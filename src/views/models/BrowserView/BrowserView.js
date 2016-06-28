@@ -20,9 +20,9 @@ import { valueToString, toGQL } from '../utils'
 import classes from './BrowserView.scss'
 
 function compareFields (a, b) {
-  if (a.fieldName === 'id') return -1
-  if (b.fieldName === 'id') return 1
-  return a.fieldName.localeCompare(b.fieldName)
+  if (a.name === 'id') return -1
+  if (b.name === 'id') return 1
+  return a.name.localeCompare(b.name)
 }
 
 class BrowserView extends React.Component {
@@ -80,13 +80,13 @@ class BrowserView extends React.Component {
   }
 
   _setSortOrder (field) {
-    const order = this.state.sortBy.fieldName === field.fieldName
+    const order = this.state.sortBy.fieldName === field.name
       ? (this.state.sortBy.order === 'ASC' ? 'DESC' : 'ASC')
       : 'ASC'
 
     this.setState({
       sortBy: {
-        fieldName: field.fieldName,
+        fieldName: field.name,
         order,
       },
     }, this._reloadData)
@@ -95,8 +95,8 @@ class BrowserView extends React.Component {
   _loadData (afterCursor = null) {
     const fieldNames = this.props.fields
       .map((field) => isScalar(field.typeIdentifier)
-        ? field.fieldName
-        : `${field.fieldName} { id }`)
+        ? field.name
+        : `${field.name} { id }`)
       .join(' ')
 
     const filterQuery = Object.keys(this.state.filter)
@@ -159,7 +159,7 @@ class BrowserView extends React.Component {
 
   _updateFilter (value, field) {
     const { filter } = this.state
-    filter[field.fieldName] = value
+    filter[field.name] = value
     this.setState({ filter }, this._reloadData)
 
     // TODO: select cut set of selected and filtered items
@@ -207,14 +207,14 @@ class BrowserView extends React.Component {
         callback(true)
 
         const { items } = this.state
-        items[index][field.fieldName] = value
+        items[index][field.name] = value
 
         this.setState({ items })
 
         analytics.track('models/browser: updated item', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
-          field: field.fieldName,
+          field: field.name,
         })
       })
       .catch(() => callback(false))
@@ -262,8 +262,8 @@ class BrowserView extends React.Component {
     return this.props.fields.map((field) => {
       return {
         field,
-        value: item[field.fieldName],
-        width: columnWidths[field.fieldName],
+        value: item[field.name],
+        width: columnWidths[field.name],
       }
     })
   }
@@ -279,14 +279,14 @@ class BrowserView extends React.Component {
     }
 
     return this.props.fields.mapToObject(
-      (field) => field.fieldName,
+      (field) => field.name,
       (field) => {
         const cellWidths = this.state.items
-          .map((item) => item[field.fieldName])
+          .map((item) => item[field.name])
           .map((value) => valueToString(value, field))
           .map((str) => calculateSize(str, cellFontOptions).width + 40)
 
-        const headerWidth = calculateSize(`${field.fieldName} ${field.typeIdentifier}`, headerFontOptions).width + 90
+        const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
 
         const maxWidth = Math.max(...cellWidths, headerWidth)
         const lowerLimit = 150
@@ -417,8 +417,8 @@ class BrowserView extends React.Component {
                 <HeaderCell
                   key={field.id}
                   field={field}
-                  width={columnWidths[field.fieldName]}
-                  sortOrder={this.state.sortBy.fieldName === field.fieldName ? this.state.sortBy.order : null}
+                  width={columnWidths[field.name]}
+                  sortOrder={this.state.sortBy.fieldName === field.name ? this.state.sortBy.order : null}
                   toggleSortOrder={() => this._setSortOrder(field)}
                   updateFilter={(value) => this._updateFilter(value, field)}
                 />
@@ -483,7 +483,7 @@ export default Relay.createContainer(MappedBrowserView, {
             edges {
               node {
                 id
-                fieldName
+                name
                 typeIdentifier
                 isList
                 isRequired

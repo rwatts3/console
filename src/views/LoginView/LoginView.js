@@ -40,7 +40,7 @@ class LoginView extends React.Component {
       updateNetworkLayer()
 
       analytics.track('login: logged in', () => {
-        window.location.reload()
+        window.location.pathname = '/'
       })
     }
     const onFailure = () => {

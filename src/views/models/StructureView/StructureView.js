@@ -182,7 +182,7 @@ const MappedStructureView = mapProps({
   fields: (props) => (
     props.viewer.model.fields.edges
       .map((edge) => edge.node)
-      .sort((a, b) => customCompare(a.fieldName, b.fieldName))
+      .sort((a, b) => customCompare(a.name, b.name))
   ),
   model: (props) => props.viewer.model,
   projectId: (props) => props.viewer.project.id,
@@ -204,7 +204,7 @@ export default Relay.createContainer(MappedStructureView, {
             edges {
               node {
                 id
-                fieldName
+                name
                 ${Field.getFragment('field')}
               }
             }
@@ -220,7 +220,7 @@ export default Relay.createContainer(MappedStructureView, {
                 name
                 unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
                   id
-                  fieldName
+                  name
                   relation {
                     id
                   }

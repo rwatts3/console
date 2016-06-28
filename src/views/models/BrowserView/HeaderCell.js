@@ -52,7 +52,7 @@ export default class HeaderCell extends React.Component {
       case 'Int': return (
         <input
           type='number'
-          placeholder={`Filter by ${this.props.field.fieldName}`}
+          placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
           onChange={::this._onFilterChangeNumber}
         />
@@ -61,21 +61,21 @@ export default class HeaderCell extends React.Component {
         <input
           type='number'
           step='any'
-          placeholder={`Filter by ${this.props.field.fieldName}`}
+          placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
           onChange={::this._onFilterChangeNumber}
         />
       )
       case 'Boolean': return (
         <select onChange={::this._onFilterChangeBoolean}>
-          <option value={''}>{`Filter by ${this.props.field.fieldName}`}</option>
+          <option value={''}>{`Filter by ${this.props.field.name}`}</option>
           <option value={!!true}>true</option>
           <option value={false}>false</option>
         </select>
       )
       case 'Enum': return (
         <select onChange={::this._onFilterChangeBoolean}>
-          <option value={''}>{`Filter by ${this.props.field.fieldName}`}</option>
+          <option value={''}>{`Filter by ${this.props.field.name}`}</option>
           {this.props.field.enumValues.map((enumValue) => (
             <option key={enumValue}>{enumValue}</option>
           ))}
@@ -84,7 +84,7 @@ export default class HeaderCell extends React.Component {
       default: return (
         <input
           type='string'
-          placeholder={`Filter by ${this.props.field.fieldName}`}
+          placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
           onChange={::this._onFilterChangeString}
         />
@@ -107,7 +107,7 @@ export default class HeaderCell extends React.Component {
       <div style={{ width }} className={classes.root}>
         <div className={classes.line} onClick={this.props.toggleSortOrder}>
           <div className={classes.fieldName}>
-            {field.fieldName}
+            {field.name}
             <span className={classes.type}>{type}</span>
           </div>
           {sortOrder &&

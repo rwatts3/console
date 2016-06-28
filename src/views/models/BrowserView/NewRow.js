@@ -30,9 +30,9 @@ export default class NewRow extends React.Component {
     super(props)
 
     const fieldValues = props.fields
-      .filter((f) => f.fieldName !== 'id')
+      .filter((f) => f.name !== 'id')
       .mapToObject(
-        (field) => field.fieldName,
+        (field) => field.name,
         (field) => ({
           field,
           value: browserDefaultValue(field),
@@ -56,7 +56,7 @@ export default class NewRow extends React.Component {
 
   _update (value, field) {
     const { fieldValues } = this.state
-    fieldValues[field.fieldName].value = value
+    fieldValues[field.name].value = value
     this.setState({ fieldValues })
   }
 
@@ -72,7 +72,7 @@ export default class NewRow extends React.Component {
           <NewCell
             key={field.id}
             field={field}
-            width={this.props.columnWidths[field.fieldName]}
+            width={this.props.columnWidths[field.name]}
             update={::this._update}
             submit={::this._add}
             autoFocus={firstAutoFocusField === field}

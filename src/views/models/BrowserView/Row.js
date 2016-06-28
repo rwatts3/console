@@ -25,8 +25,8 @@ export default class Row extends React.Component {
           <Cell
             key={field.id}
             field={field}
-            value={this.props.item[field.fieldName]}
-            width={this.props.columnWidths[field.fieldName]}
+            value={this.props.item[field.name]}
+            width={this.props.columnWidths[field.name]}
             update={this.props.update}
           />
         ))}

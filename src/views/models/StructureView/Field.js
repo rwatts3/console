@@ -28,7 +28,7 @@ class Field extends React.Component {
   }
 
   _delete () {
-    if (window.confirm(`Do you really want to delete "${this.props.field.fieldName}"?`)) {
+    if (window.confirm(`Do you really want to delete "${this.props.field.name}"?`)) {
       Relay.Store.commitUpdate(new DeleteFieldMutation({
         fieldId: this.props.field.id,
         modelId: this.props.model.id,
@@ -37,7 +37,7 @@ class Field extends React.Component {
           analytics.track('models/structure: deleted field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
-            field: this.props.field.fieldName,
+            field: this.props.field.name,
           })
         },
       })
@@ -126,13 +126,13 @@ class Field extends React.Component {
       type = `${type}!`
     }
 
-    const editLink = `/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/edit/${this.props.field.fieldName}` // eslint-disable-line
+    const editLink = `/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/edit/${this.props.field.name}` // eslint-disable-line
 
     const permissions = field.permissions.edges.map(({ node }) => node)
 
     return (
       <div className={classes.row}>
-        <Link className={classes.fieldName} to={editLink}>{field.fieldName}</Link>
+        <Link className={classes.fieldName} to={editLink}>{field.name}</Link>
         <Link className={classes.type} to={editLink}>
           <span>{type}</span>
         </Link>
@@ -192,7 +192,7 @@ export default Relay.createContainer(Field, {
     field: () => Relay.QL`
       fragment on Field {
         id
-        fieldName
+        name
         typeIdentifier
         isRequired
         isList
@@ -202,7 +202,7 @@ export default Relay.createContainer(Field, {
             node {
               id
               userType
-              comment
+              description
               allowRead
               allowCreate
               allowUpdate

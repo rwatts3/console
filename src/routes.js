@@ -14,6 +14,7 @@ import GettingStartedView from 'views/GettingStartedView/GettingStartedView'
 import AccountView from 'views/account/AccountView/AccountView'
 import SettingsTab from 'views/account/AccountView/SettingsTab'
 import ResetPasswordView from 'views/account/ResetPasswordView/ResetPasswordView'
+import LoginView from 'views/LoginView/LoginView'
 
 // TODO https://github.com/relay-tools/react-router-relay/issues/156
 class RedirectOnMount extends React.Component {
@@ -47,9 +48,17 @@ const ViewerQuery = {
 /* eslint-disable react/prop-types */
 const render = ({ error, props, routerProps, element }) => {
   if (error) {
+    const err = error.source.errors[0]
     analytics.track('error', {
-      error: JSON.stringify(error),
+      error: JSON.stringify(err),
     })
+
+    if (err.code === 1003) {
+      return (
+        <RedirectOnMount to='/login' />
+      )
+    }
+
     return (
       <RedirectOnMount to='/' />
     )
@@ -71,6 +80,7 @@ export default (
   <Route path='/'>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render} />
     <Route path='token' component={TokenRedirectView} />
+    <Route path='login' component={LoginView} queries={ViewerQuery} render={render} />
     <Route path='reset-password' component={ResetPasswordView} />
     <Route path=':projectName' component={RootView} queries={ViewerQuery} render={render}>
       <Route path='account' component={AccountView}>
