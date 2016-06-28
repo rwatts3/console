@@ -31,7 +31,7 @@ export default class AddFieldMutation extends Relay.Mutation {
   getVariables () {
     return {
       modelId: this.props.modelId,
-      fieldName: this.props.fieldName,
+      name: this.props.name,
       typeIdentifier: this.props.typeIdentifier,
       enumValues: this.props.enumValues,
       isRequired: this.props.isRequired,
