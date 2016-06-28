@@ -9,7 +9,6 @@ class RootRedirectView extends React.Component {
   static propTypes = {
     viewer: PropTypes.object.isRequired,
     projectName: PropTypes.string,
-    isLoggedin: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -17,13 +16,13 @@ class RootRedirectView extends React.Component {
   };
 
   componentWillMount () {
-    if (this.props.isLoggedin && this.props.projectName) {
+    if (this.props.projectName) {
       this.context.router.replace(`/${this.props.projectName}`)
     }
   }
 
   shouldComponentUpdate (nextProps) {
-    if (nextProps.isLoggedin && nextProps.projectName) {
+    if (nextProps.projectName) {
       this.context.router.replace(`/${nextProps.projectName}`)
       return false
     }
@@ -48,12 +47,6 @@ class RootRedirectView extends React.Component {
   }
 
   render () {
-    if (!this.props.isLoggedin) {
-      return (
-        <LoginView viewer={this.props.viewer} />
-      )
-    }
-
     if (!this.props.projectName) {
       return (
         <div className={classes.addProject} onClick={::this._addProject}>
@@ -75,7 +68,6 @@ const MappedRootRedirectView = mapProps({
      ? props.viewer.user.projects.edges[0].node.name
      : null
   ),
-  isLoggedin: (props) => props.viewer.user !== null,
 })(RootRedirectView)
 
 export default Relay.createContainer(MappedRootRedirectView, {

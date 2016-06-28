@@ -28,7 +28,7 @@ interface Props {
 
 interface State {
   loading: boolean
-  fieldName: string
+  name: string
   typeIdentifier: string
   isRequired: boolean
   isList: boolean
@@ -52,7 +52,7 @@ class FieldPopup extends React.Component<Props, State> {
 
     this.state = {
       loading: false,
-      fieldName: field ? field.fieldName : '',
+      name: field ? field.name : '',
       typeIdentifier: field ? field.typeIdentifier : 'Int',
       isRequired: field ? field.isRequired : true,
       isList: field ? field.isList : false,
@@ -99,7 +99,7 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({ loading: true } as State)
 
     const {
-      fieldName,
+      name,
       typeIdentifier,
       enumValues,
       isList,
@@ -112,7 +112,7 @@ class FieldPopup extends React.Component<Props, State> {
     Relay.Store.commitUpdate(
       new AddFieldMutation({
         modelId: this.props.modelId,
-        fieldName,
+        name,
         typeIdentifier,
         enumValues,
         isList,
@@ -125,19 +125,19 @@ class FieldPopup extends React.Component<Props, State> {
           analytics.track('models/structure: created field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
-            field: fieldName,
+            field: name,
           })
 
           this._close()
 
           // getting-started onboarding steps
           const isStep3 = (this.context as any).gettingStartedState.isActive('STEP3_CREATE_TEXT_FIELD')
-          if (isStep3 && fieldName === 'text' && typeIdentifier === 'String') {
+          if (isStep3 && name === 'text' && typeIdentifier === 'String') {
             (this.context as any).gettingStartedState.nextStep()
           }
 
           const isStep4 = (this.context as any).gettingStartedState.isActive('STEP4_CREATE_COMPLETED_FIELD')
-          if (isStep4 && fieldName === 'complete' && typeIdentifier === 'Boolean') {
+          if (isStep4 && name === 'complete' && typeIdentifier === 'Boolean') {
             (this.context as any).gettingStartedState.nextStep()
           }
         },
@@ -157,7 +157,7 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({ loading: true } as State)
 
     const {
-      fieldName,
+      name,
       typeIdentifier,
       enumValues,
       isList,
@@ -170,7 +170,7 @@ class FieldPopup extends React.Component<Props, State> {
     Relay.Store.commitUpdate(
       new UpdateFieldMutation({
         fieldId: this.props.field.id,
-        fieldName,
+        name,
         typeIdentifier,
         enumValues,
         isList,
@@ -183,7 +183,7 @@ class FieldPopup extends React.Component<Props, State> {
           analytics.track('models/structure: updated field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
-            field: fieldName,
+            field: name,
           })
 
           this._close()
@@ -197,7 +197,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   _isValid () {
-    return this.state.fieldName !== ''
+    return this.state.name !== ''
   }
 
   _onSelectType (typeIdentifier: string) {
@@ -307,7 +307,7 @@ class FieldPopup extends React.Component<Props, State> {
     const showReverseRelationSection = selectedModel &&
       selectedModel.unconnectedReverseRelationFieldsFrom.length > 0 &&
       !this.props.field
-    const reverseRelationFieldLink = `/${this.props.params.projectName}/models/${this.state.typeIdentifier}/structure/edit/${(this.state.reverseRelationField || {} as any).fieldName}` // tslint:disable-line
+    const reverseRelationFieldLink = `/${this.props.params.projectName}/models/${this.state.typeIdentifier}/structure/edit/${(this.state.reverseRelationField || {} as any).name}` // tslint:disable-line
 
     return (
       <div className={classes.background}>
@@ -337,8 +337,8 @@ class FieldPopup extends React.Component<Props, State> {
                       autoFocus={!this.props.field}
                       type='text'
                       placeholder='Fieldname'
-                      defaultValue={this.state.fieldName}
-                      onChange={(e) => this.setState({ fieldName: (e.target as HTMLInputElement).value } as State)}
+                      defaultValue={this.state.name}
+                      onChange={(e) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
                       onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
                     />
                   </div>
@@ -466,7 +466,7 @@ class FieldPopup extends React.Component<Props, State> {
                               key={relatedField.id}
                               onClick={() => this.setState({ reverseRelationField: relatedField } as State)}
                             >
-                              {relatedField.fieldName}
+                              {relatedField.name}
                             </span>
                           )
                         })}
@@ -559,7 +559,7 @@ class FieldPopup extends React.Component<Props, State> {
                         >
                           Reverse Relation From&nbsp;
                           <span className={classes.accent}>
-                            {this.state.typeIdentifier} ({this.state.reverseRelationField.fieldName})
+                            {this.state.typeIdentifier} ({this.state.reverseRelationField.name})
                           </span>
                         </Link>
                       </div>
@@ -614,7 +614,7 @@ export default Relay.createContainer(MappedFieldPopup, {
           fieldName: $fieldName
         ) @include(if: $fieldExists) {
           id
-          fieldName
+          name
           typeIdentifier
           isRequired
           isList
@@ -624,7 +624,7 @@ export default Relay.createContainer(MappedFieldPopup, {
             id
           }
           reverseRelationField {
-            fieldName
+            name
           }
         }
         project: projectByName(projectName: $projectName) {
@@ -635,7 +635,7 @@ export default Relay.createContainer(MappedFieldPopup, {
                 name
                 unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
                   id
-                  fieldName
+                  name
                   relation {
                     id
                   }

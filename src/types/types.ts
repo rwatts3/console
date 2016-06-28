@@ -1,6 +1,6 @@
 export interface Field {
   id: string
-  fieldName: string
+  name: string
   isRequired: boolean
   isList: boolean
   typeIdentifier: string

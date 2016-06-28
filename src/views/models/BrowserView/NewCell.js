@@ -32,7 +32,7 @@ export default class NewCell extends React.Component {
   }
 
   _renderContent () {
-    if (this.props.field.fieldName === 'id') {
+    if (this.props.field.name === 'id') {
       return (
         <span className={classes.value}>Id will be generated</span>
       )
@@ -123,11 +123,11 @@ export default class NewCell extends React.Component {
   render () {
     const rootClassnames = classnames({
       [classes.root]: true,
-      [classes.null]: this.props.field.fieldName === 'id',
+      [classes.null]: this.props.field.name === 'id',
       [classes.editing]: this.state.focus,
       [classes.invalid]: (
         (this.props.field.isRequired && this.state.value === null) &&
-        this.props.field.fieldName !== 'id'
+        this.props.field.name !== 'id'
       ),
     })
 
