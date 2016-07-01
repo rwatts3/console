@@ -33,7 +33,7 @@ const MappedModelRedirectView = mapProps({
           .find((m) => m.name === props.params.modelName)
       : props.viewer.project.models.edges
           .map(({ node }) => node)
-          .sort((a, b) => a.name.localeCompare(b.name))[0],
+          .sort((a, b) => a.name.localeCompare(b.name))[0]
   ),
 })(ModelRedirectView)
 
