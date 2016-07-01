@@ -46,6 +46,9 @@ module.exports = {
     }, {
       test: /graphics\/.*\.svg$/,
       loader: 'file',
+    }, { // TODO remove this loader and also `imports-loader` dependency
+      test: /load-image/,
+      loader: 'imports?define=>false'
     }],
   },
   plugins: [
