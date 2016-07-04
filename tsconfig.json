@@ -14,7 +14,9 @@
     "dist"
   ],
   "files": [
+    "./src/mutations/AddActionMutation.ts",
     "./src/mutations/ResetPasswordMutation.ts",
+    "./src/mutations/UpdateActionMutation.ts",
     "./src/types/types.ts",
     "./src/utils/classnames.ts",
     "./src/utils/cookiestore.ts",
@@ -28,6 +30,8 @@
     "./src/components/Loading/Loading.tsx",
     "./src/components/ScrollBox/ScrollBox.tsx",
     "./src/components/ToggleButton/ToggleButton.tsx",
+    "./src/views/ActionsView/ActionRow.tsx",
+    "./src/views/ActionsView/ActionsView.tsx",
     "./src/views/account/ResetPasswordView/ResetPasswordView.tsx",
     "./src/views/models/BrowserView/Cell.tsx",
     "./src/views/models/BrowserView/CheckboxCell.tsx",

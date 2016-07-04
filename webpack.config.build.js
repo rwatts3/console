@@ -74,6 +74,7 @@ module.exports = {
         warnings: false,
       }
     }),
+    new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
   ],
   postcss: [
     cssnano({
