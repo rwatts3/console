@@ -598,6 +598,7 @@ export default Relay.createContainer(MappedFieldPopup, {
     modelName: null, // injected from router
     projectName: null, // injected from router
     fieldName: null, // injected from router
+    fieldExists: false, // Warning: RelayContainer: Expected query variable `fieldExists` to be initialized in `initialVariables`
   },
   prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
     fieldExists: !!prevVariables.fieldName,
