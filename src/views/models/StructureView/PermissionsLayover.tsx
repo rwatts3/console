@@ -193,7 +193,7 @@ export default class PermissionsLayover extends React.Component<Props, State> {
                     </label>
                   </div>
                   <div className={classes.permissionComment}>
-                    <input disabled type='text' value={permission.comment} placeholder='Comment' />
+                    <input disabled type='text' value={permission.description} placeholder='Comment' />
                   </div>
                   <div className={classes.permissionDelete}>
                     <span onClick={() => this._deletePermission(permission)}>

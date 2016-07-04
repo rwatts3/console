@@ -24,7 +24,7 @@ export interface Permission {
   allowCreate: boolean
   allowUpdate: boolean
   allowDelete: boolean
-  comment: string
+  description: string
 }
 
 export interface Model {
