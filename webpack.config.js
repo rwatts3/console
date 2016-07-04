@@ -4,6 +4,7 @@ const cssnano = require('cssnano')
 const path = require('path')
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
   entry: './src/main',
   output: {
     publicPath: '/',
@@ -61,6 +62,7 @@ module.exports = {
       favicon: 'static/favicon.png',
       template: 'src/index.html',
     }),
+    new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
   ],
   postcss: [
     cssnano({
@@ -74,12 +76,12 @@ module.exports = {
       },
       safe: true,
       sourcemap: true,
-    })
+    }),
   ],
   svgo: {
     plugins: [
       { removeStyleElement: true },
-    ]
+    ],
   },
   resolve: {
     root: [path.resolve('./src'), path.resolve('node_modules')],

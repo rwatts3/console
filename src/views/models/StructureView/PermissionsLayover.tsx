@@ -12,7 +12,7 @@ const classes: any = require('./PermissionsLayover.scss')
 interface Props {
   permissions: Permission[]
   field: Field
-  close: () => null
+  close: () => void
 }
 
 interface State {
