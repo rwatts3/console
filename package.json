@@ -3,7 +3,7 @@
   "scripts": {
     "build": "rm -rf dist && NODE_ENV=production webpack --config webpack.config.build.js && cp -r static/* dist",
     "lint": "eslint src && tslint src/**/*.ts{,x}",
-    "start": "webpack-dev-server -d --hot --inline --progress --colors --history-api-fallback --host 0.0.0.0 --port 4000",
+    "start": "webpack-dev-server --hot --inline --progress --colors --history-api-fallback --host 0.0.0.0 --port 4000",
     "test": "npm run lint && jest",
     "test-watch": "jest --watch"
   },
@@ -80,6 +80,7 @@
     "imports-loader": "^0.6.5",
     "jest-cli": "^13.0.0",
     "json-loader": "^0.5.4",
+    "node-noop": "^1.0.0",
     "node-sass": "^3.7.0",
     "postcss-loader": "^0.9.1",
     "raw-loader": "^0.5.1",
