@@ -111,6 +111,7 @@ export class SideNav extends React.Component {
 
     const showsGettingStarted = this.context.router.isActive(`/${this.props.params.projectName}/getting-started`)
     const showsModels = this.context.router.isActive(`/${this.props.params.projectName}/models`)
+    const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
     const showsPlayground = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
 
     return (
@@ -208,6 +209,15 @@ export class SideNav extends React.Component {
                   <div>+ Add model</div>
                 </Tether>
               </div>
+            </div>
+            <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
+              <Link
+                to={`/${this.props.params.projectName}/actions`}
+                className={classes.head}
+                >
+                <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
+                <span>Actions</span>
+              </Link>
             </div>
             <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
               <Link
