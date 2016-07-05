@@ -210,15 +210,17 @@ export class SideNav extends React.Component {
                 </Tether>
               </div>
             </div>
-            <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
-              <Link
-                to={`/${this.props.params.projectName}/actions`}
-                className={classes.head}
-                >
-                <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
-                <span>Actions</span>
-              </Link>
-            </div>
+            {
+              // <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
+              //   <Link
+              //     to={`/${this.props.params.projectName}/actions`}
+              //     className={classes.head}
+              //   >
+              //     <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
+              //     <span>Actions</span>
+              //   </Link>
+              // </div>
+            }
             <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/playground`}
