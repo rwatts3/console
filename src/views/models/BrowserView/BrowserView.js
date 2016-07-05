@@ -334,7 +334,7 @@ class BrowserView extends React.Component {
 
   render () {
     const columnWidths = this._calculateColumnWidths()
-    const tableWidth = this.props.fields.reduce((sum, { fieldName }) => sum + columnWidths[fieldName], 0)
+    const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0)
 
     return (
       <div className={classes.root}>

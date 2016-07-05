@@ -79,7 +79,7 @@ export default class Cell extends React.Component<Props, State> {
     })
   }
 
-  _cancelOnEscape (e: __React.KeyboardEvent) {
+  _onKeyDown (e: __React.KeyboardEvent) {
     switch (e.keyCode) {
       case 13:
         this._save((e.target as HTMLInputElement).value)
@@ -87,6 +87,12 @@ export default class Cell extends React.Component<Props, State> {
       case 27:
         this._cancel()
         break
+    }
+  }
+
+  _onEscapeTextarea (e: __React.KeyboardEvent) {
+    if (e.keyCode === 27) {
+      this._save((e.target as HTMLInputElement).value)
     }
   }
 
@@ -109,7 +115,7 @@ export default class Cell extends React.Component<Props, State> {
             type='text'
             ref='input'
             defaultValue={valueString}
-            onKeyDown={(e) => this._cancelOnEscape(e)}
+            onKeyDown={(e) => this._onKeyDown(e)}
             onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
           />
         )
@@ -123,7 +129,7 @@ export default class Cell extends React.Component<Props, State> {
               ref='input'
               defaultValue={valueString}
               onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
-              onKeyDown={(e) => this._cancelOnEscape(e)}
+              onKeyDown={(e) => this._onKeyDown(e)}
             />
           )
         case 'Float':
@@ -135,7 +141,7 @@ export default class Cell extends React.Component<Props, State> {
               ref='input'
               defaultValue={valueString}
               onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
-              onKeyDown={(e) => this._cancelOnEscape(e)}
+              onKeyDown={(e) => this._onKeyDown(e)}
             />
           )
         case 'Boolean':
@@ -153,21 +159,21 @@ export default class Cell extends React.Component<Props, State> {
               autoFocus
               defaultValue={valueString}
               onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
-              onKeyDown={(e) => this._cancelOnEscape(e)}
+              onKeyDown={(e) => this._onKeyDown(e)}
             >
               {this.props.field.enumValues.map((enumValue) => (
                 <option key={enumValue}>{enumValue}</option>
               ))}
             </select>
           )
-        default:
+        case 'String':
           return (
-            <input
+            <textarea
               autoFocus
               type='text'
               ref='input'
               defaultValue={valueString}
-              onKeyDown={(e) => this._cancelOnEscape(e)}
+              onKeyDown={(e) => this._onEscapeTextarea(e)}
               onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
             />
           )
