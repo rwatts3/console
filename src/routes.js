@@ -16,6 +16,7 @@ import SettingsTab from 'views/account/AccountView/SettingsTab'
 import ResetPasswordView from 'views/account/ResetPasswordView/ResetPasswordView'
 import LoginView from 'views/LoginView/LoginView'
 import ActionsView from 'views/ActionsView/ActionsView'
+import * as cookiestore from 'utils/cookiestore'
 
 // TODO https://github.com/relay-tools/react-router-relay/issues/156
 class RedirectOnMount extends React.Component {
@@ -55,6 +56,10 @@ const render = ({ error, props, routerProps, element }) => {
     })
 
     if (err.code === 1003) {
+      cookiestore.remove('graphcool_token')
+      cookiestore.remove('graphcool_user_id')
+      window.localStorage.clear()
+
       return (
         <RedirectOnMount to='/login' />
       )
