@@ -111,7 +111,7 @@ export class SideNav extends React.Component {
 
     const showsGettingStarted = this.context.router.isActive(`/${this.props.params.projectName}/getting-started`)
     const showsModels = this.context.router.isActive(`/${this.props.params.projectName}/models`)
-    const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
+    // const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
     const showsPlayground = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
 
     return (
