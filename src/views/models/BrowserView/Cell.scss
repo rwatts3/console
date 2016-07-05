@@ -10,6 +10,7 @@
   display: flex;
   flex: 1;
   height: 47px;
+  position: relative;
 
   .value {
     text-overflow: ellipsis;
@@ -26,6 +27,18 @@
     padding: 15px 20px;
     background: none;
     border: 0;
+  }
+
+  textarea {
+    width: 105%;
+    height: 150%;
+    min-width: 100%;
+    min-height: 100%;
+    padding: 15px 20px;
+    background: #fff;
+    border: 0;
+    @include cellborder($accent-blue);
+    position: absolute;
   }
 
   select {
@@ -47,6 +60,7 @@
   &.editing {
     @include cellborder($accent-blue);
     z-index: 10;
+    overflow: visible;
   }
 
   &.invalid {
