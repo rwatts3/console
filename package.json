@@ -29,7 +29,7 @@
   "dependencies": {
     "calculate-size": "^0.2.0",
     "classnames": "^2.2.5",
-    "graphiql": "^0.7.1",
+    "graphiql": "^0.6.6",
     "js-cookie": "^2.1.1",
     "lokka": "^1.7.0",
     "lokka-transport-http": "^1.4.0",
