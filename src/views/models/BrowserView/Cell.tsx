@@ -166,6 +166,17 @@ export default class Cell extends React.Component<Props, State> {
               ))}
             </select>
           )
+        case 'DateTime':
+          return (
+            <input
+              autoFocus
+              type='text'
+              ref='input'
+              defaultValue={valueString}
+              onKeyDown={(e) => this._onKeyDown(e)}
+              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+            />
+          )
         case 'String':
           return (
             <textarea
