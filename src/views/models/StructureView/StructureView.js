@@ -43,6 +43,8 @@ class StructureView extends React.Component {
     this._toggleMenuDropdown()
 
     if (window.confirm('Do you really want to delete this model?')) {
+      this.context.router.replace(`/${this.props.params.projectName}/models`)
+
       Relay.Store.commitUpdate(new DeleteModelMutation({
         projectId: this.props.projectId,
         modelId: this.props.model.id,
@@ -52,8 +54,6 @@ class StructureView extends React.Component {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
           })
-
-          this.context.router.replace(`/${this.props.params.projectName}/models`)
         },
       })
     }
