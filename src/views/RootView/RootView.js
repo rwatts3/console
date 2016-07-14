@@ -3,6 +3,7 @@ import Relay from 'react-relay'
 import Tooltip from 'react-tooltip'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from 'map-props'
+import { validateProjectName } from 'utils/nameValidator'
 import ProjectSelection from 'components/ProjectSelection/ProjectSelection'
 import Header from 'components/Header/Header'
 import SideNav from 'views/RootView/SideNav'
@@ -188,7 +189,11 @@ export class RootView extends React.Component {
   }
 
   _addProject () {
-    const projectName = window.prompt('Project name')
+    var projectName = window.prompt('Project name:')
+    while (projectName != null && !validateProjectName(projectName)) {
+      projectName = window.prompt('The inserted project name was invalid.' +
+        'Enter a valid project name, like "Project 2" or "My Project":')
+    }
     if (projectName) {
       Relay.Store.commitUpdate(new AddProjectMutation({
         projectName,
@@ -239,6 +244,7 @@ export class RootView extends React.Component {
               params={this.props.params}
               project={this.props.project}
               viewer={this.props.viewer}
+              projectCount={this.props.allProjects.length}
               />
           </div>
           <div className={classes.content}>
