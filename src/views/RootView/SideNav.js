@@ -15,6 +15,7 @@ export class SideNav extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
+    projectCount: PropTypes.number.isRequired,
     viewer: PropTypes.object.isRequired,
     models: PropTypes.array,
   }
@@ -37,7 +38,8 @@ export class SideNav extends React.Component {
   _addModel () {
     var modelName = window.prompt('Model name:')
     while (modelName != null && !validateModelName(modelName)) {
-      modelName = window.prompt('The inserted model name was invalid. Enter a valid model name:')
+      modelName = window.prompt('The inserted model name was invalid.' +
+        'Enter a valid model name, like "Model" or "MyModel":')
     }
     const redirect = () => {
       this.context.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
@@ -124,6 +126,7 @@ export class SideNav extends React.Component {
           <ProjectSettingsOverlay
             viewer={this.props.viewer}
             project={this.props.project}
+            projectCount={this.props.projectCount}
             params={this.props.params}
             hide={::this._toggleProjectSettings}
           />
