@@ -94,7 +94,7 @@ class GettingStartedView extends React.Component {
   }
 
   _selectExample (example) {
-    this.state.selectedExample = example
+    this.setState({selectedExample: example})
   }
 
   _skipGettingStarted () {
