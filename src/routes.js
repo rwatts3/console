@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import Relay from 'react-relay'
 import { Route, IndexRoute, IndexRedirect } from 'react-router'
 import Loading from 'components/Loading/Loading'
+import RedirectOnMount from 'components/RedirectOnMount/RedirectOnMount'
 import RootView from 'views/RootView/RootView'
 import RootRedirectView from 'views/RootView/RootRedirectView'
 import TokenRedirectView from 'views/RootView/TokenRedirectView'
@@ -17,25 +18,6 @@ import ResetPasswordView from 'views/account/ResetPasswordView/ResetPasswordView
 import LoginView from 'views/LoginView/LoginView'
 import ActionsView from 'views/ActionsView/ActionsView'
 import * as cookiestore from 'utils/cookiestore'
-
-// TODO https://github.com/relay-tools/react-router-relay/issues/156
-class RedirectOnMount extends React.Component {
-  static propTypes = {
-    to: PropTypes.string.isRequired,
-  };
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
-
-  componentWillMount () {
-    this.context.router.replace(this.props.to)
-  }
-
-  render () {
-    return false
-  }
-}
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -66,6 +48,7 @@ const render = ({ error, props, routerProps, element }) => {
     }
 
     return (
+      // TODO https://github.com/relay-tools/react-router-relay/issues/156
       <RedirectOnMount to='/' />
     )
   }

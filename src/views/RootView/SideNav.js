@@ -252,8 +252,8 @@ const MappedSideNav = mapProps({
   params: (props) => props.params,
   project: (props) => props.project,
   models: (props) => props.project.models.edges
-    .map((edge) => edge.node)
-    .sort((a, b) => a.name.localeCompare(b.name)),
+      .map((edge) => edge.node)
+      .sort((a, b) => a.name.localeCompare(b.name)),
 })(SideNav)
 
 export default Relay.createContainer(MappedSideNav, {
