@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import ScrollBox from 'components/ScrollBox/ScrollBox'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from 'map-props'
+import { validateModelName } from 'utils/nameValidator'
 import Icon from 'components/Icon/Icon'
 import Tether from 'components/Tether/Tether'
 import ProjectSettingsOverlay from 'components/ProjectSettingsOverlay/ProjectSettingsOverlay'
@@ -34,7 +35,10 @@ export class SideNav extends React.Component {
   }
 
   _addModel () {
-    const modelName = window.prompt('Model name')
+    var modelName = window.prompt('Model name:')
+    while (modelName != null && !validateModelName(modelName)) {
+      modelName = window.prompt('The inserted model name was invalid. Enter a valid model name:')
+    }
     const redirect = () => {
       this.context.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
     }
