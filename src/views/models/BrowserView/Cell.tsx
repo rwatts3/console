@@ -167,6 +167,7 @@ export default class Cell extends React.Component<Props, State> {
             </select>
           )
         case 'DateTime':
+        case 'GraphQLID':
           return (
             <input
               autoFocus
