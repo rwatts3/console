@@ -15,6 +15,7 @@ export class SideNav extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
+    projectCount: PropTypes.number.isRequired,
     viewer: PropTypes.object.isRequired,
     models: PropTypes.array,
   }
@@ -125,6 +126,7 @@ export class SideNav extends React.Component {
           <ProjectSettingsOverlay
             viewer={this.props.viewer}
             project={this.props.project}
+            projectCount={this.props.projectCount}
             params={this.props.params}
             hide={::this._toggleProjectSettings}
           />
