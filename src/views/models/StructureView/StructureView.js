@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react'
 import Relay from 'react-relay'
 import { Link } from 'react-router'
-import mapProps from 'map-props'
 import Field from './Field'
 import ModelDescription from '../ModelDescription'
+import mapProps from 'components/MapProps/MapProps'
 import ScrollBox from 'components/ScrollBox/ScrollBox'
 import Icon from 'components/Icon/Icon'
 import Tether from 'components/Tether/Tether'
 import DeleteModelMutation from 'mutations/DeleteModelMutation'
 import classes from './StructureView.scss'
+
+window.xx = mapProps
 
 class StructureView extends React.Component {
   static propTypes = {
@@ -83,7 +85,7 @@ class StructureView extends React.Component {
             <Tether
               steps={{
                 STEP3_CREATE_TEXT_FIELD: 'Add a new field called "text" and select type "String".' +
-                ' Then click the "Add Field" button.',
+                ' Then click the "Create Field" button.',
                 STEP4_CREATE_COMPLETED_FIELD: 'Good job! Create another one called "complete" with type "Boolean"',
               }}
               offsetX={-5}
