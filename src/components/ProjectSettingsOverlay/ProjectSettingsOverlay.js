@@ -13,6 +13,7 @@ export default class ProjectSettingsOverlay extends React.Component {
     params: PropTypes.object.isRequired,
     viewer: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
+    projectCount: PropTypes.number.isRequired,
     hide: PropTypes.func.isRequired,
   };
 
@@ -54,7 +55,9 @@ export default class ProjectSettingsOverlay extends React.Component {
   }
 
   _onClickDeleteProject () {
-    if (window.confirm('Do you really want to delete this project?')) {
+    if (this.props.projectCount === 1) {
+      window.alert('You can\'t delete your last project!')
+    } else if (window.confirm('Do you really want to delete this project?')) {
       Relay.Store.commitUpdate(new DeleteProjectMutation({
         projectId: this.props.project.id,
         userId: this.props.viewer.user.id,

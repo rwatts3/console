@@ -244,6 +244,7 @@ export class RootView extends React.Component {
               params={this.props.params}
               project={this.props.project}
               viewer={this.props.viewer}
+              projectCount={this.props.allProjects.length}
               />
           </div>
           <div className={classes.content}>
