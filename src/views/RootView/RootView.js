@@ -191,7 +191,8 @@ export class RootView extends React.Component {
   _addProject () {
     var projectName = window.prompt('Project name:')
     while (projectName != null && !validateProjectName(projectName)) {
-      projectName = window.prompt('The inserted project name was invalid. Enter a valid project name:')
+      projectName = window.prompt('The inserted project name was invalid.' +
+        'Enter a valid project name, like "Project 2" or "My Project":')
     }
     if (projectName) {
       Relay.Store.commitUpdate(new AddProjectMutation({
