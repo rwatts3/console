@@ -29,6 +29,7 @@
     "./src/components/ApiLayover/ApiLayover.tsx",
     "./src/components/Icon/Icon.tsx",
     "./src/components/Loading/Loading.tsx",
+    "./src/components/MapProps/MapProps.tsx",
     "./src/components/RedirectOnMount/RedirectOnMount.tsx",
     "./src/components/ScrollBox/ScrollBox.tsx",
     "./src/components/ToggleButton/ToggleButton.tsx",
