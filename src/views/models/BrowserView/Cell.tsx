@@ -166,18 +166,7 @@ export default class Cell extends React.Component<Props, State> {
               ))}
             </select>
           )
-        case 'DateTime':
-        case 'GraphQLID':
-          return (
-            <input
-              autoFocus
-              type='text'
-              ref='input'
-              defaultValue={valueString}
-              onKeyDown={(e) => this._onKeyDown(e)}
-              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
-            />
-          )
+        // TODO case 'DateTime':
         case 'String':
           return (
             <textarea
@@ -186,6 +175,17 @@ export default class Cell extends React.Component<Props, State> {
               ref='input'
               defaultValue={valueString}
               onKeyDown={(e) => this._onEscapeTextarea(e)}
+              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+            />
+          )
+        default:
+          return (
+            <input
+              autoFocus
+              type='text'
+              ref='input'
+              defaultValue={valueString}
+              onKeyDown={(e) => this._onKeyDown(e)}
               onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
             />
           )
