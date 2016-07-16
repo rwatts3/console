@@ -17,6 +17,7 @@ export class SideNav extends React.Component {
     project: PropTypes.object.isRequired,
     projectCount: PropTypes.number.isRequired,
     viewer: PropTypes.object.isRequired,
+    relay: PropTypes.object.isRequired,
     models: PropTypes.array,
   }
 
@@ -33,6 +34,10 @@ export class SideNav extends React.Component {
     this.state = {
       projectSettingsVisible: false,
     }
+  }
+
+  fetch () {
+    this.props.relay.forceFetch()
   }
 
   _addModel () {
@@ -254,6 +259,7 @@ export class SideNav extends React.Component {
 const MappedSideNav = mapProps({
   params: (props) => props.params,
   project: (props) => props.project,
+  relay: (props) => props.relay,
   models: (props) => props.project.models.edges
       .map((edge) => edge.node)
       .sort((a, b) => a.name.localeCompare(b.name)),

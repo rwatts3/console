@@ -10,6 +10,7 @@ import SideNav from 'views/RootView/SideNav'
 import LoginView from 'views/LoginView/LoginView'
 import AddProjectMutation from 'mutations/AddProjectMutation'
 import UpdateUserMutation from 'mutations/UpdateUserMutation'
+import { sideNavUpdater } from 'views/RootView/SideNavUpdater'
 import classes from './RootView.scss'
 import Smooch from 'smooch'
 
@@ -245,6 +246,11 @@ export class RootView extends React.Component {
               project={this.props.project}
               viewer={this.props.viewer}
               projectCount={this.props.allProjects.length}
+              ref={(sideNav) => {
+                if (sideNav && !sideNavUpdater.sideNav) {
+                  sideNavUpdater.setSideNav(sideNav)
+                }
+              }}
               />
           </div>
           <div className={classes.content}>
