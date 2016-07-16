@@ -17,6 +17,7 @@ import Row from './Row'
 import NewRow from './NewRow'
 import ModelDescription from '../ModelDescription'
 import { valueToString, toGQL } from '../utils'
+import { sideNavUpdater } from 'views/RootView/SideNavUpdater'
 import classes from './BrowserView.scss'
 
 function compareFields (a, b) {
@@ -255,6 +256,9 @@ class BrowserView extends React.Component {
              )) {
           this.context.gettingStartedState.nextStep()
         }
+
+        // update side nav model item count
+        this._updateSideNav()
       })
   }
 
@@ -329,7 +333,14 @@ class BrowserView extends React.Component {
         this._deleteItem(itemId)
       }
       this.setState({selectedItemIds: []})
+
+      // update side nav model item count
+      this._updateSideNav()
     }
+  }
+
+  _updateSideNav () {
+    sideNavUpdater.updateSideNav()
   }
 
   render () {
