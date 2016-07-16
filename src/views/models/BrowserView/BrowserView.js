@@ -17,7 +17,7 @@ import Row from './Row'
 import NewRow from './NewRow'
 import ModelDescription from '../ModelDescription'
 import { valueToString, toGQL } from '../utils'
-import { sideNavUpdater } from 'views/RootView/SideNavUpdater'
+import { sideNavSyncer } from 'utils/sideNavSyncer'
 import classes from './BrowserView.scss'
 
 function compareFields (a, b) {
@@ -155,6 +155,8 @@ class BrowserView extends React.Component {
       .then((results) => {
         const items = results.viewer[`all${this.props.model.name}s`].edges.map((edge) => edge.node)
         this.setState({ items, loading: false })
+        // update side nav model item count
+        this._updateSideNav()
       })
   }
 
@@ -179,16 +181,11 @@ class BrowserView extends React.Component {
         }
       }
     `
-    this._lokka.mutate(mutation)
-      .then(() => {
-        const items = this.state.items.filter((i) => i.id !== itemId)
-        this.setState({ items, loading: false })
-
-        analytics.track('models/browser: deleted item', {
-          project: this.props.params.projectName,
-          model: this.props.params.modelName,
-        })
-      })
+    return this._lokka.mutate(mutation)
+      .then(analytics.track('models/browser: deleted item', {
+        project: this.props.params.projectName,
+        model: this.props.params.modelName,
+      }))
   }
 
   _updateItem (value, field, callback, itemId, index) {
@@ -256,9 +253,6 @@ class BrowserView extends React.Component {
              )) {
           this.context.gettingStartedState.nextStep()
         }
-
-        // update side nav model item count
-        this._updateSideNav()
       })
   }
 
@@ -328,19 +322,23 @@ class BrowserView extends React.Component {
 
   _deleteSelectedItems () {
     if (confirm(`Do you really want to delete ${this.state.selectedItemIds.length} item(s)?`)) {
-      var itemId
-      for (itemId of this.state.selectedItemIds) {
-        this._deleteItem(itemId)
-      }
-      this.setState({selectedItemIds: []})
 
-      // update side nav model item count
-      this._updateSideNav()
+      // only reload once after all the deletions
+      Promise.all(this.state.selectedItemIds.map((itemId) => {
+        this._deleteItem(itemId)
+      }))
+      .then(::this._reloadData)
+      .then(() => {
+        this.setState({ loading: false })
+      })
+
+      this.setState({selectedItemIds: []})
     }
   }
 
+  // THIS IS A HACK
   _updateSideNav () {
-    sideNavUpdater.updateSideNav()
+    sideNavSyncer.notifySideNav()
   }
 
   render () {

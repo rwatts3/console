@@ -9,6 +9,7 @@ import Icon from 'components/Icon/Icon'
 import Tether from 'components/Tether/Tether'
 import ProjectSettingsOverlay from 'components/ProjectSettingsOverlay/ProjectSettingsOverlay'
 import AddModelMutation from 'mutations/AddModelMutation'
+import { sideNavSyncer } from 'utils/sideNavSyncer'
 import classes from './SideNav.scss'
 
 export class SideNav extends React.Component {
@@ -36,7 +37,8 @@ export class SideNav extends React.Component {
     }
   }
 
-  fetch () {
+  _fetch () {
+    // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
     this.props.relay.forceFetch()
   }
 
@@ -83,6 +85,16 @@ export class SideNav extends React.Component {
 
   _toggleProjectSettings () {
     this.setState({ projectSettingsVisible: !this.state.projectSettingsVisible })
+  }
+
+  componentDidMount () {
+    // subscribe to sideNavSyncer - THIS IS A HACK
+    sideNavSyncer.setCallback(this._fetch, this)
+  }
+
+  componentWillUnmount () {
+    // unsubscribe from sideNavSyncer - THIS IS A HACK
+    sideNavSyncer.setCallback(null, null)
   }
 
   render () {
