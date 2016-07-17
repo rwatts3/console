@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import Loading from '../../../components/Loading/Loading'
 import UpdateFieldDescriptionMutation from 'mutations/UpdateFieldDescriptionMutation'
 import DeleteFieldMutation from 'mutations/DeleteFieldMutation'
-import PermissionsLayover from './PermissionsLayover'
+import Permissions from './Permissions'
 import Icon from 'components/Icon/Icon'
 import classes from './Field.scss'
 
@@ -128,60 +128,61 @@ class Field extends React.Component {
 
     const editLink = `/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/edit/${this.props.field.name}` // eslint-disable-line
 
-    const permissions = field.permissions.edges.map(({ node }) => node)
-
     return (
-      <div className={classes.row}>
-        <Link className={classes.fieldName} to={editLink}>{field.name}</Link>
-        <Link className={classes.type} to={editLink}>
-          <span>{type}</span>
-        </Link>
-        <div className={classes.description}>
-          {this._renderDescription()}
-        </div>
-        <div className={classes.constraints}></div>
-        <div className={classes.permissions}>
-          {this.state.showermissionsLayover &&
-            <PermissionsLayover
-              permissions={permissions}
-              field={field}
-              close={() => this.setState({ showermissionsLayover: false })}
-            />
-          }
-          {permissions.length === 0 &&
-            <span
-              className={`${classes.permission} ${classes.add}`}
-              onClick={() => this.setState({ showermissionsLayover: true })}
-            >
-              Add Permission
-            </span>
-          }
-          {permissions.map((permission) => (
-            <span
-              key={permission.id}
-              className={classes.permission}
-              onClick={() => this.setState({ showermissionsLayover: true })}
-            >
-              {permission.userType}
-            </span>
-          ))}
-        </div>
-        <div className={classes.controls}>
-          <Link to={editLink}>
-            <Icon
-              width={20}
-              height={20}
-              src={require('assets/icons/edit.svg')}
-            />
+      <div className={classes.root}>
+        <div className={classes.row}>
+          <Link className={classes.fieldName} to={editLink}>{field.name}</Link>
+          <Link className={classes.type} to={editLink}>
+            <span>{type}</span>
           </Link>
-          <span onClick={::this._delete}>
-            <Icon
-              width={20}
-              height={20}
-              src={require('assets/icons/delete.svg')}
-            />
-          </span>
+          <div className={classes.description}>
+            {this._renderDescription()}
+          </div>
+          <div className={classes.constraints}></div>
+          <div className={classes.permissions}>
+            {field.permissions.edges.length === 0 &&
+              <span
+                className={`${classes.permission} ${classes.add}`}
+                onClick={() => this.setState({ showermissionsLayover: true })}
+              >
+                Add Permission
+              </span>
+            }
+            {field.permissions.edges.map((permissionEdge) => (
+              <span
+                key={permissionEdge.node.id}
+                className={classes.permission}
+                onClick={() => this.setState({ showermissionsLayover: true })}
+              >
+                {permissionEdge.node.userType}
+              </span>
+            ))}
+          </div>
+          <div className={classes.controls}>
+            <Link to={editLink}>
+              <Icon
+                width={20}
+                height={20}
+                src={require('assets/icons/edit.svg')}
+              />
+            </Link>
+            {!field.isSystem &&
+              <span onClick={::this._delete}>
+                <Icon
+                  width={20}
+                  height={20}
+                  src={require('assets/icons/delete.svg')}
+                />
+              </span>
+            }
+          </div>
         </div>
+        {this.state.showermissionsLayover &&
+          <Permissions
+            field={field}
+            close={() => this.setState({ showermissionsLayover: false })}
+          />
+        }
       </div>
     )
   }
@@ -194,6 +195,7 @@ export default Relay.createContainer(Field, {
         id
         name
         typeIdentifier
+        isSystem
         isRequired
         isList
         description
@@ -202,14 +204,10 @@ export default Relay.createContainer(Field, {
             node {
               id
               userType
-              description
-              allowRead
-              allowCreate
-              allowUpdate
-              allowDelete
             }
           }
         }
+        ${Permissions.getFragment('field')}
       }
     `,
   },

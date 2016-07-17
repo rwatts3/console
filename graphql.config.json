@@ -1,0 +1,12 @@
+{
+  "schema": {
+    "request": {
+      "url" : "http://localhost:60000/api/schema.json",
+      "method" : "GET"
+    }
+  },
+  "endpoints": [{
+    "name": "System API",
+    "url": "http://localhost:60000/api"
+  }]
+}

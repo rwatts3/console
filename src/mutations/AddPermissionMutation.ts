@@ -1,6 +1,22 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
+import {UserType} from '../types/types'
 
-export default class AddPermissionMutation extends Relay.Mutation {
+interface Props {
+  fieldId: string
+  userType: UserType
+  userPath: string
+  userRole: string
+  description: string
+  allowRead: boolean
+  allowCreate: boolean
+  allowUpdate: boolean
+  allowDelete: boolean
+}
+
+interface Response {
+}
+
+export default class AddPermissionMutation extends Relay.Mutation<Props, Response> {
 
   getMutation () {
     return Relay.QL`mutation{addPermission}`
@@ -33,7 +49,8 @@ export default class AddPermissionMutation extends Relay.Mutation {
       fieldId: this.props.fieldId,
       userType: this.props.userType,
       userPath: this.props.userPath,
-      comment: this.props.comment,
+      userRole: this.props.userRole,
+      description: this.props.description,
       allowRead: this.props.allowRead,
       allowCreate: this.props.allowCreate,
       allowUpdate: this.props.allowUpdate,

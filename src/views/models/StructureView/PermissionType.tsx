@@ -4,7 +4,6 @@ const classes: any = require('./PermissionType.scss')
 
 interface Props {
   className?: string
-  disabled?: boolean
   dataCallback?: (data: any) => void
   userType: UserType
   userPath?: string
@@ -32,12 +31,31 @@ export default class PermissionType extends React.Component<Props, State> {
     })
   }
 
+  _renderAuthenticated () {
+    return (
+      <div>
+        <input type='checkbox' />
+        Limit to
+        <select>
+          <option value='GUEST'>Admin</option>
+        </select>
+      </div>
+    )
+  }
+
+  _renderRelated () {
+    return (
+      <div>
+        <input type='text' placeholder='Path to field' />
+      </div>
+    )
+  }
+
   render () {
     return (
       <div className={`${classes.root} ${this.props.className}`}>
         <div className={classes.container}>
           <select
-            disabled={this.props.disabled}
             onChange={(e) => this._onChangeUserType((e.target as HTMLInputElement).value as UserType)}
             value={this.state.userType}
           >
@@ -45,17 +63,8 @@ export default class PermissionType extends React.Component<Props, State> {
             <option value='AUTHENTICATED'>Authenticated</option>
             <option value='RELATED'>Related</option>
           </select>
-          {this.state.userType === 'RELATED' &&
-            <input disabled={this.props.disabled} type='text' placeholder='Path to field' />
-          }
-          {this.state.userType === 'AUTHENTICATED' &&
-            <input disabled={this.props.disabled} type='checkbox' />
-          }
-          {this.state.userType === 'AUTHENTICATED' &&
-            <select disabled={this.props.disabled}>
-              <option value='GUEST'>Admin</option>
-            </select>
-          }
+          {this.state.userType === 'AUTHENTICATED' && this._renderAuthenticated()}
+          {this.state.userType === 'RELATED' && this._renderRelated()}
         </div>
       </div>
     )

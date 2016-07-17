@@ -19,11 +19,13 @@ export interface Field {
   name: string
   isRequired: boolean
   isList: boolean
+  isSystem: boolean
   typeIdentifier: string
   defaultValue?: string
   enumValues: string[]
   reverseRelationField?: Field
   relation?: Relation
+  permissions: RelayConnection<Permission>
 }
 
 export interface Relation {
@@ -38,6 +40,7 @@ export interface Permission {
   id: string
   userType: UserType
   userPath: string
+  userRole: string
   allowRead: boolean
   allowCreate: boolean
   allowUpdate: boolean
