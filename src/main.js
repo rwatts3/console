@@ -5,9 +5,14 @@ import useRelay from 'react-router-relay'
 import { Router, browserHistory, applyRouterMiddleware } from 'react-router'
 import routes from './routes'
 import { updateNetworkLayer } from './utils/relay'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import { gettingStarted, updateGettingStartedState } from './reducers/gettingStarted'
+import thunk from 'redux-thunk'
+
+import {
+  reduceGettingStartedState,
+  fetchGettingStartedState,
+} from './reducers/GettingStartedState'
 
 import loadAnalytics from './utils/analytics'
 
@@ -21,26 +26,8 @@ browserHistory.listen(() => {
   analytics.page()
 })
 
-console.log(gettingStarted)
-
-const store = createStore(gettingStarted)
-var query = Relay.createQuery(Relay.QL`
-  query {
-    viewer {
-      user {
-        gettingStartedStatus
-      }
-    }
-  }`, {})
-Relay.Store.primeCache({query}, ({done, error}) => {
-  if (done) {
-    const data = Relay.Store.readQuery(query)[0]
-    console.log(data)
-    store.dispatch(updateGettingStartedState(data))
-  } else if (error) {
-    console.log(error)
-  }
-})
+const store = createStore(reduceGettingStartedState, applyMiddleware(thunk))
+store.dispatch(fetchGettingStartedState())
 
 ReactDOM.render((
   <Provider store={store}>
