@@ -1,6 +1,14 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class DeletePermissionMutation extends Relay.Mutation {
+interface Props {
+  permissionId: string
+  fieldId: string
+}
+
+interface Response {
+}
+
+export default class DeletePermissionMutation extends Relay.Mutation<Props, Response> {
 
   getMutation () {
     return Relay.QL`mutation{deletePermission}`

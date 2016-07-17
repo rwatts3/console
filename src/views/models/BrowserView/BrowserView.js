@@ -322,7 +322,6 @@ class BrowserView extends React.Component {
 
   _deleteSelectedItems () {
     if (confirm(`Do you really want to delete ${this.state.selectedItemIds.length} item(s)?`)) {
-
       // only reload once after all the deletions
       Promise.all(this.state.selectedItemIds.map((itemId) => {
         this._deleteItem(itemId)
