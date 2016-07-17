@@ -9,90 +9,11 @@ import Header from 'components/Header/Header'
 import SideNav from 'views/RootView/SideNav'
 import LoginView from 'views/LoginView/LoginView'
 import AddProjectMutation from 'mutations/AddProjectMutation'
-import UpdateUserMutation from 'mutations/UpdateUserMutation'
+import { connect } from 'react-redux'
 import classes from './RootView.scss'
 import Smooch from 'smooch'
 
 import '../../styles/core.scss'
-
-class GettingStartedState {
-
-  static steps = [
-    'STEP1_OVERVIEW',
-    'STEP2_CREATE_TODO_MODEL',
-    'STEP3_CREATE_TEXT_FIELD',
-    'STEP4_CREATE_COMPLETED_FIELD',
-    'STEP5_GOTO_DATA_TAB',
-    'STEP6_ADD_DATA_ITEM_1',
-    'STEP7_ADD_DATA_ITEM_2',
-    'STEP8_GOTO_GETTING_STARTED',
-    'STEP9_WAITING_FOR_REQUESTS',
-    'STEP10_DONE',
-    'STEP11_SKIPPED',
-  ]
-
-  constructor ({ step, userId }) {
-    this._userId = userId
-    this.update(step)
-  }
-
-  isActive (step) {
-    const isCurrentStep = step ? this.step === step : true
-    return isCurrentStep && this.step !== 'STEP10_DONE' && this.step !== 'STEP11_SKIPPED'
-  }
-
-  update (step) {
-    const currentStepIndex = GettingStartedState.steps.indexOf(this.step)
-    const stepIndex = GettingStartedState.steps.indexOf(step)
-    if (currentStepIndex > stepIndex) {
-      return
-    }
-
-    this.step = step
-
-    switch (step) {
-      case 'STEP1_OVERVIEW': this.progress = 0; break
-      case 'STEP2_CREATE_TODO_MODEL': this.progress = 1; break
-      case 'STEP3_CREATE_TEXT_FIELD': this.progress = 1; break
-      case 'STEP4_CREATE_COMPLETED_FIELD': this.progress = 1; break
-      case 'STEP5_GOTO_DATA_TAB': this.progress = 2; break
-      case 'STEP6_ADD_DATA_ITEM_1': this.progress = 2; break
-      case 'STEP7_ADD_DATA_ITEM_2': this.progress = 2; break
-      case 'STEP8_GOTO_GETTING_STARTED': this.progress = 3; break
-      case 'STEP9_WAITING_FOR_REQUESTS': this.progress = 3; break
-      case 'STEP10_DONE': this.progress = 4; break
-      case 'STEP11_SKIPPED': this.progress = 0; break
-    }
-  }
-
-  skip () {
-    return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(new UpdateUserMutation({
-        userId: this._userId,
-        gettingStartedStatus: 'STEP11_SKIPPED',
-      }), {
-        onSuccess: resolve,
-        onFailure: reject,
-      })
-    })
-  }
-
-  nextStep () {
-    const currentStep = this.step
-    const currentStepIndex = GettingStartedState.steps.indexOf(currentStep)
-    const nextStep = GettingStartedState.steps[currentStepIndex + 1]
-
-    return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(new UpdateUserMutation({
-        userId: this._userId,
-        gettingStartedStatus: nextStep,
-      }), {
-        onSuccess: resolve,
-        onFailure: reject,
-      })
-    })
-  }
-}
 
 export class RootView extends React.Component {
   static propTypes = {
@@ -104,6 +25,7 @@ export class RootView extends React.Component {
     allProjects: PropTypes.array,
     params: PropTypes.object.isRequired,
     relay: PropTypes.object.isRequired,
+    gettingStartedState: PropTypes.object.isRequired,
   }
 
   static childContextTypes = {
@@ -137,13 +59,6 @@ export class RootView extends React.Component {
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
-    const gettingStartedState = new GettingStartedState({
-      userId: props.user.id,
-      step: props.user.gettingStartedStatus,
-    })
-
-    this.state = { gettingStartedState }
-
     this._updateForceFetching()
   }
 
@@ -152,7 +67,8 @@ export class RootView extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.state.gettingStartedState.update(nextProps.user.gettingStartedStatus)
+    // TODO: dispatch action
+    this.props.gettingStartedState.update(nextProps.user.gettingStartedStatus)
   }
 
   componentDidUpdate (prevProps) {
@@ -174,7 +90,7 @@ export class RootView extends React.Component {
 
   getChildContext () {
     return {
-      gettingStartedState: this.state.gettingStartedState,
+      gettingStartedState: this.props.gettingStartedState,
     }
   }
 
@@ -256,6 +172,16 @@ export class RootView extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+const ReduxContainer = connect(
+  mapStateToProps
+)(RootView)
+
 const MappedRootView = mapProps({
   params: (props) => props.params,
   relay: (props) => props.relay,
@@ -268,7 +194,7 @@ const MappedRootView = mapProps({
   viewer: (props) => props.viewer,
   user: (props) => props.viewer.user,
   isLoggedin: (props) => props.viewer.user !== null,
-})(RootView)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedRootView, {
   initialVariables: {

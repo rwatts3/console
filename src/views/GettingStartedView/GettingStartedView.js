@@ -326,6 +326,7 @@ export default Relay.createContainer(MappedGettingStartedView, {
           id
         }
         user {
+          id
           name
         }
       }
