@@ -62,9 +62,6 @@ export function reduceGettingStartedState (state = initialState, action = {}) {
     case UPDATE:
       var gettingStartedState = action.payload.gettingStartedState
 
-      console.log('update redux')
-      console.log(gettingStartedState)
-
       return Object.assign({}, state, {
         gettingStartedState,
       })
@@ -80,9 +77,6 @@ export function update (step, userId) {
 }
 
 function _updateReduxAndRelay (dispatch, step, userId) {
-  console.log('update redux')
-  console.log(step, userId)
-
   return new Promise((resolve, reject) => {
     Relay.Store.commitUpdate(new UpdateUserMutation({
       userId: userId,
@@ -98,8 +92,6 @@ function _updateReduxAndRelay (dispatch, step, userId) {
 }
 
 export function nextStep () {
-  console.log('next step')
-
   return function (dispatch, getState) {
     const currentStep = getState().gettingStartedState.step
     const currentStepIndex = GettingStartedState.steps.indexOf(currentStep)
@@ -111,7 +103,6 @@ export function nextStep () {
 }
 
 export function skip () {
-  console.log('skip getting started')
   return function (dispatch, getState) {
     const nextStep = 'STEP11_SKIPPED'
     const userId = getState().gettingStartedState._userId
