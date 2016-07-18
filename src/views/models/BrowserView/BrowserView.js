@@ -18,6 +18,9 @@ import NewRow from './NewRow'
 import ModelDescription from '../ModelDescription'
 import { valueToString, toGQL } from '../utils'
 import { sideNavSyncer } from 'utils/sideNavSyncer'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { nextStep } from 'reducers/GettingStartedState'
 import classes from './BrowserView.scss'
 
 function compareFields (a, b) {
@@ -32,10 +35,11 @@ class BrowserView extends React.Component {
     fields: PropTypes.array.isRequired,
     projectId: PropTypes.string.isRequired,
     model: PropTypes.object.isRequired,
+    gettingStartedState: PropTypes.object.isRequired,
+    nextStep: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
-    gettingStartedState: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
   }
 
@@ -155,7 +159,7 @@ class BrowserView extends React.Component {
       .then((results) => {
         const items = results.viewer[`all${this.props.model.name}s`].edges.map((edge) => edge.node)
         this.setState({ items, loading: false })
-        // update side nav model item count
+        // _update side nav model item count
         this._updateSideNav()
       })
   }
@@ -248,10 +252,10 @@ class BrowserView extends React.Component {
 
         // getting-started onboarding step
         if (this.props.model.name === 'Todo' && (
-           this.context.gettingStartedState.isActive('STEP6_ADD_DATA_ITEM_1') ||
-           this.context.gettingStartedState.isActive('STEP7_ADD_DATA_ITEM_2')
+           this.props.gettingStartedState.isActive('STEP6_ADD_DATA_ITEM_1') ||
+           this.props.gettingStartedState.isActive('STEP7_ADD_DATA_ITEM_2')
              )) {
-          this.context.gettingStartedState.nextStep()
+          this.props.nextStep()
         }
       })
   }
@@ -464,6 +468,21 @@ class BrowserView extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({ nextStep }, dispatch)
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(BrowserView)
+
 const MappedBrowserView = mapProps({
   params: (props) => props.params,
   fields: (props) => (
@@ -474,7 +493,7 @@ const MappedBrowserView = mapProps({
   ),
   model: (props) => props.viewer.model,
   projectId: (props) => props.viewer.project.id,
-})(BrowserView)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedBrowserView, {
   initialVariables: {

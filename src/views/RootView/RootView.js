@@ -68,7 +68,7 @@ export class RootView extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     // TODO: dispatch action
-    this.props.gettingStartedState.update(nextProps.user.gettingStartedStatus)
+    // this.props.gettingStartedState._update(nextProps.user.gettingStartedStatus)
   }
 
   componentDidUpdate (prevProps) {
@@ -88,11 +88,13 @@ export class RootView extends React.Component {
     }
   }
 
+  /*
   getChildContext () {
     return {
       gettingStartedState: this.props.gettingStartedState,
     }
   }
+  */
 
   _updateForceFetching () {
     if (this.props.user.gettingStartedStatus === 'STEP9_WAITING_FOR_REQUESTS') {
@@ -178,9 +180,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const ReduxContainer = connect(
-  mapStateToProps
-)(RootView)
+const ReduxContainer = connect(mapStateToProps)(RootView)
 
 const MappedRootView = mapProps({
   params: (props) => props.params,
