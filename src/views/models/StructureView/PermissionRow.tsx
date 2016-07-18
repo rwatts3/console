@@ -22,6 +22,7 @@ interface State {
   userType: UserType
   userPath: string
   userRole: string
+  useUserRole: boolean
   allowRead: boolean
   allowCreate: boolean
   allowUpdate: boolean
@@ -36,8 +37,8 @@ class PermissionRow extends React.Component<Props, State> {
 
     const permission = props.permission || {
         userType: 'GUEST' as UserType,
-        userPath: '',
-        userRole: '',
+        userPath: null,
+        userRole: null,
         allowRead: false,
         allowCreate: false,
         allowUpdate: false,
@@ -52,6 +53,7 @@ class PermissionRow extends React.Component<Props, State> {
       userType: permission.userType,
       userPath: permission.userPath,
       userRole: permission.userRole,
+      useUserRole: !!permission.userRole,
       allowRead: permission.allowRead,
       allowCreate: permission.allowCreate,
       allowUpdate: permission.allowUpdate,
@@ -82,11 +84,24 @@ class PermissionRow extends React.Component<Props, State> {
 
   _updateDescription (description: string) {
     this._beginEditing()
-    this.setState({ description: description } as State)
+    this.setState({
+      editDescription: true,
+      description: description,
+    } as State)
   }
 
   _beginEditing () {
     this.setState({ editing: true } as State)
+  }
+
+  _updateUserType ({ userType, userPath, userRole, useUserRole }) {
+    this.setState({
+      editing: true,
+      userType: userType as UserType,
+      userPath: userPath,
+      userRole: userRole,
+      useUserRole: useUserRole,
+    } as State)
   }
 
   _save () {
@@ -105,7 +120,7 @@ class PermissionRow extends React.Component<Props, State> {
         fieldId: this.props.fieldId,
         userType: this.state.userType,
         userPath: this.state.userPath,
-        userRole: this.state.userRole,
+        userRole: this.state.useUserRole ? this.state.userRole : null,
         description: this.state.description,
         allowRead: this.state.allowRead,
         allowCreate: this.state.allowCreate,
@@ -131,7 +146,7 @@ class PermissionRow extends React.Component<Props, State> {
         permissionId: this.props.permission.id,
         userType: this.state.userType,
         userPath: this.state.userPath,
-        userRole: this.state.userRole,
+        userRole: this.state.useUserRole ? this.state.userRole : null,
         description: this.state.description,
         allowRead: this.state.allowRead,
         allowCreate: this.state.allowCreate,
@@ -162,6 +177,7 @@ class PermissionRow extends React.Component<Props, State> {
         userType: this.props.permission.userType,
         userPath: this.props.permission.userPath,
         userRole: this.props.permission.userRole,
+        useUserRole: !!this.props.permission.userRole,
         allowRead: this.props.permission.allowRead,
         allowCreate: this.props.permission.allowCreate,
         allowUpdate: this.props.permission.allowUpdate,
@@ -201,7 +217,7 @@ class PermissionRow extends React.Component<Props, State> {
           autoFocus={this.state.editDescription}
           type='text'
           placeholder='Description'
-          defaultValue={this.state.description}
+          value={this.state.description}
           onChange={(e) => this._updateDescription((e.target as HTMLInputElement).value)}
           onKeyDown={(e) => this._onKeyDown(e)}
           />
@@ -220,12 +236,16 @@ class PermissionRow extends React.Component<Props, State> {
 
   _renderControls () {
     if (this.state.saving) {
-      return <Loading color='#B9B9C8' />
+      return (
+        <div className={classes.controls}>
+          <Loading color='#B9B9C8' />
+        </div>
+      )
     }
 
     if (this.state.editing) {
       return (
-        <div>
+        <div className={classes.controls}>
           <span onClick={() => this._save()}>Save</span>
           <span onClick={() => this._cancel()}>Cancel</span>
         </div>
@@ -233,7 +253,7 @@ class PermissionRow extends React.Component<Props, State> {
     }
 
     return (
-      <div>
+      <div className={classes.controls}>
         <span className={classes.delete} onClick={() => this._delete()}>
           <Icon
             width={20}
@@ -252,6 +272,10 @@ class PermissionRow extends React.Component<Props, State> {
           <PermissionType
             userType={this.state.userType}
             userPath={this.state.userPath}
+            userRole={this.state.userRole}
+            useUserRole={this.state.useUserRole}
+            dataCallback={(data) => this._updateUserType(data)}
+            availableUserRoles={['Admin']}
           />
         </div>
         <div className={classes.allow}>
