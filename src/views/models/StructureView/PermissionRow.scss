@@ -20,7 +20,8 @@
 }
 
 .permissionType {
-  flex: 1 0 300px;
+  flex: 1.5 0 300px;
+  height: 100%;
 }
 
 .allow {
@@ -81,7 +82,6 @@
     margin-left: 8px;
     cursor: pointer;
   }
-
 
   svg {
     fill: $grey3;
