@@ -28,10 +28,6 @@ export class RootView extends React.Component {
     gettingStartedState: PropTypes.object.isRequired,
   }
 
-  static childContextTypes = {
-    gettingStartedState: PropTypes.object.isRequired,
-  }
-
   constructor (props) {
     super(props)
 
