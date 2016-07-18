@@ -1,16 +1,19 @@
 import React, { PropTypes } from 'react'
 import TetherComponent from 'react-tether'
+import { connect } from 'react-redux'
 import classes from './Tether.scss'
 
-export default class Tether extends React.Component {
+class Tether extends React.Component {
 
   static propTypes = {
     steps: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
+    gettingStartedState: PropTypes.object.isRequired,
     offsetX: PropTypes.number,
     offsetY: PropTypes.number,
     width: PropTypes.number,
     side: PropTypes.string,
+
   }
 
   static defaultProps = {
@@ -20,12 +23,8 @@ export default class Tether extends React.Component {
     side: 'bottom',
   }
 
-  static contextTypes = {
-    gettingStartedState: PropTypes.object.isRequired,
-  }
-
   render () {
-    const step = this.props.steps[this.context.gettingStartedState.step]
+    const step = this.props.steps[this.props.gettingStartedState.step]
     const isBottom = this.props.side === 'bottom'
 
     return (
@@ -47,3 +46,12 @@ export default class Tether extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+export default connect(mapStateToProps)(Tether)
+

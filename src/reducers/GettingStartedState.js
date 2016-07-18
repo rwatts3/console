@@ -19,7 +19,7 @@ export class GettingStartedState {
 
   constructor ({ step, userId }) {
     this._userId = userId
-    this.update(step)
+    this._update(step)
   }
 
   isActive (step) {
@@ -27,7 +27,7 @@ export class GettingStartedState {
     return isCurrentStep && this.step !== 'STEP10_DONE' && this.step !== 'STEP11_SKIPPED'
   }
 
-  update (step) {
+  _update (step) {
     const currentStepIndex = GettingStartedState.steps.indexOf(this.step)
     const stepIndex = GettingStartedState.steps.indexOf(step)
     if (currentStepIndex > stepIndex) {
@@ -50,34 +50,6 @@ export class GettingStartedState {
       case 'STEP11_SKIPPED': this.progress = 0; break
     }
   }
-
-  skip () {
-    return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(new UpdateUserMutation({
-        userId: this._userId,
-        gettingStartedStatus: 'STEP11_SKIPPED',
-      }), {
-        onSuccess: resolve,
-        onFailure: reject,
-      })
-    })
-  }
-
-  nextStep () {
-    const currentStep = this.step
-    const currentStepIndex = GettingStartedState.steps.indexOf(currentStep)
-    const nextStep = GettingStartedState.steps[currentStepIndex + 1]
-
-    return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(new UpdateUserMutation({
-        userId: this._userId,
-        gettingStartedStatus: nextStep,
-      }), {
-        onSuccess: resolve,
-        onFailure: reject,
-      })
-    })
-  }
 }
 
 // Actions
@@ -86,12 +58,11 @@ const UPDATE = 'dashboard/gettingStartedReducer/UPDATE'
 // Reducer
 const initialState = {}
 export function reduceGettingStartedState (state = initialState, action = {}) {
-  console.log(initialState)
   switch (action.type) {
     case UPDATE:
       var gettingStartedState = action.payload.gettingStartedState
 
-      console.log('update')
+      console.log('update redux')
       console.log(gettingStartedState)
 
       return Object.assign({}, state, {
@@ -103,10 +74,50 @@ export function reduceGettingStartedState (state = initialState, action = {}) {
 }
 
 // Action Creators
-export function updateGettingStartedState (step, userId) {
+export function update (step, userId) {
   const payload = {gettingStartedState: new GettingStartedState({step, userId})}
-  console.log(payload)
   return {type: UPDATE, payload}
+}
+
+function _updateReduxAndRelay (dispatch, step, userId) {
+  console.log('update redux')
+  console.log(step, userId)
+
+  return new Promise((resolve, reject) => {
+    Relay.Store.commitUpdate(new UpdateUserMutation({
+      userId: userId,
+      gettingStartedStatus: step,
+    }), {
+      onSuccess: () => {
+        dispatch(update(step, userId))
+        resolve()
+      },
+      onFailure: reject,
+    })
+  })
+}
+
+export function nextStep () {
+  console.log('next step')
+
+  return function (dispatch, getState) {
+    const currentStep = getState().gettingStartedState.step
+    const currentStepIndex = GettingStartedState.steps.indexOf(currentStep)
+    const nextStep = GettingStartedState.steps[currentStepIndex + 1]
+    const userId = getState().gettingStartedState._userId
+
+    return _updateReduxAndRelay(dispatch, nextStep, userId)
+  }
+}
+
+export function skip () {
+  console.log('skip getting started')
+  return function (dispatch, getState) {
+    const nextStep = 'STEP11_SKIPPED'
+    const userId = getState().gettingStartedState._userId
+
+    return _updateReduxAndRelay(dispatch, nextStep, userId)
+  }
 }
 
 export function fetchGettingStartedState () {
@@ -125,7 +136,7 @@ export function fetchGettingStartedState () {
       Relay.Store.primeCache({query}, ({done, error}) => {
         if (done) {
           const data = Relay.Store.readQuery(query)[0]
-          dispatch(updateGettingStartedState(data.user.gettingStartedStatus, data.user.id))
+          dispatch(update(data.user.gettingStartedStatus, data.user.id))
           resolve()
         } else if (error) {
           reject(Error('Error when fetching gettingStartedState'))

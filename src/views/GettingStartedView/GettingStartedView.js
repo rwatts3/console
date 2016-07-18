@@ -6,6 +6,9 @@ import { findDOMNode } from 'react-dom'
 import Loading from 'components/Loading/Loading'
 import classes from './GettingStartedView.scss'
 import { Follow } from 'react-twitter-widgets'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { nextStep, skip } from 'reducers/GettingStartedState'
 
 class Script extends React.Component {
   static propTypes = {
@@ -52,10 +55,12 @@ class GettingStartedView extends React.Component {
     params: PropTypes.object.isRequired,
     projectId: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
+    gettingStartedState: PropTypes.object.isRequired,
+    nextStep: PropTypes.func.isRequired,
+    skip: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
-    gettingStartedState: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
   }
 
@@ -67,7 +72,7 @@ class GettingStartedView extends React.Component {
   }
 
   componentWillMount () {
-    if (!this.context.gettingStartedState.isActive()) {
+    if (!this.props.gettingStartedState.isActive()) {
       this.context.router.replace(`/${this.props.params.projectName}/models`)
     }
   }
@@ -75,12 +80,12 @@ class GettingStartedView extends React.Component {
   componentDidMount () {
     analytics.track('getting-started: viewed', {
       project: this.props.params.projectName,
-      step: this.context.gettingStartedState.step,
+      step: this.props.gettingStartedState.step,
     })
   }
 
   componentDidUpdate () {
-    if (this.context.gettingStartedState.progress === 4) {
+    if (this.props.gettingStartedState.progress === 4) {
       const snd = new Audio(require('assets/success.mp3'))
       snd.volume = 0.5
       snd.play()
@@ -88,8 +93,8 @@ class GettingStartedView extends React.Component {
   }
 
   _getStarted () {
-    if (this.context.gettingStartedState.isActive('STEP1_OVERVIEW')) {
-      this.context.gettingStartedState.nextStep()
+    if (this.props.gettingStartedState.isActive('STEP1_OVERVIEW')) {
+      this.props.nextStep()
     }
   }
 
@@ -99,7 +104,8 @@ class GettingStartedView extends React.Component {
 
   _skipGettingStarted () {
     if (window.confirm('Do you really want skip the getting started tour?')) {
-      this.context.gettingStartedState.skip()
+      // TODO: fix this hack
+      Promise.resolve(this.props.skip())
         .then(() => {
           this.context.router.replace(`/${this.props.params.projectName}/models`)
         })
@@ -119,7 +125,7 @@ class GettingStartedView extends React.Component {
   }
 
   render () {
-    const { progress } = this.context.gettingStartedState
+    const { progress } = this.props.gettingStartedState
     const overlayActive = progress === 0 || progress === 4
     const firstName = this.props.user.name.split(' ')[0]
     const downloadUrl = (example) => (
@@ -309,11 +315,26 @@ class GettingStartedView extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({ nextStep, skip }, dispatch)
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(GettingStartedView)
+
 const MappedGettingStartedView = mapProps({
   params: (props) => props.params,
   projectId: (props) => props.viewer.project.id,
   user: (props) => props.viewer.user,
-})(GettingStartedView)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedGettingStartedView, {
   initialVariables: {

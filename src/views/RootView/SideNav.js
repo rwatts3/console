@@ -11,6 +11,9 @@ import ProjectSettingsOverlay from 'components/ProjectSettingsOverlay/ProjectSet
 import AddModelMutation from 'mutations/AddModelMutation'
 import { sideNavSyncer } from 'utils/sideNavSyncer'
 import classes from './SideNav.scss'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { nextStep, skip } from 'reducers/GettingStartedState'
 
 export class SideNav extends React.Component {
   static propTypes = {
@@ -20,10 +23,12 @@ export class SideNav extends React.Component {
     viewer: PropTypes.object.isRequired,
     relay: PropTypes.object.isRequired,
     models: PropTypes.array,
+    gettingStartedState: PropTypes.object.isRequired,
+    nextStep: PropTypes.func.isRequired,
+    skip: PropTypes.func.isRequired,
   }
 
   static contextTypes = {
-    gettingStartedState: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
   }
 
@@ -64,8 +69,8 @@ export class SideNav extends React.Component {
           })
 
           // getting-started onboarding step
-          if (modelName === 'Todo' && this.context.gettingStartedState.isActive('STEP2_CREATE_TODO_MODEL')) {
-            this.context.gettingStartedState.nextStep().then(redirect)
+          if (modelName === 'Todo' && this.props.gettingStartedState.isActive('STEP2_CREATE_TODO_MODEL')) {
+            this.props.nextStep().then(redirect)
           } else {
             redirect()
           }
@@ -76,7 +81,7 @@ export class SideNav extends React.Component {
 
   _skipGettingStarted () {
     if (window.confirm('Do you really want skip the getting started tour?')) {
-      this.context.gettingStartedState.skip()
+      this.props.skip()
         .then(() => {
           this.context.router.replace(`/${this.props.params.projectName}/models`)
         })
@@ -99,28 +104,28 @@ export class SideNav extends React.Component {
 
   render () {
     const firstStepOnClick = () => {
-      if (this.context.gettingStartedState.isActive('STEP1_OVERVIEW')) {
-        this.context.gettingStartedState.nextStep()
+      if (this.props.gettingStartedState.isActive('STEP1_OVERVIEW')) {
+        this.props.nextStep()
       }
     }
 
     const secondStepOnClick = () => {
-      if (this.context.gettingStartedState.isActive('STEP5_GOTO_DATA_TAB')) {
-        this.context.gettingStartedState.nextStep()
+      if (this.props.gettingStartedState.isActive('STEP5_GOTO_DATA_TAB')) {
+        this.props.nextStep()
       }
     }
 
     const thirdStepOnClick = () => {
-      if (this.context.gettingStartedState.isActive('STEP8_GOTO_GETTING_STARTED')) {
-        this.context.gettingStartedState.nextStep()
+      if (this.props.gettingStartedState.isActive('STEP8_GOTO_GETTING_STARTED')) {
+        this.props.nextStep()
       }
     }
 
-    const gettingStartedIsActive = this.context.gettingStartedState.isActive()
+    const gettingStartedIsActive = this.props.gettingStartedState.isActive()
     const gettingStartedStepClass = (index) => {
-      if (this.context.gettingStartedState.progress === index) {
+      if (this.props.gettingStartedState.progress === index) {
         return classes.gettingStartedStepActive
-      } else if (this.context.gettingStartedState.progress > index) {
+      } else if (this.props.gettingStartedState.progress > index) {
         return classes.gettingStartedStepDone
       } else {
         return classes.gettingStartedStepDisabled
@@ -268,6 +273,21 @@ export class SideNav extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({ nextStep, skip }, dispatch)
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SideNav)
+
 const MappedSideNav = mapProps({
   params: (props) => props.params,
   project: (props) => props.project,
@@ -275,7 +295,7 @@ const MappedSideNav = mapProps({
   models: (props) => props.project.models.edges
       .map((edge) => edge.node)
       .sort((a, b) => a.name.localeCompare(b.name)),
-})(SideNav)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedSideNav, {
   fragments: {
