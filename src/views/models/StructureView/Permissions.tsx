@@ -5,7 +5,10 @@ import PermissionRow from './PermissionRow'
 const classes: any = require('./Permissions.scss')
 
 interface Props {
+  params: any
   field: Field
+  possibleRelatedPermissionPaths: Field[][]
+  availableUserRoles: string[]
 }
 
 interface State {
@@ -32,27 +35,35 @@ class Permissions extends React.Component<Props, State> {
           <div className={classes.description}>Description</div>
           <div className={classes.controls}></div>
         </div>
-        <div className={classes.permissions}>
-          {this.props.field.permissions.edges.map((permissionEdge) => (
+        {(this.props.field.permissions.edges.length > 0 || this.state.showNewPermission) &&
+          <div className={classes.permissions}>
+            {this.props.field.permissions.edges.map((permissionEdge) => (
+              <PermissionRow
+                key={permissionEdge.node.id}
+                fieldId={this.props.field.id}
+                params={this.props.params}
+                permission={permissionEdge.node}
+                possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+                availableUserRoles={this.props.availableUserRoles}
+              />
+            ))}
+            {this.state.showNewPermission &&
             <PermissionRow
-              key={permissionEdge.node.id}
               fieldId={this.props.field.id}
-              permission={permissionEdge.node}
-            />
-          ))}
-          {this.state.showNewPermission &&
-            <PermissionRow
-              fieldId={this.props.field.id}
+              params={this.props.params}
               permission={null}
               hide={() => this.setState({ showNewPermission: false })}
+              possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+              availableUserRoles={this.props.availableUserRoles}
             />
-          }
-        </div>
+            }
+          </div>
+        }
         <div
           className={classes.add}
           onClick={() => this.setState({ showNewPermission: true })}
         >
-          + Create new permission
+          + Create permission
         </div>
       </div>
     )

@@ -7,12 +7,15 @@ interface Props {
   width?: number
   height?: number
   className?: string
+  rotate?: number
 }
 
 export default class Icon extends React.Component<Props, {}> {
   render() {
     const width = this.props.width || 16
     const height = this.props.height || 16
+
+    const rotate = this.props.rotate || 0
 
     const fillCode = this.props.color ? `fill="${this.props.color}"` : ''
     const styleCode = `style="width: ${width}px; height: ${height}px"`
@@ -29,6 +32,10 @@ export default class Icon extends React.Component<Props, {}> {
       <i
         {...restProps}
         className={`${classes.root} ${this.props.className}`}
+        style={{
+          transform: `rotate(${rotate}deg)`,
+          WebkitTransform: `rotate(${rotate}deg)`,
+        }}
         dangerouslySetInnerHTML={{ __html: html }}
       />
     )

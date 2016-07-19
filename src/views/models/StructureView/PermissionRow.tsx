@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Permission, UserType } from '../../../types/types'
+import { Permission, UserType, Field } from '../../../types/types'
 import PermissionType from './PermissionType'
 import Loading from '../../../components/Loading/Loading'
 import AddPermissionMutation from '../../../mutations/AddPermissionMutation'
@@ -10,17 +10,21 @@ import Icon from '../../../components/Icon/Icon'
 const classes: any = require('./PermissionRow.scss')
 
 interface Props {
+  params: any
   fieldId: string
   permission?: Permission
   hide?: () => void
+  possibleRelatedPermissionPaths: Field[][]
+  availableUserRoles: string[]
 }
 
 interface State {
   saving: boolean
   editing: boolean
+  isValid: boolean
   editDescription: boolean
   userType: UserType
-  userPath: string
+  userPath: string[]
   userRole: string
   useUserRole: boolean
   allowRead: boolean
@@ -49,6 +53,7 @@ class PermissionRow extends React.Component<Props, State> {
     this.state = {
       saving: false,
       editing: !props.permission,
+      isValid: true,
       editDescription: false,
       userType: permission.userType,
       userPath: permission.userPath,
@@ -94,13 +99,11 @@ class PermissionRow extends React.Component<Props, State> {
     this.setState({ editing: true } as State)
   }
 
-  _updateUserType ({ userType, userPath, userRole, useUserRole }) {
+  _updateUserType ({ userType, userPath, userRole, useUserRole, isValid }) {
     this.setState({
-      editing: true,
+      userPath, userRole, useUserRole, isValid,
       userType: userType as UserType,
-      userPath: userPath,
-      userRole: userRole,
-      useUserRole: useUserRole,
+      editing: true,
     } as State)
   }
 
@@ -173,6 +176,7 @@ class PermissionRow extends React.Component<Props, State> {
       this.setState({
         editing: false,
         saving: false,
+        isValid: true,
         editDescription: false,
         userType: this.props.permission.userType,
         userPath: this.props.permission.userPath,
@@ -246,7 +250,9 @@ class PermissionRow extends React.Component<Props, State> {
     if (this.state.editing) {
       return (
         <div className={classes.controls}>
-          <span onClick={() => this._save()}>Save</span>
+          {this.state.isValid &&
+            <span onClick={() => this._save()}>Save</span>
+          }
           <span onClick={() => this._cancel()}>Cancel</span>
         </div>
       )
@@ -275,7 +281,9 @@ class PermissionRow extends React.Component<Props, State> {
             userRole={this.state.userRole}
             useUserRole={this.state.useUserRole}
             dataCallback={(data) => this._updateUserType(data)}
-            availableUserRoles={['Admin']}
+            possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+            availableUserRoles={this.props.availableUserRoles}
+            params={this.props.params}
           />
         </div>
         <div className={classes.allow}>

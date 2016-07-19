@@ -4,7 +4,7 @@ import {UserType} from '../types/types'
 interface Props {
   permissionId: string
   userType: UserType
-  userPath: string
+  userPath: string[]
   userRole: string
   description: string
   allowRead: boolean

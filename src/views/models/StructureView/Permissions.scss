@@ -42,20 +42,22 @@
 }
 
 .permissions {
+  padding: 10px 0;
 }
 
 .add {
-  width: 100%;
-  border: 1px solid $grey2;
-  text-align: center;
-  padding: 12px 0;
+  display: inline-block;
+  padding: 5px 0 3px;
   font-size: 13px;
   font-weight: 600;
   color: $grey3;
   cursor: pointer;
-  margin-top: 10px;
-  
+  margin: 10px 0;
+  text-transform: uppercase;
+
   &:hover {
-    background: $grey1;
+    color: $accent;
+    padding: 5px 0 2px;
+    border-bottom: 1px solid $accent;
   }
 }

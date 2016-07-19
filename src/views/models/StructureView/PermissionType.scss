@@ -27,7 +27,6 @@
   background: none;
   border: 0;
   margin: 0 5px;
-  //appearance: none;
   color: $grey5;
   width: 130px;
   height: 100%;
@@ -46,21 +45,24 @@
   display: flex;
   align-items: center;
   font-size: 13px;
-  color: $grey4;
-  padding: 0 20px 0 10px;
-  cursor: pointer;
+  color: $grey5;
+  padding: 0 25px 0 15px;
   white-space: nowrap;
 
   &.inactive {
-    opacity: 0.4;
+    color: $grey3;
+
+    select {
+      color: $grey3;
+    }
 
     &:hover {
-      opacity: 0.6;
-    }
-  }
+      color: $grey4;
 
-  input[type=checkbox] {
-    margin: 0 8px;
+      select {
+        color: $grey4;
+      }
+    }
   }
 
   select {
@@ -69,10 +71,114 @@
     margin: 0 5px;
     appearance: none;
     font-weight: 600;
-    color: $grey5;
+    cursor: pointer;
 
     &:focus {
       outline: none;
+    }
+  }
+
+  .delete {
+    cursor: pointer;
+
+    svg {
+      fill: $grey5;
+    }
+
+    &:hover {
+      svg {
+        fill: red;
+      }
+    }
+  }
+
+}
+
+.related {
+  height: 100%;
+  border-left: 1px solid $grey2;
+  display: flex;
+  align-items: center;
+  padding: 0 32px 0 10px;
+  position: relative;
+
+  &.incomplete {
+    background: #FAF4EC;
+
+    &:hover {
+      .relatedDelete {
+        background: #FAF4EC;
+      }
+    }
+  }
+
+  .relatedStep {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      .relatedDelete {
+        visibility: visible;
+      }
+    }
+
+  }
+
+  .relatedDelete {
+    position: absolute;
+    right: -16px;
+    z-index: 100;
+    top: calc(50% - 15px);
+    background: #fff;
+    padding: 8px 3px;
+    cursor: pointer;
+    visibility: hidden;
+
+    svg {
+      fill: $grey5;
+    }
+
+    &:hover {
+
+      svg {
+        fill: red;
+      }
+    }
+
+  }
+
+  select {
+    height: 100%;
+    background: none;
+    border: 0;
+    margin: 0 5px;
+    appearance: none;
+    font-size: 12px;
+    color: $grey5;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+
+    &.isOptional {
+      color: $grey3;
+
+      &:hover {
+        color: $grey4;
+      }
+    }
+  }
+
+  .warning {
+    position: absolute;
+    right: 13px;
+    top: 11px;
+
+    svg {
+      fill: #ED8020;
     }
   }
 

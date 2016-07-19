@@ -12,10 +12,6 @@
     .delete {
       visibility: visible;
     }
-
-    .addDescription {
-      visibility: visible;
-    }
   }
 }
 
@@ -45,10 +41,9 @@
   font-weight: 300;
 
   .addDescription {
-    visibility: hidden;
     font-weight: 600;
     cursor: pointer;
-    color: $grey3;
+    color: $grey2;
     padding: 20px 30px 20px 0;
     margin: -20px -30px -20px 0;
 
@@ -63,6 +58,7 @@
     width: 100%;
     padding: 10px 0;
     margin: -10px 0;
+    height: 100%;
 
     @include placeholder {
       color: $grey4;
