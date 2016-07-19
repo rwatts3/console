@@ -62,11 +62,6 @@ export class RootView extends React.Component {
     clearInterval(this.refreshInterval)
   }
 
-  componentWillReceiveProps (nextProps) {
-    // TODO: dispatch action
-    // this.props.gettingStartedState._update(nextProps.user.gettingStartedStatus)
-  }
-
   componentDidUpdate (prevProps) {
     const newStatus = this.props.user.gettingStartedStatus
     const prevStatus = prevProps.user.gettingStartedStatus
@@ -84,14 +79,6 @@ export class RootView extends React.Component {
     }
   }
 
-  /*
-  getChildContext () {
-    return {
-      gettingStartedState: this.props.gettingStartedState,
-    }
-  }
-  */
-
   _updateForceFetching () {
     if (this.props.user.gettingStartedStatus === 'STEP9_WAITING_FOR_REQUESTS') {
       if (!this.refreshInterval) {
@@ -106,7 +93,7 @@ export class RootView extends React.Component {
     var projectName = window.prompt('Project name:')
     while (projectName != null && !validateProjectName(projectName)) {
       projectName = window.prompt('The inserted project name was invalid.' +
-        'Enter a valid project name, like "Project 2" or "My Project":')
+        ' Enter a valid project name, like "Project 2" or "My Project":')
     }
     if (projectName) {
       Relay.Store.commitUpdate(new AddProjectMutation({
