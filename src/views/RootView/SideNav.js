@@ -51,7 +51,7 @@ export class SideNav extends React.Component {
     var modelName = window.prompt('Model name:')
     while (modelName != null && !validateModelName(modelName)) {
       modelName = window.prompt('The inserted model name was invalid.' +
-        'Enter a valid model name, like "Model" or "MyModel":')
+        ' Enter a valid model name, like "Model" or "MyModel":')
     }
     const redirect = () => {
       this.context.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
