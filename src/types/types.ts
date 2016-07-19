@@ -39,7 +39,7 @@ export type UserType = 'GUEST' | 'AUTHENTICATED' | 'RELATED'
 export interface Permission {
   id: string
   userType: UserType
-  userPath: string
+  userPath: string[]
   userRole: string
   allowRead: boolean
   allowCreate: boolean

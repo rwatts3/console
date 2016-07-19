@@ -15,6 +15,8 @@ class Field extends React.Component {
     allModels: PropTypes.array.isRequired,
     params: PropTypes.object.isRequired,
     model: PropTypes.object.isRequired,
+    possibleRelatedPermissionPaths: PropTypes.array.isRequired,
+    availableUserRoles: PropTypes.array.isRequired,
   }
 
   state = {
@@ -180,7 +182,10 @@ class Field extends React.Component {
         {this.state.showermissionsLayover &&
           <Permissions
             field={field}
+            params={this.props.params}
             close={() => this.setState({ showermissionsLayover: false })}
+            possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+            availableUserRoles={this.props.availableUserRoles}
           />
         }
       </div>

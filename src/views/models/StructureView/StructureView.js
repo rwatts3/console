@@ -15,6 +15,8 @@ window.xx = mapProps
 class StructureView extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
+    possibleRelatedPermissionPaths: PropTypes.array.isRequired,
+    availableUserRoles: PropTypes.array.isRequired,
     fields: PropTypes.array.isRequired,
     allModels: PropTypes.array.isRequired,
     projectId: PropTypes.string.isRequired,
@@ -159,6 +161,8 @@ class StructureView extends React.Component {
                   params={this.props.params}
                   model={this.props.model}
                   allModels={this.props.allModels}
+                  possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+                  availableUserRoles={this.props.availableUserRoles}
                 />
               ))}
             </ScrollBox>
@@ -180,7 +184,12 @@ const customCompare = (fieldNameA, fieldNameB) => {
 
 const MappedStructureView = mapProps({
   params: (props) => props.params,
+  availableUserRoles: (props) => props.viewer.project.availableUserRoles,
   allModels: (props) => props.viewer.project.models.edges.map((edge) => edge.node),
+  possibleRelatedPermissionPaths: (props) => (
+    props.viewer.model.possibleRelatedPermissionPaths.edges
+      .map((edge) => edge.node.fields)
+  ),
   fields: (props) => (
     props.viewer.model.fields.edges
       .map((edge) => edge.node)
@@ -202,6 +211,17 @@ export default Relay.createContainer(MappedStructureView, {
           id
           name
           itemCount
+          possibleRelatedPermissionPaths(first: 100) {
+            edges {
+              node {
+                fields {
+                  id
+                  name
+                  typeIdentifier
+                }
+              }
+            }
+          }
           fields(first: 100) {
             edges {
               node {
@@ -215,6 +235,7 @@ export default Relay.createContainer(MappedStructureView, {
         }
         project: projectByName(projectName: $projectName) {
           id
+          availableUserRoles
           models(first: 100) {
             edges {
               node {
