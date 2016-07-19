@@ -252,8 +252,8 @@ class BrowserView extends React.Component {
 
         // getting-started onboarding step
         if (this.props.model.name === 'Todo' && (
-           this.props.gettingStartedState.isActive('STEP6_ADD_DATA_ITEM_1') ||
-           this.props.gettingStartedState.isActive('STEP7_ADD_DATA_ITEM_2')
+           this.props.gettingStartedState.isCurrentStep('STEP6_ADD_DATA_ITEM_1') ||
+           this.props.gettingStartedState.isCurrentStep('STEP7_ADD_DATA_ITEM_2')
              )) {
           this.props.nextStep()
         }

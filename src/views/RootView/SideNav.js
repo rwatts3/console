@@ -69,7 +69,7 @@ export class SideNav extends React.Component {
           })
 
           // getting-started onboarding step
-          if (modelName === 'Todo' && this.props.gettingStartedState.isActive('STEP2_CREATE_TODO_MODEL')) {
+          if (modelName === 'Todo' && this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_TODO_MODEL')) {
             this.props.nextStep().then(redirect)
           } else {
             redirect()
@@ -104,19 +104,19 @@ export class SideNav extends React.Component {
 
   render () {
     const firstStepOnClick = () => {
-      if (this.props.gettingStartedState.isActive('STEP1_OVERVIEW')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP1_OVERVIEW')) {
         this.props.nextStep()
       }
     }
 
     const secondStepOnClick = () => {
-      if (this.props.gettingStartedState.isActive('STEP5_GOTO_DATA_TAB')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP5_GOTO_DATA_TAB')) {
         this.props.nextStep()
       }
     }
 
     const thirdStepOnClick = () => {
-      if (this.props.gettingStartedState.isActive('STEP8_GOTO_GETTING_STARTED')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP8_GOTO_GETTING_STARTED')) {
         this.props.nextStep()
       }
     }

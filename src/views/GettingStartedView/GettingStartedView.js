@@ -93,7 +93,7 @@ class GettingStartedView extends React.Component {
   }
 
   _getStarted () {
-    if (this.props.gettingStartedState.isActive('STEP1_OVERVIEW')) {
+    if (this.props.gettingStartedState.isCurrentStep('STEP1_OVERVIEW')) {
       this.props.nextStep()
     }
   }

@@ -67,7 +67,7 @@ class StructureView extends React.Component {
 
   render () {
     const dataViewOnClick = () => {
-      if (this.props.gettingStartedState.isActive('STEP5_GOTO_DATA_TAB')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP5_GOTO_DATA_TAB')) {
         this.props.nextStep()
       }
     }

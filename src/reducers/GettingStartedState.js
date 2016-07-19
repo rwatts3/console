@@ -22,9 +22,12 @@ export class GettingStartedState {
     this._update(step)
   }
 
-  isActive (step) {
-    const isCurrentStep = step ? this.step === step : true
-    return isCurrentStep && this.step !== 'STEP10_DONE' && this.step !== 'STEP11_SKIPPED'
+  isActive () {
+    return this.step !== 'STEP10_DONE' && this.step !== 'STEP11_SKIPPED'
+  }
+
+  isCurrentStep (step) {
+    return step === this.step
   }
 
   _update (step) {
