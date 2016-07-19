@@ -10,6 +10,7 @@ import Icon from 'components/Icon/Icon'
 import * as cookiestore from 'utils/cookiestore'
 import endpoints from 'utils/endpoints'
 import classes from './PlaygroundView.scss'
+import { sideNavSyncer } from 'utils/sideNavSyncer'
 import LoginClientUserMutation from 'mutations/LoginClientUserMutation'
 
 import 'graphiql/graphiql.css'
@@ -163,6 +164,11 @@ class PlaygroundView extends React.Component {
             date: new Date(),
           }
           saveQuery(query, this.props.projectId)
+        }
+
+        if (graphQLParams.query.includes('mutation')) {
+          // update side nav item count when we did a mutation
+          sideNavSyncer.notifySideNav()
         }
 
         return response.json()
