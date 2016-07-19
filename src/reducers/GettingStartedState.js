@@ -59,14 +59,16 @@ export class GettingStartedState {
 const UPDATE = 'dashboard/gettingStartedReducer/UPDATE'
 
 // Reducer
-const initialState = {}
+const initialState = {checkStatus: false}
 export function reduceGettingStartedState (state = initialState, action = {}) {
   switch (action.type) {
     case UPDATE:
       var gettingStartedState = action.payload.gettingStartedState
 
+      // TODO: use reselect for derived data
       return Object.assign({}, state, {
         gettingStartedState,
+        checkStatus: gettingStartedState.isCurrentStep('STEP9_WAITING_FOR_REQUESTS'),
       })
     default:
       return state

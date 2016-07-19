@@ -10,6 +10,7 @@ import SideNav from 'views/RootView/SideNav'
 import LoginView from 'views/LoginView/LoginView'
 import AddProjectMutation from 'mutations/AddProjectMutation'
 import { connect } from 'react-redux'
+import { update } from 'reducers/GettingStartedState'
 import classes from './RootView.scss'
 import Smooch from 'smooch'
 
@@ -26,6 +27,8 @@ export class RootView extends React.Component {
     params: PropTypes.object.isRequired,
     relay: PropTypes.object.isRequired,
     gettingStartedState: PropTypes.object.isRequired,
+    checkStatus: PropTypes.bool.isRequired,
+    update: PropTypes.func.isRequired,
   }
 
   constructor (props) {
@@ -41,7 +44,7 @@ export class RootView extends React.Component {
       analytics.identify(this.props.user.id, {
         name: this.props.user.name,
         email: this.props.user.email,
-        'Getting Started Status': this.props.user.gettingStartedStatus,
+        'Getting Started Status': this.props.gettingStartedState.step,
         'Product': 'Dashboard',
       })
 
@@ -67,6 +70,10 @@ export class RootView extends React.Component {
   componentDidUpdate (prevProps) {
     const newStatus = this.props.user.gettingStartedStatus
     const prevStatus = prevProps.user.gettingStartedStatus
+
+    const newCheckStatus = this.props.checkStatus
+    const prevCheckStatus = prevProps.checkStatus
+
     if (newStatus !== prevStatus) {
       this._updateForceFetching()
 
@@ -78,13 +85,19 @@ export class RootView extends React.Component {
       analytics.identify(this.props.user.id, {
         'Getting Started Status': this.props.user.gettingStartedStatus,
       })
+    } else if (newCheckStatus !== prevCheckStatus) {
+      this._updateForceFetching()
     }
   }
 
   _updateForceFetching () {
-    if (this.props.user.gettingStartedStatus === 'STEP9_WAITING_FOR_REQUESTS') {
+    if (this.props.checkStatus) {
       if (!this.refreshInterval) {
-        this.refreshInterval = setInterval(this.props.relay.forceFetch, 1000)
+        this.refreshInterval = setInterval(() => {
+          this.props.relay.forceFetch({ }, () => {
+            this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
+          })
+        }, 3000)
       }
     } else {
       clearInterval(this.refreshInterval)
@@ -162,10 +175,22 @@ export class RootView extends React.Component {
 const mapStateToProps = (state) => {
   return {
     gettingStartedState: state.gettingStartedState,
+    checkStatus: state.checkStatus,
   }
 }
 
-const ReduxContainer = connect(mapStateToProps)(RootView)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    update: (step, userId) => {
+      dispatch(update(step, userId))
+    },
+  }
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RootView)
 
 const MappedRootView = mapProps({
   params: (props) => props.params,
