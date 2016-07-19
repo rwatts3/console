@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react'
 import Relay from 'react-relay'
 import mapProps from 'map-props'
+import { connect } from 'react-redux'
 
 class ModelRedirectView extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
     model: PropTypes.object.isRequired,
+    gettingStartedState: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
@@ -13,8 +15,14 @@ class ModelRedirectView extends React.Component {
   };
 
   componentWillMount () {
-    const subView = this.props.model.itemCount === 0 ? 'structure' : 'browser'
-    this.context.router.replace(`/${this.props.params.projectName}/models/${this.props.model.name}/${subView}`)
+    if (this.props.gettingStartedState.isCurrentStep('STEP1_OVERVIEW')) {
+      // redirect to getting started
+      this.context.router.replace(`/${this.props.params.projectName}/getting-started`)
+    } else {
+      // redirect to browser if model already has items
+      const subView = this.props.model.itemCount === 0 ? 'structure' : 'browser'
+      this.context.router.replace(`/${this.props.params.projectName}/models/${this.props.model.name}/${subView}`)
+    }
   }
 
   render () {
@@ -23,6 +31,16 @@ class ModelRedirectView extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+)(ModelRedirectView)
 
 const MappedModelRedirectView = mapProps({
   params: (props) => props.params,
@@ -35,7 +53,7 @@ const MappedModelRedirectView = mapProps({
           .map(({ node }) => node)
           .sort((a, b) => a.name.localeCompare(b.name))[0]
   ),
-})(ModelRedirectView)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedModelRedirectView, {
   initialVariables: {
