@@ -8,16 +8,19 @@ class ModelRedirectView extends React.Component {
     params: PropTypes.object.isRequired,
     model: PropTypes.object.isRequired,
     gettingStartedState: PropTypes.object.isRequired,
-  };
+  }
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  };
+  }
 
   componentWillMount () {
     if (this.props.gettingStartedState.isCurrentStep('STEP1_OVERVIEW')) {
       // redirect to getting started
       this.context.router.replace(`/${this.props.params.projectName}/getting-started`)
+    } else if (!this.props.model) {
+      // redirect to project root
+      this.context.router.replace(`/${this.props.params.projectName}/models`)
     } else {
       // redirect to browser if model already has items
       const subView = this.props.model.itemCount === 0 ? 'structure' : 'browser'
