@@ -15,6 +15,9 @@ const UpdateFieldMutation: any = (require('../../../mutations/UpdateFieldMutatio
 import { isScalar } from '../../../utils/graphql'
 import { Field, Model } from '../../../types/types'
 import { valueToString } from '../utils'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+const gettingStartedState: any = require('../../../reducers/GettingStartedState')
 const classes: any = require('./FieldPopup.scss')
 
 require('react-tagsinput/react-tagsinput.css')
@@ -24,6 +27,8 @@ interface Props {
   modelId: string
   params: any
   allModels: Model[]
+  gettingStartedState: any,
+  nextStep: any,
 }
 
 interface State {
@@ -41,7 +46,6 @@ interface State {
 class FieldPopup extends React.Component<Props, State> {
 
   static contextTypes: React.ValidationMap<any> = {
-    gettingStartedState: React.PropTypes.object.isRequired,
     router: React.PropTypes.object.isRequired,
   }
 
@@ -131,14 +135,14 @@ class FieldPopup extends React.Component<Props, State> {
           this._close()
 
           // getting-started onboarding steps
-          const isStep3 = (this.context as any).gettingStartedState.isActive('STEP3_CREATE_TEXT_FIELD')
+          const isStep3 = this.props.gettingStartedState.isActive('STEP3_CREATE_TEXT_FIELD')
           if (isStep3 && name === 'text' && typeIdentifier === 'String') {
-            (this.context as any).gettingStartedState.nextStep()
+            this.props.nextStep()
           }
 
-          const isStep4 = (this.context as any).gettingStartedState.isActive('STEP4_CREATE_COMPLETED_FIELD')
+          const isStep4 = this.props.gettingStartedState.isActive('STEP4_CREATE_COMPLETED_FIELD')
           if (isStep4 && name === 'complete' && typeIdentifier === 'Boolean') {
-            (this.context as any).gettingStartedState.nextStep()
+            this.props.nextStep()
           }
         },
         onFailure: (transaction) => {
@@ -586,12 +590,28 @@ class FieldPopup extends React.Component<Props, State> {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  const nextStep = gettingStartedState.nextStep
+  return bindActionCreators({ nextStep }, dispatch)
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FieldPopup)
+
 const MappedFieldPopup = mapProps({
   params: (props) => props.params,
   allModels: (props) => props.viewer.project.models.edges.map((edge) => edge.node),
   field: (props) => props.viewer.field,
   modelId: (props) => props.viewer.model.id,
-})(FieldPopup)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedFieldPopup, {
   initialVariables: {

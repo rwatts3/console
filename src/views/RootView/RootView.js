@@ -9,90 +9,12 @@ import Header from 'components/Header/Header'
 import SideNav from 'views/RootView/SideNav'
 import LoginView from 'views/LoginView/LoginView'
 import AddProjectMutation from 'mutations/AddProjectMutation'
-import UpdateUserMutation from 'mutations/UpdateUserMutation'
+import { connect } from 'react-redux'
+import { update } from 'reducers/GettingStartedState'
 import classes from './RootView.scss'
 import Smooch from 'smooch'
 
 import '../../styles/core.scss'
-
-class GettingStartedState {
-
-  static steps = [
-    'STEP1_OVERVIEW',
-    'STEP2_CREATE_TODO_MODEL',
-    'STEP3_CREATE_TEXT_FIELD',
-    'STEP4_CREATE_COMPLETED_FIELD',
-    'STEP5_GOTO_DATA_TAB',
-    'STEP6_ADD_DATA_ITEM_1',
-    'STEP7_ADD_DATA_ITEM_2',
-    'STEP8_GOTO_GETTING_STARTED',
-    'STEP9_WAITING_FOR_REQUESTS',
-    'STEP10_DONE',
-    'STEP11_SKIPPED',
-  ]
-
-  constructor ({ step, userId }) {
-    this._userId = userId
-    this.update(step)
-  }
-
-  isActive (step) {
-    const isCurrentStep = step ? this.step === step : true
-    return isCurrentStep && this.step !== 'STEP10_DONE' && this.step !== 'STEP11_SKIPPED'
-  }
-
-  update (step) {
-    const currentStepIndex = GettingStartedState.steps.indexOf(this.step)
-    const stepIndex = GettingStartedState.steps.indexOf(step)
-    if (currentStepIndex > stepIndex) {
-      return
-    }
-
-    this.step = step
-
-    switch (step) {
-      case 'STEP1_OVERVIEW': this.progress = 0; break
-      case 'STEP2_CREATE_TODO_MODEL': this.progress = 1; break
-      case 'STEP3_CREATE_TEXT_FIELD': this.progress = 1; break
-      case 'STEP4_CREATE_COMPLETED_FIELD': this.progress = 1; break
-      case 'STEP5_GOTO_DATA_TAB': this.progress = 2; break
-      case 'STEP6_ADD_DATA_ITEM_1': this.progress = 2; break
-      case 'STEP7_ADD_DATA_ITEM_2': this.progress = 2; break
-      case 'STEP8_GOTO_GETTING_STARTED': this.progress = 3; break
-      case 'STEP9_WAITING_FOR_REQUESTS': this.progress = 3; break
-      case 'STEP10_DONE': this.progress = 4; break
-      case 'STEP11_SKIPPED': this.progress = 0; break
-    }
-  }
-
-  skip () {
-    return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(new UpdateUserMutation({
-        userId: this._userId,
-        gettingStartedStatus: 'STEP11_SKIPPED',
-      }), {
-        onSuccess: resolve,
-        onFailure: reject,
-      })
-    })
-  }
-
-  nextStep () {
-    const currentStep = this.step
-    const currentStepIndex = GettingStartedState.steps.indexOf(currentStep)
-    const nextStep = GettingStartedState.steps[currentStepIndex + 1]
-
-    return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(new UpdateUserMutation({
-        userId: this._userId,
-        gettingStartedStatus: nextStep,
-      }), {
-        onSuccess: resolve,
-        onFailure: reject,
-      })
-    })
-  }
-}
 
 export class RootView extends React.Component {
   static propTypes = {
@@ -104,20 +26,25 @@ export class RootView extends React.Component {
     allProjects: PropTypes.array,
     params: PropTypes.object.isRequired,
     relay: PropTypes.object.isRequired,
-  }
-
-  static childContextTypes = {
     gettingStartedState: PropTypes.object.isRequired,
+    checkStatus: PropTypes.bool.isRequired,
+    update: PropTypes.func.isRequired,
   }
 
   constructor (props) {
     super(props)
 
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+
+    this._updateForceFetching()
+  }
+
+  componentWillMount () {
     if (this.props.isLoggedin) {
       analytics.identify(this.props.user.id, {
         name: this.props.user.name,
         email: this.props.user.email,
-        'Getting Started Status': this.props.user.gettingStartedStatus,
+        'Getting Started Status': this.props.gettingStartedState.step,
         'Product': 'Dashboard',
       })
 
@@ -134,30 +61,19 @@ export class RootView extends React.Component {
         'Product': 'Dashboard',
       })
     }
-
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-
-    const gettingStartedState = new GettingStartedState({
-      userId: props.user.id,
-      step: props.user.gettingStartedStatus,
-    })
-
-    this.state = { gettingStartedState }
-
-    this._updateForceFetching()
   }
 
   componentWillUnmount () {
     clearInterval(this.refreshInterval)
   }
 
-  componentWillReceiveProps (nextProps) {
-    this.state.gettingStartedState.update(nextProps.user.gettingStartedStatus)
-  }
-
   componentDidUpdate (prevProps) {
     const newStatus = this.props.user.gettingStartedStatus
     const prevStatus = prevProps.user.gettingStartedStatus
+
+    const newCheckStatus = this.props.checkStatus
+    const prevCheckStatus = prevProps.checkStatus
+
     if (newStatus !== prevStatus) {
       this._updateForceFetching()
 
@@ -169,19 +85,20 @@ export class RootView extends React.Component {
       analytics.identify(this.props.user.id, {
         'Getting Started Status': this.props.user.gettingStartedStatus,
       })
-    }
-  }
-
-  getChildContext () {
-    return {
-      gettingStartedState: this.state.gettingStartedState,
+    } else if (newCheckStatus !== prevCheckStatus) {
+      this._updateForceFetching()
     }
   }
 
   _updateForceFetching () {
-    if (this.props.user.gettingStartedStatus === 'STEP9_WAITING_FOR_REQUESTS') {
+    if (this.props.checkStatus) {
       if (!this.refreshInterval) {
-        this.refreshInterval = setInterval(this.props.relay.forceFetch, 1000)
+        this.refreshInterval = setInterval(() => {
+          // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
+          this.props.relay.forceFetch({ }, () => {
+            this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
+          })
+        }, 1500)
       }
     } else {
       clearInterval(this.refreshInterval)
@@ -192,7 +109,7 @@ export class RootView extends React.Component {
     var projectName = window.prompt('Project name:')
     while (projectName != null && !validateProjectName(projectName)) {
       projectName = window.prompt('The inserted project name was invalid.' +
-        'Enter a valid project name, like "Project 2" or "My Project":')
+        ' Enter a valid project name, like "Project 2" or "My Project":')
     }
     if (projectName) {
       Relay.Store.commitUpdate(new AddProjectMutation({
@@ -256,6 +173,26 @@ export class RootView extends React.Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+    checkStatus: state.checkStatus,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    update: (step, userId) => {
+      dispatch(update(step, userId))
+    },
+  }
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RootView)
+
 const MappedRootView = mapProps({
   params: (props) => props.params,
   relay: (props) => props.relay,
@@ -268,7 +205,7 @@ const MappedRootView = mapProps({
   viewer: (props) => props.viewer,
   user: (props) => props.viewer.user,
   isLoggedin: (props) => props.viewer.user !== null,
-})(RootView)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedRootView, {
   initialVariables: {

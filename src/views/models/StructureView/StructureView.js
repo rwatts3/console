@@ -8,6 +8,9 @@ import ScrollBox from 'components/ScrollBox/ScrollBox'
 import Icon from 'components/Icon/Icon'
 import Tether from 'components/Tether/Tether'
 import DeleteModelMutation from 'mutations/DeleteModelMutation'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { nextStep } from 'reducers/GettingStartedState'
 import classes from './StructureView.scss'
 
 window.xx = mapProps
@@ -21,11 +24,12 @@ class StructureView extends React.Component {
     allModels: PropTypes.array.isRequired,
     projectId: PropTypes.string.isRequired,
     model: PropTypes.object.isRequired,
+    gettingStartedState: PropTypes.object.isRequired,
+    nextStep: PropTypes.func.isRequired,
     children: PropTypes.element,
   }
 
   static contextTypes = {
-    gettingStartedState: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
   }
 
@@ -65,8 +69,8 @@ class StructureView extends React.Component {
 
   render () {
     const dataViewOnClick = () => {
-      if (this.context.gettingStartedState.isActive('STEP5_GOTO_DATA_TAB')) {
-        this.context.gettingStartedState.nextStep()
+      if (this.props.gettingStartedState.isCurrentStep('STEP5_GOTO_DATA_TAB')) {
+        this.props.nextStep()
       }
     }
 
@@ -182,6 +186,21 @@ const customCompare = (fieldNameA, fieldNameB) => {
   return fieldNameA === 'id' ? -1 : 1
 }
 
+const mapStateToProps = (state) => {
+  return {
+    gettingStartedState: state.gettingStartedState,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({ nextStep }, dispatch)
+}
+
+const ReduxContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(StructureView)
+
 const MappedStructureView = mapProps({
   params: (props) => props.params,
   availableUserRoles: (props) => props.viewer.project.availableUserRoles,
@@ -197,7 +216,7 @@ const MappedStructureView = mapProps({
   ),
   model: (props) => props.viewer.model,
   projectId: (props) => props.viewer.project.id,
-})(StructureView)
+})(ReduxContainer)
 
 export default Relay.createContainer(MappedStructureView, {
   initialVariables: {
