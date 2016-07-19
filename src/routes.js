@@ -47,6 +47,18 @@ const render = ({ error, props, routerProps, element }) => {
       )
     }
 
+    if (routerProps && routerProps.params.projectName && routerProps.params.modelName) {
+      // if we have a model and a project, there might be only a problem with the model, so redirect to project
+      return (
+        <RedirectOnMount to={`/${routerProps.params.projectName}`} />
+      )
+    } else if (routerProps && routerProps.params.projectName) {
+      // if we have a project, it's safest to redirect to root
+      return (
+        <RedirectOnMount to='/' />
+      )
+    }
+
     return (
       // TODO https://github.com/relay-tools/react-router-relay/issues/156
       <RedirectOnMount to='/' />
@@ -89,7 +101,7 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render} />
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render} />
       <Route path='getting-started' component={GettingStartedView} queries={ViewerQuery} render={render} />
-      <IndexRedirect to='getting-started' />
+      <IndexRedirect to='models' />
     </Route>
   </Route>
 )
