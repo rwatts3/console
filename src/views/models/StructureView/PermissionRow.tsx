@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Permission, UserType, Field } from '../../../types/types'
+import { DataCallbackProps } from './PermissionType'
 import PermissionType from './PermissionType'
 import Loading from '../../../components/Loading/Loading'
 import AddPermissionMutation from '../../../mutations/AddPermissionMutation'
@@ -50,13 +51,15 @@ class PermissionRow extends React.Component<Props, State> {
         description: null,
       }
 
+    const userPath = permission.userType === 'RELATED' ? (permission.userPath || []) : null
+
     this.state = {
       saving: false,
       editing: !props.permission,
-      isValid: true,
+      isValid: this._isValid(userPath),
       editDescription: false,
       userType: permission.userType,
-      userPath: permission.userPath,
+      userPath,
       userRole: permission.userRole,
       useUserRole: !!permission.userRole,
       allowRead: permission.allowRead,
@@ -99,12 +102,18 @@ class PermissionRow extends React.Component<Props, State> {
     this.setState({ editing: true } as State)
   }
 
-  _updateUserType ({ userType, userPath, userRole, useUserRole, isValid }) {
-    this.setState({
-      userPath, userRole, useUserRole, isValid,
-      userType: userType as UserType,
-      editing: true,
-    } as State)
+  _onPermissionTypeDataCallback (data: DataCallbackProps) {
+    let partialState = Object.assign({ editing: true }, data) as State
+
+    if (data.hasOwnProperty('userPath')) {
+      partialState.isValid = this._isValid(data.userPath)
+    }
+
+    this.setState(partialState)
+  }
+
+  _isValid (userPath: string[]): boolean {
+    return this.props.possibleRelatedPermissionPaths.findIndex((arr) => arr.map((f) => f.id).equals(userPath)) > -1
   }
 
   _save () {
@@ -173,13 +182,15 @@ class PermissionRow extends React.Component<Props, State> {
     }
 
     if (this.props.permission) {
+      const userPath = this.props.permission.userType === 'RELATED' ? (this.props.permission.userPath || []) : null
+
       this.setState({
         editing: false,
         saving: false,
-        isValid: true,
+        isValid: this._isValid(userPath),
         editDescription: false,
         userType: this.props.permission.userType,
-        userPath: this.props.permission.userPath,
+        userPath,
         userRole: this.props.permission.userRole,
         useUserRole: !!this.props.permission.userRole,
         allowRead: this.props.permission.allowRead,
@@ -279,8 +290,9 @@ class PermissionRow extends React.Component<Props, State> {
             userType={this.state.userType}
             userPath={this.state.userPath}
             userRole={this.state.userRole}
+            isValid={this.state.isValid}
             useUserRole={this.state.useUserRole}
-            dataCallback={(data) => this._updateUserType(data)}
+            dataCallback={(data) => this._onPermissionTypeDataCallback(data)}
             possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
             availableUserRoles={this.props.availableUserRoles}
             params={this.props.params}
