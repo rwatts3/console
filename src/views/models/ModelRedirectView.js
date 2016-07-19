@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 class ModelRedirectView extends React.Component {
   static propTypes = {
     params: PropTypes.object.isRequired,
-    model: PropTypes.object.isRequired,
     gettingStartedState: PropTypes.object.isRequired,
+    model: PropTypes.object,
   }
 
   static contextTypes = {
@@ -19,7 +19,7 @@ class ModelRedirectView extends React.Component {
       // redirect to getting started
       this.context.router.replace(`/${this.props.params.projectName}/getting-started`)
     } else if (!this.props.model) {
-      // redirect to project root
+      // redirect to project root, as this was probably a non-existing model
       this.context.router.replace(`/${this.props.params.projectName}/models`)
     } else {
       // redirect to browser if model already has items
