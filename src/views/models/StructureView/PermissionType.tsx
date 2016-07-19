@@ -4,69 +4,40 @@ import Icon from '../../../components/Icon/Icon'
 const calculateSize: any = require('calculate-size')
 const classes: any = require('./PermissionType.scss')
 
+export interface DataCallbackProps {
+  userType?: UserType
+  userPath?: string[]
+  userRole?: string
+  useUserRole?: boolean
+}
+
 interface Props {
   params: any
-  dataCallback?: (data: State) => void
+  dataCallback: (data: DataCallbackProps) => void
   userType: UserType
   userPath: string[]
   userRole: string
   useUserRole: boolean
   availableUserRoles: string[]
   possibleRelatedPermissionPaths: Field[][]
-}
-
-interface State {
-  userType: UserType
-  userPath: string[]
   isValid: boolean
-  userRole: string
-  useUserRole: boolean
 }
 
 const emptyRoleToken = '____EMPTY_ROLE_TOKEN'
 const addRoleToken = '____ADD_ROLE_TOKEN'
 const emptyStepToken = '____EMPTY_STEP_TOKEN'
 
-export default class PermissionType extends React.Component<Props, State> {
+export default class PermissionType extends React.Component<Props, {}> {
 
   static contextTypes: React.ValidationMap<any> = {
     router: React.PropTypes.object.isRequired,
   }
 
-  constructor (props) {
-    super(props)
-
-    const userPath = props.userType === 'RELATED' ? (props.userPath || []) : null
-
-    this.state = {
-      userPath,
-      userType: props.userType,
-      isValid: this._isValid(userPath),
-      userRole: props.userRole,
-      useUserRole: props.useUserRole,
-    }
-  }
-
-  componentWillReceiveProps (props) {
-    const userPath = props.userType === 'RELATED' ? (props.userPath || []) : null
-
-    this.setState({
-      userPath,
-      userType: props.userType,
-      isValid: this._isValid(userPath),
-      userRole: props.userRole,
-      useUserRole: props.useUserRole,
-    })
-  }
-
   _onChangeUserType (userType: UserType) {
-    this.setState(
-      {
-        userType,
-        userPath: userType === 'RELATED' ? (this.state.userPath || []) : null,
-      } as State,
-      this._dataCallback
-    )
+    this.props.dataCallback({
+      userType,
+      userPath: userType === 'RELATED' ? (this.props.userPath || []) : null,
+    })
   }
 
   _onChangeUserRole (userRole: string) {
@@ -75,7 +46,7 @@ export default class PermissionType extends React.Component<Props, State> {
 
       return
     }
-    this.setState({ userRole, useUserRole: true } as State, this._dataCallback)
+    this.props.dataCallback({ userRole, useUserRole: true })
   }
 
   _isValid (userPath: string[]): boolean {
@@ -83,34 +54,18 @@ export default class PermissionType extends React.Component<Props, State> {
   }
 
   _updateUserPath (level: number, stepValue: string) {
-    const newUserPath = this.state.userPath.slice(0, level)
+    const newUserPath = this.props.userPath.slice(0, level)
     newUserPath.push(stepValue)
-    this.setState(
-      {
-        userPath: newUserPath,
-        isValid: this._isValid(newUserPath),
-      } as State,
-      this._dataCallback
-    )
+    this.props.dataCallback({ userPath: newUserPath })
   }
 
   _resetUserPath (level: number) {
-    const newUserPath = this.state.userPath.slice(0, level)
-    this.setState(
-      {
-        userPath: newUserPath,
-        isValid: this._isValid(newUserPath),
-      } as State,
-      this._dataCallback
-    )
+    const newUserPath = this.props.userPath.slice(0, level)
+    this.props.dataCallback({ userPath: newUserPath })
   }
 
   _disableUserRole () {
-    this.setState({ useUserRole: false, userRole: null } as State, this._dataCallback)
-  }
-
-  _dataCallback () {
-    this.props.dataCallback(this.state)
+    this.props.dataCallback({ useUserRole: false, userRole: null })
   }
 
   _renderAuthenticated () {
@@ -119,15 +74,15 @@ export default class PermissionType extends React.Component<Props, State> {
       fontSize: '13px',
     }
 
-    const selectedText = this.state.userRole || 'Select Role...'
+    const selectedText = this.props.userRole || 'Select Role...'
     const selectWidth = calculateSize(selectedText, fontOptions).width
 
     return (
-      <div className={`${classes.authenticated} ${this.state.useUserRole ? '' : classes.inactive}`}>
+      <div className={`${classes.authenticated} ${this.props.useUserRole ? '' : classes.inactive}`}>
         <span>Limit to</span>
         <select
           style={{ width: selectWidth }}
-          value={this.state.userRole || emptyRoleToken}
+          value={this.props.userRole || emptyRoleToken}
           onChange={(e) => this._onChangeUserRole((e.target as HTMLInputElement).value)}
         >
           <option disabled value={emptyRoleToken}>Select Role...</option>
@@ -138,7 +93,7 @@ export default class PermissionType extends React.Component<Props, State> {
             <option value={addRoleToken}>Create a new role...</option>
           </optgroup>
         </select>
-        {this.state.useUserRole &&
+        {this.props.useUserRole &&
           <div className={classes.delete} onClick={() => this._disableUserRole()}>
             <Icon
               width={15}
@@ -153,20 +108,20 @@ export default class PermissionType extends React.Component<Props, State> {
 
   _renderRelatedLevel (level: number) {
     const fields = this.props.possibleRelatedPermissionPaths
-      .filter((arr) => arr.slice(0, level).map((f) => f.id).equals(this.state.userPath.slice(0, level)))
+      .filter((arr) => arr.slice(0, level).map((f) => f.id).equals(this.props.userPath.slice(0, level)))
       .filter((arr) => arr.length - 1 >= level)
       .map((arr) => arr[level])
       .filter((item, index, arr) => arr.findIndex((i) => i.id === item.id) === index)
 
-    const isOptional = this.state.isValid
-      && this.state.userPath.length === level
+    const isOptional = this.props.isValid
+      && this.props.userPath.length === level
     const addText = isOptional ? 'Add Step...' : 'Select Field...'
-    const hasBeenSelected = this.state.userPath.length > level
+    const hasBeenSelected = this.props.userPath.length > level
     const selectedValue = hasBeenSelected
-      ? this.state.userPath[level]
+      ? this.props.userPath[level]
       : emptyStepToken
     const selectedText = hasBeenSelected
-      ? fields.find((f) => f.id === this.state.userPath[level]).name
+      ? fields.find((f) => f.id === this.props.userPath[level]).name
       : addText
 
     const fontWeight = hasBeenSelected ? 400 : 600
@@ -205,7 +160,10 @@ export default class PermissionType extends React.Component<Props, State> {
   }
 
   _renderRelated () {
-    const currentDepth = this.state.userPath.length
+    const maxDepth = this.props.possibleRelatedPermissionPaths.reduce((acc, arr) => Math.max(acc, arr.length), 0)
+    console.log(maxDepth)
+    const currentDepth = this.props.userPath.length
+    console.log(currentDepth)
     const arrow = (
       <Icon
         width={11}
@@ -217,13 +175,13 @@ export default class PermissionType extends React.Component<Props, State> {
     )
 
     return (
-      <div className={`${classes.related} ${this.state.isValid ? '' : classes.incomplete}`}>
+      <div className={`${classes.related} ${this.props.isValid ? '' : classes.incomplete}`}>
         {this._renderRelatedLevel(0)}
-        {currentDepth >= 1 && arrow}
-        {currentDepth >= 1 && this._renderRelatedLevel(1)}
-        {currentDepth >= 2 && arrow}
-        {currentDepth >= 2 && this._renderRelatedLevel(2)}
-        {!this.state.isValid &&
+        {currentDepth >= 1 && maxDepth >= 2 && arrow}
+        {currentDepth >= 1 && maxDepth >= 2 && this._renderRelatedLevel(1)}
+        {currentDepth >= 2 && maxDepth >= 3 && arrow}
+        {currentDepth >= 2 && maxDepth >= 3 && this._renderRelatedLevel(2)}
+        {!this.props.isValid &&
           <div className={classes.warning}>
             <Icon
               width={4}
@@ -243,14 +201,16 @@ export default class PermissionType extends React.Component<Props, State> {
           <select
             className={classes.userType}
             onChange={(e) => this._onChangeUserType((e.target as HTMLInputElement).value as UserType)}
-            value={this.state.userType}
+            value={this.props.userType}
           >
             <option value='GUEST'>Guest</option>
             <option value='AUTHENTICATED'>Authenticated</option>
-            <option value='RELATED'>Related</option>
+            {this.props.possibleRelatedPermissionPaths.length > 0 &&
+              <option value='RELATED'>Related</option>
+            }
           </select>
-          {this.state.userType === 'AUTHENTICATED' && this._renderAuthenticated()}
-          {this.state.userType === 'RELATED' && this._renderRelated()}
+          {this.props.userType === 'AUTHENTICATED' && this._renderAuthenticated()}
+          {this.props.userType === 'RELATED' && this._renderRelated()}
         </div>
       </div>
     )
