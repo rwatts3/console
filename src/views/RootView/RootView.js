@@ -94,10 +94,11 @@ export class RootView extends React.Component {
     if (this.props.checkStatus) {
       if (!this.refreshInterval) {
         this.refreshInterval = setInterval(() => {
+          // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
           this.props.relay.forceFetch({ }, () => {
             this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
           })
-        }, 3000)
+        }, 1500)
       }
     } else {
       clearInterval(this.refreshInterval)
