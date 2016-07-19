@@ -31,6 +31,12 @@ export class RootView extends React.Component {
   constructor (props) {
     super(props)
 
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+
+    this._updateForceFetching()
+  }
+
+  componentWillMount () {
     if (this.props.isLoggedin) {
       analytics.identify(this.props.user.id, {
         name: this.props.user.name,
@@ -52,10 +58,6 @@ export class RootView extends React.Component {
         'Product': 'Dashboard',
       })
     }
-
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-
-    this._updateForceFetching()
   }
 
   componentWillUnmount () {
