@@ -89,7 +89,7 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render} />
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render} />
       <Route path='getting-started' component={GettingStartedView} queries={ViewerQuery} render={render} />
-      <IndexRedirect to='getting-started' />
+      <IndexRedirect to='models' />
     </Route>
   </Route>
 )
