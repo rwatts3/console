@@ -1,6 +1,11 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class DeleteFieldMutation extends Relay.Mutation {
+interface Props {
+  fieldId: string
+  modelId: string
+}
+
+export default class DeleteFieldMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{deleteField}`

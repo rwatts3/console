@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import Relay from 'react-relay'
 import { Link } from 'react-router'
-import Field from './Field'
+import FieldRow from './FieldRow'
 import ModelDescription from '../ModelDescription'
 import mapProps from 'components/MapProps/MapProps'
 import ScrollBox from 'components/ScrollBox/ScrollBox'
@@ -159,7 +159,7 @@ class StructureView extends React.Component {
           <div className={classes.tableBody}>
             <ScrollBox>
               {this.props.fields.map((field) => (
-                <Field
+                <FieldRow
                   key={field.id}
                   field={field}
                   params={this.props.params}
@@ -246,7 +246,7 @@ export default Relay.createContainer(MappedStructureView, {
               node {
                 id
                 name
-                ${Field.getFragment('field')}
+                ${FieldRow.getFragment('field')}
               }
             }
           }

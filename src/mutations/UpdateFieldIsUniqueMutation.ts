@@ -1,6 +1,11 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class UpdateFieldDescriptionMutation extends Relay.Mutation {
+interface Props {
+  fieldId: string
+  isUnique: boolean
+}
+
+export default class UpdateFieldIsUniqueMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateField}`
@@ -26,7 +31,7 @@ export default class UpdateFieldDescriptionMutation extends Relay.Mutation {
   getVariables () {
     return {
       id: this.props.fieldId,
-      description: this.props.description,
+      isUnique: this.props.isUnique,
     }
   }
 
@@ -34,7 +39,7 @@ export default class UpdateFieldDescriptionMutation extends Relay.Mutation {
     return {
       field: {
         id: this.props.fieldId,
-        description: this.props.description,
+        isUnique: this.props.isUnique,
       },
     }
   }

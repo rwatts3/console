@@ -56,7 +56,7 @@ class PermissionRow extends React.Component<Props, State> {
     this.state = {
       saving: false,
       editing: !props.permission,
-      isValid: this._isValid(userPath),
+      isValid: this._isValid(permission.userType, userPath),
       editDescription: false,
       userType: permission.userType,
       userPath,
@@ -106,14 +106,15 @@ class PermissionRow extends React.Component<Props, State> {
     let partialState = Object.assign({ editing: true }, data) as State
 
     if (data.hasOwnProperty('userPath')) {
-      partialState.isValid = this._isValid(data.userPath)
+      partialState.isValid = this._isValid(data.userType, data.userPath)
     }
 
     this.setState(partialState)
   }
 
-  _isValid (userPath: string[]): boolean {
-    return this.props.possibleRelatedPermissionPaths.findIndex((arr) => arr.map((f) => f.id).equals(userPath)) > -1
+  _isValid (userType: UserType, userPath: string[]): boolean {
+    return userType !== 'RELATED' ||
+      this.props.possibleRelatedPermissionPaths.findIndex((arr) => arr.map((f) => f.id).equals(userPath)) > -1
   }
 
   _save () {
@@ -187,7 +188,7 @@ class PermissionRow extends React.Component<Props, State> {
       this.setState({
         editing: false,
         saving: false,
-        isValid: this._isValid(userPath),
+        isValid: this._isValid(this.props.permission.userType, userPath),
         editDescription: false,
         userType: this.props.permission.userType,
         userPath,
