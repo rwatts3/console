@@ -25,6 +25,20 @@
     font-weight: 600;
     font-size: 20px;
     color: $grey5;
+    display: flex;
+    align-items: center;
+
+    .system {
+      font-weight: 400;
+      background: $grey2;
+      color: $grey4;
+      font-size: 11px;
+      padding: 3px 5px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      margin-left: 10px;
+      display: inline-block;
+    }
 
     .itemCount {
       margin-left: 9px;
@@ -38,7 +52,7 @@
     font-size: 14px;
     font-weight: 300;
     color: $grey4;
-    margin-top: 1px;
+    margin-top: 5px;
   }
 
   input {

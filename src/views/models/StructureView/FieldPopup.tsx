@@ -539,6 +539,7 @@ class FieldPopup extends React.Component<Props, State> {
                             width={162}
                             height={18}
                             src={require('assets/icons/arrow-hor.svg')}
+                            rotate={180}
                           />
                         }
                       </div>

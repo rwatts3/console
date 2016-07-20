@@ -41,10 +41,23 @@
 
 .fieldName {
   width: 166px;
-  font-family: Monaco, monospace;
-  font-size: 14px;
   cursor: pointer;
-  color: $grey5;
+
+  .name {
+    color: $grey5;
+    font-family: Monaco, monospace;
+    font-size: 14px;
+  }
+
+  .system {
+    background: $grey1;
+    color: $grey4;
+    font-size: 11px;
+    padding: 3px 5px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
 }
 
 .type {

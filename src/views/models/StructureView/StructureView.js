@@ -81,6 +81,9 @@ class StructureView extends React.Component {
           <div className={classes.headLeft}>
             <div className={classes.title}>
               {this.props.model.name}
+              {this.props.model.isSystem &&
+                <span className={classes.system}>System</span>
+              }
               <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
             </div>
             <div className={classes.titleDescription}>
@@ -230,6 +233,7 @@ export default Relay.createContainer(MappedStructureView, {
           id
           name
           itemCount
+          isSystem
           possibleRelatedPermissionPaths(first: 100) {
             edges {
               node {

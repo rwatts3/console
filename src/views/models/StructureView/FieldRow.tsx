@@ -155,7 +155,12 @@ class FieldRow extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
-          <Link className={classes.fieldName} to={editLink}>{field.name}</Link>
+          <Link className={classes.fieldName} to={editLink}>
+            <span className={classes.name}>{field.name}</span>
+            {field.isSystem &&
+              <span className={classes.system}>System</span>
+            }
+          </Link>
           <Link className={classes.type} to={editLink}>
             <span>{type}</span>
           </Link>
