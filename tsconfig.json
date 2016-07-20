@@ -15,6 +15,7 @@
   ],
   "files": [
     "./src/mutations/AddActionMutation.ts",
+    "./src/mutations/AddFieldMutation.ts",
     "./src/mutations/ResetPasswordMutation.ts",
     "./src/mutations/DeleteFieldMutation.ts",
     "./src/mutations/UpdateFieldDescriptionMutation.ts",
@@ -22,6 +23,7 @@
     "./src/mutations/AddPermissionMutation.ts",
     "./src/mutations/UpdatePermissionMutation.ts",
     "./src/mutations/DeletePermissionMutation.ts",
+    "./src/mutations/UpdateFieldMutation.ts",
     "./src/types/types.ts",
     "./src/utils/classnames.ts",
     "./src/utils/cookiestore.ts",
@@ -32,6 +34,7 @@
     "./src/utils/relay.ts",
     "./src/views/models/utils.ts",
     "./src/components/ApiLayover/ApiLayover.tsx",
+    "./src/components/Help/Help.tsx",
     "./src/components/Icon/Icon.tsx",
     "./src/components/Loading/Loading.tsx",
     "./src/components/MapProps/MapProps.tsx",

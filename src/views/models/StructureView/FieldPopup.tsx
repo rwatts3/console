@@ -7,11 +7,12 @@ import TypeSelection from './TypeSelection'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 const TagsInput: any = require('react-tagsinput')
 import Icon from '../../../components/Icon/Icon'
+import Help from '../../../components/Help/Help'
 import Loading from '../../../components/Loading/Loading'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
-const AddFieldMutation: any = (require('../../../mutations/AddFieldMutation') as any).default
-const UpdateFieldMutation: any = (require('../../../mutations/UpdateFieldMutation') as any).default
+import AddFieldMutation from '../../../mutations/AddFieldMutation'
+import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
 import { isScalar } from '../../../utils/graphql'
 import { Field, Model } from '../../../types/types'
 import { valueToString } from '../utils'
@@ -120,12 +121,12 @@ class FieldPopup extends React.Component<Props, State> {
         typeIdentifier,
         enumValues,
         isList,
-        isRequired,
+        isRequired: isRequired || isList, // isRequired has to be true if isList
         defaultValue: useDefaultValue ? defaultValue : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
       }),
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           analytics.track('models/structure: created field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
@@ -178,12 +179,12 @@ class FieldPopup extends React.Component<Props, State> {
         typeIdentifier,
         enumValues,
         isList,
-        isRequired,
+        isRequired: isRequired || isList, // isRequired has to be true if isList
         defaultValue: useDefaultValue ? defaultValue : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
       }),
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           analytics.track('models/structure: updated field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
@@ -330,11 +331,7 @@ class FieldPopup extends React.Component<Props, State> {
                 <div className={classes.row}>
                   <div className={classes.left}>
                     Choose a name for your field
-                    <Icon
-                      width={20}
-                      height={20}
-                      src={require('assets/icons/info.svg')}
-                    />
+                    <Help text='Fieldnames must be camelCase like "firstName" or "dateOfBirth".' />
                   </div>
                   <div className={classes.right}>
                     <input
@@ -350,11 +347,8 @@ class FieldPopup extends React.Component<Props, State> {
                 <div className={classes.row}>
                   <div className={classes.left}>
                     Select the type of data
-                    <Icon
-                      width={20}
-                      height={20}
-                      src={require('assets/icons/info.svg')}
-                    />
+                    <Help text={`Your field can either store scalar values such as text or numbers
+                    or setup relations between existing models.`} />
                   </div>
                   <div className={classes.right}>
                     <TypeSelection
@@ -385,11 +379,9 @@ class FieldPopup extends React.Component<Props, State> {
                     <div className={classes.row}>
                       <div className={classes.left}>
                         Is this field required?
-                        <Icon
-                          width={20}
-                          height={20}
-                          src={require('assets/icons/info.svg')}
-                        />
+                        <Help text={`Required fields always must have a value and cannot be "null".
+                        If you don't setup a default value you will need to
+                        provide a value for each create mutation.`} />
                       </div>
                       <div className={classes.right}>
                         <label>
@@ -408,11 +400,8 @@ class FieldPopup extends React.Component<Props, State> {
                     <div className={classes.row}>
                       <div className={classes.left}>
                         Store multiple values
-                        <Icon
-                          width={20}
-                          height={20}
-                          src={require('assets/icons/info.svg')}
-                        />
+                        <Help text={`Normaly you just want to store a single value
+                        but you can also save a list of values.`} />
                       </div>
                       <div className={classes.right}>
                         <label>
@@ -441,11 +430,8 @@ class FieldPopup extends React.Component<Props, State> {
                         />
                         Default value
                       </label>
-                      <Icon
-                        width={20}
-                        height={20}
-                        src={require('assets/icons/info.svg')}
-                      />
+                      <Help text={`You can provide a default value for each new data item.
+                      The default value will be applied to both required and non-required fields.`} />
                     </div>
                     <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
                       {this._renderDefaultValue()}
@@ -479,24 +465,35 @@ class FieldPopup extends React.Component<Props, State> {
                     <div className={classes.relationPhrase}>
                       <div>A</div>
                       <div className={classes.modelName}>{this.props.params.modelName}</div>
-                      <div>model</div>
-                      <div className={`${classes.select} ${this.state.isRequired ? classes.top : classes.bottom}`}>
-                        <div
-                          className={`${classes.option} ${!this.state.isRequired ? classes.selected : ''}`}
-                          onClick={() => this.setState({ isRequired: false } as State)}
-                        >
-                          can
+                      {!this.state.isList &&
+                        <div>model</div>
+                      }
+                      {!this.state.isList &&
+                        <div className={`${classes.select} ${this.state.isRequired ? classes.top : classes.bottom}`}>
+                          <div
+                            className={`${classes.option} ${!this.state.isRequired ? classes.selected : ''}`}
+                            onClick={() => this.setState({ isRequired: false } as State)}
+                          >
+                            can
+                          </div>
+                          <div
+                            className={`${classes.option} ${this.state.isRequired ? classes.selected : ''}`}
+                            onClick={() => this.setState({ isRequired: true } as State)}
+                          >
+                            must
+                          </div>
                         </div>
-                        <div
-                          className={`${classes.option} ${this.state.isRequired ? classes.selected : ''}`}
-                          onClick={() => this.setState({ isRequired: true } as State)}
-                        >
-                          must
+                      }
+                      {!this.state.isList &&
+                        <div>
+                          be related to
                         </div>
-                      </div>
+                      }
+                      {this.state.isList &&
                       <div>
-                        be related to
+                        model is related to
                       </div>
+                      }
                       <div className={`${classes.select} ${this.state.isList ? classes.top : classes.bottom}`}>
                         <div
                           className={`${classes.option} ${!this.state.isList ? classes.selected : ''}`}
