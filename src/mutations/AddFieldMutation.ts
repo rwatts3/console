@@ -1,6 +1,17 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class AddFieldMutation extends Relay.Mutation {
+interface Props {
+  modelId: string
+  name: string
+  typeIdentifier: string
+  enumValues: string[]
+  isRequired: boolean
+  isList: boolean
+  defaultValue?: any
+  relationId?: string
+}
+
+export default class AddFieldMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{addField}`

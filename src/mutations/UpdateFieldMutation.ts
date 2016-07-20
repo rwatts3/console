@@ -1,6 +1,17 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class UpdateFieldMutation extends Relay.Mutation {
+interface Props {
+  fieldId: string
+  name: string
+  typeIdentifier: string
+  enumValues: string[]
+  isRequired: boolean
+  isList: boolean
+  defaultValue?: any
+  relationId?: string
+}
+
+export default class UpdateFieldMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateField}`
@@ -46,7 +57,6 @@ export default class UpdateFieldMutation extends Relay.Mutation {
         enumValues: this.props.enumValues,
         isRequired: this.props.isRequired,
         isList: this.props.isList,
-        isUnique: false,
         defaultValue: this.props.defaultValue,
       },
     }
