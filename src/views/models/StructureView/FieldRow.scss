@@ -94,19 +94,14 @@
   }
 }
 
-.constraints {
-  width: 208px;
-  height: 100%;
-  position: relative;
-}
-
-.permissions {
-  height: 100%;
-  width: 208px;
-  position: relative;
-}
-
 .constraints, .permissions {
+  height: 100%;
+  width: 198px;
+  margin-right: 10px;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   &.active:after {
     content: '';
     width: 100%;
