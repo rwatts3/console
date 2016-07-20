@@ -17,8 +17,10 @@ export interface Project {
 export interface Field {
   id: string
   name: string
+  description: string
   isRequired: boolean
   isList: boolean
+  isUnique: boolean
   isSystem: boolean
   typeIdentifier: string
   defaultValue?: string

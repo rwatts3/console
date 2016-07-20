@@ -59,12 +59,14 @@ class Permissions extends React.Component<Props, State> {
             }
           </div>
         }
-        <div
-          className={classes.add}
-          onClick={() => this.setState({ showNewPermission: true })}
-        >
-          + Create permission
-        </div>
+        {!this.state.showNewPermission &&
+          <div
+            className={classes.add}
+            onClick={() => this.setState({ showNewPermission: true })}
+          >
+            + Create permission
+          </div>
+        }
       </div>
     )
   }

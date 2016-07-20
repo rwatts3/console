@@ -16,6 +16,8 @@
   "files": [
     "./src/mutations/AddActionMutation.ts",
     "./src/mutations/ResetPasswordMutation.ts",
+    "./src/mutations/DeleteFieldMutation.ts",
+    "./src/mutations/UpdateFieldDescriptionMutation.ts",
     "./src/mutations/UpdateActionMutation.ts",
     "./src/mutations/AddPermissionMutation.ts",
     "./src/mutations/UpdatePermissionMutation.ts",
@@ -41,6 +43,7 @@
     "./src/views/ActionsView/ActionsView.tsx",
     "./src/views/models/BrowserView/Cell.tsx",
     "./src/views/models/BrowserView/CheckboxCell.tsx",
+    "./src/views/models/StructureView/FieldRow.tsx",
     "./src/views/models/StructureView/FieldPopup.tsx",
     "./src/views/models/StructureView/Permissions.tsx",
     "./src/views/models/StructureView/PermissionRow.tsx",
