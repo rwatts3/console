@@ -1,7 +1,8 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Field } from '../../../types/types'
-import UpdateFieldIsUniqueMutation from "../../../mutations/UpdateFieldIsUniqueMutation"
+import { isScalar } from '../../../utils/graphql'
+import UpdateFieldIsUniqueMutation from '../../../mutations/UpdateFieldIsUniqueMutation'
 const classes: any = require('./Constraints.scss')
 
 interface Props {
@@ -20,13 +21,14 @@ export default class Constraints extends React.Component<Props, {}> {
   }
 
   render () {
+    const disabled = this.props.field.isSystem || !isScalar(this.props.field.typeIdentifier)
     return (
       <div className={classes.root}>
         <div className={classes.header}>Constraints</div>
         <div className={classes.row}>
-          <label>
+          <label className={disabled ? classes.disabled : ''}>
             <input
-              disabled={this.props.field.isSystem}
+              disabled={disabled}
               type='checkbox'
               checked={this.props.field.isUnique}
               onChange={(e) => this._updateIsUnique((e.target as HTMLInputElement).checked)}
