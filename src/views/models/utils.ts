@@ -1,7 +1,7 @@
 import { isScalar, isValidValueForType, parseValue } from '../../utils/graphql'
 import { Field } from '../../types/types'
 
-function valueOrDefault (value: any, field: Field): any {
+export function valueOrDefault (value: any, field: Field): any {
   if (value !== null && value !== undefined) {
     return value
   }
@@ -10,6 +10,21 @@ function valueOrDefault (value: any, field: Field): any {
     return field.defaultValue
   }
   return null
+}
+
+export function emptyDefault (typeIdentifier: string, isList: boolean): any {
+  const value = function (): any {
+    switch (typeIdentifier) {
+      case 'Int': return 0
+      case 'Float': return 0
+      case 'DateTime': return new Date()
+      case 'String': return ''
+      case 'Boolean': return false
+      default: return null
+    }
+  }()
+
+  return isList ? [value] : value
 }
 
 export function valueToString (value: any, field: Field, returnNull: boolean): string {

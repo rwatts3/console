@@ -10,6 +10,7 @@ interface Props {
 }
 
 export default class Help extends React.Component<Props, {}> {
+
   render() {
 
     const overlay = this.props.text.split('\n').map((line, index, arr) => (
@@ -20,6 +21,7 @@ export default class Help extends React.Component<Props, {}> {
       <Tooltip
         placement={this.props.placement || 'right'}
         overlay={<span>{overlay}</span>}
+        trigger={['click']}
       >
         <Icon
           width={20}

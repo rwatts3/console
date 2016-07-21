@@ -15,7 +15,7 @@ import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
 import { isScalar } from '../../../utils/graphql'
 import { Field, Model } from '../../../types/types'
-import { valueToString } from '../utils'
+import { valueToString, emptyDefault } from '../utils'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 const gettingStartedState: any = require('../../../reducers/GettingStartedState')
@@ -25,7 +25,7 @@ require('react-tagsinput/react-tagsinput.css')
 
 interface Props {
   field?: Field
-  modelId: string
+  model: Model
   params: any
   allModels: Model[]
   gettingStartedState: any,
@@ -42,6 +42,8 @@ interface State {
   useDefaultValue: boolean
   defaultValue: any
   reverseRelationField: Field | any
+  useMigrationValue: boolean
+  migrationValue: any
 }
 
 class FieldPopup extends React.Component<Props, State> {
@@ -54,17 +56,21 @@ class FieldPopup extends React.Component<Props, State> {
     super(props)
 
     const { field } = props
+    const typeIdentifier = field ? field.typeIdentifier : 'Int'
+    const isList = field ? field.isList : false
 
     this.state = {
       loading: false,
       name: field ? field.name : '',
-      typeIdentifier: field ? field.typeIdentifier : 'Int',
+      typeIdentifier,
       isRequired: field ? field.isRequired : true,
-      isList: field ? field.isList : false,
+      isList,
       enumValues: field ? field.enumValues : [],
       useDefaultValue: field ? field.defaultValue !== null : null,
       defaultValue: field ? field.defaultValue : null,
       reverseRelationField: field ? field.reverseRelationField : null,
+      useMigrationValue: false,
+      migrationValue: emptyDefault(typeIdentifier, isList),
     }
   }
 
@@ -114,9 +120,14 @@ class FieldPopup extends React.Component<Props, State> {
       reverseRelationField,
     } = this.state
 
+    const field = { isList, typeIdentifier } as Field
+    const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
+      ? valueToString(this.state.migrationValue, field, true)
+      : null
+
     Relay.Store.commitUpdate(
       new AddFieldMutation({
-        modelId: this.props.modelId,
+        modelId: this.props.model.id,
         name,
         typeIdentifier,
         enumValues,
@@ -124,6 +135,7 @@ class FieldPopup extends React.Component<Props, State> {
         isRequired: isRequired || isList, // isRequired has to be true if isList
         defaultValue: useDefaultValue ? defaultValue : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
+        migrationValue,
       }),
       {
         onSuccess: () => {
@@ -148,7 +160,6 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           alert(transaction.getError())
-          this._close()
         },
       }
     )
@@ -172,6 +183,11 @@ class FieldPopup extends React.Component<Props, State> {
       reverseRelationField,
     } = this.state
 
+    const field = { isList, typeIdentifier } as Field
+    const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
+      ? valueToString(this.state.migrationValue, field, true)
+      : null
+
     Relay.Store.commitUpdate(
       new UpdateFieldMutation({
         fieldId: this.props.field.id,
@@ -182,6 +198,7 @@ class FieldPopup extends React.Component<Props, State> {
         isRequired: isRequired || isList, // isRequired has to be true if isList
         defaultValue: useDefaultValue ? defaultValue : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
+        migrationValue,
       }),
       {
         onSuccess: () => {
@@ -195,24 +212,49 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           alert(transaction.getError())
-          this._close()
         },
       }
     )
   }
 
   _isValid () {
-    return this.state.name !== ''
+    return this.state.name !== '' && (this._needsMigrationValue() ? this.state.migrationValue !== null : true)
   }
 
-  _onSelectType (typeIdentifier: string) {
+  _needsMigrationValue (): boolean {
+    if (this.props.model.itemCount === 0) {
+      return false
+    }
+
+    const changedType = this.props.field && this.state.typeIdentifier !== this.props.field.typeIdentifier
+    const changedRequired = this.props.field && !this.props.field.isRequired && this.state.isRequired
+    const newRequiredField = !this.props.field && this.state.isRequired
+
+    return changedType || changedRequired || newRequiredField
+  }
+
+  _updateTypeIdentifier (typeIdentifier: string) {
     const { field } = this.props
+
+    const useMigrationValue = (field && field.typeIdentifier === typeIdentifier)
+      ? false
+      : this.state.useMigrationValue
+    const isList = this.state.isList
 
     this.setState({
       typeIdentifier,
       isRequired: field ? field.isRequired : true,
-      isList: field ? field.isList : false,
+      isList,
       reverseRelationField: field ? field.reverseRelationField : null,
+      migrationValue: emptyDefault(typeIdentifier, isList),
+      useMigrationValue,
+    } as State)
+  }
+
+  _updateIsList (isList: boolean) {
+    this.setState({
+      isList,
+      migrationValue: emptyDefault(this.state.typeIdentifier, isList),
     } as State)
   }
 
@@ -237,12 +279,20 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({ defaultValue } as State)
   }
 
-  _renderDefaultValue () {
+  _setMigrationValue (migrationValue: any) {
+    if (!this.state.useMigrationValue && !this._needsMigrationValue()) {
+      migrationValue = null
+    }
+
+    this.setState({ migrationValue } as State)
+  }
+
+  _renderValueInput (value: any, placeholder: string, changeCallback: (v: any) => void) {
     const field = {
       isList: this.state.isList,
       typeIdentifier: this.state.typeIdentifier,
-    }
-    const valueString = valueToString(this.state.defaultValue, field as Field, true)
+    } as Field
+    const valueString = valueToString(value, field, false)
 
     switch (this.state.typeIdentifier) {
       case 'Int':
@@ -252,7 +302,7 @@ class FieldPopup extends React.Component<Props, State> {
             ref='input'
             placeholder='Default value'
             value={valueString}
-            onChange={(e) => this._setDefaultValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
           />
         )
       case 'Float':
@@ -261,9 +311,9 @@ class FieldPopup extends React.Component<Props, State> {
             type='number'
             step='any'
             ref='input'
-            placeholder='Default value'
+            placeholder={placeholder}
             value={valueString}
-            onChange={(e) => this._setDefaultValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
           />
         )
       case 'Boolean':
@@ -272,14 +322,14 @@ class FieldPopup extends React.Component<Props, State> {
             leftText='false'
             rightText='true'
             side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
-            onChange={(side) => this._setDefaultValue(side === ToggleSide.Left ? 'false' : 'true')}
+            onChange={(side) => changeCallback(side === ToggleSide.Left ? 'false' : 'true')}
           />
         )
       case 'Enum':
         return (
           <select
             value={valueString}
-            onChange={(e) => this._setDefaultValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
           >
             {this.state.enumValues.map((enumValue) => (
               <option key={enumValue}>{enumValue}</option>
@@ -291,9 +341,9 @@ class FieldPopup extends React.Component<Props, State> {
           <input
             type='text'
             ref='input'
-            placeholder='Default value'
+            placeholder={placeholder}
             value={valueString}
-            onChange={(e) => this._setDefaultValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
           />
         )
     }
@@ -313,6 +363,10 @@ class FieldPopup extends React.Component<Props, State> {
       selectedModel.unconnectedReverseRelationFieldsFrom.length > 0 &&
       !this.props.field
     const reverseRelationFieldLink = `/${this.props.params.projectName}/models/${this.state.typeIdentifier}/structure/edit/${(this.state.reverseRelationField || {} as any).name}` // tslint:disable-line
+
+    const dataExists = this.props.model.itemCount > 0
+    const needsMigrationValue = this._needsMigrationValue()
+    const showMigrationValue = needsMigrationValue || (dataExists && !this.props.field)
 
     return (
       <div className={classes.background}>
@@ -354,7 +408,7 @@ class FieldPopup extends React.Component<Props, State> {
                     <TypeSelection
                       selected={this.state.typeIdentifier}
                       modelNames={this.props.allModels.map((m) => m.name)}
-                      select={(typeIdentifier) => this._onSelectType(typeIdentifier)}
+                      select={(typeIdentifier) => this._updateTypeIdentifier(typeIdentifier)}
                     />
                   </div>
                 </div>
@@ -387,7 +441,7 @@ class FieldPopup extends React.Component<Props, State> {
                         <label>
                           <input
                             type='checkbox'
-                            defaultChecked={this.state.isRequired}
+                            checked={this.state.isRequired}
                             onChange={(e) => this.setState({
                               isRequired: (e.target as HTMLInputElement).checked,
                             } as State)}
@@ -401,19 +455,50 @@ class FieldPopup extends React.Component<Props, State> {
                       <div className={classes.left}>
                         Store multiple values
                         <Help text={`Normaly you just want to store a single value
-                        but you can also save a list of values.`} />
+                        but you can also save a list of values.
+                        (Lists don't support migration and default values yet.)`} />
                       </div>
                       <div className={classes.right}>
                         <label>
                           <input
                             type='checkbox'
-                            defaultChecked={this.state.isList}
-                            onChange={(e) => this.setState({ isList: (e.target as HTMLInputElement).checked } as State)}
+                            checked={this.state.isList}
+                            onChange={(e) => this._updateIsList((e.target as HTMLInputElement).checked)}
                             onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
                           />
                           List
                         </label>
                       </div>
+                    </div>
+                  </div>
+                }
+                {showMigrationValue && !this.state.isList &&
+                  <div className={classes.row}>
+                    <div className={classes.left}>
+                      <label>
+                        <input
+                          type='checkbox'
+                          disabled={needsMigrationValue}
+                          checked={this.state.useMigrationValue || needsMigrationValue}
+                          onChange={(e) => this.setState({
+                              useMigrationValue: (e.target as HTMLInputElement).checked,
+                            } as State)}
+                        />
+                        Migration value
+                      </label>
+                      <Help text={this.props.field
+                      ? `The migration value will be used to pupulate
+                      New data items won't be affected by this`
+                      : ``} />
+                    </div>
+                    <div className={`
+                    ${classes.right} ${(this.state.useMigrationValue || needsMigrationValue) ? null : classes.disabled}
+                    `}>
+                      {this._renderValueInput(
+                        this.state.migrationValue,
+                        'Migration value',
+                        this._setMigrationValue.bind(this)
+                      )}
                     </div>
                   </div>
                 }
@@ -423,7 +508,7 @@ class FieldPopup extends React.Component<Props, State> {
                       <label>
                         <input
                           type='checkbox'
-                          defaultChecked={this.state.useDefaultValue}
+                          checked={this.state.useDefaultValue}
                           onChange={(e) => this.setState({
                             useDefaultValue: (e.target as HTMLInputElement).checked,
                           } as State)}
@@ -434,7 +519,11 @@ class FieldPopup extends React.Component<Props, State> {
                       The default value will be applied to both required and non-required fields.`} />
                     </div>
                     <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
-                      {this._renderDefaultValue()}
+                      {this._renderValueInput(
+                        this.state.defaultValue,
+                        'Default value',
+                        this._setDefaultValue.bind(this)
+                      )}
                     </div>
                   </div>
                 }
@@ -497,13 +586,13 @@ class FieldPopup extends React.Component<Props, State> {
                       <div className={`${classes.select} ${this.state.isList ? classes.top : classes.bottom}`}>
                         <div
                           className={`${classes.option} ${!this.state.isList ? classes.selected : ''}`}
-                          onClick={() => this.setState({ isList: false } as State)}
+                          onClick={() => this._updateIsList(false)}
                         >
                           one
                         </div>
                         <div
                           className={`${classes.option} ${this.state.isList ? classes.selected : ''}`}
-                          onClick={() => this.setState({ isList: true } as State)}
+                          onClick={() => this._updateIsList(true)}
                         >
                           many
                         </div>
@@ -608,7 +697,7 @@ const MappedFieldPopup = mapProps({
   params: (props) => props.params,
   allModels: (props) => props.viewer.project.models.edges.map((edge) => edge.node),
   field: (props) => props.viewer.field,
-  modelId: (props) => props.viewer.model.id,
+  model: (props) => props.viewer.model,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedFieldPopup, {
@@ -626,6 +715,7 @@ export default Relay.createContainer(MappedFieldPopup, {
       fragment on Viewer {
         model: modelByName(projectName: $projectName, modelName: $modelName) {
           id
+          itemCount
         }
         field: fieldByName(
           projectName: $projectName
