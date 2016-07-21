@@ -55,6 +55,7 @@ export interface Model {
   name: string
   fields: Field[]
   unconnectedReverseRelationFieldsFrom: Field[]
+  itemCount: number
 }
 
 export type ActionTriggerType = 'MUTATION_MODEL' | 'MUTATION_RELATION'

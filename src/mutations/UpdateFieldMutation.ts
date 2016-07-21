@@ -7,8 +7,9 @@ interface Props {
   enumValues: string[]
   isRequired: boolean
   isList: boolean
-  defaultValue?: any
+  defaultValue?: string
   relationId?: string
+  migrationValue?: string
 }
 
 export default class UpdateFieldMutation extends Relay.Mutation<Props, {}> {
@@ -45,6 +46,7 @@ export default class UpdateFieldMutation extends Relay.Mutation<Props, {}> {
       isUnique: false,
       defaultValue: this.props.defaultValue,
       relationId: this.props.relationId,
+      migrationValue: this.props.migrationValue,
     }
   }
 
