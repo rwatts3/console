@@ -3,6 +3,22 @@ declare module 'react-router-relay' {
   export = _temp;
 }
 
+declare module 'lokka' {
+  interface API {
+    Lokka: any
+  }
+  var _temp: API;
+  export = _temp;
+}
+
+declare module 'lokka-transport-http' {
+  interface API {
+    Transport: any
+  }
+  var _temp: API;
+  export = _temp;
+}
+
 declare var require: {
   <T>(path: string): T;
   (paths: string[], callback: (...modules: any[]) => void): void;

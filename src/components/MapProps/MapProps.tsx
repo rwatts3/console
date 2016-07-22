@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-export default function mapProps(mapping: { [key: string]: (props: Object) => any }) {
+export default function mapProps(mapping: { [key: string]: (props: any) => any }) {
   return (DecoratedComponent) => {
     class MapProps extends React.Component<{}, {}> {
 

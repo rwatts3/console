@@ -1,53 +1,76 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { Link } from 'react-router'
-import mapProps from 'map-props'
-import calculateSize from 'calculate-size'
+const calculateSize: any = require('calculate-size')
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
-import PureRenderMixin from 'react-addons-pure-render-mixin'
+// import PureRenderMixin from 'react-addons-pure-render-mixin'
 import { isScalar } from 'utils/graphql'
-import ScrollBox from 'components/ScrollBox/ScrollBox'
-import Icon from 'components/Icon/Icon'
-import * as cookiestore from 'utils/cookiestore'
-import Loading from 'components/Loading/Loading'
-import Tether from 'components/Tether/Tether'
-import HeaderCell from './HeaderCell'
+import ScrollBox from '../../../components/ScrollBox/ScrollBox'
+import Icon from '../../../components/Icon/Icon'
+import * as cookiestore from '../../../utils/cookiestore'
+import mapProps from '../../../components/MapProps/MapProps'
+import Loading from '../../../components/Loading/Loading'
+const Tether: any = (require('../../../components/Tether/Tether') as any).default
+const HeaderCell: any = (require('./HeaderCell') as any).default
+const ModelDescription: any = (require('../ModelDescription') as any).default
+const Row: any = (require('./Row') as any).default
+const NewRow: any = (require('./NewRow') as any).default
 import CheckboxCell from './CheckboxCell'
-import Row from './Row'
-import NewRow from './NewRow'
-import ModelDescription from '../ModelDescription'
 import { valueToString, toGQL } from '../utils'
-import { sideNavSyncer } from 'utils/sideNavSyncer'
+import { sideNavSyncer } from '../../../utils/sideNavSyncer'
+import { Field, Model } from '../../../types/types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { nextStep } from 'reducers/GettingStartedState'
-import classes from './BrowserView.scss'
+const gettingStartedState: any = require('../../../reducers/GettingStartedState')
+const classes: any = require('./BrowserView.scss')
 
-function compareFields (a, b) {
-  if (a.name === 'id') return -1
-  if (b.name === 'id') return 1
+function compareFields (a: Field, b: Field): number {
+  if (a.name === 'id') {
+    return -1
+  }
+  if (b.name === 'id') {
+    return 1
+  }
   return a.name.localeCompare(b.name)
 }
 
-class BrowserView extends React.Component {
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    fields: PropTypes.array.isRequired,
-    projectId: PropTypes.string.isRequired,
-    model: PropTypes.object.isRequired,
-    gettingStartedState: PropTypes.object.isRequired,
-    nextStep: PropTypes.func.isRequired,
-  }
+interface Props {
+  params: any
+  fields: Field[]
+  projectId: string
+  model: Model
+  gettingStartedState: any
+  nextStep: () => void
+}
+
+interface State {
+  items: any[]
+  loading: boolean
+  orderBy: OrderBy
+  filter: any
+  reachedEnd: boolean
+  newRowVisible: boolean
+  selectedItemIds: string[]
+}
+
+interface OrderBy {
+  fieldName: string
+  order: 'ASC' | 'DESC'
+}
+
+class BrowserView extends React.Component<Props, State> {
 
   static contextTypes = {
-    router: PropTypes.object.isRequired,
+    router: React.PropTypes.object.isRequired,
   }
+
+  _lokka: any
 
   constructor (props) {
     super(props)
 
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+    // this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.projectId}`
     const token = cookiestore.get('graphcool_token')
@@ -64,8 +87,6 @@ class BrowserView extends React.Component {
         order: 'ASC',
       },
       filter: {},
-      lastCursor: null,
-      lastLoadedCursor: null,
       reachedEnd: false,
       newRowVisible: false,
       selectedItemIds: [],
@@ -93,12 +114,15 @@ class BrowserView extends React.Component {
       ? (this.state.orderBy.order === 'ASC' ? 'DESC' : 'ASC')
       : 'ASC'
 
-    this.setState({
-      orderBy: {
-        fieldName: field.name,
-        order,
-      },
-    }, this._reloadData)
+    this.setState(
+      {
+        orderBy: {
+          fieldName: field.name,
+          order,
+        },
+      } as State,
+      this._reloadData
+    )
   }
 
   _loadData (skip) {
@@ -127,7 +151,7 @@ class BrowserView extends React.Component {
         const items = results[`all${this.props.model.namePlural}`]
         const reachedEnd = items.length === 0 || this.state.items.length > 0 &&
           this.state.items[this.state.items.length - 1].id === items[items.length - 1].id
-        this.setState({ reachedEnd })
+        this.setState({ reachedEnd } as State)
         return items
       })
   }
@@ -137,22 +161,22 @@ class BrowserView extends React.Component {
       return
     }
 
-    this.setState({ loading: true })
+    this.setState({ loading: true } as State)
 
     this._loadData(this.state.items.length)
       .then((items) => {
         this.setState({
           items: this.state.items.concat(items),
           loading: false,
-        })
+        } as State)
       })
   }
 
   _reloadData () {
-    this.setState({ loading: true })
+    this.setState({ loading: true } as State)
     return this._loadData(0)
       .then((items) => {
-        this.setState({ items, loading: false })
+        this.setState({ items, loading: false } as State)
         // _update side nav model item count
         this._updateSideNav()
       })
@@ -161,14 +185,14 @@ class BrowserView extends React.Component {
   _updateFilter (value, field) {
     const { filter } = this.state
     filter[field.name] = value
-    this.setState({ filter }, this._reloadData)
+    this.setState({ filter } as State, this._reloadData)
 
     // TODO: select cut set of selected and filtered items
-    this.setState({selectedItemIds: []})
+    this.setState({selectedItemIds: []} as State)
   }
 
   _deleteItem (itemId) {
-    this.setState({ loading: true })
+    this.setState({ loading: true } as State)
     const mutation = `
       {
         delete${this.props.model.name}(
@@ -203,7 +227,7 @@ class BrowserView extends React.Component {
         const { items } = this.state
         items[index][field.name] = value
 
-        this.setState({ items })
+        this.setState({ items } as State)
 
         analytics.track('models/browser: updated item', {
           project: this.props.params.projectName,
@@ -221,7 +245,7 @@ class BrowserView extends React.Component {
       .map(({ field, value }) => toGQL(value, field))
       .join(' ')
 
-    this.setState({ loading: true })
+    this.setState({ loading: true } as State)
     const mutation = `
       {
         create${this.props.model.name}(
@@ -232,9 +256,9 @@ class BrowserView extends React.Component {
       }
     `
     this._lokka.mutate(mutation)
-      .then(::this._reloadData)
+      .then(() => this._reloadData())
       .then(() => {
-        this.setState({ newRowVisible: false })
+        this.setState({ newRowVisible: false } as State)
 
         analytics.track('models/browser: created item', {
           project: this.props.params.projectName,
@@ -276,7 +300,7 @@ class BrowserView extends React.Component {
       (field) => {
         const cellWidths = this.state.items
           .map((item) => item[field.name])
-          .map((value) => valueToString(value, field))
+          .map((value) => valueToString(value, field, false))
           .map((str) => calculateSize(str, cellFontOptions).width + 40)
 
         const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
@@ -295,10 +319,10 @@ class BrowserView extends React.Component {
     if (index > -1) {
       this.state.selectedItemIds.splice(index, 1)
       const selectedItemIds = this.state.selectedItemIds
-      this.setState({ selectedItemIds })
+      this.setState({ selectedItemIds } as State)
     } else {
       const selectedItemIds = this.state.selectedItemIds.concat(itemId)
-      this.setState({ selectedItemIds })
+      this.setState({ selectedItemIds } as State)
     }
   }
 
@@ -309,9 +333,9 @@ class BrowserView extends React.Component {
   _selectAllOnClick (checked) {
     if (checked) {
       const selectedItemIds = this.state.items.map((item) => item.id)
-      this.setState({selectedItemIds: selectedItemIds})
+      this.setState({selectedItemIds: selectedItemIds} as State)
     } else {
-      this.setState({selectedItemIds: []})
+      this.setState({selectedItemIds: []} as State)
     }
   }
 
@@ -321,12 +345,12 @@ class BrowserView extends React.Component {
       Promise.all(this.state.selectedItemIds.map((itemId) => {
         this._deleteItem(itemId)
       }))
-      .then(::this._reloadData)
+      .then(() => this._reloadData())
       .then(() => {
-        this.setState({ loading: false })
+        this.setState({ loading: false } as State)
       })
 
-      this.setState({selectedItemIds: []})
+      this.setState({selectedItemIds: []} as State)
     }
   }
 
@@ -364,7 +388,7 @@ class BrowserView extends React.Component {
             >
               <div
                 className={`${classes.button} ${classes.green}`}
-                onClick={() => this.setState({ newRowVisible: true })}
+                onClick={() => this.setState({ newRowVisible: true } as State)}
               >
                 <Icon
                   width={16}
@@ -386,7 +410,7 @@ class BrowserView extends React.Component {
               <span>Edit Structure</span>
             </Link>
             {this.state.selectedItemIds.length > 0 &&
-              <div className={`${classes.button} ${classes.red}`} onClick={::this._deleteSelectedItems}>
+              <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
                 <Icon
                   width={16}
                   height={16}
@@ -395,7 +419,7 @@ class BrowserView extends React.Component {
                 <span>Delete Selected Items</span>
               </div>
             }
-            <div className={classes.button} onClick={::this._reloadData}>
+            <div className={classes.button} onClick={() => this._reloadData()}>
               <Icon
                 width={16}
                 height={16}
@@ -413,7 +437,7 @@ class BrowserView extends React.Component {
           <div className={classes.tableContainer} style={{ width: tableWidth }}>
             <div className={classes.tableHead}>
               <CheckboxCell
-                onChange={::this._selectAllOnClick}
+                onChange={(checked) => this._selectAllOnClick(checked)}
                 checked={this.state.selectedItemIds.length === this.state.items.length && this.state.items.length > 0}
               />
               {this.props.fields.map((field) => (
@@ -432,10 +456,10 @@ class BrowserView extends React.Component {
                 fields={this.props.fields}
                 columnWidths={columnWidths}
                 add={(data) => this._addItem(data)}
-                cancel={(e) => this.setState({newRowVisible: false})}
+                cancel={(e) => this.setState({ newRowVisible: false } as State)}
               />
             }
-            <div className={classes.tableBody} onScroll={::this._handleScroll}>
+            <div className={classes.tableBody} onScroll={(e) => this._handleScroll(e)}>
               <ScrollBox>
                 <div className={classes.tableBodyContainer}>
                   {this.state.items.map((item, index) => (
@@ -466,7 +490,7 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ nextStep }, dispatch)
+  return bindActionCreators({ nextStep: gettingStartedState.nextStep }, dispatch)
 }
 
 const ReduxContainer = connect(
