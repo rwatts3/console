@@ -1,5 +1,8 @@
 // THIS IS A HACK - do not copy this approach for similar situations without serious thought beforehand
 class SideNavSyncer {
+  callback: any
+  callbackObj: any
+
   setCallback (callback, callbackObj) {
     this.callback = callback
     this.callbackObj = callbackObj
@@ -12,4 +15,4 @@ class SideNavSyncer {
   }
 }
 
-export let sideNavSyncer = new SideNavSyncer()
+export const sideNavSyncer = new SideNavSyncer()

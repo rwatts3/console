@@ -53,6 +53,7 @@ export interface Permission {
 export interface Model {
   id: string
   name: string
+  namePlural: string
   fields: Field[]
   unconnectedReverseRelationFieldsFrom: Field[]
   itemCount: number
