@@ -3,8 +3,9 @@ import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 const calculateSize: any = require('calculate-size')
 import { Lokka } from 'lokka'
+import * as Immutable from 'immutable'
 import { Transport } from 'lokka-transport-http'
-// import PureRenderMixin from 'react-addons-pure-render-mixin'
+import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import { isScalar } from 'utils/graphql'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
@@ -45,13 +46,13 @@ interface Props {
 }
 
 interface State {
-  items: any[]
+  items: Immutable.List<Immutable.Map<string, any>>
   loading: boolean
   orderBy: OrderBy
-  filter: any
+  filter: Immutable.Map<string, any>
   reachedEnd: boolean
   newRowVisible: boolean
-  selectedItemIds: string[]
+  selectedItemIds: Immutable.List<string>
 }
 
 interface OrderBy {
@@ -67,10 +68,12 @@ class BrowserView extends React.Component<Props, State> {
 
   _lokka: any
 
+  shouldComponentUpdate: any
+
   constructor (props) {
     super(props)
 
-    // this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.projectId}`
     const token = cookiestore.get('graphcool_token')
@@ -80,16 +83,16 @@ class BrowserView extends React.Component<Props, State> {
     this._lokka = new Lokka({ transport })
 
     this.state = {
-      items: [],
+      items: Immutable.List<Immutable.Map<string, any>>(),
       loading: true,
       orderBy: {
         fieldName: 'id',
-        order: 'ASC',
+        order: 'DESC',
       },
-      filter: {},
+      filter: Immutable.Map<string, any>(),
       reachedEnd: false,
       newRowVisible: false,
-      selectedItemIds: [],
+      selectedItemIds: Immutable.List<string>(),
     }
   }
 
@@ -125,16 +128,16 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  _loadData (skip) {
+  _loadData (skip: number): Promise<Immutable.List<Immutable.Map<string, any>>> {
     const fieldNames = this.props.fields
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
         : `${field.name} { id }`)
       .join(' ')
 
-    const filterQuery = Object.keys(this.state.filter)
-      .filter((fieldName) => this.state.filter[fieldName] !== null)
-      .map((fieldName) => `${fieldName}: ${this.state.filter[fieldName]}`)
+    const filterQuery = this.state.filter
+      .filter((v) => v !== null)
+      .map((value, fieldName) => `${fieldName}: ${value}`)
       .join(' ')
 
     const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
@@ -148,9 +151,9 @@ class BrowserView extends React.Component<Props, State> {
     `
     return this._lokka.query(query)
       .then((results) => {
-        const items = results[`all${this.props.model.namePlural}`]
-        const reachedEnd = items.length === 0 || this.state.items.length > 0 &&
-          this.state.items[this.state.items.length - 1].id === items[items.length - 1].id
+        const items = Immutable.List(results[`all${this.props.model.namePlural}`]).map(Immutable.Map)
+        const reachedEnd = items.isEmpty() || !this.state.items.isEmpty() &&
+          this.state.items.last().get('id') === items.last().get('id')
         this.setState({ reachedEnd } as State)
         return items
       })
@@ -163,7 +166,7 @@ class BrowserView extends React.Component<Props, State> {
 
     this.setState({ loading: true } as State)
 
-    this._loadData(this.state.items.length)
+    this._loadData(this.state.items.size)
       .then((items) => {
         this.setState({
           items: this.state.items.concat(items),
@@ -183,12 +186,10 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   _updateFilter (value, field) {
-    const { filter } = this.state
-    filter[field.name] = value
-    this.setState({ filter } as State, this._reloadData)
+    this.setState({ filter: this.state.filter.set(field.name, value) } as State, this._reloadData)
 
     // TODO: select cut set of selected and filtered items
-    this.setState({selectedItemIds: []} as State)
+    this.setState({ selectedItemIds: Immutable.List() } as State)
   }
 
   _deleteItem (itemId) {
@@ -225,9 +226,8 @@ class BrowserView extends React.Component<Props, State> {
         callback(true)
 
         const { items } = this.state
-        items[index][field.name] = value
 
-        this.setState({ items } as State)
+        this.setState({ items: items.setIn([index, field.name], value) } as State)
 
         analytics.track('models/browser: updated item', {
           project: this.props.params.projectName,
@@ -238,7 +238,7 @@ class BrowserView extends React.Component<Props, State> {
       .catch(() => callback(false))
   }
 
-  _addItem (fieldValues) {
+  _addItem (fieldValues: any) {
     const inputString = fieldValues
       .mapToArray((fieldName, obj) => obj)
       .filter(({ value }) => value !== null)
@@ -275,17 +275,7 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  _mapToCells = (item, columnWidths) => {
-    return this.props.fields.map((field) => {
-      return {
-        field,
-        value: item[field.name],
-        width: columnWidths[field.name],
-      }
-    })
-  }
-
-  _calculateColumnWidths () {
+  _calculateColumnWidths (): any {
     const cellFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
@@ -299,9 +289,10 @@ class BrowserView extends React.Component<Props, State> {
       (field) => field.name,
       (field) => {
         const cellWidths = this.state.items
-          .map((item) => item[field.name])
+          .map((item) => item.get(field.name))
           .map((value) => valueToString(value, field, false))
           .map((str) => calculateSize(str, cellFontOptions).width + 40)
+          .toArray()
 
         const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
 
@@ -315,14 +306,10 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   _onSelectRow (itemId) {
-    const index = this.state.selectedItemIds.indexOf(itemId)
-    if (index > -1) {
-      this.state.selectedItemIds.splice(index, 1)
-      const selectedItemIds = this.state.selectedItemIds
-      this.setState({ selectedItemIds } as State)
+    if (this.state.selectedItemIds.includes(itemId)) {
+      this.setState({ selectedItemIds: this.state.selectedItemIds.filter((id) => id !== itemId) } as State)
     } else {
-      const selectedItemIds = this.state.selectedItemIds.concat(itemId)
-      this.setState({ selectedItemIds } as State)
+      this.setState({ selectedItemIds: this.state.selectedItemIds.push(itemId) } as State)
     }
   }
 
@@ -332,17 +319,17 @@ class BrowserView extends React.Component<Props, State> {
 
   _selectAllOnClick (checked) {
     if (checked) {
-      const selectedItemIds = this.state.items.map((item) => item.id)
+      const selectedItemIds = this.state.items.map((item) => item.get('id'))
       this.setState({selectedItemIds: selectedItemIds} as State)
     } else {
-      this.setState({selectedItemIds: []} as State)
+      this.setState({selectedItemIds: Immutable.List()} as State)
     }
   }
 
   _deleteSelectedItems () {
-    if (confirm(`Do you really want to delete ${this.state.selectedItemIds.length} item(s)?`)) {
+    if (confirm(`Do you really want to delete ${this.state.selectedItemIds.size} item(s)?`)) {
       // only reload once after all the deletions
-      Promise.all(this.state.selectedItemIds.map((itemId) => {
+      Promise.all(this.state.selectedItemIds.toArray().map((itemId) => {
         this._deleteItem(itemId)
       }))
       .then(() => this._reloadData())
@@ -350,7 +337,7 @@ class BrowserView extends React.Component<Props, State> {
         this.setState({ loading: false } as State)
       })
 
-      this.setState({selectedItemIds: []} as State)
+      this.setState({ selectedItemIds: Immutable.List() } as State)
     }
   }
 
@@ -361,7 +348,7 @@ class BrowserView extends React.Component<Props, State> {
 
   render () {
     const columnWidths = this._calculateColumnWidths()
-    const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0)
+    const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0) + 34 // 34 = checkbox
 
     return (
       <div className={classes.root}>
@@ -409,7 +396,7 @@ class BrowserView extends React.Component<Props, State> {
               />
               <span>Edit Structure</span>
             </Link>
-            {this.state.selectedItemIds.length > 0 &&
+            {this.state.selectedItemIds.size > 0 &&
               <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
                 <Icon
                   width={16}
@@ -438,7 +425,7 @@ class BrowserView extends React.Component<Props, State> {
             <div className={classes.tableHead}>
               <CheckboxCell
                 onChange={(checked) => this._selectAllOnClick(checked)}
-                checked={this.state.selectedItemIds.length === this.state.items.length && this.state.items.length > 0}
+                checked={this.state.selectedItemIds.size === this.state.items.size && this.state.items.size > 0}
               />
               {this.props.fields.map((field) => (
                 <HeaderCell
@@ -464,13 +451,13 @@ class BrowserView extends React.Component<Props, State> {
                 <div className={classes.tableBodyContainer}>
                   {this.state.items.map((item, index) => (
                     <Row
-                      key={item.id}
+                      key={item.get('id')}
                       fields={this.props.fields}
                       columnWidths={columnWidths}
-                      item={item}
-                      update={(key, value, callback) => this._updateItem(key, value, callback, item.id, index)}
-                      isSelected={this._isSelected(item.id)}
-                      onSelect={(event) => this._onSelectRow(item.id)}
+                      item={item.toJS()}
+                      update={(key, value, callback) => this._updateItem(key, value, callback, item.get('id'), index)}
+                      isSelected={this._isSelected(item.get('id'))}
+                      onSelect={(event) => this._onSelectRow(item.get('id'))}
                     />
                   ))}
                 </div>

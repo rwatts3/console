@@ -1,21 +1,7 @@
 import React, { PropTypes } from 'react'
 import NewCell from './NewCell'
+import { emptyDefault } from '../utils'
 import classes from './NewRow.scss'
-
-function browserDefaultValue (field) {
-  if (field.defaultValue) {
-    return field.defaultValue
-  }
-
-  switch (field.typeIdentifier) {
-    case 'String': return ''
-    case 'Int': return 0
-    case 'Float': return 0
-    case 'Boolean': return false
-    case 'Enum': return field.enumValues[0]
-    default: return null
-  }
-}
 
 export default class NewRow extends React.Component {
 
@@ -35,7 +21,7 @@ export default class NewRow extends React.Component {
         (field) => field.name,
         (field) => ({
           field,
-          value: browserDefaultValue(field),
+          value: emptyDefault(field.typeIdentifier, field.isList),
         })
       )
 
@@ -76,7 +62,7 @@ export default class NewRow extends React.Component {
             update={::this._update}
             submit={::this._add}
             autoFocus={firstAutoFocusField === field}
-            defaultValue={browserDefaultValue(field)}
+            defaultValue={emptyDefault(field.typeIdentifier, field.isList)}
             cancel={this.props.cancel}
           />
         ))}

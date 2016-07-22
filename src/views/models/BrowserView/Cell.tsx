@@ -206,7 +206,7 @@ export default class Cell extends React.Component<Props, State> {
 
     return (
       <div
-        style={{ width: this.props.width }}
+        style={{ flex: `1 0 ${this.props.width}px` }}
         className={rootClassnames}
         onDoubleClick={() => this._startEditing()}
       >

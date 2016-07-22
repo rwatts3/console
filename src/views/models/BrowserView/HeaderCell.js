@@ -104,7 +104,10 @@ export default class HeaderCell extends React.Component {
     }
 
     return (
-      <div style={{ width }} className={classes.root}>
+      <div
+        style={{ flex: `1 0 ${width}px` }}
+        className={classes.root}
+      >
         <div className={classes.line} onClick={this.props.toggleSortOrder}>
           <div className={classes.fieldName}>
             {field.name}

@@ -1,5 +1,5 @@
 interface Array<T> {
-  mapToObject<U>(keyFn: (T) => string, valFn: (T) => U): Object
+  mapToObject<U>(keyFn: (T) => string, valFn: (T) => U): any
   find(predicate: (search: T) => boolean): T
   includes(search: T): boolean
   equals(array: Array<T>): boolean
