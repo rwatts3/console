@@ -5,6 +5,7 @@ import mapProps from 'map-props'
 import calculateSize from 'calculate-size'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
+import PureRenderMixin from 'react-addons-pure-render-mixin'
 import { isScalar } from 'utils/graphql'
 import ScrollBox from 'components/ScrollBox/ScrollBox'
 import Icon from 'components/Icon/Icon'
@@ -46,7 +47,9 @@ class BrowserView extends React.Component {
   constructor (props) {
     super(props)
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.projectId}`
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+
+    const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.projectId}`
     const token = cookiestore.get('graphcool_token')
     const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab' }
     const transport = new Transport(clientEndpoint, { headers })
@@ -56,13 +59,14 @@ class BrowserView extends React.Component {
     this.state = {
       items: [],
       loading: true,
-      sortBy: {
+      orderBy: {
         fieldName: 'id',
         order: 'ASC',
       },
       filter: {},
       lastCursor: null,
       lastLoadedCursor: null,
+      reachedEnd: false,
       newRowVisible: false,
       selectedItemIds: [],
     }
@@ -79,25 +83,25 @@ class BrowserView extends React.Component {
   }
 
   _handleScroll (e) {
-    if (e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 50) {
+    if (!this.state.loading && e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 100) {
       this._loadNextPage()
     }
   }
 
   _setSortOrder (field) {
-    const order = this.state.sortBy.fieldName === field.name
-      ? (this.state.sortBy.order === 'ASC' ? 'DESC' : 'ASC')
+    const order = this.state.orderBy.fieldName === field.name
+      ? (this.state.orderBy.order === 'ASC' ? 'DESC' : 'ASC')
       : 'ASC'
 
     this.setState({
-      sortBy: {
+      orderBy: {
         fieldName: field.name,
         order,
       },
     }, this._reloadData)
   }
 
-  _loadData (afterCursor = null) {
+  _loadData (skip) {
     const fieldNames = this.props.fields
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
@@ -110,54 +114,44 @@ class BrowserView extends React.Component {
       .join(' ')
 
     const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
-    const after = afterCursor !== null ? `after: "${afterCursor}"` : ''
-    const orderBy = `orderBy: ${this.state.sortBy.fieldName}_${this.state.sortBy.order}`
+    const orderBy = `orderBy: ${this.state.orderBy.fieldName}_${this.state.orderBy.order}`
     const query = `
       {
-        viewer {
-          all${this.props.model.name}s(first: 50 ${after} ${filter} ${orderBy}) {
-            edges {
-              node {
-                ${fieldNames}
-              }
-              cursor
-            }
-          }
+        all${this.props.model.namePlural}(take: 50 skip: ${skip} ${filter} ${orderBy}) {
+          ${fieldNames}
         }
       }
     `
     return this._lokka.query(query)
-    .then((results) => {
-      const edges = results.viewer[`all${this.props.model.name}s`].edges
-      if (edges.length !== 0) {
-        this.setState({lastCursor: edges[edges.length-1].cursor})
-      }
-      return results
-    })
+      .then((results) => {
+        const items = results[`all${this.props.model.namePlural}`]
+        const reachedEnd = items.length === 0 || this.state.items.length > 0 &&
+          this.state.items[this.state.items.length - 1].id === items[items.length - 1].id
+        this.setState({ reachedEnd })
+        return items
+      })
   }
 
   _loadNextPage () {
-    if (this.state.lastLoadedCursor !== null && this.state.lastCursor === this.state.lastLoadedCursor) {
+    if (this.state.reachedEnd) {
       return
     }
 
     this.setState({ loading: true })
-    this._loadData(this.state.lastCursor)
-      .then((results) => {
-        const items = results.viewer[`all${this.props.model.name}s`].edges.map(({ node }) => node)
+
+    this._loadData(this.state.items.length)
+      .then((items) => {
         this.setState({
           items: this.state.items.concat(items),
           loading: false,
         })
       })
-    this.setState({ lastLoadedCursor: this.state.lastCursor })
   }
 
   _reloadData () {
     this.setState({ loading: true })
-    return this._loadData()
-      .then((results) => {
-        const items = results.viewer[`all${this.props.model.name}s`].edges.map((edge) => edge.node)
+    return this._loadData(0)
+      .then((items) => {
         this.setState({ items, loading: false })
         // _update side nav model item count
         this._updateSideNav()
@@ -177,11 +171,10 @@ class BrowserView extends React.Component {
     this.setState({ loading: true })
     const mutation = `
       {
-        delete${this.props.model.name}(input: {
-          id: "${itemId}",
-          clientMutationId: "lokka-${Math.random().toString(36).substring(7)}"
-        }) {
-          clientMutationId
+        delete${this.props.model.name}(
+          id: "${itemId}"
+        ) {
+          id
         }
       }
     `
@@ -195,12 +188,11 @@ class BrowserView extends React.Component {
   _updateItem (value, field, callback, itemId, index) {
     const mutation = `
       {
-        update${this.props.model.name}(input: {
+        update${this.props.model.name}(
           id: "${itemId}"
           ${toGQL(value, field)}
-          clientMutationId: "lokka-${Math.random().toString(36).substring(7)}"
-        }) {
-          clientMutationId
+        ) {
+          id
         }
       }
     `
@@ -232,11 +224,10 @@ class BrowserView extends React.Component {
     this.setState({ loading: true })
     const mutation = `
       {
-        create${this.props.model.name}(input: {
+        create${this.props.model.name}(
           ${inputString},
-          clientMutationId: "lokka-${Math.random().toString(36).substring(7)}"
-        }) {
-          clientMutationId
+        ) {
+          id
         }
       }
     `
@@ -304,10 +295,10 @@ class BrowserView extends React.Component {
     if (index > -1) {
       this.state.selectedItemIds.splice(index, 1)
       const selectedItemIds = this.state.selectedItemIds
-      this.setState({selectedItemIds: selectedItemIds})
+      this.setState({ selectedItemIds })
     } else {
       const selectedItemIds = this.state.selectedItemIds.concat(itemId)
-      this.setState({selectedItemIds: selectedItemIds})
+      this.setState({ selectedItemIds })
     }
   }
 
@@ -430,7 +421,7 @@ class BrowserView extends React.Component {
                   key={field.id}
                   field={field}
                   width={columnWidths[field.name]}
-                  sortOrder={this.state.sortBy.fieldName === field.name ? this.state.sortBy.order : null}
+                  sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
                   toggleSortOrder={() => this._setSortOrder(field)}
                   updateFilter={(value) => this._updateFilter(value, field)}
                 />
@@ -505,6 +496,7 @@ export default Relay.createContainer(MappedBrowserView, {
       fragment on Viewer {
         model: modelByName(projectName: $projectName, modelName: $modelName) {
           name
+          namePlural
           itemCount
           fields(first: 100) {
             edges {

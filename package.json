@@ -30,6 +30,7 @@
     "calculate-size": "^0.2.0",
     "classnames": "^2.2.5",
     "graphiql": "^0.6.6",
+    "immutable": "^3.8.1",
     "js-cookie": "^2.1.2",
     "lokka": "^1.7.0",
     "lokka-transport-http": "^1.4.0",
