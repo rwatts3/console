@@ -1,5 +1,7 @@
+/// <reference path="globals/immutable/index.d.ts" />
 /// <reference path="globals/js-cookie/index.d.ts" />
 /// <reference path="globals/moment-node/index.d.ts" />
+/// <reference path="globals/react-addons-pure-render-mixin/index.d.ts" />
 /// <reference path="globals/react-dom/index.d.ts" />
 /// <reference path="globals/react-redux/index.d.ts" />
 /// <reference path="globals/react-router/history/index.d.ts" />

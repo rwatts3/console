@@ -43,6 +43,9 @@ export function valueToString (value: any, field: Field, returnNull: boolean): s
       return `[${fieldValue.toString()}]`
     }
   } else {
+    if (fieldValue === undefined) {
+      debugger
+    }
     return fieldValue.toString()
   }
 }

@@ -1,20 +1,27 @@
-import React, { PropTypes } from 'react'
-import classnames from 'classnames'
+import * as React from 'react'
+const classnames: any = require('classnames')
 import { valueToString, stringToValue } from '../utils'
-import ToggleButton, { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
-import classes from './Cell.scss'
+import ToggleButton from '../../../components/ToggleButton/ToggleButton'
+import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
+import { Field } from '../../../types/types'
+const classes: any = require('./Cell.scss')
 
-export default class NewCell extends React.Component {
+interface Props {
+  field: Field
+  width: number
+  update: (value: any, field: Field) => void
+  submit: () => void
+  cancel: () => void
+  autoFocus: boolean
+  defaultValue: any | null
+}
 
-  static propTypes = {
-    field: PropTypes.object.isRequired,
-    width: PropTypes.number.isRequired,
-    update: PropTypes.func.isRequired,
-    submit: PropTypes.func.isRequired,
-    cancel: PropTypes.func.isRequired,
-    autoFocus: PropTypes.bool.isRequired,
-    defaultValue: PropTypes.any.isRequired,
-  }
+interface State {
+  value: any
+  focus: boolean
+}
+
+export default class NewCell extends React.Component<Props, State> {
 
   constructor (props) {
     super(props)
@@ -27,11 +34,11 @@ export default class NewCell extends React.Component {
 
   _updateValue (inputValue) {
     const value = stringToValue(inputValue, this.props.field)
-    this.setState({ value })
+    this.setState({ value } as State)
     this.props.update(value, this.props.field)
   }
 
-  _cancelOnEscape (e) {
+  _cancelOnEscape (e: __React.KeyboardEvent) {
     switch (e.keyCode) {
       case 13:
         this.props.submit()
@@ -57,10 +64,10 @@ export default class NewCell extends React.Component {
           autoFocus={this.props.autoFocus}
           type='text'
           defaultValue={valueString}
-          onChange={(e) => this._updateValue(e.target.value)}
+          onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
           onKeyDown={(e) => this._cancelOnEscape(e)}
-          onFocus={() => this.setState({ focus: true })}
-          onBlur={() => this.setState({ focus: false })}
+          onFocus={() => this.setState({ focus: true } as State)}
+          onBlur={() => this.setState({ focus: false } as State)}
         />
       )
     }
@@ -72,10 +79,10 @@ export default class NewCell extends React.Component {
             autoFocus={this.props.autoFocus}
             type='number'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue(e.target.value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true })}
-            onBlur={() => this.setState({ focus: false })}
+            onFocus={() => this.setState({ focus: true } as State)}
+            onBlur={() => this.setState({ focus: false } as State)}
           />
         )
       case 'Float':
@@ -85,10 +92,10 @@ export default class NewCell extends React.Component {
             type='number'
             step='any'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue(e.target.value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true })}
-            onBlur={() => this.setState({ focus: false })}
+            onFocus={() => this.setState({ focus: true } as State)}
+            onBlur={() => this.setState({ focus: false } as State)}
           />
         )
       case 'Boolean':
@@ -105,10 +112,10 @@ export default class NewCell extends React.Component {
           <select
             autoFocus={this.props.autoFocus}
             defaultValue={valueString}
-            onChange={(e) => this._updateValue(e.target.value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true })}
-            onBlur={() => this.setState({ focus: false })}
+            onFocus={() => this.setState({ focus: true } as State)}
+            onBlur={() => this.setState({ focus: false } as State)}
           >
             <option disabled={this.state.focus} />
             {this.props.field.enumValues.map((enumValue) => (
@@ -122,10 +129,10 @@ export default class NewCell extends React.Component {
             autoFocus={this.props.autoFocus}
             type='text'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue(e.target.value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true })}
-            onBlur={() => this.setState({ focus: false })}
+            onFocus={() => this.setState({ focus: true } as State)}
+            onBlur={() => this.setState({ focus: false } as State)}
           />
         )
     }

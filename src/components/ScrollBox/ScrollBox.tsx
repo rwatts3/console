@@ -33,12 +33,12 @@ export default class ScrollBox extends React.Component<Props, {}> {
     return (
       <div className={classes.rootContainer}>
         <div
-          className={`${classes.outerContainer} ${this.props.outerContainerClassName}`}
+          className={`${classes.outerContainer} ${this.props.outerContainerClassName || ''}`}
           style={{width: `calc(100% + ${scrollBarWidth}px)`}}
           ref='outerContainer'
         >
           <div
-            className={`${classes.innerContainer} ${this.props.innerContainerClassName}`}
+            className={`${classes.innerContainer} ${this.props.innerContainerClassName || ''}`}
             ref='innerContainer'
           >
             {this.props.children}
