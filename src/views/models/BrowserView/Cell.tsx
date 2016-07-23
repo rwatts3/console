@@ -181,7 +181,8 @@ export default class Cell extends React.Component<Props, State> {
         case 'DateTime':
           return (
             <Datepicker
-              defaultValue={this.props.value}
+              className={classes.datepicker}
+              defaultValue={new Date(valueString)}
               onChange={(m) => this._save(m.toISOString())}
               onCancel={() => this._cancel()}
               defaultOpen={true}

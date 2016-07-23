@@ -18,6 +18,7 @@ require('react-datetime/css/react-datetime.css')
 interface Props {
   applyImmediately: boolean
   defaultOpen: boolean
+  className?: string
   defaultValue: Date
   onChange: (m: Moment) => void
   onCancel?: () => void
@@ -71,7 +72,6 @@ export default class Cell extends React.Component<Props, State> {
   }
 
   _markOpen () {
-    console.log(this.state.open)
     if (!this.state.open) {
       this.setState({ open: true } as State)
 
@@ -92,7 +92,7 @@ export default class Cell extends React.Component<Props, State> {
     delete passThroughProps.onFocus
 
     return (
-      <div className={classes.root} onClick={() => this._markOpen()}>
+      <div className={`${classes.root} ${this.props.className}`} onClick={() => this._markOpen()}>
         <ClickOutside onClickOutside={() => this._onCancel()}>
           <Datetime
             {...passThroughProps}

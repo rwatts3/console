@@ -74,7 +74,6 @@ class BrowserView extends React.Component<Props, State> {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-    this._unmarshalItem = this._unmarshalItem.bind(this)
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.projectId}`
     const token = cookiestore.get('graphcool_token')
@@ -154,19 +153,11 @@ class BrowserView extends React.Component<Props, State> {
       .then((results) => {
         const items = Immutable.List(results[`all${this.props.model.namePlural}`])
           .map(Immutable.Map)
-          .map(this._unmarshalItem)
         const reachedEnd = items.isEmpty() || !this.state.items.isEmpty() &&
           this.state.items.last().get('id') === items.last().get('id')
         this.setState({ reachedEnd } as State)
         return items
       })
-  }
-
-  _unmarshalItem (item: Immutable.Map<string, any>): Immutable.Map<string, any> {
-    return this.props.fields
-      .filter((field) => field.typeIdentifier === 'DateTime')
-      .map((field) => field.name)
-      .reduce((acc, fieldName) => acc.set(fieldName, new Date(acc.get(fieldName))), item)
   }
 
   _loadNextPage () {
@@ -301,7 +292,7 @@ class BrowserView extends React.Component<Props, State> {
         const cellWidths = this.state.items
           .map((item) => item.get(field.name))
           .map((value) => valueToString(value, field, false))
-          .map((str) => calculateSize(str, cellFontOptions).width + 40)
+          .map((str) => calculateSize(str, cellFontOptions).width + 41)
           .toArray()
 
         const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
@@ -384,15 +375,15 @@ class BrowserView extends React.Component<Props, State> {
               width={290}
             >
               <div
-                className={`${classes.button} ${classes.green}`}
-                onClick={() => this.setState({ newRowVisible: true } as State)}
+                className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
+                onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
               >
                 <Icon
                   width={16}
                   height={16}
-                  src={require('assets/icons/add.svg')}
+                  src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
                 />
-                <span>Add item</span>
+                <span>{this.state.newRowVisible ? 'Cancel' : 'Add item'}</span>
               </div>
             </Tether>
             <Link

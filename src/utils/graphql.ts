@@ -35,7 +35,7 @@ export function parseValue (value: string, typeIdentifier: string): any {
     GraphQLID: () => value,
     Password: () => value,
     Enum: () => isValidName(value) ? value : null,
-    DateTime: () => isValidDateTime(value) ? new Date(value) : null,
+    DateTime: () => isValidDateTime(value) ? value : null,
   }[typeIdentifier]()
 }
 

@@ -68,7 +68,7 @@ class FieldPopup extends React.Component<Props, State> {
       isList,
       enumValues: field ? field.enumValues : [],
       useDefaultValue: field ? field.defaultValue !== null : null,
-      defaultValue: field ? field.defaultValue : null,
+      defaultValue: field ? field.defaultValue : emptyDefault(typeIdentifier, isList),
       reverseRelationField: field ? field.reverseRelationField : null,
       useMigrationValue: false,
       migrationValue: emptyDefault(typeIdentifier, isList),
@@ -342,7 +342,7 @@ class FieldPopup extends React.Component<Props, State> {
       case 'DateTime':
         return (
           <Datepicker
-            defaultValue={value}
+            defaultValue={new Date(valueString)}
             onChange={(m) => changeCallback(m.toDate())}
             defaultOpen={false}
             applyImmediately={true}
@@ -499,9 +499,11 @@ class FieldPopup extends React.Component<Props, State> {
                         Migration value
                       </label>
                       <Help text={this.props.field
-                      ? `The migration value will be used to pupulate
-                      New data items won't be affected by this`
-                      : ``} />
+                      ? `The migration value will be used to replace all existing values
+                      for this field. Be careful, this step cannot be undone.
+                      Note: New data items won't be affected, please see "Default value".`
+                      : `The migration value will be used to populate this field for existing data items.
+                      Note: New data items won't be affected, please see "Default value".`} />
                     </div>
                     <div className={`
                     ${classes.right} ${(this.state.useMigrationValue || needsMigrationValue) ? null : classes.disabled}
@@ -527,7 +529,7 @@ class FieldPopup extends React.Component<Props, State> {
                         />
                         Default value
                       </label>
-                      <Help text={`You can provide a default value for each new data item.
+                      <Help text={`You can provide a default value for every newly created data item.
                       The default value will be applied to both required and non-required fields.`} />
                     </div>
                     <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
