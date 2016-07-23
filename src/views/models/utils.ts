@@ -17,7 +17,7 @@ export function emptyDefault (typeIdentifier: string, isList: boolean): any {
     switch (typeIdentifier) {
       case 'Int': return 0
       case 'Float': return 0
-      case 'DateTime': return new Date()
+      case 'DateTime': return new Date().toISOString()
       case 'String': return ''
       case 'Boolean': return false
       default: return null
@@ -44,7 +44,7 @@ export function valueToString (value: any, field: Field, returnNull: boolean): s
     }
   } else {
     switch (field.typeIdentifier) {
-      case 'DateTime': return fieldValue.toISOString()
+      case 'DateTime': return new Date(fieldValue).toISOString()
       default: return fieldValue.toString()
     }
   }

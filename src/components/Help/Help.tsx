@@ -21,7 +21,6 @@ export default class Help extends React.Component<Props, {}> {
       <Tooltip
         placement={this.props.placement || 'right'}
         overlay={<span>{overlay}</span>}
-        trigger={['click']}
       >
         <Icon
           width={20}

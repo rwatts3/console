@@ -13,7 +13,6 @@ interface Props {
   update: (value: any, field: Field) => void
   submit: () => void
   cancel: () => void
-  autoFocus: boolean
   defaultValue: any | null
 }
 
@@ -29,7 +28,7 @@ export default class NewCell extends React.Component<Props, State> {
 
     this.state = {
       value: props.defaultValue,
-      focus: props.autoFocus,
+      focus: false,
     }
   }
 
@@ -68,7 +67,6 @@ export default class NewCell extends React.Component<Props, State> {
     if (this.props.field.isList) {
       return (
         <input
-          autoFocus={this.props.autoFocus}
           type='text'
           defaultValue={valueString}
           onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
@@ -83,7 +81,6 @@ export default class NewCell extends React.Component<Props, State> {
       case 'Int':
         return (
           <input
-            autoFocus={this.props.autoFocus}
             type='number'
             defaultValue={valueString}
             onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
@@ -95,7 +92,6 @@ export default class NewCell extends React.Component<Props, State> {
       case 'Float':
         return (
           <input
-            autoFocus={this.props.autoFocus}
             type='number'
             step='any'
             defaultValue={valueString}
@@ -117,7 +113,6 @@ export default class NewCell extends React.Component<Props, State> {
       case 'Enum':
         return (
           <select
-            autoFocus={this.props.autoFocus}
             defaultValue={valueString}
             onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
@@ -131,22 +126,32 @@ export default class NewCell extends React.Component<Props, State> {
           </select>
         )
       case 'String':
+        if (this.state.focus) {
+          return (
+            <textarea
+              autoFocus
+              type='text'
+              ref='input'
+              defaultValue={valueString}
+              onKeyDown={(e) => this._onEscapeTextarea(e)}
+              onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+              onFocus={() => this.setState({ focus: true } as State)}
+              onBlur={() => this.setState({ focus: false } as State)}
+            />
+          )
+        }
+
         return (
-          <textarea
-            autoFocus
+          <input
             type='text'
-            ref='input'
             defaultValue={valueString}
-            onKeyDown={(e) => this._onEscapeTextarea(e)}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
             onFocus={() => this.setState({ focus: true } as State)}
-            onBlur={() => this.setState({ focus: false } as State)}
           />
         )
       case 'DateTime':
         return (
           <Datepicker
-            defaultValue={this.state.value}
+            defaultValue={new Date(valueString)}
             onChange={(m) => {
               this._updateValue(m.toISOString())
               this.setState({ focus: false } as State)
@@ -160,7 +165,6 @@ export default class NewCell extends React.Component<Props, State> {
       default:
         return (
           <input
-            autoFocus={this.props.autoFocus}
             type='text'
             defaultValue={valueString}
             onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}

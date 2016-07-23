@@ -47,10 +47,6 @@ export default class NewRow extends React.Component {
   }
 
   render () {
-    const firstAutoFocusField = this.props.fields.find(({ typeIdentifier }) => (
-      ['String', 'Float', 'Integer', 'Enum'].includes(typeIdentifier)
-    ))
-
     return (
       <div className={classes.root}>
         <div className={classes.empty} />
@@ -61,7 +57,6 @@ export default class NewRow extends React.Component {
             width={this.props.columnWidths[field.name]}
             update={::this._update}
             submit={::this._add}
-            autoFocus={firstAutoFocusField === field}
             defaultValue={emptyDefault(field.typeIdentifier, field.isList)}
             cancel={this.props.cancel}
           />
