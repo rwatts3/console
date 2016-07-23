@@ -3,6 +3,11 @@ declare module 'react-router-relay' {
   export = _temp;
 }
 
+declare module 'react-datepicker' {
+  var _temp: any;
+  export = _temp;
+}
+
 declare module 'lokka' {
   interface API {
     Lokka: any

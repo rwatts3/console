@@ -74,6 +74,7 @@ class BrowserView extends React.Component<Props, State> {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+    this._unmarshalItem = this._unmarshalItem.bind(this)
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.projectId}`
     const token = cookiestore.get('graphcool_token')
@@ -151,12 +152,21 @@ class BrowserView extends React.Component<Props, State> {
     `
     return this._lokka.query(query)
       .then((results) => {
-        const items = Immutable.List(results[`all${this.props.model.namePlural}`]).map(Immutable.Map)
+        const items = Immutable.List(results[`all${this.props.model.namePlural}`])
+          .map(Immutable.Map)
+          .map(this._unmarshalItem)
         const reachedEnd = items.isEmpty() || !this.state.items.isEmpty() &&
           this.state.items.last().get('id') === items.last().get('id')
         this.setState({ reachedEnd } as State)
         return items
       })
+  }
+
+  _unmarshalItem (item: Immutable.Map<string, any>): Immutable.Map<string, any> {
+    return this.props.fields
+      .filter((field) => field.typeIdentifier === 'DateTime')
+      .map((field) => field.name)
+      .reduce((acc, fieldName) => acc.set(fieldName, new Date(acc.get(fieldName))), item)
   }
 
   _loadNextPage () {

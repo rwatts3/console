@@ -43,10 +43,10 @@ export function valueToString (value: any, field: Field, returnNull: boolean): s
       return `[${fieldValue.toString()}]`
     }
   } else {
-    if (fieldValue === undefined) {
-      debugger
+    switch (field.typeIdentifier) {
+      case 'DateTime': return fieldValue.toISOString()
+      default: return fieldValue.toString()
     }
-    return fieldValue.toString()
   }
 }
 

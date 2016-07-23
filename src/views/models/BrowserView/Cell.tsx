@@ -6,6 +6,7 @@ import { valueToString, isValidValue, stringToValue } from '../utils'
 import { Field } from '../../../types/types'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
+import Datepicker from '../../../components/Datepicker/Datepicker'
 const classes: any = require('./Cell.scss')
 
 type UpdateCallback = (success: boolean) => void
@@ -166,7 +167,6 @@ export default class Cell extends React.Component<Props, State> {
               ))}
             </select>
           )
-        // TODO case 'DateTime':
         case 'String':
           return (
             <textarea
@@ -176,6 +176,16 @@ export default class Cell extends React.Component<Props, State> {
               defaultValue={valueString}
               onKeyDown={(e) => this._onEscapeTextarea(e)}
               onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+            />
+          )
+        case 'DateTime':
+          return (
+            <Datepicker
+              defaultValue={this.props.value}
+              onChange={(m) => this._save(m.toISOString())}
+              onCancel={() => this._cancel()}
+              defaultOpen={true}
+              applyImmediately={false}
             />
           )
         default:

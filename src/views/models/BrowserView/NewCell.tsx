@@ -3,6 +3,7 @@ const classnames: any = require('classnames')
 import { valueToString, stringToValue } from '../utils'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
+import Datepicker from '../../../components/Datepicker/Datepicker'
 import { Field } from '../../../types/types'
 const classes: any = require('./Cell.scss')
 
@@ -46,6 +47,12 @@ export default class NewCell extends React.Component<Props, State> {
       case 27:
         this.props.cancel()
         break
+    }
+  }
+
+  _onEscapeTextarea (e: __React.KeyboardEvent) {
+    if (e.keyCode === 27) {
+      this.setState({ focus: false } as State)
     }
   }
 
@@ -123,6 +130,33 @@ export default class NewCell extends React.Component<Props, State> {
             ))}
           </select>
         )
+      case 'String':
+        return (
+          <textarea
+            autoFocus
+            type='text'
+            ref='input'
+            defaultValue={valueString}
+            onKeyDown={(e) => this._onEscapeTextarea(e)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+            onFocus={() => this.setState({ focus: true } as State)}
+            onBlur={() => this.setState({ focus: false } as State)}
+          />
+        )
+      case 'DateTime':
+        return (
+          <Datepicker
+            defaultValue={this.state.value}
+            onChange={(m) => {
+              this._updateValue(m.toISOString())
+              this.setState({ focus: false } as State)
+            }}
+            onCancel={() => this.setState({ focus: false } as State)}
+            onFocus={() => this.setState({ focus: true } as State)}
+            defaultOpen={false}
+            applyImmediately={false}
+          />
+        )
       default:
         return (
           <input
@@ -151,7 +185,7 @@ export default class NewCell extends React.Component<Props, State> {
 
     return (
       <div
-        style={{ width: this.props.width }}
+        style={{ flex: `1 0 ${this.props.width}px` }}
         className={rootClassnames}
       >
         {this._renderContent()}
