@@ -8,6 +8,7 @@ import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 const TagsInput: any = require('react-tagsinput')
 import Icon from '../../../components/Icon/Icon'
 import Help from '../../../components/Help/Help'
+import Datepicker from '../../../components/Datepicker/Datepicker'
 import Loading from '../../../components/Loading/Loading'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
@@ -160,6 +161,7 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           alert(transaction.getError())
+          this.setState({ loading: false } as State)
         },
       }
     )
@@ -212,6 +214,7 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           alert(transaction.getError())
+          this.setState({ loading: false } as State)
         },
       }
     )
@@ -335,6 +338,15 @@ class FieldPopup extends React.Component<Props, State> {
               <option key={enumValue}>{enumValue}</option>
             ))}
           </select>
+        )
+      case 'DateTime':
+        return (
+          <Datepicker
+            defaultValue={value}
+            onChange={(m) => changeCallback(m.toDate())}
+            defaultOpen={false}
+            applyImmediately={true}
+          />
         )
       default:
         return (

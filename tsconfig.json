@@ -55,7 +55,6 @@
     "./src/views/models/StructureView/PermissionType.tsx",
     "./src/views/models/StructureView/TypeSelection.tsx",
     "./typings/globals/js-cookie/index.d.ts",
-    "./typings/globals/moment-node/index.d.ts",
     "./typings/globals/react-dom/index.d.ts",
     "./typings/globals/react-router/history/index.d.ts",
     "./typings/globals/react-router/index.d.ts",
