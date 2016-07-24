@@ -10,3 +10,27 @@
   width: 34px;
   @include cellborder($grey2);
 }
+
+.buttons {
+  width: 250px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  padding-left: 20px;
+  text-transform: uppercase;
+
+  span {
+    padding: 5px;
+    cursor: pointer;
+    color: $grey3;
+
+    &:first-child {
+      font-weight: 600;
+      color: $grey4;
+    }
+
+    &:hover {
+      color: $grey5;
+    }
+  }
+}

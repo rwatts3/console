@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react'
-import classes from './HeaderCell.scss'
-import Icon from 'components/Icon/Icon'
+import * as React from 'react'
+import Icon from '../../../components/Icon/Icon'
+import { Field } from '../../../types/types'
+const classes: any = require('./HeaderCell.scss')
 
 function debounce (func, wait) {
   let timeout
@@ -15,16 +16,18 @@ function debounce (func, wait) {
   }
 }
 
-export default class HeaderCell extends React.Component {
+interface Props {
+  field: Field
+  width: number
+  sortOrder?: string
+  toggleSortOrder: () => void
+  filter?: string
+  updateFilter: (value: string) => void
+}
 
-  static propTypes = {
-    field: PropTypes.object.isRequired,
-    width: PropTypes.number.isRequired,
-    sortOrder: PropTypes.string,
-    toggleSortOrder: PropTypes.func.isRequired,
-    filter: PropTypes.string,
-    updateFilter: PropTypes.func.isRequired,
-  }
+export default class HeaderCell extends React.Component<Props, {}> {
+
+  _delayedUpdateFilter: any
 
   constructor (props) {
     super(props)
@@ -32,18 +35,15 @@ export default class HeaderCell extends React.Component {
     this._delayedUpdateFilter = debounce(this.props.updateFilter, 150)
   }
 
-  _onFilterChangeString (e) {
-    const value = e.target.value
+  _onFilterChangeString (value: string) {
     this._delayedUpdateFilter(value !== '' ? `"${value}"` : null)
   }
 
-  _onFilterChangeNumber (e) {
-    const value = e.target.value
+  _onFilterChangeNumber (value: string) {
     this._delayedUpdateFilter(value !== '' ? value : null)
   }
 
-  _onFilterChangeBoolean (e) {
-    const value = e.target.value
+  _onFilterChangeBoolean (value: any) {
     this.props.updateFilter(value !== '' ? value.toString() : null)
   }
 
@@ -54,7 +54,7 @@ export default class HeaderCell extends React.Component {
           type='number'
           placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
-          onChange={::this._onFilterChangeNumber}
+          onChange={(e) => this._onFilterChangeNumber((e.target as HTMLInputElement).value)}
         />
       )
       case 'Float': return (
@@ -63,18 +63,22 @@ export default class HeaderCell extends React.Component {
           step='any'
           placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
-          onChange={::this._onFilterChangeNumber}
+          onChange={(e) => this._onFilterChangeNumber((e.target as HTMLInputElement).value)}
         />
       )
       case 'Boolean': return (
-        <select onChange={::this._onFilterChangeBoolean}>
+        <select
+          onChange={(e) => this._onFilterChangeBoolean((e.target as HTMLInputElement).value)}
+        >
           <option value={''}>{`Filter by ${this.props.field.name}`}</option>
           <option value={!!true}>true</option>
           <option value={false}>false</option>
         </select>
       )
       case 'Enum': return (
-        <select onChange={::this._onFilterChangeBoolean}>
+        <select
+          onChange={(e) => this._onFilterChangeString((e.target as HTMLInputElement).value)}
+          >
           <option value={''}>{`Filter by ${this.props.field.name}`}</option>
           {this.props.field.enumValues.map((enumValue) => (
             <option key={enumValue}>{enumValue}</option>
@@ -86,7 +90,7 @@ export default class HeaderCell extends React.Component {
           type='string'
           placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
-          onChange={::this._onFilterChangeString}
+          onChange={(e) => this._onFilterChangeString((e.target as HTMLInputElement).value)}
         />
       )
     }
@@ -118,7 +122,7 @@ export default class HeaderCell extends React.Component {
               src={require('assets/icons/arrow.svg')}
               width={11}
               height={6}
-              className={sortOrder === 'DESC' ? classes.reverse : ''}
+              rotate={sortOrder === 'DESC' ? 180 : 0}
             />
           }
         </div>

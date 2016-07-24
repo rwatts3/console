@@ -48,6 +48,7 @@
     "./src/views/models/BrowserView/BrowserView.tsx",
     "./src/views/models/BrowserView/Cell.tsx",
     "./src/views/models/BrowserView/CheckboxCell.tsx",
+    "./src/views/models/BrowserView/HeaderCell.tsx",
     "./src/views/models/StructureView/FieldRow.tsx",
     "./src/views/models/StructureView/FieldPopup.tsx",
     "./src/views/models/StructureView/Permissions.tsx",

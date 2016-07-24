@@ -30,6 +30,7 @@ export default class Row extends React.Component {
             update={this.props.update}
           />
         ))}
+        <div style={{width: 250}}></div>
       </div>
     )
   }
