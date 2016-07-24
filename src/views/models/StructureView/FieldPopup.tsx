@@ -5,6 +5,8 @@ import * as Relay from 'react-relay'
 const ClickOutside: any = (require('react-click-outside') as any).default
 import TypeSelection from './TypeSelection'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 const TagsInput: any = require('react-tagsinput')
 import Icon from '../../../components/Icon/Icon'
 import Help from '../../../components/Help/Help'
@@ -51,6 +53,12 @@ class FieldPopup extends React.Component<Props, State> {
 
   static contextTypes: React.ValidationMap<any> = {
     router: React.PropTypes.object.isRequired,
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    router: any
+    showNotification: ShowNotificationCallback
   }
 
   constructor (props: Props) {
@@ -92,7 +100,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   _close () {
-    (this.context as any).router.push(`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`) // tslint:disable-line
+    this.context.router.push(`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`) // tslint:disable-line
   }
 
   _submit () {
@@ -160,7 +168,7 @@ class FieldPopup extends React.Component<Props, State> {
           }
         },
         onFailure: (transaction) => {
-          alert(transaction.getError())
+          onFailureShowNotification(transaction, this.context.showNotification)
           this.setState({ loading: false } as State)
         },
       }
@@ -213,7 +221,7 @@ class FieldPopup extends React.Component<Props, State> {
           this._close()
         },
         onFailure: (transaction) => {
-          alert(transaction.getError())
+          onFailureShowNotification(transaction, this.context.showNotification)
           this.setState({ loading: false } as State)
         },
       }

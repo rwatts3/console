@@ -55,6 +55,7 @@
     "./src/views/models/StructureView/PermissionRow.tsx",
     "./src/views/models/StructureView/PermissionType.tsx",
     "./src/views/models/StructureView/TypeSelection.tsx",
+    "./src/views/RootView/RootView.tsx",
     "./typings/globals/js-cookie/index.d.ts",
     "./typings/globals/react-dom/index.d.ts",
     "./typings/globals/react-router/history/index.d.ts",

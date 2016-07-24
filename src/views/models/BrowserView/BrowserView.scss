@@ -100,10 +100,10 @@
 }
 
 .loading {
-  top: 214px;
+  top: 200px;
   left: 0;
   position: absolute;
-  height: calc(100% - 214px);
+  height: calc(100% - 200px);
   width: 100%;
   background: rgba(0, 0, 0, 0.2);
   display: flex;
@@ -128,7 +128,7 @@
   }
 
   .tableBody {
-    height: calc(100% - 126px);
+    height: calc(100% - 112px);
     width: 100%;
   }
 

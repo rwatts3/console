@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Field } from '../../../types/types'
 import { isScalar } from '../../../utils/graphql'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import UpdateFieldIsUniqueMutation from '../../../mutations/UpdateFieldIsUniqueMutation'
 const classes: any = require('./Constraints.scss')
 
@@ -11,12 +13,25 @@ interface Props {
 
 export default class Constraints extends React.Component<Props, {}> {
 
+  static contextTypes: React.ValidationMap<any> = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback
+  }
+
   _updateIsUnique (isUnique: boolean) {
     Relay.Store.commitUpdate(
       new UpdateFieldIsUniqueMutation({
         fieldId: this.props.field.id,
         isUnique,
-      })
+      }),
+      {
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
+        },
+      }
     )
   }
 

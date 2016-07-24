@@ -4,6 +4,8 @@ import { Link } from 'react-router'
 import Loading from '../../../components/Loading/Loading'
 import UpdateFieldDescriptionMutation from '../../../mutations/UpdateFieldDescriptionMutation'
 import DeleteFieldMutation from 'mutations/DeleteFieldMutation'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import { Field, Model } from '../../../types/types'
 import Permissions from './Permissions'
 import Constraints from './Constraints'
@@ -29,6 +31,14 @@ interface State {
 
 class FieldRow extends React.Component<Props, State> {
 
+  static contextTypes: React.ValidationMap<any> = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback
+  }
+
   state = {
     editDescription: false,
     editDescriptionPending: false,
@@ -50,6 +60,9 @@ class FieldRow extends React.Component<Props, State> {
               field: this.props.field.name,
             })
           },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
         }
       )
     }
@@ -70,15 +83,16 @@ class FieldRow extends React.Component<Props, State> {
         description,
       }),
       {
-        onFailure: () => {
+        onSuccess: () => {
+          analytics.track('models/structure: edited description')
+
           this.setState({
             editDescription: false,
             editDescriptionPending: false,
           } as State)
         },
-        onSuccess: () => {
-          analytics.track('models/structure: edited description')
-
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
           this.setState({
             editDescription: false,
             editDescriptionPending: false,

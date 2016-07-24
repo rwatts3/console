@@ -6,17 +6,17 @@ import mapProps from 'map-props'
 import { validateProjectName } from 'utils/nameValidator'
 import ProjectSelection from 'components/ProjectSelection/ProjectSelection'
 import Header from 'components/Header/Header'
-import SideNav from 'views/RootView/SideNav'
+import SideNav from 'views/ProjectRootView/SideNav'
 import LoginView from 'views/LoginView/LoginView'
 import AddProjectMutation from 'mutations/AddProjectMutation'
 import { connect } from 'react-redux'
 import { update } from 'reducers/GettingStartedState'
-import classes from './RootView.scss'
+import classes from './ProjectRootView.scss'
 import Smooch from 'smooch'
 
 import '../../styles/core.scss'
 
-export class RootView extends React.Component {
+export class ProjectRootView extends React.Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
     isLoggedin: PropTypes.bool.isRequired,
@@ -191,9 +191,9 @@ const mapDispatchToProps = (dispatch) => {
 const ReduxContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RootView)
+)(ProjectRootView)
 
-const MappedRootView = mapProps({
+const MappedProjectRootView = mapProps({
   params: (props) => props.params,
   relay: (props) => props.relay,
   project: (props) => props.viewer.user ? props.viewer.project : null,
@@ -207,7 +207,7 @@ const MappedRootView = mapProps({
   isLoggedin: (props) => props.viewer.user !== null,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedRootView, {
+export default Relay.createContainer(MappedProjectRootView, {
   initialVariables: {
     projectName: null, // injected from router
   },
