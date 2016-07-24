@@ -1,0 +1,26 @@
+@import '~styles/variables';
+
+.root {
+  width: 250px;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+
+  a {
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    border: 1px solid $grey2;
+    border-radius: 4px;
+    padding: 9px 19px;
+    display: inline-block;
+    background: $grey1;
+    color: $grey3;
+
+    &:hover {
+      color: $grey4;
+      border-color: $grey4;
+    }
+  }
+}

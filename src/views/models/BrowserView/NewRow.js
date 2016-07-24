@@ -61,6 +61,10 @@ export default class NewRow extends React.Component {
             cancel={this.props.cancel}
           />
         ))}
+        <div className={classes.buttons}>
+          <span onClick={::this._add}>Add</span>
+          <span onClick={this.props.cancel}>Cancel</span>
+        </div>
       </div>
     )
   }

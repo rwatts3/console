@@ -13,10 +13,11 @@ import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 const Tether: any = (require('../../../components/Tether/Tether') as any).default
-const HeaderCell: any = (require('./HeaderCell') as any).default
 const ModelDescription: any = (require('../ModelDescription') as any).default
 const Row: any = (require('./Row') as any).default
 const NewRow: any = (require('./NewRow') as any).default
+import HeaderCell from './HeaderCell'
+import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
 import { valueToString, toGQL } from '../utils'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
@@ -250,7 +251,7 @@ class BrowserView extends React.Component<Props, State> {
     const mutation = `
       {
         create${this.props.model.name}(
-          ${inputString},
+          ${inputString}
         ) {
           id
         }
@@ -349,7 +350,9 @@ class BrowserView extends React.Component<Props, State> {
 
   render () {
     const columnWidths = this._calculateColumnWidths()
-    const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0) + 34 // 34 = checkbox
+    const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0)
+      + 34 // checkbox
+      + 250 // add column
 
     return (
       <div className={classes.root}>
@@ -438,6 +441,7 @@ class BrowserView extends React.Component<Props, State> {
                   updateFilter={(value) => this._updateFilter(value, field)}
                 />
               ))}
+              <AddFieldCell params={this.props.params} />
             </div>
             {this.state.newRowVisible &&
               <NewRow

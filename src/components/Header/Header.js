@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import Icon from 'components/Icon/Icon'
 import ApiLayover from 'components/ApiLayover/ApiLayover'
 import classes from './Header.scss'
+import ClickOutside from 'react-click-outside'
 import * as cookiestore from 'utils/cookiestore'
 
 export default class Header extends React.Component {
@@ -57,17 +58,19 @@ export default class Header extends React.Component {
           </span>
         </div>
         {this.state.userDropdownVisible &&
-          <div className={classes.userDropdown}>
-            <Link
-              to={`/${this.props.params.projectName}/account`}
-              onClick={::this._toggleUserDropdown}
-            >
-              Account
-            </Link>
-            <div onClick={::this._logout}>
-              Logout
+          <ClickOutside onClickOutside={::this._toggleUserDropdown}>
+            <div className={classes.userDropdown}>
+              <Link
+                to={`/${this.props.params.projectName}/account`}
+                onClick={::this._toggleUserDropdown}
+              >
+                Account
+              </Link>
+              <div onClick={::this._logout}>
+                Logout
+              </div>
             </div>
-          </div>
+          </ClickOutside>
         }
         <div className={classes.right} onClick={::this._toggleUserDropdown}>
           {this.props.user.name}
