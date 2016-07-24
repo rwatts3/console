@@ -151,6 +151,7 @@ export default class NewCell extends React.Component<Props, State> {
       case 'DateTime':
         return (
           <Datepicker
+            className={classes.datepicker}
             defaultValue={new Date(valueString)}
             onChange={(m) => {
               this._updateValue(m.toISOString())
