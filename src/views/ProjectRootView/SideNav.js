@@ -10,12 +10,14 @@ import Tether from 'components/Tether/Tether'
 import ProjectSettingsOverlay from 'components/ProjectSettingsOverlay/ProjectSettingsOverlay'
 import AddModelMutation from 'mutations/AddModelMutation'
 import { sideNavSyncer } from 'utils/sideNavSyncer'
+import { onFailureShowNotification } from '../../utils/relay'
 import classes from './SideNav.scss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { nextStep, skip } from 'reducers/GettingStartedState'
 
 export class SideNav extends React.Component {
+
   static propTypes = {
     params: PropTypes.object.isRequired,
     project: PropTypes.object.isRequired,
@@ -30,6 +32,7 @@ export class SideNav extends React.Component {
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
+    showNotification: React.PropTypes.func.isRequired,
   }
 
   constructor (props) {
@@ -74,6 +77,9 @@ export class SideNav extends React.Component {
           } else {
             redirect()
           }
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
         },
       })
     }

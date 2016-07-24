@@ -12,6 +12,7 @@ import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
+import { ShowNotificationCallback } from '../../../types/utils'
 const Tether: any = (require('../../../components/Tether/Tether') as any).default
 const ModelDescription: any = (require('../ModelDescription') as any).default
 const Row: any = (require('./Row') as any).default
@@ -63,8 +64,14 @@ interface OrderBy {
 
 class BrowserView extends React.Component<Props, State> {
 
+  context: {
+    router: any
+    showNotification: ShowNotificationCallback
+  }
+
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
+    showNotification: React.PropTypes.func.isRequired,
   }
 
   _lokka: any
@@ -159,6 +166,10 @@ class BrowserView extends React.Component<Props, State> {
         this.setState({ reachedEnd } as State)
         return items
       })
+      .catch((err) => {
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+        throw err
+      })
   }
 
   _loadNextPage () {
@@ -210,6 +221,9 @@ class BrowserView extends React.Component<Props, State> {
         project: this.props.params.projectName,
         model: this.props.params.modelName,
       }))
+      .catch((err) => {
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+      })
   }
 
   _updateItem (value, field, callback, itemId, index) {
@@ -237,7 +251,10 @@ class BrowserView extends React.Component<Props, State> {
           field: field.name,
         })
       })
-      .catch(() => callback(false))
+      .catch((err) => {
+        callback(false)
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+      })
   }
 
   _addItem (fieldValues: any) {
@@ -274,6 +291,9 @@ class BrowserView extends React.Component<Props, State> {
              )) {
           this.props.nextStep()
         }
+      })
+      .catch((err) => {
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
       })
   }
 

@@ -4,8 +4,9 @@ import { Route, IndexRoute, IndexRedirect } from 'react-router'
 import Loading from 'components/Loading/Loading'
 import RedirectOnMount from 'components/RedirectOnMount/RedirectOnMount'
 import RootView from 'views/RootView/RootView'
-import RootRedirectView from 'views/RootView/RootRedirectView'
-import TokenRedirectView from 'views/RootView/TokenRedirectView'
+import ProjectRootView from 'views/ProjectRootView/ProjectRootView'
+import RootRedirectView from 'views/ProjectRootView/RootRedirectView'
+import TokenRedirectView from 'views/ProjectRootView/TokenRedirectView'
 import StructureView from 'views/models/StructureView/StructureView'
 import FieldPopup from 'views/models/StructureView/FieldPopup'
 import BrowserView from 'views/models/BrowserView/BrowserView'
@@ -52,11 +53,6 @@ const render = ({ error, props, routerProps, element }) => {
       return (
         <RedirectOnMount to={`/${routerProps.params.projectName}`} />
       )
-    } else if (routerProps && routerProps.params.projectName) {
-      // if we have a project, it's safest to redirect to root
-      return (
-        <RedirectOnMount to='/' />
-      )
     }
 
     return (
@@ -78,12 +74,12 @@ const render = ({ error, props, routerProps, element }) => {
 /* eslint-enable react/prop-types */
 
 export default (
-  <Route path='/'>
+  <Route path='/' component={RootView}>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render} />
     <Route path='token' component={TokenRedirectView} />
     <Route path='login' component={LoginView} queries={ViewerQuery} render={render} />
     <Route path='reset-password' component={ResetPasswordView} />
-    <Route path=':projectName' component={RootView} queries={ViewerQuery} render={render}>
+    <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='account' component={AccountView}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render} />
         {/* <Route path='usage' component={SettingsTab} queries={ViewerQuery} render={render} /> */}

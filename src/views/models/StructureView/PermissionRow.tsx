@@ -7,6 +7,8 @@ import Loading from '../../../components/Loading/Loading'
 import AddPermissionMutation from '../../../mutations/AddPermissionMutation'
 import UpdatePermissionMutation from '../../../mutations/UpdatePermissionMutation'
 import DeletePermissionMutation from '../../../mutations/DeletePermissionMutation'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import Icon from '../../../components/Icon/Icon'
 const classes: any = require('./PermissionRow.scss')
 
@@ -36,6 +38,14 @@ interface State {
 }
 
 class PermissionRow extends React.Component<Props, State> {
+
+  static contextTypes: React.ValidationMap<any> = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback
+  }
 
   constructor (props: Props) {
     super(props)
@@ -149,6 +159,14 @@ class PermissionRow extends React.Component<Props, State> {
 
           this.props.hide()
         },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
+
+          this.setState({
+            editing: false,
+            saving: false,
+          } as State)
+        },
       }
     )
   }
@@ -168,6 +186,14 @@ class PermissionRow extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
+          this.setState({
+            editing: false,
+            saving: false,
+          } as State)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
+
           this.setState({
             editing: false,
             saving: false,
@@ -213,6 +239,9 @@ class PermissionRow extends React.Component<Props, State> {
         {
           onSuccess: () => {
             analytics.track('models/fields: deleted permission')
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
           },
         }
       )

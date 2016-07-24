@@ -8,14 +8,14 @@ import ScrollBox from 'components/ScrollBox/ScrollBox'
 import Icon from 'components/Icon/Icon'
 import Tether from 'components/Tether/Tether'
 import DeleteModelMutation from 'mutations/DeleteModelMutation'
+import { onFailureShowNotification } from '../../../utils/relay'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { nextStep } from 'reducers/GettingStartedState'
 import classes from './StructureView.scss'
 
-window.xx = mapProps
-
 class StructureView extends React.Component {
+
   static propTypes = {
     params: PropTypes.object.isRequired,
     possibleRelatedPermissionPaths: PropTypes.array.isRequired,
@@ -31,6 +31,7 @@ class StructureView extends React.Component {
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
+    showNotification: React.PropTypes.func.isRequired,
   }
 
   state = {
@@ -62,6 +63,9 @@ class StructureView extends React.Component {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
           })
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
         },
       })
     }

@@ -1,4 +1,5 @@
-import { injectNetworkLayer, DefaultNetworkLayer } from 'react-relay'
+import { injectNetworkLayer, DefaultNetworkLayer, Transaction } from 'react-relay'
+import { ShowNotificationCallback } from '../types/utils'
 import * as cookiestore from './cookiestore'
 
 export function updateNetworkLayer (): void {
@@ -11,4 +12,12 @@ export function updateNetworkLayer (): void {
   const layer = new DefaultNetworkLayer(api, { headers, retryDelays: [] })
 
   injectNetworkLayer(layer)
+}
+
+export function onFailureShowNotification (
+  transaction: Transaction,
+  showNotification: ShowNotificationCallback
+): void {
+  const { errors } = (transaction.getError() as any).source
+  errors.forEach((error) => showNotification(error.message, 'error'))
 }

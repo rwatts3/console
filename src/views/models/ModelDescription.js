@@ -1,10 +1,16 @@
 import React, { PropTypes } from 'react'
 import Relay from 'react-relay'
 import Loading from '../../components/Loading/Loading'
+import { onFailureShowNotification } from '../../utils/relay'
 import UpdateModelDescriptionMutation from 'mutations/UpdateModelDescriptionMutation'
 import classes from './ModelDescription.scss'
 
 class ModelDescription extends React.Component {
+
+  static contextTypes = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
   static propTypes = {
     model: PropTypes.object.isRequired,
   }
@@ -27,15 +33,16 @@ class ModelDescription extends React.Component {
       modelId: this.props.model.id,
       description,
     }), {
-      onFailure: () => {
+      onSuccess: () => {
+        analytics.track('models: edited description')
+
         this.setState({
           editDescription: false,
           editDescriptionPending: false,
         })
       },
-      onSuccess: () => {
-        analytics.track('models: edited description')
-
+      onFailure: (transaction) => {
+        onFailureShowNotification(transaction, this.context.showNotification)
         this.setState({
           editDescription: false,
           editDescriptionPending: false,
