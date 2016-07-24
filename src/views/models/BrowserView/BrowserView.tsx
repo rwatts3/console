@@ -64,14 +64,14 @@ interface OrderBy {
 
 class BrowserView extends React.Component<Props, State> {
 
-  context: {
-    router: any
-    showNotification: ShowNotificationCallback
-  }
-
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    router: any
+    showNotification: ShowNotificationCallback
   }
 
   _lokka: any
