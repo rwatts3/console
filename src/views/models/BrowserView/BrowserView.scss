@@ -1,6 +1,9 @@
 @import '~styles/variables';
 @import '~styles/mixins';
 
+$tableHead: 74px;
+$tableHeadExpanded: 100px;
+
 .root {
   height: 100%;
   position: relative;
@@ -90,6 +93,25 @@
         fill: rgb(255, 31, 0);
       }
     }
+
+    &.blue {
+      border-color: $accent-blue;
+      color: $accent-blue;
+      background: #fff;
+
+      &:hover {
+        background: $accent-blue;
+        color: #fff;
+
+        svg {
+          fill: #fff;
+        }
+      }
+
+      svg {
+        fill: $accent-blue;
+      }
+    }
   }
 
   .menuDropdown {
@@ -99,21 +121,37 @@
   }
 }
 
-.loading {
-  top: 200px;
+.root.filtersVisible {
+
+  .tableHead {
+    height: $tableHeadExpanded;
+  }
+
+  .tableBody {
+    height: calc(100% - #{$tableHeadExpanded});
+  }
+}
+
+.loadingOverlay {
+  top: 88px;
+  height: calc(100% - 88px);
   left: 0;
   position: absolute;
-  height: calc(100% - 200px);
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
 .table {
   height: calc(100% - 88px);
   overflow-x: scroll;
+
+  &.loading {
+    filter: blur(2px);
+  }
 
   .tableContainer {
     height: 100%;
@@ -122,13 +160,13 @@
 
   .tableHead {
     margin-top: -1px;
-    height: 100px;
+    height: $tableHead;
     display: flex;
     width: 100%;
   }
 
   .tableBody {
-    height: calc(100% - 112px);
+    height: calc(100% - #{$tableHead});
     width: 100%;
   }
 
