@@ -297,6 +297,7 @@ class BrowserView extends React.Component<Props, State> {
       })
       .catch((err) => {
         err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+        this.setState({ loading: false } as State)
       })
   }
 
