@@ -469,6 +469,7 @@ class BrowserView extends React.Component<Props, State> {
                   toggleSortOrder={() => this._setSortOrder(field)}
                   updateFilter={(value) => this._updateFilter(value, field)}
                   filterVisible={this.state.filtersVisible}
+                  params={this.props.params}
                 />
               ))}
               <AddFieldCell params={this.props.params} />

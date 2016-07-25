@@ -77,16 +77,21 @@
     }
 
     .enumLeft {
-      width: 120px;
+      width: 140px;
       display: flex;
       justify-content: flex-end;
       font-weight: 600;
       font-size: 16px;
       color: $grey4;
+
+      svg {
+        margin-left: 9px;
+        fill: $grey2;
+      }
     }
 
     .enumRight {
-      width: 380px;
+      width: 360px;
 
       & > div {
         border: 1px solid $grey3;

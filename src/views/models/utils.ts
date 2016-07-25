@@ -12,19 +12,20 @@ export function valueOrDefault (value: any, field: Field): any {
   return null
 }
 
-export function emptyDefault (typeIdentifier: string, isList: boolean): any {
+export function emptyDefault (field: Field): any {
   const value = function (): any {
-    switch (typeIdentifier) {
+    switch (field.typeIdentifier) {
       case 'Int': return 0
       case 'Float': return 0
       case 'DateTime': return new Date().toISOString()
       case 'String': return ''
       case 'Boolean': return false
+      case 'Enum': return field.enumValues.length > 0 ? field.enumValues[0] : null
       default: return null
     }
   }()
 
-  return isList ? [value] : value
+  return field.isList ? [value] : value
 }
 
 export function valueToString (value: any, field: Field, returnNull: boolean): string {

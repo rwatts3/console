@@ -76,10 +76,10 @@ class FieldPopup extends React.Component<Props, State> {
       isList,
       enumValues: field ? field.enumValues : [],
       useDefaultValue: field ? field.defaultValue !== null : null,
-      defaultValue: field ? field.defaultValue : emptyDefault(typeIdentifier, isList),
+      defaultValue: field ? field.defaultValue : emptyDefault({ typeIdentifier, isList, enumValues: [] } as Field),
       reverseRelationField: field ? field.reverseRelationField : null,
       useMigrationValue: false,
-      migrationValue: emptyDefault(typeIdentifier, isList),
+      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues: [] } as Field),
     }
   }
 
@@ -100,7 +100,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   _close () {
-    this.context.router.push(`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`) // tslint:disable-line
+    this.context.router.goBack()
   }
 
   _submit () {
@@ -228,8 +228,20 @@ class FieldPopup extends React.Component<Props, State> {
     )
   }
 
-  _isValid () {
-    return this.state.name !== '' && (this._needsMigrationValue() ? this.state.migrationValue !== null : true)
+  _isValid (): boolean {
+    if (this.state.name === '') {
+      return false
+    }
+
+    if (this._needsMigrationValue() && this.state.migrationValue === null) {
+      return false
+    }
+
+    if (this.state.typeIdentifier === 'Enum' && this.state.enumValues.length === 0) {
+      return false
+    }
+
+    return true
   }
 
   _needsMigrationValue (): boolean {
@@ -250,27 +262,34 @@ class FieldPopup extends React.Component<Props, State> {
     const useMigrationValue = (field && field.typeIdentifier === typeIdentifier)
       ? false
       : this.state.useMigrationValue
-    const isList = this.state.isList
+    const { isList, enumValues } = this.state
 
     this.setState({
       typeIdentifier,
       isRequired: field ? field.isRequired : true,
       isList,
       reverseRelationField: field ? field.reverseRelationField : null,
-      migrationValue: emptyDefault(typeIdentifier, isList),
+      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
       useMigrationValue,
     } as State)
   }
 
   _updateIsList (isList: boolean) {
+    const { typeIdentifier, enumValues } = this.state
+
     this.setState({
       isList,
-      migrationValue: emptyDefault(this.state.typeIdentifier, isList),
+      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
     } as State)
   }
 
   _updateEnumValues (enumValues: string[]) {
-    this.setState({ enumValues } as State)
+    const { typeIdentifier, isList } = this.state
+
+    this.setState({
+      enumValues,
+      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
+    } as State)
   }
 
   _toggleReverseRelation () {
@@ -436,6 +455,8 @@ class FieldPopup extends React.Component<Props, State> {
                   <div className={classes.row}>
                     <div className={classes.enumLeft}>
                       Enum Values
+                      <Help text={`List all possible values for your enum field.
+                      Good value names are either Capitalized or UPPERCASE.`} />
                     </div>
                     <div className={classes.enumRight}>
                       <TagsInput
