@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Icon from '../../../components/Icon/Icon'
+import { Link } from 'react-router'
 import { Field } from '../../../types/types'
 const classes: any = require('./HeaderCell.scss')
 
@@ -24,6 +25,7 @@ interface Props {
   filter?: string
   updateFilter: (value: string) => void
   filterVisible: boolean
+  params: any
 }
 
 export default class HeaderCell extends React.Component<Props, {}> {
@@ -108,6 +110,8 @@ export default class HeaderCell extends React.Component<Props, {}> {
       type = `${type}!`
     }
 
+    const editUrl = `/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/edit/${this.props.field.name}` // tslint:disable-line
+
     return (
       <div
         style={{ flex: `1 0 ${width}px` }}
@@ -117,15 +121,21 @@ export default class HeaderCell extends React.Component<Props, {}> {
           <div className={classes.fieldName}>
             {field.name}
             <span className={classes.type}>{type}</span>
+            <Link to={editUrl} className={classes.edit}>
+              <Icon
+                width={16}
+                height={16}
+                src={require('assets/icons/edit.svg')}
+              />
+            </Link>
           </div>
-          {sortOrder &&
-            <Icon
-              src={require('assets/icons/arrow.svg')}
-              width={11}
-              height={6}
-              rotate={sortOrder === 'DESC' ? 180 : 0}
-            />
-          }
+          <Icon
+            src={require('assets/icons/arrow.svg')}
+            width={11}
+            height={6}
+            rotate={sortOrder === 'DESC' ? 180 : 0}
+            className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
+          />
         </div>
         {this.props.filterVisible &&
           <div className={classes.row}>

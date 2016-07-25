@@ -19,8 +19,12 @@ export default class Header extends React.Component {
     endpointLayoverVisible: false,
   }
 
-  _toggleUserDropdown () {
-    this.setState({ userDropdownVisible: !this.state.userDropdownVisible })
+  _openUserDropdown () {
+    this.setState({ userDropdownVisible: true })
+  }
+
+  _closeUserDropdown () {
+    this.setState({ userDropdownVisible: false })
   }
 
   _logout () {
@@ -58,11 +62,14 @@ export default class Header extends React.Component {
           </span>
         </div>
         {this.state.userDropdownVisible &&
-          <ClickOutside onClickOutside={::this._toggleUserDropdown}>
+          <ClickOutside onClickOutside={(e) => {
+            e.stopPropagation()
+            this._closeUserDropdown()
+          }}>
             <div className={classes.userDropdown}>
               <Link
                 to={`/${this.props.params.projectName}/account`}
-                onClick={::this._toggleUserDropdown}
+                onClick={::this._closeUserDropdown}
               >
                 Account
               </Link>
@@ -72,7 +79,7 @@ export default class Header extends React.Component {
             </div>
           </ClickOutside>
         }
-        <div className={classes.right} onClick={::this._toggleUserDropdown}>
+        <div className={classes.right} onClick={::this._openUserDropdown}>
           {this.props.user.name}
           <Icon
             width={11}
