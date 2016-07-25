@@ -6,7 +6,7 @@ import { Lokka } from 'lokka'
 import * as Immutable from 'immutable'
 import { Transport } from 'lokka-transport-http'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
-import { isScalar } from 'utils/graphql'
+import { isScalar } from '../../../utils/graphql'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from '../../../utils/cookiestore'
@@ -52,6 +52,7 @@ interface State {
   loading: boolean
   orderBy: OrderBy
   filter: Immutable.Map<string, any>
+  filtersVisible: boolean
   reachedEnd: boolean
   newRowVisible: boolean
   selectedItemIds: Immutable.List<string>
@@ -98,6 +99,7 @@ class BrowserView extends React.Component<Props, State> {
         order: 'DESC',
       },
       filter: Immutable.Map<string, any>(),
+      filtersVisible: false,
       reachedEnd: false,
       newRowVisible: false,
       selectedItemIds: Immutable.List<string>(),
@@ -136,7 +138,7 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  _loadData (skip: number): Promise<Immutable.List<Immutable.Map<string, any>>> {
+  _loadData (skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> {
     const fieldNames = this.props.fields
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
@@ -161,8 +163,8 @@ class BrowserView extends React.Component<Props, State> {
       .then((results) => {
         const items = Immutable.List(results[`all${this.props.model.namePlural}`])
           .map(Immutable.Map)
-        const reachedEnd = items.isEmpty() || !this.state.items.isEmpty() &&
-          this.state.items.last().get('id') === items.last().get('id')
+        const reachedEnd = !reload && (items.isEmpty() || (!this.state.items.isEmpty() &&
+          this.state.items.last().get('id') === items.last().get('id')))
         this.setState({ reachedEnd } as State)
         return items
       })
@@ -179,7 +181,7 @@ class BrowserView extends React.Component<Props, State> {
 
     this.setState({ loading: true } as State)
 
-    this._loadData(this.state.items.size)
+    this._loadData(this.state.items.size, false)
       .then((items) => {
         this.setState({
           items: this.state.items.concat(items),
@@ -189,12 +191,13 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   _reloadData () {
-    this.setState({ loading: true } as State)
-    return this._loadData(0)
+    this.setState({ loading: true, reachedEnd: false } as State)
+    return this._loadData(0, true)
       .then((items) => {
         this.setState({ items, loading: false } as State)
         // _update side nav model item count
-        this._updateSideNav()
+        // THIS IS A HACK
+        sideNavSyncer.notifySideNav()
       })
   }
 
@@ -363,11 +366,6 @@ class BrowserView extends React.Component<Props, State> {
     }
   }
 
-  // THIS IS A HACK
-  _updateSideNav () {
-    sideNavSyncer.notifySideNav()
-  }
-
   render () {
     const columnWidths = this._calculateColumnWidths()
     const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0)
@@ -375,7 +373,7 @@ class BrowserView extends React.Component<Props, State> {
       + 250 // add column
 
     return (
-      <div className={classes.root}>
+      <div className={`${classes.root} ${this.state.filtersVisible ? classes.filtersVisible : ''}`}>
         <div className={classes.head}>
           <div className={classes.headLeft}>
             <div className={classes.title}>
@@ -427,9 +425,19 @@ class BrowserView extends React.Component<Props, State> {
                   height={16}
                   src={require('assets/icons/delete.svg')}
                 />
-                <span>Delete Selected Items</span>
+                <span>Delete Selected ({this.state.selectedItemIds.size})</span>
               </div>
             }
+            <div
+              className={`${classes.button} ${this.state.filtersVisible ? classes.blue : ''}`}
+              onClick={() => this.setState({ filtersVisible: !this.state.filtersVisible, } as State)}
+            >
+              <Icon
+                width={16}
+                height={16}
+                src={require('assets/icons/search.svg')}
+              />
+            </div>
             <div className={classes.button} onClick={() => this._reloadData()}>
               <Icon
                 width={16}
@@ -440,11 +448,11 @@ class BrowserView extends React.Component<Props, State> {
           </div>
         </div>
         {this.state.loading &&
-          <div className={classes.loading}>
-            <Loading color='#fff' />
+          <div className={classes.loadingOverlay}>
+            <Loading color='#B9B9C8' />
           </div>
         }
-        <div className={classes.table}>
+        <div className={`${classes.table} ${this.state.loading ? classes.loading : ''}`}>
           <div className={classes.tableContainer} style={{ width: tableWidth }}>
             <div className={classes.tableHead}>
               <CheckboxCell
@@ -459,6 +467,7 @@ class BrowserView extends React.Component<Props, State> {
                   sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
                   toggleSortOrder={() => this._setSortOrder(field)}
                   updateFilter={(value) => this._updateFilter(value, field)}
+                  filterVisible={this.state.filtersVisible}
                 />
               ))}
               <AddFieldCell params={this.props.params} />
@@ -507,7 +516,7 @@ function mapDispatchToProps (dispatch) {
 
 const ReduxContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(BrowserView)
 
 const MappedBrowserView = mapProps({

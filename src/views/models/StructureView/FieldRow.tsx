@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 import Loading from '../../../components/Loading/Loading'
 import UpdateFieldDescriptionMutation from '../../../mutations/UpdateFieldDescriptionMutation'
-import DeleteFieldMutation from 'mutations/DeleteFieldMutation'
+import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { Field, Model } from '../../../types/types'
@@ -12,7 +12,7 @@ import Constraints from './Constraints'
 import Icon from '../../../components/Icon/Icon'
 const classes: any = require('./FieldRow.scss')
 
-type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS' | null
+type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
 interface Props {
   field: Field

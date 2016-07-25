@@ -23,6 +23,7 @@ interface Props {
   toggleSortOrder: () => void
   filter?: string
   updateFilter: (value: string) => void
+  filterVisible: boolean
 }
 
 export default class HeaderCell extends React.Component<Props, {}> {
@@ -112,7 +113,7 @@ export default class HeaderCell extends React.Component<Props, {}> {
         style={{ flex: `1 0 ${width}px` }}
         className={classes.root}
       >
-        <div className={classes.line} onClick={this.props.toggleSortOrder}>
+        <div className={classes.row} onClick={this.props.toggleSortOrder}>
           <div className={classes.fieldName}>
             {field.name}
             <span className={classes.type}>{type}</span>
@@ -126,9 +127,11 @@ export default class HeaderCell extends React.Component<Props, {}> {
             />
           }
         </div>
-        <div className={classes.line}>
-          {this._renderFilter()}
-        </div>
+        {this.props.filterVisible &&
+          <div className={classes.row}>
+            {this._renderFilter()}
+          </div>
+        }
       </div>
     )
   }
