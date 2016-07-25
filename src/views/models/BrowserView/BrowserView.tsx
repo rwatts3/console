@@ -430,7 +430,7 @@ class BrowserView extends React.Component<Props, State> {
             }
             <div
               className={`${classes.button} ${this.state.filtersVisible ? classes.blue : ''}`}
-              onClick={() => this.setState({ filtersVisible: !this.state.filtersVisible, } as State)}
+              onClick={() => this.setState({ filtersVisible: !this.state.filtersVisible } as State)}
             >
               <Icon
                 width={16}
