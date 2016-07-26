@@ -1,6 +1,6 @@
 import * as React from 'react'
 const classnames: any = require('classnames')
-import { valueToString, stringToValue } from '../utils'
+import { valueToString, stringToValue, emptyDefault } from '../utils'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
 import Datepicker from '../../../components/Datepicker/Datepicker'
@@ -13,7 +13,7 @@ interface Props {
   update: (value: any, field: Field) => void
   submit: () => void
   cancel: () => void
-  defaultValue: any | null
+  defaultValue: any
 }
 
 interface State {
@@ -23,11 +23,11 @@ interface State {
 
 export default class NewCell extends React.Component<Props, State> {
 
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
 
     this.state = {
-      value: props.defaultValue,
+      value: props.defaultValue || emptyDefault(props.field),
       focus: false,
     }
   }
@@ -149,18 +149,28 @@ export default class NewCell extends React.Component<Props, State> {
           />
         )
       case 'DateTime':
-        return (
-          <Datepicker
-            className={classes.datepicker}
-            defaultValue={new Date(valueString)}
-            onChange={(m) => {
+        if (this.state.focus) {
+          return (
+            <Datepicker
+              className={classes.datepicker}
+              defaultValue={new Date(valueString)}
+              onChange={(m) => {
               this._updateValue(m.toISOString())
               this.setState({ focus: false } as State)
             }}
-            onCancel={() => this.setState({ focus: false } as State)}
+              onCancel={() => this.setState({ focus: false } as State)}
+              onFocus={() => this.setState({ focus: true } as State)}
+              defaultOpen={true}
+              applyImmediately={false}
+            />
+          )
+        }
+
+        return (
+          <input
+            type='text'
+            defaultValue={valueString}
             onFocus={() => this.setState({ focus: true } as State)}
-            defaultOpen={false}
-            applyImmediately={false}
           />
         )
       default:

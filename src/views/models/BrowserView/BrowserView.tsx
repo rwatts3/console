@@ -3,8 +3,8 @@ import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 const calculateSize: any = require('calculate-size')
 import { Lokka } from 'lokka'
-import * as Immutable from 'immutable'
 import { Transport } from 'lokka-transport-http'
+import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import { isScalar } from '../../../utils/graphql'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
@@ -15,28 +15,18 @@ import Loading from '../../../components/Loading/Loading'
 import { ShowNotificationCallback } from '../../../types/utils'
 const Tether: any = (require('../../../components/Tether/Tether') as any).default
 const ModelDescription: any = (require('../ModelDescription') as any).default
-const Row: any = (require('./Row') as any).default
 const NewRow: any = (require('./NewRow') as any).default
+import Row from './Row'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import { valueToString, toGQL } from '../utils'
+import { valueToString, toGQL, compareFields } from '../utils'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
 import { Field, Model } from '../../../types/types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 const gettingStartedState: any = require('../../../reducers/GettingStartedState')
 const classes: any = require('./BrowserView.scss')
-
-function compareFields (a: Field, b: Field): number {
-  if (a.name === 'id') {
-    return -1
-  }
-  if (b.name === 'id') {
-    return 1
-  }
-  return a.name.localeCompare(b.name)
-}
 
 interface Props {
   params: any
@@ -488,7 +478,8 @@ class BrowserView extends React.Component<Props, State> {
                   {this.state.items.map((item, index) => (
                     <Row
                       key={item.get('id')}
-                      fields={this.props.fields}
+                      model={this.props.model}
+                      projectId={this.props.projectId}
                       columnWidths={columnWidths}
                       item={item.toJS()}
                       update={(key, value, callback) => this._updateItem(key, value, callback, item.get('id'), index)}
@@ -545,19 +536,17 @@ export default Relay.createContainer(MappedBrowserView, {
           name
           namePlural
           itemCount
-          fields(first: 100) {
+          fields(first: 1000) {
             edges {
               node {
                 id
                 name
                 typeIdentifier
                 isList
-                isRequired
-                enumValues
-                defaultValue
               }
             }
           }
+          ${Row.getFragment('model')}
           ${ModelDescription.getFragment('model')}
         }
         project: projectByName(projectName: $projectName) {

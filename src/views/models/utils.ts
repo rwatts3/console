@@ -113,3 +113,13 @@ export function isValidValue (value: string, field: Field): boolean {
 
   return !invalidValue
 }
+
+export function compareFields (a: Field, b: Field): number {
+  if (a.name === 'id') {
+    return -1
+  }
+  if (b.name === 'id') {
+    return 1
+  }
+  return a.name.localeCompare(b.name)
+}

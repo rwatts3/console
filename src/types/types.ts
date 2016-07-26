@@ -26,6 +26,7 @@ export interface Field {
   defaultValue?: string
   enumValues: string[]
   reverseRelationField?: Field
+  relatedModel?: Model
   relation?: Relation
   permissions: RelayConnection<Permission>
 }
@@ -54,7 +55,7 @@ export interface Model {
   id: string
   name: string
   namePlural: string
-  fields: Field[]
+  fields: RelayConnection<Field>
   unconnectedReverseRelationFieldsFrom: Field[]
   itemCount: number
 }
