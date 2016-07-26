@@ -1,19 +1,23 @@
 import * as React from 'react'
+import * as Relay from 'react-relay'
 import { findDOMNode } from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import { classnames } from '../../../utils/classnames'
 import { valueToString, isValidValue, stringToValue } from '../utils'
+import { isScalar } from '../../../utils/graphql'
 import { Field } from '../../../types/types'
+import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
 import Datepicker from '../../../components/Datepicker/Datepicker'
 const classes: any = require('./Cell.scss')
 
-type UpdateCallback = (success: boolean) => void
+export type UpdateCallback = (success: boolean) => void
 
 interface Props {
   field: Field
-  value?: any
+  projectId: string
+  value: any
   width: number
   update: (value: any, field: Field, callback: UpdateCallback) => void
 }
@@ -23,7 +27,7 @@ interface State {
   loading: boolean
 }
 
-export default class Cell extends React.Component<Props, State> {
+class Cell extends React.Component<Props, State> {
 
   refs: {
     [key: string]: any;
@@ -121,6 +125,17 @@ export default class Cell extends React.Component<Props, State> {
           />
         )
       }
+      if (!isScalar(this.props.field.typeIdentifier)) {
+        return (
+          <ModelSelector
+            model={this.props.field.relatedModel}
+            projectId={this.props.projectId}
+            value={this.props.value ? this.props.value.id : null}
+            select={(value) => this._save(value)}
+          />
+        )
+      }
+
       switch (this.props.field.typeIdentifier) {
         case 'Int':
           return (
@@ -226,3 +241,20 @@ export default class Cell extends React.Component<Props, State> {
     )
   }
 }
+
+export default Relay.createContainer(Cell, {
+  fragments: {
+    field: () => Relay.QL`
+      fragment on Field {
+        id
+        name
+        isList
+        typeIdentifier
+        enumValues
+        relatedModel {
+          ${ModelSelector.getFragment('model')}
+        }
+      }
+    `,
+  },
+})

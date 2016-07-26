@@ -40,6 +40,7 @@
     "rc-tooltip": "^3.4.2",
     "react": "^15.2.1",
     "react-addons-pure-render-mixin": "^15.2.1",
+    "react-autocomplete": "^1.0.1",
     "react-click-outside": "github:tj/react-click-outside",
     "react-copy-to-clipboard": "^4.2.1",
     "react-datetime": "^2.4.0",
