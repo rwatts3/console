@@ -107,7 +107,7 @@ class ActionRow extends React.Component<Props, State> {
         <select
           value={this.state.triggerMutationModelModelId}
           onChange={(e) => {
-            this.setState({ triggerMutationModelModelId: (e.target as HTMLInputElement).value } as State)
+            this.setState({ triggerMutationModelModelId: e.target.value } as State)
           }}
         >
           {this.props.project.models.edges.map((edge) => (
@@ -122,7 +122,7 @@ class ActionRow extends React.Component<Props, State> {
         <select
           value={this.state.triggerMutationModelMutationType}
           onChange={(e) => {
-            this.setState({ triggerMutationModelMutationType: (e.target as HTMLInputElement).value } as State)
+            this.setState({ triggerMutationModelMutationType: e.target.value } as State)
           }}
         >
           <option value='CREATE'>Create</option>
@@ -132,20 +132,20 @@ class ActionRow extends React.Component<Props, State> {
         <textarea
           value={this.state.triggerMutationModelFragment}
           onChange={(e) => {
-            this.setState({ triggerMutationModelFragment: (e.target as HTMLInputElement).value } as State)
+            this.setState({ triggerMutationModelFragment: e.target.value } as State)
           }}
         />
         <input
           type='text'
           placeholder='URL'
           value={this.state.handlerWebhookUrl}
-          onChange={(e) => this.setState({ handlerWebhookUrl: (e.target as HTMLInputElement).value } as State)}
+          onChange={(e) => this.setState({ handlerWebhookUrl: e.target.value } as State)}
         />
         <input
           type='text'
           placeholder='Description'
           value={this.state.description}
-          onChange={(e) => this.setState({ description: (e.target as HTMLInputElement).value } as State)}
+          onChange={(e) => this.setState({ description: e.target.value } as State)}
         />
         <button onClick={this._submit.bind(this)}>{buttonText}</button>
       </div>

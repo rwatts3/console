@@ -59,7 +59,7 @@ class HeaderCell extends React.Component<Props, {}> {
           type='number'
           placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
-          onChange={(e) => this._onFilterChangeNumber((e.target as HTMLInputElement).value)}
+          onChange={(e) => this._onFilterChangeNumber(e.target.value)}
         />
       )
       case 'Float': return (
@@ -68,12 +68,12 @@ class HeaderCell extends React.Component<Props, {}> {
           step='any'
           placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
-          onChange={(e) => this._onFilterChangeNumber((e.target as HTMLInputElement).value)}
+          onChange={(e) => this._onFilterChangeNumber(e.target.value)}
         />
       )
       case 'Boolean': return (
         <select
-          onChange={(e) => this._onFilterChangeBoolean((e.target as HTMLInputElement).value)}
+          onChange={(e) => this._onFilterChangeBoolean(e.target.value)}
         >
           <option value={''}>{`Filter by ${this.props.field.name}`}</option>
           <option value={!!true}>true</option>
@@ -82,7 +82,7 @@ class HeaderCell extends React.Component<Props, {}> {
       )
       case 'Enum': return (
         <select
-          onChange={(e) => this._onFilterChangeString((e.target as HTMLInputElement).value)}
+          onChange={(e) => this._onFilterChangeString(e.target.value)}
           >
           <option value={''}>{`Filter by ${this.props.field.name}`}</option>
           {this.props.field.enumValues.map((enumValue) => (
@@ -95,7 +95,7 @@ class HeaderCell extends React.Component<Props, {}> {
           type='string'
           placeholder={`Filter by ${this.props.field.name}`}
           defaultValue={this.props.filter}
-          onChange={(e) => this._onFilterChangeString((e.target as HTMLInputElement).value)}
+          onChange={(e) => this._onFilterChangeString(e.target.value)}
         />
       )
     }

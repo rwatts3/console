@@ -39,7 +39,7 @@ export default class ApiLayover extends React.Component<Props, State> {
       <ClickOutside onClickOutside={() => this.props.close()}>
         <div className={classes.root}>
           <div className={classes.endpoints}>
-            <select onChange={(e) => this._selectEndpoint((e.target as HTMLInputElement).value as Endpoint)}>
+            <select onChange={(e) => this._selectEndpoint((e.target as HTMLSelectElement).value as Endpoint)}>
               <option>simple/v1</option>
               <option>relay/v1</option>
             </select>

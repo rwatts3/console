@@ -1,37 +1,18 @@
-declare module 'react-router-relay' {
-  var _temp: any;
-  export = _temp;
-}
-
-declare module 'react-datepicker' {
-  var _temp: any;
-  export = _temp;
-}
-
-declare module 'lokka' {
-  interface API {
-    Lokka: any
-  }
-  var _temp: API;
-  export = _temp;
-}
-
-declare module 'lokka-transport-http' {
-  interface API {
-    Transport: any
-  }
-  var _temp: API;
-  export = _temp;
-}
+declare module 'react-router-relay'
+declare module 'react-datepicker'
+declare module 'lokka'
+declare module 'lokka-transport-http'
+declare module 'react-router'
+declare module 'react-redux'
 
 declare var require: {
-  <T>(path: string): T;
-  (paths: string[], callback: (...modules: any[]) => void): void;
-  ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
+  <T>(path: string): T
+  (paths: string[], callback: (...modules: any[]) => void): void
+  ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void
 }
 
-declare var analytics: any;
-declare var __BACKEND_ADDR__: any;
+declare var analytics: any
+declare var __BACKEND_ADDR__: any
 
 declare module 'react-relay' {
 
@@ -42,8 +23,8 @@ declare module 'react-relay' {
 
   interface CreateContainerOpts {
     initialVariables?: Object
-    prepareVariables?(prevVariables: RelayVariables): RelayVariables
     fragments: Fragments
+    prepareVariables?(prevVariables: RelayVariables): RelayVariables
   }
 
   interface RelayVariables {
@@ -51,7 +32,7 @@ declare module 'react-relay' {
   }
 
   // add static getFragment method to the component constructor
-  interface RelayContainerClass<T> extends __React.ComponentClass<T> {
+  interface RelayContainerClass<T> extends React.ComponentClass<T> {
     getFragment: ((q: string) => string)
   }
 
@@ -85,9 +66,9 @@ declare module 'react-relay' {
     supports(...options: string[]): boolean
   }
 
-  function createContainer<T>(component: __React.ComponentClass<T>, params?: CreateContainerOpts): RelayContainerClass<any>
+  function createContainer<T>(component: React.ComponentClass<T>, params?: CreateContainerOpts): RelayContainerClass<any>
   function injectNetworkLayer(networkLayer: RelayNetworkLayer)
-  function isContainer(component: __React.ComponentClass<any>): boolean
+  function isContainer(component: React.ComponentClass<any>): boolean
   function QL(...args: any[]): string
 
   class Route {
@@ -120,9 +101,9 @@ declare module 'react-relay' {
 
   var Store: Store
 
-  class RootContainer extends __React.Component<RootContainerProps,any> {}
+  class RootContainer extends React.Component<RootContainerProps,any> {}
 
-  interface RootContainerProps extends __React.Props<RootContainer>{
+  interface RootContainerProps extends React.Props<RootContainer>{
     Component: RelayContainerClass<any>
     route: Route
     renderLoading?(): JSX.Element

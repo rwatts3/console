@@ -46,7 +46,7 @@ class NewCell extends React.Component<Props, State> {
     this.props.update(value, this.props.field)
   }
 
-  _cancelOnEscape (e: __React.KeyboardEvent) {
+  _cancelOnEscape (e: React.KeyboardEvent<any>) {
     switch (e.keyCode) {
       case 13:
         this.props.submit()
@@ -57,7 +57,7 @@ class NewCell extends React.Component<Props, State> {
     }
   }
 
-  _onEscapeTextarea (e: __React.KeyboardEvent) {
+  _onEscapeTextarea (e: React.KeyboardEvent<any>) {
     if (e.keyCode === 27) {
       this.props.onBlur()
     }
@@ -144,7 +144,7 @@ class NewCell extends React.Component<Props, State> {
         return (
           <select
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
+            onChange={(e) => this._updateValue(e.target.value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
             onBlur={this.props.onBlur}
           >
@@ -162,7 +162,7 @@ class NewCell extends React.Component<Props, State> {
             ref='input'
             defaultValue={valueString}
             onKeyDown={(e) => this._onEscapeTextarea(e)}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
+            onChange={(e) => this._updateValue(e.target.value, false)}
             onBlur={this.props.onBlur}
           />
         )
