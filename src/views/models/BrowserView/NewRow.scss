@@ -18,6 +18,7 @@
   font-size: 13px;
   padding-left: 20px;
   text-transform: uppercase;
+  @include cellborder($grey2);
 
   span {
     padding: 5px;

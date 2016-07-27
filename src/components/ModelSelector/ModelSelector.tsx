@@ -5,6 +5,7 @@ import { isScalar } from '../../utils/graphql'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import * as cookiestore from '../../utils/cookiestore'
+const ClickOutside: any = (require('react-click-outside') as any).default
 const Autocomplete: any = require('react-autocomplete')
 const classes: any = require('./ModelSelector.scss')
 
@@ -12,7 +13,9 @@ interface Props {
   projectId: string
   value: string
   model: Model
-  select: (value: string) => void
+  onSelect: (value: string) => void
+  onCancel: () => void
+  onFocus?: () => void
 }
 
 interface State {
@@ -27,7 +30,7 @@ class ModelSelector extends React.Component<Props, State> {
 
     this.state = {
       items: [],
-      value: props.value,
+      value: props.value || '',
     }
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${props.projectId}`
@@ -57,33 +60,62 @@ class ModelSelector extends React.Component<Props, State> {
       })
   }
 
+  componentWillReceiveProps (nextProps: Props) {
+    this.setState({ value: nextProps.value } as State)
+  }
+
+  _onFocus = () => {
+    if (this.props.onFocus) {
+      this.props.onFocus()
+    }
+  }
+
   _renderItem = (item, isHighlighted) => {
     return (
       <div
         key={item.id}
         className={`${classes.row} ${isHighlighted ? classes.highlighted : ''}`}
       >
-        {JSON.stringify(item)}
+        {JSON.stringify(item, null, 1)}
       </div>
     )
   }
 
   _shouldItemRender = (item, value) => {
-    return this.props.model.fields.edges.some(({ node }) => item[node.name].toLowerCase().includes(value))
+    return this.props.model.fields.edges
+      .map((edge) => edge.node)
+      .filter((field) => isScalar(field.typeIdentifier) && item[field.name])
+      .some((field) => item[field.name].toString().toLowerCase().includes(value))
   }
 
-  render() {
+  render () {
     return (
-      <Autocomplete
-        value={this.state.value}
-        items={this.state.items}
-        shouldItemRender={this._shouldItemRender}
-        inputProps={{ autoFocus: true }}
-        getItemValue={(item) => item.id}
-        onChange={(event, value) => this.setState({ value } as State)}
-        onSelect={(value) => this.props.select(value)}
-        renderItem={this._renderItem}
-      />
+      <ClickOutside
+        onClickOutside={this.props.onCancel}
+        style={{ width: '100%' }}
+      >
+        <Autocomplete
+          wrapperProps={{ className: classes.wrapper }}
+          menuStyle={{
+            padding: 0,
+            position: 'absolute',
+            maxHeight: 300,
+            top: '100%',
+            left: 0,
+            background: '#fff',
+            overflow: 'auto',
+            zIndex: 100,
+          }}
+          value={this.state.value}
+          items={this.state.items}
+          shouldItemRender={this._shouldItemRender}
+          inputProps={{autoFocus: true }}
+          getItemValue={(item) => item.id}
+          onChange={(event, value) => this.setState({ value } as State)}
+          onSelect={(value) => this.props.onSelect(value)}
+          renderItem={this._renderItem}
+        />
+      </ClickOutside>
     )
   }
 }

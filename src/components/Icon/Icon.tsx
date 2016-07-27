@@ -8,6 +8,7 @@ interface Props {
   height?: number
   className?: string
   rotate?: number
+  [key: string]: any
 }
 
 export default class Icon extends React.Component<Props, {}> {

@@ -1,16 +1,23 @@
 import * as React from 'react'
+import * as Relay from 'react-relay'
 const classnames: any = require('classnames')
-import { valueToString, stringToValue, emptyDefault } from '../utils'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
+import { isScalar } from '../../../utils/graphql'
+import { valueToString, stringToValue } from '../../../utils/valueparser'
 import Datepicker from '../../../components/Datepicker/Datepicker'
+import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import { Field } from '../../../types/types'
 const classes: any = require('./Cell.scss')
 
 interface Props {
   field: Field
+  projectId: string
+  focus: boolean
   width: number
   update: (value: any, field: Field) => void
+  onFocus: () => void
+  onBlur: () => void
   submit: () => void
   cancel: () => void
   defaultValue: any
@@ -18,22 +25,23 @@ interface Props {
 
 interface State {
   value: any
-  focus: boolean
 }
 
-export default class NewCell extends React.Component<Props, State> {
+class NewCell extends React.Component<Props, State> {
 
   constructor (props: Props) {
     super(props)
 
     this.state = {
-      value: props.defaultValue || emptyDefault(props.field),
-      focus: false,
+      value: props.defaultValue,
     }
   }
 
-  _updateValue (inputValue) {
+  _updateValue (inputValue: any, shouldBlur: boolean) {
     const value = stringToValue(inputValue, this.props.field)
+    if (shouldBlur) {
+      this.props.onBlur()
+    }
     this.setState({ value } as State)
     this.props.update(value, this.props.field)
   }
@@ -51,7 +59,7 @@ export default class NewCell extends React.Component<Props, State> {
 
   _onEscapeTextarea (e: __React.KeyboardEvent) {
     if (e.keyCode === 27) {
-      this.setState({ focus: false } as State)
+      this.props.onBlur()
     }
   }
 
@@ -64,15 +72,36 @@ export default class NewCell extends React.Component<Props, State> {
 
     const valueString = valueToString(this.state.value, this.props.field, false)
 
+    if (!this.props.focus) {
+      return (
+        <input
+          type='text'
+          defaultValue={valueString}
+          onFocus={this.props.onFocus}
+        />
+      )
+    }
+
+    if (!isScalar(this.props.field.typeIdentifier)) {
+      return (
+        <ModelSelector
+          model={this.props.field.relatedModel}
+          projectId={this.props.projectId}
+          value={this.state.value ? this.state.value.id : null}
+          onSelect={(value) => this._updateValue(value, true)}
+          onCancel={this.props.onBlur}
+        />
+      )
+    }
+
     if (this.props.field.isList) {
       return (
         <input
           type='text'
           defaultValue={valueString}
-          onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+          onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
           onKeyDown={(e) => this._cancelOnEscape(e)}
-          onFocus={() => this.setState({ focus: true } as State)}
-          onBlur={() => this.setState({ focus: false } as State)}
+          onBlur={this.props.onBlur}
         />
       )
     }
@@ -81,12 +110,12 @@ export default class NewCell extends React.Component<Props, State> {
       case 'Int':
         return (
           <input
+            autoFocus
             type='number'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true } as State)}
-            onBlur={() => this.setState({ focus: false } as State)}
+            onBlur={this.props.onBlur}
           />
         )
       case 'Float':
@@ -94,11 +123,11 @@ export default class NewCell extends React.Component<Props, State> {
           <input
             type='number'
             step='any'
+            autoFocus
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true } as State)}
-            onBlur={() => this.setState({ focus: false } as State)}
+            onBlur={this.props.onBlur}
           />
         )
       case 'Boolean':
@@ -107,70 +136,45 @@ export default class NewCell extends React.Component<Props, State> {
             leftText='false'
             rightText='true'
             side={ToggleSide.Left}
-            onClickOutside={(side) => this._updateValue(side === ToggleSide.Left ? 'false' : 'true')}
+            onChange={(side) => this._updateValue(side === ToggleSide.Left ? 'false' : 'true', false)}
+            onClickOutside={this.props.onBlur}
           />
         )
       case 'Enum':
         return (
           <select
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true } as State)}
-            onBlur={() => this.setState({ focus: false } as State)}
+            onBlur={this.props.onBlur}
           >
-            <option disabled={this.state.focus} />
+            <option disabled={this.props.focus} />
             {this.props.field.enumValues.map((enumValue) => (
               <option key={enumValue}>{enumValue}</option>
             ))}
           </select>
         )
       case 'String':
-        if (this.state.focus) {
-          return (
-            <textarea
-              autoFocus
-              type='text'
-              ref='input'
-              defaultValue={valueString}
-              onKeyDown={(e) => this._onEscapeTextarea(e)}
-              onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
-              onFocus={() => this.setState({ focus: true } as State)}
-              onBlur={() => this.setState({ focus: false } as State)}
-            />
-          )
-        }
-
         return (
-          <input
+          <textarea
+            autoFocus
             type='text'
+            ref='input'
             defaultValue={valueString}
-            onFocus={() => this.setState({ focus: true } as State)}
+            onKeyDown={(e) => this._onEscapeTextarea(e)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
+            onBlur={this.props.onBlur}
           />
         )
       case 'DateTime':
-        if (this.state.focus) {
-          return (
-            <Datepicker
-              className={classes.datepicker}
-              defaultValue={new Date(valueString)}
-              onChange={(m) => {
-              this._updateValue(m.toISOString())
-              this.setState({ focus: false } as State)
-            }}
-              onCancel={() => this.setState({ focus: false } as State)}
-              onFocus={() => this.setState({ focus: true } as State)}
-              defaultOpen={true}
-              applyImmediately={false}
-            />
-          )
-        }
-
         return (
-          <input
-            type='text'
-            defaultValue={valueString}
-            onFocus={() => this.setState({ focus: true } as State)}
+          <Datepicker
+            className={classes.datepicker}
+            defaultValue={new Date(valueString)}
+            onChange={(m) => this._updateValue(m.toISOString(), true)}
+            onCancel={this.props.onBlur}
+            defaultOpen={true}
+            applyImmediately={false}
           />
         )
       default:
@@ -178,10 +182,9 @@ export default class NewCell extends React.Component<Props, State> {
           <input
             type='text'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value)}
+            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
-            onFocus={() => this.setState({ focus: true } as State)}
-            onBlur={() => this.setState({ focus: false } as State)}
+            onBlur={this.props.onBlur}
           />
         )
     }
@@ -191,7 +194,7 @@ export default class NewCell extends React.Component<Props, State> {
     const rootClassnames = classnames({
       [classes.root]: true,
       [classes.null]: this.props.field.name === 'id',
-      [classes.editing]: this.state.focus,
+      [classes.editing]: this.props.focus,
       [classes.invalid]: (
         (this.props.field.isRequired && this.state.value === null) &&
         this.props.field.name !== 'id'
@@ -208,3 +211,20 @@ export default class NewCell extends React.Component<Props, State> {
     )
   }
 }
+
+export default Relay.createContainer(NewCell, {
+  fragments: {
+    field: () => Relay.QL`
+      fragment on Field {
+        id
+        name
+        isList
+        typeIdentifier
+        enumValues
+        relatedModel {
+          ${ModelSelector.getFragment('model')}
+        }
+      }
+    `,
+  },
+})

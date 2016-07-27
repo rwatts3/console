@@ -35,7 +35,9 @@ export default class ToggleButton extends React.Component<Props, State> {
 
   _onUpdateSide (side) {
     this.setState({ currentSide: side })
-    this.props.onChange(side)
+    if (this.props.onChange) {
+      this.props.onChange(side)
+    }
   }
 
   _toggle () {

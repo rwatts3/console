@@ -1,16 +1,5 @@
-import { isScalar, isValidValueForType, parseValue } from '../../utils/graphql'
+import { isScalar, isValidValueForType } from '../../utils/graphql'
 import { Field } from '../../types/types'
-
-export function valueOrDefault (value: any, field: Field): any {
-  if (value !== null && value !== undefined) {
-    return value
-  }
-
-  if (field.defaultValue !== undefined) {
-    return field.defaultValue
-  }
-  return null
-}
 
 export function emptyDefault (field: Field): any {
   const value = function (): any {
@@ -28,29 +17,6 @@ export function emptyDefault (field: Field): any {
   return field.isList ? [value] : value
 }
 
-export function valueToString (value: any, field: Field, returnNull: boolean): string {
-  const fieldValue = isScalar(field.typeIdentifier)
-    ? valueOrDefault(value, field)
-    : (value !== null ? value.id : null)
-
-  if (fieldValue === null) {
-    return returnNull ? 'null' : ''
-  }
-
-  if (field.isList) {
-    if (field.typeIdentifier === 'String') {
-      return `[${fieldValue.map((e) => `"${e}"`).toString()}]`
-    } else {
-      return `[${fieldValue.toString()}]`
-    }
-  } else {
-    switch (field.typeIdentifier) {
-      case 'DateTime': return new Date(fieldValue).toISOString()
-      default: return fieldValue.toString()
-    }
-  }
-}
-
 function valueToGQL (value: any, field: Field): string {
   if (!isScalar(field.typeIdentifier)) {
     return `"${value.id}"`
@@ -66,24 +32,6 @@ function valueToGQL (value: any, field: Field): string {
 export function toGQL (value: any, field: Field): string {
   const key = isScalar(field.typeIdentifier) ? field.name : `${field.name}Id`
   return value !== null ? `${key}: ${valueToGQL(value, field)}` : ''
-}
-
-export function stringToValue (rawValue: string, field: Field): any {
-  const { isList, isRequired, typeIdentifier } = field
-  if (rawValue === '') {
-    // todo: this should set to null but currently null is not supported by our api
-    return isRequired && typeIdentifier === 'String' ? '' : null
-  }
-
-  if (!isList && !isScalar(typeIdentifier)) {
-    return { id: rawValue }
-  }
-
-  if (isList) {
-    return JSON.parse(rawValue)
-  } else {
-    return parseValue(rawValue, typeIdentifier)
-  }
 }
 
 export function isValidValue (value: string, field: Field): boolean {
