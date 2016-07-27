@@ -43,7 +43,7 @@ export default class Cell extends React.Component<Props, State> {
     }
   }
 
-  _onKeyDown (e: __React.KeyboardEvent) {
+  _onKeyDown (e: React.KeyboardEvent<any>) {
     if (e.keyCode === 13) {
       this._applyChange(this.state.moment)
     } else if (e.keyCode === 27 || e.keyCode === 9) {

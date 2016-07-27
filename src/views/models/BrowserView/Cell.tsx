@@ -85,10 +85,10 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  _onKeyDown (e: __React.KeyboardEvent) {
+  _onKeyDown (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>) {
     switch (e.keyCode) {
       case 13:
-        this._save((e.target as HTMLInputElement).value)
+        this._save(e.target.value)
         break
       case 27:
         this._cancel()
@@ -96,9 +96,9 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _onEscapeTextarea (e: __React.KeyboardEvent) {
+  _onEscapeTextarea (e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.keyCode === 27) {
-      this._save((e.target as HTMLInputElement).value)
+      this._save(e.target.value)
     }
   }
 
@@ -147,7 +147,7 @@ class Cell extends React.Component<Props, State> {
               type='number'
               ref='input'
               defaultValue={valueString}
-              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+              onBlur={(e) => this._save(e.target.value)}
               onKeyDown={(e) => this._onKeyDown(e)}
             />
           )
@@ -159,7 +159,7 @@ class Cell extends React.Component<Props, State> {
               step='any'
               ref='input'
               defaultValue={valueString}
-              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+              onBlur={(e) => this._save(e.target.value)}
               onKeyDown={(e) => this._onKeyDown(e)}
             />
           )
@@ -177,7 +177,7 @@ class Cell extends React.Component<Props, State> {
             <select
               autoFocus
               defaultValue={valueString}
-              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+              onBlur={(e) => this._save(e.target.value)}
               onKeyDown={(e) => this._onKeyDown(e)}
             >
               {this.props.field.enumValues.map((enumValue) => (
@@ -193,7 +193,7 @@ class Cell extends React.Component<Props, State> {
               ref='input'
               defaultValue={valueString}
               onKeyDown={(e) => this._onEscapeTextarea(e)}
-              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+              onBlur={(e) => this._save(e.target.value)}
             />
           )
         case 'DateTime':
@@ -215,7 +215,7 @@ class Cell extends React.Component<Props, State> {
               ref='input'
               defaultValue={valueString}
               onKeyDown={(e) => this._onKeyDown(e)}
-              onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
+              onBlur={(e) => this._save(e.target.value)}
             />
           )
       }

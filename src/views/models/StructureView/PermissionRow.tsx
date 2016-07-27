@@ -248,9 +248,9 @@ class PermissionRow extends React.Component<Props, State> {
     }
   }
 
-  _onKeyDown (e: __React.KeyboardEvent) {
+  _onKeyDown (e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.keyCode === 13) {
-      (e.target as HTMLInputElement).blur()
+      e.target.blur()
       this._save()
     }
   }

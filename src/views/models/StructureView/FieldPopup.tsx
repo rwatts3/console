@@ -355,7 +355,7 @@ class FieldPopup extends React.Component<Props, State> {
             ref='input'
             placeholder={placeholder}
             value={valueString}
-            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
+            onChange={(e) => changeCallback(e.target.value)}
           />
         )
       case 'Boolean':
@@ -371,7 +371,7 @@ class FieldPopup extends React.Component<Props, State> {
         return (
           <select
             value={valueString}
-            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
+            onChange={(e) => changeCallback(e.target.value)}
           >
             {this.state.enumValues.map((enumValue) => (
               <option key={enumValue}>{enumValue}</option>

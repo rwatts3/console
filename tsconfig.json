@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "removeComments": true,
+    "preserveConstEnums": true,
     "jsx": "preserve",
     "pretty": true,
     "sourceMap": true,
@@ -8,71 +10,12 @@
     "moduleResolution": "node"
   },
   "exclude": [
-    "typings/globals",
-    "typings/index.d.ts",
     "node_modules",
     "dist"
   ],
-  "files": [
-    "./src/mutations/AddActionMutation.ts",
-    "./src/mutations/AddFieldMutation.ts",
-    "./src/mutations/ResetPasswordMutation.ts",
-    "./src/mutations/DeleteFieldMutation.ts",
-    "./src/mutations/UpdateFieldDescriptionMutation.ts",
-    "./src/mutations/UpdateActionMutation.ts",
-    "./src/mutations/AddPermissionMutation.ts",
-    "./src/mutations/UpdatePermissionMutation.ts",
-    "./src/mutations/DeletePermissionMutation.ts",
-    "./src/mutations/UpdateFieldMutation.ts",
-    "./src/types/types.ts",
-    "./src/utils/classnames.ts",
-    "./src/utils/cookiestore.ts",
-    "./src/utils/graphql.ts",
-    "./src/utils/location.ts",
-    "./src/utils/nameValidator.ts",
-    "./src/utils/polyfils.ts",
-    "./src/utils/relay.ts",
-    "./src/utils/sideNavSyncer.ts",
-    "./src/views/models/utils.ts",
-    "./src/components/ApiLayover/ApiLayover.tsx",
-    "./src/components/ModelSelector/ModelSelector.tsx",
-    "./src/components/Help/Help.tsx",
-    "./src/components/Icon/Icon.tsx",
-    "./src/components/Loading/Loading.tsx",
-    "./src/components/MapProps/MapProps.tsx",
-    "./src/components/RedirectOnMount/RedirectOnMount.tsx",
-    "./src/components/ScrollBox/ScrollBox.tsx",
-    "./src/components/ToggleButton/ToggleButton.tsx",
-    "./src/views/account/ResetPasswordView/ResetPasswordView.tsx",
-    "./src/views/ActionsView/ActionRow.tsx",
-    "./src/views/ActionsView/ActionsView.tsx",
-    "./src/views/models/BrowserView/BrowserView.tsx",
-    "./src/views/models/BrowserView/Cell.tsx",
-    "./src/views/models/BrowserView/Row.tsx",
-    "./src/views/models/BrowserView/CheckboxCell.tsx",
-    "./src/views/models/BrowserView/HeaderCell.tsx",
-    "./src/views/models/StructureView/FieldRow.tsx",
-    "./src/views/models/StructureView/FieldPopup.tsx",
-    "./src/views/models/StructureView/Permissions.tsx",
-    "./src/views/models/StructureView/PermissionRow.tsx",
-    "./src/views/models/StructureView/PermissionType.tsx",
-    "./src/views/models/StructureView/TypeSelection.tsx",
-    "./src/views/RootView/RootView.tsx",
-    "./typings/globals/js-cookie/index.d.ts",
-    "./typings/globals/react-dom/index.d.ts",
-    "./typings/globals/react-router/history/index.d.ts",
-    "./typings/globals/react-router/index.d.ts",
-    "./typings/globals/react/index.d.ts",
-    "./typings/index.d.ts",
-    "./custom.d.ts"
-  ],
-  "filesGlob": [
+  "include": [
     "./src/**/*.ts",
     "./src/**/*.tsx",
-    "./typings/**/*.ts",
     "./custom.d.ts"
-  ],
-  "atom": {
-    "rewriteTsconfig": true
-  }
+  ]
 }

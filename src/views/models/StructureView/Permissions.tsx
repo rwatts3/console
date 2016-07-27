@@ -81,7 +81,6 @@ export default Relay.createContainer(Permissions, {
           edges {
             node {
               id
-              ${PermissionRow.getFragment('permission')}
             }
           }
         }
