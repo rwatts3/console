@@ -1,6 +1,8 @@
 import * as React from 'react'
+import { findDOMNode } from 'react-dom'
 const Tooltip: any = require('rc-tooltip')
 import Icon from '../Icon/Icon'
+const classes: any = require('./Help.scss')
 
 require('rc-tooltip/assets/bootstrap.css')
 
@@ -18,16 +20,20 @@ export default class Help extends React.Component<Props, {}> {
     ))
 
     return (
-      <Tooltip
-        placement={this.props.placement || 'right'}
-        overlay={<span>{overlay}</span>}
-      >
-        <Icon
-          width={20}
-          height={20}
-          src={require('assets/icons/info.svg')}
-        />
-      </Tooltip>
+      <div>
+        <Tooltip
+          placement={this.props.placement || 'right'}
+          overlay={<span onClick={(e) => e.stopPropagation()}>{overlay}</span>}
+          getTooltipContainer={() => findDOMNode((this.refs as any).container)}
+        >
+          <Icon
+            width={20}
+            height={20}
+            src={require('assets/icons/info.svg')}
+          />
+        </Tooltip>
+        <div className={classes.container} ref='container' />
+      </div>
     )
   }
 }

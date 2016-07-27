@@ -18,6 +18,11 @@ export function onFailureShowNotification (
   transaction: Transaction,
   showNotification: ShowNotificationCallback
 ): void {
-  const { errors } = (transaction.getError() as any).source
-  errors.forEach((error) => showNotification(error.message, 'error'))
+  const error = transaction.getError() as any
+  // NOTE if error returns non-200 response, there is no `source` provided (probably because of fetch)
+  if (error.source && error.source.errors) {
+    error.source.errors.forEach((error) => showNotification(error.message, 'error'))
+  } else {
+    console.error(error)
+  }
 }

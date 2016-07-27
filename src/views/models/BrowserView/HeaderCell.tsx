@@ -1,6 +1,8 @@
 import * as React from 'react'
+import * as Relay from 'react-relay'
 import Icon from '../../../components/Icon/Icon'
 import { Link } from 'react-router'
+import { isScalar } from '../../../utils/graphql'
 import { Field } from '../../../types/types'
 const classes: any = require('./HeaderCell.scss')
 
@@ -28,7 +30,7 @@ interface Props {
   params: any
 }
 
-export default class HeaderCell extends React.Component<Props, {}> {
+class HeaderCell extends React.Component<Props, {}> {
 
   _delayedUpdateFilter: any
 
@@ -99,6 +101,12 @@ export default class HeaderCell extends React.Component<Props, {}> {
     }
   }
 
+  _toggleSortOrder = () => {
+    if (isScalar(this.props.field.typeIdentifier)) {
+      this.props.toggleSortOrder()
+    }
+  }
+
   render () {
     const { field, width, sortOrder } = this.props
 
@@ -117,7 +125,7 @@ export default class HeaderCell extends React.Component<Props, {}> {
         style={{ flex: `1 0 ${width}px` }}
         className={classes.root}
       >
-        <div className={classes.row} onClick={this.props.toggleSortOrder}>
+        <div className={classes.row}>
           <div className={classes.fieldName}>
             {field.name}
             <span className={classes.type}>{type}</span>
@@ -129,13 +137,19 @@ export default class HeaderCell extends React.Component<Props, {}> {
               />
             </Link>
           </div>
-          <Icon
-            src={require('assets/icons/arrow.svg')}
-            width={11}
-            height={6}
-            rotate={sortOrder === 'DESC' ? 180 : 0}
-            className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
-          />
+          {isScalar(this.props.field.typeIdentifier) &&
+            <div
+              onClick={this._toggleSortOrder}
+              className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
+            >
+              <Icon
+                src={require('assets/icons/arrow.svg')}
+                width={11}
+                height={6}
+                rotate={sortOrder === 'DESC' ? 180 : 0}
+              />
+            </div>
+          }
         </div>
         {this.props.filterVisible &&
           <div className={classes.row}>
@@ -146,3 +160,17 @@ export default class HeaderCell extends React.Component<Props, {}> {
     )
   }
 }
+
+export default Relay.createContainer(HeaderCell, {
+  fragments: {
+    field: () => Relay.QL`
+      fragment on Field {
+        id
+        name
+        isList
+        typeIdentifier
+        isRequired
+      }
+    `,
+  },
+})

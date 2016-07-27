@@ -106,6 +106,7 @@ declare module 'react-relay' {
 
   interface Transaction {
     getError(): Error
+    Status(): number
   }
 
   interface StoreUpdateCallbacks<T> {

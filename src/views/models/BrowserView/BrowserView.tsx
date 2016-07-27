@@ -15,12 +15,13 @@ import Loading from '../../../components/Loading/Loading'
 import { ShowNotificationCallback } from '../../../types/utils'
 const Tether: any = (require('../../../components/Tether/Tether') as any).default
 const ModelDescription: any = (require('../ModelDescription') as any).default
-const NewRow: any = (require('./NewRow') as any).default
+import NewRow from './NewRow'
 import Row from './Row'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import { valueToString, toGQL, compareFields } from '../utils'
+import { toGQL, compareFields } from '../utils'
+import { valueToString } from '../../../utils/valueparser'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
 import { Field, Model } from '../../../types/types'
 import { connect } from 'react-redux'
@@ -250,19 +251,18 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  _addItem (fieldValues: any) {
+  _addItem (fieldValues: { [key: string]: any }) {
     const inputString = fieldValues
       .mapToArray((fieldName, obj) => obj)
       .filter(({ value }) => value !== null)
       .map(({ field, value }) => toGQL(value, field))
       .join(' ')
+    const inputArgumentsString = inputString.length > 0 ? `(${inputString})` : ''
 
     this.setState({ loading: true } as State)
     const mutation = `
       {
-        create${this.props.model.name}(
-          ${inputString}
-        ) {
+        create${this.props.model.name}${inputArgumentsString} {
           id
         }
       }
@@ -466,10 +466,11 @@ class BrowserView extends React.Component<Props, State> {
             </div>
             {this.state.newRowVisible &&
               <NewRow
-                fields={this.props.fields}
+                model={this.props.model}
                 columnWidths={columnWidths}
                 add={(data) => this._addItem(data)}
                 cancel={(e) => this.setState({ newRowVisible: false } as State)}
+                projectId={this.props.projectId}
               />
             }
             <div className={classes.tableBody} onScroll={(e) => this._handleScroll(e)}>
@@ -543,10 +544,12 @@ export default Relay.createContainer(MappedBrowserView, {
                 name
                 typeIdentifier
                 isList
+                ${HeaderCell.getFragment('field')}
               }
             }
           }
           ${Row.getFragment('model')}
+          ${NewRow.getFragment('model')}
           ${ModelDescription.getFragment('model')}
         }
         project: projectByName(projectName: $projectName) {

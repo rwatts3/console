@@ -3,7 +3,8 @@ import * as Relay from 'react-relay'
 import { findDOMNode } from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import { classnames } from '../../../utils/classnames'
-import { valueToString, isValidValue, stringToValue } from '../utils'
+import { isValidValue } from '../utils'
+import { valueToString, stringToValue } from '../../../utils/valueparser'
 import { isScalar } from '../../../utils/graphql'
 import { Field } from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
@@ -113,6 +114,18 @@ class Cell extends React.Component<Props, State> {
     const valueString = valueToString(this.props.value, this.props.field, true)
 
     if (this.state.editing) {
+      if (!isScalar(this.props.field.typeIdentifier)) {
+        return (
+          <ModelSelector
+            model={this.props.field.relatedModel}
+            projectId={this.props.projectId}
+            value={this.props.value ? this.props.value.id : null}
+            onSelect={(value) => this._save(value)}
+            onCancel={() => this._cancel()}
+          />
+        )
+      }
+
       if (this.props.field.isList) {
         return (
           <input
@@ -122,16 +135,6 @@ class Cell extends React.Component<Props, State> {
             defaultValue={valueString}
             onKeyDown={(e) => this._onKeyDown(e)}
             onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
-          />
-        )
-      }
-      if (!isScalar(this.props.field.typeIdentifier)) {
-        return (
-          <ModelSelector
-            model={this.props.field.relatedModel}
-            projectId={this.props.projectId}
-            value={this.props.value ? this.props.value.id : null}
-            select={(value) => this._save(value)}
           />
         )
       }

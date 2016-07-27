@@ -6,6 +6,7 @@ const ClickOutside: any = (require('react-click-outside') as any).default
 import TypeSelection from './TypeSelection'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import { onFailureShowNotification } from '../../../utils/relay'
+import { valueToString, stringToValue} from '../../../utils/valueparser'
 import { ShowNotificationCallback } from '../../../types/utils'
 const TagsInput: any = require('react-tagsinput')
 import Icon from '../../../components/Icon/Icon'
@@ -18,7 +19,7 @@ import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
 import { isScalar } from '../../../utils/graphql'
 import { Field, Model } from '../../../types/types'
-import { valueToString, emptyDefault } from '../utils'
+import { emptyDefault } from '../utils'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 const gettingStartedState: any = require('../../../reducers/GettingStartedState')
@@ -67,6 +68,8 @@ class FieldPopup extends React.Component<Props, State> {
     const { field } = props
     const typeIdentifier = field ? field.typeIdentifier : 'Int'
     const isList = field ? field.isList : false
+    const enumValues = field ? field.enumValues : []
+    const tmpField = { typeIdentifier, isList, enumValues } as Field
 
     this.state = {
       loading: false,
@@ -74,9 +77,9 @@ class FieldPopup extends React.Component<Props, State> {
       typeIdentifier,
       isRequired: field ? field.isRequired : true,
       isList,
-      enumValues: field ? field.enumValues : [],
+      enumValues,
       useDefaultValue: field ? field.defaultValue !== null : null,
-      defaultValue: field ? field.defaultValue : emptyDefault({ typeIdentifier, isList, enumValues: [] } as Field),
+      defaultValue: field ? stringToValue(field.defaultValue, tmpField) : emptyDefault(tmpField),
       reverseRelationField: field ? field.reverseRelationField : null,
       useMigrationValue: false,
       migrationValue: emptyDefault({ typeIdentifier, isList, enumValues: [] } as Field),
@@ -130,8 +133,11 @@ class FieldPopup extends React.Component<Props, State> {
     } = this.state
 
     const field = { isList, typeIdentifier } as Field
+    const wrappedMigrationValue = isScalar(this.state.typeIdentifier)
+      ? this.state.migrationValue
+      : { id: this.state.migrationValue }
     const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
-      ? valueToString(this.state.migrationValue, field, true)
+      ? valueToString(wrappedMigrationValue, field, true)
       : null
 
     Relay.Store.commitUpdate(
@@ -142,7 +148,7 @@ class FieldPopup extends React.Component<Props, State> {
         enumValues,
         isList,
         isRequired: isRequired || isList, // isRequired has to be true if isList
-        defaultValue: useDefaultValue ? defaultValue : null,
+        defaultValue: useDefaultValue ? valueToString(defaultValue, field, false) : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
         migrationValue,
       }),
@@ -194,8 +200,11 @@ class FieldPopup extends React.Component<Props, State> {
     } = this.state
 
     const field = { isList, typeIdentifier } as Field
+    const wrappedMigrationValue = isScalar(this.state.typeIdentifier)
+      ? this.state.migrationValue
+      : { id: this.state.migrationValue }
     const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
-      ? valueToString(this.state.migrationValue, field, true)
+      ? valueToString(wrappedMigrationValue, field, true)
       : null
 
     Relay.Store.commitUpdate(
@@ -206,7 +215,7 @@ class FieldPopup extends React.Component<Props, State> {
         enumValues,
         isList,
         isRequired: isRequired || isList, // isRequired has to be true if isList
-        defaultValue: useDefaultValue ? defaultValue : null,
+        defaultValue: useDefaultValue ? valueToString(defaultValue, field, false) : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
         migrationValue,
       }),
@@ -263,12 +272,14 @@ class FieldPopup extends React.Component<Props, State> {
       ? false
       : this.state.useMigrationValue
     const { isList, enumValues } = this.state
+    const tmpField = { typeIdentifier, isList, enumValues } as Field
 
     this.setState({
       typeIdentifier,
       isRequired: field ? field.isRequired : true,
       isList,
       reverseRelationField: field ? field.reverseRelationField : null,
+      defaultValue: field ? stringToValue(field.defaultValue, tmpField) : emptyDefault(tmpField),
       migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
       useMigrationValue,
     } as State)
@@ -322,7 +333,8 @@ class FieldPopup extends React.Component<Props, State> {
       isList: this.state.isList,
       typeIdentifier: this.state.typeIdentifier,
     } as Field
-    const valueString = valueToString(value, field, false)
+    const wrappedValue = isScalar(this.state.typeIdentifier) ? value : { id: value }
+    const valueString = valueToString(wrappedValue, field, false)
 
     switch (this.state.typeIdentifier) {
       case 'Int':
@@ -352,7 +364,7 @@ class FieldPopup extends React.Component<Props, State> {
             leftText='false'
             rightText='true'
             side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
-            onChange={(side) => changeCallback(side === ToggleSide.Left ? 'false' : 'true')}
+            onChange={(side) => changeCallback(side === ToggleSide.Left ? false : true)}
           />
         )
       case 'Enum':
