@@ -255,6 +255,7 @@ class BrowserView extends React.Component<Props, State> {
     const inputString = fieldValues
       .mapToArray((fieldName, obj) => obj)
       .filter(({ value }) => value !== null)
+      .filter(({ field, value }) => !isScalar(field.typeIdentifier) ? value.id !== null : true)
       .map(({ field, value }) => toGQL(value, field))
       .join(' ')
     const inputArgumentsString = inputString.length > 0 ? `(${inputString})` : ''
