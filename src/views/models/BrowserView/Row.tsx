@@ -57,6 +57,8 @@ export default Relay.createContainer(Row, {
             node {
               id
               name
+              typeIdentifier
+              isList
               ${Cell.getFragment('field')}
             }
           }
