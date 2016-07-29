@@ -103,6 +103,7 @@ export default Relay.createContainer(NewRow, {
               defaultValue
               enumValues
               typeIdentifier
+              isList
               ${NewCell.getFragment('field')}
             }
           }
