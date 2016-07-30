@@ -1,48 +1,62 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { Link } from 'react-router'
-import ScrollBox from 'components/ScrollBox/ScrollBox'
-import PureRenderMixin from 'react-addons-pure-render-mixin'
-import mapProps from 'map-props'
-import { validateModelName } from 'utils/nameValidator'
-import Icon from 'components/Icon/Icon'
-import Tether from 'components/Tether/Tether'
-import ProjectSettingsOverlay from 'components/ProjectSettingsOverlay/ProjectSettingsOverlay'
-import AddModelMutation from 'mutations/AddModelMutation'
-import { sideNavSyncer } from 'utils/sideNavSyncer'
-import { onFailureShowNotification } from '../../utils/relay'
-import classes from './SideNav.scss'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { nextStep, skip } from 'reducers/GettingStartedState'
+import * as PureRenderMixin from 'react-addons-pure-render-mixin'
+import mapProps from '../../components/MapProps/MapProps'
+import { validateModelName } from 'utils/nameValidator'
+import ScrollBox from '../../components/ScrollBox/ScrollBox'
+import Icon from '../../components/Icon/Icon'
+import Tether from '../../components/Tether/Tether'
+const ProjectSettingsOverlay: any =
+  (require('../../components/ProjectSettingsOverlay/ProjectSettingsOverlay') as any).default
+import AddModelMutation from '../../mutations/AddModelMutation'
+import { sideNavSyncer } from '../../utils/sideNavSyncer'
+import { onFailureShowNotification } from '../../utils/relay'
+const { nextStep, skip } = require('../../reducers/GettingStartedState') as any
+import { Project, Viewer, Model} from '../../types/types'
+import { ShowNotificationCallback } from '../../types/utils'
+const classes: any = require('./SideNav.scss')
 
-export class SideNav extends React.Component {
+interface Props {
+  params: any
+  project: Project
+  projectCount: number
+  viewer: Viewer
+  relay: any
+  models: Model[]
+  gettingStartedState: any
+  nextStep: () => Promise<any>
+  skip: () => Promise<any>
+}
 
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    project: PropTypes.object.isRequired,
-    projectCount: PropTypes.number.isRequired,
-    viewer: PropTypes.object.isRequired,
-    relay: PropTypes.object.isRequired,
-    models: PropTypes.array,
-    gettingStartedState: PropTypes.object.isRequired,
-    nextStep: PropTypes.func.isRequired,
-    skip: PropTypes.func.isRequired,
-  }
+interface State {
+  projectSettingsVisible: boolean
+}
+
+export class SideNav extends React.Component<Props, State> {
 
   static contextTypes = {
-    router: PropTypes.object.isRequired,
+    router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
   }
+
+  context: {
+    router: any
+    showNotification: ShowNotificationCallback
+  }
+
+  state = {
+    projectSettingsVisible: false,
+  }
+
+  shouldComponentUpdate: any
 
   constructor (props) {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-
-    this.state = {
-      projectSettingsVisible: false,
-    }
   }
 
   _fetch () {
@@ -50,8 +64,8 @@ export class SideNav extends React.Component {
     this.props.relay.forceFetch()
   }
 
-  _addModel () {
-    var modelName = window.prompt('Model name:')
+  _addModel = () => {
+    let modelName = window.prompt('Model name:')
     while (modelName != null && !validateModelName(modelName)) {
       modelName = window.prompt('The inserted model name was invalid.' +
         ' Enter a valid model name, like "Model" or "MyModel":')
@@ -61,31 +75,34 @@ export class SideNav extends React.Component {
     }
 
     if (modelName) {
-      Relay.Store.commitUpdate(new AddModelMutation({
-        modelName,
-        projectId: this.props.project.id,
-      }), {
-        onSuccess: (response) => {
-          analytics.track('sidenav: created model', {
-            project: this.props.params.projectName,
-            model: modelName,
-          })
+      Relay.Store.commitUpdate(
+        new AddModelMutation({
+          modelName,
+          projectId: this.props.project.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('sidenav: created model', {
+              project: this.props.params.projectName,
+              model: modelName,
+            })
 
-          // getting-started onboarding step
-          if (modelName === 'Todo' && this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_TODO_MODEL')) {
-            this.props.nextStep().then(redirect)
-          } else {
-            redirect()
-          }
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.context.showNotification)
-        },
-      })
+            // getting-started onboarding step
+            if (modelName === 'Todo' && this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_TODO_MODEL')) {
+              this.props.nextStep().then(redirect)
+            } else {
+              redirect()
+            }
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
+        }
+      )
     }
   }
 
-  _skipGettingStarted () {
+  _skipGettingStarted = () => {
     if (window.confirm('Do you really want skip the getting started tour?')) {
       this.props.skip()
         .then(() => {
@@ -94,7 +111,7 @@ export class SideNav extends React.Component {
     }
   }
 
-  _toggleProjectSettings () {
+  _toggleProjectSettings = () => {
     this.setState({ projectSettingsVisible: !this.state.projectSettingsVisible })
   }
 
@@ -145,7 +162,7 @@ export class SideNav extends React.Component {
 
     const showsGettingStarted = this.context.router.isActive(`/${this.props.params.projectName}/getting-started`)
     const showsModels = this.context.router.isActive(`/${this.props.params.projectName}/models`)
-    // const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
+    const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
     const showsPlayground = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
 
     return (
@@ -156,7 +173,7 @@ export class SideNav extends React.Component {
             project={this.props.project}
             projectCount={this.props.projectCount}
             params={this.props.params}
-            hide={::this._toggleProjectSettings}
+            hide={this._toggleProjectSettings}
           />
         }
         <div className={classes.container}>
@@ -205,7 +222,7 @@ export class SideNav extends React.Component {
                         </Link>
                       </Tether>
                     </div>
-                    <div onClick={::this._skipGettingStarted} className={classes.gettingStartedSkip}>
+                    <div onClick={this._skipGettingStarted} className={classes.gettingStartedSkip}>
                       Skip getting started
                     </div>
                   </div>
@@ -233,7 +250,7 @@ export class SideNav extends React.Component {
                     </Link>
                   ))}
               </div>
-              <div className={classes.add} onClick={::this._addModel}>
+              <div className={classes.add} onClick={this._addModel}>
                 <Tether
                   steps={{
                     STEP2_CREATE_TODO_MODEL: 'First you need to create a new model called "Todo"',
@@ -245,17 +262,15 @@ export class SideNav extends React.Component {
                 </Tether>
               </div>
             </div>
-            {
-              // <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
-              //   <Link
-              //     to={`/${this.props.params.projectName}/actions`}
-              //     className={classes.head}
-              //   >
-              //     <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
-              //     <span>Actions</span>
-              //   </Link>
-              // </div>
-            }
+            <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
+              <Link
+                to={`/${this.props.params.projectName}/actions`}
+                className={classes.head}
+              >
+                <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
+                <span>Actions</span>
+              </Link>
+            </div>
             <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/playground`}
@@ -267,7 +282,7 @@ export class SideNav extends React.Component {
             </div>
           </ScrollBox>
         </div>
-        <div className={classes.foot} onClick={::this._toggleProjectSettings}>
+        <div className={classes.foot} onClick={this._toggleProjectSettings}>
           <Icon
             width={20} height={20}
             src={require('assets/icons/gear.svg')}

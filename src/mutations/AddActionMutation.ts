@@ -1,5 +1,5 @@
 import * as Relay from 'react-relay'
-import {ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType} from '../types/types'
+import { ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType } from '../types/types'
 
 interface Props {
   projectId: string

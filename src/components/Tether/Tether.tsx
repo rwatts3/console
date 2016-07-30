@@ -1,20 +1,19 @@
-import React, { PropTypes } from 'react'
+import * as React from 'react'
 import TetherComponent from 'react-tether'
 import { connect } from 'react-redux'
-import classes from './Tether.scss'
+const classes: any = require('./Tether.scss')
 
-class Tether extends React.Component {
+interface Props {
+  steps: { [key: string]: string }
+  children: Element
+  gettingStartedState: any
+  offsetX?: number
+  offsetY?: number
+  width?: number
+  side?: string
+}
 
-  static propTypes = {
-    steps: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired,
-    gettingStartedState: PropTypes.object.isRequired,
-    offsetX: PropTypes.number,
-    offsetY: PropTypes.number,
-    width: PropTypes.number,
-    side: PropTypes.string,
-
-  }
+class Tether extends React.Component<Props, {}> {
 
   static defaultProps = {
     offsetX: 0,
@@ -54,4 +53,3 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps)(Tether)
-
