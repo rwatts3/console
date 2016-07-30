@@ -1,17 +1,23 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
-import mapProps from 'map-props'
+import * as React from 'react'
+import * as Relay from 'react-relay'
+import mapProps from '../../components/MapProps/MapProps'
 import { connect } from 'react-redux'
+import { Model } from '../../types/types'
 
-class ModelRedirectView extends React.Component {
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    gettingStartedState: PropTypes.object.isRequired,
-    model: PropTypes.object,
-  }
+interface Props {
+  params: any
+  gettingStartedState: any
+  model?: Model
+}
+
+class ModelRedirectView extends React.Component<Props, {}> {
 
   static contextTypes = {
-    router: PropTypes.object.isRequired,
+    router: React.PropTypes.object.isRequired,
+  }
+
+  context: {
+    router: any
   }
 
   componentWillMount () {

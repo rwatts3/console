@@ -1,6 +1,11 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class DeleteModelMutation extends Relay.Mutation {
+interface Props {
+  modelId: string
+  projectId: string
+}
+
+export default class DeleteModelMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{deleteModel}`

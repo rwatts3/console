@@ -144,8 +144,8 @@ class ProjectRootView extends React.Component<Props, {}> {
 
     return (
       <div className={classes.root}>
-        <header className={classes.header}>
-          <div className={classes.headerLeft}>
+        <div className={classes.sidebar}>
+          <div className={classes.projectSelection}>
             <ProjectSelection
               params={this.props.params}
               projects={this.props.allProjects}
@@ -153,26 +153,22 @@ class ProjectRootView extends React.Component<Props, {}> {
               add={this._addProject}
             />
           </div>
-          <div className={classes.headerRight}>
-            <Header
-              viewer={this.props.viewer}
-              projectId={this.props.project.id}
-              params={this.props.params}
-            />
-          </div>
-        </header>
-        <div className={classes.main}>
           <div className={classes.sidenav}>
             <SideNav
               params={this.props.params}
               project={this.props.project}
               viewer={this.props.viewer}
               projectCount={this.props.allProjects.length}
-              />
+            />
           </div>
-          <div className={classes.content}>
-            {this.props.children}
-          </div>
+            {/*<Header*/}
+              {/*viewer={this.props.viewer}*/}
+              {/*projectId={this.props.project.id}*/}
+              {/*params={this.props.params}*/}
+            {/*/>*/}
+        </div>
+        <div className={classes.content}>
+          {this.props.children}
         </div>
       </div>
     )

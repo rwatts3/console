@@ -3,31 +3,32 @@
 .root {
   height: 100%;
   overflow: hidden;
+  display: flex;
 }
 
-.header {
-  height: 66px;
-}
-
-.headerLeft {
-  float: left;
+.sidebar {
   height: 100%;
   width: 300px;
 }
 
-.headerRight {
-  float: left;
+.content {
   height: 100%;
   width: calc(100% - 300px);
 }
 
-.main {
-  height: calc(100% - 66px);
+.header {
+  height: $headerHeight;
+}
+
+.projectSelection {
+  float: left;
+  height: $headerHeight;
+  width: 100%;
 }
 
 .sidenav {
   width: 300px;
-  height: 100%;
+  height: calc(100% - #{$headerHeight});
   float: left;
 }
 

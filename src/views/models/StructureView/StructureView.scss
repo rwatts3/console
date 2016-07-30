@@ -6,7 +6,7 @@
 }
 
 .head {
-  height: 88px;
+  height: $headerHeight;
   background: $grey1;
   border-top: 1px solid $grey2;
   border-bottom: 1px solid $grey2;
@@ -106,7 +106,7 @@
 }
 
 .table {
-  height: calc(100% - 88px);
+  height: calc(100% - #{$headerHeight});
 
   .fieldName, .type, .description, .constraints, .permissions {
     display: flex;

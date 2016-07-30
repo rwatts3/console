@@ -10,7 +10,7 @@ $tableHeadExpanded: 100px;
 }
 
 .head {
-  height: 88px;
+  height: $headerHeight;
   background: $grey1;
   border-top: 1px solid $grey2;
   border-bottom: 1px solid $grey2;
@@ -133,8 +133,8 @@ $tableHeadExpanded: 100px;
 }
 
 .loadingOverlay {
-  top: 88px;
-  height: calc(100% - 88px);
+  top: $headerHeight;
+  height: calc(100% - #{$headerHeight});
   left: 0;
   position: absolute;
   width: 100%;
@@ -146,7 +146,7 @@ $tableHeadExpanded: 100px;
 }
 
 .table {
-  height: calc(100% - 88px);
+  height: calc(100% - #{$headerHeight});
   overflow-x: scroll;
 
   &.loading {

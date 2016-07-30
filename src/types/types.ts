@@ -71,6 +71,8 @@ export interface Model {
   fields: RelayConnection<Field>
   unconnectedReverseRelationFieldsFrom: Field[]
   itemCount: number
+  description: string
+  isSystem: boolean
 }
 
 export type ActionTriggerType = 'MUTATION_MODEL' | 'MUTATION_RELATION'
