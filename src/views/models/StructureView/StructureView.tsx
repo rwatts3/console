@@ -97,15 +97,39 @@ class StructureView extends React.Component<Props, State> {
         {this.props.children}
         <div className={classes.head}>
           <div className={classes.headLeft}>
-            <div className={classes.title}>
-              {this.props.model.name}
-              {this.props.model.isSystem &&
-                <span className={classes.system}>System</span>
-              }
-              <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
-            </div>
-            <div className={classes.titleDescription}>
-              <ModelDescription model={this.props.model} />
+            <Tether
+              steps={{
+                STEP5_GOTO_DATA_TAB: 'Nice, you\'re done setting up the structure. Let\'s add some data.',
+              }}
+              width={200}
+              offsetX={-5}
+              offsetY={5}
+            >
+              <Link
+                to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
+                className={classes.tab}
+                onClick={dataViewOnClick}
+              >
+                Data Browser
+              </Link>
+            </Tether>
+            <Link
+              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
+              className={`${classes.tab} ${classes.active}`}
+            >
+              Structure
+            </Link>
+            <div className={classes.info}>
+              <div className={classes.title}>
+                {this.props.model.name}
+                {this.props.model.isSystem &&
+                  <span className={classes.system}>System</span>
+                }
+                <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
+              </div>
+              <div className={classes.titleDescription}>
+                <ModelDescription model={this.props.model} />
+              </div>
             </div>
           </div>
           <div className={classes.headRight}>
@@ -129,27 +153,6 @@ class StructureView extends React.Component<Props, State> {
                   src={require('assets/icons/add.svg')}
                 />
                 <span>Create Field</span>
-              </Link>
-            </Tether>
-            <Tether
-              steps={{
-                STEP5_GOTO_DATA_TAB: 'Nice, you\'re done setting up the structure. Let\'s add some data.',
-              }}
-              width={200}
-              offsetX={-5}
-              offsetY={5}
-            >
-              <Link
-                to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
-                className={classes.button}
-                onClick={dataViewOnClick}
-                >
-                <Icon
-                  width={16}
-                  height={16}
-                  src={require('assets/icons/data.svg')}
-                />
-                <span>Data Browser</span>
               </Link>
             </Tether>
             <div className={classes.button} onClick={this._toggleMenuDropdown}>

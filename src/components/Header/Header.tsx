@@ -9,6 +9,7 @@ import * as cookiestore from '../../utils/cookiestore'
 const classes: any = require('./Header.scss')
 
 interface Props {
+  children: Element
   viewer: Viewer
   params: any
   projectId: string
@@ -48,25 +49,26 @@ class Header extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <div className={classes.left}>
-          {this.state.endpointLayoverVisible &&
-            <ApiLayover
-              projectId={this.props.projectId}
-              close={() => this.setState({ endpointLayoverVisible: false } as State)}
-            />
-          }
-          <a
-            className={classes.item}
-            target='_blank'
-            href='http://docs.graph.cool'
-          >
-            Docs
-          </a>
-          <span
-            className={classes.item}
-            onClick={() => this.setState({ endpointLayoverVisible: !this.state.endpointLayoverVisible } as State)}
-          >
-            API Endpoint
-          </span>
+          {this.props.children}
+          {/*{this.state.endpointLayoverVisible &&*/}
+            {/*<ApiLayover*/}
+              {/*projectId={this.props.projectId}*/}
+              {/*close={() => this.setState({ endpointLayoverVisible: false } as State)}*/}
+            {/*/>*/}
+          {/*}*/}
+          {/*<a*/}
+            {/*className={classes.item}*/}
+            {/*target='_blank'*/}
+            {/*href='http://docs.graph.cool'*/}
+          {/*>*/}
+            {/*Docs*/}
+          {/*</a>*/}
+          {/*<span*/}
+            {/*className={classes.item}*/}
+            {/*onClick={() => this.setState({ endpointLayoverVisible: !this.state.endpointLayoverVisible } as State)}*/}
+          {/*>*/}
+            {/*API Endpoint*/}
+          {/*</span>*/}
         </div>
         {this.state.userDropdownVisible &&
           <ClickOutside onClickOutside={(e) => {

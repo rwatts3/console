@@ -10,11 +10,9 @@ $tableHeadExpanded: 100px;
 }
 
 .head {
-  height: $headerHeight;
-  background: $grey1;
+  height: calc(#{$headerHeight} + 1px);
   border-top: 1px solid $grey2;
   border-bottom: 1px solid $grey2;
-  padding: 19px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,8 +20,31 @@ $tableHeadExpanded: 100px;
 
 .headLeft {
   display: flex;
-  justify-content: space-between;
-  flex-direction: column;
+  height: 100%;
+
+  .tab {
+    height: 100%;
+    color: $grey4;
+    width: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+
+    &.active {
+      background: $grey2;
+      color: $grey5;
+    }
+  }
+
+  .info {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 12px 30px;
+  }
 
   .title {
     font-weight: 600;
@@ -42,7 +63,6 @@ $tableHeadExpanded: 100px;
     font-size: 14px;
     font-weight: 300;
     color: $grey4;
-    margin-top: 1px;
   }
 }
 
@@ -51,6 +71,7 @@ $tableHeadExpanded: 100px;
   align-items: center;
   justify-content: flex-end;
   position: relative;
+  padding-right: 30px;
 
   .button {
     @include button;
@@ -133,8 +154,8 @@ $tableHeadExpanded: 100px;
 }
 
 .loadingOverlay {
-  top: $headerHeight;
-  height: calc(100% - #{$headerHeight});
+  top: calc(#{$headerHeight} + 1px);
+  height: calc(100% - #{$headerHeight} - 1px);
   left: 0;
   position: absolute;
   width: 100%;
@@ -146,7 +167,7 @@ $tableHeadExpanded: 100px;
 }
 
 .table {
-  height: calc(100% - #{$headerHeight});
+  height: calc(100% - #{$headerHeight} - 1px);
   overflow-x: scroll;
 
   &.loading {

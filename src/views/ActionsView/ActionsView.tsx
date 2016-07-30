@@ -1,13 +1,12 @@
 import * as React from 'react'
-const mapProps: any = require('map-props')
 import * as Relay from 'react-relay'
-import { Action, Project } from '../../types/types'
+import { Viewer } from '../../types/types'
+import Header from '../../components/Header/Header'
 import ActionRow from './ActionRow.tsx'
 const classes: any = require('./ActionsView.scss')
 
 interface Props {
-  actions: Action[]
-  project: Project
+  viewer: Viewer & any
   params: any
 }
 
@@ -24,19 +23,26 @@ class ActionsView extends React.Component<Props, State> {
   render () {
     return (
       <div className={classes.root}>
+        <Header
+          viewer={this.props.viewer}
+          projectId={this.props.viewer.project.id}
+          params={this.props.params}
+        >
+          <span>Actions</span>
+        </Header>
         <div onClick={() => this.setState({ showAddRow: true })}>+ Add Action</div>
         {this.state.showAddRow &&
           <ActionRow
             action={null}
-            project={this.props.project}
+            project={this.props.viewer.project}
             onSubmit={() => this.setState({ showAddRow: false })}
           />
         }
-        {this.props.actions.map((action) => (
+        {this.props.viewer.project.actions.edges.map((edge) => edge.node).map((action) => (
           <ActionRow
             key={action.id}
             action={action}
-            project={this.props.project}
+            project={this.props.viewer.project}
           />
         ))}
       </div>
@@ -44,13 +50,7 @@ class ActionsView extends React.Component<Props, State> {
   }
 }
 
-const MappedActionsView = mapProps({
-  params: (props) => props.params,
-  actions: (props) => props.viewer.project.actions.edges.map(({ node }) => node),
-  project: (props) => props.viewer.project,
-})(ActionsView)
-
-export default Relay.createContainer(MappedActionsView, {
+export default Relay.createContainer(ActionsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
@@ -68,6 +68,7 @@ export default Relay.createContainer(MappedActionsView, {
           }
           ${ActionRow.getFragment('project')}
         }
+        ${Header.getFragment('viewer')}
       }
     `,
   },
