@@ -1,42 +1,41 @@
-import React, { PropTypes } from 'react'
+import * as React from 'react'
 import { Link } from 'react-router'
-import PureRenderMixin from 'react-addons-pure-render-mixin'
-import ScrollBox from 'components/ScrollBox/ScrollBox'
-import Icon from 'components/Icon/Icon'
-import classes from './ProjectSelection.scss'
+import * as PureRenderMixin from 'react-addons-pure-render-mixin'
+import ScrollBox from '../../components/ScrollBox/ScrollBox'
+import Icon from '../../components/Icon/Icon'
+import { Project } from '../../types/types'
+const classes: any = require('./ProjectSelection.scss')
 
-const ProjectPropType = React.PropTypes.shape({
-  webhookUrl: React.PropTypes.string,
-  name: React.PropTypes.string.isRequired,
-})
+interface Props {
+  params: any
+  add: () => void
+  selectedProject: Project
+  projects: Project[]
+}
 
-export default class ProjectSelection extends React.Component {
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    add: PropTypes.func.isRequired,
-    selectedProject: ProjectPropType.isRequired,
-    projects: PropTypes.arrayOf(ProjectPropType).isRequired,
-  };
+interface State {
+  expanded: boolean
+}
+
+export default class ProjectSelection extends React.Component<Props, State> {
+
+  state = {
+    expanded: false,
+  }
+
+  shouldComponentUpdate: any
 
   constructor (props) {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-
-    this.state = {
-      expanded: false,
-    }
   }
 
-  _toggle () {
+  _toggle = () => {
     this.setState({ expanded: !this.state.expanded })
   }
 
-  _onAdd () {
-    this.props.add()
-  }
-
-  _onSelectProject () {
+  _onSelectProject = () => {
     this._toggle()
 
     analytics.track('sidenav: selected project')
@@ -45,7 +44,7 @@ export default class ProjectSelection extends React.Component {
   render () {
     return (
       <div className={classes.root}>
-        <div className={classes.head} onClick={::this._toggle}>
+        <div className={classes.head} onClick={this._toggle}>
           <div className={classes.logo}>
             <Icon
               width={30}
@@ -74,7 +73,7 @@ export default class ProjectSelection extends React.Component {
                 <Link
                   key={project.name}
                   className={classes.listElement}
-                  onClick={::this._onSelectProject}
+                  onClick={this._onSelectProject}
                   to={`/${project.name}`}
                   activeClassName={classes.listElementActive}
                   >
@@ -87,7 +86,7 @@ export default class ProjectSelection extends React.Component {
                   </div>
                 </Link>
               ))}
-              <div className={classes.add} onClick={::this._onAdd}>+ New Project</div>
+              <div className={classes.add} onClick={this.props.add}>+ New Project</div>
             </ScrollBox>
           </div>
         }

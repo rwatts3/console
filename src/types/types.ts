@@ -6,6 +6,19 @@ interface RelayEdge<T> {
   node: T
 }
 
+export interface Viewer {
+  id: string
+  user: Client
+}
+
+export interface Client {
+  id: string
+  name: string
+  email: string
+  gettingStartedStatus: string
+  projects: RelayConnection<Project>
+}
+
 export interface Project {
   id: string
   name: string

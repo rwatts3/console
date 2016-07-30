@@ -1,30 +1,37 @@
-import React, { PropTypes } from 'react'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { Link } from 'react-router'
-import Icon from 'components/Icon/Icon'
-import ApiLayover from 'components/ApiLayover/ApiLayover'
-import classes from './Header.scss'
-import ClickOutside from 'react-click-outside'
-import * as cookiestore from 'utils/cookiestore'
+import { Viewer } from '../../types/types'
+import Icon from '../../components/Icon/Icon'
+import ApiLayover from '../../components/ApiLayover/ApiLayover'
+const ClickOutside: any = (require('react-click-outside') as any).default
+import * as cookiestore from '../../utils/cookiestore'
+const classes: any = require('./Header.scss')
 
-export default class Header extends React.Component {
+interface Props {
+  viewer: Viewer
+  params: any
+  projectId: string
+}
 
-  static propTypes = {
-    user: PropTypes.object.isRequired,
-    params: PropTypes.object.isRequired,
-    projectId: PropTypes.string.isRequired,
-  }
+interface State {
+  userDropdownVisible: boolean
+  endpointLayoverVisible: boolean
+}
+
+class Header extends React.Component<Props, State> {
 
   state = {
     userDropdownVisible: false,
     endpointLayoverVisible: false,
   }
 
-  _openUserDropdown () {
-    this.setState({ userDropdownVisible: true })
+  _openUserDropdown = () => {
+    this.setState({ userDropdownVisible: true } as State)
   }
 
-  _closeUserDropdown () {
-    this.setState({ userDropdownVisible: false })
+  _closeUserDropdown = () => {
+    this.setState({ userDropdownVisible: false } as State)
   }
 
   _logout () {
@@ -44,7 +51,7 @@ export default class Header extends React.Component {
           {this.state.endpointLayoverVisible &&
             <ApiLayover
               projectId={this.props.projectId}
-              close={() => this.setState({ endpointLayoverVisible: false })}
+              close={() => this.setState({ endpointLayoverVisible: false } as State)}
             />
           }
           <a
@@ -56,7 +63,7 @@ export default class Header extends React.Component {
           </a>
           <span
             className={classes.item}
-            onClick={() => this.setState({ endpointLayoverVisible: !this.state.endpointLayoverVisible })}
+            onClick={() => this.setState({ endpointLayoverVisible: !this.state.endpointLayoverVisible } as State)}
           >
             API Endpoint
           </span>
@@ -69,18 +76,18 @@ export default class Header extends React.Component {
             <div className={classes.userDropdown}>
               <Link
                 to={`/${this.props.params.projectName}/account`}
-                onClick={::this._closeUserDropdown}
+                onClick={this._closeUserDropdown}
               >
                 Account
               </Link>
-              <div onClick={::this._logout}>
+              <div onClick={this._logout}>
                 Logout
               </div>
             </div>
           </ClickOutside>
         }
-        <div className={classes.right} onClick={::this._openUserDropdown}>
-          {this.props.user.name}
+        <div className={classes.right} onClick={this._openUserDropdown}>
+          {this.props.viewer.user.name}
           <Icon
             width={11}
             height={6}
@@ -91,3 +98,16 @@ export default class Header extends React.Component {
     )
   }
 }
+
+export default Relay.createContainer(Header, {
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        user {
+          id
+          name
+        }
+      }
+    `,
+  },
+})

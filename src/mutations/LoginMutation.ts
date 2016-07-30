@@ -1,6 +1,18 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
+import { Viewer } from '../types/types'
 
-export default class LoginMutation extends Relay.Mutation {
+interface Props {
+  viewer: Viewer
+  email: string
+  password: string
+}
+
+interface Response {
+  token: string
+  viewer: Viewer
+}
+
+export default class LoginMutation extends Relay.Mutation<Props, Response> {
 
   getMutation () {
     return Relay.QL`mutation{signinUser}`

@@ -1,35 +1,39 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
-import Tooltip from 'react-tooltip'
-import PureRenderMixin from 'react-addons-pure-render-mixin'
-import mapProps from 'map-props'
-import { validateProjectName } from 'utils/nameValidator'
-import ProjectSelection from 'components/ProjectSelection/ProjectSelection'
-import Header from 'components/Header/Header'
-import SideNav from 'views/ProjectRootView/SideNav'
-import LoginView from 'views/LoginView/LoginView'
-import AddProjectMutation from 'mutations/AddProjectMutation'
+import * as React from 'react'
+import * as Relay from 'react-relay'
+import * as PureRenderMixin from 'react-addons-pure-render-mixin'
+import mapProps from '../../components/MapProps/MapProps'
 import { connect } from 'react-redux'
-import { update } from 'reducers/GettingStartedState'
-import classes from './ProjectRootView.scss'
 import Smooch from 'smooch'
+import { validateProjectName } from '../../utils/nameValidator'
+import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
+import Header from '../../components/Header/Header'
+import SideNav from '../../views/ProjectRootView/SideNav'
+import LoginView from '../../views/LoginView/LoginView'
+import AddProjectMutation from '../../mutations/AddProjectMutation'
+const update: any = (require('../../reducers/GettingStartedState') as any).update
+import { Viewer, Client, Project} from '../../types/types'
+const classes: any = require('./ProjectRootView.scss')
 
-import '../../styles/core.scss'
+require('../../styles/core.scss')
 
-export class ProjectRootView extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    isLoggedin: PropTypes.bool.isRequired,
-    viewer: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
-    project: PropTypes.object,
-    allProjects: PropTypes.array,
-    params: PropTypes.object.isRequired,
-    relay: PropTypes.object.isRequired,
-    gettingStartedState: PropTypes.object.isRequired,
-    checkStatus: PropTypes.bool.isRequired,
-    update: PropTypes.func.isRequired,
-  }
+interface Props {
+  children: Element
+  isLoggedin: boolean
+  viewer: Viewer
+  user: Client
+  project: Project
+  allProjects: Project[]
+  params: any
+  relay: any
+  gettingStartedState: any
+  checkStatus: boolean
+  update: (step: string, userId: string) => void
+}
+
+class ProjectRootView extends React.Component<Props, {}> {
+
+  _refreshInterval: any
+  shouldComponentUpdate: any
 
   constructor (props) {
     super(props)
@@ -64,7 +68,7 @@ export class ProjectRootView extends React.Component {
   }
 
   componentWillUnmount () {
-    clearInterval(this.refreshInterval)
+    clearInterval(this._refreshInterval)
   }
 
   componentDidUpdate (prevProps) {
@@ -92,36 +96,42 @@ export class ProjectRootView extends React.Component {
 
   _updateForceFetching () {
     if (this.props.checkStatus) {
-      if (!this.refreshInterval) {
-        this.refreshInterval = setInterval(() => {
-          // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
-          this.props.relay.forceFetch({ }, () => {
-            this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
-          })
-        }, 1500)
+      if (!this._refreshInterval) {
+        this._refreshInterval = setInterval(
+          () => {
+            // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
+            this.props.relay.forceFetch({ }, () => {
+              this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
+            })
+          },
+          1500
+        )
       }
     } else {
-      clearInterval(this.refreshInterval)
+      clearInterval(this._refreshInterval)
     }
   }
 
-  _addProject () {
-    var projectName = window.prompt('Project name:')
+  _addProject = () => {
+    let projectName = window.prompt('Project name:')
     while (projectName != null && !validateProjectName(projectName)) {
       projectName = window.prompt('The inserted project name was invalid.' +
         ' Enter a valid project name, like "Project 2" or "My Project":')
     }
     if (projectName) {
-      Relay.Store.commitUpdate(new AddProjectMutation({
-        projectName,
-        userId: this.props.viewer.user.id,
-      }), {
-        onSuccess: () => {
-          analytics.track('sidenav: created project', {
-            project: projectName,
-          })
-        },
-      })
+      Relay.Store.commitUpdate(
+        new AddProjectMutation({
+          projectName,
+          userId: this.props.viewer.user.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('sidenav: created project', {
+              project: projectName,
+            })
+          },
+        }
+      )
     }
   }
 
@@ -134,24 +144,20 @@ export class ProjectRootView extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Tooltip
-          place='bottom'
-          effect='solid'
-        />
         <header className={classes.header}>
           <div className={classes.headerLeft}>
             <ProjectSelection
               params={this.props.params}
               projects={this.props.allProjects}
               selectedProject={this.props.project}
-              add={::this._addProject}
+              add={this._addProject}
             />
           </div>
           <div className={classes.headerRight}>
             <Header
+              viewer={this.props.viewer}
               projectId={this.props.project.id}
               params={this.props.params}
-              user={this.props.user}
             />
           </div>
         </header>
@@ -236,6 +242,7 @@ export default Relay.createContainer(MappedProjectRootView, {
         }
         ${LoginView.getFragment('viewer')}
         ${SideNav.getFragment('viewer')}
+        ${Header.getFragment('viewer')}
       }
     `,
   },

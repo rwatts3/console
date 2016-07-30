@@ -1,37 +1,39 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
-import Loading from 'components/Loading/Loading'
-import { findDOMNode } from 'react-dom'
-import { updateNetworkLayer } from 'utils/relay'
-import * as cookiestore from 'utils/cookiestore'
-import mapProps from 'map-props'
-import LoginMutation from 'mutations/LoginMutation'
-import Icon from 'components/Icon/Icon'
-import classes from './LoginView.scss'
+import * as React from 'react'
+import * as Relay from 'react-relay'
+import Loading from '../../components/Loading/Loading'
+import { updateNetworkLayer } from '../../utils/relay'
+import * as cookiestore from '../../utils/cookiestore'
+import LoginMutation from '../../mutations/LoginMutation'
+import Icon from '../../components/Icon/Icon'
+import { Viewer } from '../../types/types'
+const classes: any = require('./LoginView.scss')
 
-class LoginView extends React.Component {
+interface Props {
+  viewer: Viewer
+}
 
-  static propTypes = {
-    viewer: PropTypes.object.isRequired,
-  };
+interface State {
+  loading: boolean
+  email: string
+  password: string
+}
 
-  constructor (props) {
-    super(props)
+class LoginView extends React.Component<Props, State> {
 
-    this.state = {
-      loading: false,
-    }
+  state = {
+    loading: false,
+    email: '',
+    password: '',
   }
 
   componentDidMount () {
     analytics.track('login: viewed')
   }
 
-  _login () {
-    this.setState({ loading: true })
+  _login = () => {
+    this.setState({ loading: true } as State)
 
-    const email = findDOMNode(this.refs.email).value
-    const password = findDOMNode(this.refs.password).value
+    const { email, password } = this.state
 
     const payload = { email, password, viewer: this.props.viewer }
     const onSuccess = (response) => {
@@ -44,7 +46,7 @@ class LoginView extends React.Component {
       })
     }
     const onFailure = () => {
-      this.setState({ loading: false })
+      this.setState({ loading: false } as State)
 
       analytics.track('login: login failed', { email })
     }
@@ -54,7 +56,7 @@ class LoginView extends React.Component {
     })
   }
 
-  _listenForEnter (e) {
+  _listenForEnter = (e) => {
     if (e.keyCode === 13) {
       this._login()
     }
@@ -87,15 +89,17 @@ class LoginView extends React.Component {
               ref='email'
               type='text'
               placeholder='Email'
-              onKeyUp={::this._listenForEnter}
+              onChange={(e) => this.setState({ email: e.target.value } as State)}
+              onKeyUp={this._listenForEnter}
               />
             <input
               ref='password'
               type='password'
               placeholder='Password'
-              onKeyUp={::this._listenForEnter}
+              onChange={(e) => this.setState({ password: e.target.value } as State)}
+              onKeyUp={this._listenForEnter}
               />
-            <button onClick={::this._login}>Login</button>
+            <button onClick={this._login}>Login</button>
           </div>
         </div>
       </div>
@@ -103,11 +107,7 @@ class LoginView extends React.Component {
   }
 }
 
-const MappedLoginView = mapProps({
-  viewer: (props) => props.viewer,
-})(LoginView)
-
-export default Relay.createContainer(MappedLoginView, {
+export default Relay.createContainer(LoginView, {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Viewer {

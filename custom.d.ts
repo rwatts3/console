@@ -4,6 +4,8 @@ declare module 'lokka'
 declare module 'lokka-transport-http'
 declare module 'react-router'
 declare module 'react-redux'
+declare module 'react-tether'
+declare module 'smooch'
 
 declare var require: {
   <T>(path: string): T
@@ -13,6 +15,7 @@ declare var require: {
 
 declare var analytics: any
 declare var __BACKEND_ADDR__: any
+declare var __SMOOCH_TOKEN__: any
 
 declare module 'react-relay' {
 
