@@ -1,37 +1,48 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 import FieldRow from './FieldRow'
 import ModelDescription from '../ModelDescription'
-import mapProps from 'components/MapProps/MapProps'
-import ScrollBox from 'components/ScrollBox/ScrollBox'
-import Icon from 'components/Icon/Icon'
-import Tether from 'components/Tether/Tether'
-import DeleteModelMutation from 'mutations/DeleteModelMutation'
+import mapProps from '../../../components/MapProps/MapProps'
+import ScrollBox from '../../../components/ScrollBox/ScrollBox'
+import Icon from '../../../components/Icon/Icon'
+import Tether from '../../../components/Tether/Tether'
+import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
+import { Field, Model } from '../../../types/types'
+import { ShowNotificationCallback } from '../../../types/utils'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { nextStep } from 'reducers/GettingStartedState'
-import classes from './StructureView.scss'
+const { nextStep } = require('../../../reducers/GettingStartedState') as any
+const classes: any = require('./StructureView.scss')
 
-class StructureView extends React.Component {
+interface Props {
+  params: any
+  possibleRelatedPermissionPaths: Field[][]
+  availableUserRoles: string[]
+  fields: Field[]
+  allModels: Model[]
+  projectId: string
+  model: Model
+  gettingStartedState: any
+  nextStep: any
+  children: Element
+}
 
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    possibleRelatedPermissionPaths: PropTypes.array.isRequired,
-    availableUserRoles: PropTypes.array.isRequired,
-    fields: PropTypes.array.isRequired,
-    allModels: PropTypes.array.isRequired,
-    projectId: PropTypes.string.isRequired,
-    model: PropTypes.object.isRequired,
-    gettingStartedState: PropTypes.object.isRequired,
-    nextStep: PropTypes.func.isRequired,
-    children: PropTypes.element,
-  }
+interface State {
+  menuDropdownVisible: boolean
+}
+
+class StructureView extends React.Component<Props, State> {
 
   static contextTypes = {
-    router: PropTypes.object.isRequired,
+    router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    router: any
+    showNotification: ShowNotificationCallback
   }
 
   state = {
@@ -44,30 +55,33 @@ class StructureView extends React.Component {
     })
   }
 
-  _toggleMenuDropdown () {
-    this.setState({ menuDropdownVisible: !this.state.menuDropdownVisible })
+  _toggleMenuDropdown = () => {
+    this.setState({ menuDropdownVisible: !this.state.menuDropdownVisible } as State)
   }
 
-  _deleteModel () {
+  _deleteModel = () => {
     this._toggleMenuDropdown()
 
     if (window.confirm('Do you really want to delete this model?')) {
       this.context.router.replace(`/${this.props.params.projectName}/models`)
 
-      Relay.Store.commitUpdate(new DeleteModelMutation({
-        projectId: this.props.projectId,
-        modelId: this.props.model.id,
-      }), {
-        onSuccess: () => {
-          analytics.track('models/structure: deleted model', {
-            project: this.props.params.projectName,
-            model: this.props.params.modelName,
-          })
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.context.showNotification)
-        },
-      })
+      Relay.Store.commitUpdate(
+        new DeleteModelMutation({
+          projectId: this.props.projectId,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('models/structure: deleted model', {
+              project: this.props.params.projectName,
+              model: this.props.params.modelName,
+            })
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
+        }
+      )
     }
   }
 
@@ -138,7 +152,7 @@ class StructureView extends React.Component {
                 <span>Data Browser</span>
               </Link>
             </Tether>
-            <div className={classes.button} onClick={::this._toggleMenuDropdown}>
+            <div className={classes.button} onClick={this._toggleMenuDropdown}>
               <Icon
                 width={16}
                 height={16}
@@ -147,7 +161,7 @@ class StructureView extends React.Component {
             </div>
             {this.state.menuDropdownVisible &&
               <div className={classes.menuDropdown}>
-                <div onClick={::this._deleteModel}>
+                <div onClick={this._deleteModel}>
                   Delete Model
                 </div>
               </div>

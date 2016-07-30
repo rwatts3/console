@@ -1,6 +1,11 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class UpdateFieldDescriptionMutation extends Relay.Mutation {
+interface Props {
+  modelId: string
+  description: string
+}
+
+export default class UpdateFieldDescriptionMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateModel}`
