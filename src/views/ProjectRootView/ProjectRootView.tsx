@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import Smooch from 'smooch'
 import { validateProjectName } from '../../utils/nameValidator'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
-import Header from '../../components/Header/Header'
 import SideNav from '../../views/ProjectRootView/SideNav'
 import LoginView from '../../views/LoginView/LoginView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
@@ -161,11 +160,6 @@ class ProjectRootView extends React.Component<Props, {}> {
               projectCount={this.props.allProjects.length}
             />
           </div>
-            {/*<Header*/}
-              {/*viewer={this.props.viewer}*/}
-              {/*projectId={this.props.project.id}*/}
-              {/*params={this.props.params}*/}
-            {/*/>*/}
         </div>
         <div className={classes.content}>
           {this.props.children}
@@ -238,7 +232,6 @@ export default Relay.createContainer(MappedProjectRootView, {
         }
         ${LoginView.getFragment('viewer')}
         ${SideNav.getFragment('viewer')}
-        ${Header.getFragment('viewer')}
       }
     `,
   },

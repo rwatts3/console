@@ -368,12 +368,26 @@ class BrowserView extends React.Component<Props, State> {
       <div className={`${classes.root} ${this.state.filtersVisible ? classes.filtersVisible : ''}`}>
         <div className={classes.head}>
           <div className={classes.headLeft}>
-            <div className={classes.title}>
-              {this.props.model.name}
-              <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
-            </div>
-            <div className={classes.titleDescription}>
-              <ModelDescription model={this.props.model} />
+            <Link
+              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/data`}
+              className={`${classes.tab} ${classes.active}`}
+            >
+              Data Browser
+            </Link>
+            <Link
+              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
+              className={classes.tab}
+            >
+              Structure
+            </Link>
+            <div className={classes.info}>
+              <div className={classes.title}>
+                {this.props.model.name}
+                <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
+              </div>
+              <div className={classes.titleDescription}>
+                <ModelDescription model={this.props.model} />
+              </div>
             </div>
           </div>
           <div className={classes.headRight}>
@@ -399,17 +413,6 @@ class BrowserView extends React.Component<Props, State> {
                 <span>{this.state.newRowVisible ? 'Cancel' : 'Add item'}</span>
               </div>
             </Tether>
-            <Link
-              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
-              className={classes.button}
-              >
-              <Icon
-                width={16}
-                height={16}
-                src={require('assets/icons/edit.svg')}
-              />
-              <span>Edit Structure</span>
-            </Link>
             {this.state.selectedItemIds.size > 0 &&
               <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
                 <Icon
