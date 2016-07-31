@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 import { Viewer } from '../../types/types'
 import Icon from '../../components/Icon/Icon'
-import ApiLayover from '../../components/ApiLayover/ApiLayover'
+// import ApiLayover from '../../components/ApiLayover/ApiLayover'
 const ClickOutside: any = (require('react-click-outside') as any).default
 import * as cookiestore from '../../utils/cookiestore'
 const classes: any = require('./Header.scss')

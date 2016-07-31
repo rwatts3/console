@@ -1,12 +1,12 @@
 import * as Relay from 'react-relay'
-import {ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType} from '../types/types'
+import { ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType } from '../types/types'
 
 interface Props {
   actionId: string
-  isActive: boolean
-  description: string
-  triggerType: ActionTriggerType
-  handlerType: ActionHandlerType
+  isActive?: boolean
+  description?: string
+  triggerType?: ActionTriggerType
+  handlerType?: ActionHandlerType
   triggerMutationModel?: TriggerMutationModelProps
   handlerWebhook?: HandlerWebhookProps
 }
@@ -49,12 +49,27 @@ export default class UpdateActionMutation extends Relay.Mutation<Props, Response
 
   getVariables () {
     return {
-      id: this.props.actionId,
+      actionId: this.props.actionId,
+      isActive: this.props.isActive,
       description: this.props.description,
       triggerType: this.props.triggerType,
       handlerType: this.props.handlerType,
       triggerMutationModel: this.props.triggerMutationModel,
       handlerWebhook: this.props.handlerWebhook,
+    }
+  }
+
+  getOptimisticResponse () {
+    return {
+      action: {
+        id: this.props.actionId,
+        isActive: this.props.isActive,
+        description: this.props.description,
+        triggerType: this.props.triggerType,
+        handlerType: this.props.handlerType,
+        triggerMutationModel: this.props.triggerMutationModel,
+        handlerWebhook: this.props.handlerWebhook,
+      }.filterNullAndUndefined(),
     }
   }
 }
