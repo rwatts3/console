@@ -101,6 +101,7 @@ if (!Array.prototype.equals) {
 
 interface Object {
   mapToArray<U, V>(fn: (str: string, U) => V): [V]
+  filterNullAndUndefined(): Object
 }
 
 Object.defineProperty(Object.prototype, 'mapToArray', {
@@ -110,6 +111,18 @@ Object.defineProperty(Object.prototype, 'mapToArray', {
       arr.push(fn(index, this[index]))
     }
     return arr
+  },
+})
+
+Object.defineProperty(Object.prototype, 'filterNullAndUndefined', {
+  value: function () {
+    let o = Object.assign({}, this)
+    Object.keys(o).forEach((k) => {
+      if (o[k] === undefined || o[k] === null) {
+        delete o[k]
+      }
+    })
+    return o
   },
 })
 

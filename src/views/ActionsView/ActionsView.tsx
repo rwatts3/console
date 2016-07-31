@@ -28,9 +28,8 @@ class ActionsView extends React.Component<Props, State> {
           projectId={this.props.viewer.project.id}
           params={this.props.params}
         >
-          <span>Actions</span>
+          <div onClick={() => this.setState({ showAddRow: true })}>+ Add Action</div>
         </Header>
-        <div onClick={() => this.setState({ showAddRow: true })}>+ Add Action</div>
         {this.state.showAddRow &&
           <ActionRow
             action={null}
@@ -42,7 +41,7 @@ class ActionsView extends React.Component<Props, State> {
           <ActionRow
             key={action.id}
             action={action}
-            project={this.props.viewer.project}
+            projectId={this.props.viewer.project.id}
           />
         ))}
       </div>
@@ -58,6 +57,7 @@ export default Relay.createContainer(ActionsView, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
+          id
           actions(first: 1000) {
             edges {
               node {
@@ -66,7 +66,6 @@ export default Relay.createContainer(ActionsView, {
               }
             }
           }
-          ${ActionRow.getFragment('project')}
         }
         ${Header.getFragment('viewer')}
       }
