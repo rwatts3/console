@@ -6,6 +6,8 @@ declare module 'react-router'
 declare module 'react-redux'
 declare module 'react-tether'
 declare module 'smooch'
+declare module 'graphql'
+declare module 'graphql/*'
 
 declare var require: {
   <T>(path: string): T

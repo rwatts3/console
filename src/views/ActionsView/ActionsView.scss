@@ -2,4 +2,13 @@
 @import '~styles/mixins';
 
 .root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding-top: $headerHeight;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
 }
