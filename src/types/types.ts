@@ -25,6 +25,7 @@ export interface Project {
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>
+  actionSchema: string
 }
 
 export interface Field {

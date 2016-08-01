@@ -9,11 +9,14 @@ const classes: any = require('./ActionRow.scss')
 interface Props {
   action: Action
   projectId: string
+  onClick: () => void
 }
 
 class ActionRow extends React.Component<Props, {}> {
 
-  _toggleIsActive = () => {
+  _toggleIsActive = (e: React.MouseEvent<any>) => {
+    e.stopPropagation()
+
     Relay.Store.commitUpdate(
       new UpdateActionMutation({
         actionId: this.props.action.id,
@@ -22,7 +25,9 @@ class ActionRow extends React.Component<Props, {}> {
     )
   }
 
-  _delete = () => {
+  _delete = (e: React.MouseEvent<any>) => {
+    e.stopPropagation()
+
     if (window.confirm('Do you really want to delete this Action?')) {
       Relay.Store.commitUpdate(
         new DeleteActionMutation({
@@ -69,11 +74,12 @@ class ActionRow extends React.Component<Props, {}> {
     }
 
     return (
-      <div className={classes.root}>
+      <div className={classes.root} onClick={this.props.onClick}>
         <div className={classes.row}>
           <input
             value={this.props.action.isActive}
-            onChange={this._toggleIsActive}
+            onClick={this._toggleIsActive}
+            readOnly
             type='checkbox'
           />
           <div>When</div>

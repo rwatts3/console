@@ -6,8 +6,10 @@
   height: calc(#{$headerHeight} + 1px);
   display: flex;
   align-items: center;
-  position: relative;
   border-bottom: 1px solid $grey2;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .left {
