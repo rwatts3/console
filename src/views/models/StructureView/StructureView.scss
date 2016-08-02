@@ -5,125 +5,34 @@
   height: 100%;
 }
 
-.head {
-  height: calc(#{$headerHeight} + 1px);
-  border-top: 1px solid $grey2;
-  border-bottom: 1px solid $grey2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.button {
+  @include button;
+  margin-left: 10px;
 
-.headLeft {
-  display: flex;
-  height: 100%;
+  &.green {
+    border-color: $accent;
+    color: $accent;
+    background: #fff;
 
-  .tab {
-    height: 100%;
-    color: $grey4;
-    width: 170px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: uppercase;
-
-    &.active {
-      background: $grey2;
-      color: $grey5;
-    }
-  }
-
-  .info {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    padding: 12px 30px;
-  }
-
-  .title {
-    font-weight: 600;
-    font-size: 20px;
-    color: $grey5;
-    display: flex;
-    align-items: center;
-
-    .system {
-      font-weight: 400;
-      background: $grey2;
-      color: $grey4;
-      font-size: 11px;
-      padding: 3px 5px;
-      text-transform: uppercase;
-      border-radius: 4px;
-      margin-left: 10px;
-      display: inline-block;
-    }
-
-    .itemCount {
-      margin-left: 9px;
-      font-size: 15px;
-      font-weight: 300;
-      color: $grey3;
-    }
-  }
-
-  .titleDescription {
-    font-size: 14px;
-    font-weight: 300;
-    color: $grey4;
-  }
-
-  input {
-    border: 0;
-    background: none;
-    width: 100%;
-    padding: 10px 0;
-    margin: -10px 0;
-
-    @include placeholder {
-      color: $grey4;
-    }
-  }
-}
-
-.headRight {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  position: relative;
-  padding-right: 30px;
-
-  .button {
-    @include button;
-    margin-left: 10px;
-
-    &.green {
-      border-color: $accent;
-      color: $accent;
-      background: #fff;
-
-      &:hover {
-        background: $accent;
-        color: #fff;
-
-        svg {
-          fill: #fff;
-        }
-      }
+    &:hover {
+      background: $accent;
+      color: #fff;
 
       svg {
-        fill: $accent;
+        fill: #fff;
       }
     }
-  }
 
-  .menuDropdown {
-    @include dropdown;
-    top: 46px;
-    right: 0;
+    svg {
+      fill: $accent;
+    }
   }
+}
+
+.menuDropdown {
+  @include dropdown;
+  top: 46px;
+  right: 0;
 }
 
 .table {

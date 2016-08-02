@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Viewer } from '../../types/types'
+import { Viewer, Project } from '../../types/types'
 import Header from '../../components/Header/Header'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import ActionRow from './ActionRow.tsx'
@@ -8,7 +8,7 @@ import ActionBoxes from './ActionBoxes.tsx'
 const classes: any = require('./ActionsView.scss')
 
 interface Props {
-  viewer: Viewer & any
+  viewer: Viewer & { project: Project }
   params: any
   relay: any
 }
@@ -46,8 +46,8 @@ class ActionsView extends React.Component<Props, State> {
       <div className={classes.root}>
         <Header
           viewer={this.props.viewer}
-          projectId={this.props.viewer.project.id}
           params={this.props.params}
+          project={this.props.viewer.project}
         >
           <div onClick={() => this.setState({ showAddRow: true } as State)}>+ Add Action</div>
         </Header>
@@ -93,7 +93,6 @@ export default Relay.createContainer(ActionsView, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
-          id
           actions(first: 1000) {
             edges {
               node {
@@ -104,6 +103,7 @@ export default Relay.createContainer(ActionsView, {
             }
           }
           ${ActionBoxes.getFragment('project')}
+          ${Header.getFragment('project')}
         }
         ${Header.getFragment('viewer')}
       }

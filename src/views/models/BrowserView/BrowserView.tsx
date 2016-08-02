@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Link } from 'react-router'
 const calculateSize: any = require('calculate-size')
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
@@ -14,7 +13,6 @@ import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import { ShowNotificationCallback } from '../../../types/utils'
 const Tether: any = (require('../../../components/Tether/Tether') as any).default
-const ModelDescription: any = (require('../ModelDescription') as any).default
 import NewRow from './NewRow'
 import Row from './Row'
 import HeaderCell from './HeaderCell'
@@ -23,16 +21,18 @@ import CheckboxCell from './CheckboxCell'
 import { toGQL, compareFields } from '../utils'
 import { valueToString } from '../../../utils/valueparser'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
-import { Field, Model } from '../../../types/types'
+import { Field, Model, Viewer, Project } from '../../../types/types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import ModelHeader from '../ModelHeader'
 const gettingStartedState: any = require('../../../reducers/GettingStartedState')
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
+  viewer: Viewer
   params: any
   fields: Field[]
-  projectId: string
+  project: Project
   model: Model
   gettingStartedState: any
   nextStep: () => void
@@ -75,7 +75,7 @@ class BrowserView extends React.Component<Props, State> {
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.projectId}`
+    const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.project.id}`
     const token = cookiestore.get('graphcool_token')
     const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab' }
     const transport = new Transport(clientEndpoint, { headers })
@@ -366,82 +366,62 @@ class BrowserView extends React.Component<Props, State> {
 
     return (
       <div className={`${classes.root} ${this.state.filtersVisible ? classes.filtersVisible : ''}`}>
-        <div className={classes.head}>
-          <div className={classes.headLeft}>
-            <Link
-              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/data`}
-              className={`${classes.tab} ${classes.active}`}
-            >
-              Data Browser
-            </Link>
-            <Link
-              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
-              className={classes.tab}
-            >
-              Structure
-            </Link>
-            <div className={classes.info}>
-              <div className={classes.title}>
-                {this.props.model.name}
-                <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
-              </div>
-              <div className={classes.titleDescription}>
-                <ModelDescription model={this.props.model} />
-              </div>
-            </div>
-          </div>
-          <div className={classes.headRight}>
-            <Tether
-              steps={{
-                STEP6_ADD_DATA_ITEM_1: `Add your first Todo item to the database.
-                Type something in the input field below and hit enter.`,
-                STEP7_ADD_DATA_ITEM_2: 'Well done. Let\'s add another one.',
-              }}
-              offsetX={-5}
-              offsetY={5}
-              width={290}
-            >
-              <div
-                className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
-                onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
-              >
-                <Icon
-                  width={16}
-                  height={16}
-                  src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
-                />
-                <span>{this.state.newRowVisible ? 'Cancel' : 'Add item'}</span>
-              </div>
-            </Tether>
-            {this.state.selectedItemIds.size > 0 &&
-              <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
-                <Icon
-                  width={16}
-                  height={16}
-                  src={require('assets/icons/delete.svg')}
-                />
-                <span>Delete Selected ({this.state.selectedItemIds.size})</span>
-              </div>
-            }
+        <ModelHeader
+          params={this.props.params}
+          model={this.props.model}
+          viewer={this.props.viewer}
+          project={this.props.project}
+        >
+          <Tether
+            steps={{
+              STEP6_ADD_DATA_ITEM_1: `Add your first Todo item to the database.
+              Type something in the input field below and hit enter.`,
+              STEP7_ADD_DATA_ITEM_2: 'Well done. Let\'s add another one.',
+            }}
+            offsetX={-5}
+            offsetY={5}
+            width={290}
+          >
             <div
-              className={`${classes.button} ${this.state.filtersVisible ? classes.blue : ''}`}
-              onClick={() => this.setState({ filtersVisible: !this.state.filtersVisible } as State)}
+              className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
+              onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
             >
               <Icon
                 width={16}
                 height={16}
-                src={require('assets/icons/search.svg')}
+                src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
               />
+              <span>{this.state.newRowVisible ? 'Cancel' : 'Add item'}</span>
             </div>
-            <div className={classes.button} onClick={() => this._reloadData()}>
+          </Tether>
+          {this.state.selectedItemIds.size > 0 &&
+            <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
               <Icon
                 width={16}
                 height={16}
-                src={require('assets/icons/refresh.svg')}
+                src={require('assets/icons/delete.svg')}
               />
+              <span>Delete Selected ({this.state.selectedItemIds.size})</span>
             </div>
+          }
+          <div
+            className={`${classes.button} ${this.state.filtersVisible ? classes.blue : ''}`}
+            onClick={() => this.setState({ filtersVisible: !this.state.filtersVisible } as State)}
+          >
+            <Icon
+              width={16}
+              height={16}
+              src={require('assets/icons/search.svg')}
+            />
           </div>
-        </div>
+          <div className={classes.button} onClick={() => this._reloadData()}>
+            <Icon
+              width={16}
+              height={16}
+              src={require('assets/icons/refresh.svg')}
+            />
+          </div>
+        </ModelHeader>
         {this.state.loading &&
           <div className={classes.loadingOverlay}>
             <Loading color='#B9B9C8' />
@@ -474,7 +454,7 @@ class BrowserView extends React.Component<Props, State> {
                 columnWidths={columnWidths}
                 add={(data) => this._addItem(data)}
                 cancel={(e) => this.setState({ newRowVisible: false } as State)}
-                projectId={this.props.projectId}
+                projectId={this.props.project.id}
               />
             }
             <div className={classes.tableBody} onScroll={(e) => this._handleScroll(e)}>
@@ -484,7 +464,7 @@ class BrowserView extends React.Component<Props, State> {
                     <Row
                       key={item.get('id')}
                       model={this.props.model}
-                      projectId={this.props.projectId}
+                      projectId={this.props.project.id}
                       columnWidths={columnWidths}
                       item={item.toJS()}
                       update={(key, value, callback) => this._updateItem(key, value, callback, item.get('id'), index)}
@@ -526,7 +506,8 @@ const MappedBrowserView = mapProps({
       .sort(compareFields)
   ),
   model: (props) => props.viewer.model,
-  projectId: (props) => props.viewer.project.id,
+  project: (props) => props.viewer.project,
+  viewer: (props) => props.viewer,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedBrowserView, {
@@ -554,11 +535,13 @@ export default Relay.createContainer(MappedBrowserView, {
           }
           ${Row.getFragment('model')}
           ${NewRow.getFragment('model')}
-          ${ModelDescription.getFragment('model')}
+          ${ModelHeader.getFragment('model')}
         }
         project: projectByName(projectName: $projectName) {
           id
+          ${ModelHeader.getFragment('project')}
         }
+        ${ModelHeader.getFragment('viewer')}
       }
     `,
   },
