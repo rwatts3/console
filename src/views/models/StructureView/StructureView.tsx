@@ -2,13 +2,13 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 import FieldRow from './FieldRow'
-import ModelDescription from '../ModelDescription'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
 import Tether from '../../../components/Tether/Tether'
+import ModelHeader from '../ModelHeader'
 import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
-import { Field, Model } from '../../../types/types'
+import { Field, Model, Viewer, Project } from '../../../types/types'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { connect } from 'react-redux'
@@ -22,11 +22,13 @@ interface Props {
   availableUserRoles: string[]
   fields: Field[]
   allModels: Model[]
-  projectId: string
+  project: Project
   model: Model
   gettingStartedState: any
   nextStep: any
   children: Element
+  viewer: Viewer
+  relay: Relay.RelayProp
 }
 
 interface State {
@@ -67,7 +69,7 @@ class StructureView extends React.Component<Props, State> {
 
       Relay.Store.commitUpdate(
         new DeleteModelMutation({
-          projectId: this.props.projectId,
+          projectId: this.props.project.id,
           modelId: this.props.model.id,
         }),
         {
@@ -86,91 +88,52 @@ class StructureView extends React.Component<Props, State> {
   }
 
   render () {
-    const dataViewOnClick = () => {
-      if (this.props.gettingStartedState.isCurrentStep('STEP5_GOTO_DATA_TAB')) {
-        this.props.nextStep()
-      }
-    }
-
     return (
       <div className={classes.root}>
         {this.props.children}
-        <div className={classes.head}>
-          <div className={classes.headLeft}>
-            <Tether
-              steps={{
-                STEP5_GOTO_DATA_TAB: 'Nice, you\'re done setting up the structure. Let\'s add some data.',
-              }}
-              width={200}
-              offsetX={-5}
-              offsetY={5}
-            >
-              <Link
-                to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
-                className={classes.tab}
-                onClick={dataViewOnClick}
-              >
-                Data Browser
-              </Link>
-            </Tether>
+        <ModelHeader
+          params={this.props.params}
+          model={this.props.model}
+          viewer={this.props.viewer}
+          project={this.props.project}
+        >
+          <Tether
+            steps={{
+              STEP3_CREATE_TEXT_FIELD: 'Add a new field called "text" and select type "String".' +
+              ' Then click the "Create Field" button.',
+              STEP4_CREATE_COMPLETED_FIELD: 'Good job! Create another one called "complete" with type "Boolean"',
+            }}
+            offsetX={-5}
+            offsetY={5}
+            width={320}
+          >
             <Link
-              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
-              className={`${classes.tab} ${classes.active}`}
+              className={`${classes.button} ${classes.green}`}
+              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/create`}
             >
-              Structure
-            </Link>
-            <div className={classes.info}>
-              <div className={classes.title}>
-                {this.props.model.name}
-                {this.props.model.isSystem &&
-                  <span className={classes.system}>System</span>
-                }
-                <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
-              </div>
-              <div className={classes.titleDescription}>
-                <ModelDescription model={this.props.model} />
-              </div>
-            </div>
-          </div>
-          <div className={classes.headRight}>
-            <Tether
-              steps={{
-                STEP3_CREATE_TEXT_FIELD: 'Add a new field called "text" and select type "String".' +
-                ' Then click the "Create Field" button.',
-                STEP4_CREATE_COMPLETED_FIELD: 'Good job! Create another one called "complete" with type "Boolean"',
-              }}
-              offsetX={-5}
-              offsetY={5}
-              width={320}
-            >
-              <Link
-                className={`${classes.button} ${classes.green}`}
-                to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/create`}
-              >
-                <Icon
-                  width={16}
-                  height={16}
-                  src={require('assets/icons/add.svg')}
-                />
-                <span>Create Field</span>
-              </Link>
-            </Tether>
-            <div className={classes.button} onClick={this._toggleMenuDropdown}>
               <Icon
                 width={16}
                 height={16}
-                src={require('assets/icons/more.svg')}
+                src={require('assets/icons/add.svg')}
               />
-            </div>
-            {this.state.menuDropdownVisible &&
-              <div className={classes.menuDropdown}>
-                <div onClick={this._deleteModel}>
-                  Delete Model
-                </div>
-              </div>
-            }
+              <span>Create Field</span>
+            </Link>
+          </Tether>
+          <div className={classes.button} onClick={this._toggleMenuDropdown}>
+            <Icon
+              width={16}
+              height={16}
+              src={require('assets/icons/more.svg')}
+            />
           </div>
-        </div>
+          {this.state.menuDropdownVisible &&
+            <div className={classes.menuDropdown}>
+              <div onClick={this._deleteModel}>
+                Delete Model
+              </div>
+            </div>
+          }
+        </ModelHeader>
         <div className={classes.table}>
           <div className={classes.tableHead}>
             <div className={classes.fieldName}>Fieldname</div>
@@ -226,6 +189,8 @@ const ReduxContainer = connect(
 )(StructureView)
 
 const MappedStructureView = mapProps({
+  relay: (props) => props.relay,
+  viewer: (props) => props.viewer,
   params: (props) => props.params,
   availableUserRoles: (props) => props.viewer.project.availableUserRoles,
   allModels: (props) => props.viewer.project.models.edges.map((edge) => edge.node),
@@ -239,7 +204,7 @@ const MappedStructureView = mapProps({
       .sort((a, b) => customCompare(a.name, b.name))
   ),
   model: (props) => props.viewer.model,
-  projectId: (props) => props.viewer.project.id,
+  project: (props) => props.viewer.project,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedStructureView, {
@@ -252,9 +217,6 @@ export default Relay.createContainer(MappedStructureView, {
       fragment on Viewer {
         model: modelByName(projectName: $projectName, modelName: $modelName) {
           id
-          name
-          itemCount
-          isSystem
           possibleRelatedPermissionPaths(first: 100) {
             edges {
               node {
@@ -275,7 +237,7 @@ export default Relay.createContainer(MappedStructureView, {
               }
             }
           }
-          ${ModelDescription.getFragment('model')}
+          ${ModelHeader.getFragment('model')}
         }
         project: projectByName(projectName: $projectName) {
           id
@@ -295,7 +257,9 @@ export default Relay.createContainer(MappedStructureView, {
               }
             }
           }
+          ${ModelHeader.getFragment('project')}
         }
+        ${ModelHeader.getFragment('viewer')}
       }
     `,
   },
