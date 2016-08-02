@@ -1,6 +1,12 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class UpdatePasswordMutation extends Relay.Mutation {
+interface Props {
+  userId: string
+  oldPassword: string
+  newPassword: string
+}
+
+export default class UpdatePasswordMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updatePassword}`

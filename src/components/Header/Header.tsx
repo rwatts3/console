@@ -46,7 +46,6 @@ class Header extends React.Component<Props, State> {
   }
 
   render () {
-    debugger
     return (
       <div className={classes.root}>
         <div className={classes.left}>
