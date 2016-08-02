@@ -21,7 +21,7 @@ interface State {
 class ActionsView extends React.Component<Props, State> {
 
   state = {
-    showAddRow: false,
+    showAddRow: true,
     editableActionIds: [],
   }
 

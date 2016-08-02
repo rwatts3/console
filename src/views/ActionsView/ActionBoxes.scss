@@ -1,19 +1,35 @@
+@import '~styles/variables';
+
 .root {
   width: 100%;
-
+  background: #E4E4F4;
+  padding: 60px;
 }
 
 .boxes {
   width: 100%;
   height: 338px;
   display: flex;
+  justify-content: space-between;
 
   & > div {
-    width: 50%;
+    width: calc(50% - 4px);
   }
 }
 
 .buttons {
   width: 100%;
   display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+
+  & > div {
+    font-size: 20px;
+    color: $newGrey3;
+    cursor: pointer;
+
+    &:first-child {
+      margin-right: auto;
+    }
+  }
 }

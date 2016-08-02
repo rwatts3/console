@@ -1,8 +1,10 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
+import Icon from '../../components/Icon/Icon'
 const { QueryEditor } = require('graphiql/dist/components/QueryEditor') as any
 const classes: any = require('./ActionTriggerBox.scss')
+const sharedClasses: any = require('./ActionBox.scss')
 
 interface Props {
   triggerMutationModelMutationType: ActionTriggerMutationModelMutationType
@@ -38,11 +40,13 @@ class ActionTriggerBox extends React.Component<Props, {}> {
     return (
       <div className={classes.root}>
 
-        <div className={classes.head}>
-          1. Trigger
-          <input
-            type='checkbox'
-            checked={this.props.valid}
+        <div className={sharedClasses.head}>
+          <div className={sharedClasses.title}>Trigger</div>
+          <Icon
+            width={24}
+            height={24}
+            src={require(`assets/new_icons/${this.props.valid ? 'check' : 'warning'}.svg`)}
+            color={this.props.valid ? '#7ED321' : '#F5A623'}
           />
         </div>
 
@@ -66,13 +70,15 @@ class ActionTriggerBox extends React.Component<Props, {}> {
               triggerMutationModelMutationType: e.target.value as ActionTriggerMutationModelMutationType,
             })}
           >
-            <option value='CREATE'>Create</option>
-            <option value='UPDATE'>Update</option>
-            <option value='DELETE'>Delete</option>
+            <option value='CREATE'>is created</option>
+            <option value='UPDATE'>is updated</option>
+            <option value='DELETE'>is deleted</option>
           </select>
         </div>
-        <div className={classes.query}>
+        <div className={sharedClasses.info}>
           Specify a query for your action handler payload
+        </div>
+        <div className={classes.query}>
           {queryEditor}
         </div>
       </div>
