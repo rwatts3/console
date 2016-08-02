@@ -1,19 +1,20 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
-import mapProps from 'map-props'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import GraphiQL from 'graphiql'
-import { saveQuery } from 'utils/QueryHistoryStorage'
-import QueryHistory from 'components/QueryHistory/QueryHistory'
-import Icon from 'components/Icon/Icon'
-import * as cookiestore from 'utils/cookiestore'
-import endpoints from 'utils/endpoints'
-import classes from './PlaygroundView.scss'
-import { sideNavSyncer } from 'utils/sideNavSyncer'
-import LoginClientUserMutation from 'mutations/LoginClientUserMutation'
+import { Viewer, User, Project } from '../../../types/types'
+import { saveQuery } from '../../../utils/QueryHistoryStorage'
+import QueryHistory from '../../../components/QueryHistory/QueryHistory'
+import Header from '../../../components/Header/Header'
+import Icon from '../../../components/Icon/Icon'
+import * as cookiestore from '../../../utils/cookiestore'
+import endpoints from '../../../utils/endpoints'
+import { sideNavSyncer } from '../../../utils/sideNavSyncer'
+import LoginClientUserMutation from '../../../mutations/LoginClientUserMutation'
+const classes: any = require('./PlaygroundView.scss')
 
-import 'graphiql/graphiql.css'
+require('graphiql/graphiql.css')
 
 const DASHBOARD_ADMIN = {
   id: '0',
@@ -28,16 +29,31 @@ const DEFAULT_QUERY = `{
   }
 }`
 
-class PlaygroundView extends React.Component {
-  static propTypes = {
-    projectId: PropTypes.string.isRequired,
-    params: PropTypes.object.isRequired,
-  };
+type Endpoint = 'SIMPLE' | 'RELAY'
+
+interface Props {
+  viewer: Viewer & { project: Project }
+  params: any
+}
+
+interface State {
+  users: User[]
+  historyVisible: boolean
+  query: string | undefined
+  variables: string | undefined
+  selectedEndpoint: Endpoint
+  selectedUserId: string
+  selectedUserToken: string
+}
+
+class PlaygroundView extends React.Component<Props, State> {
+
+  _lokka: any
 
   constructor (props) {
     super(props)
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.projectId}`
+    const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.viewer.project.id}`
     const token = cookiestore.get('graphcool_token')
     const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:playground' }
     const transport = new Transport(clientEndpoint, { headers })
@@ -47,9 +63,9 @@ class PlaygroundView extends React.Component {
     this.state = {
       users: [DASHBOARD_ADMIN],
       historyVisible: false,
-      query: window.localStorage.getItem(`used-playground-${this.props.projectId}`) ? undefined : DEFAULT_QUERY,
+      query: window.localStorage.getItem(`used-playground-${this.props.viewer.project.id}`) ? undefined : DEFAULT_QUERY,
       variables: undefined,
-      selectedEndpoint: window.localStorage.getItem('SELECTED_ENDPOINT') || 'SIMPLE',
+      selectedEndpoint: (window.localStorage.getItem('SELECTED_ENDPOINT') || 'SIMPLE') as Endpoint,
       selectedUserId: DASHBOARD_ADMIN.id,
       selectedUserToken: token,
     }
@@ -74,7 +90,7 @@ class PlaygroundView extends React.Component {
     this._lokka.query(query)
       .then((results) => {
         const users = results.viewer.allUsers.edges.map((edge) => edge.node)
-        this.setState({ users: [DASHBOARD_ADMIN, ...users] })
+        this.setState({ users: [DASHBOARD_ADMIN, ...users] } as State)
       })
   }
 
@@ -84,20 +100,20 @@ class PlaygroundView extends React.Component {
     })
   }
 
-  _onHistoryQuerySelect (query) {
+  _onHistoryQuerySelect = (query) => {
     if (query) {
       this.setState({
         query: query.query,
         variables: query.variables,
-      })
+      } as State)
     }
 
-    this.setState({ historyVisible: false })
+    this.setState({ historyVisible: false } as State)
   }
 
-  _changeEndpoint (e) {
+  _changeEndpoint = (e) => {
     const selectedEndpoint = e.target.value
-    this.setState({ selectedEndpoint })
+    this.setState({ selectedEndpoint } as State)
     window.localStorage.setItem('SELECTED_ENDPOINT', selectedEndpoint)
 
     analytics.track('playground: endpoint changed', {
@@ -106,41 +122,44 @@ class PlaygroundView extends React.Component {
     })
   }
 
-  _changeUser (e) {
+  _changeUser = (e) => {
     const selectedUserId = e.target.value
 
     if (selectedUserId === DASHBOARD_ADMIN.id) {
-      this.setState({selectedUserId, selectedUserToken: null})
+      this.setState({ selectedUserId, selectedUserToken: null } as State)
     } else {
-      Relay.Store.commitUpdate(new LoginClientUserMutation({
-        clientUserId: selectedUserId,
-        projectId: this.props.projectId,
-      }), {
-        onSuccess: (response) => {
-          this.setState({
-            selectedUserId,
-            selectedUserToken: response.signinClientUser.token,
-          })
+      Relay.Store.commitUpdate(
+        new LoginClientUserMutation({
+          clientUserId: selectedUserId,
+          projectId: this.props.viewer.project.id,
+        }),
+        {
+          onSuccess: (response) => {
+            this.setState({
+              selectedUserId,
+              selectedUserToken: response.signinClientUser.token,
+            } as State)
 
-          analytics.track('playground: user changed', {
-            project: this.props.params.projectName,
-            userId: selectedUserId,
-          })
-        },
-        onFailure: (transaction) => {
-          alert(transaction.getError())
-        },
-      })
+            analytics.track('playground: user changed', {
+              project: this.props.params.projectName,
+              userId: selectedUserId,
+            })
+          },
+          onFailure: (transaction) => {
+            alert(transaction.getError())
+          },
+        }
+      )
     }
   }
 
-  _rememberPlaygroundUsed () {
-    window.localStorage.setItem(`used-playground-${this.props.projectId}`, true)
+  _rememberPlaygroundUsed = () => {
+    window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
   }
 
   render () {
     const fetcher = (graphQLParams) => (
-      fetch(`${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.projectId}`, {
+      fetch(`${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.viewer.project.id}`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -163,7 +182,7 @@ class PlaygroundView extends React.Component {
             variables: graphQLParams.variables,
             date: new Date(),
           }
-          saveQuery(query, this.props.projectId)
+          saveQuery(query, this.props.viewer.project.id)
         }
 
         if (graphQLParams.query.includes('mutation')) {
@@ -177,16 +196,23 @@ class PlaygroundView extends React.Component {
 
     return (
       <div className={classes.root}>
+        <Header
+          viewer={this.props.viewer}
+          params={this.props.params}
+          project={this.props.viewer.project}
+        >
+          <div>Playground</div>
+        </Header>
         <div className={classes.head}>
           <div
             className={classes.history}
-            onClick={() => this.setState({ historyVisible: !this.state.historyVisible })}
+            onClick={() => this.setState({ historyVisible: !this.state.historyVisible } as State)}
             >
             {this.state.historyVisible &&
               <div className={classes.historyOverlay}>
                 <QueryHistory
-                  projectId={this.props.projectId}
-                  onQuerySelect={::this._onHistoryQuerySelect}
+                  projectId={this.props.viewer.project.id}
+                  onQuerySelect={this._onHistoryQuerySelect}
                   />
               </div>
             }
@@ -199,14 +225,14 @@ class PlaygroundView extends React.Component {
 
           </div>
           <div className={classes.endpoint}>
-            <select onChange={::this._changeEndpoint} value={this.state.selectedEndpoint}>
+            <select onChange={this._changeEndpoint} value={this.state.selectedEndpoint}>
               {Object.keys(endpoints).map((endpoint) => (
                 <option key={endpoint} value={endpoint}>{endpoints[endpoint].title}</option>
               ))}
             </select>
           </div>
           <div className={classes.user}>
-            <select value={this.state.selectedUserId} onChange={::this._changeUser}>
+            <select value={this.state.selectedUserId} onChange={this._changeUser}>
               {this.state.users.map((user) => {
                 const rolesStr = user.roles ? `(${user.roles.join(', ')})` : ''
                 return (
@@ -224,7 +250,7 @@ class PlaygroundView extends React.Component {
             fetcher={fetcher}
             query={this.state.query}
             variables={this.state.variables || ''}
-            onEditQuery={::this._rememberPlaygroundUsed}
+            onEditQuery={this._rememberPlaygroundUsed}
             />
         </div>
       </div>
@@ -232,12 +258,7 @@ class PlaygroundView extends React.Component {
   }
 }
 
-const MappedPlaygroundView = mapProps({
-  projectId: (props) => props.viewer.project.id,
-  params: (props) => props.params,
-})(PlaygroundView)
-
-export default Relay.createContainer(MappedPlaygroundView, {
+export default Relay.createContainer(PlaygroundView, {
   initialVariables: {
     projectName: null, // injected from router
   },
@@ -246,7 +267,9 @@ export default Relay.createContainer(MappedPlaygroundView, {
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
           id
+          ${Header.getFragment('project')}
         }
+        ${Header.getFragment('viewer')}
       }
     `,
   },
