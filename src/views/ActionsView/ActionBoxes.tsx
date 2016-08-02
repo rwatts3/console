@@ -142,6 +142,10 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   _submit = () => {
+    if (!this.state.triggerValid || !this.state.handlerValid) {
+      return
+    }
+
     if (this.props.action) {
       this._updateAction()
     } else {
