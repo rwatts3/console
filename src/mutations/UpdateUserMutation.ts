@@ -1,6 +1,13 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class UpdateUserMutation extends Relay.Mutation {
+interface Props {
+  userId: string
+  gettingStartedStatus?: string
+  name: string
+  email: string
+}
+
+export default class UpdateUserMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateUser}`
