@@ -8,6 +8,7 @@ declare module 'react-tether'
 declare module 'smooch'
 declare module 'graphql'
 declare module 'graphql/*'
+declare module 'graphiql'
 
 declare var require: {
   <T>(path: string): T
@@ -15,6 +16,7 @@ declare var require: {
   ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void
 }
 
+declare var fetch: any
 declare var analytics: any
 declare var __BACKEND_ADDR__: any
 declare var __SMOOCH_TOKEN__: any

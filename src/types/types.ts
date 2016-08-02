@@ -112,3 +112,9 @@ export interface ActionHandlerWebhook {
   id: string
   url: string
 }
+
+export interface User {
+  id: string
+  email: string
+  roles: string[]
+}

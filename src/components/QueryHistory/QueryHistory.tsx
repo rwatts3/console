@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react'
-import { getQueries } from 'utils/QueryHistoryStorage'
-import classes from './QueryHistory.scss'
+import * as React from 'react'
+import { getQueries } from '../../utils/QueryHistoryStorage'
+import { Query } from '../../types/utils'
+const classes: any = require('./QueryHistory.scss')
 
-function stringify (obj) {
+function stringify (obj: any): string {
   if (!obj) {
     return ''
   }
@@ -14,12 +15,17 @@ function stringify (obj) {
   return pairs.join(', ')
 }
 
-export default class QueryHistory extends React.Component {
+interface Props {
+  projectId: string
+  onQuerySelect: (query: Query) => void
+}
 
-  static propTypes = {
-    projectId: PropTypes.string.isRequired,
-    onQuerySelect: PropTypes.func.isRequired,
-  };
+interface State {
+  queries: Query[]
+  selectedIndex: number
+}
+
+export default class QueryHistory extends React.Component<Props, State> {
 
   constructor (props) {
     super(props)
@@ -50,7 +56,7 @@ export default class QueryHistory extends React.Component {
             <div
               key={index}
               className={`${classes.query} ${this.state.selectedIndex === index ? classes.querySelected : ''}`}
-              onMouseEnter={() => this.setState({ selectedIndex: index })}
+              onMouseEnter={() => this.setState({ selectedIndex: index } as State)}
               onClick={() => this._selectQuery(index)}
               >
               <div className={classes.queryDate}>
