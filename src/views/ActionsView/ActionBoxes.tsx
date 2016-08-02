@@ -200,6 +200,12 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   _renderConfirm () {
+    if (!this.state.changesMade) {
+      return (
+        <div>No changes</div>
+      )
+    }
+
     return (
       <div onClick={this._submit}>Confirm</div>
     )
@@ -226,7 +232,6 @@ class ActionBoxes extends React.Component<Props, State> {
         </div>
         <div className={classes.buttons}>
           <div onClick={this._cancel}>Cancel</div>
-          <div>Test</div>
           {this._renderConfirm()}
         </div>
       </div>

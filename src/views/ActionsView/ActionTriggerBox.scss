@@ -1,17 +1,16 @@
+@import '~styles/variables';
+
 .root {
   width: 100%;
   height: 100%;
   overflow: hidden;
-}
-
-.head {
-  width: 100%;
-  display: flex;
+  background: #fff;
 }
 
 .trigger {
   width: 100%;
   display: flex;
+  padding: 16px;
 }
 
 .editor {
