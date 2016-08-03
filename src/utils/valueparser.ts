@@ -1,22 +1,33 @@
-import { isScalar, parseValue } from './graphql'
+import { isValidDateTime, isValidName } from './utils'
 import { Field } from '../types/types'
+import { isScalar } from './graphql'
 
 export function valueToString (value: any, field: Field, returnNullAsString: boolean): string {
-  const fieldValue = isScalar(field.typeIdentifier)
-    ? value
-    : (value !== null ? value.id : null)
+  let fieldValue = null
+  if (isScalar(field.typeIdentifier)) {
+    fieldValue = value
+  } else if (field.isList) {
+    fieldValue = value
+  } else if (value !== null) {
+    fieldValue = value.id
+  }
 
   if (fieldValue === null) {
     return returnNullAsString ? 'null' : ''
   }
 
   if (field.isList) {
-    if (field.typeIdentifier === 'String') {
-      return `[${fieldValue.map((e) => `"${e}"`).toString()}]`
-    } else {
-      return `[${fieldValue.toString()}]`
+    if (isScalar(field.typeIdentifier)) {
+      if (field.typeIdentifier === 'String') {
+        return `[${fieldValue.map((v) => `"${v.toString()}"`).join(', ')}]`
+      } else {
+        debugger
+        return `[${fieldValue.toString()}]`
+      }
+    } else { // !isScalar
+      return `[${fieldValue.map((v) => v.id).join(', ')}]`
     }
-  } else {
+  } else { // !isList
     switch (field.typeIdentifier) {
       case 'DateTime': return new Date(fieldValue).toISOString()
       default: return fieldValue.toString()
@@ -31,13 +42,34 @@ export function stringToValue (rawValue: string, field: Field): any {
     return isRequired && typeIdentifier === 'String' ? '' : null
   }
 
-  if (!isList && !isScalar(typeIdentifier)) {
+  if (!isScalar(typeIdentifier)) {
+    if (isList) {
+      throw new Error('Converting a string to a relation list is not supported')
+    }
+
     return { id: rawValue }
   }
 
   if (isList) {
-    return JSON.parse(rawValue)
+    try {
+      return JSON.parse(rawValue)
+    } catch (e) {
+      return null
+    }
   } else {
-    return parseValue(rawValue, typeIdentifier)
+    return {
+      String: () => rawValue,
+      Boolean: () => rawValue.toLowerCase() === 'true' ? true : rawValue.toLowerCase() === 'false' ? false : null,
+      Int: () => isNaN(parseInt(rawValue, 10)) ? null : parseInt(rawValue, 10),
+      Float: () => isNaN(parseFloat(rawValue)) ? null : parseFloat(rawValue),
+      GraphQLID: () => rawValue,
+      Password: () => rawValue,
+      Enum: () => isValidName(rawValue) ? rawValue : null,
+      DateTime: () => isValidDateTime(rawValue) ? rawValue : null,
+    }[typeIdentifier]()
   }
+}
+
+export function isValidValue (rawValue: string, field: Field): boolean {
+  return stringToValue(rawValue, field) !== null
 }

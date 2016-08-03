@@ -43,12 +43,14 @@ export interface Field {
   relatedModel?: Model
   relation?: Relation
   permissions: RelayConnection<Permission>
+  model: Model
 }
 
 export interface Relation {
   id: string
   modelA: Model
   modelB: Model
+  name: string
 }
 
 export type UserType = 'GUEST' | 'AUTHENTICATED' | 'RELATED'

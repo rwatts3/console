@@ -12,7 +12,7 @@ const classes: any = require('./ModelSelector.scss')
 interface Props {
   projectId: string
   value: string
-  model: Model
+  relatedModel: Model
   onSelect: (value: string) => void
   onCancel: () => void
   onFocus?: () => void
@@ -39,7 +39,7 @@ class ModelSelector extends React.Component<Props, State> {
     const transport = new Transport(clientEndpoint, { headers })
     const lokka = new Lokka({ transport })
 
-    const fieldNames = props.model.fields.edges
+    const fieldNames = props.relatedModel.fields.edges
       .map(({ node }) => node)
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
@@ -47,7 +47,7 @@ class ModelSelector extends React.Component<Props, State> {
       .join(' ')
     const query = `
       {
-        all${props.model.namePlural} {
+        all${props.relatedModel.namePlural} {
           ${fieldNames}
         }
       }
@@ -55,7 +55,7 @@ class ModelSelector extends React.Component<Props, State> {
 
     lokka.query(query)
       .then((results) => {
-        const items = results[`all${props.model.namePlural}`]
+        const items = results[`all${props.relatedModel.namePlural}`]
         this.setState({ items } as State)
       })
   }
@@ -82,7 +82,7 @@ class ModelSelector extends React.Component<Props, State> {
   }
 
   _shouldItemRender = (item, value) => {
-    return this.props.model.fields.edges
+    return this.props.relatedModel.fields.edges
       .map((edge) => edge.node)
       .filter((field) => isScalar(field.typeIdentifier) && item[field.name])
       .some((field) => item[field.name].toString().toLowerCase().includes(value))
@@ -122,7 +122,7 @@ class ModelSelector extends React.Component<Props, State> {
 
 export default Relay.createContainer(ModelSelector, {
   fragments: {
-    model: () => Relay.QL`
+    relatedModel: () => Relay.QL`
       fragment on Model {
         id
         namePlural

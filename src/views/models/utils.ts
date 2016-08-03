@@ -1,4 +1,4 @@
-import { isScalar, isValidValueForType } from '../../utils/graphql'
+import { isScalar } from '../../utils/graphql'
 import { Field } from '../../types/types'
 
 export function emptyDefault (field: Field): any {
@@ -32,34 +32,6 @@ function valueToGQL (value: any, field: Field): string {
 export function toGQL (value: any, field: Field): string {
   const key = isScalar(field.typeIdentifier) ? field.name : `${field.name}Id`
   return value !== null ? `${key}: ${valueToGQL(value, field)}` : ''
-}
-
-export function isValidValue (value: string, field: Field): boolean {
-  if (value === '' && !field.isRequired) {
-    return true
-  }
-  if (field.isList) {
-    if (value === '[]') {
-      return true
-    }
-    if (value[0] !== '[' || value[value.length - 1] !== ']') {
-      return false
-    } else {
-      value = value.substring(1, value.length - 1)
-    }
-  }
-
-  let invalidValue = false
-  let values = field.isList ? value.split(',').map((x) => x.trim()) : [value]
-
-  values.forEach((value) => {
-    if (!isValidValueForType(value, isScalar(field.typeIdentifier) ? field.typeIdentifier : 'GraphQLID')) {
-      invalidValue = true
-      return
-    }
-  })
-
-  return !invalidValue
 }
 
 export function compareFields (a: Field, b: Field): number {
