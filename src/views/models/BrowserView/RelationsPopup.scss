@@ -1,0 +1,59 @@
+@import '~styles/variables';
+
+.root {
+  width: 700px;
+  height: 100%;
+  background: #fff;
+}
+
+.header {
+  height: 125px;
+  background: #27AE60;
+}
+
+.list {
+  height: calc(100% - 125px - 96px);
+}
+
+.item {
+  display: flex;
+  font-size: 13px;
+  line-height: 18px;
+  padding: 15px 30px;
+  color: $newGrey3;
+  cursor: pointer;
+
+  &:hover {
+    background: $newGrey2;
+  }
+
+  &.related {
+    color: #4A90E2;
+
+    .check {
+      border: none;
+
+      svg {
+        visibility: visible;
+      }
+    }
+  }
+
+  .check {
+    border: 1px solid #4A90E2;
+    border-radius: 50%;
+    width: 23px;
+    height: 23px;
+    margin-right: 29px;
+
+    svg {
+      fill: #4A90E2;
+      visibility: hidden;
+    }
+  }
+}
+
+.footer {
+  background: #F3F3F3;
+  height: 96px;
+}

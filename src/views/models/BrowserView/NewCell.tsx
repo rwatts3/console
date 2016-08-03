@@ -85,7 +85,7 @@ class NewCell extends React.Component<Props, State> {
     if (!isScalar(this.props.field.typeIdentifier)) {
       return (
         <ModelSelector
-          model={this.props.field.relatedModel}
+          relatedModel={this.props.field.relatedModel}
           projectId={this.props.projectId}
           value={this.state.value ? this.state.value.id : null}
           onSelect={(value) => this._updateValue(value, true)}
@@ -222,7 +222,7 @@ export default Relay.createContainer(NewCell, {
         typeIdentifier
         enumValues
         relatedModel {
-          ${ModelSelector.getFragment('model')}
+          ${ModelSelector.getFragment('relatedModel')}
         }
       }
     `,

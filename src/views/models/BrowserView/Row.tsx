@@ -5,7 +5,6 @@ import { UpdateCallback } from './Cell'
 import { Model, Field } from '../../../types/types'
 import CheckboxCell from './CheckboxCell'
 import { compareFields } from '../utils'
-import { isScalar } from '../../../utils/graphql'
 const classes: any = require('./Row.scss')
 
 interface Props {
@@ -23,7 +22,6 @@ class Row extends React.Component<Props, {}> {
   render () {
     const fields = this.props.model.fields.edges
       .map((edge) => edge.node)
-      .filter((field) => isScalar(field.typeIdentifier) || !field.isList)
       .sort(compareFields)
 
     return (
@@ -37,6 +35,7 @@ class Row extends React.Component<Props, {}> {
             key={field.id}
             field={field}
             value={this.props.item[field.name]}
+            itemId={this.props.item.id}
             width={this.props.columnWidths[field.name]}
             update={this.props.update}
             projectId={this.props.projectId}

@@ -3,14 +3,14 @@ import * as Relay from 'react-relay'
 import { findDOMNode } from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import { classnames } from '../../../utils/classnames'
-import { isValidValue } from '../utils'
-import { valueToString, stringToValue } from '../../../utils/valueparser'
+import { isValidValue, valueToString, stringToValue } from '../../../utils/valueparser'
 import { isScalar } from '../../../utils/graphql'
 import { Field } from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
 import Datepicker from '../../../components/Datepicker/Datepicker'
+import RelationsPopup from './RelationsPopup'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -18,6 +18,7 @@ export type UpdateCallback = (success: boolean) => void
 interface Props {
   field: Field
   projectId: string
+  itemId: string
   value: any
   width: number
   update: (value: any, field: Field, callback: UpdateCallback) => void
@@ -81,7 +82,7 @@ class Cell extends React.Component<Props, State> {
       this.setState({
         editing: false,
         loading: false,
-      })
+      } as State)
     })
   }
 
@@ -106,7 +107,7 @@ class Cell extends React.Component<Props, State> {
     if (this.state.loading) {
       return (
         <div className={classes.loading}>
-          <Loading color='#B9B9C8' />
+          <Loading color='#B9B9C8'/>
         </div>
       )
     }
@@ -115,77 +116,30 @@ class Cell extends React.Component<Props, State> {
 
     if (this.state.editing) {
       if (!isScalar(this.props.field.typeIdentifier)) {
-        return (
-          <ModelSelector
-            model={this.props.field.relatedModel}
-            projectId={this.props.projectId}
-            value={this.props.value ? this.props.value.id : null}
-            onSelect={(value) => this._save(value)}
-            onCancel={() => this._cancel()}
-          />
-        )
+        if (this.props.field.isList) {
+          return (
+            <RelationsPopup
+              originField={this.props.field}
+              originItemId={this.props.itemId}
+              onCancel={() => this.setState({ editing: false } as State)}
+              projectId={this.props.projectId}
+            />
+          )
+        } else {
+          return (
+            <ModelSelector
+              relatedModel={this.props.field.relatedModel}
+              projectId={this.props.projectId}
+              value={this.props.value ? this.props.value.id : null}
+              onSelect={(value) => this._save(value)}
+              onCancel={() => this._cancel()}
+            />
+          )
+        }
       }
 
       if (this.props.field.isList) {
-        return (
-          <input
-            autoFocus
-            type='text'
-            ref='input'
-            defaultValue={valueString}
-            onKeyDown={(e) => this._onKeyDown(e)}
-            onBlur={(e) => this._save((e.target as HTMLInputElement).value)}
-          />
-        )
-      }
-
-      switch (this.props.field.typeIdentifier) {
-        case 'Int':
-          return (
-            <input
-              autoFocus
-              type='number'
-              ref='input'
-              defaultValue={valueString}
-              onBlur={(e) => this._save(e.target.value)}
-              onKeyDown={(e) => this._onKeyDown(e)}
-            />
-          )
-        case 'Float':
-          return (
-            <input
-              autoFocus
-              type='number'
-              step='any'
-              ref='input'
-              defaultValue={valueString}
-              onBlur={(e) => this._save(e.target.value)}
-              onKeyDown={(e) => this._onKeyDown(e)}
-            />
-          )
-        case 'Boolean':
-          return (
-            <ToggleButton
-              leftText='false'
-              rightText='true'
-              side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
-              onClickOutside={(side) => this._save(side === ToggleSide.Left ? 'false' : 'true')}
-            />
-          )
-        case 'Enum':
-          return (
-            <select
-              autoFocus
-              defaultValue={valueString}
-              onBlur={(e) => this._save(e.target.value)}
-              onKeyDown={(e) => this._onKeyDown(e)}
-            >
-              {this.props.field.enumValues.map((enumValue) => (
-                <option key={enumValue}>{enumValue}</option>
-              ))}
-            </select>
-          )
-        case 'String':
+        if (isScalar(this.props.field.typeIdentifier)) {
           return (
             <textarea
               autoFocus
@@ -196,28 +150,88 @@ class Cell extends React.Component<Props, State> {
               onBlur={(e) => this._save(e.target.value)}
             />
           )
-        case 'DateTime':
-          return (
-            <Datepicker
-              className={classes.datepicker}
-              defaultValue={new Date(valueString)}
-              onChange={(m) => this._save(m.toISOString())}
-              onCancel={() => this._cancel()}
-              defaultOpen={true}
-              applyImmediately={false}
-            />
-          )
-        default:
-          return (
-            <input
-              autoFocus
-              type='text'
-              ref='input'
-              defaultValue={valueString}
-              onKeyDown={(e) => this._onKeyDown(e)}
-              onBlur={(e) => this._save(e.target.value)}
-            />
-          )
+        }
+
+        switch (this.props.field.typeIdentifier) {
+          case 'Int':
+            return (
+              <input
+                autoFocus
+                type='number'
+                ref='input'
+                defaultValue={valueString}
+                onBlur={(e) => this._save(e.target.value)}
+                onKeyDown={(e) => this._onKeyDown(e)}
+              />
+            )
+          case 'Float':
+            return (
+              <input
+                autoFocus
+                type='number'
+                step='any'
+                ref='input'
+                defaultValue={valueString}
+                onBlur={(e) => this._save(e.target.value)}
+                onKeyDown={(e) => this._onKeyDown(e)}
+              />
+            )
+          case 'Boolean':
+            return (
+              <ToggleButton
+                leftText='false'
+                rightText='true'
+                side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
+                onClickOutside={(side) => this._save(side === ToggleSide.Left ? 'false' : 'true')}
+              />
+            )
+          case 'Enum':
+            return (
+              <select
+                autoFocus
+                defaultValue={valueString}
+                onBlur={(e) => this._save(e.target.value)}
+                onKeyDown={(e) => this._onKeyDown(e)}
+              >
+                {this.props.field.enumValues.map((enumValue) => (
+                  <option key={enumValue}>{enumValue}</option>
+                ))}
+              </select>
+            )
+          case 'String':
+            return (
+              <textarea
+                autoFocus
+                type='text'
+                ref='input'
+                defaultValue={valueString}
+                onKeyDown={(e) => this._onEscapeTextarea(e)}
+                onBlur={(e) => this._save(e.target.value)}
+              />
+            )
+          case 'DateTime':
+            return (
+              <Datepicker
+                className={classes.datepicker}
+                defaultValue={new Date(valueString)}
+                onChange={(m) => this._save(m.toISOString())}
+                onCancel={() => this._cancel()}
+                defaultOpen={true}
+                applyImmediately={false}
+              />
+            )
+          default:
+            return (
+              <input
+                autoFocus
+                type='text'
+                ref='input'
+                defaultValue={valueString}
+                onKeyDown={(e) => this._onKeyDown(e)}
+                onBlur={(e) => this._save(e.target.value)}
+              />
+            )
+        }
       }
     }
 
@@ -255,8 +269,9 @@ export default Relay.createContainer(Cell, {
         typeIdentifier
         enumValues
         relatedModel {
-          ${ModelSelector.getFragment('model')}
+          ${ModelSelector.getFragment('relatedModel')}
         }
+        ${RelationsPopup.getFragment('originField')}
       }
     `,
   },

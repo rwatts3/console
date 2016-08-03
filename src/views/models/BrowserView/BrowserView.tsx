@@ -154,9 +154,12 @@ class BrowserView extends React.Component<Props, State> {
       .then((results) => {
         const items = Immutable.List(results[`all${this.props.model.namePlural}`])
           .map(Immutable.Map)
+
+        // check if it's the end of the data
         const reachedEnd = !reload && (items.isEmpty() || (!this.state.items.isEmpty() &&
           this.state.items.last().get('id') === items.last().get('id')))
         this.setState({ reachedEnd } as State)
+
         return items
       })
       .catch((err) => {
@@ -457,8 +460,8 @@ class BrowserView extends React.Component<Props, State> {
                 projectId={this.props.project.id}
               />
             }
-            <div className={classes.tableBody} onScroll={(e) => this._handleScroll(e)}>
-              <ScrollBox>
+            <div className={classes.tableBody}>
+              <ScrollBox onScroll={(e) => this._handleScroll(e)}>
                 <div className={classes.tableBodyContainer}>
                   {this.state.items.map((item, index) => (
                     <Row
@@ -502,7 +505,6 @@ const MappedBrowserView = mapProps({
   fields: (props) => (
     props.viewer.model.fields.edges
       .map((edge) => edge.node)
-      .filter((field) => isScalar(field.typeIdentifier) || !field.isList)
       .sort(compareFields)
   ),
   model: (props) => props.viewer.model,

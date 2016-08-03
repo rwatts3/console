@@ -5,6 +5,7 @@ interface Props {
   children?: React.ReactChild
   innerContainerClassName?: string
   outerContainerClassName?: string
+  onScroll?: (e: React.UIEvent<any>) => void
 }
 
 let scrollBarWidth = null
@@ -29,12 +30,20 @@ export default class ScrollBox extends React.Component<Props, {}> {
     }
   }
 
-  render() {
+  _onScroll (e: React.UIEvent<any>) {
+    if (e.target === this.refs.outerContainer) {
+      this.props.onScroll(e)
+    }
+  }
+
+  render () {
+    const onScroll = this.props.onScroll ? this._onScroll.bind(this) : (() => undefined)
     return (
       <div className={classes.rootContainer}>
         <div
           className={`${classes.outerContainer} ${this.props.outerContainerClassName || ''}`}
           style={{width: `calc(100% + ${scrollBarWidth}px)`}}
+          onScroll={onScroll}
           ref='outerContainer'
         >
           <div
