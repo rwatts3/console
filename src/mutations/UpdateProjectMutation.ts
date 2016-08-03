@@ -38,7 +38,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
   getVariables () {
     return {
       id: this.props.project.id,
-      name: this.props.name
+      name: this.props.name,
     }
   }
 
@@ -46,7 +46,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
     return {
       project: {
         id: this.props.project.id,
-        name: this.props.name
+        name: this.props.name,
       },
     }
   }

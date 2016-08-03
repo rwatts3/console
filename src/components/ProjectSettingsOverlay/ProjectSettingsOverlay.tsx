@@ -10,7 +10,7 @@ import ResetProjectDataMutation from 'mutations/ResetProjectDataMutation'
 const classes: any = require('./ProjectSettingsOverlay.scss')
 
 interface Props {
-  params : any,
+  params: any,
   project: Project,
   projectCount: number,
   hide?: () => void,
@@ -26,20 +26,17 @@ interface State {
 }
 
 export default class ProjectSettingsOverlay extends React.Component<Props, State> {
-  context : Context
+  context: Context
 
   refs: {
     [key: string]: any
     projectId: Element
   }
 
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
-    this.setState({
-      projectName: ""
-    })
     this._onClickResetProjectData = this._onClickResetProjectData.bind(this)
-    this._onClickResetCompleteProject= this._onClickResetCompleteProject.bind(this)
+    this._onClickResetCompleteProject = this._onClickResetCompleteProject.bind(this)
     this._onClickDeleteProject = this._onClickDeleteProject.bind(this)
     this._save = this._save.bind(this)
     this._updateProjectName = this._updateProjectName.bind(this)
@@ -47,25 +44,29 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
 
   _onClickResetProjectData () {
     if (window.confirm('Do you really want to reset the project data?')) {
-      Relay.Store.commitUpdate(new ResetProjectDataMutation({
-        projectId: this.props.project.id,
-      }), {
-        onSuccess: () => {
-          this.context.router.replace(`/${this.props.params.projectName}/playground`)
-        },
-      })
+      Relay.Store.commitUpdate(
+        new ResetProjectDataMutation({
+          projectId: this.props.project.id,
+        }),
+        {
+          onSuccess: () => {
+            this.context.router.replace(`/${this.props.params.projectName}/playground`)
+          },
+        })
     }
   }
 
   _onClickResetCompleteProject () {
     if (window.confirm('Do you really want to reset the project data and models? ')) {
-      Relay.Store.commitUpdate(new ResetProjectSchemaMutation({
-        projectId: this.props.project.id,
-      }), {
-        onSuccess: () => {
-          this.context.router.replace(`/${this.props.params.projectName}/playground`)
-        },
-      })
+      Relay.Store.commitUpdate(
+        new ResetProjectSchemaMutation({
+          projectId: this.props.project.id,
+        }),
+        {
+          onSuccess: () => {
+            this.context.router.replace(`/${this.props.params.projectName}/playground`)
+          },
+        })
     }
   }
 
@@ -73,34 +74,39 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
     if (this.props.projectCount === 1) {
       window.alert('You can\'t delete your last project!')
     } else if (window.confirm('Do you really want to delete this project?')) {
-      Relay.Store.commitUpdate(new DeleteProjectMutation({
-        projectId: this.props.project.id,
-        userId: this.props.viewer.user.id,
-      }), {
-        onSuccess: () => {
-          // TODO replace hard reload
-          // was added because deleting the last project caused
-          // a relay issue
-          window.location.pathname = '/'
-        },
-      })
+      Relay.Store.commitUpdate(
+        new DeleteProjectMutation({
+          projectId: this.props.project.id,
+          userId: this.props.viewer.user.id,
+        }),
+        {
+          onSuccess: () => {
+            // TODO replace hard reload
+            // was added because deleting the last project caused
+            // a relay issue
+            window.location.pathname = '/'
+          },
+        })
     }
   }
 
   _save () {
-    Relay.Store.commitUpdate(new UpdateProjectMutation({
-      project: this.props.project,
-      name: this.state.projectName
-    }), {
-      onSuccess: () => {
-        this.props.hide()
-      },
-    })
+    Relay.Store.commitUpdate(
+      new UpdateProjectMutation(
+        {
+          project: this.props.project,
+          name: this.state.projectName,
+        }),
+      {
+        onSuccess: () => {
+            this.props.hide()
+          },
+      })
   }
 
   _updateProjectName(name: string) {
     this.setState({
-      projectName: name
+      projectName: name,
     } as State)
   }
 
