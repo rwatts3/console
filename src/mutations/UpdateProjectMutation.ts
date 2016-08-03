@@ -5,7 +5,6 @@ interface Project {
 }
 
 interface Props {
-  webhookUrl: string,
   name: string,
   project: Project
 }
@@ -22,7 +21,6 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
         project {
           id
           name
-          webhookUrl
         }
       }
     `
@@ -40,8 +38,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
   getVariables () {
     return {
       id: this.props.project.id,
-      name: this.props.name,
-      webhookUrl: this.props.webhookUrl,
+      name: this.props.name
     }
   }
 
@@ -49,8 +46,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
     return {
       project: {
         id: this.props.project.id,
-        name: this.props.name,
-        webhookUrl: this.props.webhookUrl,
+        name: this.props.name
       },
     }
   }

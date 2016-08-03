@@ -1,33 +1,48 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { findDOMNode } from 'react-dom'
-import classes from './ProjectSettingsOverlay.scss'
+import { Project } from '../../types/types'
 import UpdateProjectMutation from 'mutations/UpdateProjectMutation'
 import DeleteProjectMutation from 'mutations/DeleteProjectMutation'
 import ResetProjectSchemaMutation from 'mutations/ResetProjectSchemaMutation'
 import ResetProjectDataMutation from 'mutations/ResetProjectDataMutation'
 
-export default class ProjectSettingsOverlay extends React.Component {
+const classes: any = require('./ProjectSettingsOverlay.scss')
 
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    viewer: PropTypes.object.isRequired,
-    project: PropTypes.object.isRequired,
-    projectCount: PropTypes.number.isRequired,
-    hide: PropTypes.func.isRequired,
-  };
+interface Props {
+  params : any,
+  project: Project,
+  projectCount: number,
+  hide?: () => void,
+  viewer: any
+}
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
+interface Context {
+  router: any
+}
+
+interface State {
+  projectName: string
+}
+
+export default class ProjectSettingsOverlay extends React.Component<Props, State> {
+  context : Context
+
+  refs: {
+    [key: string]: any
+    projectId: Element
+  }
 
   constructor (props) {
     super(props)
-
-    this._onClickResetProjectData = ::this._onClickResetProjectData
-    this._onClickResetCompleteProject= ::this._onClickResetCompleteProject
-    this._onClickDeleteProject = ::this._onClickDeleteProject
-    this._save = ::this._save
+    this.setState({
+      projectName: ""
+    })
+    this._onClickResetProjectData = this._onClickResetProjectData.bind(this)
+    this._onClickResetCompleteProject= this._onClickResetCompleteProject.bind(this)
+    this._onClickDeleteProject = this._onClickDeleteProject.bind(this)
+    this._save = this._save.bind(this)
+    this._updateProjectName = this._updateProjectName.bind(this)
   }
 
   _onClickResetProjectData () {
@@ -75,13 +90,18 @@ export default class ProjectSettingsOverlay extends React.Component {
   _save () {
     Relay.Store.commitUpdate(new UpdateProjectMutation({
       project: this.props.project,
-      name: findDOMNode(this.refs.projectName).value,
-      webhookUrl: findDOMNode(this.refs.projectWebhookUrl).value,
+      name: this.state.projectName
     }), {
       onSuccess: () => {
         this.props.hide()
       },
     })
+  }
+
+  _updateProjectName(name: string) {
+    this.setState({
+      projectName: name
+    } as State)
   }
 
   _selectProjectId () {
@@ -101,7 +121,7 @@ export default class ProjectSettingsOverlay extends React.Component {
         <div className={classes.container}>
           <div className={classes.head}>Project settings</div>
           <div className={classes.copy} title='Project Id'>
-            <div onClick={::this._selectProjectId} className={classes.copyWrapper}>
+            <div onClick={this._selectProjectId.bind(this)} className={classes.copyWrapper}>
               <span className={classes.projectId} ref='projectId'>
                 {this.props.project.id}
               </span>
@@ -110,11 +130,10 @@ export default class ProjectSettingsOverlay extends React.Component {
               </span>
             </div>
           </div>
-          <input ref='projectName' className={classes.input}
-            type='text' placeholder='Name' defaultValue={this.props.project.name} />
-          <input ref='projectWebhookUrl' className={classes.input} type='text'
-            placeholder='Webhook url' defaultValue={this.props.project.webhookUrl} />
-
+          <input className={classes.input}
+            type='text' placeholder='Name' defaultValue={this.props.project.name}
+            onChange={(e) => this._updateProjectName((e.target as HTMLInputElement).value)}
+          />
           <div className={classes.section}>
             <div className={classes.reset} onClick={this._onClickResetProjectData}>Reset Project Data</div>
             <div
@@ -125,7 +144,7 @@ export default class ProjectSettingsOverlay extends React.Component {
             </div>
             <div className={classes.delete} onClick={this._onClickDeleteProject}>Delete Project</div>
           </div>
-          <div onClick={::this.props.hide} className={classes.buttonCancel}>Cancel</div>
+          <div onClick={this.props.hide.bind(this)} className={classes.buttonCancel}>Cancel</div>
           <div onClick={this._save} className={classes.buttonSubmit}>Save</div>
         </div>
       </div>
