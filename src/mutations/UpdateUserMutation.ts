@@ -3,8 +3,8 @@ import * as Relay from 'react-relay'
 interface Props {
   userId: string
   gettingStartedStatus?: string
-  name: string
-  email: string
+  name?: string
+  email?: string
 }
 
 export default class UpdateUserMutation extends Relay.Mutation<Props, {}> {
