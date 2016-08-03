@@ -1,6 +1,16 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class UpdateProjectMutation extends Relay.Mutation {
+interface Project {
+  id: string
+}
+
+interface Props {
+  webhookUrl: string,
+  name: string,
+  project: Project
+}
+
+export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateProject}`

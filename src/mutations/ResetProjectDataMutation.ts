@@ -1,6 +1,10 @@
-import Relay from 'react-relay'
+import * as Relay from 'react-relay'
 
-export default class ResetProjectDataMutation extends Relay.Mutation {
+interface Props {
+  projectId: string
+}
+
+export default class ResetProjectDataMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{resetProjectData}`
