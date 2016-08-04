@@ -72,11 +72,14 @@ declare module 'react-relay' {
     constructor(host: string, options: any)
     supports(...options: string[]): boolean
   }
-
+  interface RelayQuery {
+    query: string
+  }
   function createContainer<T>(component: React.ComponentClass<T>, params?: CreateContainerOpts): RelayContainerClass<any>
   function injectNetworkLayer(networkLayer: RelayNetworkLayer)
   function isContainer(component: React.ComponentClass<any>): boolean
   function QL(...args: any[]): string
+  function createQuery(query: string, variables: RelayVariables)
 
   class Route {
     constructor(params?: RelayVariables)
@@ -104,6 +107,8 @@ declare module 'react-relay' {
 
   interface Store {
     commitUpdate(mutation: Mutation<any,any>, callbacks?: StoreUpdateCallbacks<any>)
+    primeCache(query: RelayQuery, callback: (done: any, error: any)=>void)
+    readQuery(query: string)
   }
 
   var Store: Store

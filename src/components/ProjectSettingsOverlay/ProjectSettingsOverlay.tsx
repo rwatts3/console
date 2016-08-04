@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { findDOMNode } from 'react-dom'
 import { Project } from '../../types/types'
+import { ShowNotificationCallback } from '../../types/utils'
+import { onFailureShowNotification } from '../../utils/relay'
 import UpdateProjectMutation from 'mutations/UpdateProjectMutation'
 import DeleteProjectMutation from 'mutations/DeleteProjectMutation'
 import ResetProjectSchemaMutation from 'mutations/ResetProjectSchemaMutation'
@@ -18,7 +20,8 @@ interface Props {
 }
 
 interface Context {
-  router: any
+  router: any,
+  showNotification: ShowNotificationCallback
 }
 
 interface State {
@@ -42,7 +45,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
     this._updateProjectName = this._updateProjectName.bind(this)
   }
 
-  _onClickResetProjectData () {
+  _onClickResetProjectData (): void {
     if (window.confirm('Do you really want to reset the project data?')) {
       Relay.Store.commitUpdate(
         new ResetProjectDataMutation({
@@ -56,7 +59,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
     }
   }
 
-  _onClickResetCompleteProject () {
+  _onClickResetCompleteProject (): void {
     if (window.confirm('Do you really want to reset the project data and models? ')) {
       Relay.Store.commitUpdate(
         new ResetProjectSchemaMutation({
@@ -70,7 +73,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
     }
   }
 
-  _onClickDeleteProject () {
+  _onClickDeleteProject (): void {
     if (this.props.projectCount === 1) {
       window.alert('You can\'t delete your last project!')
     } else if (window.confirm('Do you really want to delete this project?')) {
@@ -90,7 +93,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
     }
   }
 
-  _save () {
+  _save (): void {
     Relay.Store.commitUpdate(
       new UpdateProjectMutation(
         {
@@ -101,16 +104,20 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
         onSuccess: () => {
             this.props.hide()
           },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.context.showNotification)
+          // TODO set show notification method
+        },
       })
   }
 
-  _updateProjectName(name: string) {
+  _updateProjectName(name: string): void {
     this.setState({
       projectName: name,
     } as State)
   }
 
-  _selectProjectId () {
+  _selectProjectId (): void {
     const projectId = findDOMNode(this.refs.projectId)
     const range = document.createRange()
     range.setStartBefore(projectId)
