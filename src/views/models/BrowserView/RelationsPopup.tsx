@@ -114,14 +114,20 @@ class RelationsPopup extends React.Component<Props, State> {
         <div className={classes.root}>
           <div className={classes.header}>
             <div className={classes.filter}>
+              <Icon
+                src={require('assets/new_icons/search.svg')}
+                width={30}
+                height={30}
+              />
               <input
                 type='text'
+                placeholder='Filter...'
                 />
             </div>
             <div className={classes.selection}>
-              <div className={''}>All</div>
-              <div className={''}>Related</div>
-              <div className={''}>Unrelated</div>
+              <div className={`${true ? classes.active : ''}`}>All</div>
+              <div className={`${false ? classes.active : ''}`}>Related</div>
+              <div className={`${false ? classes.active : ''}`}>Unrelated</div>
             </div>
           </div>
           <div className={classes.list}>
@@ -145,6 +151,12 @@ class RelationsPopup extends React.Component<Props, State> {
             </ScrollBox>
           </div>
           <div className={classes.footer}>
+            <div className={classes.savedIndicator}>
+              All changes saved
+            </div>
+            <div className={classes.close}>
+              Close
+            </div>
           </div>
         </div>
       </Popup>
