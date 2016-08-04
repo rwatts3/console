@@ -1,11 +1,12 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Loading from '../../components/Loading/Loading'
-import { updateNetworkLayer } from '../../utils/relay'
+import { updateNetworkLayer, onFailureShowNotification } from '../../utils/relay'
 import * as cookiestore from '../../utils/cookiestore'
 import LoginMutation from '../../mutations/LoginMutation'
 import Icon from '../../components/Icon/Icon'
 import { Viewer } from '../../types/types'
+import { ShowNotificationCallback } from '../../types/utils'
 const classes: any = require('./LoginView.scss')
 
 interface Props {
@@ -19,6 +20,14 @@ interface State {
 }
 
 class LoginView extends React.Component<Props, State> {
+
+  static contextTypes: React.ValidationMap<any> = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback
+  }
 
   state = {
     loading: false,
@@ -45,7 +54,8 @@ class LoginView extends React.Component<Props, State> {
         window.location.pathname = '/'
       })
     }
-    const onFailure = () => {
+    const onFailure = (transaction) => {
+      onFailureShowNotification(transaction, this.context.showNotification)
       this.setState({ loading: false } as State)
 
       analytics.track('login: login failed', { email })
