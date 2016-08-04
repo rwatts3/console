@@ -19,17 +19,21 @@ interface Props {
   viewer: any
 }
 
-interface Context {
-  router: any,
-  showNotification: ShowNotificationCallback
-}
-
 interface State {
   projectName: string
 }
 
 export default class ProjectSettingsOverlay extends React.Component<Props, State> {
-  context: Context
+
+  static contextTypes: React.ValidationMap<any> = {
+    router: React.PropTypes.object.isRequired,
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    router: any,
+    showNotification: ShowNotificationCallback
+  }
 
   refs: {
     [key: string]: any
@@ -106,7 +110,6 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
           },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.context.showNotification)
-          // TODO set show notification method
         },
       })
   }
