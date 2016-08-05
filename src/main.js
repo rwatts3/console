@@ -16,7 +16,7 @@ import {
 
 import loadAnalytics from './utils/analytics'
 
-import './utils/polyfils.ts'
+import './utils/polyfils'
 
 loadAnalytics()
 
