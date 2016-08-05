@@ -1,16 +1,20 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
-import { classnames } from '../../../utils/classnames'
-import { isValidValue, valueToString, stringToValue } from '../../../utils/valueparser'
-import { isScalar } from '../../../utils/graphql'
-import { Field } from '../../../types/types'
+import {classnames} from '../../../utils/classnames'
+import {isValidValue, valueToString, stringToValue} from '../../../utils/valueparser'
+import {isScalar} from '../../../utils/graphql'
+import {Field} from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
-import ToggleButton from '../../../components/ToggleButton/ToggleButton'
-import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
-import Datepicker from '../../../components/Datepicker/Datepicker'
 import RelationsPopup from './RelationsPopup'
+import DateTimeCell from './Cell/DateTimeCell'
+import FloatCell from './Cell/FloatCell'
+import IntCell from './Cell/IntCell'
+import BooleanCell from './Cell/BooleanCell'
+import EnumCell from './Cell/EnumCell'
+import StringCell from './Cell/StringCell'
+import DefaultCell from './Cell/DefaultCell'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -37,7 +41,7 @@ class Cell extends React.Component<Props, State> {
     input: HTMLInputElement
   }
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -46,40 +50,40 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate (prevState: State): void {
+  componentDidUpdate(prevState: State): void {
     if (!prevState.editing && this.state.editing && this.refs.input) {
       findDOMNode<HTMLInputElement>(this.refs.input).select()
     }
   }
 
-  _startEditing (): void {
+  _startEditing(): void {
     console.log('starts editing')
     if (this.props.field.name !== 'id') {
-      this.setState({ editing: true } as State)
+      this.setState({editing: true} as State)
     }
   }
 
-  _cancel (): void {
+  _cancel(): void {
     console.log('stops editing')
-    this.setState({ editing: false } as State)
+    this.setState({editing: false} as State)
   }
 
-  _save (inputValue: string): void {
+  _save(inputValue: string): void {
     console.log('saving data')
     if (!isValidValue(inputValue, this.props.field)) {
       alert(`'${inputValue}' is not a valid value for field ${this.props.field.name}`)
-      this.setState({ editing: false } as State)
+      this.setState({editing: false} as State)
       return
     }
 
     const value = stringToValue(inputValue, this.props.field)
 
     if (value === this.props.value) {
-      this.setState({ editing: false } as State)
+      this.setState({editing: false} as State)
       return
     }
 
-    this.setState({ loading: true } as State)
+    this.setState({loading: true} as State)
 
     this.props.update(value, this.props.field, () => {
       this.setState({
@@ -89,7 +93,7 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  _onKeyDown (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void {
+  _onKeyDown(e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void {
     switch (e.keyCode) {
       case 13:
         this._save(e.target.value)
@@ -100,13 +104,13 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _onEscapeTextarea (e: React.KeyboardEvent<HTMLTextAreaElement>): void {
+  _onEscapeTextarea(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
     if (e.keyCode === 27) {
       this._save(e.target.value)
     }
   }
 
-  _renderContent (): JSX.Element {
+  _renderContent(): JSX.Element {
     if (this.state.loading) {
       return (
         <div className={classes.loading}>
@@ -162,81 +166,58 @@ class Cell extends React.Component<Props, State> {
       switch (this.props.field.typeIdentifier) {
         case 'Int':
           return (
-            <input
-              autoFocus
-              type='number'
-              ref='input'
-              defaultValue={valueString}
-              onBlur={(e) => this._save(e.target.value)}
-              onKeyDown={(e) => this._onKeyDown(e)}
+            <IntCell
+              valueString={valueString}
+              save={this._save.bind(this)}
+              onKeyDown={this._onKeyDown.bind(this)}
             />
           )
         case 'Float':
           return (
-            <input
-              autoFocus
-              type='number'
-              step='any'
-              ref='input'
-              defaultValue={valueString}
-              onBlur={(e) => this._save(e.target.value)}
-              onKeyDown={(e) => this._onKeyDown(e)}
+            <FloatCell
+              valueString={valueString}
+              save={this._save.bind(this)}
+              onKeyDown={this._onKeyDown.bind(this)}
             />
           )
         case 'Boolean':
-          console.log('bool')
           return (
-            <ToggleButton
-              leftText='false'
-              rightText='true'
-              side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
-              onClickOutside={(side) => this._save(side === ToggleSide.Left ? 'false' : 'true')}
+            <BooleanCell
+              valueString={valueString}
+              save={this._save.bind(this)}
             />
           )
         case 'Enum':
           return (
-            <select
-              autoFocus
-              defaultValue={valueString}
-              onBlur={(e) => this._save(e.target.value)}
-              onKeyDown={(e) => this._onKeyDown(e)}
-            >
-              {this.props.field.enumValues.map((enumValue) => (
-                <option key={enumValue}>{enumValue}</option>
-              ))}
-            </select>
+            <EnumCell
+              field={this.props.field}
+              valueString={valueString}
+              save={this._save.bind(this)}
+              onKeyDown={this._onKeyDown.bind(this)}
+            />
           )
         case 'String':
           return (
-            <textarea
-              autoFocus
-              type='text'
-              ref='input'
-              defaultValue={valueString}
-              onKeyDown={(e) => this._onEscapeTextarea(e)}
-              onBlur={(e) => this._save(e.target.value)}
+            <StringCell
+              valueString={valueString}
+              onKeyDown={this._onEscapeTextarea.bind(this)}
+              save={this._save.bind(this)}
             />
           )
         case 'DateTime':
           return (
-            <Datepicker
-              className={classes.datepicker}
-              defaultValue={new Date(valueString)}
-              onChange={(m) => this._save(m.toISOString())}
-              onCancel={() => this._cancel()}
-              defaultOpen={true}
-              applyImmediately={false}
+            <DateTimeCell
+              cancel={this._cancel.bind(this)}
+              save={this._save.bind(this)}
+              valueString={valueString}
             />
           )
         default:
           return (
-            <input
-              autoFocus
-              type='text'
-              ref='input'
-              defaultValue={valueString}
-              onKeyDown={(e) => this._onKeyDown(e)}
-              onBlur={(e) => this._save(e.target.value)}
+            <DefaultCell
+              valueString={valueString}
+              onKeyDown={this._onKeyDown.bind(this)}
+              save={this._save.bind(this)}
             />
           )
       }
@@ -247,7 +228,7 @@ class Cell extends React.Component<Props, State> {
     )
   }
 
-  render (): JSX.Element {
+  render(): JSX.Element {
     const rootClassnames = classnames({
       [classes.root]: true,
       [classes.null]: this.props.value === null,
@@ -267,19 +248,19 @@ class Cell extends React.Component<Props, State> {
 }
 
 export default Relay.createContainer(Cell, {
-  fragments: {
-    field: () => Relay.QL`
-      fragment on Field {
-        id
-        name
-        isList
-        typeIdentifier
-        enumValues
-        relatedModel {
-          ${ModelSelector.getFragment('relatedModel')}
-        }
-        ${RelationsPopup.getFragment('originField')}
-      }
-    `,
-  },
+    fragments: {
+        field: () => Relay.QL`
+            fragment on Field {
+                id
+                name
+                isList
+                typeIdentifier
+                enumValues
+                relatedModel {
+                    ${ModelSelector.getFragment('relatedModel')}
+                }
+                ${RelationsPopup.getFragment('originField')}
+            }
+        `,
+    },
 })
