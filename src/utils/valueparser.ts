@@ -44,6 +44,7 @@ export function stringToValue (rawValue: string, field: Field): any {
 
   if (!isScalar(typeIdentifier)) {
     if (isList) {
+      // TODO fix this for lists
       throw new Error('Converting a string to a relation list is not supported')
     }
 
