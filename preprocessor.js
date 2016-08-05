@@ -1,5 +1,5 @@
 const tsc = require('typescript');
-const babel = require('babel-core')
+const babel = require('babel-core');
 
 module.exports = {
   process(src, path) {
