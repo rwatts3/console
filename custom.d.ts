@@ -9,6 +9,8 @@ declare module 'smooch'
 declare module 'graphql'
 declare module 'graphql/*'
 declare module 'graphiql'
+declare module 'map-props'
+declare module 'react-twitter-widgets'
 
 declare var require: {
   <T>(path: string): T

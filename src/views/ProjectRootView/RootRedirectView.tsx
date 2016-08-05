@@ -1,27 +1,46 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
-import mapProps from 'map-props'
-import AddProjectMutation from 'mutations/AddProjectMutation'
-import LoginView from 'views/LoginView/LoginView'
-import classes from './RootRedirectView.scss'
+import * as React from 'react'
+import { PropTypes } from 'react'
+import * as Relay from 'react-relay'
+import { default as mapProps } from 'map-props'
+import AddProjectMutation from '../../mutations/AddProjectMutation'
+import LoginView from '../../views/LoginView/LoginView'
+import { Viewer } from '../../types/types'
+const classes: any = require('./RootRedirectView.scss')
 
-class RootRedirectView extends React.Component {
+console.log(mapProps)
+
+
+interface Props {
+  viewer: Viewer,
+  projectName: string,
+}
+
+class RootRedirectView extends React.Component<Props, {}> {
+
   static propTypes = {
     viewer: PropTypes.object.isRequired,
     projectName: PropTypes.string,
-  };
+  }
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  };
+  }
 
-  componentWillMount () {
+  context: {
+    router?: any
+  }
+
+  constructor(props: Props) {
+    super(props)
+  }
+
+  componentWillMount (): void {
     if (this.props.projectName) {
       this.context.router.replace(`/${this.props.projectName}`)
     }
   }
 
-  shouldComponentUpdate (nextProps) {
+  shouldComponentUpdate (nextProps: Props): boolean {
     if (nextProps.projectName) {
       this.context.router.replace(`/${nextProps.projectName}`)
       return false
@@ -30,26 +49,29 @@ class RootRedirectView extends React.Component {
     return true
   }
 
-  _addProject () {
+  _addProject (): void {
     const projectName = window.prompt('Project name')
     if (projectName) {
-      Relay.Store.commitUpdate(new AddProjectMutation({
-        projectName,
-        userId: this.props.viewer.user.id,
-      }), {
-        onSuccess: () => {
-          analytics.track('global: created project', {
-            project: projectName,
-          })
-        },
-      })
+      Relay.Store.commitUpdate(
+        new AddProjectMutation(
+          {
+            projectName,
+            userId: this.props.viewer.user.id,
+          }),
+        {
+          onSuccess: () => {
+            analytics.track('global: created project', {
+              project: projectName,
+            })
+          },
+        })
     }
   }
 
   render () {
     if (!this.props.projectName) {
       return (
-        <div className={classes.addProject} onClick={::this._addProject}>
+        <div className={classes.addProject} onClick={this._addProject.bind(this)}>
           Add new project
         </div>
       )

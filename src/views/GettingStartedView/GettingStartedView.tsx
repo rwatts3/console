@@ -1,22 +1,29 @@
-import React, { PropTypes } from 'react'
-import Relay from 'react-relay'
+import * as React from 'react'
+import { PropTypes } from 'react'
+import * as Relay from 'react-relay'
 import mapProps from 'map-props'
 import { Link } from 'react-router'
 import { findDOMNode } from 'react-dom'
-import Loading from 'components/Loading/Loading'
-import classes from './GettingStartedView.scss'
+import Loading from '../../components/Loading/Loading'
 import { Follow } from 'react-twitter-widgets'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { nextStep, skip } from 'reducers/GettingStartedState'
+import { GettingStartedState, nextStep, skip } from '../../reducers/GettingStartedState'
+import { Client } from '../../types/types'
 
-class Script extends React.Component {
+const classes: any = require('./GettingStartedView.scss')
+
+interface ScriptProps {
+  url: string,
+}
+
+class Script extends React.Component<ScriptProps, {}> {
   static propTypes = {
     url: PropTypes.string.isRequired,
   }
 
   componentDidMount () {
-    const element = findDOMNode(this.refs.element)
+    const element = findDOMNode((this.refs as any).element)
     const script = document.createElement('script')
     script.src = this.props.url
     script.async = true
@@ -50,7 +57,25 @@ const examples = {
   },
 }
 
-class GettingStartedView extends React.Component {
+interface Example {
+  path: string,
+  description: string,
+}
+
+interface ViewProps {
+  params: any,
+  projectId: string,
+  user: Client,
+  gettingStartedState: GettingStartedState,
+  nextStep: any,
+  skip: any,
+}
+
+interface ViewState {
+  selectedExample: Example
+}
+
+class GettingStartedView extends React.Component<ViewProps, ViewState> {
   static propTypes = {
     params: PropTypes.object.isRequired,
     projectId: PropTypes.string.isRequired,
@@ -64,45 +89,49 @@ class GettingStartedView extends React.Component {
     router: PropTypes.object.isRequired,
   }
 
-  constructor (props) {
+  context: {
+    router?: any
+  }
+
+  constructor (props: ViewProps) {
     super(props)
     this.state = {
       selectedExample: examples.RELAY,
     }
   }
 
-  componentWillMount () {
+  componentWillMount (): void {
     if (!this.props.gettingStartedState.isActive()) {
       this.context.router.replace(`/${this.props.params.projectName}/models`)
     }
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     analytics.track('getting-started: viewed', {
       project: this.props.params.projectName,
       step: this.props.gettingStartedState.step,
     })
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (): void {
     if (this.props.gettingStartedState.progress === 4) {
-      const snd = new Audio(require('assets/success.mp3'))
+      const snd = new Audio(require('assets/success.mp3') as string)
       snd.volume = 0.5
       snd.play()
     }
   }
 
-  _getStarted () {
+  _getStarted (): void {
     if (this.props.gettingStartedState.isCurrentStep('STEP1_OVERVIEW')) {
       this.props.nextStep()
     }
   }
 
-  _selectExample (example) {
+  _selectExample (example: Example): void {
     this.setState({selectedExample: example})
   }
 
-  _skipGettingStarted () {
+  _skipGettingStarted (): void {
     if (window.confirm('Do you really want skip the getting started tour?')) {
       // TODO: fix this hack
       Promise.resolve(this.props.skip())
@@ -112,12 +141,12 @@ class GettingStartedView extends React.Component {
     }
   }
 
-  _onClose () {
+  _onClose (): void {
     analytics.track('getting-started: closed')
   }
 
-  _selectCommands () {
-    const commands = findDOMNode(this.refs.commands)
+  _selectCommands (): void {
+    const commands = findDOMNode((this.refs as any).commands)
     const range = document.createRange()
     range.setStartBefore(commands)
     range.setEndAfter(commands)
@@ -151,14 +180,14 @@ class GettingStartedView extends React.Component {
               <div
                 className={`${classes.button} ${classes.green}`}
                 style={{width: 260}}
-                onClick={::this._getStarted}
+                onClick={this._getStarted.bind(this)}
               >
                 Let’s go
               </div>
               <div
                 className={`${classes.button} ${classes.grey}`}
                 style={{width: 170}}
-                onClick={::this._skipGettingStarted}
+                onClick={this._skipGettingStarted.bind(this)}
               >
                 Skip tour
               </div>
@@ -284,7 +313,7 @@ class GettingStartedView extends React.Component {
                   2. Run these commands
                 </h3>
                 <div
-                  onClick={::this._selectCommands}
+                  onClick={this._selectCommands.bind(this)}
                   className={classes.field}
                   ref='commands'
                 >
