@@ -106,7 +106,6 @@ class StructureView extends React.Component<Props, State> {
             offsetX={5}
             offsetY={5}
             width={240}
-            side="bottom"
           >
             <Link
               className={`${classes.button} ${classes.green}`}
