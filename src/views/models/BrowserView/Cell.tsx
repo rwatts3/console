@@ -53,16 +53,19 @@ class Cell extends React.Component<Props, State> {
   }
 
   _startEditing (): void {
+    console.log('starts editing')
     if (this.props.field.name !== 'id') {
       this.setState({ editing: true } as State)
     }
   }
 
   _cancel (): void {
+    console.log('stops editing')
     this.setState({ editing: false } as State)
   }
 
   _save (inputValue: string): void {
+    console.log('saving data')
     if (!isValidValue(inputValue, this.props.field)) {
       alert(`'${inputValue}' is not a valid value for field ${this.props.field.name}`)
       this.setState({ editing: false } as State)
@@ -154,87 +157,88 @@ class Cell extends React.Component<Props, State> {
             />
           )
         }
+      }
 
-        switch (this.props.field.typeIdentifier) {
-          case 'Int':
-            return (
-              <input
-                autoFocus
-                type='number'
-                ref='input'
-                defaultValue={valueString}
-                onBlur={(e) => this._save(e.target.value)}
-                onKeyDown={(e) => this._onKeyDown(e)}
-              />
-            )
-          case 'Float':
-            return (
-              <input
-                autoFocus
-                type='number'
-                step='any'
-                ref='input'
-                defaultValue={valueString}
-                onBlur={(e) => this._save(e.target.value)}
-                onKeyDown={(e) => this._onKeyDown(e)}
-              />
-            )
-          case 'Boolean':
-            return (
-              <ToggleButton
-                leftText='false'
-                rightText='true'
-                side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
-                onClickOutside={(side) => this._save(side === ToggleSide.Left ? 'false' : 'true')}
-              />
-            )
-          case 'Enum':
-            return (
-              <select
-                autoFocus
-                defaultValue={valueString}
-                onBlur={(e) => this._save(e.target.value)}
-                onKeyDown={(e) => this._onKeyDown(e)}
-              >
-                {this.props.field.enumValues.map((enumValue) => (
-                  <option key={enumValue}>{enumValue}</option>
-                ))}
-              </select>
-            )
-          case 'String':
-            return (
-              <textarea
-                autoFocus
-                type='text'
-                ref='input'
-                defaultValue={valueString}
-                onKeyDown={(e) => this._onEscapeTextarea(e)}
-                onBlur={(e) => this._save(e.target.value)}
-              />
-            )
-          case 'DateTime':
-            return (
-              <Datepicker
-                className={classes.datepicker}
-                defaultValue={new Date(valueString)}
-                onChange={(m) => this._save(m.toISOString())}
-                onCancel={() => this._cancel()}
-                defaultOpen={true}
-                applyImmediately={false}
-              />
-            )
-          default:
-            return (
-              <input
-                autoFocus
-                type='text'
-                ref='input'
-                defaultValue={valueString}
-                onKeyDown={(e) => this._onKeyDown(e)}
-                onBlur={(e) => this._save(e.target.value)}
-              />
-            )
-        }
+      switch (this.props.field.typeIdentifier) {
+        case 'Int':
+          return (
+            <input
+              autoFocus
+              type='number'
+              ref='input'
+              defaultValue={valueString}
+              onBlur={(e) => this._save(e.target.value)}
+              onKeyDown={(e) => this._onKeyDown(e)}
+            />
+          )
+        case 'Float':
+          return (
+            <input
+              autoFocus
+              type='number'
+              step='any'
+              ref='input'
+              defaultValue={valueString}
+              onBlur={(e) => this._save(e.target.value)}
+              onKeyDown={(e) => this._onKeyDown(e)}
+            />
+          )
+        case 'Boolean':
+          console.log('bool')
+          return (
+            <ToggleButton
+              leftText='false'
+              rightText='true'
+              side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
+              onClickOutside={(side) => this._save(side === ToggleSide.Left ? 'false' : 'true')}
+            />
+          )
+        case 'Enum':
+          return (
+            <select
+              autoFocus
+              defaultValue={valueString}
+              onBlur={(e) => this._save(e.target.value)}
+              onKeyDown={(e) => this._onKeyDown(e)}
+            >
+              {this.props.field.enumValues.map((enumValue) => (
+                <option key={enumValue}>{enumValue}</option>
+              ))}
+            </select>
+          )
+        case 'String':
+          return (
+            <textarea
+              autoFocus
+              type='text'
+              ref='input'
+              defaultValue={valueString}
+              onKeyDown={(e) => this._onEscapeTextarea(e)}
+              onBlur={(e) => this._save(e.target.value)}
+            />
+          )
+        case 'DateTime':
+          return (
+            <Datepicker
+              className={classes.datepicker}
+              defaultValue={new Date(valueString)}
+              onChange={(m) => this._save(m.toISOString())}
+              onCancel={() => this._cancel()}
+              defaultOpen={true}
+              applyImmediately={false}
+            />
+          )
+        default:
+          return (
+            <input
+              autoFocus
+              type='text'
+              ref='input'
+              defaultValue={valueString}
+              onKeyDown={(e) => this._onKeyDown(e)}
+              onBlur={(e) => this._save(e.target.value)}
+            />
+          )
       }
     }
 
