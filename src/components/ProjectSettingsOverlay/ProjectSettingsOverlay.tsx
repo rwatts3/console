@@ -4,10 +4,10 @@ import { findDOMNode } from 'react-dom'
 import { Project } from '../../types/types'
 import { ShowNotificationCallback } from '../../types/utils'
 import { onFailureShowNotification } from '../../utils/relay'
-import UpdateProjectMutation from 'mutations/UpdateProjectMutation'
-import DeleteProjectMutation from 'mutations/DeleteProjectMutation'
-import ResetProjectSchemaMutation from 'mutations/ResetProjectSchemaMutation'
-import ResetProjectDataMutation from 'mutations/ResetProjectDataMutation'
+import UpdateProjectMutation from '../../mutations/UpdateProjectMutation'
+import DeleteProjectMutation from '../../mutations/DeleteProjectMutation'
+import ResetProjectSchemaMutation from '../../mutations/ResetProjectSchemaMutation'
+import ResetProjectDataMutation from '../../mutations/ResetProjectDataMutation'
 
 const classes: any = require('./ProjectSettingsOverlay.scss')
 
