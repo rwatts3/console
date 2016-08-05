@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Field } from '../../../types/types'
+import { Field, DataItem } from '../../../types/types'
 import * as Immutable from 'immutable'
 import { isScalar } from '../../../utils/graphql'
 import { Lokka } from 'lokka'
@@ -20,11 +20,16 @@ interface Props {
 
 interface ItemWrapper {
   isRelated: boolean
-  item: any
+  item: DataItem
 }
+
+enum Selection { All, Related, Unrelated }
 
 interface State {
   items: Immutable.List<ItemWrapper>
+  selection: Selection
+  filter: string
+  success: boolean
 }
 
 class RelationsPopup extends React.Component<Props, State> {
@@ -36,6 +41,9 @@ class RelationsPopup extends React.Component<Props, State> {
 
     this.state = {
       items: Immutable.List<ItemWrapper>(),
+      selection: Selection.All,
+      filter: '',
+      success: false,
     }
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${props.projectId}`
@@ -45,8 +53,12 @@ class RelationsPopup extends React.Component<Props, State> {
 
     this._lokka = new Lokka({ transport })
 
-    const relatedModel = props.originField.relatedModel
-    const originModel = props.originField.model
+    this._reload()
+  }
+
+  _reload = () => {
+    const relatedModel = this.props.originField.relatedModel
+    const originModel = this.props.originField.model
 
     const fieldNames = relatedModel.fields.edges
       .map(({ node }) => node)
@@ -59,18 +71,18 @@ class RelationsPopup extends React.Component<Props, State> {
         all${relatedModel.namePlural} {
           ${fieldNames}
         }
-        ${originModel.name}(id: "${props.originItemId}") {
-          ${props.originField.name} {
+        ${originModel.name}(id: "${this.props.originItemId}") {
+          ${this.props.originField.name} {
             ${fieldNames}
           }
         }
       }
     `
 
-    this._lokka.query(query)
+    return this._lokka.query(query)
       .then((results) => {
         const allItems: any[] = results[`all${relatedModel.namePlural}`]
-        const relatedItems: any[] = results[originModel.name][props.originField.name]
+        const relatedItems: any[] = results[originModel.name][this.props.originField.name]
         const items = allItems.map((item) => ({
           item,
           isRelated: relatedItems.some((relatedItem) => relatedItem.id === item.id),
@@ -87,11 +99,12 @@ class RelationsPopup extends React.Component<Props, State> {
     const originModelName = this.props.originField.model.name
     const originFieldName = this.props.originField.name
 
-    const mutationArg1 = `${originFieldName}${relatedModelName}Id`
-    const mutationArg2 = `${relatedFieldName}${originModelName}Id`
+    const mutationPrefix = isRelated ? 'removeFrom' : 'addTo'
+    const mutationArg1 = `${relatedFieldName}${originModelName}Id`
+    const mutationArg2 = `${originFieldName}${relatedModelName}Id`
 
     const mutation = `{
-      addTo${relationName}(
+      ${mutationPrefix}${relationName}(
         ${mutationArg1}: "${this.props.originItemId}"
         ${mutationArg2}: "${itemId}"
       ) {
@@ -100,17 +113,30 @@ class RelationsPopup extends React.Component<Props, State> {
     }`
 
     this._lokka.mutate(mutation)
-      .then(() => {
-        const index = this.state.items.findIndex(({ item }) => item.id === itemId)
-        const { item } = this.state.items.get(index)
-        const items = this.state.items.set(index, { item, isRelated: !isRelated })
-        this.setState({ items })
-      })
+      .then(this._reload)
+      .then(() => this.setState({ success: true } as State))
   }
 
   render () {
+    const relatedFields = this.props.originField.relatedModel.fields
+    const filter = this.state.filter.toLowerCase()
+    const filteredItems = this.state.items
+      .filter(({ isRelated }) => {
+        switch (this.state.selection) {
+          case Selection.All: return true
+          case Selection.Related: return isRelated
+          case Selection.Unrelated: return !isRelated
+        }
+      })
+      .filter(({ item }) => (
+        relatedFields.edges
+          .map((edge) => edge.node)
+          .filter((field) => isScalar(field.typeIdentifier) && item[field.name])
+          .some((field) => item[field.name].toString().toLowerCase().includes(filter))
+      ))
+
     return (
-      <Popup onClickOutside={this.props.onCancel} height='90%'>
+      <Popup onClickOutside={this.props.onCancel} height='80%'>
         <div className={classes.root}>
           <div className={classes.header}>
             <div className={classes.filter}>
@@ -122,17 +148,34 @@ class RelationsPopup extends React.Component<Props, State> {
               <input
                 type='text'
                 placeholder='Filter...'
-                />
+                value={this.state.filter}
+                onChange={(e) => this.setState({ filter: e.target.value } as State)}
+              />
             </div>
             <div className={classes.selection}>
-              <div className={`${true ? classes.active : ''}`}>All</div>
-              <div className={`${false ? classes.active : ''}`}>Related</div>
-              <div className={`${false ? classes.active : ''}`}>Unrelated</div>
+              <div
+                className={`${this.state.selection === Selection.All ? classes.active : ''}`}
+                onClick={() => this.setState({ selection: Selection.All } as State)}
+              >
+                All
+              </div>
+              <div
+                className={`${this.state.selection === Selection.Related ? classes.active : ''}`}
+                onClick={() => this.setState({ selection: Selection.Related } as State)}
+              >
+                Related
+              </div>
+              <div
+                className={`${this.state.selection === Selection.Unrelated ? classes.active : ''}`}
+                onClick={() => this.setState({ selection: Selection.Unrelated } as State)}
+              >
+                Unrelated
+              </div>
             </div>
           </div>
           <div className={classes.list}>
             <ScrollBox>
-              {this.state.items.map(({ isRelated, item }) => (
+              {filteredItems.map(({ isRelated, item }) => (
                 <div
                   key={item.id}
                   className={`${classes.item} ${isRelated ? classes.related : ''}`}
@@ -151,10 +194,12 @@ class RelationsPopup extends React.Component<Props, State> {
             </ScrollBox>
           </div>
           <div className={classes.footer}>
-            <div className={classes.savedIndicator}>
-              All changes saved
-            </div>
-            <div className={classes.close}>
+            {this.state.success &&
+              <div className={classes.savedIndicator}>
+                All changes saved
+              </div>
+            }
+            <div className={classes.close} onClick={this.props.onCancel}>
               Close
             </div>
           </div>
