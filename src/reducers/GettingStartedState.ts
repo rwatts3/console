@@ -1,5 +1,6 @@
 import UpdateUserMutation from '../mutations/UpdateUserMutation'
 import * as Relay from 'react-relay'
+import { ReduxAction } from '../types/reducers'
 
 interface Props {
   step: string,
@@ -79,10 +80,6 @@ export class GettingStartedState {
 
 // Actions
 const UPDATE = 'dashboard/gettingStartedReducer/UPDATE'
-export interface Action {
-  payload?: any,
-  type?: string
-}
 
 // Reducer
 interface State {
@@ -92,7 +89,7 @@ interface State {
 
 const initialState: State = {checkStatus: false}
 
-export function reduceGettingStartedState (state: State = initialState, action: Action = {}): State {
+export function reduceGettingStartedState (state: State = initialState, action: ReduxAction = {}): State {
   switch (action.type) {
     case UPDATE:
       let gettingStartedState = action.payload.gettingStartedState
@@ -108,12 +105,12 @@ export function reduceGettingStartedState (state: State = initialState, action: 
 }
 
 // Action Creators
-export function update (step: string, userId: string): Action {
+export function update (step: string, userId: string): ReduxAction {
   const payload = {gettingStartedState: new GettingStartedState({step, userId})}
   return {type: UPDATE, payload}
 }
 
-function _updateReduxAndRelay (dispatch: (Action) => any, step: string, userId: string): Promise<{}> {
+function _updateReduxAndRelay (dispatch: (action: ReduxAction) => any, step: string, userId: string): Promise<{}> {
   return new Promise((resolve, reject) => {
     Relay.Store.commitUpdate(
       new UpdateUserMutation(
@@ -131,8 +128,8 @@ function _updateReduxAndRelay (dispatch: (Action) => any, step: string, userId: 
   })
 }
 
-export function nextStep (): (dispatch: (action: Action) => any, getState: any) => Promise<{}> {
-  return function (dispatch: (action: Action) => any, getState): Promise<{}> {
+export function nextStep (): (dispatch: (action: ReduxAction) => any, getState: any) => Promise<{}> {
+  return function (dispatch: (action: ReduxAction) => any, getState): Promise<{}> {
     const currentStep = getState().gettingStartedState.step
     const currentStepIndex = GettingStartedState.steps.indexOf(currentStep)
     const nextStep = GettingStartedState.steps[currentStepIndex + 1]
@@ -142,8 +139,8 @@ export function nextStep (): (dispatch: (action: Action) => any, getState: any) 
   }
 }
 
-export function skip (): (dispatch: (Action: any) => any, getState: any) => Promise<{}> {
-  return function (dispatch: (Action) => any, getState): Promise<{}> {
+export function skip (): (dispatch: (action: ReduxAction) => any, getState: any) => Promise<{}> {
+  return function (dispatch: (action: ReduxAction) => any, getState): Promise<{}> {
     const nextStep = 'STEP11_SKIPPED'
     const userId = getState().gettingStartedState._userId
 
@@ -151,8 +148,8 @@ export function skip (): (dispatch: (Action: any) => any, getState: any) => Prom
   }
 }
 
-export function fetchGettingStartedState (): (dispatch: (action: Action) => any) => Promise<{}> {
-  return function (dispatch: (action: Action) => any): Promise<{}> {
+export function fetchGettingStartedState (): (dispatch: (action: ReduxAction) => any) => Promise<{}> {
+  return function (dispatch: (action: ReduxAction) => any): Promise<{}> {
     let query = Relay.createQuery(
       Relay.QL`
       query {
@@ -165,7 +162,7 @@ export function fetchGettingStartedState (): (dispatch: (action: Action) => any)
       }`,
       {})
 
-    return new Promise(function (resolve: () => any, reject: (ErrorConstructor) => any) {
+    return new Promise(function (resolve: () => any, reject: (error: Error) => any) {
       Relay.Store.primeCache({query}, ({done, error}) => {
         if (done) {
           const data = Relay.Store.readQuery(query)[0]
