@@ -103,9 +103,10 @@ class StructureView extends React.Component<Props, State> {
               ' Then click the "Create Field" button.',
               STEP4_CREATE_COMPLETED_FIELD: 'Good job! Create another one called "complete" with type "Boolean"',
             }}
-            offsetX={-5}
+            offsetX={5}
             offsetY={5}
-            width={320}
+            width={240}
+            side="bottom"
           >
             <Link
               className={`${classes.button} ${classes.green}`}
