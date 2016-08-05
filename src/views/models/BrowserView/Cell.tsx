@@ -37,7 +37,7 @@ class Cell extends React.Component<Props, State> {
     input: HTMLInputElement
   }
 
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
 
     this.state = {
@@ -46,24 +46,23 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate (prevState: State): void {
     if (!prevState.editing && this.state.editing && this.refs.input) {
       findDOMNode<HTMLInputElement>(this.refs.input).select()
     }
   }
 
-  _startEditing () {
+  _startEditing (): void {
     if (this.props.field.name !== 'id') {
       this.setState({ editing: true } as State)
     }
   }
 
-  _cancel () {
+  _cancel (): void {
     this.setState({ editing: false } as State)
-    return
   }
 
-  _save (inputValue: string) {
+  _save (inputValue: string): void {
     if (!isValidValue(inputValue, this.props.field)) {
       alert(`'${inputValue}' is not a valid value for field ${this.props.field.name}`)
       this.setState({ editing: false } as State)
@@ -87,7 +86,7 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  _onKeyDown (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>) {
+  _onKeyDown (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void {
     switch (e.keyCode) {
       case 13:
         this._save(e.target.value)
@@ -98,13 +97,13 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _onEscapeTextarea (e: React.KeyboardEvent<HTMLTextAreaElement>) {
+  _onEscapeTextarea (e: React.KeyboardEvent<HTMLTextAreaElement>): void {
     if (e.keyCode === 27) {
       this._save(e.target.value)
     }
   }
 
-  _renderContent () {
+  _renderContent (): JSX.Element {
     if (this.state.loading) {
       return (
         <div className={classes.loading}>
@@ -244,7 +243,7 @@ class Cell extends React.Component<Props, State> {
     )
   }
 
-  render () {
+  render (): JSX.Element {
     const rootClassnames = classnames({
       [classes.root]: true,
       [classes.null]: this.props.value === null,
