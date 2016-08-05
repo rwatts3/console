@@ -1,4 +1,4 @@
-import UpdateUserMutation from 'mutations/UpdateUserMutation'
+import UpdateUserMutation from '../mutations/UpdateUserMutation'
 import * as Relay from 'react-relay'
 
 interface Props {
