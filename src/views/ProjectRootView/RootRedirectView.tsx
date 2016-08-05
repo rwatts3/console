@@ -7,9 +7,6 @@ import LoginView from '../../views/LoginView/LoginView'
 import { Viewer } from '../../types/types'
 const classes: any = require('./RootRedirectView.scss')
 
-console.log(mapProps)
-
-
 interface Props {
   viewer: Viewer,
   projectName: string,
