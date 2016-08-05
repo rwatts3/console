@@ -5,10 +5,6 @@ interface Project {
 }
 
 interface Props {
-<<<<<<< HEAD:src/mutations/UpdateProjectMutation.ts
-=======
-  webhookUrl: string,
->>>>>>> 9de11d534d9a0c5e5881930e0a223b5ca32749a8:src/mutations/UpdateProjectMutation.ts
   name: string,
   project: Project
 }

@@ -381,9 +381,9 @@ class BrowserView extends React.Component<Props, State> {
               Type something in the input field below and hit enter.`,
               STEP7_ADD_DATA_ITEM_2: 'Well done. Let\'s add another one.',
             }}
-            offsetX={-5}
+            offsetX={5}
             offsetY={5}
-            width={290}
+            width={240}
           >
             <div
               className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
