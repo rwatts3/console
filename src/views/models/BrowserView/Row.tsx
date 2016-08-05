@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import Cell from './Cell'
 import { UpdateCallback } from './Cell'
-import { Model, Field } from '../../../types/types'
+import { Model, Field, DataItem } from '../../../types/types'
 import CheckboxCell from './CheckboxCell'
 import { compareFields } from '../utils'
 const classes: any = require('./Row.scss')
@@ -10,11 +10,12 @@ const classes: any = require('./Row.scss')
 interface Props {
   model: Model
   projectId: string
-  item: any
+  item: DataItem
   columnWidths: {[key: string]: number}
   update: (value: any, field: Field, callback: UpdateCallback) => void
   isSelected: boolean
   onSelect: (checked: boolean) => void
+  reload: () => void
 }
 
 class Row extends React.Component<Props, {}> {
@@ -39,6 +40,7 @@ class Row extends React.Component<Props, {}> {
             width={this.props.columnWidths[field.name]}
             update={this.props.update}
             projectId={this.props.projectId}
+            reload={this.props.reload}
           />
         ))}
         <div style={{width: 250}}></div>
