@@ -79,7 +79,7 @@ export class GettingStartedState {
 
 // Actions
 const UPDATE = 'dashboard/gettingStartedReducer/UPDATE'
-interface Action {
+export interface Action {
   payload?: any,
   type?: string
 }
