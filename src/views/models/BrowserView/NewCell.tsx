@@ -83,24 +83,30 @@ class NewCell extends React.Component<Props, State> {
     }
 
     if (!isScalar(this.props.field.typeIdentifier)) {
-      return (
-        <ModelSelector
-          relatedModel={this.props.field.relatedModel}
-          projectId={this.props.projectId}
-          value={this.state.value ? this.state.value.id : null}
-          onSelect={(value) => this._updateValue(value, true)}
-          onCancel={this.props.onBlur}
-        />
-      )
+      if (this.props.field.isList) {
+        return (
+          <div>Add item to edit this field</div>
+        )
+      } else {
+        return (
+          <ModelSelector
+            relatedModel={this.props.field.relatedModel}
+            projectId={this.props.projectId}
+            value={this.state.value ? this.state.value.id : null}
+            onSelect={(value) => this._updateValue(value, true)}
+            onCancel={this.props.onBlur}
+          />
+        )
+      }
     }
 
     if (this.props.field.isList) {
       return (
-        <input
+        <textarea
           type='text'
           defaultValue={valueString}
-          onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
-          onKeyDown={(e) => this._cancelOnEscape(e)}
+          onKeyDown={(e) => this._onEscapeTextarea(e)}
+          onChange={(e) => this._updateValue(e.target.value, false)}
           onBlur={this.props.onBlur}
         />
       )
@@ -113,7 +119,7 @@ class NewCell extends React.Component<Props, State> {
             autoFocus
             type='number'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
+            onChange={(e) => this._updateValue(e.target.value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
             onBlur={this.props.onBlur}
           />
@@ -125,7 +131,7 @@ class NewCell extends React.Component<Props, State> {
             step='any'
             autoFocus
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
+            onChange={(e) => this._updateValue(e.target.value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
             onBlur={this.props.onBlur}
           />
@@ -182,7 +188,7 @@ class NewCell extends React.Component<Props, State> {
           <input
             type='text'
             defaultValue={valueString}
-            onChange={(e) => this._updateValue((e.target as HTMLInputElement).value, false)}
+            onChange={(e) => this._updateValue(e.target.value, false)}
             onKeyDown={(e) => this._cancelOnEscape(e)}
             onBlur={this.props.onBlur}
           />

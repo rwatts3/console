@@ -120,3 +120,8 @@ export interface User {
   email: string
   roles: string[]
 }
+
+export interface DataItem {
+  id: string
+  [key: string]: any
+}

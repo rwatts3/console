@@ -22,6 +22,7 @@ interface Props {
   value: any
   width: number
   update: (value: any, field: Field, callback: UpdateCallback) => void
+  reload: () => void
 }
 
 interface State {
@@ -121,7 +122,10 @@ class Cell extends React.Component<Props, State> {
             <RelationsPopup
               originField={this.props.field}
               originItemId={this.props.itemId}
-              onCancel={() => this.setState({ editing: false } as State)}
+              onCancel={() => {
+                this.setState({ editing: false } as State)
+                this.props.reload()
+              }}
               projectId={this.props.projectId}
             />
           )

@@ -184,7 +184,7 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  _reloadData () {
+  _reloadData = () => {
     this.setState({ loading: true, reachedEnd: false } as State)
     return this._loadData(0, true)
       .then((items) => {
@@ -473,6 +473,7 @@ class BrowserView extends React.Component<Props, State> {
                       update={(key, value, callback) => this._updateItem(key, value, callback, item.get('id'), index)}
                       isSelected={this._isSelected(item.get('id'))}
                       onSelect={(event) => this._onSelectRow(item.get('id'))}
+                      reload={this._reloadData}
                     />
                   ))}
                 </div>
