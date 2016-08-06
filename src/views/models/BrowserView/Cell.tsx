@@ -55,14 +55,14 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _cancel(shouldReload: boolean = false): void {
+  _cancel = (shouldReload: boolean = false): void => {
     this.setState({editing: false} as State)
     if (shouldReload) {
       this.props.reload()
     }
   }
 
-  _save(value: any): void {
+  _save = (value: any): void => {
     if (value === null) {
       alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
       this.setState({editing: false} as State)
@@ -84,7 +84,7 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  _onKeyDown(e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void {
+  _onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
     switch (e.keyCode) {
       case 13:
         this._save(stringToValue(e.target.value, this.props.field))
@@ -95,7 +95,7 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _onEscapeTextarea(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
+  _onEscapeTextarea = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.keyCode === 27) {
       this._save(stringToValue(e.target.value, this.props.field))
     }
@@ -111,19 +111,19 @@ class Cell extends React.Component<Props, State> {
     }
 
     if (this.state.editing) {
-      let pack: CellRequirements = {
+      const reqs: CellRequirements = {
         field: this.props.field,
         value: this.props.value,
         projectId: this.props.projectId,
         itemId: this.props.itemId,
         methods: {
-          save: this._save.bind(this),
-          onKeyDown: this._onKeyDown.bind(this),
-          cancel: this._cancel.bind(this),
-          onEscapeTextarea: this._onEscapeTextarea.bind(this),
+          save: this._save,
+          onKeyDown: this._onKeyDown,
+          cancel: this._cancel,
+          onEscapeTextarea: this._onEscapeTextarea,
         },
       }
-      return getEditCell(pack)
+      return getEditCell(reqs)
     }
 
     const valueString = valueToString(this.props.value, this.props.field, true)
