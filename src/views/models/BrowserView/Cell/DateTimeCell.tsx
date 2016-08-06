@@ -10,7 +10,7 @@ export default class DateTimeCell extends React.Component<CellProps<Date>,{}> {
       <Datepicker
         className={classes.datepicker}
         defaultValue={this.props.value}
-        onChange={(m) => this.props.save(m.toISOString())}
+        onChange={(m) => this.props.save(m.toDate())}
         onCancel={() => this.props.cancel()}
         defaultOpen={true}
         applyImmediately={false}
