@@ -9,7 +9,7 @@ export default class EnumCell extends React.Component<CellProps<string>, {}> {
         autoFocus
         defaultValue={this.props.value}
         onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
-        onKeyDown={(e) => this.props.onKeyDown(e)}
+        onKeyDown={this.props.onKeyDown}
       >
         {this.props.field.enumValues.map((enumValue) => (
           <option key={enumValue}>{enumValue}</option>
