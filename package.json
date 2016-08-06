@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@types/js-cookie": "^2.0.27",
+    "@types/node": "^6.0.31",
     "@types/react": "^0.14.27",
     "@types/react-addons-pure-render-mixin": "^0.14.13",
     "@types/react-dom": "^0.14.14",

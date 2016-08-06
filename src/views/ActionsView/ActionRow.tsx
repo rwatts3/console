@@ -77,7 +77,7 @@ class ActionRow extends React.Component<Props, {}> {
       <div className={classes.root} onClick={this.props.onClick}>
         <div className={classes.row}>
           <input
-            value={this.props.action.isActive}
+            value={this.props.action.isActive.toString()}
             onClick={this._toggleIsActive}
             readOnly
             type='checkbox'
