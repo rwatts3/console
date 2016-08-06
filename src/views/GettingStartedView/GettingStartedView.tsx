@@ -234,7 +234,7 @@ class GettingStartedView extends React.Component<ViewProps, ViewState> {
               </p>
             </div>
             <div className={classes.image}>
-              <img src={require('assets/graphics/getting-started-1.svg')} />
+              <img src={require('assets/graphics/getting-started-1.svg') as string} />
             </div>
           </div>
         }
@@ -251,7 +251,7 @@ class GettingStartedView extends React.Component<ViewProps, ViewState> {
               </p>
             </div>
             <div className={classes.image}>
-              <img src={require('assets/graphics/getting-started-2.svg')} />
+              <img src={require('assets/graphics/getting-started-2.svg') as string} />
             </div>
           </div>
         }
@@ -267,7 +267,7 @@ class GettingStartedView extends React.Component<ViewProps, ViewState> {
               </p>
             </div>
             <div className={classes.image}>
-              <img src={require('assets/graphics/getting-started-3.svg')} />
+              <img src={require('assets/graphics/getting-started-3.svg') as string} />
             </div>
             <div className={classes.selection}>
               <div
