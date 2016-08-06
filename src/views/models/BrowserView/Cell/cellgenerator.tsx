@@ -1,4 +1,4 @@
-import {Field} from '../../../../types/types'
+import { Field } from '../../../../types/types'
 import * as React from 'react'
 import IntCell from './IntCell'
 import FloatCell from './FloatCell'
@@ -9,10 +9,10 @@ import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
 import ModelSelector from '../../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from '../RelationsPopup'
-import {isScalar} from '../../../../utils/graphql'
+import { isScalar } from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
 
-export interface InteractionPack {
+export interface CellRequirements {
   value: any
   field: Field
   projectId: string
@@ -25,119 +25,119 @@ export interface InteractionPack {
   }
 }
 
-export function getEditCell(pack: InteractionPack): JSX.Element {
-  if (!isScalar(pack.field.typeIdentifier)) {
-    if (pack.field.isList) {
-      return getNonScalarListEditCell(pack)
+export function getEditCell(reqs: CellRequirements): JSX.Element {
+  if (!isScalar(reqs.field.typeIdentifier)) {
+    if (reqs.field.isList) {
+      return getNonScalarListEditCell(reqs)
     } else {
-      return getNonScalarEditCell(pack)
+      return getNonScalarEditCell(reqs)
     }
   }
 
-  if (pack.field.isList) {
-    return getScalarListEditCell(pack)
+  if (reqs.field.isList) {
+    return getScalarListEditCell(reqs)
   }
 
-  return getScalarEditCell(pack)
+  return getScalarEditCell(reqs)
 }
 
-function getNonScalarListEditCell(pack: InteractionPack): JSX.Element {
+function getNonScalarListEditCell(reqs: CellRequirements): JSX.Element {
   return (
     <RelationsPopup
-      originField={pack.field}
-      originItemId={pack.itemId}
-      onCancel={() => pack.methods.cancel(true)}
-      projectId={pack.projectId}
+      originField={reqs.field}
+      originItemId={reqs.itemId}
+      onCancel={() => reqs.methods.cancel(true)}
+      projectId={reqs.projectId}
     />
   )
 }
 
-function getNonScalarEditCell(pack: InteractionPack): JSX.Element {
+function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
   return (
     <ModelSelector
-      relatedModel={pack.field.relatedModel}
-      projectId={pack.projectId}
-      value={pack.value ? pack.value.id : null}
-      onSelect={pack.methods.save}
-      onCancel={pack.methods.cancel}
+      relatedModel={reqs.field.relatedModel}
+      projectId={reqs.projectId}
+      value={reqs.value ? reqs.value.id : null}
+      onSelect={reqs.methods.save}
+      onCancel={reqs.methods.cancel}
     />
   )
 }
 
-function getScalarListEditCell(pack: InteractionPack): JSX.Element {
+function getScalarListEditCell(reqs: CellRequirements): JSX.Element {
   return (
 
     <ScalarListCell
-      value={pack.value}
-      save={pack.methods.save}
-      onKeyDown={pack.methods.onEscapeTextarea}
-      field={pack.field}
+      value={reqs.value}
+      save={reqs.methods.save}
+      onKeyDown={reqs.methods.onEscapeTextarea}
+      field={reqs.field}
     />
   )
 }
 
-function getScalarEditCell(pack: InteractionPack): JSX.Element {
-  switch (pack.field.typeIdentifier) {
+function getScalarEditCell(reqs: CellRequirements): JSX.Element {
+  switch (reqs.field.typeIdentifier) {
     case 'Int':
       return (
         <IntCell
-          value={pack.value}
-          save={pack.methods.save}
-          onKeyDown={pack.methods.onKeyDown}
-          field={pack.field}
+          value={reqs.value}
+          save={reqs.methods.save}
+          onKeyDown={reqs.methods.onKeyDown}
+          field={reqs.field}
         />
       )
     case 'Float':
       return (
         <FloatCell
-          value={pack.value}
-          save={pack.methods.save}
-          onKeyDown={pack.methods.onKeyDown}
-          field={pack.field}
+          value={reqs.value}
+          save={reqs.methods.save}
+          onKeyDown={reqs.methods.onKeyDown}
+          field={reqs.field}
         />
       )
     case 'Boolean':
       return (
         <BooleanCell
-          value={pack.value}
-          save={pack.methods.save}
-          field={pack.field}
+          value={reqs.value}
+          save={reqs.methods.save}
+          field={reqs.field}
         />
       )
     case 'Enum':
       return (
         <EnumCell
-          value={pack.value}
-          save={pack.methods.save}
-          onKeyDown={pack.methods.onKeyDown}
-          field={pack.field}
+          value={reqs.value}
+          save={reqs.methods.save}
+          onKeyDown={reqs.methods.onKeyDown}
+          field={reqs.field}
         />
       )
     case 'String':
       return (
         <StringCell
-          value={pack.value}
-          onKeyDown={pack.methods.onEscapeTextarea}
-          save={pack.methods.save}
-          field={pack.field}
+          value={reqs.value}
+          onKeyDown={reqs.methods.onEscapeTextarea}
+          save={reqs.methods.save}
+          field={reqs.field}
         />
       )
     case 'DateTime':
       return (
         <DateTimeCell
-          cancel={pack.methods.cancel}
-          save={pack.methods.save}
-          value={pack.value}
-          field={pack.field}
+          cancel={reqs.methods.cancel}
+          save={reqs.methods.save}
+          value={reqs.value}
+          field={reqs.field}
         />
       )
     default:
       return (
         <DefaultCell
-          value={pack.value}
-          onKeyDown={pack.methods.onKeyDown}
-          save={pack.methods.save}
-          field={pack.field}
+          value={reqs.value}
+          onKeyDown={reqs.methods.onKeyDown}
+          save={reqs.methods.save}
+          field={reqs.field}
         />
       )
   }
