@@ -20,7 +20,7 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
       return
     }
 
-    let regex = /^-?\d*(\.\d*)?$/
+    const regex = /^-?\d*(\.\d*)?$/
     if (regex.test(e.target.value)) {
       this.setState({
         valueString: e.target.value,

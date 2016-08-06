@@ -14,7 +14,7 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
   }
 
   handleChange = (e) => {
-    let val = e.target.value
+    const val = e.target.value
     try {
       if (!(JSON.parse(val) instanceof Array)) {// if the string variable is not a JSON array
         throw 'format error'
