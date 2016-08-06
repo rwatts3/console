@@ -9,7 +9,6 @@
         "multiline": "always",
         "singleline": "never"
       }
-    ],
-    "curly": true
+    ]
   }
 }
