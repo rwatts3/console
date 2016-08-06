@@ -11,7 +11,7 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
     }
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
 
     if (e.target.value === '') {
       this.setState({
@@ -38,7 +38,7 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
         value={this.state.valueString}
         onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
         onKeyDown={(e) => this.props.onKeyDown(e)}
-        onChange={this.handleChange.bind(this)}
+        onChange={this.handleChange}
       />)
   }
 }
