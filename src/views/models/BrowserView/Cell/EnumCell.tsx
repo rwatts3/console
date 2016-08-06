@@ -1,12 +1,12 @@
 import * as React from 'react'
 import {CellProps} from '../../../../types/cells'
 
-export default class EnumCell extends React.Component<CellProps,{}> {
+export default class EnumCell extends React.Component<CellProps<string>,{}> {
   render() {
     return (
       <select
         autoFocus
-        defaultValue={this.props.valueString}
+        defaultValue={this.props.value}
         onBlur={(e) => this.props.save(e.target.value)}
         onKeyDown={(e) => this.props.onKeyDown(e)}
       >
