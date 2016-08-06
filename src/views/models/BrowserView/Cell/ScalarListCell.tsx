@@ -16,16 +16,14 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
   handleChange(e) {
     let val = e.target.value
     try {
-      let res = JSON.parse(val)
-      if (res instanceof Array) {
-
-        this.setState({
-          valueString: val,
-          valid: true,
-        })
-        return
+      if (!(JSON.parse(val) instanceof Array)) {// if the string variable is not a JSON array
+        throw 'format error'
       }
-      throw 'format error'
+
+      this.setState({
+        valueString: val,
+        valid: true,
+      })
     } catch (error) {
       this.setState({
         valueString: val,
@@ -35,7 +33,7 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
   }
 
   render() {
-    let style = {
+    const style = {
       backgroundColor: this.state.valid ? '' : '#F7B5D1',
     }
     return (

@@ -1,13 +1,13 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
-import {classnames} from '../../../utils/classnames'
-import {valueToString, stringToValue} from '../../../utils/valueparser'
-import {Field} from '../../../types/types'
+import { classnames } from '../../../utils/classnames'
+import { valueToString, stringToValue } from '../../../utils/valueparser'
+import { Field } from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
-import {InteractionPack, getEditCell} from './Cell/cellgenerator'
+import { CellRequirements, getEditCell } from './Cell/cellgenerator'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -111,7 +111,7 @@ class Cell extends React.Component<Props, State> {
     }
 
     if (this.state.editing) {
-      let pack: InteractionPack = {
+      let pack: CellRequirements = {
         field: this.props.field,
         value: this.props.value,
         projectId: this.props.projectId,
