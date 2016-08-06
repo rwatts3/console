@@ -1,10 +1,10 @@
 import * as React from 'react'
 import Datepicker from '../../../../components/Datepicker/Datepicker'
-import { CellProps } from '../../../../types/cells'
+import { CellProps } from './cells'
 
 const classes: any = require('../Cell.scss')
 
-export default class DateTimeCell extends React.Component<CellProps<Date>,{}> {
+export default class DateTimeCell extends React.Component<CellProps<Date>, {}> {
   render() {
     return (
       <Datepicker
