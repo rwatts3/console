@@ -70,7 +70,3 @@ export function stringToValue (rawValue: string, field: Field): any {
     }[typeIdentifier]()
   }
 }
-
-export function isValidValue (rawValue: string, field: Field): boolean {
-  return stringToValue(rawValue, field) !== null
-}
