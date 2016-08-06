@@ -10,6 +10,7 @@ import DefaultCell from './DefaultCell'
 import ModelSelector from '../../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from '../RelationsPopup'
 import {isScalar} from '../../../../utils/graphql'
+import ScalarListCell from './ScalarListCell'
 
 export interface InteractionPack {
   value: any
@@ -65,13 +66,12 @@ function getNonScalarEditCell(pack: InteractionPack): JSX.Element {
 
 function getScalarListEditCell(pack: InteractionPack): JSX.Element {
   return (
-    <textarea
-      autoFocus
-      type='text'
-      ref='input'
-      defaultValue={pack.value}
-      onKeyDown={(e) => pack.methods.onEscapeTextarea(e)}
-      onBlur={(e) => pack.methods.save(e.target.value)}
+
+    <ScalarListCell
+      value={pack.value}
+      save={pack.methods.save}
+      onKeyDown={pack.methods.onEscapeTextarea}
+      field={pack.field}
     />
   )
 }
