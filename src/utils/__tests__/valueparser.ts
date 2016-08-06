@@ -1,5 +1,4 @@
-///<reference path="../../../node_modules/@types/jest/index.d.ts"/>
-/* eslint-disable */
+/// <reference path="../../../node_modules/@types/jest/index.d.ts"/>
 jest.unmock('../valueparser')
 jest.unmock('../graphql')
 jest.unmock('../../types/types')
