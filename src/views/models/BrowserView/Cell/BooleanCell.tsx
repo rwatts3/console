@@ -1,16 +1,16 @@
 import * as React from 'react'
-import {CellProps} from '../../../../types/cells'
+import { CellProps } from './cells'
 import ToggleButton from '../../../../components/ToggleButton/ToggleButton'
-import {ToggleSide} from '../../../../components/ToggleButton/ToggleButton'
+import { ToggleSide } from '../../../../components/ToggleButton/ToggleButton'
 
-export default class BooleanCell extends React.Component<CellProps,{}> {
+export default class BooleanCell extends React.Component<CellProps<boolean>, {}> {
   render() {
     return (
       <ToggleButton
         leftText='false'
         rightText='true'
-        side={this.props.valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
-        onClickOutside={(side) => this.props.save(side === ToggleSide.Left ? 'false' : 'true')}
+        side={this.props.value ? ToggleSide.Right : ToggleSide.Left}
+        onClickOutside={(side) => this.props.save(side === ToggleSide.Left ? false : true)}
       />
     )
   }

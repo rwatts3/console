@@ -3,7 +3,7 @@ import { updateNetworkLayer } from '../../utils/relay'
 import { getQueryVariable } from '../../utils/location'
 import * as cookiestore from '../../utils/cookiestore'
 
-export default class TokenRedirectView extends React.Component<{},{}> {
+export default class TokenRedirectView extends React.Component<{}, {}> {
 
   componentWillMount () {
     const token = getQueryVariable('token')

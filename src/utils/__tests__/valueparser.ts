@@ -1,10 +1,10 @@
+/// <reference path="../../../node_modules/@types/jest/index.d.ts"/>
 jest.unmock('../valueparser')
 jest.unmock('../graphql')
 jest.unmock('../../types/types')
 
 import { Field } from '../../types/types'
 import { stringToValue, valueToString } from '../valueparser'
-
 import '../polyfils'
 
 const testField: Field = {
