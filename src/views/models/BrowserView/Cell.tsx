@@ -3,11 +3,11 @@ import * as Relay from 'react-relay'
 import {findDOMNode} from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import {classnames} from '../../../utils/classnames'
-import {isValidValue, valueToString, stringToValue} from '../../../utils/valueparser'
+import {valueToString} from '../../../utils/valueparser'
 import {Field} from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
-import {InteractionPack, getEditCell} from '../../../utils/cellgenerator'
+import {InteractionPack, getEditCell} from './Cell/cellgenerator'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -50,29 +50,24 @@ class Cell extends React.Component<Props, State> {
   }
 
   _startEditing(): void {
-    console.log('starts editing')
     if (this.props.field.name !== 'id') {
       this.setState({editing: true} as State)
     }
   }
 
   _cancel(shouldReload: boolean = false): void {
-    console.log('stops editing')
     this.setState({editing: false} as State)
     if (shouldReload) {
       this.props.reload()
     }
   }
 
-  _save(inputValue: string): void {
-    console.log('saving data')
-    if (!isValidValue(inputValue, this.props.field)) {
-      alert(`'${inputValue}' is not a valid value for field ${this.props.field.name}`)
+  _save(value: any): void {
+    if (value !== null) {
+      alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
       this.setState({editing: false} as State)
       return
     }
-
-    const value = stringToValue(inputValue, this.props.field)
 
     if (value === this.props.value) {
       this.setState({editing: false} as State)
