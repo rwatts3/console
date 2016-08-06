@@ -13,11 +13,11 @@ module.exports = {
     preLoaders: [{
       test: /\.js$/,
       loader: 'eslint',
-      exclude: /node_modules|.*__tests__.*/,
+      exclude: /node_modules/,
     }, {
       test: /\.ts(x?)$/,
       loader: 'tslint',
-      exclude: /node_modules|.*__tests__.*/,
+      exclude: /node_modules/,
     }],
     loaders: [{
       test: /\.json/, // TODO check if still needed
@@ -36,7 +36,7 @@ module.exports = {
     }, {
       test: /\.js$/,
       loader: 'babel',
-      exclude: /node_modules|.*__tests__.*/,
+      exclude: /node_modules/,
     }, {
       test: /\.mp3$/,
       loader: 'file',
