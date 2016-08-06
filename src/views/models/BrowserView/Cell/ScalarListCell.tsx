@@ -21,22 +21,27 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
   handleChange(e) {
     let val = e.target.value
     try {
-      JSON.parse(val)
+      let res = JSON.parse(val)
+      if (res instanceof Array) {
+
+        this.setState({
+          valueString: val,
+          valid: true,
+        })
+        return
+      }
+      throw 'format error'
+    } catch (error) {
       this.setState({
         valueString: val,
-        valid: true,
+        valid: false,
       })
-    } catch(error) {
-      this.setState({
-        valueString: val,
-        valid: false
-    })
     }
   }
 
   render() {
-    let style={
-      backgroundColor: this.state.valid? '' :'#F7B5D1'
+    let style = {
+      backgroundColor: this.state.valid ? '' : '#F7B5D1',
     }
     return (
       <textarea
