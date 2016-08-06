@@ -13,7 +13,7 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
     }
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
     let val = e.target.value
     try {
       if (!(JSON.parse(val) instanceof Array)) {// if the string variable is not a JSON array
@@ -45,7 +45,7 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
         value={this.state.valueString}
         onKeyDown={this.props.onKeyDown}
         onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
-        onChange={this.handleChange.bind(this)}
+        onChange={this.handleChange}
       />
     )
   }
