@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {CellProps} from '../../../../types/cells'
+import {stringToValue} from '../../../../utils/valueparser'
 
 export default class EnumCell extends React.Component<CellProps<string>,{}> {
   render() {
@@ -7,7 +8,7 @@ export default class EnumCell extends React.Component<CellProps<string>,{}> {
       <select
         autoFocus
         defaultValue={this.props.value}
-        onBlur={(e) => this.props.save(e.target.value)}
+        onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
         onKeyDown={(e) => this.props.onKeyDown(e)}
       >
         {this.props.field.enumValues.map((enumValue) => (

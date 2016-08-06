@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {CellProps} from '../../../../types/cells'
+import {stringToValue} from '../../../../utils/valueparser'
 
 export default class DefaultCell extends React.Component<CellProps<string>,{}> {
   render() {
@@ -10,7 +11,7 @@ export default class DefaultCell extends React.Component<CellProps<string>,{}> {
         ref='input'
         defaultValue={this.props.value}
         onKeyDown={(e) => this.props.onKeyDown(e)}
-        onBlur={(e) => this.props.save(e.target.value)}
+        onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
       />
     )
   }

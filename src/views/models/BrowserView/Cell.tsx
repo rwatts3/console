@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import {findDOMNode} from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import {classnames} from '../../../utils/classnames'
-import {valueToString} from '../../../utils/valueparser'
+import {valueToString, stringToValue} from '../../../utils/valueparser'
 import {Field} from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
@@ -63,7 +63,7 @@ class Cell extends React.Component<Props, State> {
   }
 
   _save(value: any): void {
-    if (value !== null) {
+    if (value === null) {
       alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
       this.setState({editing: false} as State)
       return
@@ -87,7 +87,7 @@ class Cell extends React.Component<Props, State> {
   _onKeyDown(e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void {
     switch (e.keyCode) {
       case 13:
-        this._save(e.target.value)
+        this._save(stringToValue(e.target.value, this.props.field))
         break
       case 27:
         this._cancel()
@@ -97,7 +97,7 @@ class Cell extends React.Component<Props, State> {
 
   _onEscapeTextarea(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
     if (e.keyCode === 27) {
-      this._save(e.target.value)
+      this._save(stringToValue(e.target.value, this.props.field))
     }
   }
 

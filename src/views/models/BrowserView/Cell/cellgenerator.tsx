@@ -17,7 +17,7 @@ export interface InteractionPack {
   projectId: string
   itemId: string
   methods: {
-    save: (val: string) => void
+    save: (val: any) => void
     cancel: (reload?: boolean) => void
     onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>) => void
     onEscapeTextarea: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void
@@ -84,6 +84,7 @@ function getScalarEditCell(pack: InteractionPack): JSX.Element {
           value={pack.value}
           save={pack.methods.save}
           onKeyDown={pack.methods.onKeyDown}
+          field={pack.field}
         />
       )
     case 'Float':
@@ -92,6 +93,7 @@ function getScalarEditCell(pack: InteractionPack): JSX.Element {
           value={pack.value}
           save={pack.methods.save}
           onKeyDown={pack.methods.onKeyDown}
+          field={pack.field}
         />
       )
     case 'Boolean':
@@ -99,15 +101,16 @@ function getScalarEditCell(pack: InteractionPack): JSX.Element {
         <BooleanCell
           value={pack.value}
           save={pack.methods.save}
+          field={pack.field}
         />
       )
     case 'Enum':
       return (
         <EnumCell
-          field={this.props.field}
           value={pack.value}
           save={pack.methods.save}
           onKeyDown={pack.methods.onKeyDown}
+          field={pack.field}
         />
       )
     case 'String':
@@ -116,6 +119,7 @@ function getScalarEditCell(pack: InteractionPack): JSX.Element {
           value={pack.value}
           onKeyDown={pack.methods.onEscapeTextarea}
           save={pack.methods.save}
+          field={pack.field}
         />
       )
     case 'DateTime':
@@ -124,6 +128,7 @@ function getScalarEditCell(pack: InteractionPack): JSX.Element {
           cancel={pack.methods.cancel}
           save={pack.methods.save}
           value={pack.value}
+          field={pack.field}
         />
       )
     default:
@@ -132,6 +137,7 @@ function getScalarEditCell(pack: InteractionPack): JSX.Element {
           value={pack.value}
           onKeyDown={pack.methods.onKeyDown}
           save={pack.methods.save}
+          field={pack.field}
         />
       )
   }
