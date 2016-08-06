@@ -34,7 +34,7 @@ export default class IntCell extends React.Component<CellProps<number>, CellStat
       return
     }
 
-    let regex = /^-?\d*$/
+    const regex = /^-?\d*$/
     if (regex.test(e.target.value)) {
       this.setState({
         valueString: e.target.value,
