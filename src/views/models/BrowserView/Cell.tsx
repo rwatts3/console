@@ -1,20 +1,13 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
-import {classnames} from '../../../utils/classnames'
-import {isValidValue, valueToString, stringToValue} from '../../../utils/valueparser'
-import {isScalar} from '../../../utils/graphql'
-import {Field} from '../../../types/types'
+import { classnames } from '../../../utils/classnames'
+import { valueToString, stringToValue } from '../../../utils/valueparser'
+import { Field } from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
-import DateTimeCell from './Cell/DateTimeCell'
-import FloatCell from './Cell/FloatCell'
-import IntCell from './Cell/IntCell'
-import BooleanCell from './Cell/BooleanCell'
-import EnumCell from './Cell/EnumCell'
-import StringCell from './Cell/StringCell'
-import DefaultCell from './Cell/DefaultCell'
+import { CellRequirements, getEditCell } from './Cell/cellgenerator'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -57,26 +50,24 @@ class Cell extends React.Component<Props, State> {
   }
 
   _startEditing(): void {
-    console.log('starts editing')
     if (this.props.field.name !== 'id') {
       this.setState({editing: true} as State)
     }
   }
 
-  _cancel(): void {
-    console.log('stops editing')
+  _cancel = (shouldReload: boolean = false): void => {
     this.setState({editing: false} as State)
+    if (shouldReload) {
+      this.props.reload()
+    }
   }
 
-  _save(inputValue: string): void {
-    console.log('saving data')
-    if (!isValidValue(inputValue, this.props.field)) {
-      alert(`'${inputValue}' is not a valid value for field ${this.props.field.name}`)
+  _save = (value: any): void => {
+    if (value === null) {
+      alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
       this.setState({editing: false} as State)
       return
     }
-
-    const value = stringToValue(inputValue, this.props.field)
 
     if (value === this.props.value) {
       this.setState({editing: false} as State)
@@ -93,10 +84,10 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  _onKeyDown(e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void {
+  _onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
     switch (e.keyCode) {
       case 13:
-        this._save(e.target.value)
+        this._save(stringToValue(e.target.value, this.props.field))
         break
       case 27:
         this._cancel()
@@ -104,9 +95,9 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _onEscapeTextarea(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
+  _onEscapeTextarea = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.keyCode === 27) {
-      this._save(e.target.value)
+      this._save(stringToValue(e.target.value, this.props.field))
     }
   }
 
@@ -119,110 +110,23 @@ class Cell extends React.Component<Props, State> {
       )
     }
 
-    const valueString = valueToString(this.props.value, this.props.field, true)
-
     if (this.state.editing) {
-      if (!isScalar(this.props.field.typeIdentifier)) {
-        if (this.props.field.isList) {
-          return (
-            <RelationsPopup
-              originField={this.props.field}
-              originItemId={this.props.itemId}
-              onCancel={() => {
-                this.setState({ editing: false } as State)
-                this.props.reload()
-              }}
-              projectId={this.props.projectId}
-            />
-          )
-        } else {
-          return (
-            <ModelSelector
-              relatedModel={this.props.field.relatedModel}
-              projectId={this.props.projectId}
-              value={this.props.value ? this.props.value.id : null}
-              onSelect={(value) => this._save(value)}
-              onCancel={() => this._cancel()}
-            />
-          )
-        }
+      const reqs: CellRequirements = {
+        field: this.props.field,
+        value: this.props.value,
+        projectId: this.props.projectId,
+        itemId: this.props.itemId,
+        methods: {
+          save: this._save,
+          onKeyDown: this._onKeyDown,
+          cancel: this._cancel,
+          onEscapeTextarea: this._onEscapeTextarea,
+        },
       }
-
-      if (this.props.field.isList) {
-        if (isScalar(this.props.field.typeIdentifier)) {
-          return (
-            <textarea
-              autoFocus
-              type='text'
-              ref='input'
-              defaultValue={valueString}
-              onKeyDown={(e) => this._onEscapeTextarea(e)}
-              onBlur={(e) => this._save(e.target.value)}
-            />
-          )
-        }
-      }
-
-      switch (this.props.field.typeIdentifier) {
-        case 'Int':
-          return (
-            <IntCell
-              valueString={valueString}
-              save={this._save.bind(this)}
-              onKeyDown={this._onKeyDown.bind(this)}
-            />
-          )
-        case 'Float':
-          return (
-            <FloatCell
-              valueString={valueString}
-              save={this._save.bind(this)}
-              onKeyDown={this._onKeyDown.bind(this)}
-            />
-          )
-        case 'Boolean':
-          return (
-            <BooleanCell
-              valueString={valueString}
-              save={this._save.bind(this)}
-            />
-          )
-        case 'Enum':
-          return (
-            <EnumCell
-              field={this.props.field}
-              valueString={valueString}
-              save={this._save.bind(this)}
-              onKeyDown={this._onKeyDown.bind(this)}
-            />
-          )
-        case 'String':
-          return (
-            <StringCell
-              valueString={valueString}
-              onKeyDown={this._onEscapeTextarea.bind(this)}
-              save={this._save.bind(this)}
-            />
-          )
-        case 'DateTime':
-          return (
-            <DateTimeCell
-              cancel={this._cancel.bind(this)}
-              save={this._save.bind(this)}
-              valueString={valueString}
-            />
-          )
-        default:
-          return (
-            <DefaultCell
-              valueString={valueString}
-              onKeyDown={this._onKeyDown.bind(this)}
-              save={this._save.bind(this)}
-            />
-          )
-      }
+      return getEditCell(reqs)
     }
 
+    const valueString = valueToString(this.props.value, this.props.field, true)
     return (
       <span className={classes.value}>{valueString}</span>
     )

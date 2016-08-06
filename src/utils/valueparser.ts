@@ -1,15 +1,16 @@
-import { isValidDateTime, isValidName } from './utils'
-import { Field } from '../types/types'
-import { isScalar } from './graphql'
+import {isValidDateTime, isValidName} from './utils'
+import {Field} from '../types/types'
+import {isScalar} from './graphql'
+import {TypedValue, NonScalarValue} from '../types/utils'
 
-export function valueToString (value: any, field: Field, returnNullAsString: boolean): string {
+export function valueToString(value: TypedValue, field: Field, returnNullAsString: boolean): string {
   let fieldValue = null
   if (isScalar(field.typeIdentifier)) {
     fieldValue = value
   } else if (field.isList) {
     fieldValue = value
   } else if (value !== null) {
-    fieldValue = value.id
+    fieldValue = (value as NonScalarValue).id
   }
 
   if (fieldValue === null) {
@@ -17,11 +18,13 @@ export function valueToString (value: any, field: Field, returnNullAsString: boo
   }
 
   if (field.isList) {
+      if (!(fieldValue instanceof Array)) {
+        return fieldValue // TODO improve this code
+      }
     if (isScalar(field.typeIdentifier)) {
       if (field.typeIdentifier === 'String') {
         return `[${fieldValue.map((v) => `"${v.toString()}"`).join(', ')}]`
       } else {
-        debugger
         return `[${fieldValue.toString()}]`
       }
     } else { // !isScalar
@@ -29,14 +32,16 @@ export function valueToString (value: any, field: Field, returnNullAsString: boo
     }
   } else { // !isList
     switch (field.typeIdentifier) {
-      case 'DateTime': return new Date(fieldValue).toISOString()
-      default: return fieldValue.toString()
+      case 'DateTime':
+        return new Date(fieldValue).toISOString()
+      default:
+        return fieldValue.toString()
     }
   }
 }
 
-export function stringToValue (rawValue: string, field: Field): any {
-  const { isList, isRequired, typeIdentifier } = field
+export function stringToValue(rawValue: string, field: Field): any {
+  const {isList, isRequired, typeIdentifier} = field
   if (rawValue === '') {
     // todo: this should set to null but currently null is not supported by our api
     return isRequired && typeIdentifier === 'String' ? '' : null
@@ -48,7 +53,7 @@ export function stringToValue (rawValue: string, field: Field): any {
       throw new Error('Converting a string to a relation list is not supported')
     }
 
-    return { id: rawValue }
+    return {id: rawValue}
   }
 
   if (isList) {
@@ -69,8 +74,4 @@ export function stringToValue (rawValue: string, field: Field): any {
       DateTime: () => isValidDateTime(rawValue) ? rawValue : null,
     }[typeIdentifier]()
   }
-}
-
-export function isValidValue (rawValue: string, field: Field): boolean {
-  return stringToValue(rawValue, field) !== null
 }
