@@ -1,5 +1,5 @@
-export interface CellProps {
-  valueString: string,
+export interface CellProps<T> {
+  value: T,
   save?: (value: string) => void,
   cancel?: () => void,
   onKeyDown?: (event: any) => void,
