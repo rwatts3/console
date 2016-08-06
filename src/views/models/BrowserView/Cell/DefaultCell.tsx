@@ -10,7 +10,7 @@ export default class DefaultCell extends React.Component<CellProps<string>, {}> 
         type='text'
         ref='input'
         defaultValue={this.props.value}
-        onKeyDown={(e) => this.props.onKeyDown(e)}
+        onKeyDown={this.props.onKeyDown}
         onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
       />
     )
