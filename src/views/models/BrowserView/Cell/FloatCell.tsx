@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {CellProps} from '../../../../types/cells'
-import {stringToValue, valueToString} from '../../../../utils/valueparser'
+import { CellProps, CellState } from './cells'
+import { stringToValue, valueToString } from '../../../../utils/valueparser'
 
-export default class FloatCell extends React.Component<CellProps<number>,{valueString: string}> {
+export default class FloatCell extends React.Component<CellProps<number>, CellState> {
   constructor(props) {
     super(props)
 

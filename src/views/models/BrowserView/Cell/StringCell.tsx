@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {CellProps} from '../../../../types/cells'
-import {stringToValue} from '../../../../utils/valueparser'
+import { CellProps } from './cells'
+import { stringToValue } from '../../../../utils/valueparser'
 
-export default class StringCell extends React.Component<CellProps<string>,{}> {
+export default class StringCell extends React.Component<CellProps<string>, {}> {
   render() {
     return (
       <textarea

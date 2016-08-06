@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {CellProps} from '../../../../types/cells'
+import {CellProps, CellState} from './cells'
 import {stringToValue, valueToString} from '../../../../utils/valueparser'
 
-export default class IntCell extends React.Component<CellProps<number>,{valueString: string}> {
+export default class IntCell extends React.Component<CellProps<number>, CellState> {
 
   constructor(props) {
     super(props)
@@ -12,8 +12,21 @@ export default class IntCell extends React.Component<CellProps<number>,{valueStr
     }
   }
 
-  handleChange(e) {
+  render() {
+    return (
+      <input
+        autoFocus
+        type='text'
+        ref='input'
+        value={this.state.valueString}
+        onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
+        onKeyDown={this.props.onKeyDown}
+        onChange={this.handleChange}
+      />
+    )
+  }
 
+  private handleChange = (e) => {
     if (e.target.value === '') {
       this.setState({
         valueString: e.target.value,
@@ -21,25 +34,11 @@ export default class IntCell extends React.Component<CellProps<number>,{valueStr
       return
     }
 
-      let regex = /^-?\d*$/
+    let regex = /^-?\d*$/
     if (regex.test(e.target.value)) {
       this.setState({
         valueString: e.target.value,
       })
     }
-  }
-
-  render() {
-      return (
-        <input
-          autoFocus
-          type='text'
-          ref='input'
-          value={this.state.valueString}
-          onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
-          onKeyDown={(e) => this.props.onKeyDown(e)}
-          onChange={this.handleChange.bind(this)}
-        />
-      )
   }
 }

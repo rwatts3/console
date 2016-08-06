@@ -1,13 +1,8 @@
 import * as React from 'react'
-import {CellProps} from '../../../../types/cells'
-import {valueToString, stringToValue} from '../../../../utils/valueparser'
+import { CellProps, CellState } from './cells'
+import { valueToString, stringToValue } from '../../../../utils/valueparser'
 
-interface State {
-  valueString: string,
-  valid: boolean,
-}
-
-export default class ScalarListCell extends React.Component<CellProps<string[]>, State> {
+export default class ScalarListCell extends React.Component<CellProps<string[]>, CellState> {
 
   constructor(props) {
     super(props)

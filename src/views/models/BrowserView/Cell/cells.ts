@@ -1,4 +1,4 @@
-import {Field} from './types'
+import {Field} from '../../../../types/types'
 
 export interface CellProps<T> {
   value: T,
@@ -6,4 +6,9 @@ export interface CellProps<T> {
   cancel?: () => void,
   onKeyDown?: (event: any) => void,
   field?: Field,
+}
+
+export interface CellState {
+  valueString: string,
+  valid?: boolean,
 }
