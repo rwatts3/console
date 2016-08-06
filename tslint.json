@@ -10,15 +10,6 @@
         "singleline": "never"
       }
     ],
-    "whitespace": [
-      true,
-      "check-module",
-      "check-type",
-      "check-decl",
-      "check-separator",
-      "check-operator",
-      "check-branch"
-    ],
     "curly": true
   }
 }
