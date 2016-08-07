@@ -111,6 +111,7 @@ export default Relay.createContainer(ActionRow, {
         triggerType
         handlerType
         description
+        isActive
         triggerMutationModel {
           model {
             name
