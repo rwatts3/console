@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Viewer, Project } from '../../types/types'
+import {Viewer, Project} from '../../types/types'
 import Header from '../../components/Header/Header'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import ActionRow from './ActionRow.tsx'
@@ -25,7 +25,7 @@ class ActionsView extends React.Component<Props, State> {
     editableActionIds: [],
   }
 
-  _toggleEdit (id: string) {
+  _toggleEdit(id: string) {
     if (this.state.editableActionIds.includes(id)) {
       this._closeEdit(id)
     } else {
@@ -33,15 +33,15 @@ class ActionsView extends React.Component<Props, State> {
     }
   }
 
-  _openEdit (id: string) {
-    this.setState({ editableActionIds: this.state.editableActionIds.concat([id]) } as State)
+  _openEdit(id: string) {
+    this.setState({editableActionIds: this.state.editableActionIds.concat([id])} as State)
   }
 
-  _closeEdit (id: string) {
-    this.setState({ editableActionIds: this.state.editableActionIds.filter((i) => i !== id) } as State)
+  _closeEdit(id: string) {
+    this.setState({editableActionIds: this.state.editableActionIds.filter((i) => i !== id)} as State)
   }
 
-  render () {
+  render() {
     return (
       <div className={classes.root}>
         <Header
@@ -49,17 +49,18 @@ class ActionsView extends React.Component<Props, State> {
           params={this.props.params}
           project={this.props.viewer.project}
         >
-          <div onClick={() => this.setState({ showAddRow: true } as State)}>+ Add Action</div>
+          <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>+ Add Action
+          </div>
         </Header>
         <div className={classes.content}>
           <ScrollBox>
             {this.state.showAddRow &&
-              <ActionBoxes
-                project={this.props.viewer.project}
-                action={null}
-                relay={this.props.relay}
-                close={() => this.setState({ showAddRow: false } as State)}
-              />
+            <ActionBoxes
+              project={this.props.viewer.project}
+              action={null}
+              relay={this.props.relay}
+              close={() => this.setState({ showAddRow: false } as State)}
+            />
             }
             {this.props.viewer.project.actions.edges.map((edge) => edge.node).map((action) => (
               <div key={action.id}>
@@ -69,12 +70,12 @@ class ActionsView extends React.Component<Props, State> {
                   onClick={() => this._toggleEdit(action.id)}
                 />
                 {this.state.editableActionIds.includes(action.id) &&
-                  <ActionBoxes
-                    project={this.props.viewer.project}
-                    action={action}
-                    relay={this.props.relay}
-                    close={() => this._closeEdit(action.id)}
-                  />
+                <ActionBoxes
+                  project={this.props.viewer.project}
+                  action={action}
+                  relay={this.props.relay}
+                  close={() => this._closeEdit(action.id)}
+                />
                 }
               </div>
             ))}
@@ -89,24 +90,24 @@ export default Relay.createContainer(ActionsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          actions(first: 1000) {
-            edges {
-              node {
-                id
-                ${ActionRow.getFragment('action')}
-                ${ActionBoxes.getFragment('action')}
-              }
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                project: projectByName(projectName: $projectName) {
+                    actions(first: 1000) {
+                        edges {
+                            node {
+                                id
+                                ${ActionRow.getFragment('action')}
+                                ${ActionBoxes.getFragment('action')}
+                            }
+                        }
+                    }
+                    ${ActionBoxes.getFragment('project')}
+                    ${Header.getFragment('project')}
+                }
+                ${Header.getFragment('viewer')}
             }
-          }
-          ${ActionBoxes.getFragment('project')}
-          ${Header.getFragment('project')}
-        }
-        ${Header.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

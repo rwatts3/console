@@ -93,9 +93,10 @@ class RelationsPopup extends React.Component<Props, State> {
   }
 
   _toggleRelation (isRelated: boolean, itemId: string): void {
+    console.log(this.props.originField)
     const relationName = this.props.originField.relation.name
     const relatedModelName = this.props.originField.relatedModel.name
-    // TODO fix this error where the reverseRelationField is null
+    // TODO fix this error where the reversRelationField is null
     const relatedFieldName = this.props.originField.reverseRelationField.name
     const originModelName = this.props.originField.model.name
     const originFieldName = this.props.originField.name
@@ -112,7 +113,6 @@ class RelationsPopup extends React.Component<Props, State> {
         id
       }
     }`
-
     this._lokka.mutate(mutation)
       .then(this._reload)
       .then(() => this.setState({ success: true } as State))

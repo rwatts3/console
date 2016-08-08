@@ -1,8 +1,9 @@
 import {Field} from '../../../../types/types'
+import {TypedValue} from '../../../../types/utils'
 
 export interface CellProps<T> {
   value: T,
-  save?: (value: T) => void,
+  save?: (value: TypedValue) => void,
   cancel?: () => void,
   onKeyDown?: (event: any) => void,
   field?: Field,
