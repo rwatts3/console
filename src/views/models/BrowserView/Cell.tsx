@@ -8,6 +8,7 @@ import { Field } from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
 import { CellRequirements, getEditCell } from './Cell/cellgenerator'
+import {TypedValue} from '../../../types/utils'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -62,7 +63,7 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _save = (value: any): void => {
+  _save = (value: TypedValue): void => {
     if (value === null) {
       alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
       this.setState({editing: false} as State)

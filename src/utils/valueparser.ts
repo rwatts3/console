@@ -40,7 +40,7 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
   }
 }
 
-export function stringToValue(rawValue: string, field: Field): any {
+export function stringToValue(rawValue: string, field: Field): TypedValue {
   const {isList, isRequired, typeIdentifier} = field
   if (rawValue === '') {
     // todo: this should set to null but currently null is not supported by our api
@@ -49,8 +49,20 @@ export function stringToValue(rawValue: string, field: Field): any {
 
   if (!isScalar(typeIdentifier)) {
     if (isList) {
-      // TODO fix this for lists
-      throw new Error('Converting a string to a relation list is not supported')
+      try {
+        let json = JSON.parse(rawValue)
+        if (!(json instanceof Array)) {
+          throw 'value is not an array'
+        }
+        for (let i = 0; i < json.length; i++) {
+          if (!json[i].hasOwnProperty('id')) {
+            throw 'value does not have "id" field'
+          }
+        }
+        return json
+      } catch (e) {
+        return null // TODO add true error handling
+      }
     }
 
     return {id: rawValue}
