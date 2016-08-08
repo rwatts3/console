@@ -1,10 +1,11 @@
 /// <reference path="../../../node_modules/@types/jest/index.d.ts"/>
+import {NonScalarValue} from "../../types/utils";
 jest.unmock('../valueparser')
 jest.unmock('../graphql')
 jest.unmock('../../types/types')
 
-import { Field } from '../../types/types'
-import { stringToValue, valueToString } from '../valueparser'
+import {Field} from '../../types/types'
+import {stringToValue, valueToString} from '../valueparser'
 import '../polyfils'
 
 const testField: Field = {
@@ -182,7 +183,7 @@ describe('stringToValue', () => {
       isList: false,
       typeIdentifier: 'SomeModel',
     })
-    expect(stringToValue('someId', field)).toEqual({ id: 'someId' })
+    expect(stringToValue('someId', field)).toEqual({id: 'someId'})
   })
 
   it('parses GraphQLID', () => {
@@ -201,6 +202,38 @@ describe('stringToValue', () => {
       typeIdentifier: 'GraphQLID',
     })
     expect(stringToValue('["id","id2"]', field)).toEqual(['id', 'id2'])
+  })
+
+  it('parses User List', () => {
+    const field: Field = Object.assign({}, testField, {
+      isRequired: true,
+      isList: true,
+      typeIdentifier: 'User',
+    })
+    interface User {
+      name: string,
+      email: string,
+      password: string,
+    }
+
+    const input = '[{"id":"blabla","name":"rene","email":"test@test.com","password":"unicorn"},' +
+      '{"id":"blabla2","name":"stuff","email":"stuffed@unicorn.com","password":"rainbow"}]'
+
+    const expectation: NonScalarValue[] = [
+      {
+        id: 'blabla',
+        name: 'rene',
+        email: 'test@test.com',
+        password: 'unicorn',
+      },
+      {
+        id: 'blabla2',
+        name: 'stuff',
+        email: 'stuffed@unicorn.com',
+        password: 'rainbow',
+      }]
+
+    expect(stringToValue(input, field)).toEqual(expectation)
   })
 })
 
