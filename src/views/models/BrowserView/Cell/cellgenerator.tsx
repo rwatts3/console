@@ -18,9 +18,9 @@ export interface CellRequirements {
   projectId: string
   itemId: string
   methods: {
-    save: (val: any) => void
+    save: (val: any, what?: any) => void
     cancel: (reload?: boolean) => void
-    onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>) => void
+    onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void
     onEscapeTextarea: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void
   }
 }

@@ -255,6 +255,9 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   _addItem (fieldValues: { [key: string]: any }) {
+    console.log('fieldValues:')
+    console.log(fieldValues)
+
     const inputString = fieldValues
       .mapToArray((fieldName, obj) => obj)
       .filter(({ value }) => value !== null)

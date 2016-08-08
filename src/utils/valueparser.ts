@@ -1,7 +1,7 @@
 import {isValidDateTime, isValidName} from './utils'
 import {Field} from '../types/types'
 import {isScalar} from './graphql'
-import {TypedValue, NonScalarValue} from '../types/utils'
+import {TypedValue, NonScalarValue, ScalarValue} from '../types/utils'
 
 export function valueToString(value: TypedValue, field: Field, returnNullAsString: boolean): string {
   let fieldValue = null
@@ -18,11 +18,16 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
   }
 
   if (field.isList) {
-      if (!(fieldValue instanceof Array)) {
-        return fieldValue // TODO improve this code
-      }
+    if (!(fieldValue instanceof Array)) {
+      return fieldValue // TODO improve this code
+    }
+
+    if ((value as (NonScalarValue[] | ScalarValue[])).length === 0) {
+      return '[]'
+    }
+
     if (isScalar(field.typeIdentifier)) {
-      if (field.typeIdentifier === 'String') {
+      if (field.typeIdentifier === 'String' || field.typeIdentifier === 'Enum') {
         return `[${fieldValue.map((v) => `"${v.toString()}"`).join(', ')}]`
       } else {
         return `[${fieldValue.toString()}]`
@@ -38,9 +43,13 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
         return fieldValue.toString()
     }
   }
+
 }
 
-export function stringToValue(rawValue: string, field: Field): any {
+export function stringToValue(rawValue: string, field: Field): TypedValue {
+  if (rawValue === null) {
+    return null
+  }
   const {isList, isRequired, typeIdentifier} = field
   if (rawValue === '') {
     // todo: this should set to null but currently null is not supported by our api
@@ -49,10 +58,21 @@ export function stringToValue(rawValue: string, field: Field): any {
 
   if (!isScalar(typeIdentifier)) {
     if (isList) {
-      // TODO fix this for lists
-      throw new Error('Converting a string to a relation list is not supported')
+      try {
+        let json = JSON.parse(rawValue)
+        if (!(json instanceof Array)) {
+          throw 'value is not an array'
+        }
+        for (let i = 0; i < json.length; i++) {
+          if (!json[i].hasOwnProperty('id')) {
+            throw 'value does not have "id" field'
+          }
+        }
+        return json
+      } catch (e) {
+        return null // TODO add true error handling
+      }
     }
-
     return {id: rawValue}
   }
 
