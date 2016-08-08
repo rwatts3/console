@@ -12,11 +12,11 @@ interface Props {
   columnWidths: {[key: string]: number}
   add: (fieldValues: { [key: string]: any }) => void
   cancel: () => void
+  reload: () => void
 }
 
 interface State {
   fieldValues: { [key: string]: any }
-  focussedField: string | null
 }
 
 class NewRow extends React.Component<Props, State> {
@@ -37,7 +37,6 @@ class NewRow extends React.Component<Props, State> {
 
     this.state = {
       fieldValues,
-      focussedField: null,
     }
   }
 
@@ -75,9 +74,7 @@ class NewRow extends React.Component<Props, State> {
               value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
               cancel={this.props.cancel}
               projectId={this.props.projectId}
-              focus={this.state.focussedField === field.name}
-              onFocus={() => this.setState({ focussedField: field.name } as State)}
-              onBlur={() => this.setState({ focussedField: null } as State)}
+              reload={this.props.reload}
             />
           )
         })}
