@@ -5,6 +5,7 @@ import { isScalar } from '../../utils/graphql'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import * as cookiestore from '../../utils/cookiestore'
+import {ScalarValue} from '../../types/utils'
 const ClickOutside: any = (require('react-click-outside') as any).default
 const Autocomplete: any = require('react-autocomplete')
 const classes: any = require('./ModelSelector.scss')
@@ -110,7 +111,7 @@ class ModelSelector extends React.Component<Props, State> {
           items={this.state.items}
           shouldItemRender={this._shouldItemRender}
           inputProps={{autoFocus: true }}
-          getItemValue={(item) => item.id}
+          getItemValue={(item: ScalarValue) => item}
           onChange={(event, value) => this.setState({ value } as State)}
           onSelect={(value) => this.props.onSelect(value)}
           renderItem={this._renderItem}
