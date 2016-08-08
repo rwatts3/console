@@ -82,7 +82,11 @@ class RelationsPopup extends React.Component<Props, State> {
     return this._lokka.query(query)
       .then((results) => {
         const allItems: any[] = results[`all${relatedModel.namePlural}`]
-        const relatedItems: any[] = results[originModel.name][this.props.originField.name]
+        console.log(originModel)
+        console.log(this.props.originField)
+        console.log(results)
+        const resultModelEntries = results[originModel.name]
+        const relatedItems: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
         const items = allItems.map((item) => ({
           item,
           isRelated: relatedItems.some((relatedItem) => relatedItem.id === item.id),
