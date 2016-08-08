@@ -9,6 +9,7 @@ import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue} from '../../../types/utils'
+import {isNonScalarList} from '../../../utils/graphql'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
