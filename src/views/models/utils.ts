@@ -31,6 +31,9 @@ export function emptyDefault(field: Field): TypedValue {
 
 function valueToGQL(value: TypedValue, field: Field): string {
   if (!isScalar(field.typeIdentifier)) {
+    if (field.isList && (value as any[]).length === 0) {
+      return '"[]"'
+    }
     return `"${(value as NonScalarValue).id}"`
   }
   if (field.typeIdentifier === 'Enum') {

@@ -1,29 +1,29 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 const calculateSize: any = require('calculate-size')
-import { Lokka } from 'lokka'
-import { Transport } from 'lokka-transport-http'
+import {Lokka} from 'lokka'
+import {Transport} from 'lokka-transport-http'
 import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
-import { isScalar } from '../../../utils/graphql'
+import {isScalar, isNonScalarList} from '../../../utils/graphql'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
-import { ShowNotificationCallback } from '../../../types/utils'
+import {ShowNotificationCallback} from '../../../types/utils'
 const Tether: any = (require('../../../components/Tether/Tether') as any).default
 import NewRow from './NewRow'
 import Row from './Row'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import { toGQL, compareFields } from '../utils'
-import { valueToString } from '../../../utils/valueparser'
-import { sideNavSyncer } from '../../../utils/sideNavSyncer'
-import { Field, Model, Viewer, Project } from '../../../types/types'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import {toGQL, compareFields} from '../utils'
+import {valueToString} from '../../../utils/valueparser'
+import {sideNavSyncer} from '../../../utils/sideNavSyncer'
+import {Field, Model, Viewer, Project} from '../../../types/types'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import ModelHeader from '../ModelHeader'
 const gettingStartedState: any = require('../../../reducers/GettingStartedState')
 const classes: any = require('./BrowserView.scss')
@@ -70,17 +70,17 @@ class BrowserView extends React.Component<Props, State> {
 
   shouldComponentUpdate: any
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.project.id}`
     const token = cookiestore.get('graphcool_token')
-    const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab' }
-    const transport = new Transport(clientEndpoint, { headers })
+    const headers = {Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab'}
+    const transport = new Transport(clientEndpoint, {headers})
 
-    this._lokka = new Lokka({ transport })
+    this._lokka = new Lokka({transport})
 
     this.state = {
       items: Immutable.List<Immutable.Map<string, any>>(),
@@ -97,23 +97,23 @@ class BrowserView extends React.Component<Props, State> {
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this._reloadData()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     analytics.track('models/browser: viewed', {
       model: this.props.params.modelName,
     })
   }
 
-  _handleScroll (e) {
+  _handleScroll(e) {
     if (!this.state.loading && e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 100) {
       this._loadNextPage()
     }
   }
 
-  _setSortOrder (field) {
+  _setSortOrder(field) {
     const order = this.state.orderBy.fieldName === field.name
       ? (this.state.orderBy.order === 'ASC' ? 'DESC' : 'ASC')
       : 'ASC'
@@ -129,7 +129,7 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  _loadData (skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> {
+  _loadData(skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> {
     const fieldNames = this.props.fields
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
@@ -158,7 +158,7 @@ class BrowserView extends React.Component<Props, State> {
         // check if it's the end of the data
         const reachedEnd = !reload && (items.isEmpty() || (!this.state.items.isEmpty() &&
           this.state.items.last().get('id') === items.last().get('id')))
-        this.setState({ reachedEnd } as State)
+        this.setState({reachedEnd} as State)
 
         return items
       })
@@ -168,12 +168,12 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  _loadNextPage () {
+  _loadNextPage() {
     if (this.state.reachedEnd) {
       return
     }
 
-    this.setState({ loading: true } as State)
+    this.setState({loading: true} as State)
 
     this._loadData(this.state.items.size, false)
       .then((items) => {
@@ -185,25 +185,25 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   _reloadData = () => {
-    this.setState({ loading: true, reachedEnd: false } as State)
+    this.setState({loading: true, reachedEnd: false} as State)
     return this._loadData(0, true)
       .then((items) => {
-        this.setState({ items, loading: false } as State)
+        this.setState({items, loading: false} as State)
         // _update side nav model item count
         // THIS IS A HACK
         sideNavSyncer.notifySideNav()
       })
   }
 
-  _updateFilter (value, field) {
-    this.setState({ filter: this.state.filter.set(field.name, value) } as State, this._reloadData)
+  _updateFilter(value, field) {
+    this.setState({filter: this.state.filter.set(field.name, value)} as State, this._reloadData)
 
     // TODO: select cut set of selected and filtered items
-    this.setState({ selectedItemIds: Immutable.List() } as State)
+    this.setState({selectedItemIds: Immutable.List()} as State)
   }
 
-  _deleteItem (itemId) {
-    this.setState({ loading: true } as State)
+  _deleteItem(itemId) {
+    this.setState({loading: true} as State)
     const mutation = `
       {
         delete${this.props.model.name}(
@@ -223,7 +223,7 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  _updateItem (value, field, callback, itemId, index) {
+  _updateItem(value, field, callback, itemId, index) {
     const mutation = `
       {
         update${this.props.model.name}(
@@ -238,9 +238,9 @@ class BrowserView extends React.Component<Props, State> {
       .then(() => {
         callback(true)
 
-        const { items } = this.state
+        const {items} = this.state
 
-        this.setState({ items: items.setIn([index, field.name], value) } as State)
+        this.setState({items: items.setIn([index, field.name], value)} as State)
 
         analytics.track('models/browser: updated item', {
           project: this.props.params.projectName,
@@ -254,19 +254,18 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  _addItem (fieldValues: { [key: string]: any }) {
-    console.log('fieldValues:')
-    console.log(fieldValues)
+  _addItem(fieldValues: { [key: string]: any }) {
 
     const inputString = fieldValues
       .mapToArray((fieldName, obj) => obj)
-      .filter(({ value }) => value !== null)
-      .filter(({ field, value }) => !isScalar(field.typeIdentifier) ? value.id !== null : true)
-      .map(({ field, value }) => toGQL(value, field))
+      .filter(({value}) => value !== null)
+      .filter(({field}) => (!isNonScalarList(field)))
+      .map(({field, value}) => toGQL(value, field))
       .join(' ')
+
     const inputArgumentsString = inputString.length > 0 ? `(${inputString})` : ''
 
-    this.setState({ loading: true } as State)
+    this.setState({loading: true} as State)
     const mutation = `
       {
         create${this.props.model.name}${inputArgumentsString} {
@@ -277,7 +276,7 @@ class BrowserView extends React.Component<Props, State> {
     this._lokka.mutate(mutation)
       .then(() => this._reloadData())
       .then(() => {
-        this.setState({ newRowVisible: false } as State)
+        this.setState({newRowVisible: false} as State)
 
         analytics.track('models/browser: created item', {
           project: this.props.params.projectName,
@@ -286,19 +285,19 @@ class BrowserView extends React.Component<Props, State> {
 
         // getting-started onboarding step
         if (this.props.model.name === 'Todo' && (
-           this.props.gettingStartedState.isCurrentStep('STEP6_ADD_DATA_ITEM_1') ||
-           this.props.gettingStartedState.isCurrentStep('STEP7_ADD_DATA_ITEM_2')
-             )) {
+            this.props.gettingStartedState.isCurrentStep('STEP6_ADD_DATA_ITEM_1') ||
+            this.props.gettingStartedState.isCurrentStep('STEP7_ADD_DATA_ITEM_2')
+          )) {
           this.props.nextStep()
         }
       })
       .catch((err) => {
         err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
-        this.setState({ loading: false } as State)
+        this.setState({loading: false} as State)
       })
   }
 
-  _calculateColumnWidths (): any {
+  _calculateColumnWidths(): any {
     const cellFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
@@ -328,19 +327,19 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  _onSelectRow (itemId) {
+  _onSelectRow(itemId) {
     if (this.state.selectedItemIds.includes(itemId)) {
-      this.setState({ selectedItemIds: this.state.selectedItemIds.filter((id) => id !== itemId) } as State)
+      this.setState({selectedItemIds: this.state.selectedItemIds.filter((id) => id !== itemId)} as State)
     } else {
-      this.setState({ selectedItemIds: this.state.selectedItemIds.push(itemId) } as State)
+      this.setState({selectedItemIds: this.state.selectedItemIds.push(itemId)} as State)
     }
   }
 
-  _isSelected (itemId) {
+  _isSelected(itemId) {
     return this.state.selectedItemIds.indexOf(itemId) > -1
   }
 
-  _selectAllOnClick (checked) {
+  _selectAllOnClick(checked) {
     if (checked) {
       const selectedItemIds = this.state.items.map((item) => item.get('id'))
       this.setState({selectedItemIds: selectedItemIds} as State)
@@ -349,24 +348,24 @@ class BrowserView extends React.Component<Props, State> {
     }
   }
 
-  _deleteSelectedItems () {
+  _deleteSelectedItems() {
     if (confirm(`Do you really want to delete ${this.state.selectedItemIds.size} item(s)?`)) {
       // only reload once after all the deletions
       Promise.all(this.state.selectedItemIds.toArray().map((itemId) => {
         this._deleteItem(itemId)
       }))
-      .then(() => this._reloadData())
-      .then(() => {
-        this.setState({ loading: false } as State)
-      })
+        .then(() => this._reloadData())
+        .then(() => {
+          this.setState({loading: false} as State)
+        })
 
-      this.setState({ selectedItemIds: Immutable.List() } as State)
+      this.setState({selectedItemIds: Immutable.List()} as State)
     }
   }
 
-  render () {
+  render() {
     const columnWidths = this._calculateColumnWidths()
-    const tableWidth = this.props.fields.reduce((sum, { name }) => sum + columnWidths[name], 0)
+    const tableWidth = this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0)
       + 34 // checkbox
       + 250 // add column
 
@@ -401,14 +400,14 @@ class BrowserView extends React.Component<Props, State> {
             </div>
           </Tether>
           {this.state.selectedItemIds.size > 0 &&
-            <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
-              <Icon
-                width={16}
-                height={16}
-                src={require('assets/icons/delete.svg')}
-              />
-              <span>Delete Selected ({this.state.selectedItemIds.size})</span>
-            </div>
+          <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedItems()}>
+            <Icon
+              width={16}
+              height={16}
+              src={require('assets/icons/delete.svg')}
+            />
+            <span>Delete Selected ({this.state.selectedItemIds.size})</span>
+          </div>
           }
           <div
             className={`${classes.button} ${this.state.filtersVisible ? classes.blue : ''}`}
@@ -429,9 +428,9 @@ class BrowserView extends React.Component<Props, State> {
           </div>
         </ModelHeader>
         {this.state.loading &&
-          <div className={classes.loadingOverlay}>
-            <Loading color='#B9B9C8' />
-          </div>
+        <div className={classes.loadingOverlay}>
+          <Loading color='#B9B9C8'/>
+        </div>
         }
         <div className={`${classes.table} ${this.state.loading ? classes.loading : ''}`}>
           <div className={classes.tableContainer} style={{ width: tableWidth }}>
@@ -452,17 +451,17 @@ class BrowserView extends React.Component<Props, State> {
                   params={this.props.params}
                 />
               ))}
-              <AddFieldCell params={this.props.params} />
+              <AddFieldCell params={this.props.params}/>
             </div>
             {this.state.newRowVisible &&
-              <NewRow
-                model={this.props.model}
-                columnWidths={columnWidths}
-                add={(data) => this._addItem(data)}
-                cancel={(e) => this.setState({ newRowVisible: false } as State)}
-                projectId={this.props.project.id}
-                reload={this._reloadData}
-              />
+            <NewRow
+              model={this.props.model}
+              columnWidths={columnWidths}
+              add={(data) => this._addItem(data)}
+              cancel={(e) => this.setState({ newRowVisible: false } as State)}
+              projectId={this.props.project.id}
+              reload={this._reloadData}
+            />
             }
             <div className={classes.tableBody}>
               <ScrollBox onScroll={(e) => this._handleScroll(e)}>
@@ -496,8 +495,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ nextStep: gettingStartedState.nextStep }, dispatch)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({nextStep: gettingStartedState.nextStep}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -522,34 +521,34 @@ export default Relay.createContainer(MappedBrowserView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          name
-          namePlural
-          itemCount
-          fields(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                typeIdentifier
-                isList
-                ${HeaderCell.getFragment('field')}
-              }
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                model: modelByName(projectName: $projectName, modelName: $modelName) {
+                    name
+                    namePlural
+                    itemCount
+                    fields(first: 1000) {
+                        edges {
+                            node {
+                                id
+                                name
+                                typeIdentifier
+                                isList
+                                ${HeaderCell.getFragment('field')}
+                            }
+                        }
+                    }
+                    ${Row.getFragment('model')}
+                    ${NewRow.getFragment('model')}
+                    ${ModelHeader.getFragment('model')}
+                }
+                project: projectByName(projectName: $projectName) {
+                    id
+                    ${ModelHeader.getFragment('project')}
+                }
+                ${ModelHeader.getFragment('viewer')}
             }
-          }
-          ${Row.getFragment('model')}
-          ${NewRow.getFragment('model')}
-          ${ModelHeader.getFragment('model')}
-        }
-        project: projectByName(projectName: $projectName) {
-          id
-          ${ModelHeader.getFragment('project')}
-        }
-        ${ModelHeader.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

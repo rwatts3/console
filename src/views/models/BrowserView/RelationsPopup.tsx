@@ -94,7 +94,6 @@ class RelationsPopup extends React.Component<Props, State> {
   }
 
   _toggleRelation (isRelated: boolean, itemId: string): void {
-    console.log(this.props.originField)
     const relationName = this.props.originField.relation.name
     const relatedModelName = this.props.originField.relatedModel.name
     // TODO fix this error where the reversRelationField is null
