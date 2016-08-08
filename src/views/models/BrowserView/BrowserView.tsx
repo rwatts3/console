@@ -461,6 +461,7 @@ class BrowserView extends React.Component<Props, State> {
                 add={(data) => this._addItem(data)}
                 cancel={(e) => this.setState({ newRowVisible: false } as State)}
                 projectId={this.props.project.id}
+                reload={this._reloadData}
               />
             }
             <div className={classes.tableBody}>
