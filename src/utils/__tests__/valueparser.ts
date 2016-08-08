@@ -1,5 +1,5 @@
 /// <reference path="../../../node_modules/@types/jest/index.d.ts"/>
-import {NonScalarValue} from "../../types/utils";
+import {NonScalarValue} from '../../types/utils'
 jest.unmock('../valueparser')
 jest.unmock('../graphql')
 jest.unmock('../../types/types')
@@ -211,6 +211,7 @@ describe('stringToValue', () => {
       typeIdentifier: 'User',
     })
     interface User {
+      id: string
       name: string,
       email: string,
       password: string,
