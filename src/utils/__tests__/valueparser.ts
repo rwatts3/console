@@ -29,7 +29,6 @@ describe('stringToValue', () => {
       isList: false,
       typeIdentifier: 'Int',
     })
-    console.log(field)
     expect(stringToValue('', field)).toBe(null)
   })
 
@@ -285,6 +284,8 @@ describe('identities', () => {
       isList: false,
       typeIdentifier: 'Int',
     })
+    console.log(JSON.stringify(stringToValue('12', field)))
+    console.log(JSON.stringify(valueToString(12, field, true)))
     expect(valueToString(stringToValue('12', field), field, true)).toBe('12')
   })
 

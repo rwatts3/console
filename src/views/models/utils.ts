@@ -1,7 +1,8 @@
 import { isScalar } from '../../utils/graphql'
 import { Field } from '../../types/types'
+import {TypedValue, NonScalarValue, ScalarValue} from '../../types/utils'
 
-export function emptyDefault (field: Field): any {
+export function emptyDefault (field: Field): TypedValue {
   const value = function (): any {
     switch (field.typeIdentifier) {
       case 'Int': return 0
@@ -14,18 +15,23 @@ export function emptyDefault (field: Field): any {
     }
   }()
 
-  return field.isList ? [value] : value
-}
-
-function valueToGQL (value: any, field: Field): string {
-  if (!isScalar(field.typeIdentifier)) {
-    return `"${value.id}"`
-  }
-
-  if (field.typeIdentifier === 'Enum') {
+  if (!field.isList) {
     return value
   }
 
+  return []
+}
+
+function valueToGQL (value: TypedValue, field: Field): string {
+  if (!isScalar(field.typeIdentifier)) {
+    return `"${(value as NonScalarValue).id}"`
+  }
+  if (field.typeIdentifier === 'Enum') {
+    if (field.isList) {
+      return `[${(value as ScalarValue[]).join(',')}]`
+    }
+    return value as string
+  }
   return JSON.stringify(value)
 }
 

@@ -1,13 +1,13 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
-import { classnames } from '../../../utils/classnames'
-import { valueToString, stringToValue } from '../../../utils/valueparser'
-import { Field } from '../../../types/types'
+import {classnames} from '../../../utils/classnames'
+import {valueToString, stringToValue} from '../../../utils/valueparser'
+import {Field} from '../../../types/types'
 import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
-import { CellRequirements, getEditCell } from './Cell/cellgenerator'
+import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue} from '../../../types/utils'
 const classes: any = require('./Cell.scss')
 
@@ -20,7 +20,8 @@ interface Props {
   value: any
   width: number
   update: (value: any, field: Field, callback: UpdateCallback) => void
-  reload: () => void
+  reload: () => void,
+  addnew: boolean
 }
 
 interface State {
@@ -76,7 +77,8 @@ class Cell extends React.Component<Props, State> {
     }
 
     this.setState({loading: true} as State)
-
+    console.log('new value')
+    console.log(value)
     this.props.update(value, this.props.field, () => {
       this.setState({
         editing: false,
@@ -103,6 +105,13 @@ class Cell extends React.Component<Props, State> {
   }
 
   _renderContent(): JSX.Element {
+
+    if (this.props.addnew && this.props.field.name === 'id') {
+      return (
+        <span className={classnames([classes.value, classes.id])}>Id will be generated</span>
+      )
+    }
+
     if (this.state.loading) {
       return (
         <div className={classes.loading}>
@@ -126,7 +135,6 @@ class Cell extends React.Component<Props, State> {
       }
       return getEditCell(reqs)
     }
-
     const valueString = valueToString(this.props.value, this.props.field, true)
     return (
       <span className={classes.value}>{valueString}</span>
