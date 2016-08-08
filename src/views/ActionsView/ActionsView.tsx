@@ -49,7 +49,7 @@ class ActionsView extends React.Component<Props, State> {
           params={this.props.params}
           project={this.props.viewer.project}
         >
-          <div onClick={() => this.setState({ showAddRow: true } as State)}>+ Add Action</div>
+          <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>+ Add Action</div>
         </Header>
         <div className={classes.content}>
           <ScrollBox>
