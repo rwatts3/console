@@ -22,7 +22,7 @@
   padding: 27px 0;
 
   &.active {
-    background: rgba(255, 255, 255, 0.05);
+    background: #1B1F25;
   }
 }
 
@@ -40,6 +40,13 @@
 
   span {
     padding: 0 25px;
+  }
+
+  &.active {
+    color: $accent;
+    svg {
+      fill: $accent;
+    }
   }
 }
 
@@ -64,8 +71,8 @@
 
   &.active {
     font-weight: 400;
-    background: rgba(255, 255, 255, 0.09);
     padding-left: 66px;
+    color: $accent;
     border-left: 4px solid $accent;
   }
 
