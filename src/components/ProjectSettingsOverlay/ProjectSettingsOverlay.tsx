@@ -106,6 +106,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
         }),
       {
         onSuccess: () => {
+            this.context.router.replace(`/${this.state.projectName}/`)
             this.props.hide()
           },
         onFailure: (transaction) => {
