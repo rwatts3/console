@@ -3,10 +3,47 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
 
+const vendor = [
+  'calculate-size',
+  'classnames',
+  'graphiql',
+  'immutable',
+  'js-cookie',
+  'lokka',
+  'lokka-transport-http',
+  'map-props',
+  'moment',
+  'normalize.css',
+  'rc-tooltip',
+  'react',
+  'react-addons-pure-render-mixin',
+  'react-autocomplete',
+  'react-click-outside',
+  'react-copy-to-clipboard',
+  'react-datetime',
+  'react-dom',
+  'react-notification-system',
+  'react-redux',
+  'react-relay',
+  'react-router',
+  'react-router-relay',
+  'react-tagsinput',
+  'react-tether',
+  'react-tooltip',
+  'react-twitter-widgets',
+  'redux',
+  'redux-thunk',
+  // 'smooch',
+]
+
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
-  entry: './src/main',
+  entry: {
+    app: './src/main',
+    vendor,
+  },
   output: {
+    filename: '[name].[hash].js',
     publicPath: '/',
   },
   module: {
@@ -27,8 +64,8 @@ module.exports = {
       exclude: /node_modules/,
     }, {
       test: /\.ts(x?)$/,
-      loader: 'babel!ts',
       exclude: /node_modules/,
+      loaders: ['babel', 'ts']
     }, {
       test: /\.js$/,
       loader: 'babel',
@@ -59,6 +96,7 @@ module.exports = {
       template: 'src/index.html',
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
+    new webpack.optimize.CommonsChunkPlugin('vendor'),
   ],
   postcss: [
     cssnano({
@@ -76,11 +114,11 @@ module.exports = {
   ],
   svgo: {
     plugins: [
-      { removeStyleElement: true },
+      {removeStyleElement: true},
     ],
   },
   resolve: {
-    root: [path.resolve('./src'), path.resolve('node_modules')],
+    modules: [path.resolve('./src'), 'node_modules'],
     extensions: ['', '.js', '.ts', '.tsx'],
   },
 }
