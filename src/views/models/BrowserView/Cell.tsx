@@ -103,7 +103,7 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _renderNew = () => {
+  _renderNew = (): JSX.Element => {
     const invalidStyle = classnames([classes.value, classes.id])
     if (this.props.field.name === 'id') {
       return (
@@ -116,9 +116,11 @@ class Cell extends React.Component<Props, State> {
         <span className={invalidStyle}>Should be added later</span>
       )
     }
+
+    return this._renderExisting()
   }
 
-  _renderExisting = () => {
+  _renderExisting = (): JSX.Element => {
     if (this.state.editing) {
       const reqs: CellRequirements = {
         field: this.props.field,
