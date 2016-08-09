@@ -1,27 +1,27 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import {Link} from 'react-router'
 const mapProps: any = require('map-props')
 import * as Relay from 'react-relay'
 const ClickOutside: any = (require('react-click-outside') as any).default
 import TypeSelection from './TypeSelection'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
-import { onFailureShowNotification } from '../../../utils/relay'
-import { valueToString, stringToValue} from '../../../utils/valueparser'
-import { ShowNotificationCallback } from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {valueToString, stringToValue} from '../../../utils/valueparser'
+import {ShowNotificationCallback} from '../../../types/utils'
 const TagsInput: any = require('react-tagsinput')
 import Icon from '../../../components/Icon/Icon'
 import Help from '../../../components/Help/Help'
 import Datepicker from '../../../components/Datepicker/Datepicker'
 import Loading from '../../../components/Loading/Loading'
 import ToggleButton from '../../../components/ToggleButton/ToggleButton'
-import { ToggleSide } from '../../../components/ToggleButton/ToggleButton'
+import {ToggleSide} from '../../../components/ToggleButton/ToggleButton'
 import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
-import { isScalar } from '../../../utils/graphql'
-import { Field, Model } from '../../../types/types'
-import { emptyDefault } from '../utils'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import {isScalar} from '../../../utils/graphql'
+import {Field, Model} from '../../../types/types'
+import {emptyDefault} from '../utils'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 const gettingStartedState: any = require('../../../reducers/GettingStartedState')
 const classes: any = require('./FieldPopup.scss')
 
@@ -62,14 +62,14 @@ class FieldPopup extends React.Component<Props, State> {
     showNotification: ShowNotificationCallback
   }
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
 
-    const { field } = props
+    const {field} = props
     const typeIdentifier = field ? field.typeIdentifier : 'Int'
     const isList = field ? field.isList : false
     const enumValues = field ? field.enumValues : []
-    const tmpField = { typeIdentifier, isList, enumValues } as Field
+    const tmpField = {typeIdentifier, isList, enumValues} as Field
 
     this.state = {
       loading: false,
@@ -82,15 +82,15 @@ class FieldPopup extends React.Component<Props, State> {
       defaultValue: field ? stringToValue(field.defaultValue, tmpField) : emptyDefault(tmpField),
       reverseRelationField: field ? field.reverseRelationField : null,
       useMigrationValue: false,
-      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues: [] } as Field),
+      migrationValue: emptyDefault({typeIdentifier, isList, enumValues: []} as Field),
     }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     window.addEventListener('keydown', this._listenForKeys, false)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('keydown', this._listenForKeys, false)
   }
 
@@ -102,11 +102,11 @@ class FieldPopup extends React.Component<Props, State> {
     }
   }
 
-  _close () {
+  _close() {
     this.context.router.goBack()
   }
 
-  _submit () {
+  _submit() {
     if (this.props.field) {
       this._update()
     } else {
@@ -114,12 +114,12 @@ class FieldPopup extends React.Component<Props, State> {
     }
   }
 
-  _create () {
+  _create() {
     if (!this._isValid()) {
       return
     }
 
-    this.setState({ loading: true } as State)
+    this.setState({loading: true} as State)
 
     const {
       name,
@@ -132,13 +132,16 @@ class FieldPopup extends React.Component<Props, State> {
       reverseRelationField,
     } = this.state
 
-    const field = { isList, typeIdentifier } as Field
+    const field = {isList, typeIdentifier} as Field
     const wrappedMigrationValue = isScalar(this.state.typeIdentifier)
       ? this.state.migrationValue
-      : { id: this.state.migrationValue }
-    const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
+      : {id: this.state.migrationValue}
+    console.log(wrappedMigrationValue)
+    const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue)
       ? valueToString(wrappedMigrationValue, field, true)
       : null
+
+    console.log(migrationValue)
 
     Relay.Store.commitUpdate(
       new AddFieldMutation({
@@ -175,18 +178,18 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.context.showNotification)
-          this.setState({ loading: false } as State)
+          this.setState({loading: false} as State)
         },
       }
     )
   }
 
-  _update () {
+  _update() {
     if (!this._isValid()) {
       return
     }
 
-    this.setState({ loading: true } as State)
+    this.setState({loading: true} as State)
 
     const {
       name,
@@ -199,10 +202,10 @@ class FieldPopup extends React.Component<Props, State> {
       reverseRelationField,
     } = this.state
 
-    const field = { isList, typeIdentifier } as Field
+    const field = {isList, typeIdentifier} as Field
     const wrappedMigrationValue = isScalar(this.state.typeIdentifier)
       ? this.state.migrationValue
-      : { id: this.state.migrationValue }
+      : {id: this.state.migrationValue}
     const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
       ? valueToString(wrappedMigrationValue, field, true)
       : null
@@ -231,13 +234,13 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.context.showNotification)
-          this.setState({ loading: false } as State)
+          this.setState({loading: false} as State)
         },
       }
     )
   }
 
-  _isValid (): boolean {
+  _isValid(): boolean {
     if (this.state.name === '') {
       return false
     }
@@ -253,7 +256,7 @@ class FieldPopup extends React.Component<Props, State> {
     return true
   }
 
-  _needsMigrationValue (): boolean {
+  _needsMigrationValue(): boolean {
     if (this.props.model.itemCount === 0) {
       return false
     }
@@ -265,14 +268,14 @@ class FieldPopup extends React.Component<Props, State> {
     return changedType || changedRequired || newRequiredField
   }
 
-  _updateTypeIdentifier (typeIdentifier: string) {
-    const { field } = this.props
+  _updateTypeIdentifier(typeIdentifier: string) {
+    const {field} = this.props
 
     const useMigrationValue = (field && field.typeIdentifier === typeIdentifier)
       ? false
       : this.state.useMigrationValue
-    const { isList, enumValues } = this.state
-    const tmpField = { typeIdentifier, isList, enumValues } as Field
+    const {isList, enumValues} = this.state
+    const tmpField = {typeIdentifier, isList, enumValues} as Field
 
     this.setState({
       typeIdentifier,
@@ -280,35 +283,35 @@ class FieldPopup extends React.Component<Props, State> {
       isList,
       reverseRelationField: field ? field.reverseRelationField : null,
       defaultValue: field ? stringToValue(field.defaultValue, tmpField) : emptyDefault(tmpField),
-      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
+      migrationValue: emptyDefault({typeIdentifier, isList, enumValues} as Field),
       useMigrationValue,
     } as State)
   }
 
-  _updateIsList (isList: boolean) {
-    const { typeIdentifier, enumValues } = this.state
+  _updateIsList(isList: boolean) {
+    const {typeIdentifier, enumValues} = this.state
 
     this.setState({
       isList,
-      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
+      migrationValue: emptyDefault({typeIdentifier, isList, enumValues} as Field),
     } as State)
   }
 
-  _updateEnumValues (enumValues: string[]) {
-    const { typeIdentifier, isList } = this.state
+  _updateEnumValues(enumValues: string[]) {
+    const {typeIdentifier, isList} = this.state
 
     this.setState({
       enumValues,
-      migrationValue: emptyDefault({ typeIdentifier, isList, enumValues } as Field),
+      migrationValue: emptyDefault({typeIdentifier, isList, enumValues} as Field),
     } as State)
   }
 
-  _toggleReverseRelation () {
+  _toggleReverseRelation() {
     if (this.state.reverseRelationField !== null) {
-      this.setState({ reverseRelationField: null } as State)
+      this.setState({reverseRelationField: null} as State)
     } else {
       const selectedModel = this.props.allModels.find((m) => m.name === this.state.typeIdentifier)
-      this.setState({ reverseRelationField: selectedModel.unconnectedReverseRelationFieldsFrom[0] } as State)
+      this.setState({reverseRelationField: selectedModel.unconnectedReverseRelationFieldsFrom[0]} as State)
     }
   }
 
@@ -317,24 +320,36 @@ class FieldPopup extends React.Component<Props, State> {
       return
     }
 
-    this.setState({ defaultValue } as State)
+    this.setState({defaultValue} as State)
   }
 
   _setMigrationValue = (migrationValue: any) => {
     if (!this.state.useMigrationValue && !this._needsMigrationValue()) {
       migrationValue = null
     }
-
-    this.setState({ migrationValue } as State)
+    this.setState({migrationValue} as State)
   }
 
-  _renderValueInput (value: any, placeholder: string, changeCallback: (v: any) => void) {
+  _renderValueInput(value: any, placeholder: string, changeCallback: (v: any) => void) {
     const field = {
       isList: this.state.isList,
       typeIdentifier: this.state.typeIdentifier,
     } as Field
-    const wrappedValue = isScalar(this.state.typeIdentifier) ? value : { id: value }
+
+    const wrappedValue = isScalar(this.state.typeIdentifier) ? value : {id: value}
     const valueString = valueToString(wrappedValue, field, false)
+
+    if (field.isList) {
+      return (
+        <input
+          type='text'
+          ref='input'
+          placeholder={placeholder}
+          value={valueString}
+          onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
+        />
+      )
+    }
 
     switch (this.state.typeIdentifier) {
       case 'Int':
@@ -400,19 +415,18 @@ class FieldPopup extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render() {
     if (this.state.loading) {
       return (
         <div className={classes.background}>
-          <Loading color='#fff' />
+          <Loading color='#fff'/>
         </div>
       )
     }
 
     const selectedModel = this.props.allModels.find((m) => m.name === this.state.typeIdentifier)
     const showReverseRelationSection = selectedModel &&
-      selectedModel.unconnectedReverseRelationFieldsFrom.length > 0 &&
-      !this.props.field
+      selectedModel.unconnectedReverseRelationFieldsFrom.length > 0 && !this.props.field
     const reverseRelationFieldLink = `/${this.props.params.projectName}/models/${this.state.typeIdentifier}/structure/edit/${(this.state.reverseRelationField || {} as any).name}` // tslint:disable-line
 
     const dataExists = this.props.model.itemCount > 0
@@ -436,7 +450,7 @@ class FieldPopup extends React.Component<Props, State> {
                 <div className={classes.row}>
                   <div className={classes.left}>
                     Choose a name for your field
-                    <Help text='Fieldnames must be camelCase like "firstName" or "dateOfBirth".' />
+                    <Help text='Fieldnames must be camelCase like "firstName" or "dateOfBirth".'/>
                   </div>
                   <div className={classes.right}>
                     <input
@@ -453,7 +467,7 @@ class FieldPopup extends React.Component<Props, State> {
                   <div className={classes.left}>
                     Select the type of data
                     <Help text={`Your field can either store scalar values such as text or numbers
-                    or setup relations between existing models.`} />
+                    or setup relations between existing models.`}/>
                   </div>
                   <div className={classes.right}>
                     <TypeSelection
@@ -464,253 +478,253 @@ class FieldPopup extends React.Component<Props, State> {
                   </div>
                 </div>
                 {this.state.typeIdentifier === 'Enum' &&
-                  <div className={classes.row}>
-                    <div className={classes.enumLeft}>
-                      Enum Values
-                      <Help text={`List all possible values for your enum field.
-                      Good value names are either Capitalized or UPPERCASE.`} />
-                    </div>
-                    <div className={classes.enumRight}>
-                      <TagsInput
-                        onlyUnique
-                        addOnBlur
-                        addKeys={[9, 13, 32]}
-                        value={this.state.enumValues}
-                        onChange={(enumValues) => this._updateEnumValues(enumValues)}
-                      />
-                    </div>
+                <div className={classes.row}>
+                  <div className={classes.enumLeft}>
+                    Enum Values
+                    <Help text={`List all possible values for your enum field.
+                      Good value names are either Capitalized or UPPERCASE.`}/>
                   </div>
+                  <div className={classes.enumRight}>
+                    <TagsInput
+                      onlyUnique
+                      addOnBlur
+                      addKeys={[9, 13, 32]}
+                      value={this.state.enumValues}
+                      onChange={(enumValues) => this._updateEnumValues(enumValues)}
+                    />
+                  </div>
+                </div>
                 }
                 {isScalar(this.state.typeIdentifier) &&
-                  <div className={classes.rowBlock}>
-                    <div className={classes.row}>
-                      <div className={classes.left}>
-                        Is this field required?
-                        <Help text={`Required fields always must have a value and cannot be "null".
-                        If you don't setup a default value you will need to
-                        provide a value for each create mutation.`} />
-                      </div>
-                      <div className={classes.right}>
-                        <label>
-                          <input
-                            type='checkbox'
-                            checked={this.state.isRequired}
-                            onChange={(e) => this.setState({
-                              isRequired: (e.target as HTMLInputElement).checked,
-                            } as State)}
-                            onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
-                          />
-                          Required
-                        </label>
-                      </div>
-                    </div>
-                    <div className={classes.row}>
-                      <div className={classes.left}>
-                        Store multiple values
-                        <Help text={`Normaly you just want to store a single value
-                        but you can also save a list of values.
-                        (Lists don't support migration and default values yet.)`} />
-                      </div>
-                      <div className={classes.right}>
-                        <label>
-                          <input
-                            type='checkbox'
-                            checked={this.state.isList}
-                            onChange={(e) => this._updateIsList((e.target as HTMLInputElement).checked)}
-                            onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
-                          />
-                          List
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                }
-                {showMigrationValue && !this.state.isList &&
+                <div className={classes.rowBlock}>
                   <div className={classes.row}>
                     <div className={classes.left}>
+                      Is this field required?
+                      <Help text={`Required fields always must have a value and cannot be "null".
+                        If you don't setup a default value you will need to
+                        provide a value for each create mutation.`}/>
+                    </div>
+                    <div className={classes.right}>
                       <label>
                         <input
                           type='checkbox'
-                          disabled={needsMigrationValue}
-                          checked={this.state.useMigrationValue || needsMigrationValue}
+                          checked={this.state.isRequired}
                           onChange={(e) => this.setState({
+                              isRequired: (e.target as HTMLInputElement).checked,
+                            } as State)}
+                          onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
+                        />
+                        Required
+                      </label>
+                    </div>
+                  </div>
+                  <div className={classes.row}>
+                    <div className={classes.left}>
+                      Store multiple values
+                      <Help text={`Normaly you just want to store a single value
+                        but you can also save a list of values.
+                        (Lists don't support migration and default values yet.)`}/>
+                    </div>
+                    <div className={classes.right}>
+                      <label>
+                        <input
+                          type='checkbox'
+                          checked={this.state.isList}
+                          onChange={(e) => this._updateIsList((e.target as HTMLInputElement).checked)}
+                          onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
+                        />
+                        List
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                }
+                {showMigrationValue &&
+                <div className={classes.row}>
+                  <div className={classes.left}>
+                    <label>
+                      <input
+                        type='checkbox'
+                        disabled={needsMigrationValue}
+                        checked={this.state.useMigrationValue || needsMigrationValue}
+                        onChange={(e) => this.setState({
                               useMigrationValue: (e.target as HTMLInputElement).checked,
                             } as State)}
-                        />
-                        Migration value
-                      </label>
-                      <Help text={this.props.field
+                      />
+                      Migration value
+                    </label>
+                    <Help text={this.props.field
                       ? `The migration value will be used to replace all existing values
                       for this field. Be careful, this step cannot be undone.
                       Note: New data items won't be affected, please see "Default value".`
                       : `The migration value will be used to populate this field for existing data items.
-                      Note: New data items won't be affected, please see "Default value".`} />
-                    </div>
-                    <div className={`
+                      Note: New data items won't be affected, please see "Default value".`}/>
+                  </div>
+                  <div className={`
                     ${classes.right} ${(this.state.useMigrationValue || needsMigrationValue) ? null : classes.disabled}
                     `}>
-                      {this._renderValueInput(
-                        this.state.migrationValue,
-                        'Migration value',
-                        this._setMigrationValue
-                      )}
-                    </div>
+                    {this._renderValueInput(
+                      this.state.migrationValue,
+                      'Migration value',
+                      this._setMigrationValue
+                    )}
                   </div>
+                </div>
                 }
-                {isScalar(this.state.typeIdentifier) && !this.state.isList &&
-                  <div className={classes.row}>
-                    <div className={classes.left}>
-                      <label>
-                        <input
-                          type='checkbox'
-                          checked={this.state.useDefaultValue}
-                          onChange={(e) => this.setState({
+                {isScalar(this.state.typeIdentifier) &&
+                <div className={classes.row}>
+                  <div className={classes.left}>
+                    <label>
+                      <input
+                        type='checkbox'
+                        checked={this.state.useDefaultValue}
+                        onChange={(e) => this.setState({
                             useDefaultValue: (e.target as HTMLInputElement).checked,
                           } as State)}
-                        />
-                        Default value
-                      </label>
-                      <Help text={`You can provide a default value for every newly created data item.
-                      The default value will be applied to both required and non-required fields.`} />
-                    </div>
-                    <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
-                      {this._renderValueInput(
-                        this.state.defaultValue,
-                        'Default value',
-                        this._setDefaultValue
-                      )}
-                    </div>
+                      />
+                      Default value
+                    </label>
+                    <Help text={`You can provide a default value for every newly created data item.
+                      The default value will be applied to both required and non-required fields.`}/>
                   </div>
+                  <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
+                    {this._renderValueInput(
+                      this.state.defaultValue,
+                      'Default value',
+                      this._setDefaultValue
+                    )}
+                  </div>
+                </div>
                 }
                 {!isScalar(this.state.typeIdentifier) &&
-                  <div className={classes.rowBlock}>
-                    {showReverseRelationSection &&
-                      <div className={classes.reverseRelationSelection}>
-                        <input
-                          type='checkbox'
-                          checked={!!this.state.reverseRelationField}
-                          onChange={() => this._toggleReverseRelation()}
-                        />
-                        This field is related to the field
-                        {selectedModel.unconnectedReverseRelationFieldsFrom.map((relatedField) => {
-                          const selected = this.state.reverseRelationField === relatedField
-                          return (
-                            <span
-                              className={`${classes.relatedField} ${selected ? classes.selected : ''}`}
-                              key={relatedField.id}
-                              onClick={() => this.setState({ reverseRelationField: relatedField } as State)}
-                            >
+                <div className={classes.rowBlock}>
+                  {showReverseRelationSection &&
+                  <div className={classes.reverseRelationSelection}>
+                    <input
+                      type='checkbox'
+                      checked={!!this.state.reverseRelationField}
+                      onChange={() => this._toggleReverseRelation()}
+                    />
+                    This field is related to the field
+                    {selectedModel.unconnectedReverseRelationFieldsFrom.map((relatedField) => {
+                      const selected = this.state.reverseRelationField === relatedField
+                      return (
+                        <span
+                          className={`${classes.relatedField} ${selected ? classes.selected : ''}`}
+                          key={relatedField.id}
+                          onClick={() => this.setState({ reverseRelationField: relatedField } as State)}
+                        >
                               {relatedField.name}
                             </span>
-                          )
-                        })}
-                      </div>
-                    }
-                    <div className={classes.relationPhrase}>
-                      <div>A</div>
-                      <div className={classes.modelName}>{this.props.params.modelName}</div>
-                      {!this.state.isList &&
-                        <div>model</div>
-                      }
-                      {!this.state.isList &&
-                        <div className={`${classes.select} ${this.state.isRequired ? classes.top : classes.bottom}`}>
-                          <div
-                            className={`${classes.option} ${!this.state.isRequired ? classes.selected : ''}`}
-                            onClick={() => this.setState({ isRequired: false } as State)}
-                          >
-                            can
-                          </div>
-                          <div
-                            className={`${classes.option} ${this.state.isRequired ? classes.selected : ''}`}
-                            onClick={() => this.setState({ isRequired: true } as State)}
-                          >
-                            must
-                          </div>
-                        </div>
-                      }
-                      {!this.state.isList &&
-                        <div>
-                          be related to
-                        </div>
-                      }
-                      {this.state.isList &&
-                      <div>
-                        model is related to
-                      </div>
-                      }
-                      <div className={`${classes.select} ${this.state.isList ? classes.top : classes.bottom}`}>
-                        <div
-                          className={`${classes.option} ${!this.state.isList ? classes.selected : ''}`}
-                          onClick={() => this._updateIsList(false)}
-                        >
-                          one
-                        </div>
-                        <div
-                          className={`${classes.option} ${this.state.isList ? classes.selected : ''}`}
-                          onClick={() => this._updateIsList(true)}
-                        >
-                          many
-                        </div>
-                      </div>
-                      <div className={classes.modelName}>{this.state.typeIdentifier}</div>
-                      <div>model{this.state.isList ? 's' : ''}</div>
-                    </div>
+                      )
+                    })}
                   </div>
+                  }
+                  <div className={classes.relationPhrase}>
+                    <div>A</div>
+                    <div className={classes.modelName}>{this.props.params.modelName}</div>
+                    {!this.state.isList &&
+                    <div>model</div>
+                    }
+                    {!this.state.isList &&
+                    <div className={`${classes.select} ${this.state.isRequired ? classes.top : classes.bottom}`}>
+                      <div
+                        className={`${classes.option} ${!this.state.isRequired ? classes.selected : ''}`}
+                        onClick={() => this.setState({ isRequired: false } as State)}
+                      >
+                        can
+                      </div>
+                      <div
+                        className={`${classes.option} ${this.state.isRequired ? classes.selected : ''}`}
+                        onClick={() => this.setState({ isRequired: true } as State)}
+                      >
+                        must
+                      </div>
+                    </div>
+                    }
+                    {!this.state.isList &&
+                    <div>
+                      be related to
+                    </div>
+                    }
+                    {this.state.isList &&
+                    <div>
+                      model is related to
+                    </div>
+                    }
+                    <div className={`${classes.select} ${this.state.isList ? classes.top : classes.bottom}`}>
+                      <div
+                        className={`${classes.option} ${!this.state.isList ? classes.selected : ''}`}
+                        onClick={() => this._updateIsList(false)}
+                      >
+                        one
+                      </div>
+                      <div
+                        className={`${classes.option} ${this.state.isList ? classes.selected : ''}`}
+                        onClick={() => this._updateIsList(true)}
+                      >
+                        many
+                      </div>
+                    </div>
+                    <div className={classes.modelName}>{this.state.typeIdentifier}</div>
+                    <div>model{this.state.isList ? 's' : ''}</div>
+                  </div>
+                </div>
                 }
                 {!isScalar(this.state.typeIdentifier) &&
-                  <div>
-                    <div className={classes.relationSchema}>
-                      <div className={classes.modelName}>
-                        {this.props.params.modelName}
-                      </div>
+                <div>
+                  <div className={classes.relationSchema}>
+                    <div className={classes.modelName}>
+                      {this.props.params.modelName}
+                    </div>
+                    <Icon
+                      width={40}
+                      height={40}
+                      src={require('assets/icons/relation-one.svg')}
+                    />
+                    <div className={classes.arrows}>
                       <Icon
-                        width={40}
-                        height={40}
-                        src={require('assets/icons/relation-one.svg')}
+                        width={162}
+                        height={18}
+                        src={require('assets/icons/arrow-hor.svg')}
                       />
-                      <div className={classes.arrows}>
-                        <Icon
-                          width={162}
-                          height={18}
-                          src={require('assets/icons/arrow-hor.svg')}
-                        />
-                        {this.state.reverseRelationField &&
-                          <Icon
-                            className={classes.back}
-                            width={162}
-                            height={18}
-                            src={require('assets/icons/arrow-hor.svg')}
-                            rotate={180}
-                          />
-                        }
-                      </div>
+                      {this.state.reverseRelationField &&
                       <Icon
-                        width={40}
-                        height={40}
-                        src={
+                        className={classes.back}
+                        width={162}
+                        height={18}
+                        src={require('assets/icons/arrow-hor.svg')}
+                        rotate={180}
+                      />
+                      }
+                    </div>
+                    <Icon
+                      width={40}
+                      height={40}
+                      src={
                           this.state.isList
                             ? require('assets/icons/relation-many.svg')
                             : require('assets/icons/relation-one.svg')
                         }
-                      />
-                      <div className={classes.modelName}>
-                        {this.state.typeIdentifier}
-                      </div>
+                    />
+                    <div className={classes.modelName}>
+                      {this.state.typeIdentifier}
                     </div>
-                    {this.state.reverseRelationField &&
-                      <div className={classes.reverseRelation}>
-                        <Link
-                          className={classes.button}
-                          to={reverseRelationFieldLink}
-                        >
-                          Reverse Relation From&nbsp;
-                          <span className={classes.accent}>
+                  </div>
+                  {this.state.reverseRelationField &&
+                  <div className={classes.reverseRelation}>
+                    <Link
+                      className={classes.button}
+                      to={reverseRelationFieldLink}
+                    >
+                      Reverse Relation From&nbsp;
+                      <span className={classes.accent}>
                             {this.state.typeIdentifier} ({this.state.reverseRelationField.name})
                           </span>
-                        </Link>
-                      </div>
-                    }
+                    </Link>
                   </div>
+                  }
+                </div>
                 }
               </div>
               <div className={classes.foot}>
@@ -738,9 +752,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   const nextStep = gettingStartedState.nextStep
-  return bindActionCreators({ nextStep }, dispatch)
+  return bindActionCreators({nextStep}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -765,50 +779,50 @@ export default Relay.createContainer(MappedFieldPopup, {
   prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
     fieldExists: !!prevVariables.fieldName,
   })),
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          id
-          itemCount
-        }
-        field: fieldByName(
-          projectName: $projectName
-          modelName: $modelName
-          fieldName: $fieldName
-        ) @include(if: $fieldExists) {
-          id
-          name
-          typeIdentifier
-          isRequired
-          isList
-          enumValues
-          defaultValue
-          relation {
-            id
-          }
-          reverseRelationField {
-            name
-          }
-        }
-        project: projectByName(projectName: $projectName) {
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
-                  id
-                  name
-                  relation {
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                model: modelByName(projectName: $projectName, modelName: $modelName) {
                     id
-                  }
+                    itemCount
                 }
-              }
+                field: fieldByName(
+                projectName: $projectName
+                modelName: $modelName
+                fieldName: $fieldName
+                ) @include(if: $fieldExists) {
+                    id
+                    name
+                    typeIdentifier
+                    isRequired
+                    isList
+                    enumValues
+                    defaultValue
+                    relation {
+                        id
+                    }
+                    reverseRelationField {
+                        name
+                    }
+                }
+                project: projectByName(projectName: $projectName) {
+                    models(first: 100) {
+                        edges {
+                            node {
+                                id
+                                name
+                                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
+                                    id
+                                    name
+                                    relation {
+                                        id
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
-    `,
-  },
+        `,
+    },
 })
