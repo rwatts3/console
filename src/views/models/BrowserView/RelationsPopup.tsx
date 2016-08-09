@@ -82,7 +82,8 @@ class RelationsPopup extends React.Component<Props, State> {
     return this._lokka.query(query)
       .then((results) => {
         const allItems: any[] = results[`all${relatedModel.namePlural}`]
-        const relatedItems: any[] = results[originModel.name][this.props.originField.name]
+        const resultModelEntries = results[originModel.name]
+        const relatedItems: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
         const items = allItems.map((item) => ({
           item,
           isRelated: relatedItems.some((relatedItem) => relatedItem.id === item.id),
@@ -93,7 +94,6 @@ class RelationsPopup extends React.Component<Props, State> {
   }
 
   _toggleRelation (isRelated: boolean, itemId: string): void {
-    console.log(this.props.originField)
     const relationName = this.props.originField.relation.name
     const relatedModelName = this.props.originField.relatedModel.name
     // TODO fix this error where the reversRelationField is null

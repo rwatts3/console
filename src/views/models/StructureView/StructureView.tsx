@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Link } from 'react-router'
+import {Link} from 'react-router'
 import FieldRow from './FieldRow'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
@@ -8,12 +8,12 @@ import Icon from '../../../components/Icon/Icon'
 import Tether from '../../../components/Tether/Tether'
 import ModelHeader from '../ModelHeader'
 import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
-import { Field, Model, Viewer, Project } from '../../../types/types'
-import { ShowNotificationCallback } from '../../../types/utils'
-import { onFailureShowNotification } from '../../../utils/relay'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-const { nextStep } = require('../../../reducers/GettingStartedState') as any
+import {Field, Model, Viewer, Project} from '../../../types/types'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+const {nextStep} = require('../../../reducers/GettingStartedState') as any
 const classes: any = require('./StructureView.scss')
 
 interface Props {
@@ -51,14 +51,14 @@ class StructureView extends React.Component<Props, State> {
     menuDropdownVisible: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     analytics.track('models/structure: viewed', {
       model: this.props.params.modelName,
     })
   }
 
   _toggleMenuDropdown = () => {
-    this.setState({ menuDropdownVisible: !this.state.menuDropdownVisible } as State)
+    this.setState({menuDropdownVisible: !this.state.menuDropdownVisible} as State)
   }
 
   _deleteModel = () => {
@@ -87,7 +87,7 @@ class StructureView extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render() {
     return (
       <div className={classes.root}>
         {this.props.children}
@@ -119,19 +119,20 @@ class StructureView extends React.Component<Props, State> {
               <span>Create Field</span>
             </Link>
           </Tether>
+          {!this.props.model.isSystem &&
           <div className={classes.button} onClick={this._toggleMenuDropdown}>
             <Icon
               width={16}
               height={16}
               src={require('assets/icons/more.svg')}
             />
-          </div>
+          </div>}
           {this.state.menuDropdownVisible &&
-            <div className={classes.menuDropdown}>
-              <div onClick={this._deleteModel}>
-                Delete Model
-              </div>
+          <div className={classes.menuDropdown}>
+            <div onClick={this._deleteModel}>
+              Delete Model
             </div>
+          </div>
           }
         </ModelHeader>
         <div className={classes.table}>
@@ -141,7 +142,7 @@ class StructureView extends React.Component<Props, State> {
             <div className={classes.description}>Description</div>
             <div className={classes.constraints}>Constraints</div>
             <div className={classes.permissions}>Permissions</div>
-            <div className={classes.controls} />
+            <div className={classes.controls}/>
           </div>
           <div className={classes.tableBody}>
             <ScrollBox>
@@ -179,8 +180,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ nextStep }, dispatch)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({nextStep}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -212,55 +213,56 @@ export default Relay.createContainer(MappedStructureView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          id
-          possibleRelatedPermissionPaths(first: 100) {
-            edges {
-              node {
-                fields {
-                  id
-                  name
-                  typeIdentifier
-                }
-              }
-            }
-          }
-          fields(first: 100) {
-            edges {
-              node {
-                id
-                name
-                ${FieldRow.getFragment('field')}
-              }
-            }
-          }
-          ${ModelHeader.getFragment('model')}
-        }
-        project: projectByName(projectName: $projectName) {
-          id
-          availableUserRoles
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
-                  id
-                  name
-                  relation {
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                model: modelByName(projectName: $projectName, modelName: $modelName) {
                     id
-                  }
+                    isSystem
+                    possibleRelatedPermissionPaths(first: 100) {
+                        edges {
+                            node {
+                                fields {
+                                    id
+                                    name
+                                    typeIdentifier
+                                }
+                            }
+                        }
+                    }
+                    fields(first: 100) {
+                        edges {
+                            node {
+                                id
+                                name
+                                ${FieldRow.getFragment('field')}
+                            }
+                        }
+                    }
+                    ${ModelHeader.getFragment('model')}
                 }
-              }
+                project: projectByName(projectName: $projectName) {
+                    id
+                    availableUserRoles
+                    models(first: 100) {
+                        edges {
+                            node {
+                                id
+                                name
+                                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
+                                    id
+                                    name
+                                    relation {
+                                        id
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    ${ModelHeader.getFragment('project')}
+                }
+                ${ModelHeader.getFragment('viewer')}
             }
-          }
-          ${ModelHeader.getFragment('project')}
-        }
-        ${ModelHeader.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

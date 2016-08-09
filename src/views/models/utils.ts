@@ -1,17 +1,24 @@
-import { isScalar } from '../../utils/graphql'
-import { Field } from '../../types/types'
+import {isScalar} from '../../utils/graphql'
+import {Field} from '../../types/types'
 import {TypedValue, NonScalarValue, ScalarValue} from '../../types/utils'
 
-export function emptyDefault (field: Field): TypedValue {
+export function emptyDefault(field: Field): TypedValue {
   const value = function (): any {
     switch (field.typeIdentifier) {
-      case 'Int': return 0
-      case 'Float': return 0
-      case 'DateTime': return new Date().toISOString()
-      case 'String': return ''
-      case 'Boolean': return false
-      case 'Enum': return field.enumValues.length > 0 ? field.enumValues[0] : null
-      default: return null
+      case 'Int':
+        return 0
+      case 'Float':
+        return 0
+      case 'DateTime':
+        return new Date().toISOString()
+      case 'String':
+        return ''
+      case 'Boolean':
+        return false
+      case 'Enum':
+        return field.enumValues.length > 0 ? field.enumValues[0] : null
+      default:
+        return null
     }
   }()
 
@@ -22,8 +29,11 @@ export function emptyDefault (field: Field): TypedValue {
   return []
 }
 
-function valueToGQL (value: TypedValue, field: Field): string {
+function valueToGQL(value: TypedValue, field: Field): string {
   if (!isScalar(field.typeIdentifier)) {
+    if (field.isList && (value as any[]).length === 0) {
+      return '"[]"'
+    }
     return `"${(value as NonScalarValue).id}"`
   }
   if (field.typeIdentifier === 'Enum') {
@@ -32,15 +42,16 @@ function valueToGQL (value: TypedValue, field: Field): string {
     }
     return value as string
   }
+
   return JSON.stringify(value)
 }
 
-export function toGQL (value: any, field: Field): string {
+export function toGQL(value: any, field: Field): string {
   const key = isScalar(field.typeIdentifier) ? field.name : `${field.name}Id`
   return value !== null ? `${key}: ${valueToGQL(value, field)}` : ''
 }
 
-export function compareFields (a: Field, b: Field): number {
+export function compareFields(a: Field, b: Field): number {
   if (a.name === 'id') {
     return -1
   }
