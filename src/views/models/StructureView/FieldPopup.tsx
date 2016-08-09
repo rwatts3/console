@@ -214,7 +214,7 @@ class FieldPopup extends React.Component<Props, State> {
         typeIdentifier,
         enumValues,
         isList,
-        isRequired: isRequired || isList, // isRequired has to be true if isList
+        isRequired: isRequired, // || isList, // isRequired has to be true if isList
         defaultValue: useDefaultValue ? valueToString(defaultValue, field, false) : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
         migrationValue,
@@ -312,7 +312,7 @@ class FieldPopup extends React.Component<Props, State> {
     }
   }
 
-  _setDefaultValue (defaultValue: any) {
+  _setDefaultValue = (defaultValue: any) => {
     if (!this.state.useDefaultValue) {
       return
     }
@@ -320,7 +320,7 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({ defaultValue } as State)
   }
 
-  _setMigrationValue (migrationValue: any) {
+  _setMigrationValue = (migrationValue: any) => {
     if (!this.state.useMigrationValue && !this._needsMigrationValue()) {
       migrationValue = null
     }
@@ -552,7 +552,7 @@ class FieldPopup extends React.Component<Props, State> {
                       {this._renderValueInput(
                         this.state.migrationValue,
                         'Migration value',
-                        this._setMigrationValue.bind(this)
+                        this._setMigrationValue
                       )}
                     </div>
                   </div>
@@ -577,7 +577,7 @@ class FieldPopup extends React.Component<Props, State> {
                       {this._renderValueInput(
                         this.state.defaultValue,
                         'Default value',
-                        this._setDefaultValue.bind(this)
+                        this._setDefaultValue
                       )}
                     </div>
                   </div>
