@@ -33,7 +33,7 @@ const vendor = [
   'react-twitter-widgets',
   'redux',
   'redux-thunk',
-  'smooch',
+  // 'smooch',
 ]
 
 module.exports = {
@@ -107,7 +107,7 @@ module.exports = {
       }
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[hash].js'),
+    new webpack.optimize.CommonsChunkPlugin('vendor'),
   ],
   postcss: [
     cssnano({
@@ -123,7 +123,7 @@ module.exports = {
     })
   ],
   resolve: {
-    root: [path.resolve('./src'), path.resolve('node_modules')],
+    modules: [path.resolve('./src'), 'node_modules'],
     extensions: ['', '.js', '.ts', '.tsx'],
   }
 }
