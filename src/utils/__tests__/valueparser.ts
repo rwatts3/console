@@ -1,9 +1,9 @@
 /// <reference path="../../../node_modules/@types/jest/index.d.ts"/>
-import {NonScalarValue} from '../../types/utils'
 jest.unmock('../valueparser')
 jest.unmock('../graphql')
 jest.unmock('../../types/types')
 
+import {NonScalarValue} from '../../types/utils'
 import {Field} from '../../types/types'
 import {stringToValue, valueToString} from '../valueparser'
 import '../polyfils'
