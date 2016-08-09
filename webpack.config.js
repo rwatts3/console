@@ -11,10 +11,6 @@ module.exports = {
   },
   module: {
     preLoaders: [{
-      test: /\.js$/,
-      loader: 'eslint',
-      exclude: /node_modules/,
-    }, {
       test: /\.ts(x?)$/,
       loader: 'tslint',
       exclude: /node_modules/,
@@ -48,7 +44,7 @@ module.exports = {
       loader: 'file',
     }, { // TODO remove this loader and also `imports-loader` dependency
       test: /load-image/,
-      loader: 'imports?define=>false'
+      loader: 'imports?define=>false',
     }],
   },
   plugins: [
