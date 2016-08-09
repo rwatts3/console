@@ -9,6 +9,7 @@ import ModelSelector from '../../../components/ModelSelector/ModelSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue} from '../../../types/utils'
+import {isNonScalarList} from '../../../utils/graphql'
 const classes: any = require('./Cell.scss')
 
 export type UpdateCallback = (success: boolean) => void
@@ -77,8 +78,6 @@ class Cell extends React.Component<Props, State> {
     }
 
     this.setState({loading: true} as State)
-    console.log('new value')
-    console.log(value)
     this.props.update(value, this.props.field, () => {
       this.setState({
         editing: false,
@@ -104,22 +103,22 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _renderContent(): JSX.Element {
-
-    if (this.props.addnew && this.props.field.name === 'id') {
+  _renderNew = () => {
+    const invalidStyle = classnames([classes.value, classes.id])
+    if (this.props.field.name === 'id') {
       return (
-        <span className={classnames([classes.value, classes.id])}>Id will be generated</span>
+        <span className={invalidStyle}>Id will be generated</span>
       )
     }
 
-    if (this.state.loading) {
+    if (isNonScalarList(this.props.field)) {
       return (
-        <div className={classes.loading}>
-          <Loading color='#B9B9C8'/>
-        </div>
+        <span className={invalidStyle}>Should be added later</span>
       )
     }
+  }
 
+  _renderExisting = () => {
     if (this.state.editing) {
       const reqs: CellRequirements = {
         field: this.props.field,
@@ -139,6 +138,23 @@ class Cell extends React.Component<Props, State> {
     return (
       <span className={classes.value}>{valueString}</span>
     )
+  }
+
+  _renderContent(): JSX.Element {
+
+    if (this.state.loading) {
+      return (
+        <div className={classes.loading}>
+          <Loading color='#B9B9C8'/>
+        </div>
+      )
+    }
+
+    if (this.props.addnew) {
+      return this._renderNew()
+    } else {
+      return this._renderExisting()
+    }
   }
 
   render(): JSX.Element {
