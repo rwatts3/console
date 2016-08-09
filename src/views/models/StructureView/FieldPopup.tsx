@@ -522,8 +522,7 @@ class FieldPopup extends React.Component<Props, State> {
                     <div className={classes.left}>
                       Store multiple values
                       <Help text={`Normaly you just want to store a single value
-                        but you can also save a list of values.
-                        (Lists don't support migration and default values yet.)`}/>
+                        but you can also save a list of values.`}/>
                     </div>
                     <div className={classes.right}>
                       <label>
