@@ -24,7 +24,7 @@ describe('isScalar', () => {
     }
   })
 
-  it('checks that isScalar is type sensitive', () => {
+  it('checks that isScalar is case sensitive', () => {
     for (let i = 0; i < scalarTypes.length; i++) {
       expect(isScalar(scalarTypes[i].toLowerCase())).toBe(false)
     }
