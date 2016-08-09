@@ -15,6 +15,5 @@ export function isScalar (typeIdentifier: string): boolean {
 
 export function isNonScalarList(field: Field) {
   const {typeIdentifier, isList} = field
-
   return !isScalar(typeIdentifier) && isList
 }
