@@ -119,7 +119,8 @@ describe('nameValidator', () => {
       ' To train them is my cause')).toBe(true)
   })
 
-  it('should allow project names starting with a capital letter and only containing alphanumberic letters and space',
+  it(
+    'should allow project names starting with a capital letter and only containing alphanumberic letters and space',
     () => {
       expect(nameValidator.validateProjectName('My PROJECT')).toBe(true)
       expect(nameValidator.validateProjectName('My Cool Project is Cool')).toBe(true)
