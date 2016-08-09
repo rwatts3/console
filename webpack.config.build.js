@@ -107,10 +107,7 @@ module.exports = {
       }
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      chunks: ['vendor'],
-    }),
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[hash].js'),
   ],
   postcss: [
     cssnano({
