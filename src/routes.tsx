@@ -1,5 +1,5 @@
-import React from 'react'
-import Relay from 'react-relay'
+import * as React from 'react'
+import * as Relay from 'react-relay'
 import { Route, IndexRoute, IndexRedirect } from 'react-router'
 import Loading from 'components/Loading/Loading'
 import RedirectOnMount from 'components/RedirectOnMount/RedirectOnMount'
