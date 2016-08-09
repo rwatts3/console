@@ -1,5 +1,6 @@
 jest.unmock('../nameValidator.ts')
 
+import '../polyfils'
 import * as nameValidator from '../nameValidator'
 
 describe('nameValidator', () => {

@@ -1,9 +1,11 @@
 export default function () {
   // Create a queue, but don't obliterate an existing one!
-  var analytics = window.analytics = window.analytics || []
+  let analytics = window.analytics = window.analytics || []
 
   // If the real analytics.js is already on the page return.
-  if (analytics.initialize) return
+  if (analytics.initialize) {
+    return
+  }
 
   // If the snippet was invoked already show an error.
   if (analytics.invoked) {
@@ -39,12 +41,16 @@ export default function () {
   analytics.track = function (event, properties, options, fn) {
     const isFn = (value) => typeof value === 'function'
     // Argument reshuffling.
-    /* eslint-disable no-unused-expressions, no-sequences */
-    if (isFn(options)) fn = options, options = null
-    if (isFn(properties)) fn = properties, options = null, properties = null
-    /* eslint-enable no-unused-expressions, no-sequences */
+    if (isFn(options)) {
+      fn = options, options = null // tslint:disable-line
+    }
+    if (isFn(properties)) {
+      fn = properties, options = null, properties = null // tslint:disable-line
+    }
 
-    if (fn) fn()
+    if (fn) {
+      fn()
+    }
 
     return this
   }
@@ -55,7 +61,7 @@ export default function () {
   // stored as the first argument, so we can replay the data.
   analytics.factory = function (method) {
     return function () {
-      var args = Array.prototype.slice.call(arguments)
+      let args = Array.prototype.slice.call(arguments)
       args.unshift(method)
       analytics.push(args)
       return analytics
@@ -63,8 +69,8 @@ export default function () {
   }
 
   // For each of our methods, generate a queueing stub.
-  for (var i = 0; i < analytics.methods.length; i++) {
-    var key = analytics.methods[i]
+  for (let i = 0; i < analytics.methods.length; i++) {
+    const key = analytics.methods[i]
     analytics[key] = analytics.factory(key)
   }
 
@@ -72,14 +78,14 @@ export default function () {
   // and that will be sure to only ever load it once.
   analytics.load = function (key) {
     // Create an async script element based on your key.
-    var script = document.createElement('script')
+    const script = document.createElement('script')
     script.type = 'text/javascript'
     script.async = true
     script.src = 'https://cdn.segment.com/analytics.js/v1/' +
       key + '/analytics.min.js'
 
     // Insert our script next to the first script element.
-    var first = document.getElementsByTagName('script')[0]
+    const first = document.getElementsByTagName('script')[0]
     first.parentNode.insertBefore(script, first)
   }
 

@@ -11,11 +11,19 @@ declare module 'graphql/*'
 declare module 'graphiql'
 declare module 'map-props'
 declare module 'react-twitter-widgets'
+declare module 'redux-thunk'
+declare module 'redux'
 
 declare var fetch: any
 declare var analytics: any
 declare var __BACKEND_ADDR__: any
 declare var __SMOOCH_TOKEN__: any
+declare var __ENABLE_SEGMENT__: any
+declare var __SEGMENT_TOKEN__: any
+
+declare interface Window {
+  analytics: any
+}
 
 declare module 'react-relay' {
 
