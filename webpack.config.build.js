@@ -3,19 +3,51 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
 
+const vendor = [
+  'calculate-size',
+  'classnames',
+  'graphiql',
+  'immutable',
+  'js-cookie',
+  'lokka',
+  'lokka-transport-http',
+  'map-props',
+  'moment',
+  'normalize.css',
+  'rc-tooltip',
+  'react',
+  'react-addons-pure-render-mixin',
+  'react-autocomplete',
+  'react-click-outside',
+  'react-copy-to-clipboard',
+  'react-datetime',
+  'react-dom',
+  'react-notification-system',
+  'react-redux',
+  'react-relay',
+  'react-router',
+  'react-router-relay',
+  'react-tagsinput',
+  'react-tether',
+  'react-tooltip',
+  'react-twitter-widgets',
+  'redux',
+  'redux-thunk',
+  'smooch',
+]
+
 module.exports = {
-  entry: './src/main',
+  entry: {
+    app: './src/main',
+    vendor,
+  },
   output: {
     path: './dist',
-    filename: 'bundle.[hash].js',
+    filename: '[name].[hash].js',
     publicPath: '/',
   },
   module: {
     preLoaders: [{
-      test: /\.js$/,
-      loader: 'eslint',
-      exclude: /node_modules/,
-    }, {
       test: /\.ts(x?)$/,
       loader: 'tslint',
       exclude: /node_modules/,
@@ -75,6 +107,10 @@ module.exports = {
       }
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      chunks: ['vendor'],
+    }),
   ],
   postcss: [
     cssnano({
