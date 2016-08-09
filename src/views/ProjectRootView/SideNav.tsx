@@ -9,8 +9,7 @@ import { validateModelName } from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Icon from '../../components/Icon/Icon'
 import Tether from '../../components/Tether/Tether'
-const ProjectSettingsOverlay: any =
-  (require('../../components/ProjectSettingsOverlay/ProjectSettingsOverlay') as any).default
+import ProjectSettingsOverlay from '../../components/ProjectSettingsOverlay/ProjectSettingsOverlay'
 import AddModelMutation from '../../mutations/AddModelMutation'
 import { sideNavSyncer } from '../../utils/sideNavSyncer'
 import { onFailureShowNotification } from '../../utils/relay'

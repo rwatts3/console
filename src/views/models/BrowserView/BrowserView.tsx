@@ -385,7 +385,7 @@ class BrowserView extends React.Component<Props, State> {
             }}
             offsetX={5}
             offsetY={5}
-            width={240}
+            width={260}
           >
             <div
               className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
