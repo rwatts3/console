@@ -116,6 +116,8 @@ class Cell extends React.Component<Props, State> {
         <span className={invalidStyle}>Should be added later</span>
       )
     }
+
+    return this._renderExisting()
   }
 
   _renderExisting = () => {
