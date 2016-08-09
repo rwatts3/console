@@ -147,7 +147,7 @@ class FieldPopup extends React.Component<Props, State> {
         typeIdentifier,
         enumValues,
         isList,
-        isRequired: isRequired || isList, // isRequired has to be true if isList
+        isRequired: isRequired,
         defaultValue: useDefaultValue ? valueToString(defaultValue, field, false) : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
         migrationValue,
@@ -214,7 +214,7 @@ class FieldPopup extends React.Component<Props, State> {
         typeIdentifier,
         enumValues,
         isList,
-        isRequired: isRequired, // || isList, // isRequired has to be true if isList
+        isRequired: isRequired,
         defaultValue: useDefaultValue ? valueToString(defaultValue, field, false) : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
         migrationValue,
