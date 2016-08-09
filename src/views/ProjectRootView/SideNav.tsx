@@ -231,7 +231,7 @@ export class SideNav extends React.Component<Props, State> {
             <div className={`${classes.listBlock} ${showsModels ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/models`}
-                className={classes.head}
+                className={`${classes.head} ${showsModels ? classes.active: ''}`}
                 >
                 <Icon width={19} height={19} src={require('assets/icons/model.svg')} />
                 <span>Models</span>
@@ -264,7 +264,7 @@ export class SideNav extends React.Component<Props, State> {
             <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/actions`}
-                className={classes.head}
+                className={`${classes.head} ${showsActions ? classes.active: ''}`}
               >
                 <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
                 <span>Actions</span>
@@ -273,7 +273,7 @@ export class SideNav extends React.Component<Props, State> {
             <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/playground`}
-                className={classes.head}
+                className={`${classes.head} ${showsPlayground ? classes.active: ''}`}
                 >
                 <Icon width={19} height={19} src={require('assets/icons/play.svg')} />
                 <span>Playground</span>
