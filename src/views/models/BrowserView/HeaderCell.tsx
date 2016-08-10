@@ -44,6 +44,10 @@ class HeaderCell extends React.Component<Props, {}> {
     this._delayedUpdateFilter(value !== '' ? `"${value}"` : null)
   }
 
+  _onFilterChangeEnum(value: string) {
+    this._delayedUpdateFilter(value !== '' ? `${value}` : null)
+  }
+
   _onFilterChangeNumber(value: string) {
     this._delayedUpdateFilter(value !== '' ? value : null)
   }
@@ -85,7 +89,7 @@ class HeaderCell extends React.Component<Props, {}> {
       case 'Enum':
         return (
           <select
-            onChange={(e) => this._onFilterChangeString(e.target.value)}
+            onChange={(e) => this._onFilterChangeEnum(e.target.value)}
           >
             <option value={''}>{`Filter by ${this.props.field.name}`}</option>
             {this.props.field.enumValues.map((enumValue) => (
@@ -174,6 +178,7 @@ export default Relay.createContainer(HeaderCell, {
                 isList
                 typeIdentifier
                 isRequired
+                enumValues
             }
         `,
     },
