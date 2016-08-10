@@ -57,6 +57,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
         }),
         {
           onSuccess: () => {
+            this.props.hide()
             this.context.router.replace(`/${this.props.params.projectName}/playground`)
           },
         })
@@ -71,6 +72,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
         }),
         {
           onSuccess: () => {
+            this.props.hide()
             this.context.router.replace(`/${this.props.params.projectName}/playground`)
           },
         })
@@ -107,6 +109,7 @@ export default class ProjectSettingsOverlay extends React.Component<Props, State
       {
         onSuccess: () => {
             this.props.hide()
+            this.context.router.replace(`/${this.state.projectName}/`)
           },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.context.showNotification)
