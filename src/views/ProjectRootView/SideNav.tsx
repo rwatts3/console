@@ -9,8 +9,7 @@ import { validateModelName } from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Icon from '../../components/Icon/Icon'
 import Tether from '../../components/Tether/Tether'
-const ProjectSettingsOverlay: any =
-  (require('../../components/ProjectSettingsOverlay/ProjectSettingsOverlay') as any).default
+import ProjectSettingsOverlay from '../../components/ProjectSettingsOverlay/ProjectSettingsOverlay'
 import AddModelMutation from '../../mutations/AddModelMutation'
 import { sideNavSyncer } from '../../utils/sideNavSyncer'
 import { onFailureShowNotification } from '../../utils/relay'
@@ -232,7 +231,7 @@ export class SideNav extends React.Component<Props, State> {
             <div className={`${classes.listBlock} ${showsModels ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/models`}
-                className={classes.head}
+                className={`${classes.head} ${showsModels ? classes.active : ''}`}
                 >
                 <Icon width={19} height={19} src={require('assets/icons/model.svg')} />
                 <span>Models</span>
@@ -265,7 +264,7 @@ export class SideNav extends React.Component<Props, State> {
             <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/actions`}
-                className={classes.head}
+                className={`${classes.head} ${showsActions ? classes.active : ''}`}
               >
                 <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
                 <span>Actions</span>
@@ -274,7 +273,7 @@ export class SideNav extends React.Component<Props, State> {
             <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/playground`}
-                className={classes.head}
+                className={`${classes.head} ${showsPlayground ? classes.active : ''}`}
                 >
                 <Icon width={19} height={19} src={require('assets/icons/play.svg')} />
                 <span>Playground</span>

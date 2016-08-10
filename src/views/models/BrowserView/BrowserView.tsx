@@ -351,9 +351,7 @@ class BrowserView extends React.Component<Props, State> {
   _deleteSelectedItems() {
     if (confirm(`Do you really want to delete ${this.state.selectedItemIds.size} item(s)?`)) {
       // only reload once after all the deletions
-      Promise.all(this.state.selectedItemIds.toArray().map((itemId) => {
-        this._deleteItem(itemId)
-      }))
+      Promise.all(this.state.selectedItemIds.toArray().map((itemId) => this._deleteItem(itemId)))
         .then(() => this._reloadData())
         .then(() => {
           this.setState({loading: false} as State)
@@ -385,7 +383,7 @@ class BrowserView extends React.Component<Props, State> {
             }}
             offsetX={5}
             offsetY={5}
-            width={240}
+            width={260}
           >
             <div
               className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
