@@ -6,7 +6,9 @@ const classes: any = require('./RelationModels.scss')
 
 interface Props {
   leftModel: Model
+  leftModelIsList: boolean
   rightModel: Model
+  rightModelIsList: boolean
   projectName: string
 }
 
@@ -27,7 +29,7 @@ export default class RelationModels extends React.Component<Props,{}> {
     return (
       <span>
         <span className={classes.model} onClick={() => this.handleClick(this.props.leftModel.name)}>
-          {this.props.leftModel.name}
+          {this.props.leftModelIsList ? `[${this.props.leftModel.name}]` : this.props.leftModel.name}
         </span>
         <span className={classes.iconContainer}>
           <Icon
@@ -37,7 +39,7 @@ export default class RelationModels extends React.Component<Props,{}> {
           />
         </span>
         <span className={classes.model} onClick={() => this.handleClick(this.props.rightModel.name)}>
-          {this.props.rightModel.name}
+          {this.props.rightModelIsList ? `[${this.props.rightModel.name}]` : this.props.rightModel.name}
         </span>
       </span>
     )
