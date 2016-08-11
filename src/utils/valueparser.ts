@@ -1,4 +1,4 @@
-import {isValidDateTime, isValidName} from './utils'
+import {isValidDateTime, isValidEnum} from './utils'
 import {Field} from '../types/types'
 import {isScalar} from './graphql'
 import {TypedValue, NonScalarValue, ScalarValue} from '../types/utils'
@@ -90,7 +90,7 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
       Float: () => isNaN(parseFloat(rawValue)) ? null : parseFloat(rawValue),
       GraphQLID: () => rawValue,
       Password: () => rawValue,
-      Enum: () => isValidName(rawValue) ? rawValue : null,
+      Enum: () => isValidEnum(rawValue) ? rawValue : null,
       DateTime: () => isValidDateTime(rawValue) ? rawValue : null,
     }[typeIdentifier]()
   }

@@ -60,6 +60,7 @@ class RootRedirectView extends React.Component<Props, {}> {
             analytics.track('global: created project', {
               project: projectName,
             })
+            this.context.router.relpace(`/${projectName}`)
           },
         })
     }

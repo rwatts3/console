@@ -12,6 +12,6 @@ export function isValidDateTime (dateTime: string): boolean {
   return moment.utc(dateTime, ISO8601).isValid()
 }
 
-export function isValidName (name: string): boolean {
+export function isValidEnum (name: string): boolean {
   return /^[_a-zA-Z][_a-zA-Z0-9]*$/.test(name)
 }

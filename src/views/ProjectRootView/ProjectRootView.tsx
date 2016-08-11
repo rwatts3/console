@@ -2,15 +2,16 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from '../../components/MapProps/MapProps'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 // import Smooch from 'smooch'
-import { validateProjectName } from '../../utils/nameValidator'
+import {validateProjectName} from '../../utils/nameValidator'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
 import LoginView from '../../views/LoginView/LoginView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
 const update: any = (require('../../reducers/GettingStartedState') as any).update
-import { Viewer, Client, Project} from '../../types/types'
+import {Viewer, Client, Project} from '../../types/types'
+import PropTypes = React.PropTypes
 const classes: any = require('./ProjectRootView.scss')
 
 require('../../styles/core.scss')
@@ -31,10 +32,18 @@ interface Props {
 
 class ProjectRootView extends React.Component<Props, {}> {
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+
   _refreshInterval: any
   shouldComponentUpdate: any
 
-  constructor (props) {
+  context: {
+    router?: any
+  }
+
+  constructor(props) {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
@@ -42,7 +51,7 @@ class ProjectRootView extends React.Component<Props, {}> {
     this._updateForceFetching()
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (this.props.isLoggedin) {
       analytics.identify(this.props.user.id, {
         name: this.props.user.name,
@@ -66,11 +75,11 @@ class ProjectRootView extends React.Component<Props, {}> {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearInterval(this._refreshInterval)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     const newStatus = this.props.user.gettingStartedStatus
     const prevStatus = prevProps.user.gettingStartedStatus
 
@@ -93,13 +102,13 @@ class ProjectRootView extends React.Component<Props, {}> {
     }
   }
 
-  _updateForceFetching () {
+  _updateForceFetching() {
     if (this.props.checkStatus) {
       if (!this._refreshInterval) {
         this._refreshInterval = setInterval(
           () => {
             // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
-            this.props.relay.forceFetch({ }, () => {
+            this.props.relay.forceFetch({}, () => {
               this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
             })
           },
@@ -128,16 +137,17 @@ class ProjectRootView extends React.Component<Props, {}> {
             analytics.track('sidenav: created project', {
               project: projectName,
             })
+            this.context.router.replace(`${projectName}`)
           },
         }
       )
     }
   }
 
-  render () {
+  render() {
     if (!this.props.isLoggedin) {
       return (
-        <LoginView viewer={this.props.viewer} />
+        <LoginView viewer={this.props.viewer}/>
       )
     }
 
@@ -195,8 +205,8 @@ const MappedProjectRootView = mapProps({
   project: (props) => props.viewer.user ? props.viewer.project : null,
   allProjects: (props) => (
     props.viewer.user
-     ? props.viewer.user.projects.edges.map((edge) => edge.node)
-     : null
+      ? props.viewer.user.projects.edges.map((edge) => edge.node)
+      : null
   ),
   viewer: (props) => props.viewer,
   user: (props) => props.viewer.user,
@@ -207,32 +217,32 @@ export default Relay.createContainer(MappedProjectRootView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          ${SideNav.getFragment('project')}
-        }
-        user {
-          id
-          email
-          name
-          gettingStartedStatus
-          projects(first: 100) {
-            edges {
-              node {
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
                 id
-                name
-              }
+                project: projectByName(projectName: $projectName) {
+                    id
+                    name
+                    ${SideNav.getFragment('project')}
+                }
+                user {
+                    id
+                    email
+                    name
+                    gettingStartedStatus
+                    projects(first: 100) {
+                        edges {
+                            node {
+                                id
+                                name
+                            }
+                        }
+                    }
+                }
+                ${LoginView.getFragment('viewer')}
+                ${SideNav.getFragment('viewer')}
             }
-          }
-        }
-        ${LoginView.getFragment('viewer')}
-        ${SideNav.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

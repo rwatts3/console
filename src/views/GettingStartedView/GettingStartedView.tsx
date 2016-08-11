@@ -157,9 +157,7 @@ class GettingStartedView extends React.Component<ViewProps, ViewState> {
     const { progress } = this.props.gettingStartedState
     const overlayActive = progress === 0 || progress === 4
     const firstName = this.props.user.name.split(' ')[0]
-    const downloadUrl = (example) => (
-      `${__BACKEND_ADDR__}/resources/examples/${example.path}?projectId=${this.props.projectId}`
-    )
+    const downloadUrl = (example) => `${__BACKEND_ADDR__}/resources/getting-started-example?repository=${example.path}&project_id=${this.props.projectId}` // tslint:disable-line
 
     return (
       <div className={classes.root}>
