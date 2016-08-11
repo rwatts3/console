@@ -32,18 +32,16 @@ interface Props {
 
 class ProjectRootView extends React.Component<Props, {}> {
 
-  _refreshInterval: any
-  shouldComponentUpdate: any
-
-
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
 
+  _refreshInterval: any
+  shouldComponentUpdate: any
+
   context: {
     router?: any
   }
-
 
   constructor(props) {
     super(props)
