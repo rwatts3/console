@@ -1,4 +1,5 @@
 import * as Relay from 'react-relay'
+import {Project} from '../types/types'
 
 interface Props {
   relationId: string
@@ -6,7 +7,7 @@ interface Props {
 }
 
 interface DeleteRelationPayload {
-  project: any
+  project: Project
   deletedId: string
 }
 
