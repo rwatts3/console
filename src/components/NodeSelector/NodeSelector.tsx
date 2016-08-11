@@ -8,7 +8,7 @@ import * as cookiestore from '../../utils/cookiestore'
 import {ScalarValue} from '../../types/utils'
 const ClickOutside: any = (require('react-click-outside') as any).default
 const Autocomplete: any = require('react-autocomplete')
-const classes: any = require('./ModelSelector.scss')
+const classes: any = require('./NodeSelector.scss')
 
 interface Props {
   projectId: string
@@ -24,7 +24,7 @@ interface State {
   value: string
 }
 
-class ModelSelector extends React.Component<Props, State> {
+class NodeSelector extends React.Component<Props, State> {
 
   constructor (props: Props) {
     super(props)
@@ -121,7 +121,7 @@ class ModelSelector extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(ModelSelector, {
+export default Relay.createContainer(NodeSelector, {
   fragments: {
     relatedModel: () => Relay.QL`
       fragment on Model {

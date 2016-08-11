@@ -1,0 +1,72 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.root {
+  display: flex;
+  align-items: center;
+  user-select: none;
+
+  a {
+    cursor: hand;
+    cursor: pointer;
+    margin-right: 8px;
+    text-decoration: underline;
+    font-size: 12px;
+
+    &:hover {
+      text-decoration: none;
+      color: $grey4;
+    }
+  }
+
+  .model {
+    font-size: 14px;
+    color: $grey3;
+    border: 1px solid $grey3;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: hand;
+    cursor: pointer;
+    display: flex;
+
+    &:hover {
+      border: 1px solid $grey4;
+      color: $grey4;
+    }
+
+    select {
+      text-align: center;
+      background: transparent;
+      border: 0;
+      appearance: none;
+      padding: 16px;
+    }
+
+    span {
+      appearance: none;
+      height: 44px;
+      background: $grey2;
+      border: 0;
+      font-size:12px;
+      text-transform: uppercase;
+      color: $grey4;
+      width: 100px;
+      border-radius: 5px;
+      padding: 4px;
+
+
+      .fieldTitle {
+        background: transparent;
+      }
+
+      input {
+        font-size: 13px;
+        border: 0;
+        color: $grey5;
+        background: transparent;
+        width: 100px;
+        padding: 4px 8px 4px 4px;
+      }
+    }
+  }
+}

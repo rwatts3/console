@@ -7,7 +7,7 @@ import EnumCell from './EnumCell'
 import StringCell from './StringCell'
 import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
-import ModelSelector from '../../../../components/ModelSelector/ModelSelector'
+import NodeSelector from '../../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from '../RelationsPopup'
 import { isScalar } from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
@@ -54,7 +54,7 @@ function getNonScalarListEditCell(reqs: CellRequirements): JSX.Element {
 
 function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
   return (
-    <ModelSelector
+    <NodeSelector
       relatedModel={reqs.field.relatedModel}
       projectId={reqs.projectId}
       value={reqs.value ? reqs.value.id : null}

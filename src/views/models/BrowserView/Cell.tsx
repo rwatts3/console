@@ -5,7 +5,7 @@ import Loading from '../../../components/Loading/Loading'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
 import {Field} from '../../../types/types'
-import ModelSelector from '../../../components/ModelSelector/ModelSelector'
+import NodeSelector from '../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue} from '../../../types/utils'
@@ -188,7 +188,7 @@ export default Relay.createContainer(Cell, {
                 typeIdentifier
                 enumValues
                 relatedModel {
-                    ${ModelSelector.getFragment('relatedModel')}
+                    ${NodeSelector.getFragment('relatedModel')}
                 }
                 ${RelationsPopup.getFragment('originField')}
             }

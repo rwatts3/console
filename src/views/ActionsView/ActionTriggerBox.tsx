@@ -40,8 +40,8 @@ class ActionTriggerBox extends React.Component<Props, {}> {
     return (
       <div className={classes.root}>
 
-        <div className={sharedClasses.head}>
-          <div className={sharedClasses.title}>Trigger</div>
+        <div className={classes.head}>
+          <div className={classes.title}>Trigger</div>
           <Icon
             width={24}
             height={24}

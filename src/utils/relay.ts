@@ -8,7 +8,7 @@ export function updateNetworkLayer (): void {
     'Authorization': `Bearer ${token}`,
     'X-GraphCool-Source': 'dashboard:relay',
   } : null
-  const api = `${__BACKEND_ADDR__}/api`
+  const api = `${__BACKEND_ADDR__}/system`
   const layer = new DefaultNetworkLayer(api, { headers, retryDelays: [] })
 
   injectNetworkLayer(layer)
