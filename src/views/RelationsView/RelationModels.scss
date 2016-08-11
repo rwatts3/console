@@ -1,0 +1,27 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.model {
+  font-size: 14px;
+  color: $grey3;
+  border: 1px solid $grey3;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: hand;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid $grey4;
+    color: $grey4;
+  }
+}
+
+.iconContainer {
+  display: inline-block;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 8px;
+}

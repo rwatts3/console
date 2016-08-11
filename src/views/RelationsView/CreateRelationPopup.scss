@@ -1,0 +1,115 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.root {
+  width: 700px;
+  height: 100%;
+  background: #fff;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 70%;
+}
+
+.header {
+  background: #27AE60;
+  height: 30%;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  padding: 30px 0 15px 60px;
+  font-size: 35px;
+  color: #fff;
+
+  input {
+    color: inherit;
+    background: inherit;
+    border: 0;
+  }
+}
+
+.description {
+  display: flex;
+  align-items: center;
+  padding: 0 60px 20px 60px;
+  color: #fff;
+
+  input {
+    color: inherit;
+    background: inherit;
+    border: 0;
+  }
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+  color: $grey3;
+  justify-content: center;
+
+  .title {
+    text-transform: uppercase;
+    padding: 0 60px 0 60px;
+  }
+
+  .settings {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    justify-content: center;
+
+    .iconContainer {
+      display: inline-block;
+    }
+
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 8px;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  user-select: none;
+  background-color: $newGrey1;
+
+  div {
+    cursor: pointer;
+    cursor: hand;
+    margin: 12px 60px;
+    padding: 12px 24px;
+
+
+  }
+
+  .submit {
+    border: 1px solid $grey3;
+    color: $grey3;
+    border-radius: 5px;
+
+    &.valid {
+      cursor: pointer;
+      cursor: hand;
+      color: $accent;
+      border: 1px solid $accent;
+
+      &:hover {
+        background-color: $accent;
+        color: white;
+        border: 1px solid white;
+      }
+    }
+  }
+}

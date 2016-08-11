@@ -11,32 +11,3 @@
     color: $accent;
   }
 }
-
-.head {
-  width: 100%;
-  display: flex;
-  padding: 16px;
-  justify-content: space-between;
-  align-items: center;
-
-  .title {
-    font-size: 15px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.2px;
-    color: $newGrey3;
-
-    &:before {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      border: 1px solid $newGrey3;
-      border-radius: 50%;
-      content: '1';
-      font-weight: 500;
-      margin-right: 10px;
-    }
-  }
-}

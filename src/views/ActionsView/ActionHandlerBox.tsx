@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Icon from '../../components/Icon/Icon'
+import {classnames} from '../../utils/classnames'
 const classes: any = require('./ActionHandlerBox.scss')
 const sharedClasses: any = require('./ActionBox.scss')
 
@@ -20,8 +21,8 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
     return (
       <div className={classes.root}>
 
-        <div className={sharedClasses.head}>
-          <div className={sharedClasses.title}>Handler</div>
+        <div className={classes.head}>
+          <div className={classnames(classes.title)}>Handler</div>
           <Icon
             width={24}
             height={24}
