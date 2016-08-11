@@ -28,6 +28,8 @@ class RelationRow extends React.Component<Props,{}> {
                 projectName={this.props.project.name}
                 leftModel={this.props.relation.leftModel}
                 rightModel={this.props.relation.rightModel}
+                leftModelIsList={this.props.relation.fieldOnLeftModel.isList}
+                rightModelIsList={this.props.relation.fieldOnRightModel.isList}
               />
               </span>
             </div>
@@ -83,10 +85,12 @@ export default Relay.createContainer(RelationRow, {
                 fieldOnLeftModel {
                     id
                     name
+                    isList
                 }
                 fieldOnRightModel {
                     id
                     name
+                    isList
                 }
             }
         `,
