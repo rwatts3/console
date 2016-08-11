@@ -48,9 +48,12 @@ export interface Field {
 
 export interface Relation {
   id: string
-  modelA: Model
-  modelB: Model
   name: string
+  description?: string
+  leftModel: Model
+  rightModel: Model
+  fieldOnLeftModel: Field
+  fieldOnRightModel: Field
 }
 
 export type UserType = 'GUEST' | 'AUTHENTICATED' | 'RELATED'

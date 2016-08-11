@@ -54,10 +54,13 @@
 
 .delete {
   margin-left: auto;
+  cursor: hand;
+  cursor: pointer;
 
   svg {
     fill: $newGrey3;
   }
+
 }
 
 .description {

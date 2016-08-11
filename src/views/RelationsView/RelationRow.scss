@@ -1,0 +1,46 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.root {
+  font-size: 17px;
+  color: $newGrey3;
+  padding: 30px 24px;
+  border-bottom: 1px solid $newGrey2;
+
+  input {
+    margin-right: 20px;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > div {
+    margin-right: 8px;
+  }
+}
+
+.description {
+  margin-top: 8px;
+  padding-right: 36px;
+  font-style: italic;
+  font-size: 14px;
+  color: $grey3;
+}
+
+.name {
+  margin-right: 12px;
+}
+
+.delete {
+  margin-left: auto;
+  cursor: hand;
+  cursor: pointer;
+
+  svg {
+    fill: $newGrey3;
+  }
+
+}

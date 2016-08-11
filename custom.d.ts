@@ -13,6 +13,7 @@ declare module 'map-props'
 declare module 'react-twitter-widgets'
 declare module 'redux-thunk'
 declare module 'redux'
+declare module 'react-select'
 
 declare var fetch: any
 declare var analytics: any
