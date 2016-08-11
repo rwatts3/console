@@ -49,7 +49,7 @@ class RelationsView extends React.Component<Props, State> {
               <div key={relation.id}>
                 <RelationRow
                   relation={relation}
-                  projectId={this.props.viewer.project.id}
+                  project={this.props.viewer.project}
                   onClick={'TODO change this'}
                 />
               </div>
@@ -70,6 +70,7 @@ export default Relay.createContainer(RelationsView, {
             fragment on Viewer {
                 project: projectByName(projectName: $projectName) {
                     id
+                    name
                     relations(first: 1000) {
                         edges {
                             node {

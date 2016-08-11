@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Relation} from '../../types/types'
+import {Relation, Project} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
 import RelationModels from './RelationModels'
 import DeleteRelationMutation from '../../mutations/DeleteRelationMutation'
@@ -8,7 +8,7 @@ const classes: any = require('./RelationRow.scss')
 
 interface Props {
   relation: Relation
-  projectId: string
+  project: Project
   onClick: () => void
 }
 
@@ -25,6 +25,7 @@ class RelationRow extends React.Component<Props,{}> {
               </span>
               <span>
               <RelationModels
+                projectName={this.props.project.name}
                 leftModel={this.props.relation.leftModel}
                 rightModel={this.props.relation.rightModel}
               />
@@ -57,7 +58,7 @@ class RelationRow extends React.Component<Props,{}> {
       Relay.Store.commitUpdate(
         new DeleteRelationMutation({
           relationId: this.props.relation.id,
-          projectId: this.props.projectId,
+          projectId: this.props.project.id,
         })
       )
     }
