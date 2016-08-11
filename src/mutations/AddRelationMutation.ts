@@ -22,13 +22,7 @@ export default class AddRelationMutation extends Relay.Mutation<Props, {}> {
         return Relay.QL`
             fragment on AddRelationPayload {
                 relation
-                project {
-                    relations (first: 10000) {
-                        edges {
-                            node 
-                        }
-                    }
-                }
+                project
             }
         `
     }
