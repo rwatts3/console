@@ -4,8 +4,14 @@
 .root {
   font-size: 17px;
   color: $newGrey3;
-  padding: 30px 24px;
+  padding: 20px 40px;
   border-bottom: 1px solid $newGrey2;
+  cursor: hand;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $newGrey1
+  }
 
   input {
     margin-right: 20px;
@@ -40,7 +46,11 @@
   cursor: pointer;
 
   svg {
-    fill: $newGrey3;
+    fill: $grey3;
+
+    &:hover {
+      fill: $newGrey3;
+    }
   }
 
 }
