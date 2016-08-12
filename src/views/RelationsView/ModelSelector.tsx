@@ -27,7 +27,8 @@ export default class ModelSelector extends React.Component<Props,{}> {
             {this.props.models.sort(this.modelCompare).map((model) => (
               <option
                 key={model.id}
-                value={model.id}>
+                value={model.id}
+              >
                 {this.props.isList ? `[${model.name}]` : model.name}
               </option>
             ))}
