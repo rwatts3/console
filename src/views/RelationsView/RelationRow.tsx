@@ -71,6 +71,8 @@ class RelationRow extends React.Component<Props,{}> {
         new DeleteRelationMutation({
           relationId: this.props.relation.id,
           projectId: this.props.project.id,
+          leftModelId: this.props.relation.leftModel.id,
+          rightModelId: this.props.relation.rightModel.id,
         })
       )
     }
