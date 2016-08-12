@@ -6,13 +6,20 @@ import ModelSelector from './ModelSelector'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import {validateModelName, validateFieldName} from '../../utils/nameValidator'
 import {classnames} from '../../utils/classnames'
+import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
+import {Relation} from '../../types/types'
+import {ShowNotificationCallback} from '../../types/utils'
+import {onFailureShowNotification} from '../../utils/relay'
+import {Transaction} from "react-relay";
 
 const classes: any = require('./CreateRelationPopup.scss')
 
 interface Props {
   onCancel: () => void
   models: any
-  projectId: string
+  projectId?: string
+  create: boolean
+  relation?: Relation
 }
 
 interface State {
@@ -28,18 +35,28 @@ interface State {
 
 export default class CreateRelationPopup extends React.Component<Props, State> {
 
+  static contextTypes: React.ValidationMap<any> = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback
+  }
+
   constructor(props: Props) {
     super(props)
 
+    const {create, relation} = this.props
+
     this.state = {
-      name: '',
-      description: '',
-      fieldOnLeftModelName: '',
-      fieldOnRightModelName: '',
-      fieldOnLeftModelIsList: false,
-      fieldOnRightModelIsList: false,
-      leftModelId: null,
-      rightModelId: null,
+      name: create ? '' : relation.name,
+      description: create ? '' : relation.description,
+      fieldOnLeftModelName: create ? '' : relation.fieldOnLeftModel.name,
+      fieldOnRightModelName: create ? '' : relation.fieldOnRightModel.name,
+      fieldOnLeftModelIsList: create ? false : relation.fieldOnLeftModel.isList,
+      fieldOnRightModelIsList: create ? false : relation.fieldOnRightModel.isList,
+      leftModelId: create ? null : relation.leftModel.id,
+      rightModelId: create ? null : relation.rightModel.id,
     }
   }
 
@@ -107,7 +124,7 @@ export default class CreateRelationPopup extends React.Component<Props, State> {
                 Cancel
               </div>
               <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
-                Create
+                {this.props.create ? 'Create' : 'Save'}
               </div>
             </div>
           </div>
@@ -127,9 +144,22 @@ export default class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private submit = (): void => {
+    if(this.props.create) {
+      this.create()
+    } else {
+      this.update()
+    }
+  }
+
+  private create = (): void => {
     if (!this.isValid()) {
       return
     }
+
+    if (this.props.projectId === null) {
+      return
+    }
+
     Relay.Store.commitUpdate(
       new AddRelationMutation({
         projectId: this.props.projectId,
@@ -144,6 +174,35 @@ export default class CreateRelationPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: this.props.onCancel,
+        onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),
+      }
+    )
+  }
+
+  private update = (): void => {
+    if(!this.isValid()) {
+      return
+    }
+
+    if (this.props.relation === null) {
+      return
+    }
+
+    Relay.Store.commitUpdate(
+      new UpdateRelationMutation({
+        relationId: this.props.relation.id,
+        name: this.state.name,
+        description: this.state.description === '' ? null : this.state.description,
+        leftModelId: this.state.leftModelId,
+        rightModelId: this.state.rightModelId,
+        fieldOnLeftModelName: this.state.fieldOnLeftModelName,
+        fieldOnRightModelName: this.state.fieldOnRightModelName,
+        fieldOnLeftModelIsList: this.state.fieldOnLeftModelIsList,
+        fieldOnRightModelIsList: this.state.fieldOnRightModelIsList,
+      }),
+      {
+        onSuccess: this.props.onCancel,
+        onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),
       }
     )
   }

@@ -16,7 +16,7 @@ class RelationRow extends React.Component<Props,{}> {
 
   render(): JSX.Element {
     return (
-      <div className={classes.root}>
+      <div className={classes.root} onClick={this.props.onClick}>
         <div className={classes.row}>
           <div>
             <div>

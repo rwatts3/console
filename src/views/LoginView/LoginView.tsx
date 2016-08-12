@@ -7,6 +7,7 @@ import LoginMutation from '../../mutations/LoginMutation'
 import Icon from '../../components/Icon/Icon'
 import { Viewer } from '../../types/types'
 import { ShowNotificationCallback } from '../../types/utils'
+import {Transaction} from 'react-relay'
 const classes: any = require('./LoginView.scss')
 
 interface Props {
@@ -54,7 +55,7 @@ class LoginView extends React.Component<Props, State> {
         window.location.pathname = '/'
       })
     }
-    const onFailure = (transaction) => {
+    const onFailure = (transaction: Transaction) => {
       onFailureShowNotification(transaction, this.context.showNotification)
       this.setState({ loading: false } as State)
 
