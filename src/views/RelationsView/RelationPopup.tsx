@@ -15,6 +15,7 @@ const classes: any = require('./RelationPopup.scss')
 
 interface Props {
   viewer: any
+  relay: any
 }
 
 interface State {
@@ -181,7 +182,11 @@ class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.fieldOnRightModelIsList,
       }),
       {
-        onSuccess: this.close,
+        onSuccess: () => {
+          // The force fetching because backend is not on sync with dashboard
+          this.props.relay.forceFetch()
+          this.close()
+        },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),
       }
     )
@@ -209,7 +214,11 @@ class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.fieldOnRightModelIsList,
       }),
       {
-        onSuccess: this.close,
+        onSuccess: () => {
+          // The force fetching because relations are too complicated to selective choose the config
+          this.props.relay.forceFetch()
+          this.close()
+        },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),
       }
     )
