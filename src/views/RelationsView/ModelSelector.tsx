@@ -48,11 +48,13 @@ export default class ModelSelector extends React.Component<Props,{}> {
   }
 
   private modelCompare(a: Model, b: Model) {
-    if (a.name < b.name)
-      return -1;
-    if (a.name > b.name)
-      return 1;
-    return 0;
+    if (a.name < b.name) {
+      return -1
+    }
+    if (a.name > b.name) {
+      return 1
+    }
+    return 0
   }
 
   private getIsListText = (isList: boolean = this.props.isList) => {
