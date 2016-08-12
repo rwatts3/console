@@ -30,7 +30,7 @@ export default class UpdateRelationMutation extends Relay.Mutation<Props, Respon
         `
     }
 
-  getConfigs () {
+  getConfigs() {
     return [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
@@ -39,7 +39,17 @@ export default class UpdateRelationMutation extends Relay.Mutation<Props, Respon
     }]
   }
 
-  getVariables () {
+  getVariables() {
+    return this.getRelation()
+  }
+
+  getOptimisticResponse() {
+    return {
+      relation: this.getRelation.filterNullAndUndefined(),
+    }
+  }
+
+  private getRelation = () => {
     return {
       id: this.props.relationId,
       name: this.props.name,
@@ -50,22 +60,6 @@ export default class UpdateRelationMutation extends Relay.Mutation<Props, Respon
       fieldOnRightModelName: this.props.fieldOnRightModelName,
       fieldOnLeftModelIsList: this.props.fieldOnLeftModelIsList,
       fieldOnRightModelIsList: this.props.fieldOnRightModelIsList,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      relation: {
-        id: this.props.relationId,
-        name: this.props.name,
-        description: this.props.description,
-        leftModelId: this.props.leftModelId,
-        rightModelId: this.props.rightModelId,
-        fieldOnLeftModelName: this.props.fieldOnLeftModelName,
-        fieldOnRightModelName: this.props.fieldOnRightModelName,
-        fieldOnLeftModelIsList: this.props.fieldOnLeftModelIsList,
-        fieldOnRightModelIsList: this.props.fieldOnRightModelIsList,
-      }.filterNullAndUndefined(),
     }
   }
 }

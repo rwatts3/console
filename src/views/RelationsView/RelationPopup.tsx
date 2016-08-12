@@ -12,7 +12,7 @@ import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
 import {Transaction} from 'react-relay'
 
-const classes: any = require('./CreateRelationPopup.scss')
+const classes: any = require('./RelationPopup.scss')
 
 interface Props {
   onCancel: () => void
@@ -33,7 +33,7 @@ interface State {
   rightModelId: string
 }
 
-export default class CreateRelationPopup extends React.Component<Props, State> {
+export default class RelationPopup extends React.Component<Props, State> {
 
   static contextTypes: React.ValidationMap<any> = {
     showNotification: React.PropTypes.func.isRequired,

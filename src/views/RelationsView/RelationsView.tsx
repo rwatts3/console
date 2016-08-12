@@ -4,7 +4,7 @@ import Header from '../../components/Header/Header'
 import {Project, Viewer, Relation} from '../../types/types'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import RelationRow from './RelationRow'
-import CreateRelationPopup from './CreateRelationPopup'
+import RelationPopup from './RelationPopup'
 const classes: any = require('./RelationsView.scss')
 
 interface Props {
@@ -45,7 +45,7 @@ class RelationsView extends React.Component<Props, State> {
         <div className={classes.content}>
           <ScrollBox>
             {this.state.showAddPopup &&
-            <CreateRelationPopup
+            <RelationPopup
               onCancel={() => this.setState({showAddPopup: false, isCreate: null, selectedRelation: null} as State)}
               models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
               projectId={this.props.viewer.project.id}
