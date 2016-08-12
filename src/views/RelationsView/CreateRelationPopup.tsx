@@ -10,7 +10,7 @@ import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
 import {Relation} from '../../types/types'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
-import {Transaction} from "react-relay";
+import {Transaction} from 'react-relay'
 
 const classes: any = require('./CreateRelationPopup.scss')
 
@@ -144,7 +144,7 @@ export default class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private submit = (): void => {
-    if(this.props.create) {
+    if (this.props.create) {
       this.create()
     } else {
       this.update()
@@ -180,7 +180,7 @@ export default class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private update = (): void => {
-    if(!this.isValid()) {
+    if (!this.isValid()) {
       return
     }
 
