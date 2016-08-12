@@ -16,7 +16,6 @@ const types = [
 ]
 
 interface Props {
-  modelNames: string[]
   selected: string
   select: (typeIdentifier: string) => void
 }
@@ -62,7 +61,7 @@ export default class TypeSelection extends React.Component<Props, State> {
   }
 
   _listenForKeys = (e: KeyboardEvent) => {
-    const allTypes = [...types, ...this.props.modelNames]
+    const allTypes = [...types]
     let selectedIndex = allTypes.indexOf(this.props.selected)
 
     switch (e.keyCode) {
@@ -101,9 +100,6 @@ export default class TypeSelection extends React.Component<Props, State> {
           <div className={classes.preview}>
             <span>
               {this.props.selected}
-              <span className={classes.kind}>
-                {types.includes(this.props.selected) ? 'Scalar' : 'Model'}
-              </span>
             </span>
             <Icon
               width={11}
@@ -124,21 +120,8 @@ export default class TypeSelection extends React.Component<Props, State> {
               innerContainerClassName={classes.scrollInnerContainer}
               outerContainerClassName={classes.scrollOuterContainer}
             >
-              <div className={classes.head} onClick={() => this._close()}>Scalar Types</div>
               <div className={classes.list}>
                 {types.map((type) => (
-                  <div
-                    key={type}
-                    onClick={() => this._select(type)}
-                    className={type === this.props.selected ? classes.selected : ''}
-                  >
-                    {type}
-                  </div>
-                ))}
-              </div>
-              <div className={classes.head} onClick={() => this._close()}>Model Types</div>
-              <div className={classes.list}>
-                {this.props.modelNames.map((type) => (
                   <div
                     key={type}
                     onClick={() => this._select(type)}
