@@ -20,6 +20,7 @@ import LoginView from './views/LoginView/LoginView'
 import ActionsView from './views/ActionsView/ActionsView'
 import * as cookiestore from './utils/cookiestore'
 import RelationsView from './views/RelationsView/RelationsView'
+import RelationPopup from './views/RelationsView/RelationPopup'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -95,7 +96,11 @@ export default (
         <Route path=':modelName/browser' component={BrowserView} queries={ViewerQuery} render={render} />
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
-      <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}/>
+      <Route path='relations'>
+        <IndexRoute component={RelationsView} queries={ViewerQuery} render={render}/>
+        <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render} />
+        <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render} />
+      </Route>
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render} />
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render} />
       <Route path='getting-started' component={GettingStartedView} queries={ViewerQuery} render={render} />
