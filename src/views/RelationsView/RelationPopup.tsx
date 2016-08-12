@@ -102,9 +102,9 @@ export default class RelationPopup extends React.Component<Props, State> {
               </div>
               <div className={classes.settings}>
                 <ModelSelector
-                  isList={this.state.fieldOnLeftModelIsList}
+                  isList={this.state.fieldOnRightModelIsList}
                   onListChange={
-                    () => this.setState({fieldOnLeftModelIsList: !this.state.fieldOnLeftModelIsList} as State)
+                    () => this.setState({fieldOnRightModelIsList: !this.state.fieldOnRightModelIsList} as State)
                   }
                   selectedModelId={this.state.leftModelId}
                   onModelChange={(id) => this.setState({leftModelId: id} as State)}
@@ -120,9 +120,9 @@ export default class RelationPopup extends React.Component<Props, State> {
                   />
                 </span>
                 <ModelSelector
-                  isList={this.state.fieldOnRightModelIsList}
+                  isList={this.state.fieldOnLeftModelIsList}
                   onListChange={
-                    () => this.setState({fieldOnRightModelIsList: !this.state.fieldOnRightModelIsList} as State)
+                    () => this.setState({fieldOnLeftModelIsList: !this.state.fieldOnLeftModelIsList} as State)
                   }
                   selectedModelId={this.state.rightModelId}
                   onModelChange={(id) => this.setState({rightModelId: id} as State)}
