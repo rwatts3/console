@@ -19,8 +19,10 @@ export default class ModelSelector extends React.Component<Props,{}> {
       <span className={classes.root}>
         <a onClick={this.props.onListChange}>{this.getIsListText()}</a>
         <span className={classes.model}>
-          <select onChange={(e) => this.props.onModelChange(e.target.value)}
-                  value={this.props.selectedModelId === null ? 'default' : this.props.selectedModelId}>
+          <select
+            onChange={(e) => this.props.onModelChange(e.target.value)}
+            value={this.props.selectedModelId === null ? 'default' : this.props.selectedModelId}
+          >
             <option value={'default'} disabled={true}>Select a Model ▾</option>
             {this.props.models.sort(this.modelCompare).map((model) => (
               <option
