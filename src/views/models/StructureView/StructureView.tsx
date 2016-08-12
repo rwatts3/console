@@ -14,7 +14,6 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {isScalar} from '../../../utils/graphql'
-import RelationRow from '../../RelationsView/RelationRow'
 const {nextStep} = require('../../../reducers/GettingStartedState') as any
 const classes: any = require('./StructureView.scss')
 
