@@ -17,18 +17,18 @@ interface Response {
 
 export default class UpdateRelationMutation extends Relay.Mutation<Props, Response> {
 
-    getMutation () {
-        return Relay.QL`mutation{updateRelation}`
-    }
+  getMutation () {
+    return Relay.QL`mutation{updateRelation}`
+  }
 
-    getFatQuery () {
-        return Relay.QL`
-            fragment on UpdateRelationPayload {
-                relation
-                project
-            }
-        `
-    }
+  getFatQuery () {
+    return Relay.QL`
+      fragment on UpdateRelationPayload {
+        relation
+        project
+      }
+    `
+  }
 
   getConfigs() {
     return [{
