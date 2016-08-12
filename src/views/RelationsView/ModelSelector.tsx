@@ -19,12 +19,13 @@ export default class ModelSelector extends React.Component<Props,{}> {
       <span className={classes.root}>
         <a onClick={this.props.onListChange}>{this.getIsListText()}</a>
         <span className={classes.model}>
-          <select onChange={(e) => this.props.onModelChange(e.target.value)}>
-            <option selected={this.props.selectedModelId === null} disabled={true}>Select a Model ▾</option>
+          <select onChange={(e) => this.props.onModelChange(e.target.value)}
+                  value={this.props.selectedModelId === null ? 'default' : this.props.selectedModelId}>
+            <option value={'default'} disabled={true}>Select a Model ▾</option>
             {this.props.models.map((model) => (
-              <option selected={this.props.selectedModelId === model.id}
-                      key={model.id}
-                      value={model.id}>
+              <option
+                key={model.id}
+                value={model.id}>
                 {this.props.isList ? `[${model.name}]` : model.name}
               </option>
             ))}
