@@ -13,6 +13,8 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {isScalar} from '../../../utils/graphql'
+import RelationRow from '../../RelationsView/RelationRow'
 const {nextStep} = require('../../../reducers/GettingStartedState') as any
 const classes: any = require('./StructureView.scss')
 
@@ -88,6 +90,12 @@ class StructureView extends React.Component<Props, State> {
   }
 
   render() {
+
+    const relations = this.props.project.relations.edges.map((edge) => edge.node)
+      .filter((relation) => {
+        return relation.leftModel.id === this.props.model.id || relation.rightModel.id === this.props.model.id
+      })
+
     return (
       <div className={classes.root}>
         {this.props.children}
@@ -146,7 +154,7 @@ class StructureView extends React.Component<Props, State> {
           </div>
           <div className={classes.tableBody}>
             <ScrollBox>
-              {this.props.fields.map((field) => (
+              {this.props.fields.filter((field) => isScalar(field.typeIdentifier)).map((field) => (
                 <FieldRow
                   key={field.id}
                   field={field}
@@ -155,6 +163,19 @@ class StructureView extends React.Component<Props, State> {
                   allModels={this.props.allModels}
                   possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
                   availableUserRoles={this.props.availableUserRoles}
+                />
+              ))}
+              {relations.length !== 0 &&
+              <div className={classes.relationHeader}>
+                Relations
+              </div>
+              }
+              {relations.map((relation) => (
+                <RelationRow
+                  key={relation.id}
+                  project={this.props.project}
+                  relation={relation}
+                  onClick={() => this.context.router.replace(`/${this.props.project.name}/relations/`)}
                 />
               ))}
             </ScrollBox>
@@ -235,6 +256,7 @@ export default Relay.createContainer(MappedStructureView, {
                             node {
                                 id
                                 name
+                                typeIdentifier
                                 ${FieldRow.getFragment('field')}
                             }
                         }
@@ -242,9 +264,36 @@ export default Relay.createContainer(MappedStructureView, {
                     ${ModelHeader.getFragment('model')}
                 }
                 project: projectByName(projectName: $projectName) {
+                    relations(first: 1000) {
+                        edges {
+                            node {
+                                leftModel {
+                                    id
+                                    name
+                                }
+                                rightModel {
+                                    id
+                                    name
+                                }
+                                fieldOnLeftModel {
+                                    name
+                                    isList
+                                }
+                                fieldOnRightModel {
+                                    name
+                                    isList
+                                }
+                                id
+                                name
+                                description
+                                ${RelationRow.getFragment('relation')}
+                            }
+                        }
+                    }
                     id
+                    name
                     availableUserRoles
-                    models(first: 100) {
+                    models(first: 1000) {
                         edges {
                             node {
                                 id

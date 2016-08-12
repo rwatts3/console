@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from '../../components/MapProps/MapProps'
 import {connect} from 'react-redux'
-// import Smooch from 'smooch'
+import Smooch from 'smooch'
 import {validateProjectName} from '../../utils/nameValidator'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
@@ -60,14 +60,14 @@ class ProjectRootView extends React.Component<Props, {}> {
         'Product': 'Dashboard',
       })
 
-      // Smooch.init({
-      //   appToken: __SMOOCH_TOKEN__,
-      //   givenName: this.props.user.name,
-      //   email: this.props.user.email,
-      //   customText: {
-      //     headerText: 'Can I help you? 🙌',
-      //   },
-      // })
+      Smooch.init({
+        appToken: __SMOOCH_TOKEN__,
+        givenName: this.props.user.name,
+        email: this.props.user.email,
+        customText: {
+          headerText: 'Can I help you? 🙌',
+        },
+      })
     } else {
       analytics.identify({
         'Product': 'Dashboard',
