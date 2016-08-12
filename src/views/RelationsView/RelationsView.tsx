@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Header from '../../components/Header/Header'
-import {Project, Viewer} from '../../types/types'
+import {Project, Viewer, Relation} from '../../types/types'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import RelationRow from './RelationRow'
 import CreateRelationPopup from './CreateRelationPopup'
@@ -14,6 +14,8 @@ interface Props {
 
 interface State {
   showAddPopup: boolean
+  isCreate: boolean
+  selectedRelation: Relation
 }
 
 class RelationsView extends React.Component<Props, State> {
@@ -23,6 +25,8 @@ class RelationsView extends React.Component<Props, State> {
 
     this.state = {
       showAddPopup: false,
+      isCreate: null,
+      selectedRelation: null,
     }
   }
 
@@ -34,23 +38,32 @@ class RelationsView extends React.Component<Props, State> {
           params={this.props.params}
           project={this.props.viewer.project}
         >
-          <div onClick={() => this.setState({ showAddPopup: true } as State)} className={classes.header}>+ Add Relation
+          <div onClick={() => this.setState({ showAddPopup: true, isCreate: true } as State)}
+               className={classes.header}>+ Add Relation
           </div>
         </Header>
         <div className={classes.content}>
           <ScrollBox>
             {this.state.showAddPopup &&
             <CreateRelationPopup
-              onCancel={() => this.setState({showAddPopup: false})}
+              onCancel={() => this.setState({showAddPopup: false, isCreate: null, selectedRelation: null} as State)}
               models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
               projectId={this.props.viewer.project.id}
+              relation={this.state.selectedRelation}
+              create={this.state.isCreate}
             />}
             {this.props.viewer.project.relations.edges.map((edge) => edge.node).map((relation) => (
               <div key={relation.id}>
                 <RelationRow
                   relation={relation}
                   project={this.props.viewer.project}
-                  onClick={'TODO change this'}
+                  onClick={() => {
+                    this.setState({
+                      showAddPopup: true,
+                      isCreate: false,
+                      selectedRelation: relation,
+                    })
+                  }}
                 />
               </div>
             ))}
@@ -75,6 +88,22 @@ export default Relay.createContainer(RelationsView, {
                         edges {
                             node {
                                 id
+                                name
+                                description
+                                leftModel {
+                                    id
+                                }
+                                rightModel {
+                                    id
+                                }
+                                fieldOnLeftModel {
+                                    name
+                                    isList
+                                }
+                                fieldOnRightModel {
+                                    name
+                                    isList
+                                }
                                 ${RelationRow.getFragment('relation')}
                             }
                         }
