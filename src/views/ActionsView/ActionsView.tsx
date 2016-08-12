@@ -5,6 +5,7 @@ import Header from '../../components/Header/Header'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import ActionRow from './ActionRow.tsx'
 import ActionBoxes from './ActionBoxes.tsx'
+import Icon from '../../components/Icon/Icon'
 const classes: any = require('./ActionsView.scss')
 
 interface Props {
@@ -49,7 +50,15 @@ class ActionsView extends React.Component<Props, State> {
           params={this.props.params}
           project={this.props.viewer.project}
         >
-          <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>+ Add Action
+          <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>
+            <div className={`${classes.button} ${classes.green}`}>
+              <Icon
+                width={16}
+                height={16}
+                src={require('assets/icons/add.svg')}
+              />
+              <span>Create Action</span>
+            </div>
           </div>
         </Header>
         <div className={classes.content}>
