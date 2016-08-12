@@ -124,7 +124,7 @@ export interface User {
   roles: string[]
 }
 
-export interface DataItem {
+export interface Node {
   id: string
   [key: string]: any
 }

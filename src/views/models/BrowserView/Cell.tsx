@@ -17,7 +17,7 @@ export type UpdateCallback = (success: boolean) => void
 interface Props {
   field: Field
   projectId: string
-  itemId: string
+  nodeId: string
   value: any
   width: number
   update: (value: any, field: Field, callback: UpdateCallback) => void
@@ -127,7 +127,7 @@ class Cell extends React.Component<Props, State> {
         field: this.props.field,
         value: this.props.value,
         projectId: this.props.projectId,
-        itemId: this.props.itemId,
+        nodeId: this.props.nodeId,
         methods: {
           save: this._save,
           onKeyDown: this._onKeyDown,

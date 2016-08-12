@@ -111,7 +111,7 @@ export default class PermissionType extends React.Component<Props, {}> {
       .filter((arr) => arr.slice(0, level).map((f) => f.id).equals(this.props.userPath.slice(0, level)))
       .filter((arr) => arr.length - 1 >= level)
       .map((arr) => arr[level])
-      .filter((item, index, arr) => arr.findIndex((i) => i.id === item.id) === index)
+      .filter((field, index, arr) => arr.findIndex((f) => f.id === field.id) === index)
 
     const isOptional = this.props.isValid
       && this.props.userPath.length === level
