@@ -28,7 +28,7 @@ class ModelRedirectView extends React.Component<Props, {}> {
       // redirect to project root, as this was probably a non-existing model
       this.context.router.replace(`/${this.props.params.projectName}/models`)
     } else {
-      // redirect to browser if model already has items
+      // redirect to browser if model already has nodes
       const subView = this.props.model.itemCount === 0 ? 'structure' : 'browser'
       this.context.router.replace(`/${this.props.params.projectName}/models/${this.props.model.name}/${subView}`)
     }

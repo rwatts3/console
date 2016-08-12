@@ -16,7 +16,7 @@ export interface CellRequirements {
   value: any
   field: Field
   projectId: string
-  itemId: string
+  nodeId: string
   methods: {
     save: (val: any, what?: any) => void
     cancel: (reload?: boolean) => void
@@ -45,7 +45,7 @@ function getNonScalarListEditCell(reqs: CellRequirements): JSX.Element {
   return (
     <RelationsPopup
       originField={reqs.field}
-      originItemId={reqs.itemId}
+      originNodeId={reqs.nodeId}
       onCancel={() => reqs.methods.cancel(true)}
       projectId={reqs.projectId}
     />

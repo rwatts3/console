@@ -20,7 +20,7 @@ interface Props {
 }
 
 interface State {
-  items: any[]
+  nodes: any[]
   value: string
 }
 
@@ -30,7 +30,7 @@ class NodeSelector extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      items: [],
+      nodes: [],
       value: props.value || '',
     }
 
@@ -56,8 +56,8 @@ class NodeSelector extends React.Component<Props, State> {
 
     lokka.query(query)
       .then((results) => {
-        const items = results[`all${props.relatedModel.namePlural}`]
-        this.setState({ items } as State)
+        const nodes = results[`all${props.relatedModel.namePlural}`]
+        this.setState({ nodes } as State)
       })
   }
 
@@ -71,22 +71,22 @@ class NodeSelector extends React.Component<Props, State> {
     }
   }
 
-  _renderItem = (item, isHighlighted) => {
+  _renderNode = (node, isHighlighted) => {
     return (
       <div
-        key={item.id}
+        key={node.id}
         className={`${classes.row} ${isHighlighted ? classes.highlighted : ''}`}
       >
-        {JSON.stringify(item, null, 1)}
+        {JSON.stringify(node, null, 1)}
       </div>
     )
   }
 
-  _shouldItemRender = (item, value) => {
+  _shouldNodeRender = (node, value) => {
     return this.props.relatedModel.fields.edges
       .map((edge) => edge.node)
-      .filter((field) => isScalar(field.typeIdentifier) && item[field.name])
-      .some((field) => item[field.name].toString().toLowerCase().includes(value))
+      .filter((field) => isScalar(field.typeIdentifier) && node[field.name])
+      .some((field) => node[field.name].toString().toLowerCase().includes(value))
   }
 
   render () {
@@ -108,13 +108,13 @@ class NodeSelector extends React.Component<Props, State> {
             zIndex: 100,
           }}
           value={this.state.value}
-          items={this.state.items}
-          shouldItemRender={this._shouldItemRender}
+          items={this.state.nodes}
+          shouldItemRender={this._shouldNodeRender}
           inputProps={{autoFocus: true }}
-          getItemValue={(item: ScalarValue) => item}
+          getItemValue={(node: ScalarValue) => node}
           onChange={(event, value) => this.setState({ value } as State)}
           onSelect={(value) => this.props.onSelect(value)}
-          renderItem={this._renderItem}
+          renderItem={this._renderNode}
         />
       </ClickOutside>
     )
