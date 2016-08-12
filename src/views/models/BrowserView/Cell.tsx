@@ -47,6 +47,7 @@ class Cell extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevState: State): void {
+    // To enable dropdowns for <select>
     if (!prevState.editing && this.state.editing && this.refs.input) {
       findDOMNode<HTMLInputElement>(this.refs.input).select()
     }
