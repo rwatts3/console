@@ -51,7 +51,8 @@ class RelationsView extends React.Component<Props, State> {
               projectId={this.props.viewer.project.id}
               relation={this.state.selectedRelation}
               create={this.state.isCreate}
-            />}
+            />
+            }
             {this.props.viewer.project.relations.edges.map((edge) => edge.node).map((relation) => (
               <div key={relation.id}>
                 <RelationRow
