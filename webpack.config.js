@@ -33,7 +33,7 @@ const vendor = [
   'react-twitter-widgets',
   'redux',
   'redux-thunk',
-  // 'smooch',
+  'smooch',
 ]
 
 module.exports = {
@@ -120,5 +120,8 @@ module.exports = {
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],
     extensions: ['', '.js', '.ts', '.tsx'],
+    alias: { // TODO remove when resolved: https://github.com/smooch/smooch-js/issues/357
+      faye: 'faye/browser/faye-browser',
+    },
   },
 }
