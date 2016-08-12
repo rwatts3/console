@@ -22,7 +22,7 @@ export default class ModelSelector extends React.Component<Props,{}> {
           <select onChange={(e) => this.props.onModelChange(e.target.value)}
                   value={this.props.selectedModelId === null ? 'default' : this.props.selectedModelId}>
             <option value={'default'} disabled={true}>Select a Model ▾</option>
-            {this.props.models.map((model) => (
+            {this.props.models.sort(this.modelCompare).map((model) => (
               <option
                 key={model.id}
                 value={model.id}>
@@ -45,6 +45,14 @@ export default class ModelSelector extends React.Component<Props,{}> {
         </span>
       </span>
     )
+  }
+
+  private modelCompare(a: Model, b: Model) {
+    if (a.name < b.name)
+      return -1;
+    if (a.name > b.name)
+      return 1;
+    return 0;
   }
 
   private getIsListText = (isList: boolean = this.props.isList) => {
