@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Field, DataItem } from '../../../types/types'
+import { Field, Node } from '../../../types/types'
 import * as Immutable from 'immutable'
 import { isScalar } from '../../../utils/graphql'
 import { Lokka } from 'lokka'
@@ -14,19 +14,19 @@ const classes: any = require('./RelationsPopup.scss')
 interface Props {
   projectId: string
   originField: Field
-  originItemId: string
+  originNodeId: string
   onCancel: () => void
 }
 
-interface ItemWrapper {
+interface NodeWrapper {
   isRelated: boolean
-  item: DataItem
+  node: Node
 }
 
 enum Selection { All, Related, Unrelated }
 
 interface State {
-  items: Immutable.List<ItemWrapper>
+  nodes: Immutable.List<NodeWrapper>
   selection: Selection
   filter: string
   success: boolean
@@ -40,7 +40,7 @@ class RelationsPopup extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      items: Immutable.List<ItemWrapper>(),
+      nodes: Immutable.List<NodeWrapper>(),
       selection: Selection.All,
       filter: '',
       success: false,
@@ -71,7 +71,7 @@ class RelationsPopup extends React.Component<Props, State> {
         all${relatedModel.namePlural} {
           ${fieldNames}
         }
-        ${originModel.name}(id: "${this.props.originItemId}") {
+        ${originModel.name}(id: "${this.props.originNodeId}") {
           ${this.props.originField.name} {
             ${fieldNames}
           }
@@ -81,19 +81,19 @@ class RelationsPopup extends React.Component<Props, State> {
 
     return this._lokka.query(query)
       .then((results) => {
-        const allItems: any[] = results[`all${relatedModel.namePlural}`]
+        const allNodes: any[] = results[`all${relatedModel.namePlural}`]
         const resultModelEntries = results[originModel.name]
-        const relatedItems: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
-        const items = allItems.map((item) => ({
-          item,
-          isRelated: relatedItems.some((relatedItem) => relatedItem.id === item.id),
+        const relatedNodes: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
+        const nodes = allNodes.map((node) => ({
+          node,
+          isRelated: relatedNodes.some((relatedNode) => relatedNode.id === node.id),
         }))
 
-        this.setState({ items: Immutable.List(items) } as State)
+        this.setState({ nodes: Immutable.List(nodes) } as State)
       })
   }
 
-  _toggleRelation (isRelated: boolean, itemId: string): void {
+  _toggleRelation (isRelated: boolean, nodeId: string): void {
     const relationName = this.props.originField.relation.name
     const relatedModelName = this.props.originField.relatedModel.name
     // TODO fix this error where the reversRelationField is null
@@ -107,8 +107,8 @@ class RelationsPopup extends React.Component<Props, State> {
 
     const mutation = `{
       ${mutationPrefix}${relationName}(
-        ${mutationArg1}: "${this.props.originItemId}"
-        ${mutationArg2}: "${itemId}"
+        ${mutationArg1}: "${this.props.originNodeId}"
+        ${mutationArg2}: "${nodeId}"
       ) {
         id
       }
@@ -121,7 +121,7 @@ class RelationsPopup extends React.Component<Props, State> {
   render () {
     const relatedFields = this.props.originField.relatedModel.fields
     const filter = this.state.filter.toLowerCase()
-    const filteredItems = this.state.items
+    const filteredNodes = this.state.nodes
       .filter(({ isRelated }) => {
         switch (this.state.selection) {
           case Selection.All: return true
@@ -129,11 +129,11 @@ class RelationsPopup extends React.Component<Props, State> {
           case Selection.Unrelated: return !isRelated
         }
       })
-      .filter(({ item }) => (
+      .filter(({ node }) => (
         relatedFields.edges
           .map((edge) => edge.node)
-          .filter((field) => isScalar(field.typeIdentifier) && item[field.name])
-          .some((field) => item[field.name].toString().toLowerCase().includes(filter))
+          .filter((field) => isScalar(field.typeIdentifier) && node[field.name])
+          .some((field) => node[field.name].toString().toLowerCase().includes(filter))
       ))
 
     return (
@@ -176,11 +176,11 @@ class RelationsPopup extends React.Component<Props, State> {
           </div>
           <div className={classes.list}>
             <ScrollBox>
-              {filteredItems.map(({ isRelated, item }) => (
+              {filteredNodes.map(({ isRelated, node }) => (
                 <div
-                  key={item.id}
+                  key={node.id}
                   className={`${classes.item} ${isRelated ? classes.related : ''}`}
-                  onClick={() => this._toggleRelation(isRelated, item.id)}
+                  onClick={() => this._toggleRelation(isRelated, node.id)}
                 >
                   <div className={classes.check}>
                     <Icon
@@ -189,7 +189,7 @@ class RelationsPopup extends React.Component<Props, State> {
                       src={require('assets/new_icons/check.svg')}
                     />
                   </div>
-                  <div>{JSON.stringify(item, null, 2)}</div>
+                  <div>{JSON.stringify(node, null, 2)}</div>
                 </div>
               ))}
             </ScrollBox>
