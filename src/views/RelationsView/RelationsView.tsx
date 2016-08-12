@@ -4,7 +4,8 @@ import Header from '../../components/Header/Header'
 import {Project, Viewer, Relation} from '../../types/types'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import RelationRow from './RelationRow'
-import RelationPopup from './RelationPopup'
+import {Link} from 'react-router'
+import Icon from '../../components/Icon/Icon'
 const classes: any = require('./RelationsView.scss')
 
 interface Props {
@@ -38,21 +39,22 @@ class RelationsView extends React.Component<Props, State> {
           params={this.props.params}
           project={this.props.viewer.project}
         >
-          <div onClick={() => this.setState({ showAddPopup: true, isCreate: true } as State)}
-               className={classes.header}>+ Add Relation
+          <div className={classes.header}>
+            <Link
+              className={`${classes.button} ${classes.green}`}
+              to={`/${this.props.viewer.project.name}/relations/create`}
+            >
+              <Icon
+                width={16}
+                height={16}
+                src={require('assets/icons/add.svg')}
+              />
+              <span>Create Relation</span>
+            </Link>
           </div>
         </Header>
         <div className={classes.content}>
           <ScrollBox>
-            {this.state.showAddPopup &&
-            <RelationPopup
-              onCancel={() => this.setState({showAddPopup: false, isCreate: null, selectedRelation: null} as State)}
-              models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-              projectId={this.props.viewer.project.id}
-              relation={this.state.selectedRelation}
-              create={this.state.isCreate}
-            />
-            }
             {this.props.viewer.project.relations.edges.map((edge) => edge.node).map((relation) => (
               <div key={relation.id}>
                 <RelationRow

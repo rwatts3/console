@@ -14,7 +14,6 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {isScalar} from '../../../utils/graphql'
-import RelationRow from '../../RelationsView/RelationRow'
 const {nextStep} = require('../../../reducers/GettingStartedState') as any
 const classes: any = require('./StructureView.scss')
 
@@ -91,10 +90,8 @@ class StructureView extends React.Component<Props, State> {
 
   render() {
 
-    const relations = this.props.project.relations.edges.map((edge) => edge.node)
-      .filter((relation) => {
-        return relation.leftModel.id === this.props.model.id || relation.rightModel.id === this.props.model.id
-      })
+    const scalars = this.props.fields.filter((field) => isScalar(field.typeIdentifier))
+    const relations = this.props.fields.filter((field) => !isScalar(field.typeIdentifier))
 
     return (
       <div className={classes.root}>
@@ -154,7 +151,7 @@ class StructureView extends React.Component<Props, State> {
           </div>
           <div className={classes.tableBody}>
             <ScrollBox>
-              {this.props.fields.filter((field) => isScalar(field.typeIdentifier)).map((field) => (
+              {scalars.map((field) => (
                 <FieldRow
                   key={field.id}
                   field={field}
@@ -165,17 +162,39 @@ class StructureView extends React.Component<Props, State> {
                   availableUserRoles={this.props.availableUserRoles}
                 />
               ))}
-              {relations.length !== 0 &&
+              <hr/>
               <div className={classes.relationHeader}>
-                Relations
+                <div>
+                  Relations
+                </div>
+                <div>
+                  <Link
+                    className={`${classes.button} ${classes.green}`}
+                    to={`/${this.props.params.projectName}/relations/create`}
+                  >
+                    <Icon
+                      width={16}
+                      height={16}
+                      src={require('assets/icons/add.svg')}
+                    />
+                    <span>Create Relation</span>
+                  </Link>
+                </div>
               </div>
+              {relations.length === 0 &&
+                <div className={classes.noRelations}>
+                  No Relations
+                </div>
               }
-              {relations.map((relation) => (
-                <RelationRow
-                  key={relation.id}
-                  project={this.props.project}
-                  relation={relation}
-                  onClick={() => this.context.router.replace(`/${this.props.project.name}/relations/`)}
+              {relations.map((field) => (
+                <FieldRow
+                  key={field.id}
+                  field={field}
+                  params={this.props.params}
+                  model={this.props.model}
+                  allModels={this.props.allModels}
+                  possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+                  availableUserRoles={this.props.availableUserRoles}
                 />
               ))}
             </ScrollBox>
@@ -257,6 +276,9 @@ export default Relay.createContainer(MappedStructureView, {
                                 id
                                 name
                                 typeIdentifier
+                                relation {
+                                    name
+                                }
                                 ${FieldRow.getFragment('field')}
                             }
                         }
@@ -264,32 +286,6 @@ export default Relay.createContainer(MappedStructureView, {
                     ${ModelHeader.getFragment('model')}
                 }
                 project: projectByName(projectName: $projectName) {
-                    relations(first: 1000) {
-                        edges {
-                            node {
-                                leftModel {
-                                    id
-                                    name
-                                }
-                                rightModel {
-                                    id
-                                    name
-                                }
-                                fieldOnLeftModel {
-                                    name
-                                    isList
-                                }
-                                fieldOnRightModel {
-                                    name
-                                    isList
-                                }
-                                id
-                                name
-                                description
-                                ${RelationRow.getFragment('relation')}
-                            }
-                        }
-                    }
                     id
                     name
                     availableUserRoles

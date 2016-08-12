@@ -6,8 +6,6 @@
   color: $newGrey3;
   padding: 20px 40px;
   border-bottom: 1px solid $newGrey2;
-  cursor: hand;
-  cursor: pointer;
 
   &:hover {
     background-color: $newGrey1
@@ -40,8 +38,12 @@
   margin-right: 12px;
 }
 
-.delete {
-  margin-left: auto;
+.buttons {
+  display: flex;
+}
+
+.icon {
+  margin-left: 16px;
   cursor: hand;
   cursor: pointer;
 
