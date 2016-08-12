@@ -7,7 +7,6 @@ import AddRelationMutation from '../../mutations/AddRelationMutation'
 import {validateModelName, validateFieldName} from '../../utils/nameValidator'
 import {classnames} from '../../utils/classnames'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
-import {Relation} from '../../types/types'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
 import {Transaction} from 'react-relay'
@@ -15,11 +14,8 @@ import {Transaction} from 'react-relay'
 const classes: any = require('./RelationPopup.scss')
 
 interface Props {
-  onCancel: () => void
-  models: any
-  projectId?: string
-  create: boolean
-  relation?: Relation
+  viewer: any
+  relay: any
 }
 
 interface State {
@@ -33,14 +29,16 @@ interface State {
   rightModelId: string
 }
 
-export default class RelationPopup extends React.Component<Props, State> {
+class RelationPopup extends React.Component<Props, State> {
 
   static contextTypes: React.ValidationMap<any> = {
+    router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
   }
 
   context: {
     showNotification: ShowNotificationCallback
+    router: any
   }
 
   refs: {
@@ -51,28 +49,28 @@ export default class RelationPopup extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const {create, relation} = this.props
+    const {relation} = this.props.viewer
 
     this.state = {
-      name: create ? '' : relation.name,
-      description: create ? '' : relation.description,
-      fieldOnLeftModelName: create ? '' : relation.fieldOnLeftModel.name,
-      fieldOnRightModelName: create ? '' : relation.fieldOnRightModel.name,
-      fieldOnLeftModelIsList: create ? false : relation.fieldOnLeftModel.isList,
-      fieldOnRightModelIsList: create ? false : relation.fieldOnRightModel.isList,
-      leftModelId: create ? null : relation.leftModel.id,
-      rightModelId: create ? null : relation.rightModel.id,
+      name: relation ? relation.name : '',
+      description: relation ? relation.description : '',
+      fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : '',
+      fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : '',
+      fieldOnLeftModelIsList: relation ? relation.fieldOnLeftModel.isList : false,
+      fieldOnRightModelIsList: relation ? relation.fieldOnRightModel.isList : false,
+      leftModelId: relation ? relation.leftModel.id : null,
+      rightModelId: relation ? relation.rightModel.id : null,
     }
   }
 
   render(): JSX.Element {
     return (
-      <Popup onClickOutside={this.props.onCancel} height={'60%'}>
+      <Popup onClickOutside={this.close} height={'60%'}>
         <div className={classes.root}>
           <div className={classes.header}>
             <div className={classes.name}>
               <input
-                autoFocus={this.props.create}
+                autoFocus={!this.props.viewer.relation}
                 ref='input'
                 type='text'
                 placeholder='+ Add Relation Name'
@@ -102,7 +100,7 @@ export default class RelationPopup extends React.Component<Props, State> {
                   }
                   selectedModelId={this.state.leftModelId}
                   onModelChange={(id) => this.setState({leftModelId: id} as State)}
-                  models={this.props.models}
+                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
                   fieldOnModelName={this.state.fieldOnLeftModelName}
                   onFieldNameChange={(name) => this.setState({fieldOnLeftModelName: name} as State)}
                 />
@@ -120,24 +118,28 @@ export default class RelationPopup extends React.Component<Props, State> {
                   }
                   selectedModelId={this.state.rightModelId}
                   onModelChange={(id) => this.setState({rightModelId: id} as State)}
-                  models={this.props.models}
+                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
                   fieldOnModelName={this.state.fieldOnRightModelName}
                   onFieldNameChange={(name) => this.setState({fieldOnRightModelName: name} as State)}
                 />
               </div>
             </div>
             <div className={classes.buttons}>
-              <div onClick={this.props.onCancel}>
+              <div onClick={this.close}>
                 Cancel
               </div>
               <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
-                {this.props.create ? 'Create' : 'Save'}
+                {this.props.viewer.relation ? 'Save' : 'Create'}
               </div>
             </div>
           </div>
         </div>
       </Popup>
     )
+  }
+
+  private close = () => {
+    this.context.router.goBack()
   }
 
   private isValid = (): boolean => {
@@ -151,10 +153,10 @@ export default class RelationPopup extends React.Component<Props, State> {
   }
 
   private submit = (): void => {
-    if (this.props.create) {
-      this.create()
-    } else {
+    if (this.props.viewer.relation) {
       this.update()
+    } else {
+      this.create()
     }
   }
 
@@ -163,13 +165,13 @@ export default class RelationPopup extends React.Component<Props, State> {
       return
     }
 
-    if (this.props.projectId === null) {
+    if (this.props.viewer.project.id === null) {
       return
     }
 
     Relay.Store.commitUpdate(
       new AddRelationMutation({
-        projectId: this.props.projectId,
+        projectId: this.props.viewer.project.id,
         name: this.state.name,
         description: this.state.description === '' ? null : this.state.description,
         leftModelId: this.state.leftModelId,
@@ -180,7 +182,11 @@ export default class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.fieldOnRightModelIsList,
       }),
       {
-        onSuccess: this.props.onCancel,
+        onSuccess: () => {
+          // The force fetching because backend is not on sync with dashboard
+          this.props.relay.forceFetch()
+          this.close()
+        },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),
       }
     )
@@ -191,13 +197,13 @@ export default class RelationPopup extends React.Component<Props, State> {
       return
     }
 
-    if (this.props.relation === null) {
+    if (this.props.viewer.relation === null) {
       return
     }
 
     Relay.Store.commitUpdate(
       new UpdateRelationMutation({
-        relationId: this.props.relation.id,
+        relationId: this.props.viewer.relation.id,
         name: this.state.name,
         description: this.state.description === '' ? null : this.state.description,
         leftModelId: this.state.leftModelId,
@@ -208,9 +214,67 @@ export default class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.fieldOnRightModelIsList,
       }),
       {
-        onSuccess: this.props.onCancel,
+        onSuccess: () => {
+          // The force fetching because relations are too complicated to selective choose the config
+          this.props.relay.forceFetch()
+          this.close()
+        },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),
       }
     )
   }
 }
+
+export default Relay.createContainer(RelationPopup, {
+  initialVariables: {
+    projectName: null, // injected from router
+    relationName: null, // injected from router
+    relationExists: false,
+  },
+  prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
+    relationExists: !!prevVariables.relationName,
+  })),
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                relation: relationByName(
+                projectName: $projectName
+                relationName: $relationName
+                ) @include(if: $relationExists) {
+                    id
+                    name
+                    description
+                    fieldOnLeftModel {
+                        id
+                        name
+                        isList
+                    }
+                    fieldOnRightModel {
+                        id
+                        name
+                        isList
+                    }
+                    leftModel {
+                        id
+                        name
+                    }
+                    rightModel {
+                        id
+                        name
+                    }
+                }
+                project: projectByName(projectName: $projectName) {
+                    id
+                    models (first: 1000) {
+                        edges {
+                            node {
+                                id
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `,
+    },
+})

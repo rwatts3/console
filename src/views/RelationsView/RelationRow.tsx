@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import {Link} from 'react-router'
 import {Relation, Project} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
 import RelationModels from './RelationModels'
@@ -39,21 +40,30 @@ class RelationRow extends React.Component<Props,{}> {
             </div>
             }
           </div>
-          <div>
-            <span className={classes.delete} onClick={this.delete}>
+          <span className={classes.buttons}>
+            <span className={classes.icon}>
+              <Link to={`/${this.props.project.name}/relations/edit/${this.props.relation.name}`}>
+              <Icon
+                width={20}
+                height={20}
+                src={require('assets/icons/edit.svg')}
+              />
+            </Link>
+            </span>
+            <span className={classes.icon} onClick={this.deleteRelation}>
               <Icon
                 width={20}
                 height={20}
                 src={require('assets/icons/delete.svg')}
               />
             </span>
-          </div>
+          </span>
         </div>
       </div>
     )
   }
 
-  private delete = (e: React.MouseEvent<any>): void => {
+  private deleteRelation = (e: React.MouseEvent<any>): void => {
     e.stopPropagation()
 
     if (window.confirm('Do you really want to delete this Relation?')) {
@@ -61,6 +71,8 @@ class RelationRow extends React.Component<Props,{}> {
         new DeleteRelationMutation({
           relationId: this.props.relation.id,
           projectId: this.props.project.id,
+          leftModelId: this.props.relation.leftModel.id,
+          rightModelId: this.props.relation.rightModel.id,
         })
       )
     }

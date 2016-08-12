@@ -10,6 +10,7 @@ import { Field, Model } from '../../../types/types'
 import Permissions from './Permissions'
 import Constraints from './Constraints'
 import Icon from '../../../components/Icon/Icon'
+import {isScalar} from '../../../utils/graphql'
 const classes: any = require('./FieldRow.scss')
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
@@ -113,6 +114,9 @@ class FieldRow extends React.Component<Props, State> {
   }
 
   _renderDescription () {
+    if (this.props.field.relation) {
+      return
+    }
     if (this.state.editDescriptionPending) {
       return (
         <Loading color='#B9B9C8' />
@@ -164,7 +168,14 @@ class FieldRow extends React.Component<Props, State> {
       type = `${type}!`
     }
 
-    const editLink = `/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/edit/${this.props.field.name}` // tslint:disable-line
+    let suffix
+    if (isScalar(field.typeIdentifier)) {
+      suffix = `/models/${this.props.params.modelName}/structure/edit/${this.props.field.name}`
+    } else {
+      suffix = `/relations/edit/${this.props.field.relation.name}`
+    }
+
+    const editLink = `/${this.props.params.projectName}${suffix}` // tslint:disable-line
 
     return (
       <div className={classes.root}>
@@ -220,7 +231,7 @@ class FieldRow extends React.Component<Props, State> {
                 src={require('assets/icons/edit.svg')}
               />
             </Link>
-            {!field.isSystem &&
+            {!field.isSystem && isScalar(field.typeIdentifier) &&
               <span onClick={() => this._delete()}>
                 <Icon
                   width={20}
@@ -268,6 +279,9 @@ export default Relay.createContainer(FieldRow, {
               userType
             }
           }
+        }
+        relation {
+            name
         }
         ${Permissions.getFragment('field')}
       }
