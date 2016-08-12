@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {Link} from 'react-router'
 const mapProps: any = require('map-props')
 import * as Relay from 'react-relay'
 const ClickOutside: any = (require('react-click-outside') as any).default
@@ -9,7 +8,6 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
 import {ShowNotificationCallback} from '../../../types/utils'
 const TagsInput: any = require('react-tagsinput')
-import Icon from '../../../components/Icon/Icon'
 import Help from '../../../components/Help/Help'
 import Datepicker from '../../../components/Datepicker/Datepicker'
 import Loading from '../../../components/Loading/Loading'
@@ -17,7 +15,6 @@ import ToggleButton from '../../../components/ToggleButton/ToggleButton'
 import {ToggleSide} from '../../../components/ToggleButton/ToggleButton'
 import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
-import {isScalar} from '../../../utils/graphql'
 import {Field, Model} from '../../../types/types'
 import {emptyDefault} from '../utils'
 import {connect} from 'react-redux'
@@ -133,9 +130,7 @@ class FieldPopup extends React.Component<Props, State> {
     } = this.state
 
     const field = {isList, typeIdentifier} as Field
-    const wrappedMigrationValue = isScalar(this.state.typeIdentifier)
-      ? this.state.migrationValue
-      : {id: this.state.migrationValue}
+    const wrappedMigrationValue = this.state.migrationValue
     console.log(wrappedMigrationValue)
     const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue)
       ? valueToString(wrappedMigrationValue, field, true)
@@ -203,9 +198,7 @@ class FieldPopup extends React.Component<Props, State> {
     } = this.state
 
     const field = {isList, typeIdentifier} as Field
-    const wrappedMigrationValue = isScalar(this.state.typeIdentifier)
-      ? this.state.migrationValue
-      : {id: this.state.migrationValue}
+    const wrappedMigrationValue = this.state.migrationValue
     const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
       ? valueToString(wrappedMigrationValue, field, true)
       : null
@@ -336,7 +329,7 @@ class FieldPopup extends React.Component<Props, State> {
       typeIdentifier: this.state.typeIdentifier,
     } as Field
 
-    const wrappedValue = isScalar(this.state.typeIdentifier) ? value : {id: value}
+    const wrappedValue = value
     const valueString = valueToString(wrappedValue, field, false)
 
     if (field.isList) {
@@ -424,11 +417,6 @@ class FieldPopup extends React.Component<Props, State> {
       )
     }
 
-    const selectedModel = this.props.allModels.find((m) => m.name === this.state.typeIdentifier)
-    const showReverseRelationSection = selectedModel &&
-      selectedModel.unconnectedReverseRelationFieldsFrom.length > 0 && !this.props.field
-    const reverseRelationFieldLink = `/${this.props.params.projectName}/models/${this.state.typeIdentifier}/structure/edit/${(this.state.reverseRelationField || {} as any).name}` // tslint:disable-line
-
     const dataExists = this.props.model.itemCount > 0
     const needsMigrationValue = this._needsMigrationValue()
     const showMigrationValue = needsMigrationValue || (dataExists && !this.props.field)
@@ -494,7 +482,6 @@ class FieldPopup extends React.Component<Props, State> {
                   </div>
                 </div>
                 }
-                {isScalar(this.state.typeIdentifier) &&
                 <div className={classes.rowBlock}>
                   <div className={classes.row}>
                     <div className={classes.left}>
@@ -536,7 +523,6 @@ class FieldPopup extends React.Component<Props, State> {
                     </div>
                   </div>
                 </div>
-                }
                 {showMigrationValue &&
                 <div className={classes.row}>
                   <div className={classes.left}>
@@ -569,7 +555,6 @@ class FieldPopup extends React.Component<Props, State> {
                   </div>
                 </div>
                 }
-                {isScalar(this.state.typeIdentifier) &&
                 <div className={classes.row}>
                   <div className={classes.left}>
                     <label>
@@ -593,7 +578,6 @@ class FieldPopup extends React.Component<Props, State> {
                     )}
                   </div>
                 </div>
-                }
               </div>
               <div className={classes.foot}>
                 <div className={classes.button} onClick={() => this._close()}>
