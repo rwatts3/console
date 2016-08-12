@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {findDOMNode} from 'react-dom'
 import * as Relay from 'react-relay'
 import Popup from '../../components/Popup/Popup'
 import Icon from '../../components/Icon/Icon'
@@ -66,12 +65,6 @@ export default class RelationPopup extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount = () => {
-    if (this.props.create) {
-      findDOMNode<HTMLInputElement>(this.refs.input).select()
-    }
-  }
-
   render(): JSX.Element {
     return (
       <Popup onClickOutside={this.props.onCancel} height={'60%'}>
@@ -79,6 +72,7 @@ export default class RelationPopup extends React.Component<Props, State> {
           <div className={classes.header}>
             <div className={classes.name}>
               <input
+                autoFocus={this.props.create}
                 ref='input'
                 type='text'
                 placeholder='+ Add Relation Name'
