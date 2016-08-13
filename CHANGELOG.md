@@ -13,9 +13,9 @@ We improve the Graphcool platform every day by releasing new features, squashing
  * you can now view and edit relations inside the structure view
  * can now click on the relations to update them
 * **UI Facelift**:
- * additional style goodness for the page
+ * additional style goodness for the navbar
  * new fancy buttons for adding relation and actions
- * a new color scheme
+ * a new color scheme for the entire dashboard
 * **UX Improvements**:
  * after project creation, the user gets redirected to new project
  * migration values and default values for lists are now availble
