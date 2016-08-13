@@ -197,7 +197,7 @@ class PlaygroundView extends React.Component<Props, State> {
 
     return (
       <div className={classes.root}>
-        <Helmet title='Playground 🚀 Graphcool' />
+        <Helmet title='Playground' />
         <Header
           viewer={this.props.viewer}
           params={this.props.params}

@@ -36,7 +36,7 @@ class RelationsView extends React.Component<Props, State> {
   render(): JSX.Element {
     return (
       <div className={classes.root}>
-        <Helmet title='Relations 🚀 Graphcool' />
+        <Helmet title='Relations' />
         <Header
           viewer={this.props.viewer}
           params={this.props.params}

@@ -46,7 +46,7 @@ class ActionsView extends React.Component<Props, State> {
   render() {
     return (
       <div className={classes.root}>
-        <Helmet title='Actions 🚀 Graphcool' />
+        <Helmet title='Actions' />
         <Header
           viewer={this.props.viewer}
           params={this.props.params}

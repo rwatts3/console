@@ -38,7 +38,7 @@ class ModelRedirectView extends React.Component<Props, {}> {
   render () {
     return (
       <div>
-        <Helmet title={`${this.props.model.name} 🚀 Graphcool`} />
+        <Helmet title={this.props.model.name} />
         Redirecting...
       </div>
     )
