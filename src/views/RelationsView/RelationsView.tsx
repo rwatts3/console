@@ -11,6 +11,7 @@ const classes: any = require('./RelationsView.scss')
 interface Props {
   viewer: Viewer & { project: Project }
   params: string
+  children: Element
 }
 
 interface State {
@@ -54,6 +55,7 @@ class RelationsView extends React.Component<Props, State> {
           </div>
         </Header>
         <div className={classes.content}>
+          {this.props.children}
           <ScrollBox>
             {this.props.viewer.project.relations.edges.map((edge) => edge.node).map((relation) => (
               <div key={relation.id}>
