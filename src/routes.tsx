@@ -96,8 +96,7 @@ export default (
         <Route path=':modelName/browser' component={BrowserView} queries={ViewerQuery} render={render} />
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
-      <Route path='relations'>
-        <IndexRoute component={RelationsView} queries={ViewerQuery} render={render}/>
+      <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
         <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render} />
         <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render} />
       </Route>
