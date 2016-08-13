@@ -119,7 +119,7 @@ describe('stringToValue', () => {
       isList: false,
       typeIdentifier: 'String',
     })
-    expect(stringToValue('', field)).toBe(null)
+    expect(stringToValue('', field)).toBe('')
   })
 
   it('parses empty string when required', () => {
