@@ -1,6 +1,6 @@
 # Graphcool Dashboard
 
-Official source of [dashboard.graph.cool](https://dashboard.graph.cool/) written in Typescript 2 and based on React & Relay
+🚀  Official source of [dashboard.graph.cool](https://dashboard.graph.cool/) written in Typescript 2 and based on React & Relay
 
 ## Changelog
 
