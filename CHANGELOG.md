@@ -6,7 +6,7 @@ We improve the Graphcool platform every day by releasing new features, squashing
 
 ## August 2016
 
-### [M1](https://github.com/graphcool/dashboard/milestone/1)
+### [Milestone M1](https://github.com/graphcool/dashboard/milestone/1)
 
 * Managing relations between models was not as straightforward as it should be. This is a lot easier now with the new **Relations Page**. Give your data model some relation love ❣️.
 * The colors of the dashboard looked a bit washed out over time, so we decided to repaint it. The paint still needs to dry... 🖌
