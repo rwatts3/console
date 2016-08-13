@@ -3,6 +3,11 @@ import {Field} from '../../types/types'
 import {TypedValue, NonScalarValue, ScalarValue} from '../../types/utils'
 
 export function emptyDefault(field: Field): TypedValue {
+
+  if (field.isRequired) {
+    return null
+  }
+
   const value = function (): any {
     switch (field.typeIdentifier) {
       case 'Int':
@@ -30,6 +35,10 @@ export function emptyDefault(field: Field): TypedValue {
 }
 
 function valueToGQL(value: TypedValue, field: Field): string {
+  if (value === null && !field.isRequired) {
+    return 'null'
+  }
+
   if (!isScalar(field.typeIdentifier)) {
     if (field.isList && (value as any[]).length === 0) {
       return '"[]"'
@@ -48,7 +57,12 @@ function valueToGQL(value: TypedValue, field: Field): string {
 
 export function toGQL(value: any, field: Field): string {
   const key = isScalar(field.typeIdentifier) ? field.name : `${field.name}Id`
-  return value !== null ? `${key}: ${valueToGQL(value, field)}` : ''
+
+  if (value === null && field.isRequired) {
+    return ''
+  }
+
+  return `${key}: ${valueToGQL(value, field)}`
 }
 
 export function compareFields(a: Field, b: Field): number {

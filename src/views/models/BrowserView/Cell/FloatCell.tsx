@@ -7,7 +7,7 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
     super(props)
 
     this.state = {
-      valueString: valueToString(this.props.value, this.props.field, true),
+      valueString: valueToString(this.props.value, this.props.field, false),
     }
   }
 

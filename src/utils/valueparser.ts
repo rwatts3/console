@@ -51,9 +51,9 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
     return null
   }
   const {isList, isRequired, typeIdentifier} = field
-  if (rawValue === '') {
-    // todo: this should set to null but currently null is not supported by our api
-    return isRequired && typeIdentifier === 'String' ? '' : null
+
+  if (rawValue === '' && !isRequired) {
+    return typeIdentifier === 'String' ? '' : null
   }
 
   if (!isScalar(typeIdentifier)) {
