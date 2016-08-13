@@ -33,7 +33,10 @@ export function getEditCell(reqs: CellRequirements): JSX.Element {
     return getSpecificEditCell(reqs)
   } else {
     return (
-      <NullableCell save={reqs.methods.save} cell={getSpecificEditCell(reqs)}/>
+      <NullableCell
+        save={reqs.methods.save}
+        cell={getSpecificEditCell(reqs)}
+      />
     )
   }
 }
