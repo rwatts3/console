@@ -35,18 +35,6 @@ export default class DeleteRelationMutation extends Relay.Mutation<Props, {}> {
       parentID: this.props.projectId,
       connectionName: 'relations',
       deletedIDFieldName: 'deletedId',
-    }, {
-      type: 'NODE_DELETE',
-      parentName: 'model',
-      parentID: this.props.leftModelId,
-      connectionName: 'fields',
-      deletedIDFieldName: 'deletedId',
-    }, {
-      type: 'NODE_DELETE',
-      parentName: 'model',
-      parentID: this.props.rightModelId,
-      connectionName: 'fields',
-      deletedIDFieldName: 'deletedId',
     }]
   }
 
