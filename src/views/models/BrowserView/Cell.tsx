@@ -67,7 +67,7 @@ class Cell extends React.Component<Props, State> {
   }
 
   _save = (value: TypedValue): void => {
-    if (value === null) {
+    if (this.props.field.isRequired && value === null) {
       alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
       this.setState({editing: false} as State)
       return
@@ -169,7 +169,7 @@ class Cell extends React.Component<Props, State> {
 
     return (
       <div
-        style={{ flex: `1 0 ${this.props.width}px` }}
+        style={{ flex: `1 0 ${this.props.width}px`, justifyContent: 'center', alignItems: 'center' }}
         className={rootClassnames}
         onDoubleClick={() => this._startEditing()}
       >
@@ -186,6 +186,7 @@ export default Relay.createContainer(Cell, {
                 id
                 name
                 isList
+                isRequired
                 typeIdentifier
                 enumValues
                 relatedModel {

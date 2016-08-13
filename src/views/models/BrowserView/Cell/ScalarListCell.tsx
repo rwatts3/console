@@ -8,13 +8,22 @@ export default class ScalarListCell extends React.Component<CellProps<string[]>,
     super(props)
 
     this.state = {
-      valueString: valueToString(this.props.value, this.props.field, true),
+      valueString: valueToString(this.props.value, this.props.field, false),
       valid: true,
     }
   }
 
   handleChange = (e) => {
     const val = e.target.value
+
+    if (val === '' && !this.props.field.isRequired) {
+      this.setState({
+        valueString: val,
+        valid: true,
+      })
+      return
+    }
+
     try {
       if (!(JSON.parse(val) instanceof Array)) {// if the string variable is not a JSON array
         throw 'format error'

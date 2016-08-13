@@ -8,7 +8,7 @@ export default class IntCell extends React.Component<CellProps<number>, CellStat
     super(props)
 
     this.state = {
-      valueString: valueToString(this.props.value, this.props.field, true),
+      valueString: valueToString(this.props.value, this.props.field, false),
     }
   }
 
