@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import Helmet from 'react-helmet'
 import Header from '../../components/Header/Header'
 import {Project, Viewer, Relation} from '../../types/types'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
@@ -35,6 +36,7 @@ class RelationsView extends React.Component<Props, State> {
   render(): JSX.Element {
     return (
       <div className={classes.root}>
+        <Helmet title='Relations' />
         <Header
           viewer={this.props.viewer}
           params={this.props.params}

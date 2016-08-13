@@ -6,6 +6,7 @@ import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import ActionRow from './ActionRow.tsx'
 import ActionBoxes from './ActionBoxes.tsx'
 import Icon from '../../components/Icon/Icon'
+import Helmet from 'react-helmet'
 const classes: any = require('./ActionsView.scss')
 
 interface Props {
@@ -45,6 +46,7 @@ class ActionsView extends React.Component<Props, State> {
   render() {
     return (
       <div className={classes.root}>
+        <Helmet title='Actions' />
         <Header
           viewer={this.props.viewer}
           params={this.props.params}

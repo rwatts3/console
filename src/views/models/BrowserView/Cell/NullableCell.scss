@@ -1,0 +1,35 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.button {
+  position: absolute;
+  top: 0;
+  left: -130px;
+  width: 120px;
+  height: 100%;
+  @include button;
+
+  &.red {
+    border-color: rgb(200, 31, 0);
+    color: rgb(200, 31, 0);
+    background: #fff;
+
+    &:hover {
+      background: rgb(200, 31, 0);
+      color: #fff;
+
+      svg {
+        fill: #fff;
+      }
+    }
+
+    svg {
+      fill: rgb(200, 31, 0);
+    }
+  }
+}
+
+textarea {
+  left: 0;
+  top: 0;
+}

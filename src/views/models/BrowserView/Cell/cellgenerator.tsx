@@ -1,4 +1,4 @@
-import { Field } from '../../../../types/types'
+import {Field} from '../../../../types/types'
 import * as React from 'react'
 import IntCell from './IntCell'
 import FloatCell from './FloatCell'
@@ -9,8 +9,9 @@ import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
 import NodeSelector from '../../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from '../RelationsPopup'
-import { isScalar } from '../../../../utils/graphql'
+import {isScalar} from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
+import NullableCell from './NullableCell'
 
 export interface CellRequirements {
   value: any
@@ -26,6 +27,21 @@ export interface CellRequirements {
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
+  if (reqs.field.isRequired) {
+    return getSpecificEditCell(reqs)
+  } else if (!isScalar(reqs.field.typeIdentifier) && reqs.field.isList) {
+    return getSpecificEditCell(reqs)
+  } else {
+    return (
+      <NullableCell
+        save={reqs.methods.save}
+        cell={getSpecificEditCell(reqs)}
+      />
+    )
+  }
+}
+
+function getSpecificEditCell(reqs: CellRequirements): JSX.Element {
   if (!isScalar(reqs.field.typeIdentifier)) {
     if (reqs.field.isList) {
       return getNonScalarListEditCell(reqs)
