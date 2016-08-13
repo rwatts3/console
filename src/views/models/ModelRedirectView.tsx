@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import Helmet from 'react-helmet'
 import mapProps from '../../components/MapProps/MapProps'
 import { connect } from 'react-redux'
 import { Model } from '../../types/types'
@@ -36,7 +37,10 @@ class ModelRedirectView extends React.Component<Props, {}> {
 
   render () {
     return (
-      <div>Redirecting...</div>
+      <div>
+        <Helmet title={`${this.props.model.name} 🚀 Graphcool`} />
+        Redirecting...
+      </div>
     )
   }
 }

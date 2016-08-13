@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import Helmet from 'react-helmet'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import GraphiQL from 'graphiql'
@@ -196,6 +197,7 @@ class PlaygroundView extends React.Component<Props, State> {
 
     return (
       <div className={classes.root}>
+        <Helmet title='Playground 🚀 Graphcool' />
         <Header
           viewer={this.props.viewer}
           params={this.props.params}
