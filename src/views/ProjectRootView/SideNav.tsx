@@ -9,7 +9,6 @@ import { validateModelName } from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Icon from '../../components/Icon/Icon'
 import Tether from '../../components/Tether/Tether'
-import ProjectSettingsOverlay from '../../components/ProjectSettingsOverlay/ProjectSettingsOverlay'
 import AddModelMutation from '../../mutations/AddModelMutation'
 import { sideNavSyncer } from '../../utils/sideNavSyncer'
 import { onFailureShowNotification } from '../../utils/relay'
@@ -30,11 +29,7 @@ interface Props {
   skip: () => Promise<any>
 }
 
-interface State {
-  projectSettingsVisible: boolean
-}
-
-export class SideNav extends React.Component<Props, State> {
+export class SideNav extends React.Component<Props, {}> {
 
   static contextTypes = {
     router: React.PropTypes.object.isRequired,
@@ -44,10 +39,6 @@ export class SideNav extends React.Component<Props, State> {
   context: {
     router: any
     showNotification: ShowNotificationCallback
-  }
-
-  state = {
-    projectSettingsVisible: false,
   }
 
   shouldComponentUpdate: any
@@ -110,10 +101,6 @@ export class SideNav extends React.Component<Props, State> {
     }
   }
 
-  _toggleProjectSettings = () => {
-    this.setState({ projectSettingsVisible: !this.state.projectSettingsVisible })
-  }
-
   componentDidMount () {
     // subscribe to sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(this._fetch, this)
@@ -167,15 +154,6 @@ export class SideNav extends React.Component<Props, State> {
 
     return (
       <div className={classes.root}>
-        {this.state.projectSettingsVisible &&
-          <ProjectSettingsOverlay
-            viewer={this.props.viewer}
-            project={this.props.project}
-            projectCount={this.props.projectCount}
-            params={this.props.params}
-            hide={this._toggleProjectSettings}
-          />
-        }
         <div className={classes.container}>
           <ScrollBox>
             {gettingStartedIsActive &&
@@ -291,13 +269,13 @@ export class SideNav extends React.Component<Props, State> {
             </div>
           </ScrollBox>
         </div>
-        <div className={classes.foot} onClick={this._toggleProjectSettings}>
+        <Link className={classes.foot} to={`/${this.props.project.name}/settings`}>
           <Icon
             width={20} height={20}
             src={require('assets/icons/gear.svg')}
             />
           <span>Project Settings</span>
-        </div>
+        </Link>
       </div>
     )
   }
