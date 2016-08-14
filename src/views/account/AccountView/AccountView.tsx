@@ -23,24 +23,6 @@ class AccountView extends React.Component<Props, {}> {
         >
           <div>Account</div>
         </Header>
-        <div className={classes.head}>
-          <div className={classes.tabs}>
-            <Link
-              to={`/${this.props.params.projectName}/account/settings`}
-              className={classes.tab}
-              activeClassName={classes.tabActive}
-            >
-              Settings
-            </Link>
-            <Link
-              to={`/${this.props.params.projectName}/account/usage`}
-              className={classes.tab}
-              activeClassName={classes.tabActive}
-            >
-              Usage
-            </Link>
-          </div>
-        </div>
         {this.props.children}
       </div>
     )
