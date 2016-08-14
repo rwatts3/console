@@ -9,6 +9,7 @@ import {classnames} from '../../utils/classnames'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
+import Help from '../../components/Help/Help'
 import {Transaction} from 'react-relay'
 
 const classes: any = require('./RelationPopup.scss')
@@ -27,6 +28,7 @@ interface State {
   fieldOnRightModelIsList: boolean
   leftModelId: string
   rightModelId: string
+  alertHint: boolean
 }
 
 class RelationPopup extends React.Component<Props, State> {
@@ -60,6 +62,7 @@ class RelationPopup extends React.Component<Props, State> {
       fieldOnRightModelIsList: relation ? relation.fieldOnRightModel.isList : false,
       leftModelId: relation ? relation.leftModel.id : null,
       rightModelId: relation ? relation.rightModel.id : null,
+      alertHint: false,
     }
   }
 
@@ -68,14 +71,23 @@ class RelationPopup extends React.Component<Props, State> {
       <Popup onClickOutside={this.close} height={'60%'}>
         <div className={classes.root}>
           <div className={classes.header}>
-            <div className={classes.name}>
+            <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
               <input
                 autoFocus={!this.props.viewer.relation}
                 ref='input'
                 type='text'
                 placeholder='+ Add Relation Name'
                 value={this.state.name}
-                onChange={(e) => this.setState({ name: e.target.value } as State)}
+                onChange={(e) => this.setState(
+                  {
+                    name: e.target.value,
+                    alertHint: !validateModelName(e.target.value) || e.target.value === '',
+                  } as State)}
+              />
+              <Help
+                size={35}
+                text={'The relation name has to be capitalized.'}
+                placement={'left'}
               />
             </div>
             <div className={classes.description}>
