@@ -21,6 +21,7 @@ import ActionsView from './views/ActionsView/ActionsView'
 import * as cookiestore from './utils/cookiestore'
 import RelationsView from './views/RelationsView/RelationsView'
 import RelationPopup from './views/RelationsView/RelationPopup'
+import ProjectSettingsView from './views/ProjectSettingsView/ProjectSettingsView'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -84,7 +85,6 @@ export default (
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render} />
-        {/* <Route path='usage' component={SettingsTab} queries={ViewerQuery} render={render} /> */}
         <IndexRedirect to='settings' />
       </Route>
       <Route path='models'>
@@ -103,6 +103,7 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render} />
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render} />
       <Route path='getting-started' component={GettingStartedView} queries={ViewerQuery} render={render} />
+      <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render} />
       <IndexRedirect to='models' />
     </Route>
   </Route>

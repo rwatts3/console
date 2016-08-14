@@ -8,7 +8,7 @@ import {Field} from '../../../types/types'
 import NodeSelector from '../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
-import {TypedValue} from '../../../types/utils'
+import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
 import {isNonScalarList} from '../../../utils/graphql'
 const classes: any = require('./Cell.scss')
 
@@ -31,6 +31,14 @@ interface State {
 }
 
 class Cell extends React.Component<Props, State> {
+
+  static contextTypes = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback
+  }
 
   refs: {
     [key: string]: any;
@@ -68,7 +76,10 @@ class Cell extends React.Component<Props, State> {
 
   _save = (value: TypedValue): void => {
     if (this.props.field.isRequired && value === null) {
-      alert(`'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`)
+      this.context.showNotification(
+        `'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`,
+        'error'
+      )
       this.setState({editing: false} as State)
       return
     }
@@ -88,6 +99,9 @@ class Cell extends React.Component<Props, State> {
   }
 
   _onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
+    if (e.keyCode === 13 && e.shiftKey) {
+      return
+    }
     switch (e.keyCode) {
       case 13:
         this._save(stringToValue(e.target.value, this.props.field))
@@ -95,12 +109,6 @@ class Cell extends React.Component<Props, State> {
       case 27:
         this._cancel()
         break
-    }
-  }
-
-  _onEscapeTextarea = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (e.keyCode === 27) {
-      this._save(stringToValue(e.target.value, this.props.field))
     }
   }
 
@@ -132,7 +140,6 @@ class Cell extends React.Component<Props, State> {
           save: this._save,
           onKeyDown: this._onKeyDown,
           cancel: this._cancel,
-          onEscapeTextarea: this._onEscapeTextarea,
         },
       }
       return getEditCell(reqs)

@@ -1,21 +1,20 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Link } from 'react-router'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import {Link} from 'react-router'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from '../../components/MapProps/MapProps'
-import { validateModelName } from '../../utils/nameValidator'
+import {validateModelName} from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Icon from '../../components/Icon/Icon'
 import Tether from '../../components/Tether/Tether'
-import ProjectSettingsOverlay from '../../components/ProjectSettingsOverlay/ProjectSettingsOverlay'
 import AddModelMutation from '../../mutations/AddModelMutation'
-import { sideNavSyncer } from '../../utils/sideNavSyncer'
-import { onFailureShowNotification } from '../../utils/relay'
-const { nextStep, skip } = require('../../reducers/GettingStartedState') as any
-import { Project, Viewer, Model} from '../../types/types'
-import { ShowNotificationCallback } from '../../types/utils'
+import {sideNavSyncer} from '../../utils/sideNavSyncer'
+import {onFailureShowNotification} from '../../utils/relay'
+import {nextStep, skip} from '../../reducers/GettingStartedState'
+import {Project, Viewer, Model} from '../../types/types'
+import {ShowNotificationCallback} from '../../types/utils'
 const classes: any = require('./SideNav.scss')
 
 interface Props {
@@ -31,7 +30,7 @@ interface Props {
 }
 
 interface State {
-  projectSettingsVisible: boolean
+  forceShowModels: boolean
 }
 
 export class SideNav extends React.Component<Props, State> {
@@ -46,19 +45,17 @@ export class SideNav extends React.Component<Props, State> {
     showNotification: ShowNotificationCallback
   }
 
-  state = {
-    projectSettingsVisible: false,
-  }
-
   shouldComponentUpdate: any
 
-  constructor (props) {
+  constructor(props) {
     super(props)
-
+    this.state = {
+      forceShowModels: false,
+    }
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
-  _fetch () {
+  _fetch() {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
     this.props.relay.forceFetch()
   }
@@ -110,21 +107,17 @@ export class SideNav extends React.Component<Props, State> {
     }
   }
 
-  _toggleProjectSettings = () => {
-    this.setState({ projectSettingsVisible: !this.state.projectSettingsVisible })
-  }
-
-  componentDidMount () {
+  componentDidMount() {
     // subscribe to sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(this._fetch, this)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     // unsubscribe from sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(null, null)
   }
 
-  render () {
+  render() {
     const firstStepOnClick = () => {
       if (this.props.gettingStartedState.isCurrentStep('STEP1_OVERVIEW')) {
         this.props.nextStep()
@@ -156,99 +149,103 @@ export class SideNav extends React.Component<Props, State> {
 
     const modelActive = (model) => (
       this.context.router.isActive(`/${this.props.params.projectName}/models/${model.name}/structure`) ||
-        this.context.router.isActive(`/${this.props.params.projectName}/models/${model.name}/browser`)
+      this.context.router.isActive(`/${this.props.params.projectName}/models/${model.name}/browser`)
     )
 
     const showsGettingStarted = this.context.router.isActive(`/${this.props.params.projectName}/getting-started`)
-    const showsModels = this.context.router.isActive(`/${this.props.params.projectName}/models`)
-    const showsRelations = this.context.router.isActive(`/${this.props.params.projectName}/relations`)
-    const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
-    const showsPlayground = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
+    const modelsPageActive = this.context.router.isActive(`/${this.props.params.projectName}/models`)
+    const showsModels = modelsPageActive || this.state.forceShowModels
+    const relationsPageActive = this.context.router.isActive(`/${this.props.params.projectName}/relations`)
+    const actionsPageActive = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
+    const playgroundPageActive = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
 
     return (
-      <div className={classes.root}>
-        {this.state.projectSettingsVisible &&
-          <ProjectSettingsOverlay
-            viewer={this.props.viewer}
-            project={this.props.project}
-            projectCount={this.props.projectCount}
-            params={this.props.params}
-            hide={this._toggleProjectSettings}
-          />
-        }
+      <div
+        className={classes.root}
+        onMouseLeave={() => this.setState({forceShowModels: false})}
+      >
         <div className={classes.container}>
           <ScrollBox>
             {gettingStartedIsActive &&
-              <div className={`${showsGettingStarted ? classes.active : ''}`}>
-                <div className={classes.gettingStarted}>
-                  <Link
-                    to={`/${this.props.params.projectName}/getting-started`}
-                    className={classes.head}
-                    onClick={thirdStepOnClick}
-                  >
-                    <Icon width={19} height={19} src={require('assets/icons/cake.svg')} />
-                    <span>Getting Started</span>
-                  </Link>
-                  <div className={classes.gettingStartedList}>
-                    <div className={gettingStartedStepClass(1)}>
-                      <Link
-                        to={`/${this.props.params.projectName}/getting-started`}
-                        onClick={firstStepOnClick}
-                      >
-                        1. Create Todo model
-                      </Link>
-                    </div>
-                    <div className={gettingStartedStepClass(2)}>
-                      <Link
-                        to={`/${this.props.params.projectName}/models/Todo/browser`}
-                        onClick={secondStepOnClick}
-                      >
-                        2. Add some data
-                      </Link>
-                    </div>
-                    <div className={gettingStartedStepClass(3)}>
-                      <Tether
-                        steps={{
+            <div className={`${showsGettingStarted ? classes.active : ''}`}>
+              <div className={classes.gettingStarted}>
+                <Link
+                  to={`/${this.props.params.projectName}/getting-started`}
+                  className={classes.head}
+                  onClick={thirdStepOnClick}
+                >
+                  <Icon width={19} height={19} src={require('assets/icons/cake.svg')}/>
+                  <span>Getting Started</span>
+                </Link>
+                <div className={classes.gettingStartedList}>
+                  <div className={gettingStartedStepClass(1)}>
+                    <Link
+                      to={`/${this.props.params.projectName}/getting-started`}
+                      onClick={firstStepOnClick}
+                    >
+                      1. Create Todo model
+                    </Link>
+                  </div>
+                  <div className={gettingStartedStepClass(2)}>
+                    <Link
+                      to={`/${this.props.params.projectName}/models/Todo/browser`}
+                      onClick={secondStepOnClick}
+                    >
+                      2. Add some data
+                    </Link>
+                  </div>
+                  <div className={gettingStartedStepClass(3)}>
+                    <Tether
+                      steps={{
                           STEP8_GOTO_GETTING_STARTED: 'You\'re almost done. Let\'s run an example app now...',
                         }}
-                        offsetY={-5}
-                        width={260}
+                      offsetY={-5}
+                      width={260}
+                    >
+                      <Link
+                        to={`/${this.props.params.projectName}/getting-started`}
+                        onClick={thirdStepOnClick}
                       >
-                        <Link
-                          to={`/${this.props.params.projectName}/getting-started`}
-                          onClick={thirdStepOnClick}
-                        >
-                          3. Run example app
-                        </Link>
-                      </Tether>
-                    </div>
-                    <div onClick={this._skipGettingStarted} className={classes.gettingStartedSkip}>
-                      Skip getting started
-                    </div>
+                        3. Run example app
+                      </Link>
+                    </Tether>
+                  </div>
+                  <div onClick={this._skipGettingStarted} className={classes.gettingStartedSkip}>
+                    Skip getting started
                   </div>
                 </div>
               </div>
+            </div>
             }
             <div className={`${classes.listBlock} ${showsModels ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/models`}
-                className={`${classes.head} ${showsModels ? classes.active : ''}`}
-                >
-                <Icon width={19} height={19} src={require('assets/icons/model.svg')} />
+                className={`${classes.head} ${modelsPageActive ? classes.active : ''}`}
+              >
+                <Icon width={19} height={19} src={require('assets/icons/model.svg')}/>
                 <span>Models</span>
               </Link>
-              <div className={classes.list}>
+              <div className={`${classes.list} ${showsModels ? classes.active : classes.inactive}`}>
                 {this.props.models &&
-                  this.props.models.map((model) => (
-                    <Link
-                      key={model.name}
-                      to={`/${this.props.params.projectName}/models/${model.name}`}
-                      className={`${classes.listElement} ${modelActive(model) ? classes.active : ''}`}
-                      >
-                      {model.name}
-                      <span className={classes.itemCount}>{model.itemCount}</span>
-                    </Link>
-                  ))}
+                this.props.models.map((model) => (
+                  <Link
+                    key={model.name}
+                    to={`/${this.props.params.projectName}/models/${model.name}`}
+                    className={`${classes.listElement} ${modelActive(model) ? classes.active : ''}`}
+                  >
+                    {model.name}
+                    <span className={classes.itemCount}>{model.itemCount}</span>
+                  </Link>
+                ))}
+              </div>
+              <div className={classes.separator}>
+                {this.props.models.length > 3 && !showsModels &&
+                <div
+                  className={classes.listElement}
+                  onClick={() => this.setState({forceShowModels: true})}>
+                  ...
+                </div>
+                }
               </div>
               <div className={classes.add} onClick={this._addModel}>
                 <Tether
@@ -262,42 +259,42 @@ export class SideNav extends React.Component<Props, State> {
                 </Tether>
               </div>
             </div>
-            <div className={`${classes.listBlock} ${showsRelations ? classes.active : ''}`}>
+            <div className={`${classes.listBlock} ${relationsPageActive ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/relations`}
-                className={`${classes.head} ${showsRelations ? classes.active : ''}`}
+                className={`${classes.head} ${relationsPageActive ? classes.active : ''}`}
               >
-                <Icon width={19} height={19} src={require('assets/new_icons/relation-arrows.svg')} />
+                <Icon width={19} height={19} src={require('assets/new_icons/relation-arrows.svg')}/>
                 <span>Relations</span>
               </Link>
             </div>
-            <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
+            <div className={`${classes.listBlock} ${actionsPageActive ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/actions`}
-                className={`${classes.head} ${showsActions ? classes.active : ''}`}
+                className={`${classes.head} ${actionsPageActive ? classes.active : ''}`}
               >
-                <Icon width={19} height={19} src={require('assets/icons/flash.svg')} />
+                <Icon width={19} height={19} src={require('assets/icons/flash.svg')}/>
                 <span>Actions</span>
               </Link>
             </div>
-            <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
+            <div className={`${classes.listBlock} ${playgroundPageActive ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/playground`}
-                className={`${classes.head} ${showsPlayground ? classes.active : ''}`}
-                >
-                <Icon width={19} height={19} src={require('assets/icons/play.svg')} />
+                className={`${classes.head} ${playgroundPageActive ? classes.active : ''}`}
+              >
+                <Icon width={19} height={19} src={require('assets/icons/play.svg')}/>
                 <span>Playground</span>
               </Link>
             </div>
           </ScrollBox>
         </div>
-        <div className={classes.foot} onClick={this._toggleProjectSettings}>
+        <Link className={classes.foot} to={`/${this.props.project.name}/settings`}>
           <Icon
             width={20} height={20}
             src={require('assets/icons/gear.svg')}
-            />
+          />
           <span>Project Settings</span>
-        </div>
+        </Link>
       </div>
     )
   }
@@ -309,8 +306,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ nextStep, skip }, dispatch)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({nextStep, skip}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -323,8 +320,8 @@ const MappedSideNav = mapProps({
   project: (props) => props.project,
   relay: (props) => props.relay,
   models: (props) => props.project.models.edges
-      .map((edge) => edge.node)
-      .sort((a, b) => a.name.localeCompare(b.name)),
+    .map((edge) => edge.node)
+    .sort((a, b) => a.name.localeCompare(b.name)),
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedSideNav, {
