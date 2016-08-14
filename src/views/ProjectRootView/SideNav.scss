@@ -56,7 +56,59 @@
 }
 
 .list {
-  padding: 33px 0;
+  padding: 33px 0 0 0;
+
+  &.active {
+    :nth-child(n+4) {
+      animation: expand .5s forwards;
+    }
+  }
+
+  &.inactive {
+    :nth-child(n+4) {
+      animation: shrink .5s forwards;
+    }
+  }
+}
+
+@keyframes shrink {
+  from {
+    display: flex;
+    opacity: 1;
+    height: 33px;
+  }
+
+  99% {
+    opacity: 0;
+    height: 0px;
+  }
+
+  to {
+    opacity: 0;
+    height: 0px;
+    display: none;
+  }
+}
+
+@keyframes expand {
+  from {
+    display: none;
+    opacity: 0;
+    height: 0px;
+  }
+
+  1% {
+    display: flex;
+  }
+
+  to {
+    opacity: 1;
+    height: 33px;
+  }
+}
+
+.separator {
+  padding: 0 0 33px 0;
 }
 
 .listElement {
@@ -69,6 +121,8 @@
   align-items: center;
   padding: 0 26px 0 70px;
   font-weight: 300;
+  cursor: hand;
+  cursor: pointer;
 
   &:hover {
     background: rgba(255, 255, 255, 0.09);
