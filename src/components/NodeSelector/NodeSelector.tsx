@@ -107,7 +107,7 @@ class NodeSelector extends React.Component<Props, State> {
             overflow: 'auto',
             zIndex: 100,
           }}
-          value={this.state.value}
+          value={this.state.value || ''}
           items={this.state.nodes}
           shouldItemRender={this._shouldNodeRender}
           inputProps={{autoFocus: true }}
