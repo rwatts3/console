@@ -160,7 +160,10 @@ export class SideNav extends React.Component<Props, State> {
     const playgroundPageActive = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
 
     return (
-      <div className={classes.root}>
+      <div
+        className={classes.root}
+        onMouseLeave={() => this.setState({forceShowModels: false})}
+      >
         <div className={classes.container}>
           <ScrollBox>
             {gettingStartedIsActive &&
@@ -214,10 +217,7 @@ export class SideNav extends React.Component<Props, State> {
               </div>
             </div>
             }
-            <div
-              className={`${classes.listBlock} ${showsModels ? classes.active : ''}`}
-              onMouseLeave={() => this.setState({forceShowModels: false})}
-            >
+            <div className={`${classes.listBlock} ${showsModels ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/models`}
                 className={`${classes.head} ${modelsPageActive ? classes.active : ''}`}
