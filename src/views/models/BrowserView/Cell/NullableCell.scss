@@ -1,6 +1,10 @@
 @import '~styles/variables';
 @import '~styles/mixins';
 
+.root {
+  width: 100%;
+}
+
 .button {
   position: absolute;
   top: 0;
