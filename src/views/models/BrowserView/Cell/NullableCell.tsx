@@ -24,7 +24,7 @@ export default class NullableCell extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>
+      <div className={classes.root}>
         {this.getSubCell()}
         <div
           className={classnames(classes.button, classes.red)}

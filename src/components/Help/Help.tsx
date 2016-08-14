@@ -9,6 +9,7 @@ require('rc-tooltip/assets/bootstrap.css')
 interface Props {
   text: string
   placement?: 'left' | 'right'
+  size?: number
 }
 
 export default class Help extends React.Component<Props, {}> {
@@ -27,8 +28,8 @@ export default class Help extends React.Component<Props, {}> {
           getTooltipContainer={() => findDOMNode((this.refs as any).container)}
         >
           <Icon
-            width={20}
-            height={20}
+            width={this.props.size || 20}
+            height={this.props.size || 20}
             src={require('assets/icons/info.svg')}
           />
         </Tooltip>
