@@ -214,23 +214,23 @@ export default Relay.createContainer(ProjectSettingsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                project: projectByName(projectName: $projectName) {
-                    ${Header.getFragment('project')}
-                    name
-                    id
-                }
-                user {
-                    projects(first: 1000) {
-                        edges {
-                            node
-                        }
-                    }
-                }
-                ${Header.getFragment('viewer')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          ${Header.getFragment('project')}
+          name
+          id
+        }
+        user {
+          projects(first: 1000) {
+            edges {
+              node
             }
-        `,
-    },
+          }
+        }
+        ${Header.getFragment('viewer')}
+      }
+    `,
+  },
 })
