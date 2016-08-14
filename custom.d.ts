@@ -14,6 +14,7 @@ declare module 'map-props'
 declare module 'react-twitter-widgets'
 declare module 'redux-thunk'
 declare module 'redux'
+declare module 'react-copy-to-clipboard'
 
 declare var fetch: any
 declare var analytics: any
