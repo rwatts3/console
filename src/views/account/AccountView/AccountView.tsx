@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Link } from 'react-router'
 import { Viewer, Project } from '../../../types/types'
 import Header from '../../../components/Header/Header'
 const classes: any = require('./AccountView.scss')
