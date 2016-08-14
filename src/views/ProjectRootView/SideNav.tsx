@@ -12,7 +12,7 @@ import Tether from '../../components/Tether/Tether'
 import AddModelMutation from '../../mutations/AddModelMutation'
 import {sideNavSyncer} from '../../utils/sideNavSyncer'
 import {onFailureShowNotification} from '../../utils/relay'
-const {nextStep, skip} = require('../../reducers/GettingStartedState') as any
+import {nextStep, skip} from '../../reducers/GettingStartedState'
 import {Project, Viewer, Model} from '../../types/types'
 import {ShowNotificationCallback} from '../../types/utils'
 const classes: any = require('./SideNav.scss')
@@ -153,11 +153,11 @@ export class SideNav extends React.Component<Props, State> {
     )
 
     const showsGettingStarted = this.context.router.isActive(`/${this.props.params.projectName}/getting-started`)
-    const showsModelHeader = this.context.router.isActive(`/${this.props.params.projectName}/models`)
-    const showsModels = showsModelHeader || this.state.forceShowModels
-    const showsRelations = this.context.router.isActive(`/${this.props.params.projectName}/relations`)
-    const showsActions = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
-    const showsPlayground = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
+    const modelsPageActive = this.context.router.isActive(`/${this.props.params.projectName}/models`)
+    const showsModels = modelsPageActive || this.state.forceShowModels
+    const relationsPageActive = this.context.router.isActive(`/${this.props.params.projectName}/relations`)
+    const actionsPageActive = this.context.router.isActive(`/${this.props.params.projectName}/actions`)
+    const playgroundPageActive = this.context.router.isActive(`/${this.props.params.projectName}/playground`)
 
     return (
       <div className={classes.root}>
@@ -220,7 +220,7 @@ export class SideNav extends React.Component<Props, State> {
             >
               <Link
                 to={`/${this.props.params.projectName}/models`}
-                className={`${classes.head} ${showsModelHeader ? classes.active : ''}`}
+                className={`${classes.head} ${modelsPageActive ? classes.active : ''}`}
               >
                 <Icon width={19} height={19} src={require('assets/icons/model.svg')}/>
                 <span>Models</span>
@@ -259,28 +259,28 @@ export class SideNav extends React.Component<Props, State> {
                 </Tether>
               </div>
             </div>
-            <div className={`${classes.listBlock} ${showsRelations ? classes.active : ''}`}>
+            <div className={`${classes.listBlock} ${relationsPageActive ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/relations`}
-                className={`${classes.head} ${showsRelations ? classes.active : ''}`}
+                className={`${classes.head} ${relationsPageActive ? classes.active : ''}`}
               >
                 <Icon width={19} height={19} src={require('assets/new_icons/relation-arrows.svg')}/>
                 <span>Relations</span>
               </Link>
             </div>
-            <div className={`${classes.listBlock} ${showsActions ? classes.active : ''}`}>
+            <div className={`${classes.listBlock} ${actionsPageActive ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/actions`}
-                className={`${classes.head} ${showsActions ? classes.active : ''}`}
+                className={`${classes.head} ${actionsPageActive ? classes.active : ''}`}
               >
                 <Icon width={19} height={19} src={require('assets/icons/flash.svg')}/>
                 <span>Actions</span>
               </Link>
             </div>
-            <div className={`${classes.listBlock} ${showsPlayground ? classes.active : ''}`}>
+            <div className={`${classes.listBlock} ${playgroundPageActive ? classes.active : ''}`}>
               <Link
                 to={`/${this.props.params.projectName}/playground`}
-                className={`${classes.head} ${showsPlayground ? classes.active : ''}`}
+                className={`${classes.head} ${playgroundPageActive ? classes.active : ''}`}
               >
                 <Icon width={19} height={19} src={require('assets/icons/play.svg')}/>
                 <span>Playground</span>
@@ -325,29 +325,29 @@ const MappedSideNav = mapProps({
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedSideNav, {
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                user {
-                    id
-                }
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        user {
+          id
+        }
+      }
+    `,
+    project: () => Relay.QL`
+      fragment on Project {
+        id
+        name
+        webhookUrl
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
+              itemCount
             }
-        `,
-        project: () => Relay.QL`
-            fragment on Project {
-                id
-                name
-                webhookUrl
-                models(first: 100) {
-                    edges {
-                        node {
-                            id
-                            name
-                            itemCount
-                        }
-                    }
-                }
-            }
-        `,
-    },
+          }
+        }
+      }
+    `,
+  },
 })
