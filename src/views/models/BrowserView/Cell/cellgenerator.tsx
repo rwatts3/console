@@ -22,7 +22,6 @@ export interface CellRequirements {
     save: (val: any, what?: any) => void
     cancel: (reload?: boolean) => void
     onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void
-    onEscapeTextarea: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void
   }
 }
 
@@ -86,7 +85,7 @@ function getScalarListEditCell(reqs: CellRequirements): JSX.Element {
     <ScalarListCell
       value={reqs.value}
       save={reqs.methods.save}
-      onKeyDown={reqs.methods.onEscapeTextarea}
+      onKeyDown={reqs.methods.onKeyDown}
       field={reqs.field}
     />
   )
@@ -133,7 +132,7 @@ function getScalarEditCell(reqs: CellRequirements): JSX.Element {
       return (
         <StringCell
           value={reqs.value}
-          onKeyDown={reqs.methods.onEscapeTextarea}
+          onKeyDown={reqs.methods.onKeyDown}
           save={reqs.methods.save}
           field={reqs.field}
         />

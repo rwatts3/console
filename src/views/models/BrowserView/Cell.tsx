@@ -99,6 +99,9 @@ class Cell extends React.Component<Props, State> {
   }
 
   _onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
+    if (e.keyCode === 13 && e.shiftKey) {
+      return
+    }
     switch (e.keyCode) {
       case 13:
         this._save(stringToValue(e.target.value, this.props.field))
@@ -106,12 +109,6 @@ class Cell extends React.Component<Props, State> {
       case 27:
         this._cancel()
         break
-    }
-  }
-
-  _onEscapeTextarea = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (e.keyCode === 27) {
-      this._save(stringToValue(e.target.value, this.props.field))
     }
   }
 
@@ -143,7 +140,6 @@ class Cell extends React.Component<Props, State> {
           save: this._save,
           onKeyDown: this._onKeyDown,
           cancel: this._cancel,
-          onEscapeTextarea: this._onEscapeTextarea,
         },
       }
       return getEditCell(reqs)
