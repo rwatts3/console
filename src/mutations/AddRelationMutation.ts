@@ -22,25 +22,39 @@ export default class AddRelationMutation extends Relay.Mutation<Props, {}> {
         return Relay.QL`
             fragment on AddRelationPayload {
                 relation
+                leftModel
+                rightModel
                 project
             }
         `
     }
 
-  getConfigs () {
+  getConfigs() {
     return [{
       type: 'RANGE_ADD',
       parentName: 'project',
       parentID: this.props.projectId,
       connectionName: 'relations',
       edgeName: 'relationEdge',
-      rangeBehaviors: {
-        '': 'append',
-      },
+      rangeBehaviors: {'': 'append'},
+    }, {
+      type: 'RANGE_ADD',
+      parentName: 'leftModel',
+      parentID: this.props.leftModelId,
+      connectionName: 'fields',
+      edgeName: 'fieldOnLeftModelEdge',
+      rangeBehaviors: {'': 'append'},
+    }, {
+      type: 'RANGE_ADD',
+      parentName: 'rightModel',
+      parentID: this.props.rightModelId,
+      connectionName: 'fields',
+      edgeName: 'fieldOnRightModelEdge',
+      rangeBehaviors: {'': 'append'},
     }]
   }
 
-  getVariables () {
+  getVariables() {
     return this.props
   }
 }
