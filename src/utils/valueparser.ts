@@ -39,6 +39,8 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
     switch (field.typeIdentifier) {
       case 'DateTime':
         return new Date(fieldValue).toISOString()
+      case 'Password':
+        return '***************'
       default:
         return fieldValue.toString()
     }
