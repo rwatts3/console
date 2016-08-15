@@ -20,7 +20,7 @@ interface Props {
   nodeId: string
   value: any
   width: number
-  update: (value: any, field: Field, callback: UpdateCallback) => void
+  update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
   reload: () => void,
   addnew: boolean
 }
