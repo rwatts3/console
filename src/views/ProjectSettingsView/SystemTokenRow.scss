@@ -1,0 +1,39 @@
+@import '~styles/variables';
+@import '~styles/mixins';
+
+.root {
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px solid $grey2;
+  width: auto;
+  cursor: pointer;
+  cursor: hand;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    background-color: $grey2;
+  }
+
+  svg {
+    margin-left: 24px;
+    fill: $grey4;
+
+    &:hover {
+      fill: $grey5;
+    }
+  }
+}
+
+.content {
+  display: inline-flex;
+  flex-direction: column;
+
+  .name {
+    font-weight: 600;
+  }
+
+  .token {
+    font-family: monospace;
+  }
+}

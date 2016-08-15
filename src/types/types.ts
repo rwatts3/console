@@ -25,6 +25,7 @@ export interface Project {
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>
+  systemTokens: RelayConnection<SystemToken>
   actionSchema: string
 }
 
@@ -127,4 +128,10 @@ export interface User {
 export interface Node {
   id: string
   [key: string]: any
+}
+
+export interface SystemToken {
+  id: string
+  name: string
+  token: string
 }

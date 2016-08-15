@@ -11,6 +11,7 @@ import UpdateProjectMutation from '../../mutations/UpdateProjectMutation'
 import {onFailureShowNotification} from '../../utils/relay'
 import {findDOMNode} from 'react-dom'
 import {classnames} from '../../utils/classnames'
+import SystemTokenRow from './SystemTokenRow'
 const classes = require('./ProjectSettingsView.scss')
 
 interface Props {
@@ -98,6 +99,20 @@ class ProjectSettingsView extends React.Component<Props, State> {
                   {this.state.idCopied ? 'Copied' : 'Copy'}
                 </span>
               </CopyToClipboard>
+            </div>
+          </div>
+          <div className={classes.category}>
+            <div className={classes.title}>
+              System Tokens
+            </div>
+            <div className={classes.tokens}>
+            {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((systemToken) => (
+              <SystemTokenRow
+                key={systemToken.id}
+                projectId={this.props.viewer.project.id}
+                systemToken={systemToken}
+              />
+            ))}
             </div>
           </div>
           <div className={classes.category}>
@@ -221,6 +236,16 @@ export default Relay.createContainer(ProjectSettingsView, {
           ${Header.getFragment('project')}
           name
           id
+          systemTokens (first: 1000) {
+            edges {
+              node {
+                ${SystemTokenRow.getFragment('systemToken')}
+                id
+                name
+                token
+              }
+            }
+          }
         }
         user {
           projects(first: 1000) {
