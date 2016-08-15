@@ -13,6 +13,7 @@ interface Props {
   viewer: Viewer & { project: Project }
   params: string
   children: Element
+  relay: any
 }
 
 interface State {
@@ -71,6 +72,7 @@ class RelationsView extends React.Component<Props, State> {
                       selectedRelation: relation,
                     })
                   }}
+                  onRelationDeleted={() => this.props.relay.forceFetch() /* force due to too complicated config*/}
                 />
               </div>
             ))}
@@ -120,6 +122,14 @@ export default Relay.createContainer(RelationsView, {
                             node {
                                 id
                                 name
+                                fields(first: 1000) {
+                                    edges {
+                                        node {
+                                            name
+                                            id
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
