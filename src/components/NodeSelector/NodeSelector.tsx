@@ -6,8 +6,8 @@ import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import * as cookiestore from '../../utils/cookiestore'
 import {ScalarValue} from '../../types/utils'
-const ClickOutside: any = (require('react-click-outside') as any).default
-const Autocomplete: any = require('react-autocomplete')
+import ClickOutside from 'react-click-outside'
+import Autocomplete from 'react-autocomplete'
 const classes: any = require('./NodeSelector.scss')
 
 interface Props {
