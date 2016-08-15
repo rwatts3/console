@@ -84,6 +84,11 @@
   }
 }
 
+.tokens {
+  display: inline-flex;
+  flex-direction: column;
+}
+
 .button {
   @include button;
   display: inline-block;
