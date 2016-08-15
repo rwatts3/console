@@ -19,16 +19,14 @@ export interface CellRequirements {
   projectId: string
   nodeId: string
   methods: {
-    save: (val: any, what?: any) => void
+    save: (val: any, keepEditing?: any) => void
     cancel: (reload?: boolean) => void
     onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void
   }
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
-  if (reqs.field.isRequired) {
-    return getSpecificEditCell(reqs)
-  } else if (!isScalar(reqs.field.typeIdentifier) && reqs.field.isList) {
+  if (reqs.field.isRequired || !isScalar(reqs.field.typeIdentifier) || reqs.field.isList) {
     return getSpecificEditCell(reqs)
   } else {
     return (
@@ -81,17 +79,13 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
 
 function getScalarListEditCell(reqs: CellRequirements): JSX.Element {
   return (
-
     <ScalarListCell
-      value={reqs.value}
-      save={reqs.methods.save}
-      onKeyDown={reqs.methods.onKeyDown}
-      field={reqs.field}
+      {...reqs}
     />
   )
 }
 
-function getScalarEditCell(reqs: CellRequirements): JSX.Element {
+export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
   switch (reqs.field.typeIdentifier) {
     case 'Int':
       return (

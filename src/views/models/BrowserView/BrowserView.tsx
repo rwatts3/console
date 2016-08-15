@@ -216,7 +216,9 @@ class BrowserView extends React.Component<Props, State> {
                       projectId={this.props.project.id}
                       columnWidths={columnWidths}
                       node={node.toJS()}
-                      update={(key, value, callback) => this.updateNode(key, value, callback, node.get('id'), index)}
+                      update={
+                        (value, field, callback) => this.updateNode(value, field, callback, node.get('id'), index)
+                      }
                       isSelected={this.isSelected(node.get('id'))}
                       onSelect={(event) => this.onSelectRow(node.get('id'))}
                       reload={this.reloadData}
