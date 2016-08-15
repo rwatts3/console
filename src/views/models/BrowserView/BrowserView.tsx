@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-const calculateSize: any = require('calculate-size')
+import calculateSize from 'calculate-size'
 import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
 import * as Immutable from 'immutable'
@@ -11,8 +11,8 @@ import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
-import {ShowNotificationCallback} from '../../../types/utils'
-const Tether: any = (require('../../../components/Tether/Tether') as any).default
+import {ShowNotificationCallback, TypedValue} from '../../../types/utils'
+import Tether from '../../../components/Tether/Tether'
 import NewRow from './NewRow'
 import Row from './Row'
 import HeaderCell from './HeaderCell'
@@ -25,7 +25,7 @@ import {Field, Model, Viewer, Project} from '../../../types/types'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import ModelHeader from '../ModelHeader'
-const gettingStartedState: any = require('../../../reducers/GettingStartedState')
+import {GettingStartedState, nextStep} from '../../../reducers/GettingStartedState'
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
@@ -34,7 +34,7 @@ interface Props {
   fields: Field[]
   project: Project
   model: Model
-  gettingStartedState: any
+  gettingStartedState: GettingStartedState
   nextStep: () => void
 }
 
@@ -66,11 +66,11 @@ class BrowserView extends React.Component<Props, State> {
     showNotification: ShowNotificationCallback
   }
 
-  _lokka: any
-
   shouldComponentUpdate: any
 
-  constructor(props) {
+  private lokka: any
+
+  constructor(props: Props) {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
@@ -80,7 +80,7 @@ class BrowserView extends React.Component<Props, State> {
     const headers = {Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab'}
     const transport = new Transport(clientEndpoint, {headers})
 
-    this._lokka = new Lokka({transport})
+    this.lokka = new Lokka({transport})
 
     this.state = {
       nodes: Immutable.List<Immutable.Map<string, any>>(),
@@ -97,272 +97,18 @@ class BrowserView extends React.Component<Props, State> {
     }
   }
 
-  componentWillMount() {
-    this._reloadData()
+  componentWillMount = () => {
+    this.reloadData()
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     analytics.track('models/browser: viewed', {
       model: this.props.params.modelName,
     })
   }
 
-  _handleScroll(e) {
-    if (!this.state.loading && e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 100) {
-      this._loadNextPage()
-    }
-  }
-
-  _setSortOrder(field) {
-    const order = this.state.orderBy.fieldName === field.name
-      ? (this.state.orderBy.order === 'ASC' ? 'DESC' : 'ASC')
-      : 'ASC'
-
-    this.setState(
-      {
-        orderBy: {
-          fieldName: field.name,
-          order,
-        },
-      } as State,
-      this._reloadData
-    )
-  }
-
-  _loadData(skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> {
-    const fieldNames = this.props.fields
-      .map((field) => isScalar(field.typeIdentifier)
-        ? field.name
-        : `${field.name} { id }`)
-      .join(' ')
-
-    const filterQuery = this.state.filter
-      .filter((v) => v !== null)
-      .map((value, fieldName) => `${fieldName}: ${value}`)
-      .join(' ')
-
-    const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
-    const orderBy = `orderBy: ${this.state.orderBy.fieldName}_${this.state.orderBy.order}`
-    const query = `
-      {
-        all${this.props.model.namePlural}(take: 50 skip: ${skip} ${filter} ${orderBy}) {
-          ${fieldNames}
-        }
-      }
-    `
-    return this._lokka.query(query)
-      .then((results) => {
-        const nodes = Immutable.List(results[`all${this.props.model.namePlural}`])
-          .map(Immutable.Map)
-
-        // check if it's the end of the data
-        const reachedEnd = !reload && (nodes.isEmpty() || (!this.state.nodes.isEmpty() &&
-          this.state.nodes.last().get('id') === nodes.last().get('id')))
-        this.setState({reachedEnd} as State)
-
-        return nodes
-      })
-      .catch((err) => {
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
-        throw err
-      })
-  }
-
-  _loadNextPage() {
-    if (this.state.reachedEnd) {
-      return
-    }
-
-    this.setState({loading: true} as State)
-
-    this._loadData(this.state.nodes.size, false)
-      .then((nodes) => {
-        this.setState({
-          nodes: this.state.nodes.concat(nodes),
-          loading: false,
-        } as State)
-      })
-  }
-
-  _reloadData = () => {
-    this.setState({loading: true, reachedEnd: false} as State)
-    return this._loadData(0, true)
-      .then((nodes) => {
-        this.setState({nodes, loading: false} as State)
-        // _update side nav model node count
-        // THIS IS A HACK
-        sideNavSyncer.notifySideNav()
-      })
-  }
-
-  _updateFilter(value, field) {
-    this.setState({filter: this.state.filter.set(field.name, value)} as State, this._reloadData)
-
-    // TODO: select cut set of selected and filtered nodes
-    this.setState({selectedNodeIds: Immutable.List()} as State)
-  }
-
-  _deleteNode(nodeId) {
-    this.setState({loading: true} as State)
-    const mutation = `
-      {
-        delete${this.props.model.name}(
-          id: "${nodeId}"
-        ) {
-          id
-        }
-      }
-    `
-    return this._lokka.mutate(mutation)
-      .then(analytics.track('models/browser: deleted node', {
-        project: this.props.params.projectName,
-        model: this.props.params.modelName,
-      }))
-      .catch((err) => {
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
-      })
-  }
-
-  _updateNode(value, field, callback, nodeId, index) {
-    const mutation = `
-      {
-        update${this.props.model.name}(
-          id: "${nodeId}"
-          ${toGQL(value, field)}
-        ) {
-          id
-        }
-      }
-    `
-    this._lokka.mutate(mutation)
-      .then(() => {
-        callback(true)
-
-        const {nodes} = this.state
-
-        this.setState({nodes: nodes.setIn([index, field.name], value)} as State)
-
-        analytics.track('models/browser: updated node', {
-          project: this.props.params.projectName,
-          model: this.props.params.modelName,
-          field: field.name,
-        })
-      })
-      .catch((err) => {
-        callback(false)
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
-      })
-  }
-
-  _addNode(fieldValues: { [key: string]: any }) {
-
-    const inputString = fieldValues
-      .mapToArray((fieldName, obj) => obj)
-      .filter(({value}) => value !== null)
-      .filter(({field}) => (!isNonScalarList(field)))
-      .map(({field, value}) => toGQL(value, field))
-      .join(' ')
-
-    const inputArgumentsString = inputString.length > 0 ? `(${inputString})` : ''
-
-    this.setState({loading: true} as State)
-    const mutation = `
-      {
-        create${this.props.model.name}${inputArgumentsString} {
-          id
-        }
-      }
-    `
-    this._lokka.mutate(mutation)
-      .then(() => this._reloadData())
-      .then(() => {
-        this.setState({newRowVisible: false} as State)
-
-        analytics.track('models/browser: created node', {
-          project: this.props.params.projectName,
-          model: this.props.params.modelName,
-        })
-
-        // getting-started onboarding step
-        if (this.props.model.name === 'Todo' && (
-            this.props.gettingStartedState.isCurrentStep('STEP6_ADD_DATA_ITEM_1') ||
-            this.props.gettingStartedState.isCurrentStep('STEP7_ADD_DATA_ITEM_2')
-          )) {
-          this.props.nextStep()
-        }
-      })
-      .catch((err) => {
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
-        this.setState({loading: false} as State)
-      })
-  }
-
-  _calculateColumnWidths(): any {
-    const cellFontOptions = {
-      font: 'Open Sans',
-      fontSize: '12px',
-    }
-    const headerFontOptions = {
-      font: 'Open Sans',
-      fontSize: '12px',
-    }
-
-    return this.props.fields.mapToObject(
-      (field) => field.name,
-      (field) => {
-        const cellWidths = this.state.nodes
-          .map((node) => node.get(field.name))
-          .map((value) => valueToString(value, field, false))
-          .map((str) => calculateSize(str, cellFontOptions).width + 41)
-          .toArray()
-
-        const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
-
-        const maxWidth = Math.max(...cellWidths, headerWidth)
-        const lowerLimit = 150
-        const upperLimit = 400
-
-        return maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)
-      }
-    )
-  }
-
-  _onSelectRow(nodeId) {
-    if (this.state.selectedNodeIds.includes(nodeId)) {
-      this.setState({selectedNodeIds: this.state.selectedNodeIds.filter((id) => id !== nodeId)} as State)
-    } else {
-      this.setState({selectedNodeIds: this.state.selectedNodeIds.push(nodeId)} as State)
-    }
-  }
-
-  _isSelected(nodeId) {
-    return this.state.selectedNodeIds.indexOf(nodeId) > -1
-  }
-
-  _selectAllOnClick(checked) {
-    if (checked) {
-      const selectedNodeIds = this.state.nodes.map((node) => node.get('id'))
-      this.setState({selectedNodeIds: selectedNodeIds} as State)
-    } else {
-      this.setState({selectedNodeIds: Immutable.List()} as State)
-    }
-  }
-
-  _deleteSelectedNodes() {
-    if (confirm(`Do you really want to delete ${this.state.selectedNodeIds.size} node(s)?`)) {
-      // only reload once after all the deletions
-      Promise.all(this.state.selectedNodeIds.toArray().map((nodeId) => this._deleteNode(nodeId)))
-        .then(() => this._reloadData())
-        .then(() => {
-          this.setState({loading: false} as State)
-        })
-
-      this.setState({selectedNodeIds: Immutable.List()} as State)
-    }
-  }
-
   render() {
-    const columnWidths = this._calculateColumnWidths()
+    const columnWidths = this.calculateColumnWidths()
     const tableWidth = this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0)
       + 34 // checkbox
       + 250 // add column
@@ -397,7 +143,7 @@ class BrowserView extends React.Component<Props, State> {
             </div>
           </Tether>
           {this.state.selectedNodeIds.size > 0 &&
-          <div className={`${classes.button} ${classes.red}`} onClick={() => this._deleteSelectedNodes()}>
+          <div className={`${classes.button} ${classes.red}`} onClick={this.deleteSelectedNodes}>
             <Icon
               width={16}
               height={16}
@@ -416,7 +162,7 @@ class BrowserView extends React.Component<Props, State> {
               src={require('assets/icons/search.svg')}
             />
           </div>
-          <div className={classes.button} onClick={() => this._reloadData()}>
+          <div className={classes.button} onClick={this.reloadData}>
             <Icon
               width={16}
               height={16}
@@ -433,7 +179,7 @@ class BrowserView extends React.Component<Props, State> {
           <div className={classes.tableContainer} style={{ width: tableWidth }}>
             <div className={classes.tableHead}>
               <CheckboxCell
-                onChange={(checked) => this._selectAllOnClick(checked)}
+                onChange={this.selectAllOnClick}
                 checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
               />
               {this.props.fields.map((field) => (
@@ -442,8 +188,8 @@ class BrowserView extends React.Component<Props, State> {
                   field={field}
                   width={columnWidths[field.name]}
                   sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
-                  toggleSortOrder={() => this._setSortOrder(field)}
-                  updateFilter={(value) => this._updateFilter(value, field)}
+                  toggleSortOrder={() => this.setSortOrder(field)}
+                  updateFilter={(value) => this.updateFilter(value, field)}
                   filterVisible={this.state.filtersVisible}
                   params={this.props.params}
                 />
@@ -454,14 +200,14 @@ class BrowserView extends React.Component<Props, State> {
             <NewRow
               model={this.props.model}
               columnWidths={columnWidths}
-              add={(data) => this._addNode(data)}
+              add={this.addNode}
               cancel={(e) => this.setState({ newRowVisible: false } as State)}
               projectId={this.props.project.id}
-              reload={this._reloadData}
+              reload={this.reloadData}
             />
             }
             <div className={classes.tableBody}>
-              <ScrollBox onScroll={(e) => this._handleScroll(e)}>
+              <ScrollBox onScroll={this.handleScroll}>
                 <div className={classes.tableBodyContainer}>
                   {this.state.nodes.map((node, index) => (
                     <Row
@@ -470,10 +216,10 @@ class BrowserView extends React.Component<Props, State> {
                       projectId={this.props.project.id}
                       columnWidths={columnWidths}
                       node={node.toJS()}
-                      update={(key, value, callback) => this._updateNode(key, value, callback, node.get('id'), index)}
-                      isSelected={this._isSelected(node.get('id'))}
-                      onSelect={(event) => this._onSelectRow(node.get('id'))}
-                      reload={this._reloadData}
+                      update={(key, value, callback) => this.updateNode(key, value, callback, node.get('id'), index)}
+                      isSelected={this.isSelected(node.get('id'))}
+                      onSelect={(event) => this.onSelectRow(node.get('id'))}
+                      reload={this.reloadData}
                     />
                   ))}
                 </div>
@@ -484,6 +230,260 @@ class BrowserView extends React.Component<Props, State> {
       </div>
     )
   }
+
+  private handleScroll = (e) => {
+    if (!this.state.loading && e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 100) {
+      this.loadNextPage()
+    }
+  }
+
+  private setSortOrder = (field: Field) => {
+    const order = this.state.orderBy.fieldName === field.name
+      ? (this.state.orderBy.order === 'ASC' ? 'DESC' : 'ASC')
+      : 'ASC'
+
+    this.setState(
+      {
+        orderBy: {
+          fieldName: field.name,
+          order,
+        },
+      } as State,
+      this.reloadData
+    )
+  }
+
+  private loadData = (skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> => {
+    const fieldNames = this.props.fields
+      .map((field) => isScalar(field.typeIdentifier)
+        ? field.name
+        : `${field.name} { id }`)
+      .join(' ')
+
+    const filterQuery = this.state.filter
+      .filter((v) => v !== null)
+      .map((value, fieldName) => `${fieldName}: ${value}`)
+      .join(' ')
+
+    const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
+    const orderBy = `orderBy: ${this.state.orderBy.fieldName}_${this.state.orderBy.order}`
+    const query = `
+      {
+        all${this.props.model.namePlural}(take: 50 skip: ${skip} ${filter} ${orderBy}) {
+          ${fieldNames}
+        }
+      }
+    `
+    return this.lokka.query(query)
+      .then((results) => {
+        const nodes = Immutable.List(results[`all${this.props.model.namePlural}`])
+          .map(Immutable.Map)
+
+        // check if it's the end of the data
+        const reachedEnd = !reload && (nodes.isEmpty() || (!this.state.nodes.isEmpty() &&
+          this.state.nodes.last().get('id') === nodes.last().get('id')))
+        this.setState({reachedEnd} as State)
+
+        return nodes
+      })
+      .catch((err) => {
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+        throw err
+      })
+  }
+
+  private loadNextPage = () => {
+    if (this.state.reachedEnd) {
+      return
+    }
+
+    this.setState({loading: true} as State)
+
+    this.loadData(this.state.nodes.size, false)
+      .then((nodes) => {
+        this.setState({
+          nodes: this.state.nodes.concat(nodes),
+          loading: false,
+        } as State)
+      })
+  }
+
+  private reloadData = () => {
+    this.setState({loading: true, reachedEnd: false} as State)
+    return this.loadData(0, true)
+      .then((nodes) => {
+        this.setState({nodes, loading: false} as State)
+        // _update side nav model node count
+        // THIS IS A HACK
+        sideNavSyncer.notifySideNav()
+      })
+  }
+
+  private updateFilter = (value: TypedValue, field: Field) => {
+    this.setState({filter: this.state.filter.set(field.name, value)} as State, this.reloadData)
+
+    // TODO: select cut set of selected and filtered nodes
+    this.setState({selectedNodeIds: Immutable.List()} as State)
+  }
+
+  private deleteNode = (nodeId: string) => {
+    this.setState({loading: true} as State)
+    const mutation = `
+      {
+        delete${this.props.model.name}(
+          id: "${nodeId}"
+        ) {
+          id
+        }
+      }
+    `
+    return this.lokka.mutate(mutation)
+      .then(analytics.track('models/browser: deleted node', {
+        project: this.props.params.projectName,
+        model: this.props.params.modelName,
+      }))
+      .catch((err) => {
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+      })
+  }
+
+  private updateNode = (value: TypedValue, field: Field, callback, nodeId: string, index: number) => {
+    const mutation = `
+      {
+        update${this.props.model.name}(
+          id: "${nodeId}"
+          ${toGQL(value, field)}
+        ) {
+          id
+        }
+      }
+    `
+    this.lokka.mutate(mutation)
+      .then(() => {
+        callback(true)
+
+        const {nodes} = this.state
+
+        this.setState({nodes: nodes.setIn([index, field.name], value)} as State)
+
+        analytics.track('models/browser: updated node', {
+          project: this.props.params.projectName,
+          model: this.props.params.modelName,
+          field: field.name,
+        })
+      })
+      .catch((err) => {
+        callback(false)
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+      })
+  }
+
+  private addNode = (fieldValues: { [key: string]: any }) => {
+
+    const inputString = fieldValues
+      .mapToArray((fieldName, obj) => obj)
+      .filter(({value}) => value !== null)
+      .filter(({field}) => (!isNonScalarList(field)))
+      .map(({field, value}) => toGQL(value, field))
+      .join(' ')
+
+    const inputArgumentsString = inputString.length > 0 ? `(${inputString})` : ''
+
+    this.setState({loading: true} as State)
+    const mutation = `
+      {
+        create${this.props.model.name}${inputArgumentsString} {
+          id
+        }
+      }
+    `
+    this.lokka.mutate(mutation)
+      .then(() => this.reloadData())
+      .then(() => {
+        this.setState({newRowVisible: false} as State)
+
+        analytics.track('models/browser: created node', {
+          project: this.props.params.projectName,
+          model: this.props.params.modelName,
+        })
+
+        // getting-started onboarding step
+        if (this.props.model.name === 'Todo' && (
+            this.props.gettingStartedState.isCurrentStep('STEP6_ADD_DATA_ITEM_1') ||
+            this.props.gettingStartedState.isCurrentStep('STEP7_ADD_DATA_ITEM_2')
+          )) {
+          this.props.nextStep()
+        }
+      })
+      .catch((err) => {
+        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
+        this.setState({loading: false} as State)
+      })
+  }
+
+  private calculateColumnWidths = (): any => {
+    const cellFontOptions = {
+      font: 'Open Sans',
+      fontSize: '12px',
+    }
+    const headerFontOptions = {
+      font: 'Open Sans',
+      fontSize: '12px',
+    }
+
+    return this.props.fields.mapToObject(
+      (field) => field.name,
+      (field) => {
+        const cellWidths = this.state.nodes
+          .map((node) => node.get(field.name))
+          .map((value) => valueToString(value, field, false))
+          .map((str) => calculateSize(str, cellFontOptions).width + 41)
+          .toArray()
+
+        const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
+
+        const maxWidth = Math.max(...cellWidths, headerWidth)
+        const lowerLimit = 150
+        const upperLimit = 400
+
+        return maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)
+      }
+    )
+  }
+
+  private onSelectRow = (nodeId: string) => {
+    if (this.state.selectedNodeIds.includes(nodeId)) {
+      this.setState({selectedNodeIds: this.state.selectedNodeIds.filter((id) => id !== nodeId)} as State)
+    } else {
+      this.setState({selectedNodeIds: this.state.selectedNodeIds.push(nodeId)} as State)
+    }
+  }
+
+  private isSelected = (nodeId: string): boolean => {
+    return this.state.selectedNodeIds.indexOf(nodeId) > -1
+  }
+
+  private selectAllOnClick = (checked: boolean) => {
+    if (checked) {
+      const selectedNodeIds = this.state.nodes.map((node) => node.get('id'))
+      this.setState({selectedNodeIds: selectedNodeIds} as State)
+    } else {
+      this.setState({selectedNodeIds: Immutable.List()} as State)
+    }
+  }
+
+  private deleteSelectedNodes = () => {
+    if (confirm(`Do you really want to delete ${this.state.selectedNodeIds.size} node(s)?`)) {
+      // only reload once after all the deletions
+      Promise.all(this.state.selectedNodeIds.toArray().map((nodeId) => this.deleteNode(nodeId)))
+        .then(() => this.reloadData())
+        .then(() => {
+          this.setState({loading: false} as State)
+        })
+
+      this.setState({selectedNodeIds: Immutable.List()} as State)
+    }
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -493,7 +493,7 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({nextStep: gettingStartedState.nextStep}, dispatch)
+  return bindActionCreators({nextStep: nextStep}, dispatch)
 }
 
 const ReduxContainer = connect(
