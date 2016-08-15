@@ -4,13 +4,14 @@ import Icon from '../../../../components/Icon/Icon'
 import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
 import {TypedValue} from '../../../../types/utils'
+import {valueToString, stringToValue} from '../../../../utils/valueparser'
 const classes: any = require('./ScalarListCell.scss')
 
 interface State {
   values: TypedValue[]
   isEditing: boolean
   filter: string
-  newValue: TypedValue
+  newValue: string
   valuesEdited: boolean
 }
 
@@ -67,7 +68,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                 {!this.state.isEditing && (
                   <span>
                       {this.state.newValue ? this.state.newValue : 'Add new item ...'}
-                    </span>
+                  </span>
                 )}
                 <Icon
                   onClick={this.addNewValue}
@@ -82,7 +83,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   className={classes.item}
                   onClick={() => null}
                 >
-                  <div>{value}</div>
+                  <div>{valueToString(value, this.props.field, true)}</div>
                   <Icon
                     src={require('assets/new_icons/remove.svg')}
                     width={14}
@@ -117,7 +118,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private addNewValue = () => {
-    this.state.values.push(this.state.newValue)
+    this.state.values.push(stringToValue(this.state.newValue, this.props.field))
     this.setState({
       newValue: '',
     } as State)
