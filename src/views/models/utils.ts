@@ -51,6 +51,7 @@ function valueToGQL(value: TypedValue, field: Field): string {
     }
     return value as string
   }
+
   return JSON.stringify(value)
 }
 
