@@ -262,28 +262,28 @@ describe('valueToString', () => {
 
   it('parses an int array and exports it as a JSON array', () => {
     const field = Object.assign({}, listTestField, {
-      typeIdentifier: 'Int'
+      typeIdentifier: 'Int',
     })
     expect(valueToString([1,3,4], field, true)).toBe('[1, 3, 4]')
   })
 
   it('parses a float array and exports it as a JSON array', () => {
     const field = Object.assign({}, listTestField, {
-      typeIdentifier: 'Float'
+      typeIdentifier: 'Float',
     })
     expect(valueToString([1.123,3.14,4.2], field, true)).toBe('[1.123, 3.14, 4.2]')
   })
 
   it('parses a string array and exports it as a JSON array', () => {
     const field = Object.assign({}, listTestField, {
-      typeIdentifier: 'String'
+      typeIdentifier: 'String',
     })
-    expect(valueToString(["Hello","World","What?"], field, true)).toBe('["Hello", "World", "What?"]')
+    expect(valueToString(['Hello','World','What?'], field, true)).toBe('["Hello", "World", "What?"]')
   })
 
   it('parses an boolean array and exports it as a JSON array', () => {
     const field = Object.assign({}, listTestField, {
-      typeIdentifier: 'Boolean'
+      typeIdentifier: 'Boolean',
     })
     expect(valueToString([true,false,true], field, true)).toBe('[true, false, true]')
   })
@@ -292,11 +292,11 @@ describe('valueToString', () => {
     const field = Object.assign({}, listTestField, {
       typeIdentifier: 'Enum',
       enumValues: [
-        "AMAZING",
-        "ADMIN",
-        "COOL",
-        "BASIC"
-      ]
+        'AMAZING',
+        'ADMIN',
+        'COOL',
+        'BASIC',
+      ],
     })
     expect(valueToString(["ADMIN","COOL","AMAZING"], field, true)).toBe('["ADMIN", "COOL", "AMAZING"]')
   })
