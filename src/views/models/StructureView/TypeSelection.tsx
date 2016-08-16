@@ -11,7 +11,6 @@ const types = [
   'Boolean',
   'String',
   'DateTime',
-  'GraphQLID',
   'Enum',
 ]
 
