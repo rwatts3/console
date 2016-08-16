@@ -298,7 +298,7 @@ describe('valueToString', () => {
         'BASIC',
       ],
     })
-    expect(valueToString(["ADMIN","COOL","AMAZING"], field, true)).toBe('["ADMIN", "COOL", "AMAZING"]')
+    expect(valueToString(['ADMIN','COOL','AMAZING'], field, true)).toBe('["ADMIN", "COOL", "AMAZING"]')
   })
 
   it('parses an date array and exports it as a JSON array', () => {
