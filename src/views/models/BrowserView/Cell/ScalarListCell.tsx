@@ -96,7 +96,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
           </div>
           <div className={classes.footer}>
             <div className={classes.savedIndicator}>
-              All changes saved
+              {this.state.valuesEdited ? 'All changes saved' : ''}
             </div>
             <div className={classes.close} onClick={() => this.props.methods.cancel()}>
               Close
@@ -110,6 +110,10 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   private handleDeleteValue = (index: number) => {
     const result = this.state.values.slice(0)
     result.splice(index, 1)
+    this.setState({
+      values: result,
+      valuesEdited: true,
+    } as State)
     this.props.methods.save(result, true)
   }
 
@@ -118,10 +122,14 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private addNewValue = () => {
-    this.state.values.push(stringToValue(this.state.newValue, this.props.field))
+
+    const current = this.state.values.slice(0)
+    current.push(stringToValue(this.state.newValue, this.props.field))
     this.setState({
       newValue: '',
+      valuesEdited: true,
+      values: current,
     } as State)
-    this.props.methods.save(this.state.values, true)
+    this.props.methods.save(current, true)
   }
 }
