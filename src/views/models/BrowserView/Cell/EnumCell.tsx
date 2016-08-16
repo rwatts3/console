@@ -3,9 +3,20 @@ import { CellProps } from './cells'
 import { stringToValue } from '../../../../utils/valueparser'
 
 export default class EnumCell extends React.Component<CellProps<string>, {}> {
+
+  refs: {
+    [key: string]: any
+    enumselector: HTMLSelectElement
+  }
+
+  componentDidMount() {
+    this.refs.enumselector
+  }
+
   render() {
     return (
       <select
+        ref='enumselector'
         autoFocus
         defaultValue={this.props.value}
         onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}

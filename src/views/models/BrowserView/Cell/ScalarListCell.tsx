@@ -4,7 +4,7 @@ import Icon from '../../../../components/Icon/Icon'
 import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
 import {TypedValue} from '../../../../types/utils'
-import {valueToString, stringToValue} from '../../../../utils/valueparser'
+import {stringToValue, atomicValueToString} from '../../../../utils/valueparser'
 const classes: any = require('./ScalarListCell.scss')
 
 interface State {
@@ -83,7 +83,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   className={classes.item}
                   onClick={() => null}
                 >
-                  <div>{valueToString(value, this.props.field, true)}</div>
+                  <div>{atomicValueToString(value, this.props.field, true)}</div>
                   <Icon
                     src={require('assets/new_icons/remove.svg')}
                     width={14}
@@ -114,7 +114,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private handleNewValueChange = (value: TypedValue) => {
-    this.setState({newValue: value, isEditing: false} as State)
+    //this.setState({newValue: value, isEditing: false} as State)
   }
 
   private addNewValue = () => {

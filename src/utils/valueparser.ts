@@ -19,15 +19,28 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
     if (listIsEmpty(value as (ScalarValue[] | NonScalarValue[]))) {
       return '[]'
     }
-    switch (field.typeIdentifier) {
-      case 'Boolean' || 'Int' || 'Float':
-        return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
-      default:
-        return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
+
+    if (isJSONNonQuoteType(field)) {
+      return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
+    } else {
+      return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
     }
 
   } else {
     return atomicValueToString(value as AtomicValue, field, returnNullAsString)
+  }
+}
+
+function isJSONNonQuoteType(field: Field): boolean {
+  const type = field.typeIdentifier
+
+  switch (type) {
+    case 'Boolean':
+    case 'Int':
+    case 'Float':
+      return true
+    default:
+      return false
   }
 }
 
