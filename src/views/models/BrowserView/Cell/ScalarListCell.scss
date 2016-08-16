@@ -45,6 +45,10 @@
   cursor: pointer;
   border-bottom: 1px solid $grey2;
 
+  select {
+    height: 50px;
+  }
+
   textarea {
     height: 50px;
     position: relative;
@@ -80,6 +84,10 @@
       visibility: hidden;
     }
   }
+}
+
+.existing {
+  padding: 35px;
 }
 
 .footer {

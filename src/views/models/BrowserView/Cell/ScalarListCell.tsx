@@ -5,6 +5,8 @@ import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
 import {TypedValue} from '../../../../types/utils'
 import {stringToValue, atomicValueToString} from '../../../../utils/valueparser'
+import {Field} from '../../../../types/types'
+import {classnames} from '../../../../utils/classnames'
 const classes: any = require('./ScalarListCell.scss')
 
 interface State {
@@ -28,10 +30,12 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     }
   }
 
+  private atomicField: Field = Object.assign({}, this.props.field, {isList: false})
+
   render() {
     const requirements: CellRequirements = {
       value: this.state.newValue,
-      field: this.props.field,
+      field: this.atomicField,
       projectId: this.props.projectId,
       nodeId: this.props.nodeId,
       methods: {
@@ -80,7 +84,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
               {this.props.value.map((value, index) => (
                 <div
                   key={index}
-                  className={classes.item}
+                  className={classnames(classes.item, classes.existing)}
                   onClick={() => null}
                 >
                   <div>{atomicValueToString(value, this.props.field, true)}</div>
@@ -118,13 +122,12 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private handleNewValueChange = (value: TypedValue) => {
-    this.setState({newValue: value, isEditing: false} as State)
+    this.setState({newValue: value, isEditing: true} as State)
   }
 
   private addNewValue = () => {
-
     const current = this.state.values.slice(0)
-    current.push(stringToValue(this.state.newValue, this.props.field))
+    current.push(stringToValue(this.state.newValue, this.atomicField))
     this.setState({
       newValue: '',
       valuesEdited: true,
