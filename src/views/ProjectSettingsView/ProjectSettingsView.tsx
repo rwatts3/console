@@ -70,9 +70,12 @@ class ProjectSettingsView extends React.Component<Props, State> {
               Project Name
             </div>
             <span>
-              <input className={classes.field}
-                     type='text' placeholder='Name' defaultValue={this.props.viewer.project.name}
-                     onChange={(e) => this.updateProjectName((e.target as HTMLInputElement).value)}
+              <input
+                className={classes.field}
+                type='text'
+                placeholder='Name'
+                defaultValue={this.props.viewer.project.name}
+                onChange={(e) => this.updateProjectName((e.target as HTMLInputElement).value)}
               />
               {this.state.nameChanged &&
               <div
@@ -93,8 +96,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
                 {this.props.viewer.project.id}
               </span>
 
-              <CopyToClipboard text={this.props.viewer.project.id}
-                               onCopy={() => this.setState({idCopied: true} as State)}>
+              <CopyToClipboard
+                text={this.props.viewer.project.id}
+                onCopy={() => this.setState({idCopied: true} as State)}
+              >
                 <span className={classes.label}>
                   {this.state.idCopied ? 'Copied' : 'Copy'}
                 </span>
@@ -106,13 +111,14 @@ class ProjectSettingsView extends React.Component<Props, State> {
               System Tokens
             </div>
             <div className={classes.tokens}>
-            {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((systemToken) => (
-              <SystemTokenRow
-                key={systemToken.id}
-                projectId={this.props.viewer.project.id}
-                systemToken={systemToken}
-              />
-            ))}
+              <SystemTokenRow addNew={true} projectId={this.props.viewer.project.id} systemToken={null}/>
+              {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((systemToken) => (
+                <SystemTokenRow
+                  key={systemToken.id}
+                  projectId={this.props.viewer.project.id}
+                  systemToken={systemToken}
+                />
+              ))}
             </div>
           </div>
           <div className={classes.category}>
@@ -229,33 +235,33 @@ export default Relay.createContainer(ProjectSettingsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${Header.getFragment('project')}
-          name
-          id
-          systemTokens (first: 1000) {
-            edges {
-              node {
-                ${SystemTokenRow.getFragment('systemToken')}
-                id
-                name
-                token
-              }
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                project: projectByName(projectName: $projectName) {
+                    ${Header.getFragment('project')}
+                    name
+                    id
+                    systemTokens (first: 1000) {
+                        edges {
+                            node {
+                                ${SystemTokenRow.getFragment('systemToken')}
+                                id
+                                name
+                                token
+                            }
+                        }
+                    }
+                }
+                user {
+                    projects(first: 1000) {
+                        edges {
+                            node
+                        }
+                    }
+                }
+                ${Header.getFragment('viewer')}
             }
-          }
-        }
-        user {
-          projects(first: 1000) {
-            edges {
-              node
-            }
-          }
-        }
-        ${Header.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

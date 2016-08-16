@@ -1,9 +1,8 @@
 import * as Relay from 'react-relay'
-import {SystemToken} from '../types/types'
 
 interface Props {
   projectId: string
-  systemToken: SystemToken
+  tokenName: string
 }
 
 export default class AddSystemTokenMutation extends Relay.Mutation<Props, {}> {
@@ -35,6 +34,9 @@ export default class AddSystemTokenMutation extends Relay.Mutation<Props, {}> {
   }
 
   getVariables() {
-    return this.props
+    return {
+      projectId: this.props.projectId,
+      name: this.props.tokenName,
+    }
   }
 }

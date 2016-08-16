@@ -32,7 +32,7 @@ export default class DeleteSystemTokenMutation extends Relay.Mutation<Props, {}>
 
   getVariables() {
     return {
-      tokenId: this.props.tokenId,
+      systemTokenId: this.props.tokenId,
     }
   }
 
