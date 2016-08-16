@@ -53,7 +53,7 @@ function listIsEmpty(value: (Array<AtomicValue>)): boolean {
   return value.length === 0
 }
 
-export function atomicValueToString(value: AtomicValue, field: Field, returnNullAsString: boolean): string {
+export function atomicValueToString(value: AtomicValue, field: Field, returnNullAsString: boolean = true): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''
   }
@@ -78,7 +78,6 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
     return null
   }
   const {isList, isRequired, typeIdentifier} = field
-
   if (rawValue === '' && !isRequired) {
     return typeIdentifier === 'String' ? '' : null
   }
