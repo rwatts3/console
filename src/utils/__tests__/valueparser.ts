@@ -303,7 +303,7 @@ describe('valueToString', () => {
 
   it('parses an date array and exports it as a JSON array', () => {
     const field = Object.assign({}, listTestField, {
-      typeIdentifier: 'DateTime'
+      typeIdentifier: 'DateTime',
     })
     const date1 = Date.now()
     const date2 = new Date(0)
