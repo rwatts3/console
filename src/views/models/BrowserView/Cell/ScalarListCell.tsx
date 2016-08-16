@@ -114,7 +114,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private handleNewValueChange = (value: TypedValue) => {
-    // this.setState({newValue: value, isEditing: false} as State)
+    this.setState({newValue: value, isEditing: false} as State)
   }
 
   private addNewValue = () => {

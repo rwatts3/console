@@ -287,6 +287,30 @@ describe('valueToString', () => {
     })
     expect(valueToString([true,false,true], field, true)).toBe('[true, false, true]')
   })
+
+  it('parses an enum array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Enum',
+      enumValues: [
+        "AMAZING",
+        "ADMIN",
+        "COOL",
+        "BASIC"
+      ]
+    })
+    expect(valueToString(["ADMIN","COOL","AMAZING"], field, true)).toBe('["ADMIN", "COOL", "AMAZING"]')
+  })
+
+  it('parses an date array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'DateTime'
+    })
+    const date1 = Date.now()
+    const date2 = new Date(0)
+    expect(
+      valueToString([date1, date2], field, true)
+    ).toBe(`["${new Date(date1).toISOString()}", "${new Date(date2).toISOString()}"]`)
+  })
 })
 
 describe('identities', () => {
