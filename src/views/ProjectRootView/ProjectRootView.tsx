@@ -124,7 +124,7 @@ class ProjectRootView extends React.Component<Props, {}> {
     let projectName = window.prompt('Project name:')
     while (projectName != null && !validateProjectName(projectName)) {
       projectName = window.prompt('The inserted project name was invalid.' +
-        ' Enter a triggerValid project name, like "Project 2" or "My Project":')
+        ' Enter a valid project name, like "Project 2" or "My Project" (First letter capitalized):')
     }
     if (projectName) {
       Relay.Store.commitUpdate(
