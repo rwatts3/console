@@ -4,15 +4,6 @@ import { stringToValue } from '../../../../utils/valueparser'
 
 export default class EnumCell extends React.Component<CellProps<string>, {}> {
 
-  refs: {
-    [key: string]: any
-    enumselector: HTMLSelectElement
-  }
-
-  componentDidMount() {
-    this.refs.enumselector
-  }
-
   render() {
     return (
       <select
