@@ -238,7 +238,55 @@ describe('stringToValue', () => {
 })
 
 describe('valueToString', () => {
-  // TODO
+  const listTestField = Object.assign({}, testField, {isList: true})
+
+  it('parses a null atomic value and should return a "null" string', () => {
+    expect(valueToString(null, testField, true)).toBe('null')
+  })
+
+  it('parses a null list value and should return a "null" string', () => {
+    expect(valueToString(null, listTestField, true)).toBe('null')
+  })
+
+  it('parses a null atomic value and should return an empty string', () => {
+    expect(valueToString(null, testField, false)).toBe('')
+  })
+
+  it('parses a null list value and should return an empty string', () => {
+    expect(valueToString(null, listTestField, false)).toBe('')
+  })
+
+  it('parses an empty list and returns an empty JSON Array as string', () => {
+    expect(valueToString([], listTestField, true)).toBe('[]')
+  })
+
+  it('parses an int array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Int'
+    })
+    expect(valueToString([1,3,4], field, true)).toBe('[1, 3, 4]')
+  })
+
+  it('parses a float array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Float'
+    })
+    expect(valueToString([1.123,3.14,4.2], field, true)).toBe('[1.123, 3.14, 4.2]')
+  })
+
+  it('parses a string array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'String'
+    })
+    expect(valueToString(["Hello","World","What?"], field, true)).toBe('["Hello", "World", "What?"]')
+  })
+
+  it('parses an boolean array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Boolean'
+    })
+    expect(valueToString([true,false,true], field, true)).toBe('[true, false, true]')
+  })
 })
 
 describe('identities', () => {
