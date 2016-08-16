@@ -19,6 +19,8 @@ interface State {
 
 export default class ScalarListCell extends React.Component<CellRequirements, State> {
 
+  private atomicField: Field = Object.assign({}, this.props.field, {isList: false})
+
   constructor(props: CellRequirements) {
     super(props)
     this.state = {
@@ -29,8 +31,6 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       valuesEdited: false,
     }
   }
-
-  private atomicField: Field = Object.assign({}, this.props.field, {isList: false})
 
   render() {
     const requirements: CellRequirements = {
