@@ -2,7 +2,7 @@
 @import '~styles/mixins';
 
 .root {
-  margin: 12px 0;
+  margin-top: 12px;
   padding: 12px;
   border: 1px solid $grey2;
   width: auto;
@@ -10,6 +10,7 @@
   cursor: hand;
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
 
   &:hover {
     background-color: $grey2;
@@ -28,9 +29,16 @@
 .content {
   display: inline-flex;
   flex-direction: column;
+  width: 100%;
 
   .name {
     font-weight: 600;
+
+    input {
+      width: 100%;
+      border: 0;
+      background-color: transparent;
+    }
   }
 
   .token {
