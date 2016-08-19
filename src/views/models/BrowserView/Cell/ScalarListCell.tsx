@@ -4,7 +4,7 @@ import Icon from '../../../../components/Icon/Icon'
 import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
 import {TypedValue} from '../../../../types/utils'
-import {stringToValue, atomicValueToString} from '../../../../utils/valueparser'
+import {atomicValueToString} from '../../../../utils/valueparser'
 import {Field} from '../../../../types/types'
 import {classnames} from '../../../../utils/classnames'
 const classes: any = require('./ScalarListCell.scss')
@@ -127,7 +127,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
 
   private addNewValue = () => {
     const current = this.state.values.slice(0)
-    current.push(stringToValue(this.state.newValue, this.atomicField))
+    current.push(this.state.newValue)
     this.setState({
       newValue: '',
       valuesEdited: true,
