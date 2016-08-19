@@ -14,7 +14,9 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {isScalar} from '../../../utils/graphql'
-const {nextStep} = require('../../../reducers/GettingStartedState') as any
+import {nextStep} from '../../../reducers/GettingStartedState'
+import {validateModelName} from '../../../utils/nameValidator'
+import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 const classes: any = require('./StructureView.scss')
 
 interface Props {
@@ -58,36 +60,6 @@ class StructureView extends React.Component<Props, State> {
     })
   }
 
-  _toggleMenuDropdown = () => {
-    this.setState({menuDropdownVisible: !this.state.menuDropdownVisible} as State)
-  }
-
-  _deleteModel = () => {
-    this._toggleMenuDropdown()
-
-    if (window.confirm('Do you really want to delete this model?')) {
-      this.context.router.replace(`/${this.props.params.projectName}/models`)
-
-      Relay.Store.commitUpdate(
-        new DeleteModelMutation({
-          projectId: this.props.project.id,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
-            analytics.track('models/structure: deleted model', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
-            })
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.context.showNotification)
-          },
-        }
-      )
-    }
-  }
-
   render() {
 
     const scalars = this.props.fields.filter((field) => isScalar(field.typeIdentifier))
@@ -125,7 +97,7 @@ class StructureView extends React.Component<Props, State> {
             </Link>
           </Tether>
           {!this.props.model.isSystem &&
-          <div className={classes.button} onClick={this._toggleMenuDropdown}>
+          <div className={classes.button} onClick={this.toggleMenuDropdown}>
             <Icon
               width={16}
               height={16}
@@ -134,7 +106,10 @@ class StructureView extends React.Component<Props, State> {
           </div>}
           {this.state.menuDropdownVisible &&
           <div className={classes.menuDropdown}>
-            <div onClick={this._deleteModel}>
+            <div onClick={this.renameModel}>
+              Rename Model
+            </div>
+            <div onClick={this.deleteModel}>
               Delete Model
             </div>
           </div>
@@ -202,6 +177,68 @@ class StructureView extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private toggleMenuDropdown = () => {
+    this.setState({menuDropdownVisible: !this.state.menuDropdownVisible} as State)
+  }
+
+  private renameModel = () => {
+    let modelName = window.prompt('Model name:')
+    while (modelName != null && !validateModelName(modelName)) {
+      modelName = window.prompt('The inserted model name was invalid. Enter a valid model name, ' +
+                                'like "Model" or "MyModel" (first-letter capitalized and no spaces):')
+    }
+    const redirect = () => {
+      this.context.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
+    }
+
+    if (modelName) {
+      Relay.Store.commitUpdate(
+        new UpdateModelNameMutation({
+          name: modelName,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('model renamed', {
+              project: this.props.params.projectName,
+              model: modelName,
+            })
+            redirect()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
+        }
+      )
+    }
+  }
+
+  private deleteModel = () => {
+    this.toggleMenuDropdown()
+
+    if (window.confirm('Do you really want to delete this model?')) {
+      this.context.router.replace(`/${this.props.params.projectName}/models`)
+
+      Relay.Store.commitUpdate(
+        new DeleteModelMutation({
+          projectId: this.props.project.id,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('models/structure: deleted model', {
+              project: this.props.params.projectName,
+              model: this.props.params.modelName,
+            })
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
+        }
+      )
+    }
   }
 }
 
