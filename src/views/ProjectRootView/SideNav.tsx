@@ -329,9 +329,11 @@ export class SideNav extends React.Component<Props, State> {
   }
 
   private toggleAddModelInput = () => {
-    this.setState({
+    this.setState(
+    {
       addingNewModel: !this.state.addingNewModel,
-    } as State, () => {
+    } as State,
+    () => {
       if (this.state.addingNewModel) {
         ReactDOM.findDOMNode<HTMLInputElement>(this.refs.newModelInput).focus()
       }
