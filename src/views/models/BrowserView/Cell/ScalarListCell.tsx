@@ -3,14 +3,14 @@ import Popup from '../../../../components/Popup/Popup'
 import Icon from '../../../../components/Icon/Icon'
 import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
-import {TypedValue} from '../../../../types/utils'
+import {AtomicValue} from '../../../../types/utils'
 import {atomicValueToString} from '../../../../utils/valueparser'
 import {Field} from '../../../../types/types'
 import {classnames} from '../../../../utils/classnames'
 const classes: any = require('./ScalarListCell.scss')
 
 interface State {
-  values: TypedValue[]
+  values: AtomicValue[]
   isEditing: boolean
   filter: string
   newValue: string
@@ -27,7 +27,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       isEditing: false,
       filter: '',
       newValue: null,
-      values: this.props.value.slice(),
+      values: this.props.value ? this.props.value.slice() : [],
       valuesEdited: false,
     }
   }
@@ -60,6 +60,16 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                 value={this.state.filter}
                 onChange={(e) => null}
               />
+              <Icon
+                className={classes.setNull}
+                src={require('assets/icons/delete.svg')}
+                width={30}
+                height={30}
+                onClick={() => {
+                  this.props.methods.save(null)
+                  this.props.methods.cancel()
+                }}
+              />
             </div>
           </div>
           <div className={classes.list}>
@@ -85,7 +95,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   height={14}
                 />
               </div>
-              {this.props.value.map((value, index) => (
+              {this.state.values.map((value, index) => (
                 <div
                   key={index}
                   className={classnames(classes.item, classes.existing)}
@@ -125,25 +135,18 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     this.props.methods.save(result, true)
   }
 
-  private handleNewValueChange = (value: TypedValue) => {
-    console.log('new valuee!!!')
-    console.log(value)
+  private handleNewValueChange = (value: AtomicValue) => {
     this.setState({newValue: value, isEditing: true} as State)
   }
 
   private addNewValue = () => {
     const current = this.state.values.slice(0)
-    console.log('get current')
     current.push(this.state.newValue)
-    console.log('pushed new')
-    console.log(current)
     this.setState({
       newValue: '',
       valuesEdited: true,
       values: current,
     } as State)
-    console.log('state set')
     this.props.methods.save(current, true)
-    console.log('saved')
   }
 }
