@@ -63,7 +63,7 @@ export class SideNav extends React.Component<Props, State> {
     this.state = {
       forceShowModels: false,
       addingNewModel: false,
-      newModelName: null,
+      newModelName: '',
       newModelIsValid: true,
     }
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
