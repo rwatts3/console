@@ -8,12 +8,12 @@ interface Props {
 export default class DeleteSystemTokenMutation extends Relay.Mutation<Props, {}> {
 
   getMutation() {
-    return Relay.QL`mutation{revokeSystemToken}`
+    return Relay.QL`mutation{deleteSystemToken}`
   }
 
   getFatQuery() {
     return Relay.QL`
-      fragment on RevokeSystemTokenPayload {
+      fragment on DeleteSystemTokenPayload {
         deletedId
         project
       }
