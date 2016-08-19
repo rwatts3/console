@@ -17,6 +17,7 @@ declare module 'redux'
 declare module 'react-copy-to-clipboard'
 declare module 'react-click-outside'
 declare module 'react-autocomplete'
+declare module 'react-datetime'
 declare module 'calculate-size'
 
 declare var fetch: any

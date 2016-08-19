@@ -59,31 +59,27 @@
   &:hover {
     background: $newGrey2;
   }
+}
 
-  &.related {
-    color: #4A90E2;
+.addBox {
+  position: relative;
 
-    .check {
-      border: none;
-
-      svg {
-        visibility: visible;
-      }
-    }
+  .addNewText {
+    position: absolute;
+    left: 35px;
   }
 
-  .check {
-    border: 1px solid #4A90E2;
-    border-radius: 50%;
-    width: 23px;
-    height: 23px;
-    margin-right: 15px;
-
-    svg {
-      fill: #4A90E2;
-      visibility: hidden;
-    }
+  .inputWrapper {
+    position: absolute;
+    left: 35px;
+    right: 45px;
   }
+
+  i {
+    position: absolute;
+    right: 35px;
+  }
+
 }
 
 .existing {

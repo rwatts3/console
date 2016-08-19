@@ -40,7 +40,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       nodeId: this.props.nodeId,
       methods: {
         save: this.handleNewValueChange,
-        cancel: this.props.methods.cancel,
+        cancel: () => null,
         onKeyDown: this.props.methods.onKeyDown,
       },
     }
@@ -65,12 +65,16 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
           <div className={classes.list}>
             <ScrollBox>
               <div
-                className={classes.item}
+                className={classnames(classes.item, classes.addBox)}
                 onClick={ () => this.setState({isEditing: true} as State)}
               >
-                {this.state.isEditing && getScalarEditCell(requirements)}
+                {this.state.isEditing && (
+		  <div className={classes.inputWrapper}>
+		    {getScalarEditCell(requirements)}
+		  </div>
+		)}
                 {!this.state.isEditing && (
-                  <span>
+                  <span className={classes.addNewText}>
                       {this.state.newValue ? this.state.newValue : 'Add new item ...'}
                   </span>
                 )}
@@ -122,17 +126,24 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private handleNewValueChange = (value: TypedValue) => {
+    console.log('new valuee!!!')
+    console.log(value)
     this.setState({newValue: value, isEditing: true} as State)
   }
 
   private addNewValue = () => {
     const current = this.state.values.slice(0)
+    console.log('get current')
     current.push(this.state.newValue)
+    console.log('pushed new')
+    console.log(current)
     this.setState({
       newValue: '',
       valuesEdited: true,
       values: current,
     } as State)
+    console.log('state set')
     this.props.methods.save(current, true)
+    console.log('saved')
   }
 }
