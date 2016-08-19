@@ -390,11 +390,11 @@ describe('identities', () => {
     const field: Field = Object.assign({}, testField, {
       isRequired: true,
       isList: true,
-      typeIdentifier: 'Enum'
+      typeIdentifier: 'Enum',
     })
 
     const input = '[AMAZING, AWESOME, HELLO]'
 
     expect(valueToString(stringToValue(input, field), field, true)).toBe(input)
-  }
+  })
 })
