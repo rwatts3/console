@@ -9,7 +9,7 @@ import ProjectSelection from '../../components/ProjectSelection/ProjectSelection
 import SideNav from '../../views/ProjectRootView/SideNav'
 import LoginView from '../../views/LoginView/LoginView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-const update: any = (require('../../reducers/GettingStartedState') as any).update
+import {update} from '../../reducers/GettingStartedState'
 import {Viewer, Client, Project} from '../../types/types'
 import PropTypes = React.PropTypes
 const classes: any = require('./ProjectRootView.scss')

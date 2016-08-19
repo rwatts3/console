@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-const { nextStep } = require('../../reducers/GettingStartedState') as any
-import { Link } from 'react-router'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {nextStep} from '../../reducers/GettingStartedState'
+import {Link} from 'react-router'
 import ModelDescription from './ModelDescription'
 import Tether from '../../components/Tether/Tether'
 import Header from '../../components/Header/Header'

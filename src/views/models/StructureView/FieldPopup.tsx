@@ -1,13 +1,13 @@
 import * as React from 'react'
-const mapProps: any = require('map-props')
+import mapProps from 'map-props'
 import * as Relay from 'react-relay'
-const ClickOutside: any = (require('react-click-outside') as any).default
+import ClickOutside from 'react-click-outside'
 import TypeSelection from './TypeSelection'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
 import {ShowNotificationCallback} from '../../../types/utils'
-const TagsInput: any = require('react-tagsinput')
+import TagsInput from 'react-tagsinput'
 import Help from '../../../components/Help/Help'
 import Datepicker from '../../../components/Datepicker/Datepicker'
 import Loading from '../../../components/Loading/Loading'
@@ -19,7 +19,7 @@ import {Field, Model} from '../../../types/types'
 import {emptyDefault} from '../utils'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-const gettingStartedState: any = require('../../../reducers/GettingStartedState')
+import * as  GettingStartedState from '../../../reducers/GettingStartedState'
 const classes: any = require('./FieldPopup.scss')
 
 require('react-tagsinput/react-tagsinput.css')
@@ -605,7 +605,7 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps(dispatch) {
-  const nextStep = gettingStartedState.nextStep
+  const nextStep = GettingStartedState.nextStep
   return bindActionCreators({nextStep}, dispatch)
 }
 

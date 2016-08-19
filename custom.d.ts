@@ -19,6 +19,10 @@ declare module 'react-click-outside'
 declare module 'react-autocomplete'
 declare module 'react-datetime'
 declare module 'calculate-size'
+declare module 'rc-tooltip'
+declare module 'react-tagsinput'
+declare module 'graphiql/dist/components/QueryEditor'
+declare module 'react-notification-system'
 
 declare var fetch: any
 declare var analytics: any

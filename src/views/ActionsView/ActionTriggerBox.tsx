@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
 import Icon from '../../components/Icon/Icon'
-const { QueryEditor } = require('graphiql/dist/components/QueryEditor') as any
+import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 const classes: any = require('./ActionTriggerBox.scss')
 const sharedClasses: any = require('./ActionBox.scss')
 
