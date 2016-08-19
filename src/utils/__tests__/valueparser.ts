@@ -298,7 +298,7 @@ describe('valueToString', () => {
         'BASIC',
       ],
     })
-    expect(valueToString(['ADMIN','COOL','AMAZING'], field, true)).toBe('["ADMIN", "COOL", "AMAZING"]')
+    expect(valueToString(['ADMIN','COOL','AMAZING'], field, true)).toBe('[ADMIN, COOL, AMAZING]')
   })
 
   it('parses an date array and exports it as a JSON array', () => {
@@ -385,4 +385,16 @@ describe('identities', () => {
     })
     expect(valueToString(stringToValue('true', field), field, true)).toBe('true')
   })
+  
+  it('is an identity to convert a string to Enum list and back to string', () => {
+    const field: Field = Object.assign({}, testField, {
+      isRequired: true,
+      isList: true,
+      typeIdentifier: 'Enum'
+    })
+
+    const input = '[AMAZING, AWESOME, HELLO]'
+
+    expect(valueToString(stringToValue(input, field), field, true)).toBe(input)
+  }
 })
