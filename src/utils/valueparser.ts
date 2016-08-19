@@ -20,7 +20,7 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
       return '[]'
     }
 
-    if (isJSONNonQuoteType(field)) {
+    if (isNonQuoteType(field)) {
       return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
     } else {
       return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
@@ -31,10 +31,11 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
   }
 }
 
-function isJSONNonQuoteType(field: Field): boolean {
+function isNonQuoteType(field: Field): boolean {
   const type = field.typeIdentifier
 
   switch (type) {
+    case 'Enum':
     case 'Boolean':
     case 'Int':
     case 'Float':
@@ -103,6 +104,9 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
   }
 
   if (isList) {
+    if (typeIdentifier === 'Enum') {
+      return rawValue.slice(1, -1).split(',').map((value) => value.trim())
+    }
     try {
       return JSON.parse(rawValue)
     } catch (e) {
