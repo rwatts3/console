@@ -2,10 +2,10 @@ import * as Relay from 'react-relay'
 
 interface Props {
   modelId: string
-  description: string
+  name: string
 }
 
-export default class UpdateModelDescriptionMutation extends Relay.Mutation<Props, {}> {
+export default class UpdateModelNameMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateModel}`
@@ -31,7 +31,7 @@ export default class UpdateModelDescriptionMutation extends Relay.Mutation<Props
   getVariables () {
     return {
       id: this.props.modelId,
-      description: this.props.description,
+      name: this.props.name,
     }
   }
 
@@ -39,7 +39,7 @@ export default class UpdateModelDescriptionMutation extends Relay.Mutation<Props
     return {
       model: {
         id: this.props.modelId,
-        description: this.props.description,
+        name: this.props.name,
       },
     }
   }
