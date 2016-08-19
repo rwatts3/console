@@ -8,12 +8,12 @@ interface Props {
 export default class AddSystemTokenMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{createSystemToken}`
+    return Relay.QL`mutation{addSystemToken}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on CreateSystemTokenPayload {
+      fragment on AddSystemTokenPayload {
         systemTokenEdge
         project
       }
