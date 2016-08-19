@@ -385,7 +385,7 @@ describe('identities', () => {
     })
     expect(valueToString(stringToValue('true', field), field, true)).toBe('true')
   })
- 
+
   it('is an identity to convert a string to Enum list and back to string', () => {
     const field: Field = Object.assign({}, testField, {
       isRequired: true,
