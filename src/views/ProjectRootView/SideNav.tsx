@@ -202,6 +202,7 @@ export class SideNav extends React.Component<Props, State> {
                 classes.newModelBox,
                 this.state.addingNewModel ? '' : classes.notToggled
               )}
+              value={this.state.newModelName}
               onChange={this.handleNewModelChange}
               onKeyDown={this.handleNewModelKeyDown}
             />
