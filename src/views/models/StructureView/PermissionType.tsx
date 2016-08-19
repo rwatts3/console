@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { UserType, Field } from '../../../types/types'
 import Icon from '../../../components/Icon/Icon'
-const calculateSize: any = require('calculate-size')
+import calculateSize from 'calculate-size'
 const classes: any = require('./PermissionType.scss')
 
 export interface DataCallbackProps {
