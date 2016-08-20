@@ -8,7 +8,6 @@ import { Transport } from 'lokka-transport-http'
 import * as cookiestore from '../../../utils/cookiestore'
 import Icon from '../../../components/Icon/Icon'
 import Popup from '../../../components/Popup/Popup'
-import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 const classes: any = require('./RelationsPopup.scss')
 
 interface Props {
@@ -174,7 +173,7 @@ class RelationsPopup extends React.Component<Props, State> {
             </div>
           </div>
           <div className={classes.list}>
-            <ScrollBox>
+            <div>
               {filteredNodes.map(({ isRelated, node }) => (
                 <div
                   key={node.id}
@@ -191,7 +190,7 @@ class RelationsPopup extends React.Component<Props, State> {
                   <div>{JSON.stringify(node, null, 2)}</div>
                 </div>
               ))}
-            </ScrollBox>
+            </div>
           </div>
           <div className={classes.footer}>
             {this.state.success &&
