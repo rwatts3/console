@@ -47,6 +47,7 @@ class SystemTokenRow extends React.Component<Props, State> {
               <input
                 value={this.state.newTokenName}
                 onChange={(e) => this.setState({newTokenName: e.target.value})}
+                onKeyDown={(e) => {if (e.keyCode === 13) {this.addSystemToken()}}}
                 placeholder={'Add new token ...'}
               />
             ) : this.props.systemToken.name}
@@ -85,6 +86,9 @@ class SystemTokenRow extends React.Component<Props, State> {
   }
 
   private addSystemToken = (): void => {
+    if (!this.state.newTokenName) {
+      return 
+    }
     Relay.Store.commitUpdate(
       new AddSystemTokenMutation({
         projectId: this.props.projectId,
