@@ -25,7 +25,7 @@ export interface Project {
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>
-  systemTokens: RelayConnection<SystemToken>
+  systemTokens: RelayConnection<PermanentAuthToken>
   actionSchema: string
 }
 
@@ -130,7 +130,7 @@ export interface Node {
   [key: string]: any
 }
 
-export interface SystemToken {
+export interface PermanentAuthToken {
   id: string
   name: string
   token: string

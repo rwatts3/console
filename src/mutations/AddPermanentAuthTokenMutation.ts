@@ -5,7 +5,7 @@ interface Props {
   tokenName: string
 }
 
-export default class AddSystemTokenMutation extends Relay.Mutation<Props, {}> {
+export default class AddPermanentAuthTokenMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{addSystemToken}`
