@@ -11,8 +11,8 @@ import UpdateProjectMutation from '../../mutations/UpdateProjectMutation'
 import {onFailureShowNotification} from '../../utils/relay'
 import {findDOMNode} from 'react-dom'
 import {classnames} from '../../utils/classnames'
-import SystemTokenRow from './SystemTokenRow'
-import AddSystemTokenRow from './AddSystemTokenRow'
+import PermanentAuthTokenRow from './PermanentAuthTokenRow'
+import AddPermanentAuthTokenRow from './AddPermanentAuthTokenRow'
 const classes = require('./ProjectSettingsView.scss')
 
 interface Props {
@@ -112,12 +112,12 @@ class ProjectSettingsView extends React.Component<Props, State> {
               Permanent Auth Tokens
             </div>
             <div className={classes.tokens}>
-              <AddSystemTokenRow projectId={this.props.viewer.project.id}/>
-              {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((systemToken) => (
-                <SystemTokenRow
-                  key={systemToken.id}
+              <AddPermanentAuthTokenRow projectId={this.props.viewer.project.id}/>
+              {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((token) => (
+                <PermanentAuthTokenRow
+                  key={token.id}
                   projectId={this.props.viewer.project.id}
-                  systemToken={systemToken}
+                  permanentAuthToken={token}
                 />
               ))}
             </div>
@@ -246,7 +246,7 @@ export default Relay.createContainer(ProjectSettingsView, {
                     systemTokens (first: 1000) {
                         edges {
                             node {
-                                ${SystemTokenRow.getFragment('systemToken')}
+                                ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
                                 id
                                 name
                                 token

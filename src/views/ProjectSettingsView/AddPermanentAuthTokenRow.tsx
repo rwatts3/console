@@ -3,9 +3,9 @@ import * as Relay from 'react-relay'
 import Icon from '../../components/Icon/Icon'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
-import AddSystemTokenMutation from '../../mutations/AddSystemTokenMutation'
+import AddPermanentAuthTokenMutation from '../../mutations/AddPermanentAuthTokenMutation'
 
-const classes = require('./SystemTokenRow.scss')
+const classes = require('./PermanentAuthTokenRow.scss')
 
 interface Props {
   projectId: string
@@ -15,7 +15,7 @@ interface State {
   newTokenName: string
 }
 
-export default class AddSystemTokenRow extends React.Component<Props, State> {
+export default class AddPermanentAuthTokenRow extends React.Component<Props, State> {
 
   static contextTypes = {
     showNotification: React.PropTypes.func.isRequired,
@@ -52,7 +52,7 @@ export default class AddSystemTokenRow extends React.Component<Props, State> {
           width={19}
           height={19}
           src={require('assets/new_icons/add_new.svg')}
-          onClick={this.addSystemToken}
+          onClick={this.addPermanentAuthToken}
         />
         }
       </div>
@@ -61,16 +61,16 @@ export default class AddSystemTokenRow extends React.Component<Props, State> {
 
   private handleKeyDown = (e) => {
     if (e.keyCode === 13) {
-      this.addSystemToken()
+      this.addPermanentAuthToken()
     }
   }
 
-  private addSystemToken = (): void => {
+  private addPermanentAuthToken = (): void => {
     if (!this.state.newTokenName) {
       return
     }
     Relay.Store.commitUpdate(
-      new AddSystemTokenMutation({
+      new AddPermanentAuthTokenMutation({
         projectId: this.props.projectId,
         tokenName: this.state.newTokenName,
       }),

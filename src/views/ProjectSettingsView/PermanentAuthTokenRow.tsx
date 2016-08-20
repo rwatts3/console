@@ -1,16 +1,16 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {SystemToken} from '../../types/types'
+import {PermanentAuthToken} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
-import DeleteSystemTokenMutation from '../../mutations/DeleteSystemTokenMutation'
+import DeletePermanentAuthTokenMutation from '../../mutations/DeletePermanentAuthTokenMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {onFailureShowNotification} from '../../utils/relay'
 
-const classes = require('./SystemTokenRow.scss')
+const classes = require('./PermanentAuthTokenRow.scss')
 
 interface Props {
-  systemToken: SystemToken
+  permanentAuthToken: PermanentAuthToken
   projectId: string
 }
 
@@ -19,7 +19,7 @@ interface State {
   isCopied: boolean
 }
 
-class SystemTokenRow extends React.Component<Props, State> {
+class PermanentAuthTokenRow extends React.Component<Props, State> {
 
   static contextTypes = {
     showNotification: React.PropTypes.func.isRequired,
@@ -42,7 +42,7 @@ class SystemTokenRow extends React.Component<Props, State> {
 
     return (
       <CopyToClipboard
-        text={this.props.systemToken.token}
+        text={this.props.permanentAuthToken.token}
         onCopy={() => this.setState({isCopied: true} as State)}
       >
         <div
@@ -52,7 +52,7 @@ class SystemTokenRow extends React.Component<Props, State> {
         >
           <div className={classes.content}>
             <div className={classes.name}>
-              {this.props.systemToken.name}
+              {this.props.permanentAuthToken.name}
               {this.state.showFullToken &&
                 <span className={classes.hint}>
                   {this.state.isCopied ? '(copied)' : '(click to copy)'}
@@ -60,7 +60,7 @@ class SystemTokenRow extends React.Component<Props, State> {
               }
             </div>
             <div className={classes.token}>
-              {this.state.showFullToken ? this.props.systemToken.token : this.getTokenSuffix()}
+              {this.state.showFullToken ? this.props.permanentAuthToken.token : this.getTokenSuffix()}
             </div>
           </div>
           <Icon
@@ -76,16 +76,16 @@ class SystemTokenRow extends React.Component<Props, State> {
 
   private getTokenSuffix = (): string => {
     // Getting the suffix because that's the only part that's changing
-    const systemTokenSuffix = this.props.systemToken.token.split('.').reverse()[0]
+    const tokenSuffix = this.props.permanentAuthToken.token.split('.').reverse()[0]
     // We can change the style here in the future to make the text look 'cooler'
-    return systemTokenSuffix
+    return tokenSuffix
   }
 
   private deleteSystemToken = (): void => {
     Relay.Store.commitUpdate(
-      new DeleteSystemTokenMutation({
+      new DeletePermanentAuthTokenMutation({
         projectId: this.props.projectId,
-        tokenId: this.props.systemToken.id,
+        tokenId: this.props.permanentAuthToken.id,
       }),
       {
         onFailure: (transaction) => onFailureShowNotification(transaction, this.context.showNotification),
@@ -93,9 +93,9 @@ class SystemTokenRow extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(SystemTokenRow, {
+export default Relay.createContainer(PermanentAuthTokenRow, {
   fragments: {
-    systemToken: () => Relay.QL`
+    permanentAuthToken: () => Relay.QL`
       fragment on SystemToken {
         id
         name

@@ -5,7 +5,7 @@ interface Props {
   tokenId: string
 }
 
-export default class DeleteSystemTokenMutation extends Relay.Mutation<Props, {}> {
+export default class DeletePermanentAuthTokenMutation extends Relay.Mutation<Props, {}> {
 
   getMutation() {
     return Relay.QL`mutation{deleteSystemToken}`
