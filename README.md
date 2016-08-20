@@ -5,15 +5,14 @@
 ## Changelog
 
 ### [Milestone M2](https://github.com/graphcool/dashboard/milestone/2)
-* You can finally set values to **null** if they are not required!
-* Want to modify a list within the dashboard? Don't every write JSON ever again! We have a new popup for that!
-* If you had 20 models you needed to scroll on the side bar to get to the actions. Now the models are in an expandable list with "swooooooosh" animations!
-* We heard and we knew that the Project Settings Popup wasn't pretty. So we dedicated an entirely new page for the settings! You can even create and revoke system tokens from there. That'll enable you to control your Graphcool models, relations and actions manually! 🔧
-* Adding a new model doesn't give you an annoying popup. It's now all in a sleek and awesome inline design. (Yeah, we have an awesome designer 🖌)
-* Unsaved changes? no they won't be lost! We will prompt you to make sure you want to discard them.
-* Instead of showing everybody the hash of password fields, we now hide it behind a rows of __*__s. Double-click to reveal the hash! 🎩
-* Checkout what you browser title displays when you're on the dashboard! We put an emoji in there, just to let you spot it between your 200000 tabs. #giveYourTabSomeLove
-* *Fixed*: We talked with Safari and clearly communicated our definition of our relationship. Now we are on the same page everything should be rendered correctly.
+* You can finally set values to `null` if they are not required by the field.
+* Working with scalar list values is now a lot easier in the data browser.
+* The number of models can grow pretty fast in a project which hides the rest of the side navigation. We now auto-collapse the list of models when you don't need them.
+* We added a new way of authentication called "Permanent Auth Tokens" which is especially useful for server-side scripts. You can create and revoke tokens from our new project settings page. 🔑
+* We simplified the process of adding a new model.
+* Unsaved changes? We will prompt you to make sure you don't discard them accidentally.
+* Instead of showing everybody the hash of password fields, we now hide it behind a rows of __*__s. (Double-click to reveal the hash. 🎩)
+* *Fixed*: The dashboard now looks the same in Safari.
 
 See **[here](CHANGELOG.md)** for a full list of all changes (features/bug fixes).
 
