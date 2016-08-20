@@ -33,7 +33,7 @@ class SystemTokenRow extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      showFullToken: false, 
+      showFullToken: false,
       isCopied: false,
     }
   }
@@ -41,11 +41,11 @@ class SystemTokenRow extends React.Component<Props, State> {
   render() {
 
     return (
-      <CopyToClipboard 
+      <CopyToClipboard
         text={this.props.systemToken.token}
         onCopy={() => this.setState({isCopied: true} as State)}
       >
-        <div 
+        <div
           className={classes.root}
           onMouseEnter={() => this.setState({showFullToken: true} as State)}
           onMouseLeave={() => this.setState({showFullToken: false} as State)}
@@ -53,7 +53,7 @@ class SystemTokenRow extends React.Component<Props, State> {
           <div className={classes.content}>
             <div className={classes.name}>
               {this.props.systemToken.name}
-              {this.state.showFullToken && 
+              {this.state.showFullToken &&
                 <span className={classes.hint}>
                   {this.state.isCopied ? '(copied)' : '(click to copy)'}
                 </span>
