@@ -109,7 +109,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
           </div>
           <div className={classes.category}>
             <div className={classes.title}>
-              System Tokens
+              Permanent Auth Tokens
             </div>
             <div className={classes.tokens}>
               <AddSystemTokenRow projectId={this.props.viewer.project.id}/>
