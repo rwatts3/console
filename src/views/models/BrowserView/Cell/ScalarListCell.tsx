@@ -72,16 +72,15 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
             </div>
           </div>
           <div className={classes.list}>
-            <div>
               <div
                 className={classnames(classes.item, classes.addBox)}
                 onClick={ () => this.setState({isEditing: true} as State)}
               >
-              {this.state.isEditing && (
-                <div className={classes.inputWrapper}>
-                {getScalarEditCell(requirements)}
-                </div>
-              )}
+                {this.state.isEditing && (
+                  <div className={classes.inputWrapper}>
+                  {getScalarEditCell(requirements)}
+                  </div>
+                )}
                 {!this.state.isEditing && (
                   <span className={classes.addNewText}>
                       {this.state.newValue ? this.state.newValue : 'Add new item ...'}
@@ -110,7 +109,6 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   />
                 </div>
               ))}
-            </div>
           </div>
           <div className={classes.footer}>
             <div className={classes.savedIndicator}>
