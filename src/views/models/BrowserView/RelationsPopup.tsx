@@ -173,24 +173,22 @@ class RelationsPopup extends React.Component<Props, State> {
             </div>
           </div>
           <div className={classes.list}>
-            <div>
-              {filteredNodes.map(({ isRelated, node }) => (
-                <div
-                  key={node.id}
-                  className={`${classes.item} ${isRelated ? classes.related : ''}`}
-                  onClick={() => this._toggleRelation(isRelated, node.id)}
-                >
-                  <div className={classes.check}>
-                    <Icon
-                      width={23}
-                      height={23}
-                      src={require('assets/new_icons/check.svg')}
-                    />
-                  </div>
-                  <div>{JSON.stringify(node, null, 2)}</div>
+            {filteredNodes.map(({ isRelated, node }) => (
+              <div
+                key={node.id}
+                className={`${classes.item} ${isRelated ? classes.related : ''}`}
+                onClick={() => this._toggleRelation(isRelated, node.id)}
+              >
+                <div className={classes.check}>
+                  <Icon
+                    width={23}
+                    height={23}
+                    src={require('assets/new_icons/check.svg')}
+                  />
                 </div>
-              ))}
-            </div>
+                <div>{JSON.stringify(node, null, 2)}</div>
+              </div>
+            ))}
           </div>
           <div className={classes.footer}>
             {this.state.success &&
