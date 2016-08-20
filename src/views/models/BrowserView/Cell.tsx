@@ -92,25 +92,25 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  private save = (value: TypedValue, keepEditing?: boolean): void => {
+  private save = (value: TypedValue, keepEditing: boolean = false): void => {
     if (this.props.field.isRequired && value === null) {
       this.context.showNotification(
         `'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`,
         'error'
       )
-      this.setState({editing: keepEditing || false} as State)
+      this.setState({editing: keepEditing} as State)
       return
     }
 
     if (value === this.props.value) {
-      this.setState({editing: keepEditing || false} as State)
+      this.setState({editing: keepEditing} as State)
       return
     }
 
-    this.setState({loading: keepEditing === true ? false : true} as State)
+    this.setState({loading: !keepEditing} as State)
     this.props.update(value, this.props.field, () => {
       this.setState({
-        editing: keepEditing || false,
+        editing: keepEditing,
         loading: false,
       } as State)
     })
