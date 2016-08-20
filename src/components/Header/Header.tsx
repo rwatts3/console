@@ -38,8 +38,8 @@ class Header extends React.Component<Props, State> {
   _logout () {
     analytics.track('header: logout', () => {
       analytics.reset()
-      cookiestore.remove('graphcool_token')
-      cookiestore.remove('graphcool_user_id')
+      cookiestore.remove('graphcool_auth_token')
+      cookiestore.remove('graphcool_client_id')
       window.localStorage.clear()
       window.location.pathname = '/'
     })

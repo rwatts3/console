@@ -77,7 +77,7 @@ class BrowserView extends React.Component<Props, State> {
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.project.id}`
-    const token = cookiestore.get('graphcool_token')
+    const token = cookiestore.get('graphcool_auth_token')
     const headers = {Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab'}
     const transport = new Transport(clientEndpoint, {headers})
 
