@@ -76,9 +76,7 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
 
   private getTokenSuffix = (): string => {
     // Getting the suffix because that's the only part that's changing
-    const tokenSuffix = this.props.permanentAuthToken.token.split('.').reverse()[0]
-    // We can change the style here in the future to make the text look 'cooler'
-    return tokenSuffix
+    return this.props.permanentAuthToken.token.split('.').reverse()[0]
   }
 
   private deleteSystemToken = (): void => {
