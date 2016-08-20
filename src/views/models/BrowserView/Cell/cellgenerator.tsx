@@ -26,7 +26,7 @@ export interface CellRequirements {
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
-  if (reqs.field.isRequired || !isScalar(reqs.field.typeIdentifier) || reqs.field.isList) {
+  if (reqs.field.isRequired || (!isScalar(reqs.field.typeIdentifier) && reqs.field.isList) || reqs.field.isList) {
     return getSpecificEditCell(reqs)
   } else {
     return (
