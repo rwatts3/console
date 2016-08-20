@@ -20,7 +20,7 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
       return '[]'
     }
 
-    if (isNonQuoteType(field)) {
+    if (!isStringlyType(field)) {
       return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
     } else {
       return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
@@ -31,7 +31,7 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
   }
 }
 
-function isNonQuoteType(field: Field): boolean {
+function isStringlyType(field: Field): boolean {
   const type = field.typeIdentifier
 
   switch (type) {
@@ -39,9 +39,9 @@ function isNonQuoteType(field: Field): boolean {
     case 'Boolean':
     case 'Int':
     case 'Float':
-      return true
-    default:
       return false
+    default:
+      return true
   }
 }
 
