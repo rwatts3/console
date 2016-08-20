@@ -3,7 +3,7 @@ import { ShowNotificationCallback } from '../types/utils'
 import * as cookiestore from './cookiestore'
 
 export function updateNetworkLayer (): void {
-  const token = cookiestore.get('graphcool_token')
+  const token = cookiestore.get('graphcool_auth_token')
   const headers = token ? {
     'Authorization': `Bearer ${token}`,
     'X-GraphCool-Source': 'dashboard:relay',
