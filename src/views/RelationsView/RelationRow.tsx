@@ -5,15 +5,27 @@ import {Relation, Project} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
 import RelationModels from './RelationModels'
 import DeleteRelationMutation from '../../mutations/DeleteRelationMutation'
+import {Transaction} from 'react-relay'
+import {onFailureShowNotification} from '../../utils/relay'
+import {ShowNotificationCallback} from '../../types/utils'
 const classes: any = require('./RelationRow.scss')
 
 interface Props {
   relation: Relation
   project: Project
+  onRelationDeleted: () => void
   onClick: () => void
 }
 
 class RelationRow extends React.Component<Props,{}> {
+
+  static contextTypes: React.ValidationMap<any> = {
+    showNotification: React.PropTypes.func.isRequired,
+  }
+
+  context: {
+    showNotification: ShowNotificationCallback,
+  }
 
   render(): JSX.Element {
     return (
@@ -73,38 +85,41 @@ class RelationRow extends React.Component<Props,{}> {
           projectId: this.props.project.id,
           leftModelId: this.props.relation.leftModel.id,
           rightModelId: this.props.relation.rightModel.id,
+        }),
+        {
+          onSuccess: this.props.onRelationDeleted,
+          onFailure: (trans: Transaction) => onFailureShowNotification(trans, this.context.showNotification),
         })
-      )
     }
   }
 }
 
 export default Relay.createContainer(RelationRow, {
-    fragments: {
-        relation: () => Relay.QL`
-            fragment on Relation {
-                id
-                name
-                description
-                leftModel {
-                    id
-                    name
-                }
-                rightModel {
-                    id
-                    name
-                }
-                fieldOnLeftModel {
-                    id
-                    name
-                    isList
-                }
-                fieldOnRightModel {
-                    id
-                    name
-                    isList
-                }
-            }
-        `,
-    },
+  fragments: {
+    relation: () => Relay.QL`
+      fragment on Relation {
+        id
+        name
+        description
+        leftModel {
+          id
+          name
+        }
+        rightModel {
+          id
+          name
+        }
+        fieldOnLeftModel {
+          id
+          name
+          isList
+        }
+        fieldOnRightModel {
+          id
+          name
+          isList
+        }
+      }
+    `,
+  },
 })

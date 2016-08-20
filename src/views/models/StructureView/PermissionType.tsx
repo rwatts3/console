@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { UserType, Field } from '../../../types/types'
 import Icon from '../../../components/Icon/Icon'
-const calculateSize: any = require('calculate-size')
+import calculateSize from 'calculate-size'
 const classes: any = require('./PermissionType.scss')
 
 export interface DataCallbackProps {
@@ -143,6 +143,7 @@ export default class PermissionType extends React.Component<Props, {}> {
         >
           <option disabled value={emptyStepToken}>{addText}</option>
           {fields.map((field) => (
+            // TODO field.typeIdentifier doesn't work now that it would default to "Relation"
             <option key={field.id} value={field.id}>{field.name}: {field.typeIdentifier}</option>
           ))}
         </select>

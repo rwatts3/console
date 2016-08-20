@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import Icon from '../../../components/Icon/Icon'
 import {Link} from 'react-router'
+import {getFieldTypeName} from '../../../utils/valueparser'
 import {isScalar} from '../../../utils/graphql'
 import {Field} from '../../../types/types'
 const classes: any = require('./HeaderCell.scss')
@@ -118,7 +119,7 @@ class HeaderCell extends React.Component<Props, {}> {
   render() {
     const {field, width, sortOrder} = this.props
 
-    let type = field.typeIdentifier
+    let type = getFieldTypeName(field)
     if (field.isList) {
       type = `[${type}]`
     }
@@ -179,6 +180,9 @@ export default Relay.createContainer(HeaderCell, {
                 typeIdentifier
                 isRequired
                 enumValues
+                relatedModel {
+                  name
+                }
             }
         `,
     },

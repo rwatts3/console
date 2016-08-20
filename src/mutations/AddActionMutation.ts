@@ -26,11 +26,11 @@ interface Response {
 
 export default class AddActionMutation extends Relay.Mutation<Props, Response> {
 
-  getMutation () {
+  getMutation() {
     return Relay.QL`mutation{addAction}`
   }
 
-  getFatQuery () {
+  getFatQuery() {
     return Relay.QL`
       fragment on AddActionPayload {
         actionEdge
@@ -39,7 +39,7 @@ export default class AddActionMutation extends Relay.Mutation<Props, Response> {
     `
   }
 
-  getConfigs () {
+  getConfigs() {
     return [{
       type: 'RANGE_ADD',
       parentName: 'project',
@@ -52,7 +52,7 @@ export default class AddActionMutation extends Relay.Mutation<Props, Response> {
     }]
   }
 
-  getVariables () {
+  getVariables() {
     return this.props
   }
 }

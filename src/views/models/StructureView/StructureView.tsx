@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Link} from 'react-router'
+import {Link, withRouter} from 'react-router'
 import FieldRow from './FieldRow'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
@@ -14,7 +14,9 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {isScalar} from '../../../utils/graphql'
-const {nextStep} = require('../../../reducers/GettingStartedState') as any
+import {nextStep} from '../../../reducers/GettingStartedState'
+import {validateModelName} from '../../../utils/nameValidator'
+import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 const classes: any = require('./StructureView.scss')
 
 interface Props {
@@ -27,6 +29,8 @@ interface Props {
   model: Model
   gettingStartedState: any
   nextStep: any
+  router: any
+  route: any
   children: Element
   viewer: Viewer
   relay: Relay.RelayProp
@@ -39,12 +43,10 @@ interface State {
 class StructureView extends React.Component<Props, State> {
 
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
   }
 
   context: {
-    router: any
     showNotification: ShowNotificationCallback
   }
 
@@ -56,36 +58,6 @@ class StructureView extends React.Component<Props, State> {
     analytics.track('models/structure: viewed', {
       model: this.props.params.modelName,
     })
-  }
-
-  _toggleMenuDropdown = () => {
-    this.setState({menuDropdownVisible: !this.state.menuDropdownVisible} as State)
-  }
-
-  _deleteModel = () => {
-    this._toggleMenuDropdown()
-
-    if (window.confirm('Do you really want to delete this model?')) {
-      this.context.router.replace(`/${this.props.params.projectName}/models`)
-
-      Relay.Store.commitUpdate(
-        new DeleteModelMutation({
-          projectId: this.props.project.id,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
-            analytics.track('models/structure: deleted model', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
-            })
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.context.showNotification)
-          },
-        }
-      )
-    }
   }
 
   render() {
@@ -125,7 +97,7 @@ class StructureView extends React.Component<Props, State> {
             </Link>
           </Tether>
           {!this.props.model.isSystem &&
-          <div className={classes.button} onClick={this._toggleMenuDropdown}>
+          <div className={classes.button} onClick={this.toggleMenuDropdown}>
             <Icon
               width={16}
               height={16}
@@ -134,7 +106,10 @@ class StructureView extends React.Component<Props, State> {
           </div>}
           {this.state.menuDropdownVisible &&
           <div className={classes.menuDropdown}>
-            <div onClick={this._deleteModel}>
+            <div onClick={this.renameModel}>
+              Rename Model
+            </div>
+            <div onClick={this.deleteModel}>
               Delete Model
             </div>
           </div>
@@ -153,6 +128,7 @@ class StructureView extends React.Component<Props, State> {
             <ScrollBox>
               {scalars.map((field) => (
                 <FieldRow
+                  route={this.props.route}
                   key={field.id}
                   field={field}
                   params={this.props.params}
@@ -188,6 +164,7 @@ class StructureView extends React.Component<Props, State> {
               }
               {relations.map((field) => (
                 <FieldRow
+                  route={this.props.route}
                   key={field.id}
                   field={field}
                   params={this.props.params}
@@ -202,6 +179,68 @@ class StructureView extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private toggleMenuDropdown = () => {
+    this.setState({menuDropdownVisible: !this.state.menuDropdownVisible} as State)
+  }
+
+  private renameModel = () => {
+    let modelName = window.prompt('Model name:')
+    while (modelName != null && !validateModelName(modelName)) {
+      modelName = window.prompt('The inserted model name was invalid. Enter a valid model name, ' +
+                                'like "Model" or "MyModel" (first-letter capitalized and no spaces):')
+    }
+    const redirect = () => {
+      this.props.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
+    }
+
+    if (modelName) {
+      Relay.Store.commitUpdate(
+        new UpdateModelNameMutation({
+          name: modelName,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('model renamed', {
+              project: this.props.params.projectName,
+              model: modelName,
+            })
+            redirect()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
+        }
+      )
+    }
+  }
+
+  private deleteModel = () => {
+    this.toggleMenuDropdown()
+
+    if (window.confirm('Do you really want to delete this model?')) {
+      this.props.router.replace(`/${this.props.params.projectName}/models`)
+
+      Relay.Store.commitUpdate(
+        new DeleteModelMutation({
+          projectId: this.props.project.id,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('models/structure: deleted model', {
+              project: this.props.params.projectName,
+              model: this.props.params.modelName,
+            })
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.context.showNotification)
+          },
+        }
+      )
+    }
   }
 }
 
@@ -248,7 +287,7 @@ const MappedStructureView = mapProps({
   project: (props) => props.viewer.project,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedStructureView, {
+export default Relay.createContainer(withRouter(MappedStructureView), {
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router

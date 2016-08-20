@@ -5,6 +5,7 @@ import { UpdateCallback } from './Cell'
 import { Model, Field, Node } from '../../../types/types'
 import CheckboxCell from './CheckboxCell'
 import { compareFields } from '../utils'
+import {TypedValue} from '../../../types/utils'
 const classes: any = require('./Row.scss')
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   projectId: string
   node: Node
   columnWidths: {[key: string]: number}
-  update: (value: any, field: Field, callback: UpdateCallback) => void
+  update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
   isSelected: boolean
   onSelect: (checked: boolean) => void
   reload: () => void

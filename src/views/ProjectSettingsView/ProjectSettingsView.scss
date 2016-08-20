@@ -84,6 +84,13 @@
   }
 }
 
+.tokens {
+  width: 100%;
+  max-width: 500px;
+  display: inline-flex;
+  flex-direction: column;
+}
+
 .button {
   @include button;
   display: inline-block;

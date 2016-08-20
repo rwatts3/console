@@ -55,7 +55,7 @@ function valueToGQL(value: TypedValue, field: Field): string {
   return JSON.stringify(value)
 }
 
-export function toGQL(value: any, field: Field): string {
+export function toGQL(value: TypedValue, field: Field): string {
   const key = isScalar(field.typeIdentifier) ? field.name : `${field.name}Id`
 
   if (value === null && field.isRequired) {

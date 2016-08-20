@@ -20,7 +20,7 @@ interface Props {
   nodeId: string
   value: any
   width: number
-  update: (value: any, field: Field, callback: UpdateCallback) => void
+  update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
   reload: () => void,
   addnew: boolean
 }
@@ -61,58 +61,76 @@ class Cell extends React.Component<Props, State> {
     }
   }
 
-  _startEditing(): void {
+  render(): JSX.Element {
+    const rootClassnames = classnames({
+      [classes.root]: true,
+      [classes.null]: this.props.value === null,
+      [classes.editing]: this.state.editing,
+    })
+
+    return (
+      <div
+        style={{ flex: `1 0 ${this.props.width}px`, justifyContent: 'center', alignItems: 'center' }}
+        className={rootClassnames}
+        onDoubleClick={() => this.startEditing()}
+      >
+        {this.renderContent()}
+      </div>
+    )
+  }
+
+  private startEditing = (): void => {
     if (this.props.field.name !== 'id') {
       this.setState({editing: true} as State)
     }
   }
 
-  _cancel = (shouldReload: boolean = false): void => {
+  private cancel = (shouldReload: boolean = false): void => {
     this.setState({editing: false} as State)
     if (shouldReload) {
       this.props.reload()
     }
   }
 
-  _save = (value: TypedValue): void => {
+  private save = (value: TypedValue, keepEditing: boolean = false): void => {
     if (this.props.field.isRequired && value === null) {
       this.context.showNotification(
         `'${valueToString(value, this.props.field, true)}' is not a valid value for field ${this.props.field.name}`,
         'error'
       )
-      this.setState({editing: false} as State)
+      this.setState({editing: keepEditing} as State)
       return
     }
 
     if (value === this.props.value) {
-      this.setState({editing: false} as State)
+      this.setState({editing: keepEditing} as State)
       return
     }
 
-    this.setState({loading: true} as State)
+    this.setState({loading: !keepEditing} as State)
     this.props.update(value, this.props.field, () => {
       this.setState({
-        editing: false,
+        editing: keepEditing,
         loading: false,
       } as State)
     })
   }
 
-  _onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
+  private onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
     if (e.keyCode === 13 && e.shiftKey) {
       return
     }
     switch (e.keyCode) {
       case 13:
-        this._save(stringToValue(e.target.value, this.props.field))
+        this.save(stringToValue(e.target.value, this.props.field))
         break
       case 27:
-        this._cancel()
+        this.cancel()
         break
     }
   }
 
-  _renderNew = (): JSX.Element => {
+  private renderNew = (): JSX.Element => {
     const invalidStyle = classnames([classes.value, classes.id])
     if (this.props.field.name === 'id') {
       return (
@@ -126,10 +144,10 @@ class Cell extends React.Component<Props, State> {
       )
     }
 
-    return this._renderExisting()
+    return this.renderExisting()
   }
 
-  _renderExisting = (): JSX.Element => {
+  private renderExisting = (): JSX.Element => {
     if (this.state.editing) {
       const reqs: CellRequirements = {
         field: this.props.field,
@@ -137,9 +155,9 @@ class Cell extends React.Component<Props, State> {
         projectId: this.props.projectId,
         nodeId: this.props.nodeId,
         methods: {
-          save: this._save,
-          onKeyDown: this._onKeyDown,
-          cancel: this._cancel,
+          save: this.save,
+          onKeyDown: this.onKeyDown,
+          cancel: this.cancel,
         },
       }
       return getEditCell(reqs)
@@ -150,7 +168,7 @@ class Cell extends React.Component<Props, State> {
     )
   }
 
-  _renderContent(): JSX.Element {
+  private renderContent(): JSX.Element {
 
     if (this.state.loading) {
       return (
@@ -161,28 +179,10 @@ class Cell extends React.Component<Props, State> {
     }
 
     if (this.props.addnew) {
-      return this._renderNew()
+      return this.renderNew()
     } else {
-      return this._renderExisting()
+      return this.renderExisting()
     }
-  }
-
-  render(): JSX.Element {
-    const rootClassnames = classnames({
-      [classes.root]: true,
-      [classes.null]: this.props.value === null,
-      [classes.editing]: this.state.editing,
-    })
-
-    return (
-      <div
-        style={{ flex: `1 0 ${this.props.width}px`, justifyContent: 'center', alignItems: 'center' }}
-        className={rootClassnames}
-        onDoubleClick={() => this._startEditing()}
-      >
-        {this._renderContent()}
-      </div>
-    )
   }
 }
 

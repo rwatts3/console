@@ -54,8 +54,8 @@ class RelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
 
     this.state = {
-      name: relation ? relation.name : '',
-      description: relation ? relation.description : '',
+      name: relation ? relation.name || '' : '',
+      description: relation ? relation.description || '' : '',
       fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : '',
       fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : '',
       fieldOnLeftModelIsList: relation ? relation.fieldOnLeftModel.isList : false,
@@ -195,8 +195,6 @@ class RelationPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          // The force fetching because backend is not on sync with dashboard
-          this.props.relay.forceFetch()
           this.close()
         },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.context.showNotification),

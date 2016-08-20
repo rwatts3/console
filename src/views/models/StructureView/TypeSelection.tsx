@@ -2,7 +2,7 @@ import * as React from 'react'
 import { findDOMNode } from 'react-dom'
 import Icon from '../../../components/Icon/Icon'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
-const ClickOutside: any = (require('react-click-outside') as any).default
+import ClickOutside from 'react-click-outside'
 const classes: any = require('./TypeSelection.scss')
 
 const types = [
@@ -11,7 +11,6 @@ const types = [
   'Boolean',
   'String',
   'DateTime',
-  'GraphQLID',
   'Enum',
 ]
 

@@ -9,7 +9,7 @@ export default class TokenRedirectView extends React.Component<{}, {}> {
     const token = getQueryVariable('token')
     if (token) {
       window.localStorage.clear()
-      cookiestore.set('graphcool_token', token)
+      cookiestore.set('graphcool_auth_token', token)
       updateNetworkLayer()
       window.location.href = window.location.origin
     }

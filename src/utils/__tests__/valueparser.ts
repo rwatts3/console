@@ -238,7 +238,79 @@ describe('stringToValue', () => {
 })
 
 describe('valueToString', () => {
-  // TODO
+  const listTestField = Object.assign({}, testField, {isList: true})
+
+  it('parses a null atomic value and should return a "null" string', () => {
+    expect(valueToString(null, testField, true)).toBe('null')
+  })
+
+  it('parses a null list value and should return a "null" string', () => {
+    expect(valueToString(null, listTestField, true)).toBe('null')
+  })
+
+  it('parses a null atomic value and should return an empty string', () => {
+    expect(valueToString(null, testField, false)).toBe('')
+  })
+
+  it('parses a null list value and should return an empty string', () => {
+    expect(valueToString(null, listTestField, false)).toBe('')
+  })
+
+  it('parses an empty list and returns an empty JSON Array as string', () => {
+    expect(valueToString([], listTestField, true)).toBe('[]')
+  })
+
+  it('parses an int array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Int',
+    })
+    expect(valueToString([1,3,4], field, true)).toBe('[1, 3, 4]')
+  })
+
+  it('parses a float array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Float',
+    })
+    expect(valueToString([1.123,3.14,4.2], field, true)).toBe('[1.123, 3.14, 4.2]')
+  })
+
+  it('parses a string array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'String',
+    })
+    expect(valueToString(['Hello','World','What?'], field, true)).toBe('["Hello", "World", "What?"]')
+  })
+
+  it('parses an boolean array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Boolean',
+    })
+    expect(valueToString([true,false,true], field, true)).toBe('[true, false, true]')
+  })
+
+  it('parses an enum array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'Enum',
+      enumValues: [
+        'AMAZING',
+        'ADMIN',
+        'COOL',
+        'BASIC',
+      ],
+    })
+    expect(valueToString(['ADMIN','COOL','AMAZING'], field, true)).toBe('[ADMIN, COOL, AMAZING]')
+  })
+
+  it('parses an date array and exports it as a JSON array', () => {
+    const field = Object.assign({}, listTestField, {
+      typeIdentifier: 'DateTime',
+    })
+    const date1 = Date.now()
+    const date2 = new Date(0)
+    expect(
+      valueToString([date1, date2], field, true)
+    ).toBe(`["${new Date(date1).toISOString()}", "${new Date(date2).toISOString()}"]`)
+  })
 })
 
 describe('identities', () => {
@@ -312,5 +384,17 @@ describe('identities', () => {
       typeIdentifier: 'Boolean',
     })
     expect(valueToString(stringToValue('true', field), field, true)).toBe('true')
+  })
+
+  it('is an identity to convert a string to Enum list and back to string', () => {
+    const field: Field = Object.assign({}, testField, {
+      isRequired: true,
+      isList: true,
+      typeIdentifier: 'Enum',
+    })
+
+    const input = '[AMAZING, AWESOME, HELLO]'
+
+    expect(valueToString(stringToValue(input, field), field, true)).toBe(input)
   })
 })

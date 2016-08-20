@@ -1,19 +1,22 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Permission, UserType, Field } from '../../../types/types'
-import { DataCallbackProps } from './PermissionType'
+import {withRouter} from 'react-router'
+import {Permission, UserType, Field} from '../../../types/types'
+import {DataCallbackProps} from './PermissionType'
 import PermissionType from './PermissionType'
 import Loading from '../../../components/Loading/Loading'
 import AddPermissionMutation from '../../../mutations/AddPermissionMutation'
 import UpdatePermissionMutation from '../../../mutations/UpdatePermissionMutation'
 import DeletePermissionMutation from '../../../mutations/DeletePermissionMutation'
-import { onFailureShowNotification } from '../../../utils/relay'
-import { ShowNotificationCallback } from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {ShowNotificationCallback} from '../../../types/utils'
 import Icon from '../../../components/Icon/Icon'
 const classes: any = require('./PermissionRow.scss')
 
 interface Props {
   params: any
+  router: any
+  route: any
   fieldId: string
   permission?: Permission
   hide?: () => void
@@ -66,7 +69,7 @@ class PermissionRow extends React.Component<Props, State> {
     this.state = {
       saving: false,
       editing: !props.permission,
-      isValid: this._isValid(permission.userType, userPath),
+      isValid: this.isValid(permission.userType, userPath),
       editDescription: false,
       userType: permission.userType,
       userPath,
@@ -80,64 +83,125 @@ class PermissionRow extends React.Component<Props, State> {
     }
   }
 
-  _toggleAllowRead () {
-    this._beginEditing()
+  componentDidMount = () => {
+    this.props.router.setRouteLeaveHook(this.props.route, () => {
+      if (this.state.editing) {
+        // TODO with custom dialogs use "return false" and display custom dialog
+        return 'Are you sure you want to discard unsaved changes?'
+      }
+    })
+  }
+
+  render () {
+    return (
+      <div className={classes.root}>
+        <div className={classes.permissionType}>
+          <PermissionType
+            userType={this.state.userType}
+            userPath={this.state.userPath}
+            userRole={this.state.userRole}
+            isValid={this.state.isValid}
+            useUserRole={this.state.useUserRole}
+            dataCallback={(data) => this.onPermissionTypeDataCallback(data)}
+            possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
+            availableUserRoles={this.props.availableUserRoles}
+            params={this.props.params}
+          />
+        </div>
+        <div className={classes.allow}>
+          <div>
+            <input
+              onChange={() => this.toggleAllowRead()}
+              checked={this.state.allowRead}
+              type='checkbox'
+            />
+          </div>
+          <div>
+            <input
+              onChange={() => this.toggleAllowCreate()}
+              checked={this.state.allowCreate}
+              type='checkbox'
+            />
+          </div>
+          <div>
+            <input
+              onChange={() => this.toggleAllowUpdate()}
+              checked={this.state.allowUpdate}
+              type='checkbox'
+            />
+          </div>
+          <div>
+            <input
+              onChange={() => this.toggleAllowDelete()}
+              checked={this.state.allowDelete}
+              type='checkbox'
+            />
+          </div>
+        </div>
+        <div className={classes.description}>{this.renderDescription()}</div>
+        <div className={classes.controls}>{this.renderControls()}</div>
+      </div>
+    )
+  }
+
+  private toggleAllowRead () {
+    this.beginEditing()
     this.setState({ allowRead: !this.state.allowRead } as State)
   }
 
-  _toggleAllowCreate () {
-    this._beginEditing()
+  private toggleAllowCreate () {
+    this.beginEditing()
     this.setState({ allowCreate: !this.state.allowCreate } as State)
   }
 
-  _toggleAllowUpdate () {
-    this._beginEditing()
+  private toggleAllowUpdate () {
+    this.beginEditing()
     this.setState({ allowUpdate: !this.state.allowUpdate } as State)
   }
 
-  _toggleAllowDelete () {
-    this._beginEditing()
+  private toggleAllowDelete () {
+    this.beginEditing()
     this.setState({ allowDelete: !this.state.allowDelete } as State)
   }
 
-  _updateDescription (description: string) {
-    this._beginEditing()
+  private updateDescription (description: string) {
+    this.beginEditing()
     this.setState({
       editDescription: true,
       description: description,
     } as State)
   }
 
-  _beginEditing () {
+  private beginEditing () {
     this.setState({ editing: true } as State)
   }
 
-  _onPermissionTypeDataCallback (data: DataCallbackProps) {
+  private onPermissionTypeDataCallback (data: DataCallbackProps) {
     let partialState = Object.assign({ editing: true }, data) as State
 
     if (data.hasOwnProperty('userPath')) {
-      partialState.isValid = this._isValid(data.userType, data.userPath)
+      partialState.isValid = this.isValid(data.userType, data.userPath)
     }
 
     this.setState(partialState)
   }
 
-  _isValid (userType: UserType, userPath: string[]): boolean {
+  private isValid (userType: UserType, userPath: string[]): boolean {
     return userType !== 'RELATED' ||
       this.props.possibleRelatedPermissionPaths.findIndex((arr) => arr.map((f) => f.id).equals(userPath)) > -1
   }
 
-  _save () {
+  private save () {
     this.setState({ saving: true } as State)
 
     if (this.props.permission) {
-      this._update()
+      this.update()
     } else {
-      this._create()
+      this.create()
     }
   }
 
-  _create () {
+  private create () {
     Relay.Store.commitUpdate(
       new AddPermissionMutation({
         fieldId: this.props.fieldId,
@@ -171,7 +235,7 @@ class PermissionRow extends React.Component<Props, State> {
     )
   }
 
-  _update () {
+  private update () {
     Relay.Store.commitUpdate(
       new UpdatePermissionMutation({
         permissionId: this.props.permission.id,
@@ -203,7 +267,7 @@ class PermissionRow extends React.Component<Props, State> {
     )
   }
 
-  _cancel () {
+  private cancel = () => {
     if (this.props.hide) {
       this.props.hide()
     }
@@ -214,7 +278,7 @@ class PermissionRow extends React.Component<Props, State> {
       this.setState({
         editing: false,
         saving: false,
-        isValid: this._isValid(this.props.permission.userType, userPath),
+        isValid: this.isValid(this.props.permission.userType, userPath),
         editDescription: false,
         userType: this.props.permission.userType,
         userPath,
@@ -229,7 +293,7 @@ class PermissionRow extends React.Component<Props, State> {
     }
   }
 
-  _delete () {
+  private delete = () => {
     if (window.confirm('Do you really want to delete this permission')) {
       Relay.Store.commitUpdate(
         new DeletePermissionMutation({
@@ -248,14 +312,14 @@ class PermissionRow extends React.Component<Props, State> {
     }
   }
 
-  _onKeyDown (e: React.KeyboardEvent<HTMLInputElement>) {
+  private onKeyDown (e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.keyCode === 13) {
       e.target.blur()
-      this._save()
+      this.save()
     }
   }
 
-  _renderDescription () {
+  private renderDescription = () => {
     if (this.state.description || this.state.editDescription) {
       return (
         <input
@@ -263,8 +327,8 @@ class PermissionRow extends React.Component<Props, State> {
           type='text'
           placeholder='Description'
           value={this.state.description}
-          onChange={(e) => this._updateDescription((e.target as HTMLInputElement).value)}
-          onKeyDown={(e) => this._onKeyDown(e)}
+          onChange={(e) => this.updateDescription((e.target as HTMLInputElement).value)}
+          onKeyDown={(e) => this.onKeyDown(e)}
           />
         )
       }
@@ -279,7 +343,7 @@ class PermissionRow extends React.Component<Props, State> {
     )
   }
 
-  _renderControls () {
+  private renderControls = () => {
     if (this.state.saving) {
       return (
         <div className={classes.controls}>
@@ -292,16 +356,16 @@ class PermissionRow extends React.Component<Props, State> {
       return (
         <div className={classes.controls}>
           {this.state.isValid &&
-            <span onClick={() => this._save()}>Save</span>
+            <span onClick={() => this.save()}>Save</span>
           }
-          <span onClick={() => this._cancel()}>Cancel</span>
+          <span onClick={() => this.cancel()}>Cancel</span>
         </div>
       )
     }
 
     return (
       <div className={classes.controls}>
-        <span className={classes.delete} onClick={() => this._delete()}>
+        <span className={classes.delete} onClick={() => this.delete()}>
           <Icon
             width={20}
             height={20}
@@ -311,61 +375,9 @@ class PermissionRow extends React.Component<Props, State> {
       </div>
     )
   }
-
-  render () {
-    return (
-      <div className={classes.root}>
-        <div className={classes.permissionType}>
-          <PermissionType
-            userType={this.state.userType}
-            userPath={this.state.userPath}
-            userRole={this.state.userRole}
-            isValid={this.state.isValid}
-            useUserRole={this.state.useUserRole}
-            dataCallback={(data) => this._onPermissionTypeDataCallback(data)}
-            possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
-            availableUserRoles={this.props.availableUserRoles}
-            params={this.props.params}
-          />
-        </div>
-        <div className={classes.allow}>
-          <div>
-            <input
-              onChange={() => this._toggleAllowRead()}
-              checked={this.state.allowRead}
-              type='checkbox'
-            />
-          </div>
-          <div>
-            <input
-              onChange={() => this._toggleAllowCreate()}
-              checked={this.state.allowCreate}
-              type='checkbox'
-            />
-          </div>
-          <div>
-            <input
-              onChange={() => this._toggleAllowUpdate()}
-              checked={this.state.allowUpdate}
-              type='checkbox'
-            />
-          </div>
-          <div>
-            <input
-              onChange={() => this._toggleAllowDelete()}
-              checked={this.state.allowDelete}
-              type='checkbox'
-            />
-          </div>
-        </div>
-        <div className={classes.description}>{this._renderDescription()}</div>
-        <div className={classes.controls}>{this._renderControls()}</div>
-      </div>
-    )
-  }
 }
 
-export default Relay.createContainer(PermissionRow, {
+export default Relay.createContainer(withRouter(PermissionRow), {
   fragments: {
     permission: () => Relay.QL`
       fragment on Permission {

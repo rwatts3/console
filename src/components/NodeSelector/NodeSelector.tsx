@@ -6,8 +6,8 @@ import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import * as cookiestore from '../../utils/cookiestore'
 import {ScalarValue} from '../../types/utils'
-const ClickOutside: any = (require('react-click-outside') as any).default
-const Autocomplete: any = require('react-autocomplete')
+import ClickOutside from 'react-click-outside'
+import Autocomplete from 'react-autocomplete'
 const classes: any = require('./NodeSelector.scss')
 
 interface Props {
@@ -35,7 +35,7 @@ class NodeSelector extends React.Component<Props, State> {
     }
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${props.projectId}`
-    const token = cookiestore.get('graphcool_token')
+    const token = cookiestore.get('graphcool_auth_token')
     const headers = { Authorization: `Bearer ${token}` }
     const transport = new Transport(clientEndpoint, { headers })
     const lokka = new Lokka({ transport })
@@ -107,7 +107,7 @@ class NodeSelector extends React.Component<Props, State> {
             overflow: 'auto',
             zIndex: 100,
           }}
-          value={this.state.value}
+          value={this.state.value || ''}
           items={this.state.nodes}
           shouldItemRender={this._shouldNodeRender}
           inputProps={{autoFocus: true }}

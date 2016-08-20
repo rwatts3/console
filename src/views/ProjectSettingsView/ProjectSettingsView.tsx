@@ -11,6 +11,8 @@ import UpdateProjectMutation from '../../mutations/UpdateProjectMutation'
 import {onFailureShowNotification} from '../../utils/relay'
 import {findDOMNode} from 'react-dom'
 import {classnames} from '../../utils/classnames'
+import PermanentAuthTokenRow from './PermanentAuthTokenRow'
+import AddPermanentAuthTokenRow from './AddPermanentAuthTokenRow'
 const classes = require('./ProjectSettingsView.scss')
 
 interface Props {
@@ -69,9 +71,12 @@ class ProjectSettingsView extends React.Component<Props, State> {
               Project Name
             </div>
             <span>
-              <input className={classes.field}
-                     type='text' placeholder='Name' defaultValue={this.props.viewer.project.name}
-                     onChange={(e) => this.updateProjectName((e.target as HTMLInputElement).value)}
+              <input
+                className={classes.field}
+                type='text'
+                placeholder='Name'
+                defaultValue={this.props.viewer.project.name}
+                onChange={(e) => this.updateProjectName((e.target as HTMLInputElement).value)}
               />
               {this.state.nameChanged &&
               <div
@@ -92,12 +97,29 @@ class ProjectSettingsView extends React.Component<Props, State> {
                 {this.props.viewer.project.id}
               </span>
 
-              <CopyToClipboard text={this.props.viewer.project.id}
-                               onCopy={() => this.setState({idCopied: true} as State)}>
+              <CopyToClipboard
+                text={this.props.viewer.project.id}
+                onCopy={() => this.setState({idCopied: true} as State)}
+              >
                 <span className={classes.label}>
                   {this.state.idCopied ? 'Copied' : 'Copy'}
                 </span>
               </CopyToClipboard>
+            </div>
+          </div>
+          <div className={classes.category}>
+            <div className={classes.title}>
+              Permanent Auth Tokens
+            </div>
+            <div className={classes.tokens}>
+              <AddPermanentAuthTokenRow projectId={this.props.viewer.project.id}/>
+              {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((token) => (
+                <PermanentAuthTokenRow
+                  key={token.id}
+                  projectId={this.props.viewer.project.id}
+                  permanentAuthToken={token}
+                />
+              ))}
             </div>
           </div>
           <div className={classes.category}>
@@ -214,23 +236,33 @@ export default Relay.createContainer(ProjectSettingsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${Header.getFragment('project')}
-          name
-          id
-        }
-        user {
-          projects(first: 1000) {
-            edges {
-              node
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                project: projectByName(projectName: $projectName) {
+                    ${Header.getFragment('project')}
+                    name
+                    id
+                    systemTokens (first: 1000) {
+                        edges {
+                            node {
+                                ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
+                                id
+                                name
+                                token
+                            }
+                        }
+                    }
+                }
+                user {
+                    projects(first: 1000) {
+                        edges {
+                            node
+                        }
+                    }
+                }
+                ${Header.getFragment('viewer')}
             }
-          }
-        }
-        ${Header.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

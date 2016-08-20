@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import { NotificationLevel } from '../../types/utils'
-const NotificationSystem: any = require('react-notification-system')
+import NotificationSystem from 'react-notification-system'
 
 interface Props {
   children: Element

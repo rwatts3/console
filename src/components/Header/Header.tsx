@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import { Link } from 'react-router'
 import Icon from '../../components/Icon/Icon'
 import ApiLayover from '../../components/ApiLayover/ApiLayover'
-const ClickOutside: any = (require('react-click-outside') as any).default
+import ClickOutside from 'react-click-outside'
 import * as cookiestore from '../../utils/cookiestore'
 import { Project } from '../../types/types'
 const classes: any = require('./Header.scss')
@@ -38,8 +38,8 @@ class Header extends React.Component<Props, State> {
   _logout () {
     analytics.track('header: logout', () => {
       analytics.reset()
-      cookiestore.remove('graphcool_token')
-      cookiestore.remove('graphcool_user_id')
+      cookiestore.remove('graphcool_auth_token')
+      cookiestore.remove('graphcool_client_id')
       window.localStorage.clear()
       window.location.pathname = '/'
     })

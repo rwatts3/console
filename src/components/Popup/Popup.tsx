@@ -1,5 +1,5 @@
 import * as React from 'react'
-const ClickOutside: any = (require('react-click-outside') as any).default
+import ClickOutside from 'react-click-outside'
 const classes: any = require('./Popup.scss')
 
 interface Props {

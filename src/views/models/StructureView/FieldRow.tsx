@@ -16,6 +16,7 @@ const classes: any = require('./FieldRow.scss')
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
 interface Props {
+  route: any
   field: Field
   allModels: Model[]
   params: any
@@ -244,6 +245,7 @@ class FieldRow extends React.Component<Props, State> {
         </div>
         {this.state.detailsState === 'PERMISSIONS' &&
           <Permissions
+            route={this.props.route}
             field={field}
             params={this.props.params}
             possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}

@@ -6,5 +6,6 @@ dist
 lib
 .idea
 *.iml
-
+*.swp
+*.swo
 .envrc

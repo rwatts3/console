@@ -2,8 +2,8 @@ import * as React from 'react'
 import { ISO8601 } from '../../utils/constants'
 import * as moment from 'moment'
 import { Moment } from 'moment'
-const ClickOutside: any = (require('react-click-outside') as any).default
-const Datetime: any = require('react-datetime')
+import ClickOutside from 'react-click-outside'
+import Datetime from 'react-datetime'
 const classes: any = require('./Datepicker.scss')
 
 // TODO remove once closed: https://github.com/YouCanBookMe/react-datetime/issues/44
