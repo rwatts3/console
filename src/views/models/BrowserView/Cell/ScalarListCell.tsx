@@ -141,7 +141,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
 
   private addNewValue = () => {
     if (!this.state.newValue) {
-      return 
+      return
     }
     const current = this.state.values.slice(0)
     current.push(this.state.newValue)
