@@ -47,7 +47,7 @@ class SystemTokenRow extends React.Component<Props, State> {
               <input
                 value={this.state.newTokenName}
                 onChange={(e) => this.setState({newTokenName: e.target.value})}
-                onKeyDown={(e) => {if (e.keyCode === 13) {this.addSystemToken()}}}
+                onKeyDown={this.handleKeyDown}
                 placeholder={'Add new token ...'}
               />
             ) : this.props.systemToken.name}
@@ -78,6 +78,12 @@ class SystemTokenRow extends React.Component<Props, State> {
     )
   }
 
+  private handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      this.addSystemToken()
+    }
+  }
+
   private getTokenSuffix = (): string => {
     // Getting the suffix because that's the only part that's changing
     const systemTokenSuffix = this.props.systemToken.token.split('.').reverse()[0]
@@ -87,7 +93,7 @@ class SystemTokenRow extends React.Component<Props, State> {
 
   private addSystemToken = (): void => {
     if (!this.state.newTokenName) {
-      return 
+      return
     }
     Relay.Store.commitUpdate(
       new AddSystemTokenMutation({
