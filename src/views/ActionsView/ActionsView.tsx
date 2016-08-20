@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import {withRouter} from 'react-router'
 import {Viewer, Project} from '../../types/types'
 import Header from '../../components/Header/Header'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
@@ -13,6 +14,8 @@ interface Props {
   viewer: Viewer & { project: Project }
   params: any
   relay: any
+  router: any
+  route: any
 }
 
 interface State {
@@ -25,6 +28,15 @@ class ActionsView extends React.Component<Props, State> {
   state = {
     showAddRow: false,
     editableActionIds: [],
+  }
+
+  componentDidMount = () => {
+    this.props.router.setRouteLeaveHook(this.props.route, () => {
+      if (this.state.showAddRow) {
+        // TODO with custom dialogs use "return false" and display custom dialog
+        return 'Are you sure you want to discard unsaved changes?'
+      }
+    })
   }
 
   _toggleEdit(id: string) {
@@ -52,6 +64,7 @@ class ActionsView extends React.Component<Props, State> {
           params={this.props.params}
           project={this.props.viewer.project}
         >
+         {!this.state.showAddRow &&
           <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>
             <div className={`${classes.button} ${classes.green}`}>
               <Icon
@@ -62,6 +75,7 @@ class ActionsView extends React.Component<Props, State> {
               <span>Create Action</span>
             </div>
           </div>
+         }
         </Header>
         <div className={classes.content}>
           <ScrollBox>
@@ -97,7 +111,7 @@ class ActionsView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(ActionsView, {
+export default Relay.createContainer(withRouter(ActionsView), {
   initialVariables: {
     projectName: null, // injected from router
   },

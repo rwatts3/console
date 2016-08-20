@@ -1,51 +1,77 @@
 import {isValidDateTime, isValidEnum} from './utils'
 import {Field} from '../types/types'
 import {isScalar} from './graphql'
-import {TypedValue, NonScalarValue, ScalarValue} from '../types/utils'
+import {TypedValue, NonScalarValue, ScalarValue, AtomicValue} from '../types/utils'
 
 export function valueToString(value: TypedValue, field: Field, returnNullAsString: boolean): string {
-  let fieldValue = null
-  if (isScalar(field.typeIdentifier)) {
-    fieldValue = value
-  } else if (field.isList) {
-    fieldValue = value
-  } else if (value !== null) {
-    fieldValue = (value as NonScalarValue).id
-  }
-
-  if (fieldValue === null) {
+  if (value === null) {
     return returnNullAsString ? 'null' : ''
   }
 
   if (field.isList) {
-    if (!(fieldValue instanceof Array)) {
-      return fieldValue // TODO improve this code
+
+    if (!isValidList(value)) {
+      return returnNullAsString ? 'null' : ''
     }
 
-    if ((value as (NonScalarValue[] | ScalarValue[])).length === 0) {
+    const valueArray: Array<AtomicValue> = value as Array<AtomicValue>
+
+    if (listIsEmpty(value as (ScalarValue[] | NonScalarValue[]))) {
       return '[]'
     }
 
-    if (isScalar(field.typeIdentifier)) {
-      if (field.typeIdentifier === 'String' || field.typeIdentifier === 'Enum') {
-        return `[${fieldValue.map((v) => `"${v.toString()}"`).join(', ')}]`
-      } else {
-        return `[${fieldValue.toString()}]`
-      }
-    } else { // !isScalar
-      return `[${fieldValue.map((v) => v.id).join(', ')}]`
+    if (!isStringlyType(field)) {
+      return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
+    } else {
+      return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
     }
-  } else { // !isList
-    switch (field.typeIdentifier) {
-      case 'DateTime':
-        return new Date(fieldValue).toISOString()
-      case 'Password':
-        return '***************'
-      default:
-        return fieldValue.toString()
-    }
+
+  } else {
+    return atomicValueToString(value as AtomicValue, field, returnNullAsString)
+  }
+}
+
+function isStringlyType(field: Field): boolean {
+  const type = field.typeIdentifier
+
+  switch (type) {
+    case 'Enum':
+    case 'Boolean':
+    case 'Int':
+    case 'Float':
+      return false
+    default:
+      return true
+  }
+}
+
+function isValidList(value: any): boolean {
+  // TODO improve this code because it doesn't check if the items are of the same type
+  return value instanceof Array
+}
+
+function listIsEmpty(value: (Array<AtomicValue>)): boolean {
+  return value.length === 0
+}
+
+export function atomicValueToString(value: AtomicValue, field: Field, returnNullAsString: boolean = true): string {
+  if (value === null) {
+    return returnNullAsString ? 'null' : ''
   }
 
+  const type = field.typeIdentifier
+  if (!isScalar(type)) {
+    return (value as NonScalarValue).id
+  }
+
+  switch (type) {
+    case 'DateTime':
+      return new Date(value).toISOString()
+    case 'Password':
+      return '***************'
+    default:
+      return value.toString()
+  }
 }
 
 export function stringToValue(rawValue: string, field: Field): TypedValue {
@@ -53,7 +79,6 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
     return null
   }
   const {isList, isRequired, typeIdentifier} = field
-
   if (rawValue === '' && !isRequired) {
     return typeIdentifier === 'String' ? '' : null
   }
@@ -79,6 +104,9 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
   }
 
   if (isList) {
+    if (typeIdentifier === 'Enum') {
+      return rawValue.slice(1, -1).split(',').map((value) => value.trim())
+    }
     try {
       return JSON.parse(rawValue)
     } catch (e) {
@@ -95,5 +123,13 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
       Enum: () => isValidEnum(rawValue) ? rawValue : null,
       DateTime: () => isValidDateTime(rawValue) ? rawValue : null,
     }[typeIdentifier]()
+  }
+}
+
+export function getFieldTypeName(field: Field) {
+  if (isScalar(field.typeIdentifier)) {
+    return field.typeIdentifier
+  } else {
+    return field.relatedModel.name
   }
 }

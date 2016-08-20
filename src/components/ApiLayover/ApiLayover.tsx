@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Icon from '../Icon/Icon'
-const ClickOutside: any = (require('react-click-outside') as any).default
-const CopyToClipboard: any = require('react-copy-to-clipboard')
+import ClickOutside from 'react-click-outside'
+import CopyToClipboard from 'react-copy-to-clipboard'
 const classes: any = require('./ApiLayover.scss')
 
 type Endpoint = 'simple/v1' | 'relay/v1'

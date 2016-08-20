@@ -8,7 +8,6 @@ import { Transport } from 'lokka-transport-http'
 import * as cookiestore from '../../../utils/cookiestore'
 import Icon from '../../../components/Icon/Icon'
 import Popup from '../../../components/Popup/Popup'
-import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 const classes: any = require('./RelationsPopup.scss')
 
 interface Props {
@@ -47,7 +46,7 @@ class RelationsPopup extends React.Component<Props, State> {
     }
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${props.projectId}`
-    const token = cookiestore.get('graphcool_token')
+    const token = cookiestore.get('graphcool_auth_token')
     const headers = { Authorization: `Bearer ${token}` }
     const transport = new Transport(clientEndpoint, { headers })
 
@@ -96,7 +95,6 @@ class RelationsPopup extends React.Component<Props, State> {
   _toggleRelation (isRelated: boolean, nodeId: string): void {
     const relationName = this.props.originField.relation.name
     const relatedModelName = this.props.originField.relatedModel.name
-    // TODO fix this error where the reversRelationField is null
     const relatedFieldName = this.props.originField.reverseRelationField.name
     const originModelName = this.props.originField.model.name
     const originFieldName = this.props.originField.name
@@ -175,24 +173,22 @@ class RelationsPopup extends React.Component<Props, State> {
             </div>
           </div>
           <div className={classes.list}>
-            <ScrollBox>
-              {filteredNodes.map(({ isRelated, node }) => (
-                <div
-                  key={node.id}
-                  className={`${classes.item} ${isRelated ? classes.related : ''}`}
-                  onClick={() => this._toggleRelation(isRelated, node.id)}
-                >
-                  <div className={classes.check}>
-                    <Icon
-                      width={23}
-                      height={23}
-                      src={require('assets/new_icons/check.svg')}
-                    />
-                  </div>
-                  <div>{JSON.stringify(node, null, 2)}</div>
+            {filteredNodes.map(({ isRelated, node }) => (
+              <div
+                key={node.id}
+                className={`${classes.item} ${isRelated ? classes.related : ''}`}
+                onClick={() => this._toggleRelation(isRelated, node.id)}
+              >
+                <div className={classes.check}>
+                  <Icon
+                    width={23}
+                    height={23}
+                    src={require('assets/new_icons/check.svg')}
+                  />
                 </div>
-              ))}
-            </ScrollBox>
+                <div>{JSON.stringify(node, null, 2)}</div>
+              </div>
+            ))}
           </div>
           <div className={classes.footer}>
             {this.state.success &&

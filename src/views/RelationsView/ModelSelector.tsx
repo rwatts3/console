@@ -21,9 +21,9 @@ export default class ModelSelector extends React.Component<Props,{}> {
         <span className={classes.model}>
           <select
             onChange={(e) => this.props.onModelChange(e.target.value)}
-            value={this.props.selectedModelId === null ? 'default' : this.props.selectedModelId}
+            value={this.props.selectedModelId === null ? 'default value' : this.props.selectedModelId}
           >
-            <option value={'default'} disabled={true}>Select a Model ▾</option>
+            <option value={'default value'} disabled={true}>Select a Model ▾</option>
             {this.props.models.sort(this.modelCompare).map((model) => (
               <option
                 key={model.id}

@@ -9,6 +9,7 @@ interface Props {
   field: Field
   possibleRelatedPermissionPaths: Field[][]
   availableUserRoles: string[]
+  route: any
 }
 
 interface State {
@@ -39,6 +40,7 @@ class Permissions extends React.Component<Props, State> {
           <div className={classes.permissions}>
             {this.props.field.permissions.edges.map((permissionEdge) => (
               <PermissionRow
+                route={this.props.route}
                 key={permissionEdge.node.id}
                 fieldId={this.props.field.id}
                 params={this.props.params}
@@ -49,6 +51,7 @@ class Permissions extends React.Component<Props, State> {
             ))}
             {this.state.showNewPermission &&
             <PermissionRow
+              route={this.props.route}
               fieldId={this.props.field.id}
               params={this.props.params}
               permission={null}

@@ -15,6 +15,14 @@ declare module 'react-twitter-widgets'
 declare module 'redux-thunk'
 declare module 'redux'
 declare module 'react-copy-to-clipboard'
+declare module 'react-click-outside'
+declare module 'react-autocomplete'
+declare module 'react-datetime'
+declare module 'calculate-size'
+declare module 'rc-tooltip'
+declare module 'react-tagsinput'
+declare module 'graphiql/dist/components/QueryEditor'
+declare module 'react-notification-system'
 
 declare var fetch: any
 declare var analytics: any
