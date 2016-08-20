@@ -1,5 +1,4 @@
 import * as React from 'react'
-const classes: any = require('./Icon.scss')
 
 interface Props {
   src: any
@@ -32,10 +31,11 @@ export default class Icon extends React.Component<Props, {}> {
     return (
       <i
         {...restProps}
-        className={`${classes.root} ${this.props.className}`}
+        className={this.props.className}
         style={{
           transform: `rotate(${rotate}deg)`,
           WebkitTransform: `rotate(${rotate}deg)`,
+          display: 'flex',
         }}
         dangerouslySetInnerHTML={{ __html: html }}
       />
