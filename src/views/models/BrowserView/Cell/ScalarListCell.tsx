@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Popup from '../../../../components/Popup/Popup'
 import Icon from '../../../../components/Icon/Icon'
-import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
 import {AtomicValue} from '../../../../types/utils'
 import {atomicValueToString} from '../../../../utils/valueparser'
@@ -73,7 +72,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
             </div>
           </div>
           <div className={classes.list}>
-            <ScrollBox>
+            <div>
               <div
                 className={classnames(classes.item, classes.addBox)}
                 onClick={ () => this.setState({isEditing: true} as State)}
@@ -89,6 +88,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   </span>
                 )}
                 <Icon
+                  className={this.state.newValue ? '' : classes.disabled}
                   onClick={this.addNewValue}
                   src={require('assets/new_icons/add_new.svg')}
                   width={14}
@@ -110,7 +110,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   />
                 </div>
               ))}
-            </ScrollBox>
+            </div>
           </div>
           <div className={classes.footer}>
             <div className={classes.savedIndicator}>
@@ -140,10 +140,13 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private addNewValue = () => {
+    if (!this.state.newValue) {
+      return 
+    }
     const current = this.state.values.slice(0)
     current.push(this.state.newValue)
     this.setState({
-      newValue: '',
+      newValue: this.state.newValue,
       valuesEdited: true,
       values: current,
     } as State)

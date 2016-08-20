@@ -59,6 +59,7 @@
 
 .list {
   height: calc(100% - 125px - 96px);
+  overflow: scroll;
 }
 
 .item {
