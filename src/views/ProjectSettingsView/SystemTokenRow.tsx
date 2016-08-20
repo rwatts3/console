@@ -4,19 +4,19 @@ import {SystemToken} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
 import DeleteSystemTokenMutation from '../../mutations/DeleteSystemTokenMutation'
 import {ShowNotificationCallback} from '../../types/utils'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import {onFailureShowNotification} from '../../utils/relay'
-import AddSystemTokenMutation from '../../mutations/AddSystemTokenMutation'
 
 const classes = require('./SystemTokenRow.scss')
 
 interface Props {
-  systemToken?: SystemToken
+  systemToken: SystemToken
   projectId: string
-  addNew?: boolean
 }
 
 interface State {
-  newTokenName: string
+  showFullToken: boolean
+  isCopied: boolean
 }
 
 class SystemTokenRow extends React.Component<Props, State> {
@@ -33,55 +33,45 @@ class SystemTokenRow extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      newTokenName: '',
+      showFullToken: false, 
+      isCopied: false,
     }
   }
 
   render() {
 
     return (
-      <div className={classes.root}>
-        <div className={classes.content}>
-          <div className={classes.name}>
-            {this.props.addNew ? (
-              <input
-                value={this.state.newTokenName}
-                onChange={(e) => this.setState({newTokenName: e.target.value})}
-                onKeyDown={this.handleKeyDown}
-                placeholder={'Add new token ...'}
-              />
-            ) : this.props.systemToken.name}
+      <CopyToClipboard 
+        text={this.props.systemToken.token}
+        onCopy={() => this.setState({isCopied: true} as State)}
+      >
+        <div 
+          className={classes.root}
+          onMouseEnter={() => this.setState({showFullToken: true} as State)}
+          onMouseLeave={() => this.setState({showFullToken: false} as State)}
+        >
+          <div className={classes.content}>
+            <div className={classes.name}>
+              {this.props.systemToken.name}
+              {this.state.showFullToken && 
+                <span className={classes.hint}>
+                  {this.state.isCopied ? '(copied)' : '(click to copy)'}
+                </span>
+              }
+            </div>
+            <div className={classes.token}>
+              {this.state.showFullToken ? this.props.systemToken.token : this.getTokenSuffix()}
+            </div>
           </div>
-          {!this.props.addNew &&
-          <div className={classes.token}>
-            {this.getTokenSuffix()}
-          </div>
-          }
+          <Icon
+            width={19}
+            height={19}
+            src={require('assets/icons/delete.svg')}
+            onClick={this.deleteSystemToken}
+          />
         </div>
-        {!this.props.addNew &&
-        <Icon
-          width={19}
-          height={19}
-          src={require('assets/icons/delete.svg')}
-          onClick={this.deleteSystemToken}
-        />
-        }
-        {this.props.addNew && this.state.newTokenName !== '' &&
-        <Icon
-          width={19}
-          height={19}
-          src={require('assets/new_icons/add_new.svg')}
-          onClick={this.addSystemToken}
-        />
-        }
-      </div>
+      </CopyToClipboard>
     )
-  }
-
-  private handleKeyDown = (e) => {
-    if (e.keyCode === 13) {
-      this.addSystemToken()
-    }
   }
 
   private getTokenSuffix = (): string => {
@@ -89,21 +79,6 @@ class SystemTokenRow extends React.Component<Props, State> {
     const systemTokenSuffix = this.props.systemToken.token.split('.').reverse()[0]
     // We can change the style here in the future to make the text look 'cooler'
     return systemTokenSuffix
-  }
-
-  private addSystemToken = (): void => {
-    if (!this.state.newTokenName) {
-      return
-    }
-    Relay.Store.commitUpdate(
-      new AddSystemTokenMutation({
-        projectId: this.props.projectId,
-        tokenName: this.state.newTokenName,
-      }),
-      {
-        onSuccess: () => this.setState({newTokenName: ''}),
-        onFailure: (transaction) => onFailureShowNotification(transaction, this.context.showNotification),
-      })
   }
 
   private deleteSystemToken = (): void => {
