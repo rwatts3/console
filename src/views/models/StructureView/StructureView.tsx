@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Link} from 'react-router'
+import {Link, withRouter} from 'react-router'
 import FieldRow from './FieldRow'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
@@ -29,6 +29,8 @@ interface Props {
   model: Model
   gettingStartedState: any
   nextStep: any
+  router: any
+  route: any
   children: Element
   viewer: Viewer
   relay: Relay.RelayProp
@@ -41,12 +43,10 @@ interface State {
 class StructureView extends React.Component<Props, State> {
 
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
   }
 
   context: {
-    router: any
     showNotification: ShowNotificationCallback
   }
 
@@ -128,6 +128,7 @@ class StructureView extends React.Component<Props, State> {
             <ScrollBox>
               {scalars.map((field) => (
                 <FieldRow
+                  route={this.props.route}
                   key={field.id}
                   field={field}
                   params={this.props.params}
@@ -163,6 +164,7 @@ class StructureView extends React.Component<Props, State> {
               }
               {relations.map((field) => (
                 <FieldRow
+                  route={this.props.route}
                   key={field.id}
                   field={field}
                   params={this.props.params}
@@ -190,7 +192,7 @@ class StructureView extends React.Component<Props, State> {
                                 'like "Model" or "MyModel" (first-letter capitalized and no spaces):')
     }
     const redirect = () => {
-      this.context.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
+      this.props.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
     }
 
     if (modelName) {
@@ -219,7 +221,7 @@ class StructureView extends React.Component<Props, State> {
     this.toggleMenuDropdown()
 
     if (window.confirm('Do you really want to delete this model?')) {
-      this.context.router.replace(`/${this.props.params.projectName}/models`)
+      this.props.router.replace(`/${this.props.params.projectName}/models`)
 
       Relay.Store.commitUpdate(
         new DeleteModelMutation({
@@ -285,7 +287,7 @@ const MappedStructureView = mapProps({
   project: (props) => props.viewer.project,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedStructureView, {
+export default Relay.createContainer(withRouter(MappedStructureView), {
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router
