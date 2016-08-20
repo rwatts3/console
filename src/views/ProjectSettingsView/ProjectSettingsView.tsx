@@ -12,6 +12,7 @@ import {onFailureShowNotification} from '../../utils/relay'
 import {findDOMNode} from 'react-dom'
 import {classnames} from '../../utils/classnames'
 import SystemTokenRow from './SystemTokenRow'
+import AddSystemTokenRow from './AddSystemTokenRow'
 const classes = require('./ProjectSettingsView.scss')
 
 interface Props {
@@ -111,7 +112,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
               System Tokens
             </div>
             <div className={classes.tokens}>
-              <SystemTokenRow addNew={true} projectId={this.props.viewer.project.id} systemToken={null}/>
+              <AddSystemTokenRow projectId={this.props.viewer.project.id}/>
               {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((systemToken) => (
                 <SystemTokenRow
                   key={systemToken.id}

@@ -5,7 +5,7 @@
   margin-top: 12px;
   padding: 12px;
   border: 1px solid $grey2;
-  width: auto;
+  width: 100%;
   cursor: pointer;
   cursor: hand;
   display: inline-flex;
@@ -29,7 +29,7 @@
 .content {
   display: inline-flex;
   flex-direction: column;
-  width: 100%;
+  width: calc(100% - 43px);
 
   .name {
     font-weight: 600;
@@ -39,9 +39,18 @@
       border: 0;
       background-color: transparent;
     }
+    
+    .hint {
+      color: $grey4;
+      font-size: 12px;
+      margin-left: 6px;
+    }
   }
 
   .token {
+    margin-top: 6px;
     font-family: monospace;
+    word-wrap: break-word;
+    width: 100%;
   }
 }
