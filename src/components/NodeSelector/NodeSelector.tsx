@@ -35,7 +35,7 @@ class NodeSelector extends React.Component<Props, State> {
     }
 
     const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${props.projectId}`
-    const token = cookiestore.get('graphcool_token')
+    const token = cookiestore.get('graphcool_auth_token')
     const headers = { Authorization: `Bearer ${token}` }
     const transport = new Transport(clientEndpoint, { headers })
     const lokka = new Lokka({ transport })
