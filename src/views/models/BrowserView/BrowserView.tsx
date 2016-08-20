@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import {withRouter} from 'react-router'
 import calculateSize from 'calculate-size'
 import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
@@ -30,6 +31,8 @@ const classes: any = require('./BrowserView.scss')
 
 interface Props {
   viewer: Viewer
+  router: any
+  route: any
   params: any
   fields: Field[]
   project: Project
@@ -57,12 +60,10 @@ interface OrderBy {
 class BrowserView extends React.Component<Props, State> {
 
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
     showNotification: React.PropTypes.func.isRequired,
   }
 
   context: {
-    router: any
     showNotification: ShowNotificationCallback
   }
 
@@ -104,6 +105,13 @@ class BrowserView extends React.Component<Props, State> {
   componentDidMount = () => {
     analytics.track('models/browser: viewed', {
       model: this.props.params.modelName,
+    })
+
+    this.props.router.setRouteLeaveHook(this.props.route, () => {
+      if (this.state.newRowVisible) {
+        // TODO with custom dialogs use "return false" and display custom dialog
+        return 'Are you sure you want to discard unsaved changes?'
+      }
     })
   }
 
@@ -501,7 +509,7 @@ function mapDispatchToProps(dispatch) {
 const ReduxContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(BrowserView)
+)(withRouter(BrowserView))
 
 const MappedBrowserView = mapProps({
   params: (props) => props.params,
