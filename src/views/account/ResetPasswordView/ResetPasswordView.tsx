@@ -33,8 +33,8 @@ export default class ResetPasswordView extends React.Component<{}, State> {
       }),
       {
         onSuccess: (response) => {
-          cookiestore.set('graphcool_token', response.resetPassword.token)
-          cookiestore.set('graphcool_user_id', response.resetPassword.user.id)
+          cookiestore.set('graphcool_auth_token', response.resetPassword.token)
+          cookiestore.set('graphcool_client_id', response.resetPassword.user.id)
           updateNetworkLayer()
 
           analytics.track('reset-password', () => {
