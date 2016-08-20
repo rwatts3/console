@@ -125,3 +125,11 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
     }[typeIdentifier]()
   }
 }
+
+export function getFieldTypeName(field: Field) {
+  if (isScalar(field.typeIdentifier)) {
+    return field.typeIdentifier
+  } else {
+    return field.relatedModel.name
+  }
+}
