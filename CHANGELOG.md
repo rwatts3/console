@@ -13,7 +13,7 @@ We improve the Graphcool platform every day by releasing new features, squashing
 * We added a new way of authentication called "Permanent Auth Tokens" which is especially useful for server-side scripts. You can create and revoke tokens from our new project settings page. 🔑
 * We simplified the process of adding a new model.
 * Unsaved changes? We will prompt you to make sure you don't discard them accidentally.
-* Instead of showing everybody the hash of password fields, we now hide it behind a rows of __*__s. (Double-click to reveal the hash. 🎩)
+* Instead of showing everybody the hash of password fields, we now hide it behind a rows of `*`s. (Double-click to reveal the hash. 🎩)
 * *Fixed*: The dashboard now looks the same in Safari.
 
 ### [Milestone M1](https://github.com/graphcool/dashboard/milestone/1)
