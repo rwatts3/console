@@ -94,7 +94,7 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
 export default Relay.createContainer(PermanentAuthTokenRow, {
   fragments: {
     permanentAuthToken: () => Relay.QL`
-      fragment on SystemToken {
+      fragment on PermanentAuthToken {
         id
         name
         token
