@@ -8,13 +8,13 @@ interface Props {
 export default class AddPermanentAuthTokenMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{addSystemToken}`
+    return Relay.QL`mutation{addPermanentAuthToken}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on AddSystemTokenPayload {
-        systemTokenEdge
+      fragment on AddPermanentAuthTokenPayload {
+        permanentAuthTokenEdge
         project
       }
     `
@@ -25,8 +25,8 @@ export default class AddPermanentAuthTokenMutation extends Relay.Mutation<Props,
       type: 'RANGE_ADD',
       parentName: 'project',
       parentID: this.props.projectId,
-      connectionName: 'systemTokens',
-      edgeName: 'systemTokenEdge',
+      connectionName: 'permanentAuthTokens',
+      edgeName: 'permanentAuthTokenEdge',
       rangeBehaviors: {
         '': 'append',
       },
