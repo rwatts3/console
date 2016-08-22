@@ -113,7 +113,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
             </div>
             <div className={classes.tokens}>
               <AddPermanentAuthTokenRow projectId={this.props.viewer.project.id}/>
-              {this.props.viewer.project.systemTokens.edges.map((edge) => edge.node).map((token) => (
+              {this.props.viewer.project.permanentAuthTokens.edges.map((edge) => edge.node).map((token) => (
                 <PermanentAuthTokenRow
                   key={token.id}
                   projectId={this.props.viewer.project.id}
@@ -243,7 +243,7 @@ export default Relay.createContainer(ProjectSettingsView, {
                     ${Header.getFragment('project')}
                     name
                     id
-                    systemTokens (first: 1000) {
+                    permanentAuthTokens (first: 1000) {
                         edges {
                             node {
                                 ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
