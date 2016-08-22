@@ -84,35 +84,224 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    window.addEventListener('keydown', this._listenForKeys, false)
+    window.addEventListener('keydown', this.listenForKeys, false)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this._listenForKeys, false)
+    window.removeEventListener('keydown', this.listenForKeys, false)
   }
 
-  _listenForKeys = (e: KeyboardEvent) => {
+  render() {
+    if (this.state.loading) {
+      return (
+        <div className={classes.background}>
+          <Loading color='#fff'/>
+        </div>
+      )
+    }
+
+    const dataExists = this.props.model.itemCount > 0
+    const needsMigrationValue = this.needsMigrationValue()
+    const showMigrationValue = needsMigrationValue || (dataExists && !this.props.field)
+
+    return (
+      <div className={classes.background}>
+        <ScrollBox innerContainerClassName={classes.scrollBox}>
+          <ClickOutside onClickOutside={() => this.close()}>
+            <div className={classes.container} onKeyUp={(e) => e.keyCode === 27 ? this.close() : null}>
+              <div className={classes.head}>
+                <div className={classes.title}>
+                  {this.props.field ? 'Change field' : 'Create a new field'}
+                </div>
+                <div className={classes.subtitle}>
+                  You can change this field later
+                </div>
+              </div>
+              <div className={classes.body}>
+                <div className={classes.row}>
+                  <div className={classes.left}>
+                    Choose a name for your field
+                    <Help text='Fieldnames must be camelCase like "firstName" or "dateOfBirth".'/>
+                  </div>
+                  <div className={classes.right}>
+                    <input
+                      autoFocus={!this.props.field}
+                      type='text'
+                      placeholder='Fieldname'
+                      defaultValue={this.state.name}
+                      onChange={(e) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
+                      onKeyUp={(e) => e.keyCode === 13 ? this.submit() : null}
+                    />
+                  </div>
+                </div>
+                <div className={classes.row}>
+                  <div className={classes.left}>
+                    Select the type of data
+                    <Help text={`Your field can either store scalar values such as text or numbers
+                    or setup relations between existing models.`}/>
+                  </div>
+                  <div className={classes.right}>
+                    <TypeSelection
+                      selected={this.state.typeIdentifier}
+                      select={(typeIdentifier) => this.updateTypeIdentifier(typeIdentifier)}
+                    />
+                  </div>
+                </div>
+                {this.state.typeIdentifier === 'Enum' &&
+                <div className={classes.row}>
+                  <div className={classes.enumLeft}>
+                    Enum Values
+                    <Help text={`List all possible values for your enum field.
+                      Good value names are either Capitalized or UPPERCASE.`}/>
+                  </div>
+                  <div className={classes.enumRight}>
+                    <TagsInput
+                      onlyUnique
+                      addOnBlur
+                      addKeys={[9, 13, 32]}
+                      value={this.state.enumValues}
+                      onChange={(enumValues) => this.updateEnumValues(enumValues)}
+                    />
+                  </div>
+                </div>
+                }
+                <div className={classes.rowBlock}>
+                  <div className={classes.row}>
+                    <div className={classes.left}>
+                      Is this field required?
+                      <Help text={`Required fields always must have a value and cannot be "null".
+                        If you don't setup a default value you will need to
+                        provide a value for each create mutation.`}/>
+                    </div>
+                    <div className={classes.right}>
+                      <label>
+                        <input
+                          type='checkbox'
+                          checked={this.state.isRequired}
+                          onChange={(e) => this.setState({
+                              isRequired: (e.target as HTMLInputElement).checked,
+                            } as State)}
+                          onKeyUp={(e) => e.keyCode === 13 ? this.submit() : null}
+                        />
+                        Required
+                      </label>
+                    </div>
+                  </div>
+                  <div className={classes.row}>
+                    <div className={classes.left}>
+                      Store multiple values
+                      <Help text={`Normaly you just want to store a single value
+                        but you can also save a list of values.`}/>
+                    </div>
+                    <div className={classes.right}>
+                      <label>
+                        <input
+                          type='checkbox'
+                          checked={this.state.isList}
+                          onChange={(e) => this.updateIsList((e.target as HTMLInputElement).checked)}
+                          onKeyUp={(e) => e.keyCode === 13 ? this.submit() : null}
+                        />
+                        List
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                {showMigrationValue &&
+                <div className={classes.row}>
+                  <div className={classes.left}>
+                    <label>
+                      <input
+                        type='checkbox'
+                        disabled={needsMigrationValue}
+                        checked={this.state.useMigrationValue || needsMigrationValue}
+                        onChange={(e) => this.setState({
+                              useMigrationValue: (e.target as HTMLInputElement).checked,
+                            } as State)}
+                      />
+                      Migration value
+                    </label>
+                    <Help text={this.props.field
+                      ? `The migration value will be used to replace all existing values
+                      for this field. Be careful, this step cannot be undone.
+                      Note: New data items won't be affected, please see "Default value".`
+                      : `The migration value will be used to populate this field for existing data items.
+                      Note: New data items won't be affected, please see "Default value".`}/>
+                  </div>
+                  <div className={`
+                    ${classes.right} ${(this.state.useMigrationValue || needsMigrationValue) ? null : classes.disabled}
+                    `}>
+                    {this.renderValueInput(
+                      this.state.migrationValue,
+                      'Migration value',
+                      this.setMigrationValue
+                    )}
+                  </div>
+                </div>
+                }
+                <div className={classes.row}>
+                  <div className={classes.left}>
+                    <label>
+                      <input
+                        type='checkbox'
+                        checked={this.state.useDefaultValue}
+                        onChange={(e) => this.setState({
+                            useDefaultValue: (e.target as HTMLInputElement).checked,
+                          } as State)}
+                      />
+                      Default value
+                    </label>
+                    <Help text={`You can provide a default value for every newly created data item.
+                      The default value will be applied to both required and non-required fields.`}/>
+                  </div>
+                  <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
+                    {this.renderValueInput(
+                      this.state.defaultValue,
+                      'Default value',
+                      this.setDefaultValue
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className={classes.foot}>
+                <div className={classes.button} onClick={() => this.close()}>
+                  Cancel
+                </div>
+                <button
+                  className={`${classes.button} ${this.isValid() ? classes.green : classes.disabled}`}
+                  onClick={() => this.submit()}
+                >
+                  {this.props.field ? 'Update field' : 'Create field'}
+                </button>
+              </div>
+            </div>
+          </ClickOutside>
+        </ScrollBox>
+      </div>
+    )
+  }
+
+  private listenForKeys = (e: KeyboardEvent) => {
     if (e.keyCode === 13 && e.target === document.body) {
-      this._submit()
+      this.submit()
     } else if (e.keyCode === 27 && e.target === document.body) {
-      this._close()
+      this.close()
     }
   }
 
-  _close() {
+  private close() {
     this.context.router.goBack()
   }
 
-  _submit() {
+  private submit() {
     if (this.props.field) {
-      this._update()
+      this.update()
     } else {
-      this._create()
+      this.create()
     }
   }
 
-  _create() {
-    if (!this._isValid()) {
+  private create() {
+    if (!this.isValid()) {
       return
     }
 
@@ -131,12 +320,9 @@ class FieldPopup extends React.Component<Props, State> {
 
     const field = {isList, typeIdentifier} as Field
     const wrappedMigrationValue = this.state.migrationValue
-    console.log(wrappedMigrationValue)
-    const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue)
+    const migrationValue = (this.needsMigrationValue() || this.state.useMigrationValue)
       ? valueToString(wrappedMigrationValue, field, true)
       : null
-
-    console.log(migrationValue)
 
     Relay.Store.commitUpdate(
       new AddFieldMutation({
@@ -158,15 +344,15 @@ class FieldPopup extends React.Component<Props, State> {
             field: name,
           })
 
-          this._close()
+          this.close()
 
           // getting-started onboarding steps
-          const isStep3 = this.props.gettingStartedState.isActive('STEP3_CREATE_TEXT_FIELD')
+          const isStep3 = this.props.gettingStartedState.isActive('STEP3CREATETEXTFIELD')
           if (isStep3 && name === 'text' && typeIdentifier === 'String') {
             this.props.nextStep()
           }
 
-          const isStep4 = this.props.gettingStartedState.isActive('STEP4_CREATE_COMPLETED_FIELD')
+          const isStep4 = this.props.gettingStartedState.isActive('STEP4CREATECOMPLETEDFIELD')
           if (isStep4 && name === 'complete' && typeIdentifier === 'Boolean') {
             this.props.nextStep()
           }
@@ -179,8 +365,8 @@ class FieldPopup extends React.Component<Props, State> {
     )
   }
 
-  _update() {
-    if (!this._isValid()) {
+  private update() {
+    if (!this.isValid()) {
       return
     }
 
@@ -199,7 +385,7 @@ class FieldPopup extends React.Component<Props, State> {
 
     const field = {isList, typeIdentifier} as Field
     const wrappedMigrationValue = this.state.migrationValue
-    const migrationValue = (this._needsMigrationValue() || this.state.useMigrationValue) && !isList
+    const migrationValue = (this.needsMigrationValue() || this.state.useMigrationValue) && !isList
       ? valueToString(wrappedMigrationValue, field, true)
       : null
 
@@ -223,7 +409,7 @@ class FieldPopup extends React.Component<Props, State> {
             field: name,
           })
 
-          this._close()
+          this.close()
         },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.context.showNotification)
@@ -233,12 +419,12 @@ class FieldPopup extends React.Component<Props, State> {
     )
   }
 
-  _isValid(): boolean {
+  private isValid(): boolean {
     if (this.state.name === '') {
       return false
     }
 
-    if (this._needsMigrationValue() && this.state.migrationValue === null) {
+    if (this.needsMigrationValue() && this.state.migrationValue === null) {
       return false
     }
 
@@ -249,7 +435,7 @@ class FieldPopup extends React.Component<Props, State> {
     return true
   }
 
-  _needsMigrationValue(): boolean {
+  private needsMigrationValue(): boolean {
     if (this.props.model.itemCount === 0) {
       return false
     }
@@ -261,7 +447,7 @@ class FieldPopup extends React.Component<Props, State> {
     return changedType || changedRequired || newRequiredField
   }
 
-  _updateTypeIdentifier(typeIdentifier: string) {
+  private updateTypeIdentifier(typeIdentifier: string) {
     const {field} = this.props
 
     const useMigrationValue = (field && field.typeIdentifier === typeIdentifier)
@@ -281,7 +467,7 @@ class FieldPopup extends React.Component<Props, State> {
     } as State)
   }
 
-  _updateIsList(isList: boolean) {
+  private updateIsList(isList: boolean) {
     const {typeIdentifier, enumValues} = this.state
 
     this.setState({
@@ -290,7 +476,7 @@ class FieldPopup extends React.Component<Props, State> {
     } as State)
   }
 
-  _updateEnumValues(enumValues: string[]) {
+  private updateEnumValues(enumValues: string[]) {
     const {typeIdentifier, isList} = this.state
 
     this.setState({
@@ -299,16 +485,7 @@ class FieldPopup extends React.Component<Props, State> {
     } as State)
   }
 
-  _toggleReverseRelation() {
-    if (this.state.reverseRelationField !== null) {
-      this.setState({reverseRelationField: null} as State)
-    } else {
-      const selectedModel = this.props.allModels.find((m) => m.name === this.state.typeIdentifier)
-      this.setState({reverseRelationField: selectedModel.unconnectedReverseRelationFieldsFrom[0]} as State)
-    }
-  }
-
-  _setDefaultValue = (defaultValue: any) => {
+  private setDefaultValue = (defaultValue: any) => {
     if (!this.state.useDefaultValue) {
       return
     }
@@ -316,14 +493,14 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({defaultValue} as State)
   }
 
-  _setMigrationValue = (migrationValue: any) => {
-    if (!this.state.useMigrationValue && !this._needsMigrationValue()) {
+  private setMigrationValue = (migrationValue: any) => {
+    if (!this.state.useMigrationValue && !this.needsMigrationValue()) {
       migrationValue = null
     }
     this.setState({migrationValue} as State)
   }
 
-  _renderValueInput(value: any, placeholder: string, changeCallback: (v: any) => void) {
+  private renderValueInput(value: any, placeholder: string, changeCallback: (v: any) => void) {
     const field = {
       isList: this.state.isList,
       typeIdentifier: this.state.typeIdentifier,
@@ -406,195 +583,6 @@ class FieldPopup extends React.Component<Props, State> {
           />
         )
     }
-  }
-
-  render() {
-    if (this.state.loading) {
-      return (
-        <div className={classes.background}>
-          <Loading color='#fff'/>
-        </div>
-      )
-    }
-
-    const dataExists = this.props.model.itemCount > 0
-    const needsMigrationValue = this._needsMigrationValue()
-    const showMigrationValue = needsMigrationValue || (dataExists && !this.props.field)
-
-    return (
-      <div className={classes.background}>
-        <ScrollBox innerContainerClassName={classes.scrollBox}>
-          <ClickOutside onClickOutside={() => this._close()}>
-            <div className={classes.container} onKeyUp={(e) => e.keyCode === 27 ? this._close() : null}>
-              <div className={classes.head}>
-                <div className={classes.title}>
-                  {this.props.field ? 'Change field' : 'Create a new field'}
-                </div>
-                <div className={classes.subtitle}>
-                  You can change this field later
-                </div>
-              </div>
-              <div className={classes.body}>
-                <div className={classes.row}>
-                  <div className={classes.left}>
-                    Choose a name for your field
-                    <Help text='Fieldnames must be camelCase like "firstName" or "dateOfBirth".'/>
-                  </div>
-                  <div className={classes.right}>
-                    <input
-                      autoFocus={!this.props.field}
-                      type='text'
-                      placeholder='Fieldname'
-                      defaultValue={this.state.name}
-                      onChange={(e) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
-                      onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
-                    />
-                  </div>
-                </div>
-                <div className={classes.row}>
-                  <div className={classes.left}>
-                    Select the type of data
-                    <Help text={`Your field can either store scalar values such as text or numbers
-                    or setup relations between existing models.`}/>
-                  </div>
-                  <div className={classes.right}>
-                    <TypeSelection
-                      selected={this.state.typeIdentifier}
-                      select={(typeIdentifier) => this._updateTypeIdentifier(typeIdentifier)}
-                    />
-                  </div>
-                </div>
-                {this.state.typeIdentifier === 'Enum' &&
-                <div className={classes.row}>
-                  <div className={classes.enumLeft}>
-                    Enum Values
-                    <Help text={`List all possible values for your enum field.
-                      Good value names are either Capitalized or UPPERCASE.`}/>
-                  </div>
-                  <div className={classes.enumRight}>
-                    <TagsInput
-                      onlyUnique
-                      addOnBlur
-                      addKeys={[9, 13, 32]}
-                      value={this.state.enumValues}
-                      onChange={(enumValues) => this._updateEnumValues(enumValues)}
-                    />
-                  </div>
-                </div>
-                }
-                <div className={classes.rowBlock}>
-                  <div className={classes.row}>
-                    <div className={classes.left}>
-                      Is this field required?
-                      <Help text={`Required fields always must have a value and cannot be "null".
-                        If you don't setup a default value you will need to
-                        provide a value for each create mutation.`}/>
-                    </div>
-                    <div className={classes.right}>
-                      <label>
-                        <input
-                          type='checkbox'
-                          checked={this.state.isRequired}
-                          onChange={(e) => this.setState({
-                              isRequired: (e.target as HTMLInputElement).checked,
-                            } as State)}
-                          onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
-                        />
-                        Required
-                      </label>
-                    </div>
-                  </div>
-                  <div className={classes.row}>
-                    <div className={classes.left}>
-                      Store multiple values
-                      <Help text={`Normaly you just want to store a single value
-                        but you can also save a list of values.`}/>
-                    </div>
-                    <div className={classes.right}>
-                      <label>
-                        <input
-                          type='checkbox'
-                          checked={this.state.isList}
-                          onChange={(e) => this._updateIsList((e.target as HTMLInputElement).checked)}
-                          onKeyUp={(e) => e.keyCode === 13 ? this._submit() : null}
-                        />
-                        List
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                {showMigrationValue &&
-                <div className={classes.row}>
-                  <div className={classes.left}>
-                    <label>
-                      <input
-                        type='checkbox'
-                        disabled={needsMigrationValue}
-                        checked={this.state.useMigrationValue || needsMigrationValue}
-                        onChange={(e) => this.setState({
-                              useMigrationValue: (e.target as HTMLInputElement).checked,
-                            } as State)}
-                      />
-                      Migration value
-                    </label>
-                    <Help text={this.props.field
-                      ? `The migration value will be used to replace all existing values
-                      for this field. Be careful, this step cannot be undone.
-                      Note: New data items won't be affected, please see "Default value".`
-                      : `The migration value will be used to populate this field for existing data items.
-                      Note: New data items won't be affected, please see "Default value".`}/>
-                  </div>
-                  <div className={`
-                    ${classes.right} ${(this.state.useMigrationValue || needsMigrationValue) ? null : classes.disabled}
-                    `}>
-                    {this._renderValueInput(
-                      this.state.migrationValue,
-                      'Migration value',
-                      this._setMigrationValue
-                    )}
-                  </div>
-                </div>
-                }
-                <div className={classes.row}>
-                  <div className={classes.left}>
-                    <label>
-                      <input
-                        type='checkbox'
-                        checked={this.state.useDefaultValue}
-                        onChange={(e) => this.setState({
-                            useDefaultValue: (e.target as HTMLInputElement).checked,
-                          } as State)}
-                      />
-                      Default value
-                    </label>
-                    <Help text={`You can provide a default value for every newly created data item.
-                      The default value will be applied to both required and non-required fields.`}/>
-                  </div>
-                  <div className={`${classes.right} ${this.state.useDefaultValue ? null : classes.disabled}`}>
-                    {this._renderValueInput(
-                      this.state.defaultValue,
-                      'Default value',
-                      this._setDefaultValue
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className={classes.foot}>
-                <div className={classes.button} onClick={() => this._close()}>
-                  Cancel
-                </div>
-                <button
-                  className={`${classes.button} ${this._isValid() ? classes.green : classes.disabled}`}
-                  onClick={() => this._submit()}
-                >
-                  {this.props.field ? 'Update field' : 'Create field'}
-                </button>
-              </div>
-            </div>
-          </ClickOutside>
-        </ScrollBox>
-      </div>
-    )
   }
 }
 
