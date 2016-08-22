@@ -279,7 +279,7 @@ class BrowserView extends React.Component<Props, State> {
     const orderBy = `orderBy: ${this.state.orderBy.fieldName}_${this.state.orderBy.order}`
     const query = `
       {
-        all${this.props.model.namePlural}(take: 50 skip: ${skip} ${filter} ${orderBy}) {
+        all${this.props.model.namePlural}(first: 50 skip: ${skip} ${filter} ${orderBy}) {
           ${fieldNames}
         }
       }
