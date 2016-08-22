@@ -343,6 +343,11 @@ export class SideNav extends React.Component<Props, State> {
 
   private addModel = () => {
     const redirect = () => {
+      this.setState({
+        newModelName: '',
+        addingNewModel: false,
+        newModelIsValid: true,
+      } as State)
       this.context.router.replace(`/${this.props.params.projectName}/models/${this.state.newModelName}`)
     }
 
@@ -358,11 +363,6 @@ export class SideNav extends React.Component<Props, State> {
               project: this.props.params.projectName,
               model: this.state.newModelName,
             })
-            this.setState({
-              newModelName: '',
-              addingNewModel: false,
-              newModelIsValid: true,
-            } as State)
             // getting-started onboarding step
             if (this.state.newModelName === 'Todo' &&
                 this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_TODO_MODEL')) {
