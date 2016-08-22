@@ -8,12 +8,12 @@ interface Props {
 export default class DeletePermanentAuthTokenMutation extends Relay.Mutation<Props, {}> {
 
   getMutation() {
-    return Relay.QL`mutation{deleteSystemToken}`
+    return Relay.QL`mutation{deletePermanentAuthToken}`
   }
 
   getFatQuery() {
     return Relay.QL`
-      fragment on DeleteSystemTokenPayload {
+      fragment on DeletePermanentAuthTokenPayload {
         deletedId
         project
       }
@@ -25,14 +25,14 @@ export default class DeletePermanentAuthTokenMutation extends Relay.Mutation<Pro
       type: 'NODE_DELETE',
       parentName: 'project',
       parentID: this.props.projectId,
-      connectionName: 'systemTokens',
+      connectionName: 'permanentAuthTokens',
       deletedIDFieldName: 'deletedId',
     }]
   }
 
   getVariables() {
     return {
-      systemTokenId: this.props.tokenId,
+      permanentAuthTokenId: this.props.tokenId,
     }
   }
 

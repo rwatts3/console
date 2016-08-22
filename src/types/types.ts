@@ -25,7 +25,7 @@ export interface Project {
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>
-  systemTokens: RelayConnection<PermanentAuthToken>
+  permanentAuthTokens: RelayConnection<PermanentAuthToken>
   actionSchema: string
 }
 
