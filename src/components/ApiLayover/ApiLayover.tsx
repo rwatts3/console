@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Icon from '../Icon/Icon'
 import ClickOutside from 'react-click-outside'
 import CopyToClipboard from 'react-copy-to-clipboard'
 const classes: any = require('./ApiLayover.scss')
@@ -40,14 +39,9 @@ export default class ApiLayover extends React.Component<Props, State> {
         <div className={classes.root}>
           <div className={classes.endpoints}>
             <select onChange={(e) => this._selectEndpoint((e.target as HTMLSelectElement).value as Endpoint)}>
-              <option>simple/v1</option>
-              <option>relay/v1</option>
+              <option>simple/v1 ▾</option>
+              <option>relay/v1 ▾</option>
             </select>
-            <Icon
-              width={11}
-              height={6}
-              src={require('assets/icons/arrow.svg')}
-            />
           </div>
           <div className={classes.url}>{url}</div>
           <CopyToClipboard text={url}
