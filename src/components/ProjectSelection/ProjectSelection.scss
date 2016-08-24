@@ -33,6 +33,7 @@
     right: 22px;
     height: 6px;
     top: calc(50% - 3px);
+    transition: transform 0.2s;
 
     &.up {
       transform: rotate(180deg);
