@@ -45,6 +45,7 @@ interface State {
   selectedEndpoint: Endpoint
   selectedUserId: string
   selectedUserToken: string
+  adminToken: string
 }
 
 class PlaygroundView extends React.Component<Props, State> {
@@ -68,7 +69,8 @@ class PlaygroundView extends React.Component<Props, State> {
       variables: undefined,
       selectedEndpoint: (window.localStorage.getItem('SELECTED_ENDPOINT') || 'SIMPLE') as Endpoint,
       selectedUserId: DASHBOARD_ADMIN.id,
-      selectedUserToken: token,
+      selectedUserToken: null,
+      adminToken: token,
     }
   }
 
@@ -164,7 +166,7 @@ class PlaygroundView extends React.Component<Props, State> {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.state.selectedUserToken}`,
+          'Authorization': `Bearer ${this.state.selectedUserToken || this.state.adminToken}`,
           'X-GraphCool-Source': 'dashboard:playground',
         },
         body: JSON.stringify(graphQLParams),
