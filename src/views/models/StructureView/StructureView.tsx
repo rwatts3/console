@@ -64,7 +64,7 @@ class StructureView extends React.Component<Props, State> {
 
     const scalars = this.props.fields.filter((field) => isScalar(field.typeIdentifier))
     const relations = this.props.fields.filter((field) => !isScalar(field.typeIdentifier))
-
+    const urlPrefix = `/${this.props.params.projectName}`
     return (
       <div className={classes.root}>
         {this.props.children}
@@ -86,7 +86,7 @@ class StructureView extends React.Component<Props, State> {
           >
             <Link
               className={`${classes.button} ${classes.green}`}
-              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/create`}
+              to={`${urlPrefix}/models/${this.props.params.modelName}/structure/create`}
             >
               <Icon
                 width={16}
@@ -146,7 +146,7 @@ class StructureView extends React.Component<Props, State> {
                 <div>
                   <Link
                     className={`${classes.button} ${classes.green}`}
-                    to={`/${this.props.params.projectName}/relations/create`}
+                    to={`${urlPrefix}/relations/create?leftModelName=${this.props.params.modelName}`}
                   >
                     <Icon
                       width={16}

@@ -340,7 +340,7 @@ class BrowserView extends React.Component<Props, State> {
     this.setState({loading: true} as State)
     const mutation = `
       {
-        delete${this.props.model.name}(
+        delete${this.props.params.modelName}(
           id: "${nodeId}"
         ) {
           id
@@ -360,7 +360,7 @@ class BrowserView extends React.Component<Props, State> {
   private updateNode = (value: TypedValue, field: Field, callback, nodeId: string, index: number) => {
     const mutation = `
       {
-        update${this.props.model.name}(
+        update${this.props.params.modelName}(
           id: "${nodeId}"
           ${toGQL(value, field)}
         ) {
@@ -402,7 +402,7 @@ class BrowserView extends React.Component<Props, State> {
     this.setState({loading: true} as State)
     const mutation = `
       {
-        create${this.props.model.name}${inputArgumentsString} {
+        create${this.props.params.modelName}${inputArgumentsString} {
           id
         }
       }
@@ -418,7 +418,7 @@ class BrowserView extends React.Component<Props, State> {
         })
 
         // getting-started onboarding step
-        if (this.props.model.name === 'Todo' && (
+        if (this.props.params.modelName === 'Todo' && (
             this.props.gettingStartedState.isCurrentStep('STEP6_ADD_DATA_ITEM_1') ||
             this.props.gettingStartedState.isCurrentStep('STEP7_ADD_DATA_ITEM_2')
           )) {
