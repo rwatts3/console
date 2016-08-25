@@ -39,22 +39,6 @@ class ActionsView extends React.Component<Props, State> {
     })
   }
 
-  _toggleEdit(id: string) {
-    if (this.state.editableActionIds.includes(id)) {
-      this._closeEdit(id)
-    } else {
-      this._openEdit(id)
-    }
-  }
-
-  _openEdit(id: string) {
-    this.setState({editableActionIds: this.state.editableActionIds.concat([id])} as State)
-  }
-
-  _closeEdit(id: string) {
-    this.setState({editableActionIds: this.state.editableActionIds.filter((i) => i !== id)} as State)
-  }
-
   render() {
     return (
       <div className={classes.root}>
@@ -92,14 +76,14 @@ class ActionsView extends React.Component<Props, State> {
                 <ActionRow
                   action={action}
                   projectId={this.props.viewer.project.id}
-                  onClick={() => this._toggleEdit(action.id)}
+                  onClick={() => this.toggleEdit(action.id)}
                 />
                 {this.state.editableActionIds.includes(action.id) &&
                 <ActionBoxes
                   project={this.props.viewer.project}
                   action={action}
                   relay={this.props.relay}
-                  close={() => this._closeEdit(action.id)}
+                  close={() => this.closeEdit(action.id)}
                 />
                 }
               </div>
@@ -109,6 +93,23 @@ class ActionsView extends React.Component<Props, State> {
       </div>
     )
   }
+
+  private toggleEdit = (id: string): void => {
+    if (this.state.editableActionIds.includes(id)) {
+      this.closeEdit(id)
+    } else {
+      this.openEdit(id)
+    }
+  }
+
+  private openEdit = (id: string): void => {
+    this.setState({editableActionIds: this.state.editableActionIds.concat([id])} as State)
+  }
+
+  private closeEdit = (id: string): void => {
+    this.setState({editableActionIds: this.state.editableActionIds.filter((i) => i !== id)} as State)
+  }
+
 }
 
 export default Relay.createContainer(withRouter(ActionsView), {
