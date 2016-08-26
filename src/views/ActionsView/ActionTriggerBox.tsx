@@ -37,7 +37,8 @@ class ActionTriggerBox extends React.Component<Props, {}> {
     } else {
       queryEditor = (
         <div className={classes.noQuery}>
-          After you selected your trigger and mutation, you need to specify a graphQL-fragment from it to use for the handler
+          {'After you selected your trigger and mutation, ' +
+           'you need to specify a GraphQL fragment from it to use for the handler.'}
         </div>
       )
     }

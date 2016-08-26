@@ -106,7 +106,12 @@ class ActionBoxes extends React.Component<Props, State> {
           <div className={classes.header}>
             {this.props.action ? 'Edit Action' : 'New Action'}
           </div>
-          <input className={classes.description} placeholder={'+ Add Description'} />
+          <input
+            className={classes.description}
+            placeholder={'+ Add Description'}
+            value={this.state.description}
+            onChange={(e) => this.setState({description: e.target.value, changesMade: true} as State)}
+          />
         </div>
         <div className={classes.boxes}>
           <ActionTriggerBox
@@ -191,7 +196,7 @@ class ActionBoxes extends React.Component<Props, State> {
       new AddActionMutation({
         projectId: this.props.project.id,
         isActive: true,
-        description: '',
+        description: this.state.description,
         triggerType: 'MUTATION_MODEL' as ActionTriggerType,
         handlerType: 'WEBHOOK' as ActionHandlerType,
         triggerMutationModel: {
@@ -216,7 +221,7 @@ class ActionBoxes extends React.Component<Props, State> {
       new UpdateActionMutation({
         actionId: this.props.action.id,
         isActive: this.props.action.isActive,
-        description: this.props.action.description,
+        description: this.state.description,
         triggerType: 'MUTATION_MODEL' as ActionTriggerType,
         handlerType: 'WEBHOOK' as ActionHandlerType,
         triggerMutationModel: {
