@@ -55,6 +55,13 @@
       opacity: 1;
     }
   }
+
+  .noFilter {
+    text-align: center;
+    font-size: 12px;
+    color: $grey3;
+    font-style: italic;
+  }
 }
 
 .fieldName {

@@ -33,87 +33,12 @@ interface Props {
 
 class HeaderCell extends React.Component<Props, {}> {
 
-  _delayedUpdateFilter: any
+  delayedUpdateFilter: any
 
   constructor(props) {
     super(props)
 
-    this._delayedUpdateFilter = debounce(this.props.updateFilter, 150)
-  }
-
-  _onFilterChangeString(value: string) {
-    this._delayedUpdateFilter(value !== '' ? `"${value}"` : null)
-  }
-
-  _onFilterChangeEnum(value: string) {
-    this._delayedUpdateFilter(value !== '' ? `${value}` : null)
-  }
-
-  _onFilterChangeNumber(value: string) {
-    this._delayedUpdateFilter(value !== '' ? value : null)
-  }
-
-  _onFilterChangeBoolean(value: any) {
-    this.props.updateFilter(value !== '' ? value.toString() : null)
-  }
-
-  _renderFilter() {
-    switch (this.props.field.typeIdentifier) {
-      case 'Int':
-        return (
-          <input
-            type='number'
-            placeholder={`Filter by ${this.props.field.name}`}
-            defaultValue={this.props.filter}
-            onChange={(e) => this._onFilterChangeNumber(e.target.value)}
-          />
-        )
-      case 'Float':
-        return (
-          <input
-            type='number'
-            step='any'
-            placeholder={`Filter by ${this.props.field.name}`}
-            defaultValue={this.props.filter}
-            onChange={(e) => this._onFilterChangeNumber(e.target.value)}
-          />
-        )
-      case 'Boolean':
-        return (
-          <select
-            onChange={(e) => this._onFilterChangeBoolean(e.target.value)}>
-            <option value={''}>{`Filter by ${this.props.field.name}`}</option>
-            <option value={'true'}>true</option>
-            <option value={'false'}>false</option>
-          </select>
-        )
-      case 'Enum':
-        return (
-          <select
-            onChange={(e) => this._onFilterChangeEnum(e.target.value)}
-          >
-            <option value={''}>{`Filter by ${this.props.field.name}`}</option>
-            {this.props.field.enumValues.map((enumValue) => (
-              <option key={enumValue}>{enumValue}</option>
-            ))}
-          </select>
-        )
-      default:
-        return (
-          <input
-            type='text'
-            placeholder={`Filter by ${this.props.field.name}`}
-            defaultValue={this.props.filter}
-            onChange={(e) => this._onFilterChangeString(e.target.value)}
-          />
-        )
-    }
-  }
-
-  _toggleSortOrder = () => {
-    if (isScalar(this.props.field.typeIdentifier)) {
-      this.props.toggleSortOrder()
-    }
+    this.delayedUpdateFilter = debounce(this.props.updateFilter, 150)
   }
 
   render() {
@@ -148,7 +73,7 @@ class HeaderCell extends React.Component<Props, {}> {
           </div>
           {isScalar(this.props.field.typeIdentifier) &&
           <div
-            onClick={this._toggleSortOrder}
+            onClick={this.toggleSortOrder}
             className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
           >
             <Icon
@@ -162,12 +87,94 @@ class HeaderCell extends React.Component<Props, {}> {
         </div>
         {this.props.filterVisible &&
         <div className={classes.row}>
-          {this._renderFilter()}
+          {this.renderFilter()}
         </div>
         }
       </div>
     )
   }
+
+  private onFilterChangeString(value: string) {
+    this.delayedUpdateFilter(value !== '' ? `"${value}"` : null)
+  }
+
+  private onFilterChangeEnum(value: string) {
+    this.delayedUpdateFilter(value !== '' ? `${value}` : null)
+  }
+
+  private onFilterChangeNumber(value: string) {
+    this.delayedUpdateFilter(value !== '' ? value : null)
+  }
+
+  private onFilterChangeBoolean(value: any) {
+    this.props.updateFilter(value !== '' ? value.toString() : null)
+  }
+
+  private toggleSortOrder = () => {
+    if (isScalar(this.props.field.typeIdentifier)) {
+      this.props.toggleSortOrder()
+    }
+  }
+
+  private renderFilter() {
+    switch (this.props.field.typeIdentifier) {
+      case 'Relation':
+        return (
+          <div className={classes.noFilter}>
+            Filters are not available for Relations
+          </div>
+        )
+      case 'Int':
+        return (
+          <input
+            type='number'
+            placeholder={`Filter by ${this.props.field.name}`}
+            defaultValue={this.props.filter}
+            onChange={(e) => this.onFilterChangeNumber(e.target.value)}
+          />
+        )
+      case 'Float':
+        return (
+          <input
+            type='number'
+            step='any'
+            placeholder={`Filter by ${this.props.field.name}`}
+            defaultValue={this.props.filter}
+            onChange={(e) => this.onFilterChangeNumber(e.target.value)}
+          />
+        )
+      case 'Boolean':
+        return (
+          <select
+            onChange={(e) => this.onFilterChangeBoolean(e.target.value)}>
+            <option value={''}>{`Filter by ${this.props.field.name}`}</option>
+            <option value={'true'}>true</option>
+            <option value={'false'}>false</option>
+          </select>
+        )
+      case 'Enum':
+        return (
+          <select
+            onChange={(e) => this.onFilterChangeEnum(e.target.value)}
+          >
+            <option value={''}>{`Filter by ${this.props.field.name}`}</option>
+            {this.props.field.enumValues.map((enumValue) => (
+              <option key={enumValue}>{enumValue}</option>
+            ))}
+          </select>
+        )
+      default:
+        return (
+          <input
+            type='text'
+            placeholder={`Filter by ${this.props.field.name}`}
+            defaultValue={this.props.filter}
+            onChange={(e) => this.onFilterChangeString(e.target.value)}
+          />
+        )
+    }
+  }
+
 }
 
 export default Relay.createContainer(HeaderCell, {
