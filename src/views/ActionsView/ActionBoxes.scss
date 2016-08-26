@@ -1,9 +1,26 @@
 @import '~styles/variables';
+@import '~styles/mixins';
 
 .root {
   width: 100%;
   background: #E4E4F4;
   padding: 60px;
+}
+
+.header {
+  font-size: 35px;
+}
+
+.description {
+  margin: 20px 0 40px;
+  border: none;
+  appearance: none;
+  box-shadow: none;
+  background: transparent;
+
+  @include placeholder {
+    color: #8E96A3;
+  }
 }
 
 .boxes {

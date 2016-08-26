@@ -62,11 +62,9 @@ class ActionBoxes extends React.Component<Props, State> {
 
     const { action } = props
 
-    const triggerMutationModelModelId = action
-      ? action.triggerMutationModel.model.id
-      : props.project.models.edges[0].node.id
+    const triggerMutationModelModelId = action ? action.triggerMutationModel.model.id : ''
     const triggerMutationModelFragment = action ? action.triggerMutationModel.fragment : ''
-    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : 'CREATE'
+    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : ''
     const handlerWebhookUrl = action && action.handlerWebhook ? action.handlerWebhook.url : ''
 
     const { schema, valid } = extractSchema({
@@ -89,7 +87,7 @@ class ActionBoxes extends React.Component<Props, State> {
     props.relay.setVariables({
       selectedModelMutationType: triggerMutationModelMutationType,
       selectedModelId: triggerMutationModelModelId,
-      hasSelectedModelId: true,
+      hasSelectedModelId: !!action,
     })
   }
 
@@ -101,7 +99,40 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState({ schema, triggerValid: valid } as State)
   }
 
-  _onUpdateTrigger = (payload: UpdateTriggerPayload) => {
+  render () {
+    return (
+      <div className={classes.root}>
+        <div>
+          <div className={classes.header}>
+            {this.props.action ? 'Edit Action' : 'New Action'}
+          </div>
+          <input className={classes.description} placeholder={'+ Add Description'} />
+        </div>
+        <div className={classes.boxes}>
+          <ActionTriggerBox
+            triggerMutationModelMutationType={this.state.triggerMutationModelMutationType}
+            triggerMutationModelModelId={this.state.triggerMutationModelModelId}
+            triggerMutationModelFragment={this.state.triggerMutationModelFragment}
+            schema={this.state.schema}
+            valid={this.state.triggerValid}
+            project={this.props.project}
+            update={this.onUpdateTrigger}
+            />
+          <ActionHandlerBox
+            handlerWebhookUrl={this.state.handlerWebhookUrl}
+            valid={this.state.handlerValid}
+            update={this.onUpdateHandler}
+          />
+        </div>
+        <div className={classes.buttons}>
+          <div onClick={this.cancel}>Cancel</div>
+          {this.renderConfirm()}
+        </div>
+      </div>
+    )
+  }
+
+  private onUpdateTrigger = (payload: UpdateTriggerPayload) => {
     let partialState = payload.filterNullAndUndefined() as State
     partialState.changesMade = true
 
@@ -121,11 +152,14 @@ class ActionBoxes extends React.Component<Props, State> {
     }
 
     if (payload.triggerMutationModelMutationType) {
-      this.props.relay.setVariables({ selectedModelMutationType: payload.triggerMutationModelMutationType })
+      this.props.relay.setVariables({
+        selectedModelMutationType: payload.triggerMutationModelMutationType,
+        hasSelectedModelId: true,
+      })
     }
   }
 
-  _onUpdateHandler = (payload: UpdateHandlerPayload) => {
+  private onUpdateHandler = (payload: UpdateHandlerPayload) => {
     let partialState = payload.filterNullAndUndefined() as State
     partialState.changesMade = true
     if (payload.handlerWebhookUrl) {
@@ -134,25 +168,25 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState(partialState)
   }
 
-  _cancel = () => {
+  private cancel = () => {
     if (!this.state.changesMade || window.confirm('You have unsaved changes. Do you really want to cancel?')) {
       this.props.close()
     }
   }
 
-  _submit = () => {
+  private submit = () => {
     if (!this.state.triggerValid || !this.state.handlerValid) {
       return
     }
 
     if (this.props.action) {
-      this._updateAction()
+      this.updateAction()
     } else {
-      this._createAction()
+      this.createAction()
     }
   }
 
-  _createAction () {
+  private createAction () {
     Relay.Store.commitUpdate(
       new AddActionMutation({
         projectId: this.props.project.id,
@@ -177,7 +211,7 @@ class ActionBoxes extends React.Component<Props, State> {
     )
   }
 
-  _updateAction () {
+  private updateAction () {
     Relay.Store.commitUpdate(
       new UpdateActionMutation({
         actionId: this.props.action.id,
@@ -202,7 +236,7 @@ class ActionBoxes extends React.Component<Props, State> {
     )
   }
 
-  _renderConfirm () {
+  private renderConfirm () {
     if (!this.state.changesMade) {
       return (
         <div>No changes</div>
@@ -210,34 +244,7 @@ class ActionBoxes extends React.Component<Props, State> {
     }
 
     return (
-      <div onClick={this._submit}>Confirm</div>
-    )
-  }
-
-  render () {
-    return (
-      <div className={classes.root}>
-        <div className={classes.boxes}>
-          <ActionTriggerBox
-            triggerMutationModelMutationType={this.state.triggerMutationModelMutationType}
-            triggerMutationModelModelId={this.state.triggerMutationModelModelId}
-            triggerMutationModelFragment={this.state.triggerMutationModelFragment}
-            schema={this.state.schema}
-            valid={this.state.triggerValid}
-            project={this.props.project}
-            update={this._onUpdateTrigger}
-            />
-          <ActionHandlerBox
-            handlerWebhookUrl={this.state.handlerWebhookUrl}
-            valid={this.state.handlerValid}
-            update={this._onUpdateHandler}
-          />
-        </div>
-        <div className={classes.buttons}>
-          <div onClick={this._cancel}>Cancel</div>
-          {this._renderConfirm()}
-        </div>
-      </div>
+      <div onClick={this.submit}>Confirm</div>
     )
   }
 }
