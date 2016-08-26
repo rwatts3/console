@@ -22,7 +22,7 @@ class ActionRow extends React.Component<Props, State> {
   constructor() {
     super()
     this.state = {
-      mouseOverToggle: false
+      mouseOverToggle: false,
     }
   }
 
