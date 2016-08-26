@@ -130,7 +130,6 @@ class ActionBoxes extends React.Component<Props, State> {
     partialState.changesMade = true
     if (payload.handlerWebhookUrl) {
       partialState.handlerValid = isValidUrl(payload.handlerWebhookUrl)
-      console.log(partialState)
     }
     this.setState(partialState)
   }

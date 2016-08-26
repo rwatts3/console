@@ -20,14 +20,14 @@ interface Props {
 
 interface State {
   showAddRow: boolean
-  editableActionIds: string[]
+  editableActionId: string
 }
 
 class ActionsView extends React.Component<Props, State> {
 
   state = {
     showAddRow: false,
-    editableActionIds: [],
+    editableActionId: null,
   }
 
   componentDidMount = () => {
@@ -78,12 +78,12 @@ class ActionsView extends React.Component<Props, State> {
                   projectId={this.props.viewer.project.id}
                   onClick={() => this.toggleEdit(action.id)}
                 />
-                {this.state.editableActionIds.includes(action.id) &&
+                {this.state.editableActionId === action.id &&
                 <ActionBoxes
                   project={this.props.viewer.project}
                   action={action}
                   relay={this.props.relay}
-                  close={() => this.closeEdit(action.id)}
+                  close={() => this.closeEdit()}
                 />
                 }
               </div>
@@ -95,19 +95,19 @@ class ActionsView extends React.Component<Props, State> {
   }
 
   private toggleEdit = (id: string): void => {
-    if (this.state.editableActionIds.includes(id)) {
-      this.closeEdit(id)
-    } else {
+    const currentAction = this.state.editableActionId
+    this.closeEdit()
+    if (currentAction !== id) {
       this.openEdit(id)
     }
   }
 
   private openEdit = (id: string): void => {
-    this.setState({editableActionIds: this.state.editableActionIds.concat([id])} as State)
+    this.setState({editableActionId: id} as State)
   }
 
-  private closeEdit = (id: string): void => {
-    this.setState({editableActionIds: this.state.editableActionIds.filter((i) => i !== id)} as State)
+  private closeEdit = (): void => {
+    this.setState({editableActionId: null} as State)
   }
 
 }
