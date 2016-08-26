@@ -2,7 +2,6 @@ import * as React from 'react'
 import Icon from '../../components/Icon/Icon'
 import {classnames} from '../../utils/classnames'
 const classes: any = require('./ActionHandlerBox.scss')
-const sharedClasses: any = require('./ActionBox.scss')
 
 interface Props {
   handlerWebhookUrl: string
@@ -31,7 +30,7 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
           />
         </div>
 
-        <div className={sharedClasses.info}>
+        <div className={classes.info}>
           Enter the URL to your webhook which will be called each time the action is triggered.
         </div>
 
@@ -44,7 +43,7 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
           />
         </div>
 
-        <div className={sharedClasses.info}>
+        <div className={classes.info}>
           You can find an example&nbsp;
           <a href='https://github.com/graphcool-examples/webhook-express-example' target='_blank'>here</a>.
           We recommend using <a href='https://webtask.io/' target='_blank'>Webtask</a> or&nbsp;
