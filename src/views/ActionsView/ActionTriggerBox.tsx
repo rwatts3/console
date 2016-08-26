@@ -5,7 +5,6 @@ import Icon from '../../components/Icon/Icon'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import ActionTrigger from './ActionTrigger'
 const classes: any = require('./ActionTriggerBox.scss')
-const sharedClasses: any = require('./ActionBox.scss')
 
 interface Props {
   triggerMutationModelMutationType: ActionTriggerMutationModelMutationType
@@ -35,6 +34,12 @@ class ActionTriggerBox extends React.Component<Props, {}> {
           onEdit={(query) => this.props.update({ triggerMutationModelFragment: query })}
         />
       )
+    } else {
+      queryEditor = (
+        <div className={classes.noQuery}>
+          After you selected your trigger and mutation, you need to specify a graphQL-fragment from it to use for the handler
+        </div>
+      )
     }
 
     return (
@@ -58,9 +63,10 @@ class ActionTriggerBox extends React.Component<Props, {}> {
             triggerMutationModelModelId={this.props.triggerMutationModelModelId}
           />
         </div>
-        <div className={sharedClasses.info}>
+        {this.props.schema &&
+        <div className={classes.info}>
           Specify a query for your action handler payload
-        </div>
+        </div>}
         <div className={classes.query}>
           {queryEditor}
         </div>
