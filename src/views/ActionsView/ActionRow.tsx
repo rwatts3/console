@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import Toggle from 'react-toggle-button'
 import { Action } from '../../types/types'
 import Icon from '../../components/Icon/Icon'
 import UpdateActionMutation from '../../mutations/UpdateActionMutation'
@@ -9,32 +10,19 @@ const classes: any = require('./ActionRow.scss')
 interface Props {
   action: Action
   projectId: string
-  onClick: () => void
+  onClick: (e: any) => void
 }
 
-class ActionRow extends React.Component<Props, {}> {
+interface State {
+  mouseOverToggle: boolean
+}
 
-  _toggleIsActive = (e: React.MouseEvent<any>) => {
-    e.stopPropagation()
+class ActionRow extends React.Component<Props, State> {
 
-    Relay.Store.commitUpdate(
-      new UpdateActionMutation({
-        actionId: this.props.action.id,
-        isActive: !this.props.action.isActive,
-      })
-    )
-  }
-
-  _delete = (e: React.MouseEvent<any>) => {
-    e.stopPropagation()
-
-    if (window.confirm('Do you really want to delete this Action?')) {
-      Relay.Store.commitUpdate(
-        new DeleteActionMutation({
-          actionId: this.props.action.id,
-          projectId: this.props.projectId,
-        })
-      )
+  constructor() {
+    super()
+    this.state = {
+      mouseOverToggle: false
     }
   }
 
@@ -74,20 +62,23 @@ class ActionRow extends React.Component<Props, {}> {
     }
 
     return (
-      <div className={classes.root} onClick={this.props.onClick}>
+      <div className={classes.root} onClick={this.rootClick}>
         <div className={classes.row}>
-          <input
-            checked={this.props.action.isActive}
-            onClick={this._toggleIsActive}
-            readOnly
-            type='checkbox'
-          />
+          <div
+            onMouseEnter={() => this.setState({mouseOverToggle: true})}
+            onMouseLeave={() => this.setState({mouseOverToggle: false})}
+          >
+            <Toggle
+              value={this.props.action.isActive}
+              onClick={this.toggleIsActive}
+            />
+          </div>
           <div>When</div>
           {trigger}
           <div>run</div>
           {handler}
 
-          <span onClick={this._delete} className={classes.delete}>
+          <span onClick={this.deleteAction} className={classes.delete}>
             <Icon
               width={20}
               height={20}
@@ -101,6 +92,35 @@ class ActionRow extends React.Component<Props, {}> {
       </div>
     )
   }
+
+  private rootClick = (e) => {
+    if (!this.state.mouseOverToggle) {
+      this.props.onClick(e)
+    }
+  }
+
+  private toggleIsActive = (e: any) => {
+    Relay.Store.commitUpdate(
+      new UpdateActionMutation({
+        actionId: this.props.action.id,
+        isActive: !this.props.action.isActive,
+      })
+    )
+  }
+
+  private deleteAction = (e: React.MouseEvent<any>) => {
+    e.stopPropagation()
+
+    if (window.confirm('Do you really want to delete this Action?')) {
+      Relay.Store.commitUpdate(
+        new DeleteActionMutation({
+          actionId: this.props.action.id,
+          projectId: this.props.projectId,
+        })
+      )
+    }
+  }
+
 }
 
 export default Relay.createContainer(ActionRow, {
