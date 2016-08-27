@@ -7,6 +7,7 @@ interface Props {
   handlerWebhookUrl: string
   valid: boolean
   update: (payload: UpdateHandlerPayload) => void
+  disabled: boolean
 }
 
 export interface UpdateHandlerPayload {
@@ -18,7 +19,7 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
   render() {
 
     return (
-      <div className={classes.root}>
+      <div className={classnames(classes.root, this.props.disabled ? classes.disabled : '')}>
 
         <div className={classes.head}>
           <div className={classnames(classes.title)}>Handler</div>
@@ -36,6 +37,7 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
 
         <div className={classes.input}>
           <input
+            disabled={this.props.disabled}
             type='text'
             value={this.props.handlerWebhookUrl}
             onChange={(e) => this.props.update({ handlerWebhookUrl: e.target.value })}
