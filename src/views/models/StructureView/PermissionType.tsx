@@ -206,7 +206,13 @@ export default class PermissionType extends React.Component<Props, {}> {
           >
             <option value='GUEST'>Guest</option>
             <option value='AUTHENTICATED'>Authenticated</option>
-            <option disabled={this.props.possibleRelatedPermissionPaths.length === 0} value='RELATED'>Related</option>
+            <option disabled value='RELATED'>Related</option>
+            {
+              // TODO enable again when related permission are implemented
+              // <option disabled={this.props.possibleRelatedPermissionPaths.length === 0} value='RELATED'>
+              // Related
+              // </option>
+            }
           </select>
           {this.props.userType === 'AUTHENTICATED' && this._renderAuthenticated()}
           {this.props.userType === 'RELATED' && this._renderRelated()}
