@@ -3,6 +3,7 @@ import * as Relay from 'react-relay'
 import { classnames } from '../../utils/classnames'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
 import { UpdateTriggerPayload } from './ActionTriggerBox'
+import calculateSize from 'calculate-size'
 const classes = require('./ActionTrigger.scss')
 
 interface Props {
@@ -25,9 +26,21 @@ class ActionTrigger extends React.Component<Props, {}> {
       triggerClass = classnames(triggerClass, classes.selecting)
     }
 
+    const fontOptions = {
+      font: 'Open Sans',
+      fontSize: '16px',
+    }
+
+    const selectedModel = this.getModelNameFromId(this.props.triggerMutationModelModelId)
+      || 'Select a Model/Relation...'
+    const modelWidth = calculateSize(selectedModel, fontOptions).width + 24
+
+    const selectedType = this.getTypeTextFromEnum(this.props.triggerMutationModelMutationType) || 'Select a Mutation...'
+    const typeWidth = calculateSize(selectedType, fontOptions).width + 24
     return (
       <div>
         <select
+          style={{width: modelWidth}}
           className={classnames(classes.selector, classes.modelselector)}
           value={this.props.triggerMutationModelModelId
             ? this.props.triggerMutationModelModelId
@@ -45,6 +58,7 @@ class ActionTrigger extends React.Component<Props, {}> {
           ))}
         </select>
         <select
+          style={{width: typeWidth}}
           disabled={!modelSelected}
           className={triggerClass}
           value={this.props.triggerMutationModelMutationType
@@ -61,6 +75,24 @@ class ActionTrigger extends React.Component<Props, {}> {
         </select>
       </div>
     )
+  }
+
+  private getModelNameFromId = (id: string): string => {
+    const model = this.props.project.models.edges.map((edge) => edge.node).find((node) => node.id === id)
+    return model ? model.name : null
+  }
+
+  private getTypeTextFromEnum = (type: ActionTriggerMutationModelMutationType) => {
+    switch (type) {
+      case 'CREATE':
+        return 'is created'
+      case 'UPDATE':
+        return 'is updated'
+      case 'DELETE':
+        return 'is deleted'
+      default:
+        return null
+    }
   }
 
   private getMutationClass() {

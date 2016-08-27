@@ -4,6 +4,7 @@ import { Project, ActionTriggerMutationModelMutationType } from '../../types/typ
 import Icon from '../../components/Icon/Icon'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import ActionTrigger from './ActionTrigger'
+import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionTriggerBox.scss')
 
 interface Props {
@@ -48,18 +49,35 @@ class ActionTriggerBox extends React.Component<Props, {}> {
 
         <div className={classes.head}>
           <div className={classes.title}>Trigger</div>
-          <Icon
-            width={24}
-            height={24}
-            src={require(`assets/new_icons/${this.props.valid ? 'check' : 'warning'}.svg`)}
-            color={this.props.valid ? '#7ED321' : '#F5A623'}
-          />
+          {!this.props.valid &&
+          <Tooltip
+            placement={'bottom'}
+            overlay={<span onClick={(e) => e.stopPropagation()}>
+                Please enter a valid url.
+              </span>}
+          >
+            <Icon
+              width={24}
+              height={24}
+              src={require('assets/new_icons/warning.svg')}
+              color={'#F5A623'}
+            />
+          </Tooltip>
+          }
+          {this.props.valid &&
+            <Icon
+              width={24}
+              height={24}
+              src={require('assets/new_icons/check.svg')}
+              color={'#7ED321'}
+            />
+          }
         </div>
 
         <div className={classes.trigger}>
           <ActionTrigger
             project={this.props.project}
-            update={this.props.update}
+            update={this.handleUpdate}
             triggerMutationModelMutationType={this.props.triggerMutationModelMutationType}
             triggerMutationModelModelId={this.props.triggerMutationModelModelId}
           />
@@ -73,6 +91,19 @@ class ActionTriggerBox extends React.Component<Props, {}> {
         </div>
       </div>
     )
+  }
+
+  private handleUpdate = (payload: UpdateTriggerPayload) => {
+    if (this.props.triggerMutationModelModelId && payload.triggerMutationModelMutationType &&
+       !this.props.triggerMutationModelFragment) {
+      payload.triggerMutationModelFragment = this.getDefaultSchema(payload)
+    }
+    this.props.update(payload)
+  }
+
+  private getDefaultSchema = (payload: UpdateTriggerPayload) => {
+    const type = payload.triggerMutationModelMutationType
+    return `{\n  ${type.toString().toLowerCase()}dNode{\n    id\n  }\n}`
   }
 }
 

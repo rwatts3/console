@@ -71,6 +71,23 @@ class ActionRow extends React.Component<Props, State> {
             <Toggle
               value={this.props.action.isActive}
               onClick={this.toggleIsActive}
+              inactiveLabel={''}
+              activeLabel={''}
+              thumbStyle={{boxShadow: 'none'}}
+              colors={{
+                activeThumb: {
+                  base: '#7ED321',
+                },
+                inactiveThumb: {
+                  base: '#8E96A3',
+                },
+                active: {
+                  base: '#DDDFE3',
+                },
+                inactive: {
+                  base: '#DDDFE3',
+                },
+              }}
             />
           </div>
           <div>When</div>
