@@ -102,13 +102,16 @@ class RelationsPopup extends React.Component<Props, State> {
     const mutationPrefix = isRelated ? 'removeFrom' : 'addTo'
     const mutationArg1 = `${relatedFieldName}${originModelName}Id`
     const mutationArg2 = `${originFieldName}${relatedModelName}Id`
+    const payloadName = `${relatedFieldName}${originModelName}`
 
     const mutation = `{
       ${mutationPrefix}${relationName}(
         ${mutationArg1}: "${this.props.originNodeId}"
         ${mutationArg2}: "${nodeId}"
       ) {
-        id
+        ${payloadName}{
+          id
+        }
       }
     }`
     this._lokka.mutate(mutation)

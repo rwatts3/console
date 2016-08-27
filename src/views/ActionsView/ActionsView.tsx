@@ -20,14 +20,14 @@ interface Props {
 
 interface State {
   showAddRow: boolean
-  editableActionIds: string[]
+  editableActionId: string
 }
 
 class ActionsView extends React.Component<Props, State> {
 
   state = {
     showAddRow: false,
-    editableActionIds: [],
+    editableActionId: null,
   }
 
   componentDidMount = () => {
@@ -37,22 +37,6 @@ class ActionsView extends React.Component<Props, State> {
         return 'Are you sure you want to discard unsaved changes?'
       }
     })
-  }
-
-  _toggleEdit(id: string) {
-    if (this.state.editableActionIds.includes(id)) {
-      this._closeEdit(id)
-    } else {
-      this._openEdit(id)
-    }
-  }
-
-  _openEdit(id: string) {
-    this.setState({editableActionIds: this.state.editableActionIds.concat([id])} as State)
-  }
-
-  _closeEdit(id: string) {
-    this.setState({editableActionIds: this.state.editableActionIds.filter((i) => i !== id)} as State)
   }
 
   render() {
@@ -92,14 +76,14 @@ class ActionsView extends React.Component<Props, State> {
                 <ActionRow
                   action={action}
                   projectId={this.props.viewer.project.id}
-                  onClick={() => this._toggleEdit(action.id)}
+                  onClick={() => this.toggleEdit(action.id)}
                 />
-                {this.state.editableActionIds.includes(action.id) &&
+                {this.state.editableActionId === action.id &&
                 <ActionBoxes
                   project={this.props.viewer.project}
                   action={action}
                   relay={this.props.relay}
-                  close={() => this._closeEdit(action.id)}
+                  close={() => this.closeEdit()}
                 />
                 }
               </div>
@@ -109,6 +93,23 @@ class ActionsView extends React.Component<Props, State> {
       </div>
     )
   }
+
+  private toggleEdit = (id: string): void => {
+    const currentAction = this.state.editableActionId
+    this.closeEdit()
+    if (currentAction !== id) {
+      this.openEdit(id)
+    }
+  }
+
+  private openEdit = (id: string): void => {
+    this.setState({editableActionId: id} as State)
+  }
+
+  private closeEdit = (): void => {
+    this.setState({editableActionId: null} as State)
+  }
+
 }
 
 export default Relay.createContainer(withRouter(ActionsView), {
