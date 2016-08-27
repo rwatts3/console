@@ -59,7 +59,7 @@ class ActionTriggerBox extends React.Component<Props, {}> {
         <div className={classes.trigger}>
           <ActionTrigger
             project={this.props.project}
-            update={this.props.update}
+            update={this.handleUpdate}
             triggerMutationModelMutationType={this.props.triggerMutationModelMutationType}
             triggerMutationModelModelId={this.props.triggerMutationModelModelId}
           />
@@ -73,6 +73,19 @@ class ActionTriggerBox extends React.Component<Props, {}> {
         </div>
       </div>
     )
+  }
+
+  private handleUpdate = (payload: UpdateTriggerPayload) => {
+    if (this.props.triggerMutationModelModelId && payload.triggerMutationModelMutationType &&
+       !this.props.triggerMutationModelFragment) {
+      payload.triggerMutationModelFragment = this.getDefaultSchema(payload)
+    }
+    this.props.update(payload)
+  }
+
+  private getDefaultSchema = (payload: UpdateTriggerPayload) => {
+    const type = payload.triggerMutationModelMutationType
+    return `{\n  ${type.toString().toLowerCase()}dNode{\n    id\n  }\n}`
   }
 }
 
