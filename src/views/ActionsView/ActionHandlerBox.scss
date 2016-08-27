@@ -4,6 +4,25 @@
   width: 100%;
   overflow: hidden;
   background: #fff;
+  transition: background .2s ease, color .2s ease, border .2s ease;
+
+  &.disabled {
+    background: #E4E4F4;
+    border: 1px solid #8E96A3;
+    user-select: none;
+    cursor: default;
+    
+    div {
+      color: #8E96A3;
+      border-color: #8E96A3;
+    }
+
+    input {
+      background: transparent;
+      border-color: #8E96A3;
+      user-select: none;
+    }
+  }
 }
 
 .info {

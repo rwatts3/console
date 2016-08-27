@@ -127,6 +127,7 @@ class ActionBoxes extends React.Component<Props, State> {
             handlerWebhookUrl={this.state.handlerWebhookUrl}
             valid={this.state.handlerValid}
             update={this.onUpdateHandler}
+            disabled={!this.state.triggerValid}
           />
         </div>
         <div className={classes.buttons}>
@@ -264,6 +265,7 @@ export default Relay.createContainer(ActionBoxes, {
     action: () => Relay.QL`
       fragment on Action {
         id
+        description
         triggerType
         handlerType
         triggerMutationModel {
