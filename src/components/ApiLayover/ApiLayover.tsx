@@ -27,7 +27,7 @@ export default class ApiLayover extends React.Component<Props, State> {
     const url = `https://api.graph.cool/${this.state.endpoint}/${this.props.projectId}`
 
     return (
-      <ClickOutside onClickOutside={() => this.props.close()}>
+      <ClickOutside onClickOutside={this.props.close}>
         <div className={classes.root}>
           <div className={classes.endpoints}>
             <select
@@ -43,7 +43,7 @@ export default class ApiLayover extends React.Component<Props, State> {
           </div>
           <div className={classes.url}>{url}</div>
           <CopyToClipboard text={url}
-            onCopy={() => this.onCopy()}>
+            onCopy={this.onCopy}>
             <span className={classes.copy}>
               {this.state.copied ? 'Copied' : 'Copy'}
             </span>
@@ -53,12 +53,12 @@ export default class ApiLayover extends React.Component<Props, State> {
     )
   }
 
-  private onCopy () {
+  private onCopy = () => {
     this.setState({ copied: true } as State)
     setTimeout(this.props.close, 900)
   }
 
-  private selectEndpoint (endpoint: Endpoint) {
+  private selectEndpoint = (endpoint: Endpoint) => {
     this.setState({ endpoint } as State)
   }
 }
