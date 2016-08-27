@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Icon from '../../components/Icon/Icon'
 import {classnames} from '../../utils/classnames'
+import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionHandlerBox.scss')
 
 interface Props {
@@ -23,12 +24,29 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
 
         <div className={classes.head}>
           <div className={classnames(classes.title)}>Handler</div>
-          <Icon
-            width={24}
-            height={24}
-            src={require(`assets/new_icons/${this.props.valid ? 'check' : 'warning'}.svg`)}
-            color={this.props.valid ? '#7ED321' : '#F5A623'}
-          />
+          {!this.props.disabled && !this.props.valid &&
+          <Tooltip
+            placement={'bottom'}
+            overlay={<span onClick={(e) => e.stopPropagation()}>
+                Please enter a valid url.
+              </span>}
+          >
+            <Icon
+              width={24}
+              height={24}
+              src={require('assets/new_icons/warning.svg')}
+              color={'#F5A623'}
+            />
+          </Tooltip>
+          }
+          {this.props.valid &&
+            <Icon
+              width={24}
+              height={24}
+              src={require('assets/new_icons/check.svg')}
+              color={'#7ED321'}
+            />
+          }
         </div>
 
         <div className={classes.info}>
