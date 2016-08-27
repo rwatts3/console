@@ -77,7 +77,7 @@ class StructureView extends React.Component<Props, State> {
           <Tether
             steps={{
               STEP3_CREATE_TEXT_FIELD: 'Add a new field called "text" and select type "String".' +
-              ' Then click the "Create Field" button.',
+              ' Then click the "Create" button.',
               STEP4_CREATE_COMPLETED_FIELD: 'Good job! Create another one called "complete" with type "Boolean"',
             }}
             offsetX={5}

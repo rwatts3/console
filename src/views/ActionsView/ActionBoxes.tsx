@@ -57,7 +57,7 @@ function extractSchema ({ schemaString, query }): { schema: any, valid: boolean 
 
 class ActionBoxes extends React.Component<Props, State> {
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const { action } = props
@@ -99,7 +99,7 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState({ schema, triggerValid: valid } as State)
   }
 
-  render () {
+  render() {
     return (
       <div className={classes.root}>
         <div>
@@ -191,7 +191,7 @@ class ActionBoxes extends React.Component<Props, State> {
     }
   }
 
-  private createAction () {
+  private createAction = () => {
     Relay.Store.commitUpdate(
       new AddActionMutation({
         projectId: this.props.project.id,
@@ -216,7 +216,7 @@ class ActionBoxes extends React.Component<Props, State> {
     )
   }
 
-  private updateAction () {
+  private updateAction = () => {
     Relay.Store.commitUpdate(
       new UpdateActionMutation({
         actionId: this.props.action.id,
@@ -241,7 +241,7 @@ class ActionBoxes extends React.Component<Props, State> {
     )
   }
 
-  private renderConfirm () {
+  private renderConfirm = () => {
     if (!this.state.changesMade) {
       return (
         <div>No changes</div>
