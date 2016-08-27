@@ -103,9 +103,11 @@ class ActionBoxes extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <div>
+          {!this.props.action &&
           <div className={classes.header}>
-            {this.props.action ? 'Edit Action' : 'New Action'}
+            New Action
           </div>
+          }
           <input
             className={classes.description}
             placeholder={'+ Add Description'}
