@@ -60,6 +60,7 @@
     "react-router-relay": "^0.13.4",
     "react-tagsinput": "^3.12.0",
     "react-tether": "^0.5.2",
+    "react-toggle-button": "^2.0.0",
     "react-tooltip": "^3.1.1",
     "react-twitter-widgets": "^0.2.4",
     "redux": "^3.5.2",

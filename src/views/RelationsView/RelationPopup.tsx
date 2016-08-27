@@ -15,6 +15,7 @@ import {Transaction} from 'react-relay'
 const classes: any = require('./RelationPopup.scss')
 
 interface Props {
+  location: any
   viewer: any
   relay: any
 }
@@ -52,18 +53,7 @@ class RelationPopup extends React.Component<Props, State> {
     super(props)
 
     const {relation} = this.props.viewer
-
-    this.state = {
-      name: relation ? relation.name || '' : '',
-      description: relation ? relation.description || '' : '',
-      fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : '',
-      fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : '',
-      fieldOnLeftModelIsList: relation ? relation.fieldOnLeftModel.isList : false,
-      fieldOnRightModelIsList: relation ? relation.fieldOnRightModel.isList : false,
-      leftModelId: relation ? relation.leftModel.id : null,
-      rightModelId: relation ? relation.rightModel.id : null,
-      alertHint: false,
-    }
+    this.state = relation ? this.getExistingRelationState() : this.getNewRelationState()
   }
 
   render(): JSX.Element {
@@ -152,6 +142,43 @@ class RelationPopup extends React.Component<Props, State> {
 
   private close = () => {
     this.context.router.goBack()
+  }
+
+  private getNewRelationState = (): State => {
+
+    let preselectedModelId = null
+
+    const {leftModelName} = this.props.location.query
+    if (leftModelName) {
+      preselectedModelId = this.props.viewer.project.models.edges.map((edge) => edge.node)
+        .find((node) => node.name === leftModelName).id
+    }
+    return {
+      name: '',
+      description: '',
+      fieldOnLeftModelName: '',
+      fieldOnRightModelName: leftModelName ? leftModelName.toLowerCase() : '',
+      fieldOnLeftModelIsList: false,
+      fieldOnRightModelIsList: false,
+      leftModelId: preselectedModelId,
+      rightModelId: null,
+      alertHint: false,
+    } as State
+  }
+
+  private getExistingRelationState = (): State => {
+    const {relation} = this.props.viewer
+    return {
+      name: relation.name,
+      description: relation.description,
+      fieldOnLeftModelName: relation.fieldOnLeftModel.name,
+      fieldOnRightModelName: relation.fieldOnRightModel.name,
+      fieldOnLeftModelIsList: relation.fieldOnLeftModel.isList,
+      fieldOnRightModelIsList: relation.fieldOnRightModel.isList,
+      leftModelId: relation.leftModel.id,
+      rightModelId: relation.rightModel.id,
+      alertHint: false,
+    } as State
   }
 
   private isValid = (): boolean => {

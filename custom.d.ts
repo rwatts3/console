@@ -23,6 +23,7 @@ declare module 'rc-tooltip'
 declare module 'react-tagsinput'
 declare module 'graphiql/dist/components/QueryEditor'
 declare module 'react-notification-system'
+declare module 'react-toggle-button'
 
 declare var fetch: any
 declare var analytics: any

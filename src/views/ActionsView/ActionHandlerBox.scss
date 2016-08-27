@@ -6,6 +6,18 @@
   background: #fff;
 }
 
+.info {
+  width: 100%;
+  font-size: 15px;
+  color: $newGrey3;
+  padding: 16px;
+  line-height: 20px;
+
+  a {
+    color: $accent;
+  }
+}
+
 .input {
   width: 100%;
   padding: 16px;
