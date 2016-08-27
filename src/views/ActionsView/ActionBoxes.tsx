@@ -243,7 +243,7 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   private renderConfirm = () => {
-    if (!this.state.changesMade) {
+    if (!this.state.changesMade || !this.state.triggerValid || !this.state.handlerValid) {
       return (
         <div>No changes</div>
       )
