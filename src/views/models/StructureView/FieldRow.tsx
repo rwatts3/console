@@ -215,14 +215,7 @@ class FieldRow extends React.Component<Props, State> {
                 Add Permission
               </span>
             }
-            {field.permissions.edges.map((permissionEdge) => (
-              <span
-                key={permissionEdge.node.id}
-                className={classes.label}
-              >
-                {permissionEdge.node.userType}
-              </span>
-            ))}
+            {this.renderPermissionList()}
           </div>
           <div className={classes.controls}>
             <Link to={editLink}>
@@ -259,6 +252,34 @@ class FieldRow extends React.Component<Props, State> {
         }
       </div>
     )
+  }
+
+  private renderPermissionList = () => {
+    const permissionCount = this.props.field.permissions.edges.map((edge) => edge.node).reduce(
+      (prev, node) => {
+        if (!prev[node.userType]) {
+          prev[node.userType] = 1
+        } else {
+          prev[node.userType]++
+        }
+        console.log(prev)
+        return prev
+      },
+      {})
+    const permissions = []
+    for (let key in permissionCount) {
+      if (permissionCount.hasOwnProperty(key)) {
+        permissions.push(
+          <span
+            key={key}
+            className={classes.label}
+          >
+            {permissionCount[key] > 1 ? `${permissionCount[key]}x ${key}` : `${key}`}
+          </span>
+        )
+      }
+    }
+    return permissions
   }
 }
 
