@@ -10,7 +10,7 @@ const classes: any = require('./ActionRow.scss')
 interface Props {
   action: Action
   projectId: string
-  onClick: (e: any) => void
+  onClick: (e: React.MouseEvent<any>) => void
 }
 
 interface State {
@@ -93,7 +93,7 @@ class ActionRow extends React.Component<Props, State> {
     )
   }
 
-  private rootClick = (e) => {
+  private rootClick = (e: React.MouseEvent<any>) => {
     if (!this.state.mouseOverToggle) {
       this.props.onClick(e)
     }
