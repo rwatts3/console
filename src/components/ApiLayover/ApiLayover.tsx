@@ -1,6 +1,7 @@
 import * as React from 'react'
 import ClickOutside from 'react-click-outside'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import Icon from '../Icon/Icon'
 const classes: any = require('./ApiLayover.scss')
 
 type Endpoint = 'simple/v1' | 'relay/v1'
@@ -22,15 +23,6 @@ export default class ApiLayover extends React.Component<Props, State> {
     copied: false,
   }
 
-  _onCopy () {
-    this.setState({ copied: true } as State)
-    setTimeout(this.props.close, 900)
-  }
-
-  _selectEndpoint (endpoint: Endpoint) {
-    this.setState({ endpoint } as State)
-  }
-
   render() {
     const url = `https://api.graph.cool/${this.state.endpoint}/${this.props.projectId}`
 
@@ -38,14 +30,20 @@ export default class ApiLayover extends React.Component<Props, State> {
       <ClickOutside onClickOutside={() => this.props.close()}>
         <div className={classes.root}>
           <div className={classes.endpoints}>
-            <select onChange={(e) => this._selectEndpoint((e.target as HTMLSelectElement).value as Endpoint)}>
-              <option>simple/v1 ▾</option>
-              <option>relay/v1 ▾</option>
+            <select
+              onChange={(e) => this.selectEndpoint((e.target as HTMLSelectElement).value as Endpoint)}
+              ref='select'
+            >
+              <option>simple/v1</option>
+              <option>relay/v1</option>
             </select>
+            <Icon
+              src={require('../../assets/icons/arrow.svg')}
+            />
           </div>
           <div className={classes.url}>{url}</div>
           <CopyToClipboard text={url}
-            onCopy={() => this._onCopy()}>
+            onCopy={() => this.onCopy()}>
             <span className={classes.copy}>
               {this.state.copied ? 'Copied' : 'Copy'}
             </span>
@@ -53,5 +51,14 @@ export default class ApiLayover extends React.Component<Props, State> {
         </div>
       </ClickOutside>
     )
+  }
+
+  private onCopy () {
+    this.setState({ copied: true } as State)
+    setTimeout(this.props.close, 900)
+  }
+
+  private selectEndpoint (endpoint: Endpoint) {
+    this.setState({ endpoint } as State)
   }
 }
