@@ -270,7 +270,7 @@ class FieldPopup extends React.Component<Props, State> {
                   className={`${classes.button} ${this.isValid() ? classes.green : classes.disabled}`}
                   onClick={() => this.submit()}
                 >
-                  {this.props.field ? 'Update field' : 'Create field'}
+                  {this.props.field ? 'Save' : 'Create'}
                 </button>
               </div>
             </div>
