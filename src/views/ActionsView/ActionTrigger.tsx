@@ -2,13 +2,14 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { classnames } from '../../utils/classnames'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
+import { UpdateTriggerPayload } from './ActionTriggerBox'
 const classes = require('./ActionTrigger.scss')
 
 interface Props {
   project: Project
   triggerMutationModelModelId: string
   triggerMutationModelMutationType: ActionTriggerMutationModelMutationType
-  update: (obj: any) => void
+  update: (payload: UpdateTriggerPayload) => void
 }
 
 class ActionTrigger extends React.Component<Props, {}> {
