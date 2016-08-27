@@ -57,7 +57,7 @@ function extractSchema ({ schemaString, query }): { schema: any, valid: boolean 
 
 class ActionBoxes extends React.Component<Props, State> {
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     const { action } = props
@@ -99,13 +99,15 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState({ schema, triggerValid: valid } as State)
   }
 
-  render () {
+  render() {
     return (
       <div className={classes.root}>
         <div>
+          {!this.props.action &&
           <div className={classes.header}>
-            {this.props.action ? 'Edit Action' : 'New Action'}
+            New Action
           </div>
+          }
           <input
             className={classes.description}
             placeholder={'+ Add Description'}
@@ -127,6 +129,7 @@ class ActionBoxes extends React.Component<Props, State> {
             handlerWebhookUrl={this.state.handlerWebhookUrl}
             valid={this.state.handlerValid}
             update={this.onUpdateHandler}
+            disabled={!this.state.triggerValid}
           />
         </div>
         <div className={classes.buttons}>
@@ -191,7 +194,7 @@ class ActionBoxes extends React.Component<Props, State> {
     }
   }
 
-  private createAction () {
+  private createAction = () => {
     Relay.Store.commitUpdate(
       new AddActionMutation({
         projectId: this.props.project.id,
@@ -216,7 +219,7 @@ class ActionBoxes extends React.Component<Props, State> {
     )
   }
 
-  private updateAction () {
+  private updateAction = () => {
     Relay.Store.commitUpdate(
       new UpdateActionMutation({
         actionId: this.props.action.id,
@@ -241,8 +244,8 @@ class ActionBoxes extends React.Component<Props, State> {
     )
   }
 
-  private renderConfirm () {
-    if (!this.state.changesMade) {
+  private renderConfirm = () => {
+    if (!this.state.changesMade || !this.state.triggerValid || !this.state.handlerValid) {
       return (
         <div>No changes</div>
       )
@@ -264,6 +267,7 @@ export default Relay.createContainer(ActionBoxes, {
     action: () => Relay.QL`
       fragment on Action {
         id
+        description
         triggerType
         handlerType
         triggerMutationModel {

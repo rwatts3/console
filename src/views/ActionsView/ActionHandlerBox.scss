@@ -4,6 +4,27 @@
   width: 100%;
   overflow: hidden;
   background: #fff;
+  transition: background .2s ease, color .2s ease, border .2s ease;
+
+  &.disabled {
+    background: #E4E4F4;
+    border: 1px solid rgba(142, 148, 163, 0.4);
+    user-select: none;
+    cursor: default;
+    
+    div {
+      opacity: 0.4;
+      color: #8E96A3;
+      border-color: #8E96A3;
+    }
+
+    input {
+      opacity: 0.4;
+      background: transparent;
+      border-color: #8E96A3;
+      user-select: none;
+    }
+  }
 }
 
 .info {

@@ -216,7 +216,7 @@ export class SideNav extends React.Component<Props, State> {
             steps={{
               STEP2_CREATE_TODO_MODEL: 'First you need to create a new model called "Todo"',
             }}
-            offsetY={-5}
+            offsetY={this.state.addingNewModel ? -45 : 5}
             width={260}
           >
             <div>+ Add model</div>
@@ -263,7 +263,7 @@ export class SideNav extends React.Component<Props, State> {
         <div className={classes.gettingStarted}>
           <Link
             to={`/${this.props.params.projectName}/getting-started`}
-            className={classes.head}
+            className={classes.gettingStartedTitle}
           onClick={thirdStepOnClick}
           >
             <Icon width={19} height={19} src={require('assets/icons/cake.svg')}/>
