@@ -4,15 +4,10 @@
 
 ## Changelog
 
-### [Milestone M2](https://github.com/graphcool/dashboard/milestone/2)
-* You can finally set values to `null` if they are not required by the field.
-* Working with scalar list values is now a lot easier in the data browser.
-* The number of models can grow pretty fast in a project which hides the rest of the side navigation. We now auto-collapse the list of models when you don't need them.
-* We added a new way of authentication called "Permanent Auth Tokens" which is especially useful for server-side scripts. You can create and revoke tokens from our new project settings page. 🔑
-* We simplified the process of adding a new model.
-* Unsaved changes? We will prompt you to make sure you don't discard them accidentally.
-* Instead of showing everybody the hash of password fields, we now hide it behind a rows of `*`s. (Double-click to reveal the hash. 🎩)
-* *Fixed*: The dashboard now looks the same in Safari.
+### [Milestone M3](https://github.com/graphcool/dashboard/milestone/3)
+* Working with Actions just got a whole lot easier through the power of some fancy new UI. 🎊
+* *Fixed*: You will no longer get stuck during onboarding when you've been asked to "Add a Todo model". 
+* *Fixed*: If you create a new model, you will be automatically redirected.
 
 See **[here](CHANGELOG.md)** for a full list of all changes (features/bug fixes).
 
