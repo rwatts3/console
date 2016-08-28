@@ -184,7 +184,7 @@ export class SideNav extends React.Component<Props, State> {
             </Link>
           ))}
         </div>
-        <div className={classes.separator}>
+        <div className={classnames(classes.separator, this.state.addingNewModel ? '' : classes.notToggled)}>
           {this.props.models.length > 3 && !showsModels &&
           <div
             className={classes.listElement}
@@ -216,7 +216,7 @@ export class SideNav extends React.Component<Props, State> {
             steps={{
               STEP2_CREATE_TODO_MODEL: 'First you need to create a new model called "Todo"',
             }}
-            offsetY={this.state.addingNewModel ? -45 : 5}
+            offsetY={this.state.addingNewModel ? -75 : -5}
             width={260}
           >
             <div>+ Add model</div>
