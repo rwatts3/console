@@ -5,6 +5,10 @@ We improve the Graphcool platform every day by releasing new features, squashing
 ## Work In Progress
 
 ## August 2016
+### [Milestone M3](https://github.com/graphcool/dashboard/milestone/3)
+* Working with Actions just got a whole lot easier through the power of some fancy new UI. 🎊
+* *Fixed*: You will no longer get stuck during onboarding when you've been asked to "Add a Todo model". 
+* *Fixed*: If you create a new model, you will be automatically redirected.
 
 ### [Milestone M2](https://github.com/graphcool/dashboard/milestone/2)
 * You can finally set values to `null` if they are not required by the field.
