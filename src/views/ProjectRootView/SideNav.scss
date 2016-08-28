@@ -142,7 +142,12 @@
 }
 
 .separator {
+  transition: padding 0.2s ease;
   padding: 0 0 33px 0;
+
+  &.notToggled {
+    padding: 0;
+  }
 }
 
 .listStructure {
