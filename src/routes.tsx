@@ -23,6 +23,8 @@ import RelationsView from './views/RelationsView/RelationsView'
 import RelationPopup from './views/RelationsView/RelationPopup'
 import ProjectSettingsView from './views/ProjectSettingsView/ProjectSettingsView'
 
+import InfiniteWrapper from './components/InfiniteTable/InfiniteWrapper'
+
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
     query {
@@ -94,6 +96,7 @@ export default (
           <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render} />
         </Route>
         <Route path=':modelName/browser' component={BrowserView} queries={ViewerQuery} render={render} />
+        <Route path=':modelName/__browser' component={InfiniteWrapper} queries={ViewerQuery} render={render} />
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>

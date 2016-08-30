@@ -68,7 +68,7 @@ class RelationPopup extends React.Component<Props, State> {
                 type='text'
                 placeholder='+ Add Relation Name'
                 value={this.state.name}
-                onChange={(e) => this.setState(
+                onChange={(e: any) => this.setState(
                   {
                     name: e.target.value,
                     alertHint: !validateModelName(e.target.value) || e.target.value === '',
@@ -85,7 +85,7 @@ class RelationPopup extends React.Component<Props, State> {
                 type='text'
                 placeholder='+ Add Description'
                 value={this.state.description}
-                onChange={(e) => this.setState({ description: e.target.value } as State)}
+                onChange={(e: any) => this.setState({ description: e.target.value } as State)}
               />
             </div>
           </div>

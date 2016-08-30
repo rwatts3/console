@@ -151,7 +151,7 @@ class RelationsPopup extends React.Component<Props, State> {
                 type='text'
                 placeholder='Filter...'
                 value={this.state.filter}
-                onChange={(e) => this.setState({ filter: e.target.value } as State)}
+                onChange={(e: any) => this.setState({ filter: e.target.value } as State)}
               />
             </div>
             <div className={classes.selection}>
