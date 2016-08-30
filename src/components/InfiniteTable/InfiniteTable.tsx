@@ -3,74 +3,42 @@ import {AutoSizer, InfiniteLoader, FlexColumn, FlexTable, Grid, ScrollSync} from
 const classes: any = require('./InfiniteTable.scss')
 
 interface Props {
-  model: any
+  rowCount: number
+  rowHeight: number
+  headerHeight: number
+  columnCount: number
+  cellRenderer: (any) => JSX.Element | string
+  loadingCellRenderer: (any) => JSX.Element | string
+  minimumBatchSize?: number
+  threshold?: number
+  headerRenderer: (any) => JSX.Element | string
+  columnWidth: (any) => number
+  loadMoreRows: (any) => Promise<any>
 }
 
 interface State {
-  scrollTop: number
-  scrollLeft: number
 }
 
 export default class InifiniteTable extends React.Component<Props, State> {
-  list = [
-      { name: 'Brian Vaughn', description: 'Software engineer', loaded: false },
-      { name: 'John Doe', description: 'PM', loaded: false },
-  ];
 
-  constructor() {
-    super()
-    for (let i = 0; i < 100; i++) {
-      this.list.push({ name: 'John Doe', description: 'PM', loaded: false })
+  loaded = []
+
+  constructor(props: Props) {
+    super(props)
+    for (let i = 0; i < this.props.rowCount; i++) {
+      this.loaded.push(false)
     }
-    this.state = {
-      scrollTop: 0,
-      scrollLeft: 0,
-    }
-  }
-
-  loadMoreRows = ({startIndex, stopIndex}) => {
-    console.log(`loading more rows ${startIndex} - ${stopIndex}`)
-    return new Promise(
-      (resolve) =>
-          setTimeout(() => {
-            for (let i = startIndex; i < stopIndex; i++) {
-              this.list[i].loaded = true
-            }
-            resolve(this.list.slice(startIndex, stopIndex))
-          }, 1000)
-    )
-  }
-
-  renderCell = ({rowIndex, columnIndex}) => {
-    let value;
-    if (this.list[rowIndex].loaded) {
-      value = columnIndex === 0 ? this.list[rowIndex].name : this.list[rowIndex].description
-    } else {
-      value = 'loading'
-    }
-    return (
-      <div style={{display: 'flex', alignItems: 'center', height: 30}}>
-        {value}
-      </div>
-    )
-  }
-
-  onGridRowsRendered = (section, onRowsRendered) => {
-    onRowsRendered({
-      startIndex: section.rowStartIndex,
-      stopIndex: section.rowStopIndex,
-      overscanStartIndex: section.rowOverscanStartIndex,
-      overscanStopIndex: section.rowOverscanStopIndex,
-    })
   }
 
   render() {
     return (
       <div style={{height: '100%'}}>
         <InfiniteLoader
-          rowCount={this.list.length}
-          isRowLoaded={({index}) => this.list[index].loaded}
+          minimumBatchSize={this.props.minimumBatchSize}
+          threshold={this.props.threshold}
+          rowCount={this.props.rowCount}
           loadMoreRows={this.loadMoreRows}
+          isRowLoaded={({index}) => this.loaded[index]}
           >
           {({onRowsRendered, registerChild}) => (
           <ScrollSync>
@@ -81,12 +49,12 @@ export default class InifiniteTable extends React.Component<Props, State> {
                 <div>
                   <Grid
                     className={classes.headerContainer}
-                    columnWidth={({index}) => index === 0 ? width * 0.8 : width * 0.5}
-                    columnCount={2}
+                    columnWidth={this.props.columnWidth}
+                    columnCount={this.props.columnCount}
                     scrollLeft={scrollLeft}
-                    height={30}
-                    cellRenderer={({columnIndex}) => columnIndex === 0 ? 'Name' : 'Description'}
-                    rowHeight={30}
+                    height={this.props.headerHeight}
+                    cellRenderer={this.props.headerRenderer}
+                    rowHeight={this.props.headerHeight}
                     rowCount={1}
                     width={width}
                   />
@@ -94,15 +62,13 @@ export default class InifiniteTable extends React.Component<Props, State> {
                     ref={registerChild}
                     width={width}
                     height={height}
-                    onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
-                    headerHeight={30}
-                    rowHeight={30}
-                    columnCount={2}
+                    rowHeight={this.props.rowHeight}
+                    columnCount={this.props.columnCount}
                     onScroll={onScroll}
-                    columnWidth={({index}) => index === 0 ? width * 0.8 : width * 0.5}
-                    rowCount={this.list.length}
+                    columnWidth={this.props.columnWidth}
+                    rowCount={this.props.rowCount}
                     cellRenderer={this.renderCell}
-                    rowGetter={({index}) => this.list[index].loaded ? this.list[index] : ({name: 'loading', description: 'loading'})}
+                    onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
                     >
                   </Grid>
                 </div>
@@ -115,5 +81,33 @@ export default class InifiniteTable extends React.Component<Props, State> {
         </InfiniteLoader>
       </div>
     )
+  }
+
+  private renderCell = (input) => {
+    if (this.loaded[input.rowIndex]) {
+      return this.props.cellRenderer(input)
+    } else {
+      return this.props.loadingCellRenderer(input)
+    }
+  }
+
+  private loadMoreRows = (input) => {
+    return new Promise((resolve, reject) => {
+      this.props.loadMoreRows(input).then(() => {
+        for (let i = input.startIndex; i <= input.stopIndex; i++) {
+          this.loaded[i] = true
+        }
+        resolve(true)
+      })
+    })
+  }
+
+  private onGridRowsRendered = (section, onRowsRendered) => {
+    onRowsRendered({
+      startIndex: section.rowStartIndex,
+      stopIndex: section.rowStopIndex,
+      overscanStartIndex: section.rowOverscanStartIndex,
+      overscanStopIndex: section.rowOverscanStopIndex,
+    })
   }
 }
