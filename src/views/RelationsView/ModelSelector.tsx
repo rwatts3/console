@@ -20,7 +20,7 @@ export default class ModelSelector extends React.Component<Props,{}> {
         <a onClick={this.props.onListChange}>{this.getIsListText()}</a>
         <span className={classes.model}>
           <select
-            onChange={(e) => this.props.onModelChange(e.target.value)}
+            onChange={(e: any) => this.props.onModelChange(e.target.value)}
             value={this.props.selectedModelId === null ? 'default value' : this.props.selectedModelId}
           >
             <option value={'default value'} disabled={true}>Select a Model ▾</option>
@@ -40,7 +40,7 @@ export default class ModelSelector extends React.Component<Props,{}> {
               </span>
               <input value={this.props.fieldOnModelName}
                      type='text' placeholder='_______________'
-                     onChange={(e) => this.props.onFieldNameChange(e.target.value)}
+                     onChange={(e: any) => this.props.onFieldNameChange(e.target.value)}
               />
             </div>
           </span>

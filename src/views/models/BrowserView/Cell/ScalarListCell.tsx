@@ -57,7 +57,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                 type='text'
                 placeholder='Filter...'
                 value={this.state.filter}
-                onChange={(e) => null}
+                onChange={(e: any) => null}
               />
               <Icon
                 className={classes.setNull}

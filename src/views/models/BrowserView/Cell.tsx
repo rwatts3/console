@@ -116,7 +116,7 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  private onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
+  private onKeyDown = (e: any): void => {
     if (e.keyCode === 13 && e.shiftKey) {
       return
     }

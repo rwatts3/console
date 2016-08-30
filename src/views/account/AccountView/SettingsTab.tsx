@@ -117,7 +117,7 @@ class SettingsTab extends React.Component<Props, State> {
             placeholder='Your name'
             value={this.state.name}
             className={classes.field}
-            onChange={(e) => this.setState({ name: e.target.value } as State)}
+            onChange={(e: any) => this.setState({ name: e.target.value } as State)}
           />
         </div>
         <div className={classes.category}>
@@ -129,7 +129,7 @@ class SettingsTab extends React.Component<Props, State> {
             placeholder='Your email'
             value={this.state.email}
             className={classes.field}
-            onChange={(e) => this.setState({ email: e.target.value } as State)}
+            onChange={(e: any) => this.setState({ email: e.target.value } as State)}
           />
         </div>
         <div className={classes.category}>
@@ -141,21 +141,21 @@ class SettingsTab extends React.Component<Props, State> {
             value={this.state.oldPassword}
             placeholder='Enter current password'
             className={classes.field}
-            onChange={(e) => this.setState({ oldPassword: e.target.value } as State)}
+            onChange={(e: any) => this.setState({ oldPassword: e.target.value } as State)}
           />
           <input
             type='password'
             value={this.state.newPasswordOne}
             placeholder='Choose new password'
             className={classes.field}
-            onChange={(e) => this.setState({ newPasswordOne: e.target.value } as State)}
+            onChange={(e: any) => this.setState({ newPasswordOne: e.target.value } as State)}
           />
           <input
             type='password'
             value={this.state.newPasswordTwo}
             placeholder='Repeat new password'
             className={classes.field}
-            onChange={(e) => this.setState({ newPasswordTwo: e.target.value } as State)}
+            onChange={(e: any) => this.setState({ newPasswordTwo: e.target.value } as State)}
           />
         </div>
         <div className={classes.saveChanges} onClick={this._saveChanges}>

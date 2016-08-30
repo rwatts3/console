@@ -129,27 +129,7 @@ class BrowserView extends React.Component<Props, State> {
           viewer={this.props.viewer}
           project={this.props.project}
         >
-          <Tether
-            steps={{
-              STEP6_ADD_DATA_ITEM_1: `Add your first Todo node to the database.`,
-              STEP7_ADD_DATA_ITEM_2: 'Well done. Let\'s add another one.',
-            }}
-            offsetX={5}
-            offsetY={5}
-            width={260}
-          >
-            <div
-              className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
-              onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
-            >
-              <Icon
-                width={16}
-                height={16}
-                src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
-              />
-              <span>{this.state.newRowVisible ? 'Cancel' : 'Add node'}</span>
-            </div>
-          </Tether>
+          {this.renderTether()}
           {this.state.selectedNodeIds.size > 0 &&
           <div className={`${classes.button} ${classes.red}`} onClick={this.deleteSelectedNodes}>
             <Icon
@@ -238,6 +218,32 @@ class BrowserView extends React.Component<Props, State> {
           </div>
         </div>
       </div>
+    )
+  }
+
+  private renderTether = (): JSX.Element => {
+    return (
+      <Tether
+        steps={{
+          STEP6_ADD_DATA_ITEM_1: `Add your first Todo node to the database.`,
+          STEP7_ADD_DATA_ITEM_2: `Well done. Let's add another one.`,
+        }}
+        offsetX={5}
+        offsetY={5}
+        width={260}
+      >
+        <div
+          className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
+          onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
+        >
+          <Icon
+            width={16}
+            height={16}
+            src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
+          />
+          <span>{this.state.newRowVisible ? 'Cancel' : 'Add node'}</span>
+        </div>
+      </Tether>
     )
   }
 

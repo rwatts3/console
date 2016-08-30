@@ -21,9 +21,9 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
         ref='enumselector'
         autoFocus
         value={this.state.value}
-        onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
+        onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
         onKeyDown={this.props.onKeyDown}
-        onChange={(e) => this.setState({value: e.target.value})}
+        onChange={(e: any) => this.setState({value: e.target.value})}
       >
         <option key={'standard value'} disabled>Select an Enum ▾</option>
         {this.props.field.enumValues.map((enumValue) => (<option key={enumValue}>{enumValue}</option>))}
