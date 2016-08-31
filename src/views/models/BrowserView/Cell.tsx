@@ -19,10 +19,12 @@ interface Props {
   projectId: string
   nodeId: string
   value: any
-  width: number
   update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
-  reload: () => void,
+  reload: () => void
+  isSelected: boolean
   addnew: boolean
+  backgroundColor: string
+  width: number
 }
 
 interface State {
@@ -70,7 +72,9 @@ class Cell extends React.Component<Props, State> {
 
     return (
       <div
-        style={{ flex: `1 0 ${this.props.width}px`, justifyContent: 'center', alignItems: 'center' }}
+        style={{justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
+          flex: `1 0 ${this.props.width}px`
+        }}
         className={rootClassnames}
         onDoubleClick={() => this.startEditing()}
       >

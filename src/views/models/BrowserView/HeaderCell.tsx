@@ -22,7 +22,6 @@ function debounce(func, wait) {
 
 interface Props {
   field: Field
-  width: number
   sortOrder?: string
   toggleSortOrder: () => void
   filter?: string
@@ -42,7 +41,7 @@ class HeaderCell extends React.Component<Props, {}> {
   }
 
   render() {
-    const {field, width, sortOrder} = this.props
+    const {field, sortOrder} = this.props
 
     let type = getFieldTypeName(field)
     if (field.isList) {
@@ -56,7 +55,7 @@ class HeaderCell extends React.Component<Props, {}> {
 
     return (
       <div
-        style={{ flex: `1 0 ${width}px` }}
+        style={{ width: '100%' }}
         className={classes.root}
       >
         <div className={classes.row}>

@@ -6,7 +6,7 @@ import {TypedValue, NonScalarValue, ScalarValue, AtomicValue} from '../types/uti
 export function valueToString(value: TypedValue, field: Field, returnNullAsString: boolean): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''
-  }
+  } 
 
   if (field.isList) {
 

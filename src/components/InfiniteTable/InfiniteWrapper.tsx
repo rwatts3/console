@@ -37,6 +37,8 @@ class InfiniteWrapper extends React.Component<Props, State> {
     return (
       <div style={{height: '100vh'}}>
         <InfiniteTable
+          height={12}
+          width={12}
           rowCount={this.props.viewer.model.itemCount}
           columnCount={this.props.viewer.model.fields.edges.length}
           columnWidth={() => 500}
@@ -70,24 +72,19 @@ class InfiniteWrapper extends React.Component<Props, State> {
    private loadData = (skip: number): Promise<Immutable.List<Immutable.Map<string, any>>> => {
      console.log('skip ' + skip)
      const fieldNames = this.props.viewer.model.fields.edges.map((edge) => edge.node)
-     .map((field) => isScalar(field.typeIdentifier)
-       ? field.name
-       : `${field.name} { id }`)
-       .join(' ')
+     .map((field) => isScalar(field.typeIdentifier) ? field.name : `${field.name} { id }`) .join(' ')
 
-       const query = `
+     const query = `
        {
          all${this.props.viewer.model.namePlural}(first: 50 skip: ${skip}) {
            ${fieldNames}
          }
        }
-       `
-       return this.lokka.query(query)
+     `
+     return this.lokka.query(query)
        .then((results) => {
          const nodes = Immutable.List(results[`all${this.props.viewer.model.namePlural}`]).map(Immutable.Map)
          const nodeMap = nodes.reduce((result, item, index) => result.set(skip + index, nodes.get(index)), Immutable.Map<number, any>())
-         // console.log(results)
-         // console.log(this.state.nodes.merge(nodeMap))
          this.setState({nodes: this.state.nodes.merge(nodeMap)})
          return nodes
        })

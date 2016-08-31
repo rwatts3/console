@@ -110,15 +110,8 @@ $tableHeadExpanded: 100px;
   }
 
   .tableContainer {
-    height: 100%;
+    height: calc(100% - #{$tableHead});
     min-width: 100%;
-  }
-
-  .tableHead {
-    margin-top: -1px;
-    height: $tableHead;
-    display: flex;
-    width: 100%;
   }
 
   .tableBody {
