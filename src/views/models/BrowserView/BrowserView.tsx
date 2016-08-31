@@ -1,21 +1,21 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {withRouter} from 'react-router'
+import Row from './Row'
 import calculateSize from 'calculate-size'
 import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
 import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import {isScalar, isNonScalarList} from '../../../utils/graphql'
-import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback, TypedValue} from '../../../types/utils'
+import {getFieldTypeName} from '../../../utils/valueparser'
 import Tether from '../../../components/Tether/Tether'
 import NewRow from './NewRow'
-import Row from './Row'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
@@ -27,6 +27,9 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import ModelHeader from '../ModelHeader'
 import {GettingStartedState, nextStep} from '../../../reducers/GettingStartedState'
+import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
+import {AutoSizer} from 'react-virtualized'
+import Cell from './Cell'
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
@@ -42,14 +45,14 @@ interface Props {
 }
 
 interface State {
-  nodes: Immutable.List<Immutable.Map<string, any>>
+  nodes: Immutable.Map<number, Immutable.Map<string, any>>
   loading: boolean
   orderBy: OrderBy
   filter: Immutable.Map<string, any>
   filtersVisible: boolean
-  reachedEnd: boolean
   newRowVisible: boolean
   selectedNodeIds: Immutable.List<string>
+  itemCount: number
 }
 
 interface OrderBy {
@@ -71,6 +74,7 @@ class BrowserView extends React.Component<Props, State> {
 
   private lokka: any
 
+
   constructor(props: Props) {
     super(props)
 
@@ -84,7 +88,7 @@ class BrowserView extends React.Component<Props, State> {
     this.lokka = new Lokka({transport})
 
     this.state = {
-      nodes: Immutable.List<Immutable.Map<string, any>>(),
+      nodes: Immutable.Map<number, Immutable.Map<string, any>>(),
       loading: true,
       orderBy: {
         fieldName: 'id',
@@ -92,9 +96,9 @@ class BrowserView extends React.Component<Props, State> {
       },
       filter: Immutable.Map<string, any>(),
       filtersVisible: false,
-      reachedEnd: false,
       newRowVisible: false,
       selectedNodeIds: Immutable.List<string>(),
+      itemCount: this.props.model.itemCount > 175 ? 175 : this.props.model.itemCount,
     }
   }
 
@@ -116,11 +120,6 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   render() {
-    const columnWidths = this.calculateColumnWidths()
-    const tableWidth = this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0)
-      + 34 // checkbox
-      + 250 // add column
-
     return (
       <div className={`${classes.root} ${this.state.filtersVisible ? classes.filtersVisible : ''}`}>
         <ModelHeader
@@ -164,57 +163,28 @@ class BrowserView extends React.Component<Props, State> {
         </div>
         }
         <div className={`${classes.table} ${this.state.loading ? classes.loading : ''}`}>
-          <div className={classes.tableContainer} style={{ width: tableWidth }}>
-            <div className={classes.tableHead}>
-              <CheckboxCell
-                onChange={this.selectAllOnClick}
-                checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
-              />
-              {this.props.fields.map((field) => (
-                <HeaderCell
-                  key={field.id}
-                  field={field}
-                  width={columnWidths[field.name]}
-                  sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
-                  toggleSortOrder={() => this.setSortOrder(field)}
-                  updateFilter={(value) => this.updateFilter(value, field)}
-                  filterVisible={this.state.filtersVisible}
-                  params={this.props.params}
-                />
-              ))}
-              <AddFieldCell params={this.props.params}/>
-            </div>
-            {this.state.newRowVisible &&
-            <NewRow
-              model={this.props.model}
-              columnWidths={columnWidths}
-              add={this.addNode}
-              cancel={(e) => this.setState({ newRowVisible: false } as State)}
-              projectId={this.props.project.id}
-              reload={this.reloadData}
-            />
-            }
-            <div className={classes.tableBody}>
-              <ScrollBox onScroll={this.handleScroll}>
-                <div className={classes.tableBodyContainer}>
-                  {this.state.nodes.map((node, index) => (
-                    <Row
-                      key={node.get('id')}
-                      model={this.props.model}
-                      projectId={this.props.project.id}
-                      columnWidths={columnWidths}
-                      node={node.toJS()}
-                      update={
-                        (value, field, callback) => this.updateNode(value, field, callback, node.get('id'), index)
-                      }
-                      isSelected={this.isSelected(node.get('id'))}
-                      onSelect={(event) => this.onSelectRow(node.get('id'))}
-                      reload={this.reloadData}
-                    />
-                  ))}
-                </div>
-              </ScrollBox>
-            </div>
+          <div className={classes.tableContainer} style={{ width: '100%' }}>
+            <AutoSizer>
+              {({width, height}) => {
+                const columnWidths = this.calculateColumnWidths(width)
+                return (
+                  <InfiniteTable
+                    columnWidth={(input) => this.getColumnWidth(columnWidths, input)}
+                    cellRenderer={this.cellRenderer}
+                    columnCount={this.props.fields.length + 2}
+                    headerHeight={74}
+                    headerRenderer={this.headerRenderer}
+                    minimumBatchSize={50}
+                    loadMoreRows={(input) => this.loadData(input.startIndex)}
+                    loadingCellRenderer={() => 'loading'}
+                    rowCount={this.state.itemCount}
+                    rowHeight={47}
+                    width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
+                    height={height}
+                  />
+                  )
+              }}
+            </AutoSizer>
           </div>
         </div>
       </div>
@@ -247,9 +217,77 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  private handleScroll = (e) => {
-    if (!this.state.loading && e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 100) {
-      this.loadNextPage()
+  private getColumnWidth = (columnWidths, {index}): number => {
+    if (index === 0)  { // Checkbox
+      return 34
+    }  else if (index === this.props.fields.length + 1) { // AddColumn
+      return 250
+    } else {
+      return columnWidths[this.getFieldName(index - 1)]
+    } 
+  }
+
+  private getFieldName = (index: number): string => {
+    return this.props.fields[index].name
+  }
+
+  private cellRenderer = ({rowIndex, columnIndex}): JSX.Element | string => {
+    const node = this.state.nodes.get(rowIndex)
+    const nodeId = node.get('id')
+    const field = this.props.fields[columnIndex - 1]
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          checked={this.state.selectedNodeIds.includes(nodeId)}
+          onChange={() => this.onSelectRow(nodeId)} 
+          height={47}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
+      return <div></div>
+    } else {
+      const value = node.get(field.name)
+      const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
+      return (
+        <Cell
+          isSelected={this.state.selectedNodeIds.includes(nodeId)}
+          backgroundColor={backgroundColor}
+          field={field}
+          value={value}
+          projectId={this.props.project.id}
+          update={undefined}
+          reload={undefined}
+          nodeId={this.state.nodes.get(rowIndex).get('id')}
+          addNew={false}
+        />
+      )
+    }
+  }
+
+  private headerRenderer = ({columnIndex}): JSX.Element | string => {
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          height={74}
+          onChange={this.selectAllOnClick}
+          checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) {
+      return <AddFieldCell params={this.props.params} />
+    } else {
+      const field = this.props.fields[columnIndex - 1]
+      return (
+        <HeaderCell
+          key={field.id}
+          field={field}
+          sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
+          toggleSortOrder={() => this.setSortOrder(field)}
+          updateFilter={(value) => this.updateFilter(value, field)}
+          filterVisible={this.state.filtersVisible}
+          params={this.props.params}
+        />
+      )
     }
   }
 
@@ -269,7 +307,7 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  private loadData = (skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> => {
+  private loadData = (skip: number): Promise<Immutable.List<Immutable.Map<string, any>>> => {
     const fieldNames = this.props.fields
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
@@ -292,15 +330,16 @@ class BrowserView extends React.Component<Props, State> {
     `
     return this.lokka.query(query)
       .then((results) => {
-        const nodes = Immutable.List(results[`all${this.props.model.namePlural}`])
-          .map(Immutable.Map)
-
-        // check if it's the end of the data
-        const reachedEnd = !reload && (nodes.isEmpty() || (!this.state.nodes.isEmpty() &&
-          this.state.nodes.last().get('id') === nodes.last().get('id')))
-        this.setState({reachedEnd} as State)
-
-        return nodes
+        const nodeMap = results[`all${this.props.model.namePlural}`].map(Immutable.Map).reduce((result, item, index) => result.set(skip + index, item),
+                                     Immutable.Map<number, any>())
+        this.setState({
+          nodes: this.state.nodes.merge(nodeMap), 
+          itemCount: this.state.itemCount > skip + 50 
+            ? this.state.itemCount : skip + 50 > this.props.model.itemCount 
+            ? this.props.model.itemCount : skip + 50, 
+          loading: false
+        } as State)
+        return nodeMap
       })
       .catch((err) => {
         err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
@@ -308,27 +347,11 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  private loadNextPage = () => {
-    if (this.state.reachedEnd) {
-      return
-    }
-
-    this.setState({loading: true} as State)
-
-    this.loadData(this.state.nodes.size, false)
-      .then((nodes) => {
-        this.setState({
-          nodes: this.state.nodes.concat(nodes),
-          loading: false,
-        } as State)
-      })
-  }
-
   private reloadData = () => {
-    this.setState({loading: true, reachedEnd: false} as State)
-    return this.loadData(0, true)
+    this.setState({loading: true} as State)
+    return this.loadData(0)
       .then((nodes) => {
-        this.setState({nodes, loading: false} as State)
+
         // _update side nav model node count
         // THIS IS A HACK
         sideNavSyncer.notifySideNav()
@@ -437,7 +460,7 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  private calculateColumnWidths = (): any => {
+  private calculateColumnWidths = (width: number): any => {
     const cellFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
@@ -446,17 +469,15 @@ class BrowserView extends React.Component<Props, State> {
       font: 'Open Sans',
       fontSize: '12px',
     }
-
-    return this.props.fields.mapToObject(
+    const widths = this.props.fields.mapToObject(
       (field) => field.name,
       (field) => {
-        const cellWidths = this.state.nodes
+         const cellWidths = this.state.nodes
           .map((node) => node.get(field.name))
           .map((value) => valueToString(value, field, false))
           .map((str) => calculateSize(str, cellFontOptions).width + 41)
           .toArray()
-
-        const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
+        const headerWidth = calculateSize(`${field.name} ${getFieldTypeName(field)}`, headerFontOptions).width + 90
 
         const maxWidth = Math.max(...cellWidths, headerWidth)
         const lowerLimit = 150
@@ -465,6 +486,15 @@ class BrowserView extends React.Component<Props, State> {
         return maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)
       }
     )
+    console.log(widths)
+    const totalWidth = this.props.fields.reduce((sum, {name}) => sum + widths[name], 0)
+    const fieldWidth = width - 34 - 250
+    if (totalWidth < fieldWidth) {
+      this.props.fields.forEach(({name}) => {
+        widths[name] = (widths[name] / totalWidth) * fieldWidth
+      })
+    }
+    return widths
   }
 
   private onSelectRow = (nodeId: string) => {
@@ -548,7 +578,11 @@ export default Relay.createContainer(MappedBrowserView, {
                                 name
                                 typeIdentifier
                                 isList
+                                relatedModel {
+                                  name
+                                }
                                 ${HeaderCell.getFragment('field')}
+                                ${Cell.getFragment('field')}
                             }
                         }
                     }

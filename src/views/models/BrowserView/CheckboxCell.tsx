@@ -4,6 +4,7 @@ const classes: any = require('./CheckboxCell.scss')
 interface Props {
   onChange: (checked: boolean) => void
   checked: boolean
+  height: number
 }
 
 export default class CheckboxCell extends React.Component<Props, {}> {
@@ -14,7 +15,7 @@ export default class CheckboxCell extends React.Component<Props, {}> {
 
   render () {
     return (
-      <div className={classes.root} onClick={() => this._toggle()}>
+      <div className={classes.root} style={{height: this.props.height}} onClick={() => this._toggle()}>
         <input type='checkbox' checked={this.props.checked} />
       </div>
     )

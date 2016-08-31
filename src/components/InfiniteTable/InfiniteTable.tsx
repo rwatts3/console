@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {AutoSizer, InfiniteLoader, FlexColumn, FlexTable, Grid, ScrollSync} from 'react-virtualized'
+import {classnames} from '../../utils/classnames'
 const classes: any = require('./InfiniteTable.scss')
 
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
   headerRenderer: (any) => JSX.Element | string
   columnWidth: (any) => number
   loadMoreRows: (any) => Promise<any>
+  width: number
+  height: number
 }
 
 interface State {
@@ -31,6 +34,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
   }
 
   render() {
+    console.log(this.props.width)
     return (
       <div style={{height: '100%'}}>
         <InfiniteLoader
@@ -41,42 +45,32 @@ export default class InifiniteTable extends React.Component<Props, State> {
           isRowLoaded={({index}) => this.loaded[index]}
           >
           {({onRowsRendered, registerChild}) => (
-          <ScrollSync>
-            { ({scrollLeft, onScroll}) =>
             <div style={{display: 'flex', flexDirection: 'row', height: '100%'}}>
-              <AutoSizer>
-                {({width, height}) => (
-                <div>
-                  <Grid
-                    className={classes.headerContainer}
-                    columnWidth={this.props.columnWidth}
-                    columnCount={this.props.columnCount}
-                    scrollLeft={scrollLeft}
-                    height={this.props.headerHeight}
-                    cellRenderer={this.props.headerRenderer}
-                    rowHeight={this.props.headerHeight}
-                    rowCount={1}
-                    width={width}
-                  />
-                  <Grid
-                    ref={registerChild}
-                    width={width}
-                    height={height}
-                    rowHeight={this.props.rowHeight}
-                    columnCount={this.props.columnCount}
-                    onScroll={onScroll}
-                    columnWidth={this.props.columnWidth}
-                    rowCount={this.props.rowCount}
-                    cellRenderer={this.renderCell}
-                    onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
-                    >
-                  </Grid>
-                </div>
-                )}
-              </AutoSizer>
+              <Grid
+                columnWidth={this.props.columnWidth}
+                columnCount={this.props.columnCount}
+                height={this.props.headerHeight}
+                cellRenderer={this.props.headerRenderer}
+                cellStyle={{position: 'absolute'}}
+                rowHeight={this.props.headerHeight}
+                rowCount={1}
+                style={{overflow: 'visible', width: 'auto', position: 'relative'}}
+                width={this.props.width}
+              />
+              <Grid
+                ref={registerChild}
+                width={this.props.width}
+                height={this.props.height}
+                style={{overflow: 'scroll', position: 'absolute', width: 'auto', top: this.props.headerHeight}}
+                cellStyle={{position: 'absolute'}}
+                rowHeight={this.props.rowHeight}
+                columnCount={this.props.columnCount}
+                columnWidth={this.props.columnWidth}
+                rowCount={this.props.rowCount}
+                cellRenderer={this.renderCell}
+                onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
+              />
             </div>
-            }
-          </ScrollSync>
           )}
         </InfiniteLoader>
       </div>

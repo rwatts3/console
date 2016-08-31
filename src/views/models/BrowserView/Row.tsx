@@ -11,7 +11,7 @@ const classes: any = require('./Row.scss')
 interface Props {
   model: Model
   projectId: string
-  node: Node
+  node: any
   columnWidths: {[key: string]: number}
   update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
   isSelected: boolean
@@ -26,22 +26,25 @@ class Row extends React.Component<Props, {}> {
       .map((edge) => edge.node)
       .sort(compareFields)
 
+    console.log(this.props.node)
     return (
-      <div className={`${classes.root} ${this.props.isSelected ? classes.isSelected : ''}`}>
+      <div style={{height: 47}} className={`${classes.root} ${this.props.isSelected ? classes.isSelected : ''}`}>
         <CheckboxCell
           onChange={this.props.onSelect}
           checked={this.props.isSelected}
+          height={47}
         />
         {fields.map((field) => (
           <Cell
             key={field.id}
             field={field}
-            value={this.props.node[field.name]}
+            value={this.props.node.get(field.name)}
             nodeId={this.props.node.id}
             width={this.props.columnWidths[field.name]}
             update={this.props.update}
             projectId={this.props.projectId}
             reload={this.props.reload}
+            height={47}
           />
         ))}
         <div style={{width: 250}}></div>
