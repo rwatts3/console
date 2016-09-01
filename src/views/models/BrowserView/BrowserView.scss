@@ -90,7 +90,7 @@ $tableHeadExpanded: 100px;
 
 .loadingOverlay {
   top: calc(#{$headerHeight} + 1px);
-  height: calc(100% - #{$headerHeight} - 1px);
+  height: calc(100% - 127px - 1px);
   left: 0;
   position: absolute;
   width: 100%;
@@ -102,7 +102,7 @@ $tableHeadExpanded: 100px;
 }
 
 .table {
-  height: calc(100% - #{$headerHeight} - 1px);
+  height: calc(100% - 127px - 1px);
   overflow-x: scroll;
 
   &.loading {
@@ -110,7 +110,7 @@ $tableHeadExpanded: 100px;
   }
 
   .tableContainer {
-    height: calc(100% - #{$tableHead});
+    height: 100%;
     min-width: 100%;
   }
 

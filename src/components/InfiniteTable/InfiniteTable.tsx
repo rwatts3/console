@@ -51,7 +51,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
                 columnCount={this.props.columnCount}
                 height={this.props.headerHeight}
                 cellRenderer={this.props.headerRenderer}
-                cellStyle={{position: 'absolute'}}
+                cellStyle={{position: 'absolute', marginTop: '-1px'}}
                 rowHeight={this.props.headerHeight}
                 rowCount={1}
                 style={{overflow: 'visible', width: 'auto', position: 'relative'}}
@@ -60,7 +60,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
               <Grid
                 ref={registerChild}
                 width={this.props.width}
-                height={this.props.height}
+                height={this.props.height - this.props.headerHeight}
                 style={{overflow: 'scroll', position: 'absolute', width: 'auto', top: this.props.headerHeight}}
                 cellStyle={{position: 'absolute'}}
                 rowHeight={this.props.rowHeight}
