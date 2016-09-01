@@ -3,6 +3,17 @@ import {Field, OrderBy} from '../types/types'
 import * as Immutable from 'immutable'
 import {TypedValue} from '../types/utils'
 import {isScalar, isNonScalarList} from './graphql'
+import * as cookiestore from './cookiestore'
+import { Lokka } from 'lokka'
+import { Transport } from 'lokka-transport-http'
+
+export function getLokka(projectId: string): any {
+  const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${projectId}`
+  const token = cookiestore.get('graphcool_auth_token')
+  const headers = { Authorization: `Bearer ${token}` }
+  const transport = new Transport(clientEndpoint, { headers })
+  return new Lokka({transport})
+}
 
 export function addNode(lokka: any, modelName: string, fieldValues: { [key: string]: any }): Promise<any> {
   const inputString = fieldValues
@@ -52,8 +63,9 @@ export function deleteNode(lokka: any, modelName: string, nodeId: string): Promi
   return lokka.mutate(mutation)
 }
 
-export function queryNodes(lokka: any, modelNamePlural: string, skip: number,
-                           fields: Field[], filters: Immutable.Map<string, any>, orderBy: OrderBy): Promise<any> {
+export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[], skip: number = 0,
+                           filters: Immutable.Map<string, any> = Immutable.Map<string, any>(),
+                           orderBy?: OrderBy): Promise<any> {
 
   const fieldNames = fields
     .map((field) => isScalar(field.typeIdentifier) ? field.name : `${field.name} { id }`)
@@ -65,7 +77,7 @@ export function queryNodes(lokka: any, modelNamePlural: string, skip: number,
     .join(' ')
 
   const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
-  const orderByQuery = `orderBy: ${orderBy.fieldName}_${orderBy.order}`
+  const orderByQuery = orderBy ? `orderBy: ${orderBy.fieldName}_${orderBy.order}` : ''
   const query = `
     {
       all${modelNamePlural}(first: 50 skip: ${skip} ${filter} ${orderByQuery}) {
