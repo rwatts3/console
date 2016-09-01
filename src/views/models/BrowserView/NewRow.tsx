@@ -40,22 +40,6 @@ class NewRow extends React.Component<Props, State> {
     }
   }
 
-  _add = () => {
-    const allRequiredFieldsGiven = this.state.fieldValues
-      .mapToArray((fieldName, obj) => obj)
-      .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
-    if (allRequiredFieldsGiven) {
-      this.props.add(this.state.fieldValues)
-    }
-  }
-
-  _update = (value, field, callback) => {
-    const {fieldValues} = this.state
-    fieldValues[field.name].value = value
-    this.setState({fieldValues} as State)
-    callback()
-  }
-
   render() {
     const fields = this.props.model.fields.edges
       .map((edge) => edge.node)
@@ -65,26 +49,45 @@ class NewRow extends React.Component<Props, State> {
         <div className={classes.empty}/>
         {fields.map((field) => {
           return (
-            <Cell
-              addnew={true}
-              key={field.id}
-              field={field}
-              width={this.props.columnWidths[field.name]}
-              update={this._update}
-              value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
-              cancel={this.props.cancel}
-              projectId={this.props.projectId}
-              reload={this.props.reload}
-            />
+            <div style={{width: this.props.columnWidths[field.name]}}>
+              <Cell
+                addnew={true}
+                key={field.id}
+                field={field}
+                width={this.props.columnWidths[field.name]}
+                update={this.update}
+                value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
+                cancel={this.props.cancel}
+                projectId={this.props.projectId}
+                reload={this.props.reload}
+              />
+            </div>
           )
         })}
         <div className={classes.buttons}>
-          <span onClick={this._add}>Add</span>
+          <span onClick={this.add}>Add</span>
           <span onClick={this.props.cancel}>Cancel</span>
         </div>
       </div>
     )
   }
+
+  private add = () => {
+    const allRequiredFieldsGiven = this.state.fieldValues
+      .mapToArray((fieldName, obj) => obj)
+      .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
+    if (allRequiredFieldsGiven) {
+      this.props.add(this.state.fieldValues)
+    }
+  }
+
+  private update = (value, field, callback) => {
+    const {fieldValues} = this.state
+    fieldValues[field.name].value = value
+    this.setState({fieldValues} as State)
+    callback()
+  }
+
 }
 
 export default Relay.createContainer(NewRow, {
