@@ -1,20 +1,18 @@
 import * as React from 'react'
-import {AutoSizer, InfiniteLoader, FlexColumn, FlexTable, Grid, ScrollSync} from 'react-virtualized'
-import {classnames} from '../../utils/classnames'
-const classes: any = require('./InfiniteTable.scss')
+import {InfiniteLoader, Grid} from 'react-virtualized'
 
 interface Props {
   rowCount: number
   rowHeight: number
   headerHeight: number
   columnCount: number
-  cellRenderer: (any) => JSX.Element | string
-  loadingCellRenderer: (any) => JSX.Element | string
+  cellRenderer: (input: any) => JSX.Element | string
+  loadingCellRenderer: (input: any) => JSX.Element | string
   minimumBatchSize?: number
   threshold?: number
-  headerRenderer: (any) => JSX.Element | string
-  columnWidth: (any) => number
-  loadMoreRows: (any) => Promise<any>
+  headerRenderer: (input: any) => JSX.Element | string
+  columnWidth: (input: any) => number
+  loadMoreRows: (input: any) => Promise<any>
   width: number
   height: number
 }

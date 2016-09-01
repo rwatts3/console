@@ -1,7 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {withRouter} from 'react-router'
-import Row from './Row'
 import calculateSize from 'calculate-size'
 import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
@@ -30,6 +29,7 @@ import {GettingStartedState, nextStep} from '../../../reducers/GettingStartedSta
 import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
 import {AutoSizer} from 'react-virtualized'
 import Cell from './Cell'
+import LoadingCell from './LoadingCell'
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
@@ -179,7 +179,7 @@ class BrowserView extends React.Component<Props, State> {
                       headerRenderer={this.headerRenderer}
                       minimumBatchSize={50}
                       loadMoreRows={(input) => this.loadData(input.startIndex)}
-                      loadingCellRenderer={() => 'loading'}
+                      loadingCellRenderer={this.loadingCellRenderer}
                       rowCount={this.state.itemCount}
                       rowHeight={47}
                       width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
@@ -220,18 +220,53 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  private getColumnWidth = (columnWidths, {index}): number => {
-    if (index === 0)  { // Checkbox
-      return 34
-    }  else if (index === this.props.fields.length + 1) { // AddColumn
-      return 250
+  private loadingCellRenderer = ({rowIndex, columnIndex}) => {
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          onChange={undefined}
+          disabled={true}
+          checked={false}
+          height={47}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
+      return <div></div>
     } else {
-      return columnWidths[this.getFieldName(index - 1)]
+      const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
+      return (
+        <LoadingCell
+          backgroundColor={backgroundColor}
+        />
+      )
     }
   }
 
-  private getFieldName = (index: number): string => {
-    return this.props.fields[index].name
+  private headerRenderer = ({columnIndex}): JSX.Element | string => {
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          height={74}
+          onChange={this.selectAllOnClick}
+          checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) {
+      return <AddFieldCell params={this.props.params} />
+    } else {
+      const field = this.props.fields[columnIndex - 1]
+      return (
+        <HeaderCell
+          key={field.id}
+          field={field}
+          sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
+          toggleSortOrder={() => this.setSortOrder(field)}
+          updateFilter={(value) => this.updateFilter(value, field)}
+          filterVisible={this.state.filtersVisible}
+          params={this.props.params}
+        />
+      )
+    }
   }
 
   private cellRenderer = ({rowIndex, columnIndex}): JSX.Element | string => {
@@ -266,31 +301,18 @@ class BrowserView extends React.Component<Props, State> {
     }
   }
 
-  private headerRenderer = ({columnIndex}): JSX.Element | string => {
-    if (columnIndex === 0) {
-      return (
-        <CheckboxCell
-          height={74}
-          onChange={this.selectAllOnClick}
-          checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
-        />
-      )
-    } else if (columnIndex === this.props.fields.length + 1) {
-      return <AddFieldCell params={this.props.params} />
+  private getColumnWidth = (columnWidths, {index}): number => {
+    if (index === 0)  { // Checkbox
+      return 34
+    }  else if (index === this.props.fields.length + 1) { // AddColumn
+      return 250
     } else {
-      const field = this.props.fields[columnIndex - 1]
-      return (
-        <HeaderCell
-          key={field.id}
-          field={field}
-          sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
-          toggleSortOrder={() => this.setSortOrder(field)}
-          updateFilter={(value) => this.updateFilter(value, field)}
-          filterVisible={this.state.filtersVisible}
-          params={this.props.params}
-        />
-      )
+      return columnWidths[this.getFieldName(index - 1)]
     }
+  }
+
+  private getFieldName = (index: number): string => {
+    return this.props.fields[index].name
   }
 
   private setSortOrder = (field: Field) => {
@@ -589,7 +611,6 @@ export default Relay.createContainer(MappedBrowserView, {
                             }
                         }
                     }
-                    ${Row.getFragment('model')}
                     ${NewRow.getFragment('model')}
                     ${ModelHeader.getFragment('model')}
                 }
