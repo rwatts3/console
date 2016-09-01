@@ -172,7 +172,7 @@ class Cell extends React.Component<Props, State> {
     return (
       <input
         className={classes.value}
-        value={valueString}
+        defaultValue={valueString}
         onFocus={() => this.startEditing()}
         style={{pointerEvents: this.props.field.name === 'id' ? '' : 'none'}}
       />
