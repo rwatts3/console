@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Model } from '../../types/types'
 import { isScalar } from '../../utils/graphql'
-import {ScalarValue} from '../../types/utils'
+import {NonScalarValue} from '../../types/utils'
 import ClickOutside from 'react-click-outside'
 import Autocomplete from 'react-autocomplete'
 import {getLokka, queryNodes} from '../../utils/simpleapi'
@@ -70,9 +70,9 @@ class NodeSelector extends React.Component<Props, State> {
           items={this.state.nodes}
           shouldItemRender={this.shouldNodeRender}
           inputProps={{autoFocus: true }}
-          getItemValue={(node: ScalarValue) => node}
+          getItemValue={(node: NonScalarValue) => node.id}
           onChange={(event, value) => this.setState({ value } as State)}
-          onSelect={(value) => this.props.onSelect(value)}
+          onSelect={(value, node) => this.props.onSelect(node)}
           renderItem={this.renderNode}
         />
       </ClickOutside>
