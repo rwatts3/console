@@ -6,7 +6,6 @@ import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
 import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
-import {isScalar, isNonScalarList} from '../../../utils/graphql'
 import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
@@ -18,7 +17,7 @@ import NewRow from './NewRow'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import {toGQL, compareFields} from '../utils'
+import {compareFields} from '../utils'
 import {valueToString} from '../../../utils/valueparser'
 import {sideNavSyncer} from '../../../utils/sideNavSyncer'
 import {Field, Model, Viewer, Project, OrderBy} from '../../../types/types'
@@ -499,7 +498,8 @@ class BrowserView extends React.Component<Props, State> {
       // only reload once after all the deletions
 
       this.setState({loading: true} as State)
-      Promise.all(this.state.selectedNodeIds.toArray().map((nodeId) => deleteNode(this.lokka, this.props.params.modelName, nodeId)))
+      Promise.all(this.state.selectedNodeIds.toArray()
+        .map((nodeId) => deleteNode(this.lokka, this.props.params.modelName, nodeId)))
         .then(analytics.track('models/browser: deleted node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
