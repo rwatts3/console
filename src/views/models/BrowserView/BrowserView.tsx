@@ -238,7 +238,12 @@ class BrowserView extends React.Component<Props, State> {
         />
       )
     } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
-      return <div></div>
+      return (
+        <LoadingCell
+          backgroundColor={backgroundColor}
+          empty={true}
+        />
+      )
     } else {
       return (
         <LoadingCell
@@ -291,7 +296,12 @@ class BrowserView extends React.Component<Props, State> {
         />
       )
     } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
-      return <div></div>
+      return (
+        <LoadingCell
+          backgroundColor={backgroundColor}
+          empty={true}
+        />
+      )
     } else {
       const value = node.get(field.name)
       return (
