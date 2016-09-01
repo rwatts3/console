@@ -9,7 +9,7 @@ import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
 import NodeSelector from '../../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from '../RelationsPopup'
-import {isScalar} from '../../../../utils/graphql'
+import {isScalar, isNonScalarList} from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
 import NullableCell from './NullableCell'
 
@@ -26,7 +26,7 @@ export interface CellRequirements {
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
-  if (reqs.field.isRequired || (!isScalar(reqs.field.typeIdentifier) && reqs.field.isList) || reqs.field.isList) {
+  if (reqs.field.isRequired || isNonScalarList(reqs.field) || reqs.field.isList) {
     return getSpecificEditCell(reqs)
   } else {
     return (
@@ -72,7 +72,7 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
       projectId={reqs.projectId}
       value={reqs.value ? reqs.value.id : null}
       onSelect={reqs.methods.save}
-      onCancel={reqs.methods.cancel}
+      cancel={reqs.methods.cancel}
     />
   )
 }

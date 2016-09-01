@@ -39,7 +39,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
 
   render() {
     return (
-      <div style={{height: '100%'}}>
+      <div style={{height: '100%', position: 'relative'}}>
         <InfiniteLoader
           minimumBatchSize={this.props.minimumBatchSize}
           threshold={this.props.threshold}
@@ -48,7 +48,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
           isRowLoaded={({index}) => this.loaded[index]}
           >
           {({onRowsRendered, registerChild}) => (
-            <div style={{display: 'flex', flexDirection: 'row', height: '100%'}}>
+            <div style={{display: 'flex', flexDirection: 'row', height: '100%', position: 'relative'}}>
               <Grid
                 columnWidth={this.props.columnWidth}
                 columnCount={this.props.columnCount}
