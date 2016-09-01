@@ -149,7 +149,7 @@ class BrowserView extends React.Component<Props, State> {
               src={require('assets/icons/search.svg')}
             />
           </div>
-          <div className={classes.button} onClick={this.reloadData}>
+          <div className={classes.button} onClick={() => this.reloadData()}>
             <Icon
               width={16}
               height={16}
@@ -255,10 +255,9 @@ class BrowserView extends React.Component<Props, State> {
           field={field}
           value={value}
           projectId={this.props.project.id}
-          update={undefined}
-          reload={undefined}
-          nodeId={this.state.nodes.get(rowIndex).get('id')}
-          addNew={false}
+          update={(value, field, callback) => this.updateNode(value, field, callback, nodeId, rowIndex)}
+          reload={() => this.reloadData(rowIndex)}
+          nodeId={nodeId}
         />
       )
     }
@@ -333,10 +332,10 @@ class BrowserView extends React.Component<Props, State> {
         const nodeMap = results[`all${this.props.model.namePlural}`].map(Immutable.Map).reduce((result, item, index) => result.set(skip + index, item),
                                      Immutable.Map<number, any>())
         this.setState({
-          nodes: this.state.nodes.merge(nodeMap), 
-          itemCount: this.state.itemCount > skip + 50 
-            ? this.state.itemCount : skip + 50 > this.props.model.itemCount 
-            ? this.props.model.itemCount : skip + 50, 
+          nodes: this.state.nodes.merge(nodeMap),
+          itemCount: this.state.itemCount > skip + 50
+            ? this.state.itemCount : skip + 50 > this.props.model.itemCount
+            ? this.props.model.itemCount : skip + 50,
           loading: false
         } as State)
         return nodeMap
@@ -347,8 +346,8 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  private reloadData = () => {
-    this.setState({loading: true} as State)
+  private reloadData = (index: number = 0) => {
+    this.setState({nodes: Immutable.Map<number, Immutable.Map<string, any>>(), loading: true} as State)
     return this.loadData(0)
       .then((nodes) => {
 
