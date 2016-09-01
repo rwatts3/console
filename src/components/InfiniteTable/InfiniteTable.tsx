@@ -2,19 +2,25 @@ import * as React from 'react'
 import {InfiniteLoader, Grid} from 'react-virtualized'
 
 interface Props {
-  rowCount: number
-  rowHeight: number
-  headerHeight: number
-  columnCount: number
-  cellRenderer: (input: any) => JSX.Element | string
-  loadingCellRenderer: (input: any) => JSX.Element | string
   minimumBatchSize?: number
   threshold?: number
-  headerRenderer: (input: any) => JSX.Element | string
-  columnWidth: (input: any) => number
-  loadMoreRows: (input: any) => Promise<any>
   width: number
   height: number
+  columnCount: number
+  columnWidth: (input: any) => number
+  loadMoreRows: (input: any) => Promise<any>
+  addNew: boolean
+
+  rowCount: number
+  rowHeight: number
+  cellRenderer: (input: any) => JSX.Element | string
+  loadingCellRenderer: (input: any) => JSX.Element | string
+
+  headerHeight: number
+  headerRenderer: (input: any) => JSX.Element | string
+
+  addRowHeight: number
+  addCellRenderer: (input: any) => JSX.Element | string
 }
 
 interface State {
@@ -32,7 +38,6 @@ export default class InifiniteTable extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.width)
     return (
       <div style={{height: '100%'}}>
         <InfiniteLoader
@@ -55,11 +60,30 @@ export default class InifiniteTable extends React.Component<Props, State> {
                 style={{overflow: 'visible', width: 'auto', position: 'relative'}}
                 width={this.props.width}
               />
+              {this.props.addNew &&
               <Grid
                 ref={registerChild}
                 width={this.props.width}
-                height={this.props.height - this.props.headerHeight}
+                height={this.props.addRowHeight}
                 style={{overflow: 'scroll', position: 'absolute', width: 'auto', top: this.props.headerHeight}}
+                cellStyle={{position: 'absolute'}}
+                rowHeight={this.props.addRowHeight}
+                columnCount={1}
+                columnWidth={this.props.width}
+                rowCount={1}
+                cellRenderer={this.props.addCellRenderer}
+              />
+              }
+              <Grid
+                ref={registerChild}
+                width={this.props.width}
+                height={this.props.height - this.props.headerHeight - (this.props.addNew ? this.props.addRowHeight : 0)}
+                style={{
+                  overflow: 'scroll',
+                  position: 'absolute',
+                  width: 'auto',
+                  top: this.props.headerHeight + (this.props.addNew ? this.props.addRowHeight : 0),
+                }}
                 cellStyle={{position: 'absolute'}}
                 rowHeight={this.props.rowHeight}
                 columnCount={this.props.columnCount}

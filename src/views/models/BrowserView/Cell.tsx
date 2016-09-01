@@ -73,7 +73,8 @@ class Cell extends React.Component<Props, State> {
       <div
         style={{
         justifyContent: 'center',
-        alignItems: 'center', backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
+        alignItems: 'center',
+        backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
         }}
         className={rootClassnames}
         onDoubleClick={() => this.startEditing()}
