@@ -167,22 +167,25 @@ class BrowserView extends React.Component<Props, State> {
             <AutoSizer>
               {({width, height}) => {
                 const columnWidths = this.calculateColumnWidths(width)
+                if (this.state.loading) {
+                  return
+                }
                 return (
-                  <InfiniteTable
-                    columnWidth={(input) => this.getColumnWidth(columnWidths, input)}
-                    cellRenderer={this.cellRenderer}
-                    columnCount={this.props.fields.length + 2}
-                    headerHeight={74}
-                    headerRenderer={this.headerRenderer}
-                    minimumBatchSize={50}
-                    loadMoreRows={(input) => this.loadData(input.startIndex)}
-                    loadingCellRenderer={() => 'loading'}
-                    rowCount={this.state.itemCount}
-                    rowHeight={47}
-                    width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
-                    height={height}
-                  />
-                  )
+                    <InfiniteTable
+                      columnWidth={(input) => this.getColumnWidth(columnWidths, input)}
+                      cellRenderer={this.cellRenderer}
+                      columnCount={this.props.fields.length + 2}
+                      headerHeight={74}
+                      headerRenderer={this.headerRenderer}
+                      minimumBatchSize={50}
+                      loadMoreRows={(input) => this.loadData(input.startIndex)}
+                      loadingCellRenderer={() => 'loading'}
+                      rowCount={this.state.itemCount}
+                      rowHeight={47}
+                      width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
+                      height={height}
+                    />
+                )
               }}
             </AutoSizer>
           </div>
@@ -224,7 +227,7 @@ class BrowserView extends React.Component<Props, State> {
       return 250
     } else {
       return columnWidths[this.getFieldName(index - 1)]
-    } 
+    }
   }
 
   private getFieldName = (index: number): string => {
@@ -471,6 +474,7 @@ class BrowserView extends React.Component<Props, State> {
     const widths = this.props.fields.mapToObject(
       (field) => field.name,
       (field) => {
+        console.log(this.state.nodes)
          const cellWidths = this.state.nodes
           .map((node) => node.get(field.name))
           .map((value) => valueToString(value, field, false))
@@ -485,7 +489,6 @@ class BrowserView extends React.Component<Props, State> {
         return maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)
       }
     )
-    console.log(widths)
     const totalWidth = this.props.fields.reduce((sum, {name}) => sum + widths[name], 0)
     const fieldWidth = width - 34 - 250
     if (totalWidth < fieldWidth) {
@@ -493,6 +496,7 @@ class BrowserView extends React.Component<Props, State> {
         widths[name] = (widths[name] / totalWidth) * fieldWidth
       })
     }
+    console.log(widths)
     return widths
   }
 
