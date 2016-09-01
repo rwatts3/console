@@ -2,12 +2,9 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {withRouter} from 'react-router'
 import calculateSize from 'calculate-size'
-import {Lokka} from 'lokka'
-import {Transport} from 'lokka-transport-http'
 import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import Icon from '../../../components/Icon/Icon'
-import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback, TypedValue} from '../../../types/utils'
@@ -29,7 +26,7 @@ import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
 import {AutoSizer} from 'react-virtualized'
 import Cell from './Cell'
 import LoadingCell from './LoadingCell'
-import {addNode, updateNode, deleteNode, queryNodes} from './../../../utils/simpleapi'
+import {getLokka, addNode, updateNode, deleteNode, queryNodes} from './../../../utils/simpleapi'
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
@@ -74,12 +71,7 @@ class BrowserView extends React.Component<Props, State> {
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.project.id}`
-    const token = cookiestore.get('graphcool_auth_token')
-    const headers = {Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab'}
-    const transport = new Transport(clientEndpoint, {headers})
-
-    this.lokka = new Lokka({transport})
+    this.lokka = getLokka(this.props.project.id)
 
     this.state = {
       nodes: Immutable.Map<number, Immutable.Map<string, any>>(),
@@ -160,17 +152,17 @@ class BrowserView extends React.Component<Props, State> {
           <div className={classes.tableContainer} style={{ width: '100%' }}>
             <AutoSizer>
               {({width, height}) => {
-                const columnWidths = this.calculateColumnWidths(width)
+                const fieldColumnWidths = this.calculateFieldColumnWidths(width)
                 if (this.state.loading) {
                   return
                 }
                 return (
                   <InfiniteTable
                     minimumBatchSize={50}
-                    width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
+                    width={this.props.fields.reduce((sum, {name}) => sum + fieldColumnWidths[name], 0) + 34 + 250}
                     height={height}
                     columnCount={this.props.fields.length + 2}
-                    columnWidth={(input) => this.getColumnWidth(columnWidths, input)}
+                    columnWidth={(input) => this.getColumnWidth(fieldColumnWidths, input)}
                     loadMoreRows={(input) => this.loadData(input.startIndex)}
                     addNew={this.state.newRowVisible}
 
@@ -183,7 +175,7 @@ class BrowserView extends React.Component<Props, State> {
                     loadingCellRenderer={this.loadingCellRenderer}
 
                     addRowHeight={47}
-                    addCellRenderer={() => this.addCellRenderer(columnWidths)}
+                    addCellRenderer={() => this.addCellRenderer(fieldColumnWidths)}
                   />
                 )
               }}
@@ -317,13 +309,13 @@ class BrowserView extends React.Component<Props, State> {
     }
   }
 
-  private getColumnWidth = (columnWidths, {index}): number => {
+  private getColumnWidth = (fieldColumnWidths, {index}): number => {
     if (index === 0)  { // Checkbox
       return 34
     }  else if (index === this.props.fields.length + 1) { // AddColumn
       return 250
     } else {
-      return columnWidths[this.getFieldName(index - 1)]
+      return fieldColumnWidths[this.getFieldName(index - 1)]
     }
   }
 
@@ -348,8 +340,8 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   private loadData = (skip: number): Promise<Immutable.List<Immutable.Map<string, any>>> => {
-    return queryNodes(this.lokka, this.props.model.namePlural, skip,
-                      this.props.fields, this.state.filter, this.state.orderBy)
+    return queryNodes(this.lokka, this.props.model.namePlural, this.props.fields,
+                      skip, this.state.filter, this.state.orderBy)
       .then((results) => {
         const nodeMap = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
           .reduce((result, item, index) => result.set(skip + index, item), Immutable.Map<number, any>())
@@ -435,15 +427,17 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  private calculateColumnWidths = (width: number): any => {
+  private calculateFieldColumnWidths = (width: number): any => {
     const cellFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
     }
+
     const headerFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
     }
+
     const widths = this.props.fields.mapToObject(
       (field) => field.name,
       (field) => {
@@ -461,6 +455,7 @@ class BrowserView extends React.Component<Props, State> {
         return maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)
       }
     )
+
     const totalWidth = this.props.fields.reduce((sum, {name}) => sum + widths[name], 0)
     const fieldWidth = width - 34 - 250
     if (totalWidth < fieldWidth) {

@@ -1,11 +1,9 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Field, Node } from '../../../types/types'
 import * as Immutable from 'immutable'
-import { isScalar } from '../../../utils/graphql'
-import { Lokka } from 'lokka'
-import { Transport } from 'lokka-transport-http'
-import * as cookiestore from '../../../utils/cookiestore'
+import {Field, Node} from '../../../types/types'
+import {isScalar} from '../../../utils/graphql'
+import {getLokka} from '../../../utils/simpleapi'
 import Icon from '../../../components/Icon/Icon'
 import Popup from '../../../components/Popup/Popup'
 const classes: any = require('./RelationsPopup.scss')
@@ -33,7 +31,7 @@ interface State {
 
 class RelationsPopup extends React.Component<Props, State> {
 
-  _lokka: any
+  private lokka: any
 
   constructor (props: Props) {
     super(props)
@@ -45,78 +43,9 @@ class RelationsPopup extends React.Component<Props, State> {
       success: false,
     }
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${props.projectId}`
-    const token = cookiestore.get('graphcool_auth_token')
-    const headers = { Authorization: `Bearer ${token}` }
-    const transport = new Transport(clientEndpoint, { headers })
+    this.lokka = getLokka(props.projectId)
 
-    this._lokka = new Lokka({ transport })
-
-    this._reload()
-  }
-
-  _reload = () => {
-    const relatedModel = this.props.originField.relatedModel
-    const originModel = this.props.originField.model
-
-    const fieldNames = relatedModel.fields.edges
-      .map(({ node }) => node)
-      .map((field) => isScalar(field.typeIdentifier)
-        ? field.name
-        : `${field.name} { id }`)
-      .join(' ')
-    const query = `
-      {
-        all${relatedModel.namePlural} {
-          ${fieldNames}
-        }
-        ${originModel.name}(id: "${this.props.originNodeId}") {
-          ${this.props.originField.name} {
-            ${fieldNames}
-          }
-        }
-      }
-    `
-
-    return this._lokka.query(query)
-      .then((results) => {
-        const allNodes: any[] = results[`all${relatedModel.namePlural}`]
-        const resultModelEntries = results[originModel.name]
-        const relatedNodes: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
-        const nodes = allNodes.map((node) => ({
-          node,
-          isRelated: relatedNodes.some((relatedNode) => relatedNode.id === node.id),
-        }))
-
-        this.setState({ nodes: Immutable.List(nodes) } as State)
-      })
-  }
-
-  _toggleRelation (isRelated: boolean, nodeId: string): void {
-    const relationName = this.props.originField.relation.name
-    const relatedModelName = this.props.originField.relatedModel.name
-    const relatedFieldName = this.props.originField.reverseRelationField.name
-    const originModelName = this.props.originField.model.name
-    const originFieldName = this.props.originField.name
-
-    const mutationPrefix = isRelated ? 'removeFrom' : 'addTo'
-    const mutationArg1 = `${relatedFieldName}${originModelName}Id`
-    const mutationArg2 = `${originFieldName}${relatedModelName}Id`
-    const payloadName = `${relatedFieldName}${originModelName}`
-
-    const mutation = `{
-      ${mutationPrefix}${relationName}(
-        ${mutationArg1}: "${this.props.originNodeId}"
-        ${mutationArg2}: "${nodeId}"
-      ) {
-        ${payloadName}{
-          id
-        }
-      }
-    }`
-    this._lokka.mutate(mutation)
-      .then(this._reload)
-      .then(() => this.setState({ success: true } as State))
+    this.reload()
   }
 
   render () {
@@ -180,7 +109,7 @@ class RelationsPopup extends React.Component<Props, State> {
               <div
                 key={node.id}
                 className={`${classes.item} ${isRelated ? classes.related : ''}`}
-                onClick={() => this._toggleRelation(isRelated, node.id)}
+                onClick={() => this.toggleRelation(isRelated, node.id)}
               >
                 <div className={classes.check}>
                   <Icon
@@ -206,6 +135,70 @@ class RelationsPopup extends React.Component<Props, State> {
         </div>
       </Popup>
     )
+  }
+
+  private reload = () => {
+    const relatedModel = this.props.originField.relatedModel
+    const originModel = this.props.originField.model
+
+    const fieldNames = relatedModel.fields.edges
+      .map(({ node }) => node)
+      .map((field) => isScalar(field.typeIdentifier)
+        ? field.name
+        : `${field.name} { id }`)
+      .join(' ')
+    const query = `
+      {
+        all${relatedModel.namePlural} {
+          ${fieldNames}
+        }
+        ${originModel.name}(id: "${this.props.originNodeId}") {
+          ${this.props.originField.name} {
+            ${fieldNames}
+          }
+        }
+      }
+    `
+
+    return this.lokka.query(query)
+      .then((results) => {
+        const allNodes: any[] = results[`all${relatedModel.namePlural}`]
+        const resultModelEntries = results[originModel.name]
+        const relatedNodes: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
+        const nodes = allNodes.map((node) => ({
+          node,
+          isRelated: relatedNodes.some((relatedNode) => relatedNode.id === node.id),
+        }))
+
+        this.setState({ nodes: Immutable.List(nodes) } as State)
+      })
+  }
+
+  private toggleRelation (isRelated: boolean, nodeId: string): void {
+    const relationName = this.props.originField.relation.name
+    const relatedModelName = this.props.originField.relatedModel.name
+    const relatedFieldName = this.props.originField.reverseRelationField.name
+    const originModelName = this.props.originField.model.name
+    const originFieldName = this.props.originField.name
+
+    const mutationPrefix = isRelated ? 'removeFrom' : 'addTo'
+    const mutationArg1 = `${relatedFieldName}${originModelName}Id`
+    const mutationArg2 = `${originFieldName}${relatedModelName}Id`
+    const payloadName = `${relatedFieldName}${originModelName}`
+
+    const mutation = `{
+      ${mutationPrefix}${relationName}(
+        ${mutationArg1}: "${this.props.originNodeId}"
+        ${mutationArg2}: "${nodeId}"
+      ) {
+        ${payloadName}{
+          id
+        }
+      }
+    }`
+    this.lokka.mutate(mutation)
+      .then(this.reload)
+      .then(() => this.setState({ success: true } as State))
   }
 }
 
