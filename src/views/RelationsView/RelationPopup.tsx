@@ -74,11 +74,13 @@ class RelationPopup extends React.Component<Props, State> {
                     alertHint: !validateModelName(e.target.value) || e.target.value === '',
                   } as State)}
               />
+              {this.state.alertHint &&
               <Help
                 size={35}
                 text={'The relation name has to be capitalized.'}
                 placement={'left'}
               />
+              }
             </div>
             <div className={classes.description}>
               <input
