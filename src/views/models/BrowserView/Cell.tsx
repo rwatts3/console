@@ -24,7 +24,6 @@ interface Props {
   isSelected: boolean
   addnew: boolean
   backgroundColor: string
-  width: number
 }
 
 interface State {
@@ -72,8 +71,9 @@ class Cell extends React.Component<Props, State> {
 
     return (
       <div
-        style={{justifyContent: 'center', alignItems: 'center', backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
-          flex: `1 0 ${this.props.width}px`
+        style={{
+        justifyContent: 'center',
+        alignItems: 'center', backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
         }}
         className={rootClassnames}
         onDoubleClick={() => this.startEditing()}
@@ -173,7 +173,6 @@ class Cell extends React.Component<Props, State> {
   }
 
   private renderContent(): JSX.Element {
-
     if (this.state.loading) {
       return (
         <div className={classes.loading}>
