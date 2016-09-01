@@ -171,20 +171,26 @@ class BrowserView extends React.Component<Props, State> {
                   return
                 }
                 return (
-                    <InfiniteTable
-                      columnWidth={(input) => this.getColumnWidth(columnWidths, input)}
-                      cellRenderer={this.cellRenderer}
-                      columnCount={this.props.fields.length + 2}
-                      headerHeight={74}
-                      headerRenderer={this.headerRenderer}
-                      minimumBatchSize={50}
-                      loadMoreRows={(input) => this.loadData(input.startIndex)}
-                      loadingCellRenderer={this.loadingCellRenderer}
-                      rowCount={this.state.itemCount}
-                      rowHeight={47}
-                      width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
-                      height={height}
-                    />
+                  <InfiniteTable
+                    minimumBatchSize={50}
+                    width={this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0) + 34 + 250}
+                    height={height}
+                    columnCount={this.props.fields.length + 2}
+                    columnWidth={(input) => this.getColumnWidth(columnWidths, input)}
+                    loadMoreRows={(input) => this.loadData(input.startIndex)}
+                    addNew={this.state.newRowVisible}
+
+                    headerHeight={74}
+                    headerRenderer={this.headerRenderer}
+
+                    rowCount={this.state.itemCount}
+                    rowHeight={47}
+                    cellRenderer={this.cellRenderer}
+                    loadingCellRenderer={this.loadingCellRenderer}
+
+                    addRowHeight={47}
+                    addCellRenderer={() => this.addCellRenderer(columnWidths)}
+                  />
                 )
               }}
             </AutoSizer>
@@ -220,10 +226,25 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
+  private addCellRenderer = (columnWidths) => {
+    return (
+      <NewRow
+        model={this.props.model}
+        projectId={this.props.project.id}
+        columnWidths={columnWidths}
+        add={this.addNode}
+        reload={this.reloadData}
+        cancel={() => this.setState({newRowVisible: false} as State)}
+      />
+    )
+  }
+
   private loadingCellRenderer = ({rowIndex, columnIndex}) => {
+    const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
     if (columnIndex === 0) {
       return (
         <CheckboxCell
+          backgroundColor={backgroundColor}
           onChange={undefined}
           disabled={true}
           checked={false}
@@ -233,7 +254,6 @@ class BrowserView extends React.Component<Props, State> {
     } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
       return <div></div>
     } else {
-      const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
       return (
         <LoadingCell
           backgroundColor={backgroundColor}
@@ -249,6 +269,7 @@ class BrowserView extends React.Component<Props, State> {
           height={74}
           onChange={this.selectAllOnClick}
           checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
+          backgroundColor={'transparent'}
         />
       )
     } else if (columnIndex === this.props.fields.length + 1) {
@@ -273,19 +294,20 @@ class BrowserView extends React.Component<Props, State> {
     const node = this.state.nodes.get(rowIndex)
     const nodeId = node.get('id')
     const field = this.props.fields[columnIndex - 1]
+    const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
     if (columnIndex === 0) {
       return (
         <CheckboxCell
-          checked={this.state.selectedNodeIds.includes(nodeId)}
-          onChange={() => this.onSelectRow(nodeId)} 
+          checked={this.isSelected(nodeId)}
+          onChange={() => this.onSelectRow(nodeId)}
           height={47}
+          backgroundColor={backgroundColor}
         />
       )
     } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
       return <div></div>
     } else {
       const value = node.get(field.name)
-      const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
       return (
         <Cell
           isSelected={this.state.selectedNodeIds.includes(nodeId)}
@@ -477,6 +499,7 @@ class BrowserView extends React.Component<Props, State> {
           )) {
           this.props.nextStep()
         }
+        this.reloadData()
       })
       .catch((err) => {
         err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
@@ -496,7 +519,6 @@ class BrowserView extends React.Component<Props, State> {
     const widths = this.props.fields.mapToObject(
       (field) => field.name,
       (field) => {
-        console.log(this.state.nodes)
          const cellWidths = this.state.nodes
           .map((node) => node.get(field.name))
           .map((value) => valueToString(value, field, false))
@@ -518,7 +540,6 @@ class BrowserView extends React.Component<Props, State> {
         widths[name] = (widths[name] / totalWidth) * fieldWidth
       })
     }
-    console.log(widths)
     return widths
   }
 
