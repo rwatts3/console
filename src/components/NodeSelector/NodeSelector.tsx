@@ -13,7 +13,7 @@ interface Props {
   value: string
   relatedModel: Model
   onSelect: (value: string) => void
-  onCancel: () => void
+  cancel: () => void
   onFocus?: () => void
 }
 
@@ -51,7 +51,7 @@ class NodeSelector extends React.Component<Props, State> {
   render () {
     return (
       <ClickOutside
-        onClickOutside={this.props.onCancel}
+        onClickOutside={this.props.cancel}
         style={{ width: '100%' }}
       >
         <Autocomplete
