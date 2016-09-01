@@ -65,8 +65,8 @@ class NewRow extends React.Component<Props, State> {
           )
         })}
         <div className={classes.buttons}>
-          <span onClick={this.add}>Add</span>
-          <span onClick={this.props.cancel}>Cancel</span>
+          <button onClick={this.add}>Add</button>
+          <button onClick={this.props.cancel}>Cancel</button>
         </div>
       </div>
     )

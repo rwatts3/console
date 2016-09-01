@@ -3,6 +3,7 @@ const classes: any = require('./LoadingCell.scss')
 
 interface Props {
   backgroundColor: string
+  empty?: boolean
 }
 
 export default class LoadingCell extends React.Component<Props, {}> {
@@ -15,11 +16,12 @@ export default class LoadingCell extends React.Component<Props, {}> {
         className={classes.root}
       >
         <span className={classes.content}>
+          {!this.props.empty &&
           <div
             className={classes.loader}
             style={{width: `${100 - (50 * Math.random())}%`}}
-          >
-          </div>
+          />
+          }
         </span>
       </div>
     )

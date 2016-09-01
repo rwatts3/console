@@ -72,12 +72,13 @@ class Cell extends React.Component<Props, State> {
     return (
       <div
         style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
         }}
         className={rootClassnames}
-        onDoubleClick={() => this.startEditing()}
+        onClick={() => this.startEditing()}
+        onBlur={() => this.cancel()}
       >
         {this.renderContent()}
       </div>
@@ -169,7 +170,12 @@ class Cell extends React.Component<Props, State> {
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
     return (
-      <span className={classes.value}>{valueString}</span>
+      <input
+        className={classes.value}
+        value={valueString}
+        onFocus={() => this.startEditing()}
+        style={{pointerEvents: this.props.field.name === 'id' ? '' : 'none'}}
+      />
     )
   }
 

@@ -20,7 +20,9 @@
   text-transform: uppercase;
   @include cellborder($grey2);
 
-  span {
+  button {
+    border: none;
+    background: transparent;
     padding: 5px;
     cursor: pointer;
     color: $grey3;
@@ -32,6 +34,10 @@
 
     &:hover {
       color: $grey5;
+    }
+
+    &:focus {
+      color: $accent;
     }
   }
 }
