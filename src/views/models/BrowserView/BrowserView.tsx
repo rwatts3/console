@@ -394,7 +394,6 @@ class BrowserView extends React.Component<Props, State> {
         callback(true)
 
         const {nodes} = this.state
-
         this.setState({nodes: nodes.setIn([index, field.name], value)} as State)
 
         analytics.track('models/browser: updated node', {
