@@ -1,10 +1,8 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Cell from './Cell'
-import {Model, Field} from '../../../types/types'
-import {emptyDefault, compareFields} from '../utils'
-import {stringToValue} from '../../../utils/valueparser'
-import {isNonScalarList} from '../../../utils/graphql'
+import {Model} from '../../../types/types'
+import {compareFields, getFirstInputFieldIndex, getDefaultFieldValues} from '../utils'
 const classes: any = require('./NewRow.scss')
 
 interface Props {
@@ -13,7 +11,6 @@ interface Props {
   columnWidths: {[key: string]: number}
   add: (fieldValues: { [key: string]: any }) => void
   cancel: () => void
-  reload: () => void
 }
 
 interface State {
@@ -24,20 +21,8 @@ class NewRow extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-
-    const fieldValues = props.model.fields.edges
-      .map((edge) => edge.node)
-      .filter((f) => f.name !== 'id')
-      .mapToObject(
-        (field) => field.name,
-        (field) => ({
-          value: stringToValue(field.defaultValue, field) || emptyDefault(field),
-          field: field,
-        })
-      )
-
     this.state = {
-      fieldValues,
+      fieldValues: getDefaultFieldValues(props.model.fields.edges.map((edge) => edge.node)),
     }
   }
 
@@ -45,11 +30,8 @@ class NewRow extends React.Component<Props, State> {
     const fields = this.props.model.fields.edges
       .map((edge) => edge.node)
       .sort(compareFields)
-    const inputIndex = this.getFirstInputFieldIndex(fields)
-    if (!inputIndex) {
-      this.add()
-    }
-    console.log('render')
+    const inputIndex = getFirstInputFieldIndex(fields)
+
     return (
       <div className={classes.root} onKeyDown={this.handleKeyDown}>
         <div className={classes.empty}/>
@@ -65,7 +47,7 @@ class NewRow extends React.Component<Props, State> {
                 value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
                 cancel={this.props.cancel}
                 projectId={this.props.projectId}
-                reload={this.props.reload}
+                reload={() => null}
               />
             </div>
           )
@@ -83,23 +65,6 @@ class NewRow extends React.Component<Props, State> {
       this.add()
     } else if (e.keyCode === 27) {
       this.props.cancel()
-    }
-  }
-
-  private getFirstInputFieldIndex = (fields: Field[]) => {
-    let inputIndex
-    const hasInputField = fields.some((field, index) => {
-      if (isNonScalarList(field) || field.name === 'id') {
-        return false
-      } else {
-        inputIndex = index
-        return true
-      }
-    })
-    if (hasInputField) {
-      return inputIndex
-    } else {
-      return null
     }
   }
 

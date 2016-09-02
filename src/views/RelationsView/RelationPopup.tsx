@@ -2,7 +2,8 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import Popup from '../../components/Popup/Popup'
 import Icon from '../../components/Icon/Icon'
-import ModelSelector from './ModelSelector'
+import RelationSelector from './RelationSelector'
+import RelationExplanation from '../../components/RelationExplanation/RelationExplanation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import {validateModelName, validateFieldName} from '../../utils/nameValidator'
 import {classnames} from '../../utils/classnames'
@@ -58,7 +59,7 @@ class RelationPopup extends React.Component<Props, State> {
 
   render(): JSX.Element {
     return (
-      <Popup onClickOutside={this.close} height={'60%'}>
+      <Popup onClickOutside={this.close} height={'100%'}>
         <div className={classes.root}>
           <div className={classes.header}>
             <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
@@ -97,35 +98,48 @@ class RelationPopup extends React.Component<Props, State> {
                 Relation Schema
               </div>
               <div className={classes.settings}>
-                <ModelSelector
-                  isList={this.state.fieldOnRightModelIsList}
-                  onListChange={
-                    () => this.setState({fieldOnRightModelIsList: !this.state.fieldOnRightModelIsList} as State)
-                  }
-                  selectedModelId={this.state.leftModelId}
-                  onModelChange={(id) => this.setState({leftModelId: id} as State)}
-                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-                  fieldOnModelName={this.state.fieldOnLeftModelName}
-                  onFieldNameChange={(name) => this.setState({fieldOnLeftModelName: name} as State)}
-                />
-                <span className={classes.iconContainer}>
-                  <Icon
-                    className={classes.icon}
-                    width={18}
-                    src={require('assets/new_icons/bidirectional.svg')}
+                <div className={classes.container}>
+                  <RelationSelector
+                    viewer={this.props.viewer}
+                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                    fieldOnRightModelName={this.state.fieldOnRightModelName}
+                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                    leftModelId={this.state.leftModelId}
+                    rightModelId={this.state.rightModelId}
                   />
-                </span>
-                <ModelSelector
-                  isList={this.state.fieldOnLeftModelIsList}
-                  onListChange={
-                    () => this.setState({fieldOnLeftModelIsList: !this.state.fieldOnLeftModelIsList} as State)
+                </div>
+              </div>
+              <div className={classes.container}>
+                <div>
+                  Name
+                </div>
+                <input defaultValue={'Project Categories'} />
+                <input placeholder={'+ Add Description'} />
+              </div>
+              <div className={classes.container}>
+                <div>
+                  <div>
+                    Relation Explanation
+                  </div>
+                  <div>
+                    Generated Mutations
+                  </div>
+                </div>
+                <div>
+                  {this.state.leftModelId && this.state.rightModelId &&
+
+                  <RelationExplanation
+                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                    fieldOnRightModelName={this.state.fieldOnRightModelName}
+                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                    leftModelId={this.state.leftModelId}
+                    rightModelId={this.state.rightModelId}
+                    project={this.props.viewer.project}
+                  />
                   }
-                  selectedModelId={this.state.rightModelId}
-                  onModelChange={(id) => this.setState({rightModelId: id} as State)}
-                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-                  fieldOnModelName={this.state.fieldOnRightModelName}
-                  onFieldNameChange={(name) => this.setState({fieldOnRightModelName: name} as State)}
-                />
+                </div>
               </div>
             </div>
             <div className={classes.buttons}>
@@ -275,44 +289,45 @@ export default Relay.createContainer(RelationPopup, {
   })),
     fragments: {
         viewer: () => Relay.QL`
-            fragment on Viewer {
-                relation: relationByName(
-                projectName: $projectName
-                relationName: $relationName
-                ) @include(if: $relationExists) {
-                    id
-                    name
-                    description
-                    fieldOnLeftModel {
-                        id
-                        name
-                        isList
-                    }
-                    fieldOnRightModel {
-                        id
-                        name
-                        isList
-                    }
-                    leftModel {
-                        id
-                        name
-                    }
-                    rightModel {
-                        id
-                        name
-                    }
+          fragment on Viewer {
+              relation: relationByName(
+              projectName: $projectName
+              relationName: $relationName
+              ) @include(if: $relationExists) {
+                id
+                name
+                description
+                fieldOnLeftModel {
+                  id
+                  name
+                  isList
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    models (first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                            }
-                        }
-                    }
+                fieldOnRightModel {
+                  id
+                  name
+                  isList
                 }
+                leftModel {
+                  id
+                  name
+                }
+                rightModel {
+                  id
+                  name
+                }
+              }
+              project: projectByName(projectName: $projectName) {
+                id
+                ${RelationExplanation.getFragment('project')}
+                models (first: 1000) {
+                  edges {
+                    node {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
             }
         `,
     },

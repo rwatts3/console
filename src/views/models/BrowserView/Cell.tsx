@@ -159,10 +159,12 @@ class Cell extends React.Component<Props, State> {
       return getEditCell(reqs)
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
+    // Do not use 'defaultValue' because it won't force an update after value change
     return (
       <input
         className={classes.value}
-        defaultValue={valueString}
+        value={valueString}
+        onChange={() => null}
         onFocus={() => this.startEditing()}
         autoFocus={this.props.needsFocus && this.state.shouldReFocus}
         style={{pointerEvents: this.props.field.name === 'id' ? '' : 'none'}}
@@ -188,20 +190,20 @@ class Cell extends React.Component<Props, State> {
 }
 
 export default Relay.createContainer(Cell, {
-    fragments: {
-        field: () => Relay.QL`
-            fragment on Field {
-                id
-                name
-                isList
-                isRequired
-                typeIdentifier
-                enumValues
-                relatedModel {
-                    ${NodeSelector.getFragment('relatedModel')}
-                }
-                ${RelationsPopup.getFragment('originField')}
-            }
-        `,
-    },
+  fragments: {
+    field: () => Relay.QL`
+      fragment on Field {
+        id
+        name
+        isList
+        isRequired
+        typeIdentifier
+        enumValues
+        relatedModel {
+          ${NodeSelector.getFragment('relatedModel')}
+        }
+        ${RelationsPopup.getFragment('originField')}
+      }
+    `,
+  },
 })

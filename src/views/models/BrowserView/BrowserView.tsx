@@ -8,13 +8,13 @@ import Icon from '../../../components/Icon/Icon'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback, TypedValue} from '../../../types/utils'
-import {getFieldTypeName} from '../../../utils/valueparser'
+import {getFieldTypeName, stringToValue} from '../../../utils/valueparser'
 import Tether from '../../../components/Tether/Tether'
 import NewRow from './NewRow'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import {compareFields} from '../utils'
+import {compareFields, emptyDefault, getFirstInputFieldIndex} from '../utils'
 import {valueToString} from '../../../utils/valueparser'
 import {sideNavSyncer} from '../../../utils/sideNavSyncer'
 import {Field, Model, Viewer, Project, OrderBy} from '../../../types/types'
@@ -158,6 +158,7 @@ class BrowserView extends React.Component<Props, State> {
                 }
                 return (
                   <InfiniteTable
+                    loadedList={Immutable.List<boolean>()}
                     minimumBatchSize={50}
                     width={this.props.fields.reduce((sum, {name}) => sum + fieldColumnWidths[name], 0) + 34 + 250}
                     height={height}
@@ -199,7 +200,7 @@ class BrowserView extends React.Component<Props, State> {
       >
         <div
           className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
-          onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
+          onClick={this.handleAddNodeClick}
         >
           <Icon
             width={16}
@@ -212,6 +213,24 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
+  private handleAddNodeClick = () => {
+    if (getFirstInputFieldIndex(this.props.fields) !== null) {
+      this.setState({ newRowVisible: !this.state.newRowVisible } as State)
+    } else {
+      const fieldValues = this.props.model.fields.edges
+        .map((edge) => edge.node)
+        .filter((f) => f.name !== 'id')
+        .mapToObject(
+          (field) => field.name,
+          (field) => ({
+            value: stringToValue(field.defaultValue, field) || emptyDefault(field),
+            field: field,
+          })
+        )
+      this.addNewNode(fieldValues)
+    }
+  }
+
   private addCellRenderer = (columnWidths) => {
     return (
       <NewRow
@@ -219,7 +238,6 @@ class BrowserView extends React.Component<Props, State> {
         projectId={this.props.project.id}
         columnWidths={columnWidths}
         add={this.addNewNode}
-        reload={this.reloadData}
         cancel={() => this.setState({newRowVisible: false} as State)}
       />
     )
@@ -374,7 +392,6 @@ class BrowserView extends React.Component<Props, State> {
     this.setState({nodes: Immutable.Map<number, Immutable.Map<string, any>>(), loading: true} as State)
     return this.loadData(0)
       .then((nodes) => {
-
         // _update side nav model node count
         // THIS IS A HACK
         sideNavSyncer.notifySideNav()
@@ -392,10 +409,8 @@ class BrowserView extends React.Component<Props, State> {
     updateNode(this.lokka, this.props.params.modelName, value, field, nodeId)
       .then(() => {
         callback(true)
-
         const {nodes} = this.state
         this.setState({nodes: nodes.setIn([index, field.name], value)} as State)
-
         analytics.track('models/browser: updated node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
@@ -414,8 +429,8 @@ class BrowserView extends React.Component<Props, State> {
     addNode(this.lokka, this.props.params.modelName, fieldValues)
       .then(() => this.reloadData())
       .then(() => {
-        this.setState({newRowVisible: false} as State)
 
+        this.setState({newRowVisible: false} as State)
         analytics.track('models/browser: created node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
@@ -428,7 +443,6 @@ class BrowserView extends React.Component<Props, State> {
           )) {
           this.props.nextStep()
         }
-        this.reloadData()
       })
       .catch((err) => {
         err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
@@ -490,7 +504,6 @@ class BrowserView extends React.Component<Props, State> {
   private selectAllOnClick = (checked: boolean) => {
     if (checked) {
       const selectedNodeIds = this.state.nodes.toIndexedSeq().map((node) => node.get('id'))
-      console.log(selectedNodeIds)
       this.setState({selectedNodeIds: selectedNodeIds} as State)
     } else {
       this.setState({selectedNodeIds: Immutable.List()} as State)
@@ -510,6 +523,7 @@ class BrowserView extends React.Component<Props, State> {
         }))
         .then(() => this.reloadData())
         .then(() => {
+          console.log('reached this state')
           this.setState({loading: false} as State)
         })
         .catch((err) => {
@@ -553,37 +567,37 @@ export default Relay.createContainer(MappedBrowserView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    name
-                    namePlural
-                    itemCount
-                    fields(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                isList
-                                relatedModel {
-                                  name
-                                }
-                                ${HeaderCell.getFragment('field')}
-                                ${Cell.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${NewRow.getFragment('model')}
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          name
+          namePlural
+          itemCount
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                isList
+                relatedModel {
+                  name
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+                ${HeaderCell.getFragment('field')}
+                ${Cell.getFragment('field')}
+              }
             }
-        `,
-    },
+          }
+          ${NewRow.getFragment('model')}
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })

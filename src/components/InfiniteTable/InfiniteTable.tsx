@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as Immutable from 'immutable'
 import {InfiniteLoader, Grid} from 'react-virtualized'
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
   columnWidth: (input: any) => number
   loadMoreRows: (input: any) => Promise<any>
   addNew: boolean
+
+  loadedList: Immutable.List<boolean>
 
   rowCount: number
   rowHeight: number
@@ -23,19 +26,7 @@ interface Props {
   addCellRenderer: (input: any) => JSX.Element | string
 }
 
-interface State {
-}
-
-export default class InifiniteTable extends React.Component<Props, State> {
-
-  loaded = []
-
-  constructor(props: Props) {
-    super(props)
-    for (let i = 0; i < this.props.rowCount; i++) {
-      this.loaded.push(false)
-    }
-  }
+export default class InfiniteTable extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -45,7 +36,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
           threshold={this.props.threshold}
           rowCount={this.props.rowCount}
           loadMoreRows={this.loadMoreRows}
-          isRowLoaded={({index}) => this.loaded[index]}
+          isRowLoaded={({index}) => this.props.loadedList.get(index)}
           >
           {({onRowsRendered, registerChild}) => (
             <div style={{display: 'flex', flexDirection: 'row', height: '100%', position: 'relative'}}>
@@ -57,7 +48,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
                 cellStyle={{position: 'absolute', marginTop: '-1px'}}
                 rowHeight={this.props.headerHeight}
                 rowCount={1}
-                style={{overflow: 'visible', width: 'auto', position: 'relative'}}
+                style={{overflowX: 'visible', overflowY: 'visible', width: 'auto', position: 'relative'}}
                 width={this.props.width}
               />
               {this.props.addNew &&
@@ -100,7 +91,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
   }
 
   private renderCell = (input) => {
-    if (this.loaded[input.rowIndex]) {
+    if (this.props.loadedList.get(input.rowIndex)) {
       return this.props.cellRenderer(input)
     } else {
       return this.props.loadingCellRenderer(input)
@@ -110,9 +101,6 @@ export default class InifiniteTable extends React.Component<Props, State> {
   private loadMoreRows = (input) => {
     return new Promise((resolve, reject) => {
       this.props.loadMoreRows(input).then(() => {
-        for (let i = input.startIndex; i <= input.stopIndex; i++) {
-          this.loaded[i] = true
-        }
         resolve(true)
       })
     })
