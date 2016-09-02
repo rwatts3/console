@@ -62,7 +62,7 @@ class RelationPopup extends React.Component<Props, State> {
     return (
       <Popup onClickOutside={this.close} height={'100%'}>
         <div className={classes.root}>
-          <div className={classnames(classes.header, classes.name)}>
+          <div className={classes.header}>
             New Relation
           </div>
           <div className={classes.container}>
@@ -90,11 +90,10 @@ class RelationPopup extends React.Component<Props, State> {
                 </div>
               </div>
               <div className={classes.container}>
-                <div>
-                  Name
-                </div>
                 <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
+                  <label for='nameInput'>Name</label>
                   <input
+                    id='nameInput'
                     autoFocus={!this.props.viewer.relation}
                     ref='input'
                     type='text'
