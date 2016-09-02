@@ -114,7 +114,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
             <div className={classes.savedIndicator}>
               {this.state.valuesEdited ? 'All changes saved' : ''}
             </div>
-            <div className={classes.close} onClick={() => this.props.methods.cancel()}>
+            <div className={classes.close} onClick={() => this.props.methods.cancel(true)}>
               Close
             </div>
           </div>

@@ -312,7 +312,7 @@ class BrowserView extends React.Component<Props, State> {
           value={value}
           projectId={this.props.project.id}
           update={(value, field, callback) => this.updateEditingNode(value, field, callback, nodeId, rowIndex)}
-          reload={() => this.reloadData(rowIndex)}
+          reload={() => this.loadData(rowIndex, 1)}
           nodeId={nodeId}
         />
       )
@@ -349,9 +349,9 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  private loadData = (skip: number): Promise<Immutable.List<Immutable.Map<string, any>>> => {
+  private loadData = (skip: number, first: number = 50): Promise<Immutable.List<Immutable.Map<string, any>>> => {
     return queryNodes(this.lokka, this.props.model.namePlural, this.props.fields,
-                      skip, this.state.filter, this.state.orderBy)
+                      skip, first,this.state.filter, this.state.orderBy)
       .then((results) => {
         const nodeMap = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
           .reduce((result, item, index) => result.set(skip + index, item), Immutable.Map<number, any>())

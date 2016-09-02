@@ -65,7 +65,7 @@ export default class InifiniteTable extends React.Component<Props, State> {
                 ref={registerChild}
                 width={this.props.width}
                 height={this.props.addRowHeight}
-                style={{overflow: 'scroll', position: 'absolute', width: 'auto', top: this.props.headerHeight}}
+                style={{overflow: 'visible', position: 'absolute', width: 'auto', top: this.props.headerHeight}}
                 cellStyle={{position: 'absolute'}}
                 rowHeight={this.props.addRowHeight}
                 columnCount={1}

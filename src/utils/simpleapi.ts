@@ -63,7 +63,7 @@ export function deleteNode(lokka: any, modelName: string, nodeId: string): Promi
   return lokka.mutate(mutation)
 }
 
-export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[], skip: number = 0,
+export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[], skip: number = 0, first: number = 50,
                            filters: Immutable.Map<string, any> = Immutable.Map<string, any>(),
                            orderBy?: OrderBy): Promise<any> {
 
@@ -80,7 +80,7 @@ export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[],
   const orderByQuery = orderBy ? `orderBy: ${orderBy.fieldName}_${orderBy.order}` : ''
   const query = `
     {
-      all${modelNamePlural}(first: 50 skip: ${skip} ${filter} ${orderByQuery}) {
+      all${modelNamePlural}(first: ${first} skip: ${skip} ${filter} ${orderByQuery}) {
         ${fieldNames}
       }
     }

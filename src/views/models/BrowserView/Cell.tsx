@@ -24,11 +24,13 @@ interface Props {
   isSelected: boolean
   addnew: boolean
   backgroundColor: string
+  needsFocus?: boolean
 }
 
 interface State {
   editing: boolean
   loading: boolean
+  shouldReFocus: boolean
 }
 
 class Cell extends React.Component<Props, State> {
@@ -41,24 +43,13 @@ class Cell extends React.Component<Props, State> {
     showNotification: ShowNotificationCallback
   }
 
-  refs: {
-    [key: string]: any;
-    input: HTMLInputElement
-  }
-
   constructor(props: Props) {
     super(props)
 
     this.state = {
       editing: false,
       loading: false,
-    }
-  }
-
-  componentDidUpdate(prevState: State): void {
-    // To enable dropdowns for <select>
-    if (!prevState.editing && this.state.editing && this.refs.input) {
-      findDOMNode<HTMLInputElement>(this.refs.input).select()
+      shouldReFocus: true,
     }
   }
 
@@ -75,10 +66,10 @@ class Cell extends React.Component<Props, State> {
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
+          overflow: 'visible',
         }}
         className={rootClassnames}
         onClick={() => this.startEditing()}
-        onBlur={() => this.cancel()}
       >
         {this.renderContent()}
       </div>
@@ -92,7 +83,7 @@ class Cell extends React.Component<Props, State> {
   }
 
   private cancel = (shouldReload: boolean = false): void => {
-    this.setState({editing: false} as State)
+    this.setState({editing: false, shouldReFocus: false} as State)
     if (shouldReload) {
       this.props.reload()
     }
@@ -113,7 +104,7 @@ class Cell extends React.Component<Props, State> {
       return
     }
 
-    this.setState({loading: !keepEditing} as State)
+    this.setState({loading: keepEditing} as State)
     this.props.update(value, this.props.field, () => {
       this.setState({
         editing: keepEditing,
@@ -174,6 +165,7 @@ class Cell extends React.Component<Props, State> {
         className={classes.value}
         defaultValue={valueString}
         onFocus={() => this.startEditing()}
+        autoFocus={this.props.needsFocus && this.state.shouldReFocus}
         style={{pointerEvents: this.props.field.name === 'id' ? '' : 'none'}}
       />
     )
