@@ -6,7 +6,7 @@ import Icon from '../../components/Icon/Icon'
 
 const classes: any = require('./RelationPopup.scss')
 interface Props {
-  viewer: any
+  models: Model[]
   fieldOnLeftModelName: string
   fieldOnRightModelName: string
   fieldOnLeftModelIsList: boolean
@@ -32,14 +32,12 @@ export default class RelationSelector extends React.Component<Props, State> {
       <div>
         <ModelSelector
           isList={this.props.fieldOnRightModelIsList}
-          onListChange={
-            () => this.setState({fieldOnRightModelIsList: !this.props.fieldOnRightModelIsList} as State)
-          }
+          onListChange={() => this.props.onFieldOnRightModelIsListChange(!this.props.fieldOnRightModelIsList)}
           selectedModelId={this.props.leftModelId}
-          onModelChange={(id) => this.setState({leftModelId: id} as State)}
-          models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
+          onModelChange={(id) => this.props.onLeftModelIdChange(id)}
+          models={this.props.models}
           fieldOnModelName={this.props.fieldOnLeftModelName}
-          onFieldNameChange={(name) => this.setState({fieldOnLeftModelName: name} as State)}
+          onFieldNameChange={(name) => this.props.onFieldOnLeftModelNameChange(name)}
         />
         <span className={classes.iconContainer}>
           <Icon
@@ -50,14 +48,12 @@ export default class RelationSelector extends React.Component<Props, State> {
         </span>
         <ModelSelector
           isList={this.props.fieldOnLeftModelIsList}
-          onListChange={
-            () => this.setState({fieldOnLeftModelIsList: !this.props.fieldOnLeftModelIsList} as State)
-          }
+          onListChange={() => this.props.onFieldOnLeftModelIsListChange(!this.props.fieldOnLeftModelIsList)}
           selectedModelId={this.props.rightModelId}
-          onModelChange={(id) => this.setState({rightModelId: id} as State)}
-          models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
+          onModelChange={(id) => this.props.onRightModelIdChange(id)}
+          models={this.props.models}
           fieldOnModelName={this.props.fieldOnRightModelName}
-          onFieldNameChange={(name) => this.setState({fieldOnRightModelName: name} as State)}
+          onFieldNameChange={(name) => this.props.onFieldOnLeftModelNameChange(name)}
         />
       </div>
     )
