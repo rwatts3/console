@@ -40,7 +40,12 @@ export default class RelationSelector extends React.Component<Props, State> {
         <div className={`${classes.relationArrows} ${classes.hasFields}`}>
           <div className={`${classes.relationArrow} ${classes.pointsRight}`}>
             <div className={classes.relationFieldInput}>
-              <label>via field</label><input type="text" value="categories" />
+              <label>via field</label>
+              <input
+                type='text'
+                value={this.props.fieldOnLeftModelName}
+                onChange={(e: any) => this.props.onFieldOnLeftModelNameChange(e.target.value)}
+              />
             </div>
 
             <div className={`${classes.relationArrowBase}`}/>
@@ -49,7 +54,12 @@ export default class RelationSelector extends React.Component<Props, State> {
           <div className={`${classes.relationArrow} ${classes.pointsLeft}`}>
             <div className={`${classes.relationArrowBase}`}/>
             <div className={classes.relationFieldInput}>
-              <label>via field</label><input type="text" value="projects" />
+              <label>via field</label>
+              <input
+                type='text'
+                value={this.props.fieldOnRightModelName}
+                onChange={(e: any) => this.props.onFieldOnRightModelNameChange(e.target.value)}
+              />
             </div>
 
           </div>
