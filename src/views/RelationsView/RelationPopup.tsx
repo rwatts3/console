@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import Popup from '../../components/Popup/Popup'
 import Icon from '../../components/Icon/Icon'
-import ModelSelector from './ModelSelector'
+import RelationSelector from './RelationSelector'
 import RelationExplanation from '../../components/RelationExplanation/RelationExplanation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import {validateModelName, validateFieldName} from '../../utils/nameValidator'
@@ -98,35 +98,17 @@ class RelationPopup extends React.Component<Props, State> {
                 Relation Schema
               </div>
               <div className={classes.settings}>
-                <ModelSelector
-                  isList={this.state.fieldOnRightModelIsList}
-                  onListChange={
-                    () => this.setState({fieldOnRightModelIsList: !this.state.fieldOnRightModelIsList} as State)
-                  }
-                  selectedModelId={this.state.leftModelId}
-                  onModelChange={(id) => this.setState({leftModelId: id} as State)}
-                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-                  fieldOnModelName={this.state.fieldOnLeftModelName}
-                  onFieldNameChange={(name) => this.setState({fieldOnLeftModelName: name} as State)}
-                />
-                <span className={classes.iconContainer}>
-                  <Icon
-                    className={classes.icon}
-                    width={18}
-                    src={require('assets/new_icons/bidirectional.svg')}
+                <div className={classes.container}>
+                  <RelationSelector
+                    viewer={this.props.viewer}
+                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                    fieldOnRightModelName={this.state.fieldOnRightModelName}
+                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                    leftModelId={this.state.leftModelId}
+                    rightModelId={this.state.rightModelId}
                   />
-                </span>
-                <ModelSelector
-                  isList={this.state.fieldOnLeftModelIsList}
-                  onListChange={
-                    () => this.setState({fieldOnLeftModelIsList: !this.state.fieldOnLeftModelIsList} as State)
-                  }
-                  selectedModelId={this.state.rightModelId}
-                  onModelChange={(id) => this.setState({rightModelId: id} as State)}
-                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-                  fieldOnModelName={this.state.fieldOnRightModelName}
-                  onFieldNameChange={(name) => this.setState({fieldOnRightModelName: name} as State)}
-                />
+                </div>
               </div>
               <div className={classes.container}>
                 <div>
