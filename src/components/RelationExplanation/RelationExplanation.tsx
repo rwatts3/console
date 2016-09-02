@@ -17,29 +17,34 @@ class RelationExplanation extends React.Component<Props, {}> {
   render() {
     const {fieldOnLeftModelIsList, leftModelId, fieldOnRightModelIsList, rightModelId} = this.props
 
-    const leftModelMultiplicity = fieldOnLeftModelIsList ? 'One' : 'Many'
-    const leftModelName = fieldOnLeftModelIsList ? this.getModelNamePlural(leftModelId) : this.getModelName(leftModelId)
-    const leftNameS = this.getModelName(leftModelId).slice(-1) === 's' ? `'` : `'s`
+    const leftModelMultiplicity = fieldOnLeftModelIsList ? 'Many' : 'One'
+    const leftModelName = fieldOnRightModelIsList
+      ? this.getModelNamePlural(leftModelId) : this.getModelName(leftModelId)
+    const leftNameS = this.getModelName(leftModelId).slice(-1) === 's'
+      ? `'` : `'s`
 
-    const rightModelMultiplicity = fieldOnRightModelIsList ? 'One' : 'Many'
-    const rightModelName = fieldOnRightModelIsList ? this.getModelNamePlural(rightModelId) : this.getModelName(rightModelId)
+    const rightModelMultiplicity = fieldOnRightModelIsList ? 'Many' : 'One'
+    const rightModelName = fieldOnLeftModelIsList
+      ? this.getModelNamePlural(rightModelId) : this.getModelName(rightModelId)
     const rightNameS = this.getModelName(rightModelId).slice(-1) === 's' ? `'` : `'s`
     return (
       <div>
         <div>
-          <span>{leftModelMultiplicity}</span> <span>{leftModelName}</span>
-          {` are related to `}
-          <span>{rightModelMultiplicity.toLowerCase()}</span> <span>{rightModelName}</span>
+          <span>{rightModelMultiplicity}</span> <span>{leftModelName}</span>
+          {` ${rightModelMultiplicity === 'One' ? 'is' : 'are'} related to `}
+          <span>{leftModelMultiplicity.toLowerCase()}</span> <span>{rightModelName}</span>
         </div>
         <div>
-          <span>{this.getModelName(leftModelId)}</span>{`${leftNameS} field `}<span>{this.props.fieldOnLeftModelName}</span>
-          {` represents `}
-          <span>{rightModelMultiplicity.toLowerCase()}</span> <span>{rightModelName}</span>
+          <span>{this.getModelName(leftModelId)}</span>{`${leftNameS} field "`}
+          <span>{this.props.fieldOnLeftModelName}</span>
+          {`" represents `}
+          <span>{leftModelMultiplicity.toLowerCase()}</span> <span>{rightModelName}</span>
         </div>
         <div>
-          <span>{this.getModelName(rightModelId)}</span>{`${rightNameS} field `}<span>{this.props.fieldOnRightModelName}</span>
-          {` represents `}
-          <span>{leftModelMultiplicity.toLowerCase()}</span> <span>{leftModelName}</span>
+          <span>{this.getModelName(rightModelId)}</span>{`${rightNameS} field "`}
+          <span>{this.props.fieldOnRightModelName}</span>
+          {`" represents `}
+          <span>{rightModelMultiplicity.toLowerCase()}</span> <span>{leftModelName}</span>
         </div>
       </div>
     )
