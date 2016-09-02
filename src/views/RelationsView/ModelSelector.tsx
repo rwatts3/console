@@ -36,7 +36,7 @@ export default class ModelSelector extends React.Component<Props,{}> {
               onChange={(e: any) => this.props.onModelChange(e.target.value)}
             >
               <option value={'default value'} disabled>Select Model</option>
-              {this.props.models.map((model) => (
+              {this.props.models.sort(this.modelCompare).map((model) => (
                 <option key={model.id} value={model.id}>{model.name}</option>
               ))}
             </select>
@@ -54,9 +54,5 @@ export default class ModelSelector extends React.Component<Props,{}> {
       return 1
     }
     return 0
-  }
-
-  private getIsListText = (isList: boolean = this.props.isList) => {
-    return isList ? 'Many' : 'One'
   }
 }
