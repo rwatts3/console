@@ -4,7 +4,7 @@ import {Model} from '../../types/types'
 import ModelSelector from './ModelSelector'
 import Icon from '../../components/Icon/Icon'
 
-const classes: any = require('./RelationPopup.scss')
+const classes: any = require('./RelationSelector.scss')
 interface Props {
   models: Model[]
   fieldOnLeftModelName: string
@@ -29,7 +29,7 @@ export default class RelationSelector extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>
+      <div className={classes.root}>
         <ModelSelector
           isList={this.props.fieldOnRightModelIsList}
           onListChange={(value) => this.props.onFieldOnRightModelIsListChange(value)}
@@ -37,13 +37,23 @@ export default class RelationSelector extends React.Component<Props, State> {
           onModelChange={(id) => this.props.onLeftModelIdChange(id)}
           models={this.props.models}
         />
-        <span className={classes.iconContainer}>
-          <Icon
-            className={classes.icon}
-            width={18}
-            src={require('assets/new_icons/bidirectional.svg')}
-          />
-        </span>
+        <div className={`${classes.relationArrows} ${classes.hasFields}`}>
+          <div className={`${classes.relationArrow} ${classes.pointsRight}`}>
+            <div className={classes.relationFieldInput}>
+              <label>via field</label><input type="text" value="categories" />
+            </div>
+
+            <div className={`${classes.relationArrowBase}`}/>
+
+          </div>
+          <div className={`${classes.relationArrow} ${classes.pointsLeft}`}>
+            <div className={`${classes.relationArrowBase}`}/>
+            <div className={classes.relationFieldInput}>
+              <label>via field</label><input type="text" value="projects" />
+            </div>
+
+          </div>
+        </div>
         <ModelSelector
           isList={this.props.fieldOnLeftModelIsList}
           onListChange={(value) => this.props.onFieldOnLeftModelIsListChange(value)}
