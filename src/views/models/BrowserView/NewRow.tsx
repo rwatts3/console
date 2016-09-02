@@ -1,9 +1,10 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Cell from './Cell'
-import {Model} from '../../../types/types'
+import {Model, Field} from '../../../types/types'
 import {emptyDefault, compareFields} from '../utils'
 import {stringToValue} from '../../../utils/valueparser'
+import {isNonScalarList} from '../../../utils/graphql'
 const classes: any = require('./NewRow.scss')
 
 interface Props {
@@ -44,15 +45,20 @@ class NewRow extends React.Component<Props, State> {
     const fields = this.props.model.fields.edges
       .map((edge) => edge.node)
       .sort(compareFields)
+    const inputIndex = this.getFirstInputFieldIndex(fields)
+    if (!inputIndex) {
+      this.add()
+    }
+    console.log('render')
     return (
-      <div className={classes.root}>
+      <div className={classes.root} onKeyDown={this.handleKeyDown}>
         <div className={classes.empty}/>
-        {fields.map((field) => {
+        {fields.map((field, index) => {
           return (
-            <div style={{width: this.props.columnWidths[field.name]}}>
+            <div key={field.id} style={{width: this.props.columnWidths[field.name]}}>
               <Cell
+                needsFocus={index === inputIndex}
                 addnew={true}
-                key={field.id}
                 field={field}
                 width={this.props.columnWidths[field.name]}
                 update={this.update}
@@ -70,6 +76,31 @@ class NewRow extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      this.add()
+    } else if (e.keyCode === 27) {
+      this.props.cancel()
+    }
+  }
+
+  private getFirstInputFieldIndex = (fields: Field[]) => {
+    let inputIndex;
+    const hasInputField = fields.some((field, index) => {
+      if (isNonScalarList(field) || field.name === 'id') {
+        return false
+      } else {
+        inputIndex = index
+        return true
+      }
+    })
+    if (hasInputField) {
+      return inputIndex
+    } else {
+      return null
+    }
   }
 
   private add = () => {

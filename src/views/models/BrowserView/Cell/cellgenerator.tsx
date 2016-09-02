@@ -71,7 +71,7 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
       relatedModel={reqs.field.relatedModel}
       projectId={reqs.projectId}
       value={reqs.value ? reqs.value.id : null}
-      onSelect={reqs.methods.save}
+      save={reqs.methods.save}
       cancel={reqs.methods.cancel}
     />
   )
@@ -94,6 +94,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           save={reqs.methods.save}
           onKeyDown={reqs.methods.onKeyDown}
           field={reqs.field}
+          cancel={reqs.methods.cancel}
         />
       )
     case 'Float':
@@ -103,6 +104,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           save={reqs.methods.save}
           onKeyDown={reqs.methods.onKeyDown}
           field={reqs.field}
+          cancel={reqs.methods.cancel}
         />
       )
     case 'Boolean':
@@ -111,6 +113,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           value={reqs.value}
           save={reqs.methods.save}
           field={reqs.field}
+          cancel={reqs.methods.cancel}
         />
       )
     case 'Enum':
@@ -120,6 +123,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           save={reqs.methods.save}
           onKeyDown={reqs.methods.onKeyDown}
           field={reqs.field}
+          cancel={reqs.methods.cancel}
         />
       )
     case 'String':
@@ -129,6 +133,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           onKeyDown={reqs.methods.onKeyDown}
           save={reqs.methods.save}
           field={reqs.field}
+          cancel={reqs.methods.cancel}
         />
       )
     case 'DateTime':
@@ -147,6 +152,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           onKeyDown={reqs.methods.onKeyDown}
           save={reqs.methods.save}
           field={reqs.field}
+          cancel={reqs.methods.cancel}
         />
       )
   }

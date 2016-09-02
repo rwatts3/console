@@ -12,7 +12,7 @@ interface Props {
   projectId: string
   value: string
   relatedModel: Model
-  onSelect: (value: string) => void
+  save: (value: string) => void
   cancel: () => void
   onFocus?: () => void
 }
@@ -51,11 +51,11 @@ class NodeSelector extends React.Component<Props, State> {
   render () {
     return (
       <ClickOutside
-        onClickOutside={this.props.cancel}
+        onClickOutside={() => this.props.cancel()}
         style={{ width: '100%' }}
       >
         <Autocomplete
-          wrapperProps={{ className: classes.wrapper }}
+          wrapperProps={{className: classes.wrapper}}
           menuStyle={{
             padding: 0,
             position: 'absolute',
@@ -69,10 +69,10 @@ class NodeSelector extends React.Component<Props, State> {
           value={this.state.value || ''}
           items={this.state.nodes}
           shouldItemRender={this.shouldNodeRender}
-          inputProps={{autoFocus: true }}
+          inputProps={{autoFocus: true}}
           getItemValue={(node: NonScalarValue) => node.id}
           onChange={(event, value) => this.setState({ value } as State)}
-          onSelect={(value, node) => this.props.onSelect(node)}
+          onSelect={(value, node) => this.props.save(node)}
           renderItem={this.renderNode}
         />
       </ClickOutside>
