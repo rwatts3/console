@@ -73,19 +73,19 @@ class RelationPopup extends React.Component<Props, State> {
               <div className={classes.settings}>
                 <div className={classes.container}>
                   <RelationSelector
-                    viewer={this.props.viewer}
+                    models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
                     fieldOnLeftModelName={this.state.fieldOnLeftModelName}
                     fieldOnRightModelName={this.state.fieldOnRightModelName}
                     fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
                     fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
                     leftModelId={this.state.leftModelId}
                     rightModelId={this.state.rightModelId}
-                    onFieldOnLeftModelNameChange={(value) => this.setState({} as State)}
-                    onFieldOnRightModelNameChange={(value) => this.setState({} as State)}
-                    onFieldOnLeftModelIsListChange={(value) => this.setState({} as State)}
-                    onFieldOnRightModelIsListChange={(value) => this.setState({} as State)}
-                    onLeftModelIdChange={(value) => this.setState({} as State)}
-                    onRightModelIdChange={(value) => this.setState({} as State)}
+                    onFieldOnLeftModelNameChange={(value) => this.setState({fieldOnLeftModelName: value} as State)}
+                    onFieldOnRightModelNameChange={(value) => this.setState({fieldOnRightModelName: value} as State)}
+                    onFieldOnLeftModelIsListChange={(value) => this.setState({fieldOnLeftModelIsList: value} as State)}
+                    onFieldOnRightModelIsListChange={(value) => this.setState({fieldOnRightModelIsList: value} as State)}
+                    onLeftModelIdChange={(value) => this.setState({leftModelId: value} as State)}
+                    onRightModelIdChange={(value) => this.setState({rightModelId: value} as State)}
                   />
                 </div>
               </div>

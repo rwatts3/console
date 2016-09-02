@@ -32,12 +32,10 @@ export default class RelationSelector extends React.Component<Props, State> {
       <div>
         <ModelSelector
           isList={this.props.fieldOnRightModelIsList}
-          onListChange={() => this.props.onFieldOnRightModelIsListChange(!this.props.fieldOnRightModelIsList)}
+          onListChange={(value) => this.props.onFieldOnRightModelIsListChange(value)}
           selectedModelId={this.props.leftModelId}
           onModelChange={(id) => this.props.onLeftModelIdChange(id)}
           models={this.props.models}
-          fieldOnModelName={this.props.fieldOnLeftModelName}
-          onFieldNameChange={(name) => this.props.onFieldOnLeftModelNameChange(name)}
         />
         <span className={classes.iconContainer}>
           <Icon
@@ -48,12 +46,10 @@ export default class RelationSelector extends React.Component<Props, State> {
         </span>
         <ModelSelector
           isList={this.props.fieldOnLeftModelIsList}
-          onListChange={() => this.props.onFieldOnLeftModelIsListChange(!this.props.fieldOnLeftModelIsList)}
+          onListChange={(value) => this.props.onFieldOnLeftModelIsListChange(value)}
           selectedModelId={this.props.rightModelId}
           onModelChange={(id) => this.props.onRightModelIdChange(id)}
           models={this.props.models}
-          fieldOnModelName={this.props.fieldOnRightModelName}
-          onFieldNameChange={(name) => this.props.onFieldOnLeftModelNameChange(name)}
         />
       </div>
     )
