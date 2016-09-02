@@ -13,7 +13,6 @@ interface State {
   isEditing: boolean
   filter: string
   newValue: string
-  valuesEdited: boolean
 }
 
 export default class ScalarListCell extends React.Component<CellRequirements, State> {
@@ -27,7 +26,6 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       filter: '',
       newValue: null,
       values: this.props.value ? this.props.value.slice() : [],
-      valuesEdited: false,
     }
   }
 
@@ -44,7 +42,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       },
     }
     return (
-      <Popup height='80%' onClickOutside={this.props.methods.cancel}>
+      <Popup height='80%' onClickOutside={this.handleClose}>
         <div className={classes.root}>
           <div className={classes.header}>
             <div className={classes.filter}>
@@ -111,10 +109,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
               ))}
           </div>
           <div className={classes.footer}>
-            <div className={classes.savedIndicator}>
-              {this.state.valuesEdited ? 'All changes saved' : ''}
-            </div>
-            <div className={classes.close} onClick={() => this.props.methods.cancel(true)}>
+            <div className={classes.close} onClick={this.handleClose}>
               Close
             </div>
           </div>
@@ -123,14 +118,16 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     )
   }
 
+  private handleClose = () => {
+    this.props.methods.save(this.state.values)
+  }
+
   private handleDeleteValue = (index: number) => {
     const result = this.state.values.slice(0)
     result.splice(index, 1)
     this.setState({
       values: result,
-      valuesEdited: true,
     } as State)
-    this.props.methods.save(result, true)
   }
 
   private handleNewValueChange = (value: AtomicValue) => {
@@ -145,9 +142,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     current.push(this.state.newValue)
     this.setState({
       newValue: this.state.newValue,
-      valuesEdited: true,
       values: current,
     } as State)
-    this.props.methods.save(current, true)
   }
 }
