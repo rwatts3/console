@@ -13,6 +13,12 @@ interface Props {
   fieldOnRightModelIsList: boolean
   leftModelId: string
   rightModelId: string
+  onFieldOnLeftModelNameChange: (value: string) => void
+  onFieldOnRightModelNameChange: (value: string) => void
+  onFieldOnLeftModelIsListChange: (value: boolean) => void
+  onFieldOnRightModelIsListChange: (value: boolean) => void
+  onLeftModelIdChange: (value: string) => void
+  onRightModelIdChange: (value: string) => void
 }
 
 interface State {
