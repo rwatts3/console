@@ -1,8 +1,6 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
 import {Model} from '../../types/types'
 import ModelSelector from './ModelSelector'
-import Icon from '../../components/Icon/Icon'
 
 const classes: any = require('./RelationSelector.scss')
 interface Props {

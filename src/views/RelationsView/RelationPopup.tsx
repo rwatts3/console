@@ -1,7 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Popup from '../../components/Popup/Popup'
-import Icon from '../../components/Icon/Icon'
 import RelationSelector from './RelationSelector'
 import RelationExplanation from '../../components/RelationExplanation/RelationExplanation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
@@ -80,10 +79,10 @@ class RelationPopup extends React.Component<Props, State> {
                     fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
                     leftModelId={this.state.leftModelId}
                     rightModelId={this.state.rightModelId}
-                    onFieldOnLeftModelNameChange={(value) => this.setState({fieldOnLeftModelName: value} as State)}
-                    onFieldOnRightModelNameChange={(value) => this.setState({fieldOnRightModelName: value} as State)}
-                    onFieldOnLeftModelIsListChange={(value) => this.setState({fieldOnLeftModelIsList: value} as State)}
-                    onFieldOnRightModelIsListChange={(value) => this.setState({fieldOnRightModelIsList: value} as State)}
+                    onFieldOnLeftModelNameChange={(val) => this.setState({fieldOnLeftModelName: val} as State)}
+                    onFieldOnRightModelNameChange={(val) => this.setState({fieldOnRightModelName: val} as State)}
+                    onFieldOnLeftModelIsListChange={(val) => this.setState({fieldOnLeftModelIsList: val} as State)}
+                    onFieldOnRightModelIsListChange={(val) => this.setState({fieldOnRightModelIsList: val} as State)}
                     onLeftModelIdChange={(value) => this.setState({leftModelId: value} as State)}
                     onRightModelIdChange={(value) => this.setState({rightModelId: value} as State)}
                   />
@@ -91,7 +90,7 @@ class RelationPopup extends React.Component<Props, State> {
               </div>
               <div className={classes.container}>
                 <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
-                  <label for='nameInput'>Name</label>
+                  <label>Name</label>
                   <input
                     id='nameInput'
                     autoFocus={!this.props.viewer.relation}
