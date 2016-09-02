@@ -31,6 +31,7 @@ interface State {
   leftModelId: string
   rightModelId: string
   alertHint: boolean
+  showExplanation: boolean
 }
 
 class RelationPopup extends React.Component<Props, State> {
@@ -123,17 +124,36 @@ class RelationPopup extends React.Component<Props, State> {
                 </div>
               </div>
               <div className={classes.container}>
-                <div>
-                  <div>
-                    Relation Explanation
+                <div className={classes.additionalInfo}>
+                  <div
+                    className={classnames(classes.tabbutton, this.state.showExplanation ? classes.active : '')}
+                    onClick={() => this.setState({showExplanation: true} as State)}
+                  >
+                    <Help
+                      size={12}
+                      text={'The relation name has to be capitalized.'}
+                      placement={'left'}
+                    />
+                    <div className={classes.tabheader}>
+                      Relation Explanation
+                    </div>
                   </div>
-                  <div>
-                    Generated Mutations
+                  <div
+                    className={classnames(classes.tabbutton, !this.state.showExplanation ? classes.active : '')}
+                    onClick={() => this.setState({showExplanation: false} as State)}
+                  >
+                    <Help
+                      size={12}
+                      text={'The relation name has to be capitalized.'}
+                      placement={'left'}
+                    />
+                    <div className={classes.tabheader}>
+                     Generated Mutations
+                    </div>
                   </div>
                 </div>
                 <div>
                   {this.state.leftModelId && this.state.rightModelId &&
-
                   <RelationExplanation
                     fieldOnLeftModelName={this.state.fieldOnLeftModelName}
                     fieldOnRightModelName={this.state.fieldOnRightModelName}
@@ -184,6 +204,7 @@ class RelationPopup extends React.Component<Props, State> {
       leftModelId: preselectedModelId,
       rightModelId: null,
       alertHint: false,
+      showExplanation: true,
     } as State
   }
 
@@ -199,6 +220,7 @@ class RelationPopup extends React.Component<Props, State> {
       leftModelId: relation.leftModel.id,
       rightModelId: relation.rightModel.id,
       alertHint: false,
+      showExplanation: true,
     } as State
   }
 
