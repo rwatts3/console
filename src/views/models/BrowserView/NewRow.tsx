@@ -87,7 +87,7 @@ class NewRow extends React.Component<Props, State> {
   }
 
   private getFirstInputFieldIndex = (fields: Field[]) => {
-    let inputIndex;
+    let inputIndex
     const hasInputField = fields.some((field, index) => {
       if (isNonScalarList(field) || field.name === 'id') {
         return false

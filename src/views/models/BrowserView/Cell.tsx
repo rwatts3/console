@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {findDOMNode} from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
