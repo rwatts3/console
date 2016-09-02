@@ -123,6 +123,7 @@ class RelationPopup extends React.Component<Props, State> {
                   />
                 </div>
               </div>
+              {this.state.leftModelId && this.state.rightModelId &&
               <div className={classes.container}>
                 <div className={classes.additionalInfo}>
                   <div
@@ -153,7 +154,6 @@ class RelationPopup extends React.Component<Props, State> {
                   </div>
                 </div>
                 <div>
-                  {this.state.leftModelId && this.state.rightModelId &&
                   <RelationExplanation
                     fieldOnLeftModelName={this.state.fieldOnLeftModelName}
                     fieldOnRightModelName={this.state.fieldOnRightModelName}
@@ -163,9 +163,9 @@ class RelationPopup extends React.Component<Props, State> {
                     rightModelId={this.state.rightModelId}
                     project={this.props.viewer.project}
                   />
-                  }
                 </div>
               </div>
+              }
             </div>
             <div className={classes.buttons}>
               <div onClick={this.close}>
