@@ -158,6 +158,7 @@ class BrowserView extends React.Component<Props, State> {
                 }
                 return (
                   <InfiniteTable
+                    loadedList={Immutable.List<boolean>()}
                     minimumBatchSize={50}
                     width={this.props.fields.reduce((sum, {name}) => sum + fieldColumnWidths[name], 0) + 34 + 250}
                     height={height}
