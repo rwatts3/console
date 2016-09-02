@@ -61,36 +61,8 @@ class RelationPopup extends React.Component<Props, State> {
     return (
       <Popup onClickOutside={this.close} height={'100%'}>
         <div className={classes.root}>
-          <div className={classes.header}>
-            <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
-              <input
-                autoFocus={!this.props.viewer.relation}
-                ref='input'
-                type='text'
-                placeholder='+ Add Relation Name'
-                value={this.state.name}
-                onChange={(e: any) => this.setState(
-                  {
-                    name: e.target.value,
-                    alertHint: !validateModelName(e.target.value) || e.target.value === '',
-                  } as State)}
-              />
-              {this.state.alertHint &&
-              <Help
-                size={35}
-                text={'The relation name has to be capitalized.'}
-                placement={'left'}
-              />
-              }
-            </div>
-            <div className={classes.description}>
-              <input
-                type='text'
-                placeholder='+ Add Description'
-                value={this.state.description}
-                onChange={(e: any) => this.setState({ description: e.target.value } as State)}
-              />
-            </div>
+          <div className={classnames(classes.header, classes.name)}>
+            New Relation
           </div>
           <div className={classes.container}>
             <div className={classes.content}>
@@ -107,6 +79,12 @@ class RelationPopup extends React.Component<Props, State> {
                     fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
                     leftModelId={this.state.leftModelId}
                     rightModelId={this.state.rightModelId}
+                    onFieldOnLeftModelNameChange={(value) => this.setState({} as State)}
+                    onFieldOnRightModelNameChange={(value) => this.setState({} as State)}
+                    onFieldOnLeftModelIsListChange={(value) => this.setState({} as State)}
+                    onFieldOnRightModelIsListChange={(value) => this.setState({} as State)}
+                    onLeftModelIdChange={(value) => this.setState({} as State)}
+                    onRightModelIdChange={(value) => this.setState({} as State)}
                   />
                 </div>
               </div>
@@ -114,8 +92,35 @@ class RelationPopup extends React.Component<Props, State> {
                 <div>
                   Name
                 </div>
-                <input defaultValue={'Project Categories'} />
-                <input placeholder={'+ Add Description'} />
+                <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
+                  <input
+                    autoFocus={!this.props.viewer.relation}
+                    ref='input'
+                    type='text'
+                    placeholder='+ Add Relation Name'
+                    value={this.state.name}
+                    onChange={(e: any) => this.setState(
+                      {
+                        name: e.target.value,
+                        alertHint: !validateModelName(e.target.value) || e.target.value === '',
+                      } as State)}
+                  />
+                  {this.state.alertHint &&
+                  <Help
+                    size={35}
+                    text={'The relation name has to be capitalized.'}
+                    placement={'left'}
+                  />
+                  }
+                </div>
+                <div className={classes.description}>
+                  <input
+                    type='text'
+                    placeholder='+ Add Description'
+                    value={this.state.description}
+                    onChange={(e: any) => this.setState({ description: e.target.value } as State)}
+                  />
+                </div>
               </div>
               <div className={classes.container}>
                 <div>
