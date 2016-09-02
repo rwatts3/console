@@ -16,37 +16,22 @@ export default class ModelSelector extends React.Component<Props,{}> {
 
   render() {
     return (
-      <span className={classes.root}>
-        <a onClick={this.props.onListChange}>{this.getIsListText()}</a>
-        <span className={classes.model}>
-          <select
-            onChange={(e: any) => this.props.onModelChange(e.target.value)}
-            value={this.props.selectedModelId === null ? 'default value' : this.props.selectedModelId}
-          >
-            <option value={'default value'} disabled={true}>Select a Model ▾</option>
-            {this.props.models.sort(this.modelCompare).map((model) => (
-              <option
-                key={model.id}
-                value={model.id}
-              >
-                {this.props.isList ? `[${model.name}]` : model.name}
-              </option>
-            ))}
-          </select>
-          <span>
-            <div>
-              <span className={classes.fieldTitle}>
-                In Field:
-              </span>
-              <input value={this.props.fieldOnModelName}
-                     type='text' placeholder='_______________'
-                     onChange={(e: any) => this.props.onFieldNameChange(e.target.value)}
-              />
-            </div>
-          </span>
-
-        </span>
-      </span>
+      <div className={`${classes.root} ${classes.isMany}`}>
+        <div className={classes.rootContainer}>
+          <div className={classes.sizeToggle}>
+            <div>One</div>
+            <div className={classes.active}>Many</div>
+          </div>
+          <div className={classes.modelSelect}>
+            <select>
+              <option selected disabled>Select Model</option>
+              <option value="1">Projects</option>
+              <option value="1">Pokemons</option>
+              <option value="1">Stuff</option>
+            </select>
+          </div>
+        </div>
+      </div>
     )
   }
 
