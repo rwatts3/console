@@ -31,7 +31,7 @@ class ModelDescription extends React.Component<Props, State> {
     editDescriptionPending: false,
   }
 
-  _saveDescription = (e) => {
+  _saveDescription = (e: any) => {
     const description = e.target.value
     if (this.props.model.description === description) {
       this.setState({ editDescription: false } as State)
@@ -80,7 +80,7 @@ class ModelDescription extends React.Component<Props, State> {
           placeholder='Description'
           defaultValue={this.props.model.description}
           onBlur={this._saveDescription}
-          onKeyDown={(e) => e.keyCode === 13 ? e.target.blur() : null}
+          onKeyDown={(e: any) => e.keyCode === 13 ? e.target.blur() : null}
         />
       )
     }

@@ -4,49 +4,45 @@ const classes = require('./ModelSelector.scss')
 
 interface Props {
   isList: boolean
-  onListChange: () => void
+  onListChange: (value: boolean) => void
   models: Model[]
   selectedModelId: string
   onModelChange: (modelId: string) => void
-  fieldOnModelName: string
-  onFieldNameChange: (name: string) => void
 }
 
 export default class ModelSelector extends React.Component<Props,{}> {
 
   render() {
     return (
-      <span className={classes.root}>
-        <a onClick={this.props.onListChange}>{this.getIsListText()}</a>
-        <span className={classes.model}>
-          <select
-            onChange={(e) => this.props.onModelChange(e.target.value)}
-            value={this.props.selectedModelId === null ? 'default value' : this.props.selectedModelId}
-          >
-            <option value={'default value'} disabled={true}>Select a Model ▾</option>
-            {this.props.models.sort(this.modelCompare).map((model) => (
-              <option
-                key={model.id}
-                value={model.id}
-              >
-                {this.props.isList ? `[${model.name}]` : model.name}
-              </option>
-            ))}
-          </select>
-          <span>
-            <div>
-              <span className={classes.fieldTitle}>
-                In Field:
-              </span>
-              <input value={this.props.fieldOnModelName}
-                     type='text' placeholder='_______________'
-                     onChange={(e) => this.props.onFieldNameChange(e.target.value)}
-              />
+      <div className={`${classes.root} ${this.props.isList ? classes.isMany : ''}`}>
+        <div className={classes.rootContainer}>
+          <div className={classes.sizeToggle}>
+            <div
+              onClick={() => this.props.onListChange(false)}
+              className={!this.props.isList ? classes.active : ''}
+            >
+              One
             </div>
-          </span>
-
-        </span>
-      </span>
+            <div
+              onClick={() => this.props.onListChange(true)}
+              className={this.props.isList ? classes.active : ''}
+            >
+                Many
+            </div>
+          </div>
+          <div className={classes.modelSelect}>
+            <select
+              value={this.props.selectedModelId ? this.props.selectedModelId : 'default value'}
+              onChange={(e: any) => this.props.onModelChange(e.target.value)}
+            >
+              <option value={'default value'} disabled>Select Model</option>
+              {this.props.models.sort(this.modelCompare).map((model) => (
+                <option key={model.id} value={model.id}>{model.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -58,9 +54,5 @@ export default class ModelSelector extends React.Component<Props,{}> {
       return 1
     }
     return 0
-  }
-
-  private getIsListText = (isList: boolean = this.props.isList) => {
-    return isList ? 'Many' : 'One'
   }
 }

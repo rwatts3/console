@@ -343,12 +343,12 @@ export class SideNav extends React.Component<Props, State> {
 
   private addModel = () => {
     const redirect = () => {
+      this.context.router.push(`/${this.props.params.projectName}/models/${this.state.newModelName}`)
       this.setState({
-        newModelName: '',
         addingNewModel: false,
         newModelIsValid: true,
+        newModelName: '',
       } as State)
-      this.context.router.replace(`/${this.props.params.projectName}/models/${this.state.newModelName}`)
     }
 
     if (this.state.newModelName) {

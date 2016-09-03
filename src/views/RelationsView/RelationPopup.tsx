@@ -1,14 +1,15 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Popup from '../../components/Popup/Popup'
-import Icon from '../../components/Icon/Icon'
-import ModelSelector from './ModelSelector'
+import RelationSelector from './RelationSelector'
+import RelationExplanation from '../../components/RelationExplanation/RelationExplanation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import {validateModelName, validateFieldName} from '../../utils/nameValidator'
 import {classnames} from '../../utils/classnames'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
+import {getModelName, getModelNamePlural} from '../../utils/namegetter'
 import Help from '../../components/Help/Help'
 import {Transaction} from 'react-relay'
 
@@ -30,6 +31,8 @@ interface State {
   leftModelId: string
   rightModelId: string
   alertHint: boolean
+  showExplanation: boolean
+  fieldsEdited: boolean
 }
 
 class RelationPopup extends React.Component<Props, State> {
@@ -58,36 +61,10 @@ class RelationPopup extends React.Component<Props, State> {
 
   render(): JSX.Element {
     return (
-      <Popup onClickOutside={this.close} height={'60%'}>
+      <Popup onClickOutside={this.close} height={'100%'}>
         <div className={classes.root}>
           <div className={classes.header}>
-            <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
-              <input
-                autoFocus={!this.props.viewer.relation}
-                ref='input'
-                type='text'
-                placeholder='+ Add Relation Name'
-                value={this.state.name}
-                onChange={(e) => this.setState(
-                  {
-                    name: e.target.value,
-                    alertHint: !validateModelName(e.target.value) || e.target.value === '',
-                  } as State)}
-              />
-              <Help
-                size={35}
-                text={'The relation name has to be capitalized.'}
-                placement={'left'}
-              />
-            </div>
-            <div className={classes.description}>
-              <input
-                type='text'
-                placeholder='+ Add Description'
-                value={this.state.description}
-                onChange={(e) => this.setState({ description: e.target.value } as State)}
-              />
-            </div>
+            New Relation
           </div>
           <div className={classes.container}>
             <div className={classes.content}>
@@ -95,49 +72,163 @@ class RelationPopup extends React.Component<Props, State> {
                 Relation Schema
               </div>
               <div className={classes.settings}>
-                <ModelSelector
-                  isList={this.state.fieldOnRightModelIsList}
-                  onListChange={
-                    () => this.setState({fieldOnRightModelIsList: !this.state.fieldOnRightModelIsList} as State)
-                  }
-                  selectedModelId={this.state.leftModelId}
-                  onModelChange={(id) => this.setState({leftModelId: id} as State)}
-                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-                  fieldOnModelName={this.state.fieldOnLeftModelName}
-                  onFieldNameChange={(name) => this.setState({fieldOnLeftModelName: name} as State)}
-                />
-                <span className={classes.iconContainer}>
-                  <Icon
-                    className={classes.icon}
-                    width={18}
-                    src={require('assets/new_icons/bidirectional.svg')}
+                <div className={classes.container}>
+                  <RelationSelector
+                    models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
+                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                    fieldOnRightModelName={this.state.fieldOnRightModelName}
+                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                    leftModelId={this.state.leftModelId}
+                    rightModelId={this.state.rightModelId}
+                    onFieldOnLeftModelNameChange={
+                      (val) => this.setState({
+                          fieldOnLeftModelName: val,
+                          fieldsEdited: true,
+                        } as State)
+                    }
+                    onFieldOnRightModelNameChange={
+                      (val) => this.setState({
+                          fieldOnRightModelName: val,
+                          fieldsEdited: true,
+                        } as State)
+                    }
+                    onFieldOnLeftModelIsListChange={
+                      (val) => this.setState(
+                        {
+                          fieldOnLeftModelIsList: val,
+                        } as State,
+                        this.prepopulateFields)
+                    }
+                    onFieldOnRightModelIsListChange={
+                      (val) => this.setState(
+                        {
+                          fieldOnRightModelIsList: val,
+                        } as State,
+                        this.prepopulateFields)
+                    }
+                    onLeftModelIdChange={this.handleLeftModelIdChange}
+                    onRightModelIdChange={this.handleRightModelIdChange}
                   />
-                </span>
-                <ModelSelector
-                  isList={this.state.fieldOnLeftModelIsList}
-                  onListChange={
-                    () => this.setState({fieldOnLeftModelIsList: !this.state.fieldOnLeftModelIsList} as State)
+                </div>
+              </div>
+              <div className={classes.descriptors}>
+                <div className={classes.name}>
+                  <label>Name</label>
+                  <input
+                    id='nameInput'
+                    autoFocus={!this.props.viewer.relation}
+                    ref='input'
+                    type='text'
+                    placeholder='+ Add Relation Name'
+                    value={this.state.name}
+                    onChange={(e: any) => this.setState(
+                      {
+                        name: e.target.value,
+                        alertHint: !validateModelName(e.target.value) || e.target.value === '',
+                      } as State)}
+                  />
+                  {this.state.alertHint &&
+                  <Help
+                    size={35}
+                    text={'The relation name has to be capitalized.'}
+                    placement={'left'}
+                  />
                   }
-                  selectedModelId={this.state.rightModelId}
-                  onModelChange={(id) => this.setState({rightModelId: id} as State)}
-                  models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
-                  fieldOnModelName={this.state.fieldOnRightModelName}
-                  onFieldNameChange={(name) => this.setState({fieldOnRightModelName: name} as State)}
-                />
+                </div>
+                <div className={classes.description}>
+                  <input
+                    type='text'
+                    placeholder='+ Add Description'
+                    value={this.state.description}
+                    onChange={(e: any) => this.setState({ description: e.target.value } as State)}
+                  />
+                </div>
               </div>
+              {this.state.leftModelId && this.state.rightModelId &&
+              <div className={classes.container}>
+                <div className={classes.additionalInfo}>
+                  <div
+                    className={classnames(classes.tabbutton, this.state.showExplanation ? classes.active : '')}
+                    onClick={() => this.setState({showExplanation: true} as State)}
+                  >
+                    <Help
+                      size={12}
+                      text={'The relation name has to be capitalized.'}
+                      placement={'left'}
+                    />
+                    <div className={classes.tabheader}>
+                      Relation Explanation
+                    </div>
+                  </div>
+                  <div
+                    className={classnames(classes.tabbutton, !this.state.showExplanation ? classes.active : '')}
+                    onClick={() => this.setState({showExplanation: false} as State)}
+                  >
+                    <Help
+                      size={12}
+                      text={'The relation name has to be capitalized.'}
+                      placement={'left'}
+                    />
+                    <div className={classes.tabheader}>
+                     Generated Mutations
+                    </div>
+                  </div>
+                </div>
+                <div className={classes.explanation}>
+                  <RelationExplanation
+                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                    fieldOnRightModelName={this.state.fieldOnRightModelName}
+                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                    leftModelId={this.state.leftModelId}
+                    rightModelId={this.state.rightModelId}
+                    project={this.props.viewer.project}
+                  />
+                </div>
+              </div>
+              }
             </div>
-            <div className={classes.buttons}>
-              <div onClick={this.close}>
-                Cancel
-              </div>
-              <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
-                {this.props.viewer.relation ? 'Save' : 'Create'}
-              </div>
+          </div>
+          <div className={classes.buttons}>
+            <div onClick={this.close}>
+              Cancel
+            </div>
+            <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
+              {this.props.viewer.relation ? 'Save' : 'Create'}
             </div>
           </div>
         </div>
       </Popup>
     )
+  }
+
+  private handleLeftModelIdChange = (id: string) => {
+    this.setState({leftModelId: id} as State, this.prepopulateFields)
+  }
+
+  private handleRightModelIdChange = (id: string) => {
+    this.setState({rightModelId: id} as State, this.prepopulateFields)
+  }
+
+  private prepopulateFields = () => {
+    if (this.state.fieldsEdited || !this.state.leftModelId || !this.state.rightModelId) {
+      return
+    }
+
+    const models = this.props.viewer.project.models.edges.map((edge) => edge.node)
+
+    let leftFieldName = this.state.fieldOnLeftModelIsList
+      ? getModelNamePlural(this.state.rightModelId, models)
+      : getModelName(this.state.rightModelId, models)
+    let rightFieldName = this.state.fieldOnRightModelIsList
+      ? getModelNamePlural(this.state.leftModelId, models)
+      : getModelName(this.state.leftModelId, models)
+
+    this.setState({
+      fieldOnLeftModelName: leftFieldName.toLowerCase(),
+      fieldOnRightModelName: rightFieldName.toLowerCase(),
+    } as State)
   }
 
   private close = () => {
@@ -163,6 +254,8 @@ class RelationPopup extends React.Component<Props, State> {
       leftModelId: preselectedModelId,
       rightModelId: null,
       alertHint: false,
+      showExplanation: true,
+      fieldsEdited: false,
     } as State
   }
 
@@ -178,6 +271,8 @@ class RelationPopup extends React.Component<Props, State> {
       leftModelId: relation.leftModel.id,
       rightModelId: relation.rightModel.id,
       alertHint: false,
+      showExplanation: true,
+      fieldsEdited: true,
     } as State
   }
 
@@ -273,44 +368,46 @@ export default Relay.createContainer(RelationPopup, {
   })),
     fragments: {
         viewer: () => Relay.QL`
-            fragment on Viewer {
-                relation: relationByName(
-                projectName: $projectName
-                relationName: $relationName
-                ) @include(if: $relationExists) {
-                    id
-                    name
-                    description
-                    fieldOnLeftModel {
-                        id
-                        name
-                        isList
-                    }
-                    fieldOnRightModel {
-                        id
-                        name
-                        isList
-                    }
-                    leftModel {
-                        id
-                        name
-                    }
-                    rightModel {
-                        id
-                        name
-                    }
+          fragment on Viewer {
+              relation: relationByName(
+              projectName: $projectName
+              relationName: $relationName
+              ) @include(if: $relationExists) {
+                id
+                name
+                description
+                fieldOnLeftModel {
+                  id
+                  name
+                  isList
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    models (first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                            }
-                        }
-                    }
+                fieldOnRightModel {
+                  id
+                  name
+                  isList
                 }
+                leftModel {
+                  id
+                  name
+                }
+                rightModel {
+                  id
+                  name
+                }
+              }
+              project: projectByName(projectName: $projectName) {
+                id
+                ${RelationExplanation.getFragment('project')}
+                models (first: 1000) {
+                  edges {
+                    node {
+                      id
+                      name
+                      namePlural
+                    }
+                  }
+                }
+              }
             }
         `,
     },

@@ -108,7 +108,7 @@ class FieldPopup extends React.Component<Props, State> {
       <div className={classes.background}>
         <ScrollBox innerContainerClassName={classes.scrollBox}>
           <ClickOutside onClickOutside={() => this.close()}>
-            <div className={classes.container} onKeyUp={(e) => e.keyCode === 27 ? this.close() : null}>
+            <div className={classes.container} onKeyUp={(e: any) => e.keyCode === 27 ? this.close() : null}>
               <div className={classes.head}>
                 <div className={classes.title}>
                   {this.props.field ? 'Change field' : 'Create a new field'}
@@ -129,8 +129,8 @@ class FieldPopup extends React.Component<Props, State> {
                       type='text'
                       placeholder='Fieldname'
                       defaultValue={this.state.name}
-                      onChange={(e) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
-                      onKeyUp={(e) => e.keyCode === 13 ? this.submit() : null}
+                      onChange={(e: any) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
+                      onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
                     />
                   </div>
                 </div>
@@ -178,10 +178,10 @@ class FieldPopup extends React.Component<Props, State> {
                         <input
                           type='checkbox'
                           checked={this.state.isRequired}
-                          onChange={(e) => this.setState({
+                          onChange={(e: any) => this.setState({
                               isRequired: (e.target as HTMLInputElement).checked,
                             } as State)}
-                          onKeyUp={(e) => e.keyCode === 13 ? this.submit() : null}
+                          onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
                         />
                         Required
                       </label>
@@ -198,8 +198,8 @@ class FieldPopup extends React.Component<Props, State> {
                         <input
                           type='checkbox'
                           checked={this.state.isList}
-                          onChange={(e) => this.updateIsList((e.target as HTMLInputElement).checked)}
-                          onKeyUp={(e) => e.keyCode === 13 ? this.submit() : null}
+                          onChange={(e: any) => this.updateIsList((e.target as HTMLInputElement).checked)}
+                          onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
                         />
                         List
                       </label>
@@ -214,7 +214,7 @@ class FieldPopup extends React.Component<Props, State> {
                         type='checkbox'
                         disabled={needsMigrationValue}
                         checked={this.state.useMigrationValue || needsMigrationValue}
-                        onChange={(e) => this.setState({
+                        onChange={(e: any) => this.setState({
                               useMigrationValue: (e.target as HTMLInputElement).checked,
                             } as State)}
                       />
@@ -244,7 +244,7 @@ class FieldPopup extends React.Component<Props, State> {
                       <input
                         type='checkbox'
                         checked={this.state.useDefaultValue}
-                        onChange={(e) => this.setState({
+                        onChange={(e: any) => this.setState({
                             useDefaultValue: (e.target as HTMLInputElement).checked,
                           } as State)}
                       />
@@ -516,7 +516,7 @@ class FieldPopup extends React.Component<Props, State> {
           ref='input'
           placeholder={placeholder}
           value={valueString}
-          onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
+          onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
         />
       )
     }
@@ -529,7 +529,7 @@ class FieldPopup extends React.Component<Props, State> {
             ref='input'
             placeholder='Default value'
             value={valueString}
-            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
+            onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
           />
         )
       case 'Float':
@@ -540,7 +540,7 @@ class FieldPopup extends React.Component<Props, State> {
             ref='input'
             placeholder={placeholder}
             value={valueString}
-            onChange={(e) => changeCallback(e.target.value)}
+            onChange={(e: any) => changeCallback(e.target.value)}
           />
         )
       case 'Boolean':
@@ -556,7 +556,7 @@ class FieldPopup extends React.Component<Props, State> {
         return (
           <select
             value={valueString}
-            onChange={(e) => changeCallback(e.target.value)}
+            onChange={(e: any) => changeCallback(e.target.value)}
           >
             {this.state.enumValues.map((enumValue) => (
               <option key={enumValue}>{enumValue}</option>
@@ -579,7 +579,7 @@ class FieldPopup extends React.Component<Props, State> {
             ref='input'
             placeholder={placeholder}
             value={valueString}
-            onChange={(e) => changeCallback((e.target as HTMLInputElement).value)}
+            onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
           />
         )
     }

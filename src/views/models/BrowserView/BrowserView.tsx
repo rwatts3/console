@@ -2,31 +2,31 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {withRouter} from 'react-router'
 import calculateSize from 'calculate-size'
-import {Lokka} from 'lokka'
-import {Transport} from 'lokka-transport-http'
 import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
-import {isScalar, isNonScalarList} from '../../../utils/graphql'
-import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
-import * as cookiestore from '../../../utils/cookiestore'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback, TypedValue} from '../../../types/utils'
+import {getFieldTypeName, stringToValue} from '../../../utils/valueparser'
 import Tether from '../../../components/Tether/Tether'
 import NewRow from './NewRow'
-import Row from './Row'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import {toGQL, compareFields} from '../utils'
+import {compareFields, emptyDefault, getFirstInputFieldIndex} from '../utils'
 import {valueToString} from '../../../utils/valueparser'
 import {sideNavSyncer} from '../../../utils/sideNavSyncer'
-import {Field, Model, Viewer, Project} from '../../../types/types'
+import {Field, Model, Viewer, Project, OrderBy} from '../../../types/types'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import ModelHeader from '../ModelHeader'
 import {GettingStartedState, nextStep} from '../../../reducers/GettingStartedState'
+import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
+import {AutoSizer} from 'react-virtualized'
+import Cell from './Cell'
+import LoadingCell from './LoadingCell'
+import {getLokka, addNode, updateNode, deleteNode, queryNodes} from './../../../utils/simpleapi'
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
@@ -47,14 +47,10 @@ interface State {
   orderBy: OrderBy
   filter: Immutable.Map<string, any>
   filtersVisible: boolean
-  reachedEnd: boolean
   newRowVisible: boolean
   selectedNodeIds: Immutable.List<string>
-}
-
-interface OrderBy {
-  fieldName: string
-  order: 'ASC' | 'DESC'
+  itemCount: number
+  loaded: Immutable.List<boolean>
 }
 
 class BrowserView extends React.Component<Props, State> {
@@ -76,12 +72,9 @@ class BrowserView extends React.Component<Props, State> {
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/simple/v1/${this.props.project.id}`
-    const token = cookiestore.get('graphcool_auth_token')
-    const headers = {Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:data-tab'}
-    const transport = new Transport(clientEndpoint, {headers})
+    this.lokka = getLokka(this.props.project.id)
 
-    this.lokka = new Lokka({transport})
+    const itemCount = this.props.model.itemCount > 175 ? 175 : this.props.model.itemCount
 
     this.state = {
       nodes: Immutable.List<Immutable.Map<string, any>>(),
@@ -92,9 +85,10 @@ class BrowserView extends React.Component<Props, State> {
       },
       filter: Immutable.Map<string, any>(),
       filtersVisible: false,
-      reachedEnd: false,
       newRowVisible: false,
       selectedNodeIds: Immutable.List<string>(),
+      itemCount: itemCount,
+      loaded: Immutable.List<boolean>(),
     }
   }
 
@@ -116,11 +110,6 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   render() {
-    const columnWidths = this.calculateColumnWidths()
-    const tableWidth = this.props.fields.reduce((sum, {name}) => sum + columnWidths[name], 0)
-      + 34 // checkbox
-      + 250 // add column
-
     return (
       <div className={`${classes.root} ${this.state.filtersVisible ? classes.filtersVisible : ''}`}>
         <ModelHeader
@@ -129,27 +118,7 @@ class BrowserView extends React.Component<Props, State> {
           viewer={this.props.viewer}
           project={this.props.project}
         >
-          <Tether
-            steps={{
-              STEP6_ADD_DATA_ITEM_1: `Add your first Todo node to the database.`,
-              STEP7_ADD_DATA_ITEM_2: 'Well done. Let\'s add another one.',
-            }}
-            offsetX={5}
-            offsetY={5}
-            width={260}
-          >
-            <div
-              className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
-              onClick={() => this.setState({ newRowVisible: !this.state.newRowVisible } as State)}
-            >
-              <Icon
-                width={16}
-                height={16}
-                src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
-              />
-              <span>{this.state.newRowVisible ? 'Cancel' : 'Add node'}</span>
-            </div>
-          </Tether>
+          {this.renderTether()}
           {this.state.selectedNodeIds.size > 0 &&
           <div className={`${classes.button} ${classes.red}`} onClick={this.deleteSelectedNodes}>
             <Icon
@@ -170,7 +139,7 @@ class BrowserView extends React.Component<Props, State> {
               src={require('assets/icons/search.svg')}
             />
           </div>
-          <div className={classes.button} onClick={this.reloadData}>
+          <div className={classes.button} onClick={() => this.reloadData()}>
             <Icon
               width={16}
               height={16}
@@ -184,67 +153,206 @@ class BrowserView extends React.Component<Props, State> {
         </div>
         }
         <div className={`${classes.table} ${this.state.loading ? classes.loading : ''}`}>
-          <div className={classes.tableContainer} style={{ width: tableWidth }}>
-            <div className={classes.tableHead}>
-              <CheckboxCell
-                onChange={this.selectAllOnClick}
-                checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
-              />
-              {this.props.fields.map((field) => (
-                <HeaderCell
-                  key={field.id}
-                  field={field}
-                  width={columnWidths[field.name]}
-                  sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
-                  toggleSortOrder={() => this.setSortOrder(field)}
-                  updateFilter={(value) => this.updateFilter(value, field)}
-                  filterVisible={this.state.filtersVisible}
-                  params={this.props.params}
-                />
-              ))}
-              <AddFieldCell params={this.props.params}/>
-            </div>
-            {this.state.newRowVisible &&
-            <NewRow
-              model={this.props.model}
-              columnWidths={columnWidths}
-              add={this.addNode}
-              cancel={(e) => this.setState({ newRowVisible: false } as State)}
-              projectId={this.props.project.id}
-              reload={this.reloadData}
-            />
-            }
-            <div className={classes.tableBody}>
-              <ScrollBox onScroll={this.handleScroll}>
-                <div className={classes.tableBodyContainer}>
-                  {this.state.nodes.map((node, index) => (
-                    <Row
-                      key={node.get('id')}
-                      model={this.props.model}
-                      projectId={this.props.project.id}
-                      columnWidths={columnWidths}
-                      node={node.toJS()}
-                      update={
-                        (value, field, callback) => this.updateNode(value, field, callback, node.get('id'), index)
-                      }
-                      isSelected={this.isSelected(node.get('id'))}
-                      onSelect={(event) => this.onSelectRow(node.get('id'))}
-                      reload={this.reloadData}
-                    />
-                  ))}
-                </div>
-              </ScrollBox>
-            </div>
+          <div className={classes.tableContainer} style={{ width: '100%' }}>
+            <AutoSizer>
+              {({width, height}) => {
+                const fieldColumnWidths = this.calculateFieldColumnWidths(width)
+                if (this.state.loading) {
+                  return
+                }
+                return (
+                  <InfiniteTable
+                    loadedList={this.state.loaded}
+                    minimumBatchSize={50}
+                    width={this.props.fields.reduce((sum, {name}) => sum + fieldColumnWidths[name], 0) + 34 + 250}
+                    height={height}
+                    columnCount={this.props.fields.length + 2}
+                    columnWidth={(input) => this.getColumnWidth(fieldColumnWidths, input)}
+                    loadMoreRows={(input) => this.loadData(input.startIndex)}
+                    addNew={this.state.newRowVisible}
+
+                    headerHeight={74}
+                    headerRenderer={this.headerRenderer}
+
+                    rowCount={this.state.itemCount}
+                    rowHeight={47}
+                    cellRenderer={this.cellRenderer}
+                    loadingCellRenderer={this.loadingCellRenderer}
+
+                    addRowHeight={47}
+                    addCellRenderer={() => this.addCellRenderer(fieldColumnWidths)}
+                  />
+                )
+              }}
+            </AutoSizer>
           </div>
         </div>
       </div>
     )
   }
 
-  private handleScroll = (e) => {
-    if (!this.state.loading && e.target.scrollHeight - (e.target.scrollTop + e.target.offsetHeight) < 100) {
-      this.loadNextPage()
+  private renderTether = (): JSX.Element => {
+    return (
+      <Tether
+        steps={{
+          STEP6_ADD_DATA_ITEM_1: `Add your first Todo node to the database.`,
+          STEP7_ADD_DATA_ITEM_2: `Well done. Let's add another one.`,
+        }}
+        offsetX={5}
+        offsetY={5}
+        width={260}
+      >
+        <div
+          className={`${classes.button} ${this.state.newRowVisible ? '' : classes.green}`}
+          onClick={this.handleAddNodeClick}
+        >
+          <Icon
+            width={16}
+            height={16}
+            src={require(`assets/icons/${this.state.newRowVisible ? 'close' : 'add'}.svg`)}
+          />
+          <span>{this.state.newRowVisible ? 'Cancel' : 'Add node'}</span>
+        </div>
+      </Tether>
+    )
+  }
+
+  private handleAddNodeClick = () => {
+    if (getFirstInputFieldIndex(this.props.fields) !== null) {
+      this.setState({ newRowVisible: !this.state.newRowVisible } as State)
+    } else {
+      const fieldValues = this.props.model.fields.edges
+        .map((edge) => edge.node)
+        .filter((f) => f.name !== 'id')
+        .mapToObject(
+          (field) => field.name,
+          (field) => ({
+            value: stringToValue(field.defaultValue, field) || emptyDefault(field),
+            field: field,
+          })
+        )
+      this.addNewNode(fieldValues)
     }
+  }
+
+  private addCellRenderer = (columnWidths) => {
+    return (
+      <NewRow
+        model={this.props.model}
+        projectId={this.props.project.id}
+        columnWidths={columnWidths}
+        add={this.addNewNode}
+        cancel={() => this.setState({newRowVisible: false} as State)}
+      />
+    )
+  }
+
+  private loadingCellRenderer = ({rowIndex, columnIndex}) => {
+    const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          backgroundColor={backgroundColor}
+          onChange={undefined}
+          disabled={true}
+          checked={false}
+          height={47}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
+      return (
+        <LoadingCell
+          backgroundColor={backgroundColor}
+          empty={true}
+        />
+      )
+    } else {
+      return (
+        <LoadingCell
+          backgroundColor={backgroundColor}
+        />
+      )
+    }
+  }
+
+  private headerRenderer = ({columnIndex}): JSX.Element | string => {
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          height={74}
+          onChange={this.selectAllOnClick}
+          checked={this.state.selectedNodeIds.size === this.state.nodes.size && this.state.nodes.size > 0}
+          backgroundColor={'transparent'}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) {
+      return <AddFieldCell params={this.props.params} />
+    } else {
+      const field = this.props.fields[columnIndex - 1]
+      return (
+        <HeaderCell
+          key={field.id}
+          field={field}
+          sortOrder={this.state.orderBy.fieldName === field.name ? this.state.orderBy.order : null}
+          toggleSortOrder={() => this.setSortOrder(field)}
+          updateFilter={(value) => this.updateFilter(value, field)}
+          filterVisible={this.state.filtersVisible}
+          params={this.props.params}
+        />
+      )
+    }
+  }
+
+  private cellRenderer = ({rowIndex, columnIndex}): JSX.Element | string => {
+    const node = this.state.nodes.get(rowIndex)
+    const nodeId = node.get('id')
+    const field = this.props.fields[columnIndex - 1]
+    const backgroundColor = rowIndex % 2 === 0 ? '#FCFDFE' : '#FFF'
+    if (columnIndex === 0) {
+      return (
+        <CheckboxCell
+          checked={this.isSelected(nodeId)}
+          onChange={() => this.onSelectRow(nodeId)}
+          height={47}
+          backgroundColor={backgroundColor}
+        />
+      )
+    } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
+      return (
+        <LoadingCell
+          backgroundColor={backgroundColor}
+          empty={true}
+        />
+      )
+    } else {
+      const value = node.get(field.name)
+      return (
+        <Cell
+          isSelected={this.state.selectedNodeIds.includes(nodeId)}
+          backgroundColor={backgroundColor}
+          field={field}
+          value={value}
+          projectId={this.props.project.id}
+          update={(value, field, callback) => this.updateEditingNode(value, field, callback, nodeId, rowIndex)}
+          reload={() => this.loadData(rowIndex, 1)}
+          nodeId={nodeId}
+        />
+      )
+    }
+  }
+
+  private getColumnWidth = (fieldColumnWidths, {index}): number => {
+    if (index === 0)  { // Checkbox
+      return 34
+    }  else if (index === this.props.fields.length + 1) { // AddColumn
+      return 250
+    } else {
+      return fieldColumnWidths[this.getFieldName(index - 1)]
+    }
+  }
+
+  private getFieldName = (index: number): string => {
+    return this.props.fields[index].name
   }
 
   private setSortOrder = (field: Field) => {
@@ -263,66 +371,43 @@ class BrowserView extends React.Component<Props, State> {
     )
   }
 
-  private loadData = (skip: number, reload: boolean): Promise<Immutable.List<Immutable.Map<string, any>>> => {
-    const fieldNames = this.props.fields
-      .map((field) => isScalar(field.typeIdentifier)
-        ? field.name
-        : `${field.name} { id }`)
-      .join(' ')
-
-    const filterQuery = this.state.filter
-      .filter((v) => v !== null)
-      .map((value, fieldName) => `${fieldName}: ${value}`)
-      .join(' ')
-
-    const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
-    const orderBy = `orderBy: ${this.state.orderBy.fieldName}_${this.state.orderBy.order}`
-    const query = `
-      {
-        all${this.props.model.namePlural}(first: 50 skip: ${skip} ${filter} ${orderBy}) {
-          ${fieldNames}
-        }
-      }
-    `
-    return this.lokka.query(query)
+  private loadData = (skip: number, first: number = 50): Promise<Immutable.List<Immutable.Map<string, any>>> => {
+    return queryNodes(this.lokka, this.props.model.namePlural, this.props.fields,
+                      skip, first,this.state.filter, this.state.orderBy)
       .then((results) => {
-        const nodes = Immutable.List(results[`all${this.props.model.namePlural}`])
-          .map(Immutable.Map)
+        const newNodes = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
 
-        // check if it's the end of the data
-        const reachedEnd = !reload && (nodes.isEmpty() || (!this.state.nodes.isEmpty() &&
-          this.state.nodes.last().get('id') === nodes.last().get('id')))
-        this.setState({reachedEnd} as State)
+        const itemCount = this.state.itemCount > skip + first
+          ? this.state.itemCount : skip + first > this.props.model.itemCount
+          ? this.props.model.itemCount : skip + first
+        let nodes = this.state.nodes
+        let loaded = this.state.loaded
+        for (let index = 0; index < newNodes.length; index++) {
+          nodes = nodes.set(skip + index, newNodes[index])
+          loaded = loaded.set(skip + index, true)
+        }
 
+        this.setState({
+          nodes: nodes,
+          itemCount: itemCount,
+          loading: false,
+          loaded: loaded,
+        } as State)
         return nodes
       })
       .catch((err) => {
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
         throw err
       })
   }
 
-  private loadNextPage = () => {
-    if (this.state.reachedEnd) {
-      return
-    }
-
-    this.setState({loading: true} as State)
-
-    this.loadData(this.state.nodes.size, false)
+  private reloadData = (index: number = 0) => {
+    this.setState({
+      nodes: Immutable.List<Immutable.Map<string, any>>(),
+      loading: true,
+      loaded: Immutable.List<boolean>(),
+    } as State)
+    return this.loadData(index)
       .then((nodes) => {
-        this.setState({
-          nodes: this.state.nodes.concat(nodes),
-          loading: false,
-        } as State)
-      })
-  }
-
-  private reloadData = () => {
-    this.setState({loading: true, reachedEnd: false} as State)
-    return this.loadData(0, true)
-      .then((nodes) => {
-        this.setState({nodes, loading: false} as State)
         // _update side nav model node count
         // THIS IS A HACK
         sideNavSyncer.notifySideNav()
@@ -336,46 +421,12 @@ class BrowserView extends React.Component<Props, State> {
     this.setState({selectedNodeIds: Immutable.List()} as State)
   }
 
-  private deleteNode = (nodeId: string) => {
-    this.setState({loading: true} as State)
-    const mutation = `
-      {
-        delete${this.props.params.modelName}(
-          id: "${nodeId}"
-        ) {
-          id
-        }
-      }
-    `
-    return this.lokka.mutate(mutation)
-      .then(analytics.track('models/browser: deleted node', {
-        project: this.props.params.projectName,
-        model: this.props.params.modelName,
-      }))
-      .catch((err) => {
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
-      })
-  }
-
-  private updateNode = (value: TypedValue, field: Field, callback, nodeId: string, index: number) => {
-    const mutation = `
-      {
-        update${this.props.params.modelName}(
-          id: "${nodeId}"
-          ${toGQL(value, field)}
-        ) {
-          id
-        }
-      }
-    `
-    this.lokka.mutate(mutation)
+  private updateEditingNode = (value: TypedValue, field: Field, callback, nodeId: string, index: number) => {
+    this.setState({loaded: this.state.loaded.set(index, false)} as State)
+    updateNode(this.lokka, this.props.params.modelName, value, field, nodeId)
+      .then(() => this.loadData(index, 1))
       .then(() => {
         callback(true)
-
-        const {nodes} = this.state
-
-        this.setState({nodes: nodes.setIn([index, field.name], value)} as State)
-
         analytics.track('models/browser: updated node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
@@ -388,30 +439,15 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  private addNode = (fieldValues: { [key: string]: any }) => {
-
-    const inputString = fieldValues
-      .mapToArray((fieldName, obj) => obj)
-      .filter(({value}) => value !== null)
-      .filter(({field}) => (!isNonScalarList(field)))
-      .map(({field, value}) => toGQL(value, field))
-      .join(' ')
-
-    const inputArgumentsString = inputString.length > 0 ? `(${inputString})` : ''
-
-    this.setState({loading: true} as State)
-    const mutation = `
-      {
-        create${this.props.params.modelName}${inputArgumentsString} {
-          id
-        }
-      }
-    `
-    this.lokka.mutate(mutation)
-      .then(() => this.reloadData())
+  private addNewNode = (fieldValues: { [key: string]: any }) => {
+    addNode(this.lokka, this.props.params.modelName, fieldValues)
+      .then(() => this.reloadData(0))
       .then(() => {
-        this.setState({newRowVisible: false} as State)
-
+        this.setState({
+          itemCount: this.state.itemCount + 1,
+          loaded: this.state.loaded.unshift(false),
+          newRowVisible: false,
+        } as State)
         analytics.track('models/browser: created node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
@@ -431,26 +467,26 @@ class BrowserView extends React.Component<Props, State> {
       })
   }
 
-  private calculateColumnWidths = (): any => {
+  private calculateFieldColumnWidths = (width: number): any => {
     const cellFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
     }
+
     const headerFontOptions = {
       font: 'Open Sans',
       fontSize: '12px',
     }
 
-    return this.props.fields.mapToObject(
+    const widths = this.props.fields.mapToObject(
       (field) => field.name,
       (field) => {
-        const cellWidths = this.state.nodes
+         const cellWidths = this.state.nodes
           .map((node) => node.get(field.name))
           .map((value) => valueToString(value, field, false))
           .map((str) => calculateSize(str, cellFontOptions).width + 41)
           .toArray()
-
-        const headerWidth = calculateSize(`${field.name} ${field.typeIdentifier}`, headerFontOptions).width + 90
+        const headerWidth = calculateSize(`${field.name} ${getFieldTypeName(field)}`, headerFontOptions).width + 90
 
         const maxWidth = Math.max(...cellWidths, headerWidth)
         const lowerLimit = 150
@@ -459,6 +495,15 @@ class BrowserView extends React.Component<Props, State> {
         return maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)
       }
     )
+
+    const totalWidth = this.props.fields.reduce((sum, {name}) => sum + widths[name], 0)
+    const fieldWidth = width - 34 - 250
+    if (totalWidth < fieldWidth) {
+      this.props.fields.forEach(({name}) => {
+        widths[name] = (widths[name] / totalWidth) * fieldWidth
+      })
+    }
+    return widths
   }
 
   private onSelectRow = (nodeId: string) => {
@@ -485,10 +530,20 @@ class BrowserView extends React.Component<Props, State> {
   private deleteSelectedNodes = () => {
     if (confirm(`Do you really want to delete ${this.state.selectedNodeIds.size} node(s)?`)) {
       // only reload once after all the deletions
-      Promise.all(this.state.selectedNodeIds.toArray().map((nodeId) => this.deleteNode(nodeId)))
+
+      this.setState({loading: true} as State)
+      Promise.all(this.state.selectedNodeIds.toArray()
+        .map((nodeId) => deleteNode(this.lokka, this.props.params.modelName, nodeId)))
+        .then(analytics.track('models/browser: deleted node', {
+          project: this.props.params.projectName,
+          model: this.props.params.modelName,
+        }))
         .then(() => this.reloadData())
         .then(() => {
           this.setState({loading: false} as State)
+        })
+        .catch((err) => {
+          err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
         })
 
       this.setState({selectedNodeIds: Immutable.List()} as State)
@@ -528,34 +583,37 @@ export default Relay.createContainer(MappedBrowserView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    name
-                    namePlural
-                    itemCount
-                    fields(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                isList
-                                ${HeaderCell.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${Row.getFragment('model')}
-                    ${NewRow.getFragment('model')}
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          name
+          namePlural
+          itemCount
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                isList
+                relatedModel {
+                  name
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+                ${HeaderCell.getFragment('field')}
+                ${Cell.getFragment('field')}
+              }
             }
-        `,
-    },
+          }
+          ${NewRow.getFragment('model')}
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })

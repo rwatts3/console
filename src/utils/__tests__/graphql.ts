@@ -24,14 +24,8 @@ describe('isScalar', () => {
     }
   })
 
-  it('checks that isScalar is case sensitive', () => {
-    for (let i = 0; i < scalarTypes.length; i++) {
-      expect(isScalar(scalarTypes[i].toLowerCase())).toBe(false)
-    }
-  })
-
   it('checks if item not in the scalarTypes is an invalid ScalarType', () => {
-    const identifier = 'Hello World'
+    const identifier = 'Relation'
     expect(isScalar(identifier)).toBe(false)
   })
 })
@@ -54,7 +48,7 @@ describe('isNonScalarList', () => {
 
   it('checks if a NonScalar List Field is a valid NonScalar List', () => {
     const field: Field = Object.assign(testField, {
-      typeIdentifier: 'Hello World',
+      typeIdentifier: 'Relation',
       isList: true,
     })
     expect(isNonScalarList(field)).toBe(true)
