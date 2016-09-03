@@ -70,7 +70,7 @@ class HeaderCell extends React.Component<Props, {}> {
               />
             </Link>
           </div>
-          {isScalar(this.props.field.typeIdentifier) &&
+          {isScalar(this.props.field.typeIdentifier) && !this.props.field.isList &&
           <div
             onClick={this.toggleSortOrder}
             className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
