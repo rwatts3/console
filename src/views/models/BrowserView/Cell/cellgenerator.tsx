@@ -31,6 +31,7 @@ export function getEditCell(reqs: CellRequirements): JSX.Element {
   } else {
     return (
       <NullableCell
+        cancel={reqs.methods.cancel}
         save={reqs.methods.save}
         cell={getSpecificEditCell(reqs)}
       />

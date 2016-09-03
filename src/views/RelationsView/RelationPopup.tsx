@@ -132,7 +132,7 @@ class RelationPopup extends React.Component<Props, State> {
                   <Help
                     size={35}
                     text={'The relation name has to be capitalized.'}
-                    placement={'left'}
+                    placement={'right'}
                   />
                   }
                 </div>
@@ -154,7 +154,7 @@ class RelationPopup extends React.Component<Props, State> {
                   >
                     <Help
                       size={12}
-                      text={'The relation name has to be capitalized.'}
+                      text={'These sentences express your specified schema in natural language.'}
                       placement={'left'}
                     />
                     <div className={classes.tabheader}>
@@ -167,8 +167,8 @@ class RelationPopup extends React.Component<Props, State> {
                   >
                     <Help
                       size={12}
-                      text={'The relation name has to be capitalized.'}
-                      placement={'left'}
+                      text={'There are the mutations that your relation schema would generate'}
+                      placement={'top'}
                     />
                     <div className={classes.tabheader}>
                      Generated Mutations

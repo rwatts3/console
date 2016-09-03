@@ -99,6 +99,11 @@ class Cell extends React.Component<Props, State> {
       return
     }
 
+    if (this.props.value === value) {
+      this.setState({editing: keepEditing} as State)
+      return
+    }
+
     this.props.update(value, this.props.field, () => {
       this.setState({
         editing: keepEditing,

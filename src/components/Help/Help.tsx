@@ -8,7 +8,7 @@ require('rc-tooltip/assets/bootstrap.css')
 
 interface Props {
   text: string
-  placement?: 'left' | 'right'
+  placement?: 'left' | 'right' | 'top' | 'bottom'
   size?: number
 }
 
