@@ -42,7 +42,7 @@ interface Props {
 }
 
 interface State {
-  nodes: Immutable.Map<number, Immutable.Map<string, any>>
+  nodes: Immutable.List<Immutable.Map<string, any>>
   loading: boolean
   orderBy: OrderBy
   filter: Immutable.Map<string, any>
@@ -50,6 +50,7 @@ interface State {
   newRowVisible: boolean
   selectedNodeIds: Immutable.List<string>
   itemCount: number
+  loaded: Immutable.List<boolean>
 }
 
 class BrowserView extends React.Component<Props, State> {
@@ -73,8 +74,10 @@ class BrowserView extends React.Component<Props, State> {
 
     this.lokka = getLokka(this.props.project.id)
 
+    const itemCount = this.props.model.itemCount > 175 ? 175 : this.props.model.itemCount
+
     this.state = {
-      nodes: Immutable.Map<number, Immutable.Map<string, any>>(),
+      nodes: Immutable.List<Immutable.Map<string, any>>(),
       loading: true,
       orderBy: {
         fieldName: 'id',
@@ -84,7 +87,8 @@ class BrowserView extends React.Component<Props, State> {
       filtersVisible: false,
       newRowVisible: false,
       selectedNodeIds: Immutable.List<string>(),
-      itemCount: this.props.model.itemCount > 175 ? 175 : this.props.model.itemCount,
+      itemCount: itemCount,
+      loaded: Immutable.List<boolean>(),
     }
   }
 
@@ -158,7 +162,7 @@ class BrowserView extends React.Component<Props, State> {
                 }
                 return (
                   <InfiniteTable
-                    loadedList={Immutable.List<boolean>()}
+                    loadedList={this.state.loaded}
                     minimumBatchSize={50}
                     width={this.props.fields.reduce((sum, {name}) => sum + fieldColumnWidths[name], 0) + 34 + 250}
                     height={height}
@@ -371,26 +375,38 @@ class BrowserView extends React.Component<Props, State> {
     return queryNodes(this.lokka, this.props.model.namePlural, this.props.fields,
                       skip, first,this.state.filter, this.state.orderBy)
       .then((results) => {
-        const nodeMap = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
-          .reduce((result, item, index) => result.set(skip + index, item), Immutable.Map<number, any>())
+        const newNodes = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
+
+        const itemCount = this.state.itemCount > skip + first
+          ? this.state.itemCount : skip + first > this.props.model.itemCount
+          ? this.props.model.itemCount : skip + first
+        let nodes = this.state.nodes
+        let loaded = this.state.loaded
+        for (let index = 0; index < newNodes.length; index++) {
+          nodes = nodes.set(skip + index, newNodes[index])
+          loaded = loaded.set(skip + index, true)
+        }
+
         this.setState({
-          nodes: this.state.nodes.merge(nodeMap),
-          itemCount: this.state.itemCount > skip + 50
-            ? this.state.itemCount : skip + 50 > this.props.model.itemCount
-            ? this.props.model.itemCount : skip + 50,
+          nodes: nodes,
+          itemCount: itemCount,
           loading: false,
+          loaded: loaded,
         } as State)
-        return nodeMap
+        return nodes
       })
       .catch((err) => {
-        err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
         throw err
       })
   }
 
   private reloadData = (index: number = 0) => {
-    this.setState({nodes: Immutable.Map<number, Immutable.Map<string, any>>(), loading: true} as State)
-    return this.loadData(0)
+    this.setState({
+      nodes: Immutable.List<Immutable.Map<string, any>>(),
+      loading: true,
+      loaded: Immutable.List<boolean>(),
+    } as State)
+    return this.loadData(index)
       .then((nodes) => {
         // _update side nav model node count
         // THIS IS A HACK
@@ -406,11 +422,11 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   private updateEditingNode = (value: TypedValue, field: Field, callback, nodeId: string, index: number) => {
+    this.setState({loaded: this.state.loaded.set(index, false)} as State)
     updateNode(this.lokka, this.props.params.modelName, value, field, nodeId)
+      .then(() => this.loadData(index, 1))
       .then(() => {
         callback(true)
-        const {nodes} = this.state
-        this.setState({nodes: nodes.setIn([index, field.name], value)} as State)
         analytics.track('models/browser: updated node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
@@ -424,13 +440,14 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   private addNewNode = (fieldValues: { [key: string]: any }) => {
-    this.setState({loading: true} as State)
-
     addNode(this.lokka, this.props.params.modelName, fieldValues)
-      .then(() => this.reloadData())
+      .then(() => this.reloadData(0))
       .then(() => {
-
-        this.setState({newRowVisible: false} as State)
+        this.setState({
+          itemCount: this.state.itemCount + 1,
+          loaded: this.state.loaded.unshift(false),
+          newRowVisible: false,
+        } as State)
         analytics.track('models/browser: created node', {
           project: this.props.params.projectName,
           model: this.props.params.modelName,
@@ -503,7 +520,7 @@ class BrowserView extends React.Component<Props, State> {
 
   private selectAllOnClick = (checked: boolean) => {
     if (checked) {
-      const selectedNodeIds = this.state.nodes.toIndexedSeq().map((node) => node.get('id'))
+      const selectedNodeIds = this.state.nodes.map((node) => node.get('id'))
       this.setState({selectedNodeIds: selectedNodeIds} as State)
     } else {
       this.setState({selectedNodeIds: Immutable.List()} as State)
@@ -523,7 +540,6 @@ class BrowserView extends React.Component<Props, State> {
         }))
         .then(() => this.reloadData())
         .then(() => {
-          console.log('reached this state')
           this.setState({loading: false} as State)
         })
         .catch((err) => {
