@@ -84,24 +84,28 @@ class RelationPopup extends React.Component<Props, State> {
                     onFieldOnLeftModelNameChange={
                       (val) => this.setState({
                           fieldOnLeftModelName: val,
-                          fieldsEdited: true
+                          fieldsEdited: true,
                         } as State)
                     }
                     onFieldOnRightModelNameChange={
                       (val) => this.setState({
                           fieldOnRightModelName: val,
-                          fieldsEdited: true
+                          fieldsEdited: true,
                         } as State)
                     }
                     onFieldOnLeftModelIsListChange={
-                      (val) => this.setState({
-                        fieldOnLeftModelIsList: val
-                      } as State, this.prepopulateFields)
+                      (val) => this.setState(
+                        {
+                          fieldOnLeftModelIsList: val,
+                        } as State,
+                        this.prepopulateFields)
                     }
                     onFieldOnRightModelIsListChange={
-                      (val) => this.setState({
-                        fieldOnRightModelIsList: val
-                      } as State, this.prepopulateFields)
+                      (val) => this.setState(
+                        {
+                          fieldOnRightModelIsList: val,
+                        } as State,
+                        this.prepopulateFields)
                     }
                     onLeftModelIdChange={this.handleLeftModelIdChange}
                     onRightModelIdChange={this.handleRightModelIdChange}
@@ -212,7 +216,7 @@ class RelationPopup extends React.Component<Props, State> {
       return
     }
 
-    const models = this.props.viewer.project.models.edges.map((edge) => edge.node) 
+    const models = this.props.viewer.project.models.edges.map((edge) => edge.node)
 
     let leftFieldName = this.state.fieldOnLeftModelIsList
       ? getModelNamePlural(this.state.rightModelId, models)
