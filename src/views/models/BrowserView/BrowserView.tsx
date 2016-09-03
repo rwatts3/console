@@ -51,6 +51,7 @@ interface State {
   selectedNodeIds: Immutable.List<string>
   itemCount: number
   loaded: Immutable.List<boolean>
+  scrollTop: number
 }
 
 class BrowserView extends React.Component<Props, State> {
@@ -74,8 +75,6 @@ class BrowserView extends React.Component<Props, State> {
 
     this.lokka = getLokka(this.props.project.id)
 
-    const itemCount = this.props.model.itemCount > 175 ? 175 : this.props.model.itemCount
-
     this.state = {
       nodes: Immutable.List<Immutable.Map<string, any>>(),
       loading: true,
@@ -87,8 +86,9 @@ class BrowserView extends React.Component<Props, State> {
       filtersVisible: false,
       newRowVisible: false,
       selectedNodeIds: Immutable.List<string>(),
-      itemCount: itemCount,
+      itemCount: this.props.model.itemCount,
       loaded: Immutable.List<boolean>(),
+      scrollTop: 0,
     }
   }
 
@@ -139,7 +139,7 @@ class BrowserView extends React.Component<Props, State> {
               src={require('assets/icons/search.svg')}
             />
           </div>
-          <div className={classes.button} onClick={() => this.reloadData()}>
+          <div className={classes.button} onClick={() => this.reloadData(Math.floor(this.state.scrollTop / 47))}>
             <Icon
               width={16}
               height={16}
@@ -166,10 +166,12 @@ class BrowserView extends React.Component<Props, State> {
                     minimumBatchSize={50}
                     width={this.props.fields.reduce((sum, {name}) => sum + fieldColumnWidths[name], 0) + 34 + 250}
                     height={height}
+                    scrollTop={this.state.scrollTop}
                     columnCount={this.props.fields.length + 2}
                     columnWidth={(input) => this.getColumnWidth(fieldColumnWidths, input)}
                     loadMoreRows={(input) => this.loadData(input.startIndex)}
                     addNew={this.state.newRowVisible}
+                    onScroll={(input) => this.setState({scrollTop: input.scrollTop} as State)}
 
                     headerHeight={74}
                     headerRenderer={this.headerRenderer}
@@ -377,9 +379,6 @@ class BrowserView extends React.Component<Props, State> {
       .then((results) => {
         const newNodes = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
 
-        const itemCount = this.state.itemCount > skip + first
-          ? this.state.itemCount : skip + first > this.props.model.itemCount
-          ? this.props.model.itemCount : skip + first
         let nodes = this.state.nodes
         let loaded = this.state.loaded
         for (let index = 0; index < newNodes.length; index++) {
@@ -389,7 +388,6 @@ class BrowserView extends React.Component<Props, State> {
 
         this.setState({
           nodes: nodes,
-          itemCount: itemCount,
           loading: false,
           loaded: loaded,
         } as State)
@@ -403,7 +401,6 @@ class BrowserView extends React.Component<Props, State> {
   private reloadData = (index: number = 0) => {
     this.setState({
       nodes: Immutable.List<Immutable.Map<string, any>>(),
-      loading: true,
       loaded: Immutable.List<boolean>(),
     } as State)
     return this.loadData(index)
@@ -422,8 +419,8 @@ class BrowserView extends React.Component<Props, State> {
   }
 
   private updateEditingNode = (value: TypedValue, field: Field, callback, nodeId: string, index: number) => {
-    this.setState({loaded: this.state.loaded.set(index, false)} as State)
     updateNode(this.lokka, this.props.params.modelName, value, field, nodeId)
+      .then(() => this.setState({loaded: this.state.loaded.set(index, false)} as State))
       .then(() => this.loadData(index, 1))
       .then(() => {
         callback(true)
@@ -482,6 +479,7 @@ class BrowserView extends React.Component<Props, State> {
       (field) => field.name,
       (field) => {
          const cellWidths = this.state.nodes
+          .filter((node) => !!node)
           .map((node) => node.get(field.name))
           .map((value) => valueToString(value, field, false))
           .map((str) => calculateSize(str, cellFontOptions).width + 41)
@@ -531,7 +529,9 @@ class BrowserView extends React.Component<Props, State> {
     if (confirm(`Do you really want to delete ${this.state.selectedNodeIds.size} node(s)?`)) {
       // only reload once after all the deletions
 
-      this.setState({loading: true} as State)
+      this.setState({
+        itemCount: this.state.itemCount - this.state.selectedNodeIds.size,
+      } as State)
       Promise.all(this.state.selectedNodeIds.toArray()
         .map((nodeId) => deleteNode(this.lokka, this.props.params.modelName, nodeId)))
         .then(analytics.track('models/browser: deleted node', {
@@ -539,9 +539,6 @@ class BrowserView extends React.Component<Props, State> {
           model: this.props.params.modelName,
         }))
         .then(() => this.reloadData())
-        .then(() => {
-          this.setState({loading: false} as State)
-        })
         .catch((err) => {
           err.rawError.forEach((error) => this.context.showNotification(error.message, 'error'))
         })

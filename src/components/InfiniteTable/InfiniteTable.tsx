@@ -7,10 +7,12 @@ interface Props {
   threshold?: number
   width: number
   height: number
+  scrollTop?: number
   columnCount: number
   columnWidth: (input: any) => number
   loadMoreRows: (input: any) => Promise<any>
   addNew: boolean
+  onScroll?: (input: any) => void
 
   loadedList: Immutable.List<boolean>
 
@@ -75,6 +77,8 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                   width: 'auto',
                   top: this.props.headerHeight + (this.props.addNew ? this.props.addRowHeight : 0),
                 }}
+                scrollTop={this.props.scrollTop ? this.props.scrollTop : null}
+                onScroll={this.props.onScroll}
                 cellStyle={{position: 'absolute'}}
                 rowHeight={this.props.rowHeight}
                 columnCount={this.props.columnCount}
