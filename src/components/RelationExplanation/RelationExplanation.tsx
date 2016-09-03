@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {Model, Project} from '../../types/types'
+const classes: any = require('./RelationExplanation.scss')
 
 interface Props {
   project: Project
@@ -28,24 +29,28 @@ class RelationExplanation extends React.Component<Props, {}> {
       ? this.getModelNamePlural(rightModelId) : this.getModelName(rightModelId)
     const rightNameS = this.getModelName(rightModelId).slice(-1) === 's' ? `'` : `'s`
     return (
-      <div>
-        <div>
-          <span>{rightModelMultiplicity}</span> <span>{leftModelName}</span>
+      <div className={classes.root}>
+        <div className={classes.sentence}>
+          <span className={classes.multiplicity}>{rightModelMultiplicity}</span> <span className={classes.model}>{leftModelName}</span>
           {` ${rightModelMultiplicity === 'One' ? 'is' : 'are'} related to `}
-          <span>{leftModelMultiplicity.toLowerCase()}</span> <span>{rightModelName}</span>
+          <span className={classes.multiplicity}>{leftModelMultiplicity.toLowerCase()}</span> <span className={classes.model}>{rightModelName}</span>
         </div>
-        <div>
-          <span>{this.getModelName(leftModelId)}</span>{`${leftNameS} field "`}
-          <span>{this.props.fieldOnLeftModelName}</span>
-          {`" represents `}
-          <span>{leftModelMultiplicity.toLowerCase()}</span> <span>{rightModelName}</span>
+        {this.props.fieldOnLeftModelName &&
+        <div className={classes.sentence}>
+          <span className={classes.model}>{this.getModelName(leftModelId)}</span>{`${leftNameS} field `}
+          <span className={classes.field}>{this.props.fieldOnLeftModelName}</span>
+          {` represents `}
+          <span className={classes.multiplicity}>{leftModelMultiplicity.toLowerCase()}</span> <span className={classes.model}>{rightModelName}</span>
         </div>
-        <div>
-          <span>{this.getModelName(rightModelId)}</span>{`${rightNameS} field "`}
-          <span>{this.props.fieldOnRightModelName}</span>
-          {`" represents `}
-          <span>{rightModelMultiplicity.toLowerCase()}</span> <span>{leftModelName}</span>
+        }
+        {this.props.fieldOnRightModelName &&
+        <div className={classes.sentence}>
+          <span className={classes.model}>{this.getModelName(rightModelId)}</span>{`${rightNameS} field `}
+          <span className={classes.field}>{this.props.fieldOnRightModelName}</span>
+          {` represents `}
+          <span className={classes.multiplicity}>{rightModelMultiplicity.toLowerCase()}</span> <span className={classes.model}>{leftModelName}</span>
         </div>
+        }
       </div>
     )
   }
