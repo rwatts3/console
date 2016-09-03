@@ -165,13 +165,13 @@ class RelationPopup extends React.Component<Props, State> {
               </div>
               }
             </div>
-            <div className={classes.buttons}>
-              <div onClick={this.close}>
-                Cancel
-              </div>
-              <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
-                {this.props.viewer.relation ? 'Save' : 'Create'}
-              </div>
+          </div>
+          <div className={classes.buttons}>
+            <div onClick={this.close}>
+              Cancel
+            </div>
+            <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
+              {this.props.viewer.relation ? 'Save' : 'Create'}
             </div>
           </div>
         </div>
