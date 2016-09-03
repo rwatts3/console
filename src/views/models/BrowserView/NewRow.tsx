@@ -15,6 +15,7 @@ interface Props {
 
 interface State {
   fieldValues: { [key: string]: any }
+  shouldFocus?: boolean
 }
 
 class NewRow extends React.Component<Props, State> {
@@ -23,6 +24,7 @@ class NewRow extends React.Component<Props, State> {
     super(props)
     this.state = {
       fieldValues: getDefaultFieldValues(props.model.fields.edges.map((edge) => edge.node)),
+      shouldFocus: true,
     }
   }
 
@@ -43,7 +45,7 @@ class NewRow extends React.Component<Props, State> {
             onKeyDown={this.handleKeyDown}
           >
               <Cell
-                needsFocus={index === inputIndex}
+                needsFocus={this.state.shouldFocus ? index === inputIndex : false}
                 addnew={true}
                 field={field}
                 width={this.props.columnWidths[field.name]}
@@ -84,7 +86,7 @@ class NewRow extends React.Component<Props, State> {
   private update = (value, field, callback) => {
     const {fieldValues} = this.state
     fieldValues[field.name].value = value
-    this.setState({fieldValues} as State)
+    this.setState({fieldValues, shouldFocus: false} as State)
     callback()
   }
 
