@@ -19,13 +19,10 @@ interface Props {
   onRightModelIdChange: (value: string) => void
 }
 
-interface State {
-
-}
-
-export default class RelationSelector extends React.Component<Props, State> {
+export default class RelationSelector extends React.Component<Props, {}> {
 
   render() {
+    const hasFields = this.props.leftModelId && this.props.rightModelId
     return (
       <div className={classes.root}>
         <ModelSelector
@@ -35,8 +32,9 @@ export default class RelationSelector extends React.Component<Props, State> {
           onModelChange={(id) => this.props.onLeftModelIdChange(id)}
           models={this.props.models}
         />
-        <div className={`${classes.relationArrows} ${classes.hasFields}`}>
+        <div className={`${classes.relationArrows} ${hasFields ? classes.hasFields : ''}`}>
           <div className={`${classes.relationArrow} ${classes.pointsRight}`}>
+            {hasFields &&
             <div className={classes.relationFieldInput}>
               <label>via field</label>
               <input
@@ -45,12 +43,14 @@ export default class RelationSelector extends React.Component<Props, State> {
                 onChange={(e: any) => this.props.onFieldOnLeftModelNameChange(e.target.value)}
               />
             </div>
+            }
 
             <div className={`${classes.relationArrowBase}`}/>
 
           </div>
           <div className={`${classes.relationArrow} ${classes.pointsLeft}`}>
             <div className={`${classes.relationArrowBase}`}/>
+            {hasFields &&
             <div className={classes.relationFieldInput}>
               <label>via field</label>
               <input
@@ -59,7 +59,7 @@ export default class RelationSelector extends React.Component<Props, State> {
                 onChange={(e: any) => this.props.onFieldOnRightModelNameChange(e.target.value)}
               />
             </div>
-
+            }
           </div>
         </div>
         <ModelSelector

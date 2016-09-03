@@ -9,6 +9,7 @@ import {classnames} from '../../utils/classnames'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
+import {getModelName, getModelNamePlural} from '../../utils/namegetter'
 import Help from '../../components/Help/Help'
 import {Transaction} from 'react-relay'
 
@@ -31,6 +32,7 @@ interface State {
   rightModelId: string
   alertHint: boolean
   showExplanation: boolean
+  fieldsEdited: boolean
 }
 
 class RelationPopup extends React.Component<Props, State> {
@@ -79,17 +81,35 @@ class RelationPopup extends React.Component<Props, State> {
                     fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
                     leftModelId={this.state.leftModelId}
                     rightModelId={this.state.rightModelId}
-                    onFieldOnLeftModelNameChange={(val) => this.setState({fieldOnLeftModelName: val} as State)}
-                    onFieldOnRightModelNameChange={(val) => this.setState({fieldOnRightModelName: val} as State)}
-                    onFieldOnLeftModelIsListChange={(val) => this.setState({fieldOnLeftModelIsList: val} as State)}
-                    onFieldOnRightModelIsListChange={(val) => this.setState({fieldOnRightModelIsList: val} as State)}
-                    onLeftModelIdChange={(value) => this.setState({leftModelId: value} as State)}
-                    onRightModelIdChange={(value) => this.setState({rightModelId: value} as State)}
+                    onFieldOnLeftModelNameChange={
+                      (val) => this.setState({
+                          fieldOnLeftModelName: val,
+                          fieldsEdited: true
+                        } as State)
+                    }
+                    onFieldOnRightModelNameChange={
+                      (val) => this.setState({
+                          fieldOnRightModelName: val,
+                          fieldsEdited: true
+                        } as State)
+                    }
+                    onFieldOnLeftModelIsListChange={
+                      (val) => this.setState({
+                        fieldOnLeftModelIsList: val
+                      } as State, this.prepopulateFields)
+                    }
+                    onFieldOnRightModelIsListChange={
+                      (val) => this.setState({
+                        fieldOnRightModelIsList: val
+                      } as State, this.prepopulateFields)
+                    }
+                    onLeftModelIdChange={this.handleLeftModelIdChange}
+                    onRightModelIdChange={this.handleRightModelIdChange}
                   />
                 </div>
               </div>
-              <div className={classes.container}>
-                <div className={classnames(classes.name, this.state.alertHint ? classes.alert : '')}>
+              <div className={classes.descriptors}>
+                <div className={classes.name}>
                   <label>Name</label>
                   <input
                     id='nameInput'
@@ -151,7 +171,7 @@ class RelationPopup extends React.Component<Props, State> {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className={classes.explanation}>
                   <RelationExplanation
                     fieldOnLeftModelName={this.state.fieldOnLeftModelName}
                     fieldOnRightModelName={this.state.fieldOnRightModelName}
@@ -179,6 +199,34 @@ class RelationPopup extends React.Component<Props, State> {
     )
   }
 
+  private handleLeftModelIdChange = (id: string) => {
+    this.setState({leftModelId: id} as State, this.prepopulateFields)
+  }
+
+  private handleRightModelIdChange = (id: string) => {
+    this.setState({rightModelId: id} as State, this.prepopulateFields)
+  }
+
+  private prepopulateFields = () => {
+    if (this.state.fieldsEdited || !this.state.leftModelId || !this.state.rightModelId) {
+      return
+    }
+
+    const models = this.props.viewer.project.models.edges.map((edge) => edge.node) 
+
+    let leftFieldName = this.state.fieldOnLeftModelIsList
+      ? getModelNamePlural(this.state.rightModelId, models)
+      : getModelName(this.state.rightModelId, models)
+    let rightFieldName = this.state.fieldOnRightModelIsList
+      ? getModelNamePlural(this.state.leftModelId, models)
+      : getModelName(this.state.leftModelId, models)
+
+    this.setState({
+      fieldOnLeftModelName: leftFieldName.toLowerCase(),
+      fieldOnRightModelName: rightFieldName.toLowerCase(),
+    } as State)
+  }
+
   private close = () => {
     this.context.router.goBack()
   }
@@ -203,6 +251,7 @@ class RelationPopup extends React.Component<Props, State> {
       rightModelId: null,
       alertHint: false,
       showExplanation: true,
+      fieldsEdited: false,
     } as State
   }
 
@@ -219,6 +268,7 @@ class RelationPopup extends React.Component<Props, State> {
       rightModelId: relation.rightModel.id,
       alertHint: false,
       showExplanation: true,
+      fieldsEdited: true,
     } as State
   }
 
@@ -349,6 +399,7 @@ export default Relay.createContainer(RelationPopup, {
                     node {
                       id
                       name
+                      namePlural
                     }
                   }
                 }
