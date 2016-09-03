@@ -19,14 +19,14 @@ export default class IntCell extends React.Component<CellProps<number>, CellStat
         type='text'
         ref='input'
         value={this.state.valueString}
-        onBlur={(e) => this.props.save(stringToValue(e.target.value, this.props.field))}
+        onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
         onKeyDown={this.props.onKeyDown}
         onChange={this.handleChange}
       />
     )
   }
 
-  private handleChange = (e) => {
+  private handleChange = (e: any) => {
     if (e.target.value === '') {
       this.setState({
         valueString: e.target.value,

@@ -24,6 +24,7 @@ declare module 'react-tagsinput'
 declare module 'graphiql/dist/components/QueryEditor'
 declare module 'react-notification-system'
 declare module 'react-toggle-button'
+declare module 'react-virtualized'
 
 declare var fetch: any
 declare var analytics: any

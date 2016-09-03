@@ -50,7 +50,7 @@ interface State {
 
 class PlaygroundView extends React.Component<Props, State> {
 
-  _lokka: any
+  private lokka: any
 
   constructor (props) {
     super(props)
@@ -60,7 +60,7 @@ class PlaygroundView extends React.Component<Props, State> {
     const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:playground' }
     const transport = new Transport(clientEndpoint, { headers })
 
-    this._lokka = new Lokka({ transport })
+    this.lokka = new Lokka({ transport })
 
     this.state = {
       users: [DASHBOARD_ADMIN],
@@ -90,7 +90,7 @@ class PlaygroundView extends React.Component<Props, State> {
         }
       }
     `
-    this._lokka.query(query)
+    this.lokka.query(query)
       .then((results) => {
         const users = results.viewer.allUsers.edges.map((edge) => edge.node)
         this.setState({ users: [DASHBOARD_ADMIN, ...users] } as State)
@@ -101,63 +101,6 @@ class PlaygroundView extends React.Component<Props, State> {
     analytics.track('playground: viewed', {
       project: this.props.params.projectName,
     })
-  }
-
-  _onHistoryQuerySelect = (query) => {
-    if (query) {
-      this.setState({
-        query: query.query,
-        variables: query.variables,
-      } as State)
-    }
-
-    this.setState({ historyVisible: false } as State)
-  }
-
-  _changeEndpoint = (e) => {
-    const selectedEndpoint = e.target.value
-    this.setState({ selectedEndpoint } as State)
-    window.localStorage.setItem('SELECTED_ENDPOINT', selectedEndpoint)
-
-    analytics.track('playground: endpoint changed', {
-      project: this.props.params.projectName,
-      endpoint: selectedEndpoint,
-    })
-  }
-
-  _changeUser = (e) => {
-    const selectedUserId = e.target.value
-
-    if (selectedUserId === DASHBOARD_ADMIN.id) {
-      this.setState({ selectedUserId, selectedUserToken: null } as State)
-    } else {
-      Relay.Store.commitUpdate(
-        new LoginClientUserMutation({
-          clientUserId: selectedUserId,
-          projectId: this.props.viewer.project.id,
-        }),
-        {
-          onSuccess: (response) => {
-            this.setState({
-              selectedUserId,
-              selectedUserToken: response.signinClientUser.token,
-            } as State)
-
-            analytics.track('playground: user changed', {
-              project: this.props.params.projectName,
-              userId: selectedUserId,
-            })
-          },
-          onFailure: (transaction) => {
-            alert(transaction.getError())
-          },
-        }
-      )
-    }
-  }
-
-  _rememberPlaygroundUsed = () => {
-    window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
   }
 
   render () {
@@ -216,7 +159,7 @@ class PlaygroundView extends React.Component<Props, State> {
               <div className={classes.historyOverlay}>
                 <QueryHistory
                   projectId={this.props.viewer.project.id}
-                  onQuerySelect={this._onHistoryQuerySelect}
+                  onQuerySelect={this.onHistoryQuerySelect}
                   />
               </div>
             }
@@ -229,14 +172,14 @@ class PlaygroundView extends React.Component<Props, State> {
 
           </div>
           <div className={classes.endpoint}>
-            <select onChange={this._changeEndpoint} value={this.state.selectedEndpoint}>
+            <select onChange={this.changeEndpoint} value={this.state.selectedEndpoint}>
               {Object.keys(endpoints).map((endpoint) => (
                 <option key={endpoint} value={endpoint}>{endpoints[endpoint].title}</option>
               ))}
             </select>
           </div>
           <div className={classes.user}>
-            <select value={this.state.selectedUserId} onChange={this._changeUser}>
+            <select value={this.state.selectedUserId} onChange={this.changeUser}>
               {this.state.users.map((user) => {
                 const rolesStr = user.roles ? `(${user.roles.join(', ')})` : ''
                 return (
@@ -254,11 +197,68 @@ class PlaygroundView extends React.Component<Props, State> {
             fetcher={fetcher}
             query={this.state.query}
             variables={this.state.variables || ''}
-            onEditQuery={this._rememberPlaygroundUsed}
+            onEditQuery={this.rememberPlaygroundUsed}
             />
         </div>
       </div>
     )
+  }
+
+  private onHistoryQuerySelect = (query) => {
+    if (query) {
+      this.setState({
+        query: query.query,
+        variables: query.variables,
+      } as State)
+    }
+
+    this.setState({ historyVisible: false } as State)
+  }
+
+  private changeEndpoint = (e) => {
+    const selectedEndpoint = e.target.value
+    this.setState({ selectedEndpoint } as State)
+    window.localStorage.setItem('SELECTED_ENDPOINT', selectedEndpoint)
+
+    analytics.track('playground: endpoint changed', {
+      project: this.props.params.projectName,
+      endpoint: selectedEndpoint,
+    })
+  }
+
+  private changeUser = (e) => {
+    const selectedUserId = e.target.value
+
+    if (selectedUserId === DASHBOARD_ADMIN.id) {
+      this.setState({ selectedUserId, selectedUserToken: null } as State)
+    } else {
+      Relay.Store.commitUpdate(
+        new LoginClientUserMutation({
+          clientUserId: selectedUserId,
+          projectId: this.props.viewer.project.id,
+        }),
+        {
+          onSuccess: (response) => {
+            this.setState({
+              selectedUserId,
+              selectedUserToken: response.signinClientUser.token,
+            } as State)
+
+            analytics.track('playground: user changed', {
+              project: this.props.params.projectName,
+              userId: selectedUserId,
+            })
+          },
+          onFailure: (transaction) => {
+            alert(transaction.getError())
+          },
+        }
+      )
+    }
+  }
+
+  private rememberPlaygroundUsed = () => {
+    window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
   }
 }
 

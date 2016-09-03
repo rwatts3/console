@@ -42,7 +42,67 @@ class SettingsTab extends React.Component<Props, State> {
     }
   }
 
-  _saveChanges = () => {
+  render () {
+    return (
+      <div className={classes.root}>
+        <div className={classes.category}>
+          <div className={classes.title}>
+            Name
+          </div>
+          <input
+            type='text'
+            placeholder='Your name'
+            value={this.state.name}
+            className={classes.field}
+            onChange={(e: any) => this.setState({ name: e.target.value } as State)}
+          />
+        </div>
+        <div className={classes.category}>
+          <div className={classes.title}>
+            Email
+          </div>
+          <input
+            type='text'
+            placeholder='Your email'
+            value={this.state.email}
+            className={classes.field}
+            onChange={(e: any) => this.setState({ email: e.target.value } as State)}
+          />
+        </div>
+        <div className={classes.category}>
+          <div className={classes.title}>
+            Change password
+          </div>
+          <input
+            type='password'
+            value={this.state.oldPassword}
+            placeholder='Enter current password'
+            className={classes.field}
+            onChange={(e: any) => this.setState({ oldPassword: e.target.value } as State)}
+          />
+          <input
+            type='password'
+            value={this.state.newPasswordOne}
+            placeholder='Choose new password'
+            className={classes.field}
+            onChange={(e: any) => this.setState({ newPasswordOne: e.target.value } as State)}
+          />
+          <input
+            type='password'
+            value={this.state.newPasswordTwo}
+            placeholder='Repeat new password'
+            className={classes.field}
+            onChange={(e: any) => this.setState({ newPasswordTwo: e.target.value } as State)}
+          />
+        </div>
+        <div className={classes.saveChanges} onClick={this.saveChanges}>
+          Save changes
+        </div>
+      </div>
+    )
+  }
+
+  private saveChanges = () => {
     const nameWasChanged = this.props.viewer.user.name !== this.state.name
     const emailWasChanged = this.props.viewer.user.email !== this.state.email
     const passwordWasChanged = this.state.newPasswordOne !== '' && this.state.newPasswordTwo !== ''
@@ -52,15 +112,15 @@ class SettingsTab extends React.Component<Props, State> {
     }
 
     if (nameWasChanged || emailWasChanged) {
-      this._handleUserChange()
+      this.handleUserChange()
     }
 
     if (passwordWasChanged) {
-      this._handlePasswordChange()
+      this.handlePasswordChange()
     }
   }
 
-  _handleUserChange () {
+  private handleUserChange () {
     Relay.Store.commitUpdate(
       new UpdateUserMutation({
         userId: this.props.viewer.user.id,
@@ -78,7 +138,7 @@ class SettingsTab extends React.Component<Props, State> {
     )
   }
 
-  _handlePasswordChange () {
+  private handlePasswordChange () {
     if (this.state.newPasswordOne !== '' && this.state.newPasswordOne === this.state.newPasswordTwo) {
       Relay.Store.commitUpdate(
         new UpdatePasswordMutation({
@@ -103,66 +163,6 @@ class SettingsTab extends React.Component<Props, State> {
     } else {
       this.context.showNotification('Please enter the same new password twice.', 'error')
     }
-  }
-
-  render () {
-    return (
-      <div className={classes.root}>
-        <div className={classes.category}>
-          <div className={classes.title}>
-            Name
-          </div>
-          <input
-            type='text'
-            placeholder='Your name'
-            value={this.state.name}
-            className={classes.field}
-            onChange={(e) => this.setState({ name: e.target.value } as State)}
-          />
-        </div>
-        <div className={classes.category}>
-          <div className={classes.title}>
-            Email
-          </div>
-          <input
-            type='text'
-            placeholder='Your email'
-            value={this.state.email}
-            className={classes.field}
-            onChange={(e) => this.setState({ email: e.target.value } as State)}
-          />
-        </div>
-        <div className={classes.category}>
-          <div className={classes.title}>
-            Change password
-          </div>
-          <input
-            type='password'
-            value={this.state.oldPassword}
-            placeholder='Enter current password'
-            className={classes.field}
-            onChange={(e) => this.setState({ oldPassword: e.target.value } as State)}
-          />
-          <input
-            type='password'
-            value={this.state.newPasswordOne}
-            placeholder='Choose new password'
-            className={classes.field}
-            onChange={(e) => this.setState({ newPasswordOne: e.target.value } as State)}
-          />
-          <input
-            type='password'
-            value={this.state.newPasswordTwo}
-            placeholder='Repeat new password'
-            className={classes.field}
-            onChange={(e) => this.setState({ newPasswordTwo: e.target.value } as State)}
-          />
-        </div>
-        <div className={classes.saveChanges} onClick={this._saveChanges}>
-          Save changes
-        </div>
-      </div>
-    )
   }
 }
 

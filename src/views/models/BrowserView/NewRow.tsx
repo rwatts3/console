@@ -2,8 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import Cell from './Cell'
 import {Model} from '../../../types/types'
-import {emptyDefault, compareFields} from '../utils'
-import {stringToValue} from '../../../utils/valueparser'
+import {compareFields, getFirstInputFieldIndex, getDefaultFieldValues} from '../utils'
 const classes: any = require('./NewRow.scss')
 
 interface Props {
@@ -12,35 +11,70 @@ interface Props {
   columnWidths: {[key: string]: number}
   add: (fieldValues: { [key: string]: any }) => void
   cancel: () => void
-  reload: () => void
 }
 
 interface State {
   fieldValues: { [key: string]: any }
+  shouldFocus?: boolean
 }
 
 class NewRow extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-
-    const fieldValues = props.model.fields.edges
-      .map((edge) => edge.node)
-      .filter((f) => f.name !== 'id')
-      .mapToObject(
-        (field) => field.name,
-        (field) => ({
-          value: stringToValue(field.defaultValue, field) || emptyDefault(field),
-          field: field,
-        })
-      )
-
     this.state = {
-      fieldValues,
+      fieldValues: getDefaultFieldValues(props.model.fields.edges.map((edge) => edge.node)),
+      shouldFocus: true,
     }
   }
 
-  _add = () => {
+  render() {
+    const fields = this.props.model.fields.edges
+      .map((edge) => edge.node)
+      .sort(compareFields)
+    const inputIndex = getFirstInputFieldIndex(fields)
+
+    return (
+      <div className={classes.root}>
+        <div className={classes.empty}/>
+        {fields.map((field, index) => {
+          return (
+          <div
+            key={field.id}
+            style={{width: this.props.columnWidths[field.name]}}
+            onKeyDown={this.handleKeyDown}
+          >
+              <Cell
+                needsFocus={this.state.shouldFocus ? index === inputIndex : false}
+                addnew={true}
+                field={field}
+                width={this.props.columnWidths[field.name]}
+                update={this.update}
+                value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
+                cancel={this.props.cancel}
+                projectId={this.props.projectId}
+                reload={() => null}
+              />
+            </div>
+          )
+        })}
+        <div className={classes.buttons}>
+          <button onClick={this.add}>Add</button>
+          <button onClick={this.props.cancel}>Cancel</button>
+        </div>
+      </div>
+    )
+  }
+
+  private handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      this.add()
+    } else if (e.keyCode === 27) {
+      this.props.cancel()
+    }
+  }
+
+  private add = () => {
     const allRequiredFieldsGiven = this.state.fieldValues
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
@@ -49,42 +83,13 @@ class NewRow extends React.Component<Props, State> {
     }
   }
 
-  _update = (value, field, callback) => {
+  private update = (value, field, callback) => {
     const {fieldValues} = this.state
     fieldValues[field.name].value = value
-    this.setState({fieldValues} as State)
+    this.setState({fieldValues, shouldFocus: false} as State)
     callback()
   }
 
-  render() {
-    const fields = this.props.model.fields.edges
-      .map((edge) => edge.node)
-      .sort(compareFields)
-    return (
-      <div className={classes.root}>
-        <div className={classes.empty}/>
-        {fields.map((field) => {
-          return (
-            <Cell
-              addnew={true}
-              key={field.id}
-              field={field}
-              width={this.props.columnWidths[field.name]}
-              update={this._update}
-              value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
-              cancel={this.props.cancel}
-              projectId={this.props.projectId}
-              reload={this.props.reload}
-            />
-          )
-        })}
-        <div className={classes.buttons}>
-          <span onClick={this._add}>Add</span>
-          <span onClick={this.props.cancel}>Cancel</span>
-        </div>
-      </div>
-    )
-  }
 }
 
 export default Relay.createContainer(NewRow, {

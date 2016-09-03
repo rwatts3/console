@@ -27,7 +27,7 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
           {!this.props.disabled && !this.props.valid &&
           <Tooltip
             placement={'bottom'}
-            overlay={<span onClick={(e) => e.stopPropagation()}>
+            overlay={<span onClick={(e: any) => e.stopPropagation()}>
                 Please enter a valid url.
               </span>}
           >
@@ -58,7 +58,7 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
             disabled={this.props.disabled}
             type='text'
             value={this.props.handlerWebhookUrl}
-            onChange={(e) => this.props.update({ handlerWebhookUrl: e.target.value })}
+            onChange={(e: any) => this.props.update({ handlerWebhookUrl: e.target.value })}
             placeholder='Enter Webhook URL'
           />
         </div>

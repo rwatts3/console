@@ -83,7 +83,7 @@ export default class PermissionType extends React.Component<Props, {}> {
         <select
           style={{ width: selectWidth }}
           value={this.props.userRole || emptyRoleToken}
-          onChange={(e) => this._onChangeUserRole(e.target.value)}
+          onChange={(e: any) => this._onChangeUserRole(e.target.value)}
         >
           <option disabled value={emptyRoleToken}>Select Role...</option>
           {this.props.availableUserRoles.map((userRole) => (
@@ -139,7 +139,7 @@ export default class PermissionType extends React.Component<Props, {}> {
           style={{ width, fontWeight }}
           value={selectedValue}
           className={isOptional ? classes.isOptional : ''}
-          onChange={(e) => this._updateUserPath(level, e.target.value)}
+          onChange={(e: any) => this._updateUserPath(level, e.target.value)}
         >
           <option disabled value={emptyStepToken}>{addText}</option>
           {fields.map((field) => (
@@ -201,7 +201,7 @@ export default class PermissionType extends React.Component<Props, {}> {
         <div className={classes.container}>
           <select
             className={classes.userType}
-            onChange={(e) => this._onChangeUserType(e.target.value as UserType)}
+            onChange={(e: any) => this._onChangeUserType(e.target.value as UserType)}
             value={this.props.userType}
           >
             <option value='GUEST'>Guest</option>

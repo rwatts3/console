@@ -262,7 +262,6 @@ class FieldRow extends React.Component<Props, State> {
         } else {
           prev[node.userType]++
         }
-        console.log(prev)
         return prev
       },
       {})

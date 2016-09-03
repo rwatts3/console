@@ -312,7 +312,7 @@ class PermissionRow extends React.Component<Props, State> {
     }
   }
 
-  private onKeyDown (e: React.KeyboardEvent<HTMLInputElement>) {
+  private onKeyDown (e: any) {
     if (e.keyCode === 13) {
       e.target.blur()
       this.save()
@@ -327,8 +327,8 @@ class PermissionRow extends React.Component<Props, State> {
           type='text'
           placeholder='Description'
           value={this.state.description}
-          onChange={(e) => this.updateDescription((e.target as HTMLInputElement).value)}
-          onKeyDown={(e) => this.onKeyDown(e)}
+          onChange={(e: any) => this.updateDescription((e.target as HTMLInputElement).value)}
+          onKeyDown={(e: any) => this.onKeyDown(e)}
           />
         )
       }
