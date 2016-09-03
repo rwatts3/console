@@ -33,11 +33,15 @@ class NewRow extends React.Component<Props, State> {
     const inputIndex = getFirstInputFieldIndex(fields)
 
     return (
-      <div className={classes.root} onKeyDown={this.handleKeyDown}>
+      <div className={classes.root}>
         <div className={classes.empty}/>
         {fields.map((field, index) => {
           return (
-            <div key={field.id} style={{width: this.props.columnWidths[field.name]}}>
+          <div
+            key={field.id}
+            style={{width: this.props.columnWidths[field.name]}}
+            onKeyDown={this.handleKeyDown}
+          >
               <Cell
                 needsFocus={index === inputIndex}
                 addnew={true}
