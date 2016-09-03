@@ -119,7 +119,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private handleClose = () => {
-    this.props.methods.save(this.state.values)
+    this.props.methods.save(this.state.values, false)
   }
 
   private handleDeleteValue = (index: number) => {

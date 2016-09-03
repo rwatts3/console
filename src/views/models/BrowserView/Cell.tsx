@@ -29,7 +29,6 @@ interface Props {
 interface State {
   editing: boolean
   loading: boolean
-  shouldReFocus: boolean
 }
 
 class Cell extends React.Component<Props, State> {
@@ -48,7 +47,6 @@ class Cell extends React.Component<Props, State> {
     this.state = {
       editing: false,
       loading: false,
-      shouldReFocus: true,
     }
   }
 
@@ -76,13 +74,16 @@ class Cell extends React.Component<Props, State> {
   }
 
   private startEditing = (): void => {
+    if (this.state.editing) {
+      return
+    }
     if (this.props.field.name !== 'id') {
       this.setState({editing: true} as State)
     }
   }
 
   private cancel = (shouldReload: boolean = false): void => {
-    this.setState({editing: false, shouldReFocus: false} as State)
+    this.setState({editing: false} as State)
     if (shouldReload) {
       this.props.reload()
     }
@@ -98,12 +99,6 @@ class Cell extends React.Component<Props, State> {
       return
     }
 
-    if (value === this.props.value) {
-      this.setState({editing: keepEditing} as State)
-      return
-    }
-
-    this.setState({loading: keepEditing} as State)
     this.props.update(value, this.props.field, () => {
       this.setState({
         editing: keepEditing,
@@ -166,7 +161,7 @@ class Cell extends React.Component<Props, State> {
         value={valueString}
         onChange={() => null}
         onFocus={() => this.startEditing()}
-        autoFocus={this.props.needsFocus && this.state.shouldReFocus}
+        autoFocus={this.props.needsFocus}
         style={{pointerEvents: this.props.field.name === 'id' ? '' : 'none'}}
       />
     )
