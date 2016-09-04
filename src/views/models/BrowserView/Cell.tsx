@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {findDOMNode} from 'react-dom'
 import Loading from '../../../components/Loading/Loading'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
@@ -19,10 +18,12 @@ interface Props {
   projectId: string
   nodeId: string
   value: any
-  width: number
   update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
-  reload: () => void,
+  reload: () => void
+  isSelected: boolean
   addnew: boolean
+  backgroundColor: string
+  needsFocus?: boolean
 }
 
 interface State {
@@ -40,24 +41,12 @@ class Cell extends React.Component<Props, State> {
     showNotification: ShowNotificationCallback
   }
 
-  refs: {
-    [key: string]: any;
-    input: HTMLInputElement
-  }
-
   constructor(props: Props) {
     super(props)
 
     this.state = {
       editing: false,
       loading: false,
-    }
-  }
-
-  componentDidUpdate(prevState: State): void {
-    // To enable dropdowns for <select>
-    if (!prevState.editing && this.state.editing && this.refs.input) {
-      findDOMNode<HTMLInputElement>(this.refs.input).select()
     }
   }
 
@@ -70,9 +59,14 @@ class Cell extends React.Component<Props, State> {
 
     return (
       <div
-        style={{ flex: `1 0 ${this.props.width}px`, justifyContent: 'center', alignItems: 'center' }}
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: this.props.isSelected ? '#EEF9FF' : this.props.backgroundColor,
+          overflow: 'visible',
+        }}
         className={rootClassnames}
-        onDoubleClick={() => this.startEditing()}
+        onClick={() => this.startEditing()}
       >
         {this.renderContent()}
       </div>
@@ -80,6 +74,9 @@ class Cell extends React.Component<Props, State> {
   }
 
   private startEditing = (): void => {
+    if (this.state.editing) {
+      return
+    }
     if (this.props.field.name !== 'id') {
       this.setState({editing: true} as State)
     }
@@ -102,12 +99,11 @@ class Cell extends React.Component<Props, State> {
       return
     }
 
-    if (value === this.props.value) {
+    if (this.props.value === value) {
       this.setState({editing: keepEditing} as State)
       return
     }
 
-    this.setState({loading: !keepEditing} as State)
     this.props.update(value, this.props.field, () => {
       this.setState({
         editing: keepEditing,
@@ -116,7 +112,7 @@ class Cell extends React.Component<Props, State> {
     })
   }
 
-  private onKeyDown = (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>): void => {
+  private onKeyDown = (e: any): void => {
     if (e.keyCode === 13 && e.shiftKey) {
       return
     }
@@ -163,13 +159,20 @@ class Cell extends React.Component<Props, State> {
       return getEditCell(reqs)
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
+    // Do not use 'defaultValue' because it won't force an update after value change
     return (
-      <span className={classes.value}>{valueString}</span>
+      <input
+        className={classes.value}
+        value={valueString}
+        onChange={() => null}
+        onFocus={() => this.startEditing()}
+        autoFocus={this.props.needsFocus}
+        style={{pointerEvents: this.props.field.name === 'id' ? '' : 'none'}}
+      />
     )
   }
 
   private renderContent(): JSX.Element {
-
     if (this.state.loading) {
       return (
         <div className={classes.loading}>
@@ -187,20 +190,20 @@ class Cell extends React.Component<Props, State> {
 }
 
 export default Relay.createContainer(Cell, {
-    fragments: {
-        field: () => Relay.QL`
-            fragment on Field {
-                id
-                name
-                isList
-                isRequired
-                typeIdentifier
-                enumValues
-                relatedModel {
-                    ${NodeSelector.getFragment('relatedModel')}
-                }
-                ${RelationsPopup.getFragment('originField')}
-            }
-        `,
-    },
+  fragments: {
+    field: () => Relay.QL`
+      fragment on Field {
+        id
+        name
+        isList
+        isRequired
+        typeIdentifier
+        enumValues
+        relatedModel {
+          ${NodeSelector.getFragment('relatedModel')}
+        }
+        ${RelationsPopup.getFragment('originField')}
+      }
+    `,
+  },
 })

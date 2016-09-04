@@ -45,7 +45,7 @@ class ActionTrigger extends React.Component<Props, {}> {
           value={this.props.triggerMutationModelModelId
             ? this.props.triggerMutationModelModelId
             : 'default value'}
-          onChange={(e) => this.props.update({ triggerMutationModelModelId: e.target.value })}
+          onChange={(e: any) => this.props.update({ triggerMutationModelModelId: e.target.value })}
         >
           <option value={'default value'} disabled>Select a Model/Relation...</option>
           {this.props.project.models.edges.map((edge) => (
@@ -64,7 +64,7 @@ class ActionTrigger extends React.Component<Props, {}> {
           value={this.props.triggerMutationModelMutationType
             ? this.props.triggerMutationModelMutationType
             : 'default value'}
-          onChange={(e) => this.props.update({
+          onChange={(e: any) => this.props.update({
             triggerMutationModelMutationType: e.target.value as ActionTriggerMutationModelMutationType,
           })}
         >

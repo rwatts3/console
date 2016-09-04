@@ -1,6 +1,8 @@
 import {isScalar} from '../../utils/graphql'
 import {Field} from '../../types/types'
 import {TypedValue, NonScalarValue, ScalarValue} from '../../types/utils'
+import {stringToValue} from '../../utils/valueparser'
+import {isNonScalarList} from '../../utils/graphql'
 
 export function emptyDefault(field: Field): TypedValue {
 
@@ -73,4 +75,33 @@ export function compareFields(a: Field, b: Field): number {
     return 1
   }
   return a.name.localeCompare(b.name)
+}
+
+export function getFirstInputFieldIndex(fields: Field[]): number {
+  let inputIndex
+  const hasInputField = fields.some((field, index) => {
+    if (isNonScalarList(field) || field.name === 'id') {
+      return false
+    } else {
+      inputIndex = index
+      return true
+    }
+  })
+
+  if (hasInputField) {
+    return inputIndex
+  } else {
+    return null
+  }
+}
+
+export function getDefaultFieldValues(fields: Field[]): { [key: string]: any } {
+  return fields.filter((f) => f.name !== 'id')
+    .mapToObject(
+      (field) => field.name,
+      (field) => ({
+        value: stringToValue(field.defaultValue, field) || emptyDefault(field),
+        field: field,
+      })
+    )
 }

@@ -180,7 +180,7 @@ describe('stringToValue', () => {
     const field: Field = Object.assign({}, testField, {
       isRequired: true,
       isList: false,
-      typeIdentifier: 'SomeModel',
+      typeIdentifier: 'Relation',
     })
     expect(stringToValue('someId', field)).toEqual({id: 'someId'})
   })

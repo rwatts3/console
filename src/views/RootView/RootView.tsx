@@ -35,7 +35,7 @@ export default class RootView extends React.Component<Props, {}> {
   render () {
     return (
       <div style={{ height: '100%' }}>
-        <Helmet titleTemplate='%s  🚀 Graphcool'/>
+        <Helmet titleTemplate='%s | Graphcool'/>
         {this.props.children}
         <NotificationSystem ref='notificationSystem' />
       </div>

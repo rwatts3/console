@@ -135,3 +135,8 @@ export interface PermanentAuthToken {
   name: string
   token: string
 }
+
+export interface OrderBy {
+  fieldName: string
+  order: 'ASC' | 'DESC'
+}

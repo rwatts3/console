@@ -12,10 +12,10 @@ import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
 import AddActionMutation from '../../mutations/AddActionMutation'
 import UpdateActionMutation from '../../mutations/UpdateActionMutation'
-import ActionTriggerBox from './ActionTriggerBox.tsx'
-import ActionHandlerBox from './ActionHandlerBox.tsx'
-import { UpdateTriggerPayload } from './ActionTriggerBox.tsx'
-import { UpdateHandlerPayload } from './ActionHandlerBox.tsx'
+import ActionTriggerBox from './ActionTriggerBox'
+import ActionHandlerBox from './ActionHandlerBox'
+import { UpdateTriggerPayload } from './ActionTriggerBox'
+import { UpdateHandlerPayload } from './ActionHandlerBox'
 import { isValidUrl } from '../../utils/utils'
 const classes: any = require('./ActionBoxes.scss')
 
@@ -112,7 +112,7 @@ class ActionBoxes extends React.Component<Props, State> {
             className={classes.description}
             placeholder={'+ Add Description'}
             value={this.state.description}
-            onChange={(e) => this.setState({description: e.target.value, changesMade: true} as State)}
+            onChange={(e: any) => this.setState({description: e.target.value, changesMade: true} as State)}
           />
         </div>
         <div className={classes.boxes}>
