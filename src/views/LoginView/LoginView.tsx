@@ -67,7 +67,7 @@ class LoginView extends React.Component<Props, State> {
     })
   }
 
-  _listenForEnter = (e) => {
+  _listenForEnter = (e: any) => {
     if (e.keyCode === 13) {
       this._login()
     }
@@ -100,14 +100,14 @@ class LoginView extends React.Component<Props, State> {
               ref='email'
               type='text'
               placeholder='Email'
-              onChange={(e) => this.setState({ email: e.target.value } as State)}
+              onChange={(e: any) => this.setState({ email: e.target.value } as State)}
               onKeyUp={this._listenForEnter}
               />
             <input
               ref='password'
               type='password'
               placeholder='Password'
-              onChange={(e) => this.setState({ password: e.target.value } as State)}
+              onChange={(e: any) => this.setState({ password: e.target.value } as State)}
               onKeyUp={this._listenForEnter}
               />
             <button onClick={this._login}>Login</button>

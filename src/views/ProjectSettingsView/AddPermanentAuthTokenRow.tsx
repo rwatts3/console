@@ -41,7 +41,7 @@ export default class AddPermanentAuthTokenRow extends React.Component<Props, Sta
           <div className={classes.name}>
             <input
               value={this.state.newTokenName}
-              onChange={(e) => this.setState({newTokenName: e.target.value})}
+              onChange={(e: any) => this.setState({newTokenName: e.target.value})}
               onKeyDown={this.handleKeyDown}
               placeholder={'Add new token ...'}
             />

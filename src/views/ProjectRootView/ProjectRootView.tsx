@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {withRouter} from 'react-router'
 import * as Relay from 'react-relay'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from '../../components/MapProps/MapProps'
@@ -11,12 +12,12 @@ import LoginView from '../../views/LoginView/LoginView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
 import {update} from '../../reducers/GettingStartedState'
 import {Viewer, Client, Project} from '../../types/types'
-import PropTypes = React.PropTypes
 const classes: any = require('./ProjectRootView.scss')
 
 require('../../styles/core.scss')
 
 interface Props {
+  router: any
   children: Element
   isLoggedin: boolean
   viewer: Viewer
@@ -32,23 +33,16 @@ interface Props {
 
 class ProjectRootView extends React.Component<Props, {}> {
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
-  _refreshInterval: any
   shouldComponentUpdate: any
 
-  context: {
-    router?: any
-  }
+  private refreshInterval: any
 
   constructor(props) {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
-    this._updateForceFetching()
+    this.updateForceFetching()
   }
 
   componentWillMount() {
@@ -76,7 +70,7 @@ class ProjectRootView extends React.Component<Props, {}> {
   }
 
   componentWillUnmount() {
-    clearInterval(this._refreshInterval)
+    clearInterval(this.refreshInterval)
   }
 
   componentDidUpdate(prevProps) {
@@ -87,7 +81,7 @@ class ProjectRootView extends React.Component<Props, {}> {
     const prevCheckStatus = prevProps.checkStatus
 
     if (newStatus !== prevStatus) {
-      this._updateForceFetching()
+      this.updateForceFetching()
 
       if (newStatus === 'STEP11_SKIPPED') {
         analytics.track(`getting-started: skipped at ${prevStatus}`)
@@ -98,49 +92,7 @@ class ProjectRootView extends React.Component<Props, {}> {
         'Getting Started Status': this.props.user.gettingStartedStatus,
       })
     } else if (newCheckStatus !== prevCheckStatus) {
-      this._updateForceFetching()
-    }
-  }
-
-  _updateForceFetching() {
-    if (this.props.checkStatus) {
-      if (!this._refreshInterval) {
-        this._refreshInterval = setInterval(
-          () => {
-            // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
-            this.props.relay.forceFetch({}, () => {
-              this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
-            })
-          },
-          1500
-        )
-      }
-    } else {
-      clearInterval(this._refreshInterval)
-    }
-  }
-
-  _addProject = () => {
-    let projectName = window.prompt('Project name:')
-    while (projectName != null && !validateProjectName(projectName)) {
-      projectName = window.prompt('The inserted project name was invalid.' +
-        ' Enter a valid project name, like "Project 2" or "My Project" (First letter capitalized):')
-    }
-    if (projectName) {
-      Relay.Store.commitUpdate(
-        new AddProjectMutation({
-          projectName,
-          userId: this.props.viewer.user.id,
-        }),
-        {
-          onSuccess: () => {
-            analytics.track('sidenav: created project', {
-              project: projectName,
-            })
-            this.context.router.replace(`${projectName}`)
-          },
-        }
-      )
+      this.updateForceFetching()
     }
   }
 
@@ -159,7 +111,7 @@ class ProjectRootView extends React.Component<Props, {}> {
               params={this.props.params}
               projects={this.props.allProjects}
               selectedProject={this.props.project}
-              add={this._addProject}
+              add={this.addProject}
             />
           </div>
           <div className={classes.sidenav}>
@@ -176,6 +128,48 @@ class ProjectRootView extends React.Component<Props, {}> {
         </div>
       </div>
     )
+  }
+
+  private updateForceFetching() {
+    if (this.props.checkStatus) {
+      if (!this.refreshInterval) {
+        this.refreshInterval = setInterval(
+          () => {
+            // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
+            this.props.relay.forceFetch({}, () => {
+              this.props.update(this.props.user.gettingStartedStatus, this.props.user.id)
+            })
+          },
+          1500
+        )
+      }
+    } else {
+      clearInterval(this.refreshInterval)
+    }
+  }
+
+  private addProject = () => {
+    let projectName = window.prompt('Project name:')
+    while (projectName != null && !validateProjectName(projectName)) {
+      projectName = window.prompt('The inserted project name was invalid.' +
+        ' Enter a valid project name, like "Project 2" or "My Project" (First letter capitalized):')
+    }
+    if (projectName) {
+      Relay.Store.commitUpdate(
+        new AddProjectMutation({
+          projectName,
+          userId: this.props.viewer.user.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('sidenav: created project', {
+              project: projectName,
+            })
+            this.props.router.replace(`${projectName}`)
+          },
+        }
+      )
+    }
   }
 }
 
@@ -197,7 +191,7 @@ const mapDispatchToProps = (dispatch) => {
 const ReduxContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ProjectRootView)
+)(withRouter(ProjectRootView))
 
 const MappedProjectRootView = mapProps({
   params: (props) => props.params,

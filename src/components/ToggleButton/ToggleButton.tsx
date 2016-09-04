@@ -12,6 +12,7 @@ interface Props {
   rightText: string
   onChange?: (ToggleSide) => void
   onClickOutside?: (ToggleSide) => void
+  onBlur?: (e: any) => void
 }
 
 interface State {
@@ -33,17 +34,6 @@ export default class ToggleButton extends React.Component<Props, State> {
     }
   }
 
-  _onUpdateSide (side) {
-    this.setState({ currentSide: side })
-    if (this.props.onChange) {
-      this.props.onChange(side)
-    }
-  }
-
-  _toggle () {
-    this._onUpdateSide(this.state.currentSide === ToggleSide.Left ? ToggleSide.Right : ToggleSide.Left)
-  }
-
   componentDidMount() {
     document.addEventListener('click', this.handle, true)
   }
@@ -52,34 +42,45 @@ export default class ToggleButton extends React.Component<Props, State> {
     document.removeEventListener('click', this.handle, true)
   }
 
-  handle = e => {
-    if (!this.refs.container.contains(e.target) && this.props.onClickOutside) {
-      this.props.onClickOutside(this.state.currentSide)
-    }
-  }
-
   render() {
     return (
-      <div className={classes.root} ref='container'>
+      <div className={classes.root} ref='container' onBlur={this.props.onBlur}>
         <span
           className={classes.label}
-          onClick={() => this._onUpdateSide(ToggleSide.Left)}
+          onClick={() => this.onUpdateSide(ToggleSide.Left)}
         >
           {this.props.leftText}
         </span>
         <span
           className={`${classes.sliderContainer} ${this.state.currentSide === ToggleSide.Right ? classes.active : ''}`}
-          onClick={() => this._toggle()}
+          onClick={() => this.toggle()}
         >
           <span className={classes.slider}></span>
         </span>
         <span
           className={classes.label}
-          onClick={() => this._onUpdateSide(ToggleSide.Right)}
+          onClick={() => this.onUpdateSide(ToggleSide.Right)}
         >
           {this.props.rightText}
         </span>
       </div>
     )
+  }
+
+  handle = (e) => {
+    if (!this.refs.container.contains(e.target) && this.props.onClickOutside) {
+      this.props.onClickOutside(this.state.currentSide)
+    }
+  }
+
+  private onUpdateSide (side) {
+    this.setState({ currentSide: side })
+    if (this.props.onChange) {
+      this.props.onChange(side)
+    }
+  }
+
+  private toggle () {
+    this.onUpdateSide(this.state.currentSide === ToggleSide.Left ? ToggleSide.Right : ToggleSide.Left)
   }
 }

@@ -11,7 +11,8 @@
   ],
   "plugins": [
     "transform-runtime",
-    "react-relay"
+    "react-relay",
+    "transform-async-to-generator"
   ],
   "env": {
     "development": {
