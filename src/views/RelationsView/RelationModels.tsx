@@ -21,14 +21,10 @@ export default class RelationModels extends React.Component<Props,{}> {
     router?: any
   }
 
-  handleClick = (modelName: string) => {
-    this.context.router.replace(`/${this.props.projectName}/models/${modelName}`)
-  }
-
   render() {
     return (
       <span>
-        <span className={classes.model} onClick={() => this.handleClick(this.props.leftModel.name)}>
+        <span className={classes.model} onClick={(e) => this.handleClick(e, this.props.leftModel.name)}>
           {this.props.rightModelIsList ? `[${this.props.leftModel.name}]` : this.props.leftModel.name}
         </span>
         <span className={classes.iconContainer}>
@@ -38,10 +34,16 @@ export default class RelationModels extends React.Component<Props,{}> {
             src={require('assets/new_icons/bidirectional.svg')}
           />
         </span>
-        <span className={classes.model} onClick={() => this.handleClick(this.props.rightModel.name)}>
+        <span className={classes.model} onClick={(e) => this.handleClick(e, this.props.rightModel.name)}>
           {this.props.leftModelIsList ? `[${this.props.rightModel.name}]` : this.props.rightModel.name}
         </span>
       </span>
     )
+  }
+
+  private handleClick = (e: any, modelName: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.context.router.push(`/${this.props.projectName}/models/${modelName}`)
   }
 }
