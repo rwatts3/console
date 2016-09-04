@@ -43,7 +43,7 @@ export function getLokka(projectId: string): any {
 }
 
 function camelCase(value: string) {
-  return value.charAt(0).toLowerCase() + value.slice(1);
+  return value.charAt(0).toLowerCase() + value.slice(1)
 }
 
 export function addNode(lokka: any, modelName: string, fieldValues: { [key: string]: any }): Promise<any> {
