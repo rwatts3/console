@@ -26,7 +26,7 @@ import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
 import {AutoSizer} from 'react-virtualized'
 import Cell from './Cell'
 import LoadingCell from './LoadingCell'
-import {getLokka, addNode, updateNode, deleteNode, queryNodes} from './../../../utils/simpleapi'
+import {getLokka, addNode, updateNode, deleteNode, queryNodes} from './../../../utils/relay'
 const classes: any = require('./BrowserView.scss')
 
 interface Props {
@@ -377,7 +377,8 @@ class BrowserView extends React.Component<Props, State> {
     return queryNodes(this.lokka, this.props.model.namePlural, this.props.fields,
                       skip, first, this.state.filter, this.state.orderBy)
       .then((results) => {
-        const newNodes = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
+        const newNodes = results.viewer[`all${this.props.model.namePlural}`]
+          .edges.map((edge) => edge.node).map(Immutable.Map)
 
         let nodes = this.state.nodes
         let loaded = this.state.loaded
