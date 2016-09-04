@@ -1,6 +1,13 @@
-import { injectNetworkLayer, DefaultNetworkLayer, Transaction } from 'react-relay'
-import { ShowNotificationCallback } from '../types/utils'
+import {injectNetworkLayer, DefaultNetworkLayer, Transaction} from 'react-relay'
+import {ShowNotificationCallback} from '../types/utils'
 import * as cookiestore from './cookiestore'
+import {Lokka} from 'lokka'
+import {Transport} from 'lokka-transport-http'
+import {toGQL} from '../views/models/utils'
+import {isScalar, isNonScalarList} from './graphql'
+import * as Immutable from 'immutable'
+import {Field, OrderBy} from '../types/types'
+import {TypedValue} from '../types/utils'
 
 export function updateNetworkLayer (): void {
   const token = cookiestore.get('graphcool_auth_token')
@@ -25,4 +32,105 @@ export function onFailureShowNotification (
   } else {
     console.error(error)
   }
+}
+
+export function getLokka(projectId: string): any {
+  const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${projectId}`
+  const token = cookiestore.get('graphcool_auth_token')
+  const headers = { Authorization: `Bearer ${token}` }
+  const transport = new Transport(clientEndpoint, { headers })
+  return new Lokka({transport})
+}
+
+function camelCase(value: string) {
+  return value.charAt(0).toLowerCase() + value.slice(1);
+}
+
+export function addNode(lokka: any, modelName: string, fieldValues: { [key: string]: any }): Promise<any> {
+  const inputString = fieldValues
+    .mapToArray((fieldName, obj) => obj)
+    .filter(({value}) => value !== null)
+    .filter(({field}) => (!isNonScalarList(field)))
+    .map(({field, value}) => toGQL(value, field))
+    .join(' ')
+
+  const inputArgumentsString = inputString.length > 0 ? `(input: {${inputString} clientMutationId: "a"})` : ''
+
+  const mutation = `
+    {
+      create${modelName}${inputArgumentsString} {
+        ${camelCase(modelName)} {
+          id
+        }
+      }
+    }
+  `
+  return lokka.mutate(mutation)
+}
+
+export function updateNode(lokka: any, modelName: string, value: TypedValue,
+                           field: Field, nodeId: string): Promise<any> {
+  const mutation = `
+    {
+      update${modelName}(
+        input: {
+          id: "${nodeId}"
+          clientMutationId: "a"
+          ${toGQL(value, field)}
+        }
+      ) {
+        ${camelCase(modelName)} {
+          id
+        }
+      }
+    }
+  `
+  return lokka.mutate(mutation)
+}
+
+export function deleteNode(lokka: any, modelName: string, nodeId: string): Promise<any> {
+  const mutation = `
+    {
+      delete${modelName}(
+        input: {
+          id: "${nodeId}"
+          clientMutationId: "a"
+        }
+      ) {
+        deletedId
+      }
+    }
+  `
+  return lokka.mutate(mutation)
+}
+
+export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[], skip: number = 0, first: number = 50,
+                           filters: Immutable.Map<string, any> = Immutable.Map<string, any>(),
+                           orderBy?: OrderBy): Promise<any> {
+
+  const fieldNames = fields
+    .map((field) => isScalar(field.typeIdentifier) ? field.name : `${field.name} { id }`)
+    .join(' ')
+
+  const filterQuery = filters
+    .filter((v) => v !== null)
+    .map((value, fieldName) => `${fieldName}: ${value}`)
+    .join(' ')
+
+  const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
+  const orderByQuery = orderBy ? `orderBy: ${orderBy.fieldName}_${orderBy.order}` : ''
+  const query = `
+    {
+      viewer {
+        all${modelNamePlural}(first: ${first} skip: ${skip} ${filter} ${orderByQuery}) {
+          edges {
+            node {
+              ${fieldNames}
+            }
+          }
+        }
+      }
+    }
+  `
+  return lokka.query(query)
 }
