@@ -3,6 +3,7 @@ import * as Relay from 'react-relay'
 import Popup from '../../components/Popup/Popup'
 import RelationSelector from './RelationSelector'
 import RelationExplanation from '../../components/RelationExplanation/RelationExplanation'
+import GeneratedMutations from '../../components/GeneratedMutations/GeneratedMutations'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import {validateModelName, validateFieldName} from '../../utils/nameValidator'
 import {classnames} from '../../utils/classnames'
@@ -60,6 +61,7 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
+    const models = this.props.viewer.project.models.edges.map((edge) => edge.node)
     return (
       <Popup onClickOutside={this.close} height={'100%'}>
         <div className={classes.root}>
@@ -74,7 +76,7 @@ class RelationPopup extends React.Component<Props, State> {
               <div className={classes.settings}>
                 <div className={classes.container}>
                   <RelationSelector
-                    models={this.props.viewer.project.models.edges.map((edge) => edge.node)}
+                    models={models}
                     fieldOnLeftModelName={this.state.fieldOnLeftModelName}
                     fieldOnRightModelName={this.state.fieldOnRightModelName}
                     fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
@@ -147,7 +149,7 @@ class RelationPopup extends React.Component<Props, State> {
                 </div>
               </div>
               }
-              {this.state.leftModelId && this.state.rightModelId &&
+              {this.state.leftModelId && this.state.rightModelId && this.state.name &&
               <div className={classes.container}>
                 <div className={classes.additionalInfo}>
                   <div
@@ -178,6 +180,7 @@ class RelationPopup extends React.Component<Props, State> {
                   </div>
                 </div>
                 <div className={classes.explanation}>
+                  {this.state.showExplanation &&
                   <RelationExplanation
                     fieldOnLeftModelName={this.state.fieldOnLeftModelName}
                     fieldOnRightModelName={this.state.fieldOnRightModelName}
@@ -187,6 +190,19 @@ class RelationPopup extends React.Component<Props, State> {
                     rightModelId={this.state.rightModelId}
                     project={this.props.viewer.project}
                   />
+                  }
+                  {!this.state.showExplanation &&
+                  <GeneratedMutations
+                    models={models}
+                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                    fieldOnRightModelName={this.state.fieldOnRightModelName}
+                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                    leftModelId={this.state.leftModelId}
+                    rightModelId={this.state.rightModelId}
+                    relationName={this.state.name}
+                  />
+                  }
                 </div>
               </div>
               }
