@@ -54,7 +54,7 @@ export function addNode(lokka: any, modelName: string, fieldValues: { [key: stri
     .map(({field, value}) => toGQL(value, field))
     .join(' ')
 
-  const inputArgumentsString = inputString.length > 0 ? `(input: {${inputString} clientMutationId: "a"})` : ''
+  const inputArgumentsString = `(input: {${inputString} clientMutationId: "a"})`
 
   const mutation = `
     {
