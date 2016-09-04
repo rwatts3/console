@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Model} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
+import {classnames} from '../../utils/classnames'
 import PropTypes = React.PropTypes
 const classes: any = require('./RelationModels.scss')
 
@@ -24,8 +25,13 @@ export default class RelationModels extends React.Component<Props,{}> {
   render() {
     return (
       <span>
-        <span className={classes.model} onClick={(e) => this.handleClick(e, this.props.leftModel.name)}>
-          {this.props.rightModelIsList ? `[${this.props.leftModel.name}]` : this.props.leftModel.name}
+        <span
+          className={classnames(classes.model, this.props.rightModelIsList ? classes.isMany : '')}
+          onClick={(e) => this.handleClick(e, this.props.leftModel.name)}
+        >
+          <span className={classes.modelContainer}>
+            {this.props.leftModel.name}
+          </span>
         </span>
         <span className={classes.iconContainer}>
           <Icon
@@ -34,8 +40,13 @@ export default class RelationModels extends React.Component<Props,{}> {
             src={require('assets/new_icons/bidirectional.svg')}
           />
         </span>
-        <span className={classes.model} onClick={(e) => this.handleClick(e, this.props.rightModel.name)}>
-          {this.props.leftModelIsList ? `[${this.props.rightModel.name}]` : this.props.rightModel.name}
+        <span
+          className={classnames(classes.model, this.props.leftModelIsList ? classes.isMany : '')}
+          onClick={(e) => this.handleClick(e, this.props.rightModel.name)}
+        >
+          <span className={classes.modelContainer}>
+          {this.props.rightModel.name}
+          </span>
         </span>
       </span>
     )

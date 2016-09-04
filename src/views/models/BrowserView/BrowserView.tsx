@@ -16,6 +16,7 @@ import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
 import {compareFields, emptyDefault, getFirstInputFieldIndex} from '../utils'
 import {valueToString} from '../../../utils/valueparser'
+import {isNonScalarList} from '../../../utils/graphql'
 import {sideNavSyncer} from '../../../utils/sideNavSyncer'
 import {Field, Model, Viewer, Project, OrderBy} from '../../../types/types'
 import {connect} from 'react-redux'
@@ -381,7 +382,7 @@ class BrowserView extends React.Component<Props, State> {
           .edges.map(({node}) => {
             // Transforms the relay query into something that the valueparser understands
             // Previously we used the simple API that's why this is necessary
-            this.props.fields.filter((field) => field.isList)
+            this.props.fields.filter((field) => isNonScalarList(field))
               .forEach(({name}) => node[name] = node[name].edges.map(({node}) => node))
             return node
         }).map(Immutable.Map)
