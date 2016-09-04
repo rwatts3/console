@@ -1,8 +1,10 @@
 import * as React from 'react'
 import {Model} from '../../types/types'
+import {classnames} from '../../utils/classnames'
 const classes = require('./ModelSelector.scss')
 
 interface Props {
+  isDisabled?: boolean
   isList: boolean
   onListChange: (value: boolean) => void
   models: Model[]
@@ -14,7 +16,9 @@ export default class ModelSelector extends React.Component<Props,{}> {
 
   render() {
     return (
-      <div className={`${classes.root} ${this.props.isList ? classes.isMany : ''}`}>
+      <div className={
+        classnames(classes.root, this.props.isList ? classes.isMany : '', this.props.isDisabled ? classes.disabled : '')
+      }>
         <div className={classes.rootContainer}>
           <div className={classes.sizeToggle}>
             <div
@@ -37,7 +41,7 @@ export default class ModelSelector extends React.Component<Props,{}> {
             >
               <option value={'default value'} disabled>Select Model</option>
               {this.props.models.sort(this.modelCompare).map((model) => (
-                <option key={model.id} value={model.id}>{model.name}</option>
+                <option key={model.id} value={model.id}>{this.props.isList ? model.namePlural : model.name}</option>
               ))}
             </select>
           </div>

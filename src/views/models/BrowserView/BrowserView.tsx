@@ -375,7 +375,7 @@ class BrowserView extends React.Component<Props, State> {
 
   private loadData = (skip: number, first: number = 50): Promise<Immutable.List<Immutable.Map<string, any>>> => {
     return queryNodes(this.lokka, this.props.model.namePlural, this.props.fields,
-                      skip, first,this.state.filter, this.state.orderBy)
+                      skip, first, this.state.filter, this.state.orderBy)
       .then((results) => {
         const newNodes = results[`all${this.props.model.namePlural}`].map(Immutable.Map)
 
