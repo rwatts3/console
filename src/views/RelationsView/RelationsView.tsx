@@ -87,56 +87,56 @@ export default Relay.createContainer(RelationsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                project: projectByName(projectName: $projectName) {
-                    id
-                    name
-                    relations(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                description
-                                leftModel {
-                                    id
-                                }
-                                rightModel {
-                                    id
-                                }
-                                fieldOnLeftModel {
-                                    name
-                                    isList
-                                }
-                                fieldOnRightModel {
-                                    name
-                                    isList
-                                }
-                                ${RelationRow.getFragment('relation')}
-                            }
-                        }
-                    }
-                    models(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                fields(first: 1000) {
-                                    edges {
-                                        node {
-                                            name
-                                            id
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ${Header.getFragment('project')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          relations(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                description
+                leftModel {
+                  id
                 }
-                ${Header.getFragment('viewer')}
+                rightModel {
+                  id
+                }
+                fieldOnLeftModel {
+                  name
+                  isList
+                }
+                fieldOnRightModel {
+                  name
+                  isList
+                }
+                ${RelationRow.getFragment('relation')}
+              }
             }
-        `,
-    },
+          }
+          models(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                fields(first: 1000) {
+                  edges {
+                    node {
+                      name
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
+          ${Header.getFragment('project')}
+        }
+        ${Header.getFragment('viewer')}
+      }
+    `,
+  },
 })

@@ -33,6 +33,11 @@
       z-index: 1;
     }
   }
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 .rootContainer {
@@ -49,7 +54,6 @@
 
 .sizeToggle {
   display: flex;
-  // border-bottom: 1px solid $newGrey4;
   width: 100%;
   padding: 3px;
 
@@ -94,7 +98,6 @@
   select {
     cursor: pointer;
     color: $newGrayDark;
-    // font-weight: bold;
     line-height: 1.5;
     width: 100%;
     box-sizing: border-box;

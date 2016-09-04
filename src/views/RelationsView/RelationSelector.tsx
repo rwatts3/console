@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Model} from '../../types/types'
 import ModelSelector from './ModelSelector'
+import {classnames} from '../../utils/classnames'
 
 const classes: any = require('./RelationSelector.scss')
 interface Props {
@@ -32,8 +33,8 @@ export default class RelationSelector extends React.Component<Props, {}> {
           onModelChange={(id) => this.props.onLeftModelIdChange(id)}
           models={this.props.models}
         />
-        <div className={`${classes.relationArrows} ${hasFields ? classes.hasFields : ''}`}>
-          <div className={`${classes.relationArrow} ${classes.pointsRight}`}>
+        <div className={classnames(classes.relationArrows, hasFields ? classes.hasFields : '')}>
+          <div className={classnames(classes.relationArrow, classes.pointsRight)}>
             {hasFields &&
             <div className={classes.relationFieldInput}>
               <label>via field</label>
@@ -45,11 +46,11 @@ export default class RelationSelector extends React.Component<Props, {}> {
             </div>
             }
 
-            <div className={`${classes.relationArrowBase}`}/>
+            <div className={classes.relationArrowBase}/>
 
           </div>
-          <div className={`${classes.relationArrow} ${classes.pointsLeft}`}>
-            <div className={`${classes.relationArrowBase}`}/>
+          <div className={classnames(classes.relationArrow, classes.pointsLeft)}>
+            <div className={classnames(classes.relationArrowBase)}/>
             {hasFields &&
             <div className={classes.relationFieldInput}>
               <label>via field</label>
@@ -63,6 +64,7 @@ export default class RelationSelector extends React.Component<Props, {}> {
           </div>
         </div>
         <ModelSelector
+          isDisabled={!this.props.leftModelId}
           isList={this.props.fieldOnLeftModelIsList}
           onListChange={(value) => this.props.onFieldOnLeftModelIsListChange(value)}
           selectedModelId={this.props.rightModelId}

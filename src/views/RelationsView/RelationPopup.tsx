@@ -64,7 +64,7 @@ class RelationPopup extends React.Component<Props, State> {
       <Popup onClickOutside={this.close} height={'100%'}>
         <div className={classes.root}>
           <div className={classes.header}>
-            New Relation
+            {this.props.viewer.relation ? 'Edit Relation' : 'New Relation'}
           </div>
           <div className={classes.container}>
             <div className={classes.content}>
@@ -112,6 +112,7 @@ class RelationPopup extends React.Component<Props, State> {
                   />
                 </div>
               </div>
+              {this.state.leftModelId && this.state.rightModelId &&
               <div className={classes.descriptors}>
                 <div className={classes.name}>
                   <label>Name</label>
@@ -145,6 +146,7 @@ class RelationPopup extends React.Component<Props, State> {
                   />
                 </div>
               </div>
+              }
               {this.state.leftModelId && this.state.rightModelId &&
               <div className={classes.container}>
                 <div className={classes.additionalInfo}>
