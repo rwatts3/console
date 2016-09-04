@@ -109,7 +109,9 @@ export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[],
                            orderBy?: OrderBy): Promise<any> {
 
   const fieldNames = fields
-    .map((field) => isScalar(field.typeIdentifier) ? field.name : `${field.name} { id }`)
+    .map((field) => isScalar(field.typeIdentifier)
+      ? field.name : field.isList
+      ? `${field.name} { edges { node { id } } }` :  `${field.name} { id }`)
     .join(' ')
 
   const filterQuery = filters

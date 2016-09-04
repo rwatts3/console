@@ -378,7 +378,13 @@ class BrowserView extends React.Component<Props, State> {
                       skip, first, this.state.filter, this.state.orderBy)
       .then((results) => {
         const newNodes = results.viewer[`all${this.props.model.namePlural}`]
-          .edges.map((edge) => edge.node).map(Immutable.Map)
+          .edges.map(({node}) => {
+            // Transforms the relay query into something that the valueparser understands
+            // Previously we used the simple API that's why this is necessary
+            this.props.fields.filter((field) => field.isList)
+              .forEach(({name}) => node[name] = node[name].edges.map(({node}) => node))
+            return node
+        }).map(Immutable.Map)
 
         let nodes = this.state.nodes
         let loaded = this.state.loaded
