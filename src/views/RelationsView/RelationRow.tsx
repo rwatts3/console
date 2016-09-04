@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Link} from 'react-router'
+import {Link, withRouter} from 'react-router'
 import {Relation, Project} from '../../types/types'
 import Icon from '../../components/Icon/Icon'
 import RelationModels from './RelationModels'
@@ -11,10 +11,10 @@ import {ShowNotificationCallback} from '../../types/utils'
 const classes: any = require('./RelationRow.scss')
 
 interface Props {
+  router: any
   relation: Relation
   project: Project
   onRelationDeleted: () => void
-  onClick: () => void
 }
 
 class RelationRow extends React.Component<Props,{}> {
@@ -28,8 +28,9 @@ class RelationRow extends React.Component<Props,{}> {
   }
 
   render(): JSX.Element {
+    const to = `/${this.props.project.name}/relations/edit/${this.props.relation.name}`
     return (
-      <div className={classes.root} onClick={this.props.onClick}>
+      <div className={classes.root} onClick={() => this.props.router.push(to)}>
         <div className={classes.row}>
           <div>
             <div>
@@ -54,7 +55,7 @@ class RelationRow extends React.Component<Props,{}> {
           </div>
           <span className={classes.buttons}>
             <span className={classes.icon}>
-              <Link to={`/${this.props.project.name}/relations/edit/${this.props.relation.name}`}>
+              <Link to={to}>
               <Icon
                 width={20}
                 height={20}
@@ -94,7 +95,7 @@ class RelationRow extends React.Component<Props,{}> {
   }
 }
 
-export default Relay.createContainer(RelationRow, {
+export default Relay.createContainer(withRouter(RelationRow), {
   fragments: {
     relation: () => Relay.QL`
       fragment on Relation {
