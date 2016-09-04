@@ -128,6 +128,7 @@ export function queryNodes(lokka: any, modelNamePlural: string, fields: Field[],
               ${fieldNames}
             }
           }
+          count
         }
       }
     }

@@ -391,6 +391,7 @@ class BrowserView extends React.Component<Props, State> {
           nodes: nodes,
           loading: false,
           loaded: loaded,
+          itemCount: results.viewer[`all${this.props.model.namePlural}`].count,
         } as State)
         return nodes
       })
@@ -442,8 +443,6 @@ class BrowserView extends React.Component<Props, State> {
       .then(() => this.reloadData(0))
       .then(() => {
         this.setState({
-          itemCount: this.state.itemCount + 1,
-          loaded: this.state.loaded.unshift(false),
           newRowVisible: false,
         } as State)
         analytics.track('models/browser: created node', {
@@ -530,9 +529,6 @@ class BrowserView extends React.Component<Props, State> {
     if (confirm(`Do you really want to delete ${this.state.selectedNodeIds.size} node(s)?`)) {
       // only reload once after all the deletions
 
-      this.setState({
-        itemCount: this.state.itemCount - this.state.selectedNodeIds.size,
-      } as State)
       Promise.all(this.state.selectedNodeIds.toArray()
         .map((nodeId) => deleteNode(this.lokka, this.props.params.modelName, nodeId)))
         .then(analytics.track('models/browser: deleted node', {
