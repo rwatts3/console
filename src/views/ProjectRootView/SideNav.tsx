@@ -194,7 +194,8 @@ export class SideNav extends React.Component<Props, State> {
           particles.bgDarkBlue,
           particles.f14,
         )}
-        onMouseLeave={() => this.setState({forceShowModels: false} as State)}>
+        onMouseLeave={() => this.setState({forceShowModels: false} as State)}
+      >
         <div className={cx(particles.h100)} style={{ paddingBottom: '70px' }}>
           <ScrollBox>
             {this.renderModels()}
@@ -457,17 +458,22 @@ export class SideNav extends React.Component<Props, State> {
         <ModelsHead to={`/${this.props.params.projectName}/models`}>
           Models
         </ModelsHead>
-        <div className={cx(particles.overflowHidden)} style={{
-          height: this.state.modelsFit
-            ? 'auto' : (this.state.modelsExpanded ? 76 + 41 * this.props.models.length : window.innerHeight - 456),
-          transition: 'height .5s ease',
-        }}>
-          <div className={cx(
-            particles.flex,
-            particles.flexColumn,
-            particles.pt16,
-            this.state.modelsFit ? particles.pb38 : particles.pb60
-          )}>
+        <div
+          className={cx(particles.overflowHidden)}
+          style={{
+            height: this.state.modelsFit
+              ? 'auto' : (this.state.modelsExpanded ? 76 + 41 * this.props.models.length : window.innerHeight - 456),
+            transition: 'height .5s ease',
+          }}
+        >
+          <div
+            className={cx(
+              particles.flex,
+              particles.flexColumn,
+              particles.pt16,
+              this.state.modelsFit ? particles.pb38 : particles.pb60
+            )}
+          >
             {this.props.models && this.props.models.map((model) => (
               <ListElement
                 key={model.name}
@@ -501,7 +507,7 @@ export class SideNav extends React.Component<Props, State> {
             particles.bWhite,
             particles.pointer,
             particles.o60
-           )}
+          )}
           onClick={this.showAddModelPopup}
         >
           <Tether

@@ -72,14 +72,16 @@ class AddProjectPopup extends React.Component<Props, State> {
     `
 
     return (
-      <div className={cx(
-        particles.flex,
-        particles.bgBlack50,
-        particles.w100,
-        particles.h100,
-        particles.justifyCenter,
-        particles.itemsCenter,
-      )}>
+      <div
+        className={cx(
+          particles.flex,
+          particles.bgBlack50,
+          particles.w100,
+          particles.h100,
+          particles.justifyCenter,
+          particles.itemsCenter,
+        )}
+      >
         <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
           <div className={cx(particles.relative, particles.pa60)}>
 
@@ -94,24 +96,28 @@ class AddProjectPopup extends React.Component<Props, State> {
               </Warning>
               <NameInput
                 className={cx(
-                particles.fw3,
-                particles.f38,
-                particles.bNone,
-                particles.lhSolid,
-                particles.tl,
-              )}
-                placeholder="New Project..."
+                  particles.fw3,
+                  particles.f38,
+                  particles.bNone,
+                  particles.lhSolid,
+                  particles.tl,
+                )}
+                type='text'
+                autoFocus
+                placeholder='New Project...'
               />
             </div>
 
           </div>
-          <div className={cx(
-            particles.bt,
-            particles.bBlack10,
-            particles.pa25,
-            particles.flex,
-            particles.justifyBetween,
-          )}>
+          <div
+            className={cx(
+              particles.bt,
+              particles.bBlack10,
+              particles.pa25,
+              particles.flex,
+              particles.justifyBetween,
+            )}
+          >
             <Button onClick={() => this.props.closePopup(this.props.id)}>
               Cancel
             </Button>

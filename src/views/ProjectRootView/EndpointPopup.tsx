@@ -130,14 +130,16 @@ class EndpointPopup extends React.Component<Props, State> {
     `
 
     return (
-      <div className={cx(
-        particles.flex,
-        particles.bgBlack50,
-        particles.w100,
-        particles.h100,
-        particles.justifyCenter,
-        particles.itemsCenter,
-      )}>
+      <div
+        className={cx(
+          particles.flex,
+          particles.bgBlack50,
+          particles.w100,
+          particles.h100,
+          particles.justifyCenter,
+          particles.itemsCenter,
+        )}
+      >
         <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
           <header className={cx(particles.relative, particles.pa60)}>
             <h1 className={cx(particles.fw3, particles.f38, particles.tc)}>
@@ -164,29 +166,33 @@ class EndpointPopup extends React.Component<Props, State> {
             </div>
           </header>
           <Separator>
-            <div className={cx(
-              particles.relative,
-              particles.ph16,
-              particles.bgWhite,
-              particles.f14,
-              particles.fw6,
-              particles.ttu,
-              particles.flex,
-              particles.itemsCenter,
-            )}>
+            <div
+              className={cx(
+                particles.relative,
+                particles.ph16,
+                particles.bgWhite,
+                particles.f14,
+                particles.fw6,
+                particles.ttu,
+                particles.flex,
+                particles.itemsCenter,
+              )}
+            >
               <EndpointType active>Relay</EndpointType>
               <EndpointType>Simple</EndpointType>
               <EndpointType>File</EndpointType>
             </div>
           </Separator>
           <div className={cx(particles.flex, particles.ph38)}>
-            <EndpointField className={cx(
-              particles.f25,
-              particles.fw3,
-              particles.pv38,
-              particles.overflowHidden,
-              particles.relative,
-            )}>
+            <EndpointField
+              className={cx(
+                particles.f25,
+                particles.fw3,
+                particles.pv38,
+                particles.overflowHidden,
+                particles.relative,
+              )}
+            >
               {'https://api.graph.cool/simple/v1/cim2556e300e20plm8aj7e4wo'}
             </EndpointField>
             <Copy
@@ -199,13 +205,15 @@ class EndpointPopup extends React.Component<Props, State> {
                 particles.pointer,
               )}
             >
-              <CopyIndicator className={cx(
-                particles.o0,
-                particles.absolute,
-                particles.f14,
-                particles.fw6,
-                particles.blue,
-              )}>
+              <CopyIndicator
+                className={cx(
+                  particles.o0,
+                  particles.absolute,
+                  particles.f14,
+                  particles.fw6,
+                  particles.blue,
+                )}
+              >
                 Copied
               </CopyIndicator>
               <Icon
@@ -216,13 +224,15 @@ class EndpointPopup extends React.Component<Props, State> {
               />
             </Copy>
           </div>
-          <p className={cx(
-            particles.bt,
-            particles.bBlack10,
-            particles.pa38,
-            particles.lhCopy,
-            particles.black50,
-          )}>
+          <p
+            className={cx(
+              particles.bt,
+              particles.bBlack10,
+              particles.pa38,
+              particles.lhCopy,
+              particles.black50,
+            )}
+          >
             {'Here\'s space for a short description what to do with the endpoint(s). ' +
             'A link to the documentation could also be helpful.'}
           </p>
