@@ -42,7 +42,7 @@ class EndpointPopup extends React.Component<Props, State> {
     `
 
     const activeEndpointType = `
-      background: ${variables.blue};
+      background: ${variables.green};
       padding: 12px;
       border-radius: 2px;
       cursor: default;
@@ -50,7 +50,7 @@ class EndpointPopup extends React.Component<Props, State> {
       
       &:hover {
         color: ${variables.white};
-        background: ${variables.blue};
+        background: ${variables.green};
       }
     `
 
@@ -223,7 +223,8 @@ class EndpointPopup extends React.Component<Props, State> {
             particles.lhCopy,
             particles.black50,
           )}>
-            Here's space for a short description what to do with the endpoint(s). A link to the documentation could also be helpful.
+            {'Here\'s space for a short description what to do with the endpoint(s). ' +
+            'A link to the documentation could also be helpful.'}
           </p>
         </Popup>
       </div>

@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux'
 import {ReduxAction} from '../../types/reducers'
 import {closePopup} from '../../actions/popup'
 import styled from 'styled-components'
-import {particles, variables, Icon} from 'graphcool-styles'
+import {particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 
 interface Props {
@@ -72,46 +72,54 @@ class AddModelPopup extends React.Component<Props, State> {
     `
 
     return (
-      <div className={cx(
-        particles.flex,
-        particles.bgBlack50,
-        particles.w100,
-        particles.h100,
-        particles.justifyCenter,
-        particles.itemsCenter,
-      )}>
+      <div
+        className={cx(
+          particles.flex,
+          particles.bgBlack50,
+          particles.w100,
+          particles.h100,
+          particles.justifyCenter,
+          particles.itemsCenter,
+        )}
+      >
         <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
           <div className={cx(particles.relative, particles.pa60)}>
 
             <div className={cx(particles.relative)}>
-              <Warning className={cx(
-                particles.absolute,
-                particles.left0,
-                particles.orange,
-                particles.f14,
-              )}>
+              <Warning
+                className={cx(
+                  particles.absolute,
+                  particles.left0,
+                  particles.orange,
+                  particles.f14,
+                )}
+              >
                 Models must begin with an uppercase letter
               </Warning>
               <NameInput
                 className={cx(
-                particles.fw3,
-                particles.f38,
-                particles.bNone,
-                particles.lhSolid,
-                particles.tl,
-              )}
-                placeholder="New Model..."
+                  particles.fw3,
+                  particles.f38,
+                  particles.bNone,
+                  particles.lhSolid,
+                  particles.tl,
+                )}
+                type='text'
+                autoFocus
+                placeholder='New Model...'
               />
             </div>
 
           </div>
-          <div className={cx(
-            particles.bt,
-            particles.bBlack10,
-            particles.pa25,
-            particles.flex,
-            particles.justifyBetween,
-          )}>
+          <div
+            className={cx(
+              particles.bt,
+              particles.bBlack10,
+              particles.pa25,
+              particles.flex,
+              particles.justifyBetween,
+            )}
+          >
             <Button onClick={() => this.props.closePopup(this.props.id)}>
               Cancel
             </Button>

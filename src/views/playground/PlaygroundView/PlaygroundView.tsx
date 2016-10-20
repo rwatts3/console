@@ -22,8 +22,6 @@ import {GettingStartedState} from '../../../types/gettingStarted'
 import {nextStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
 
-import {particles} from 'graphcool-styles'
-
 require('graphiql/graphiql.css')
 
 const DASHBOARD_ADMIN = {

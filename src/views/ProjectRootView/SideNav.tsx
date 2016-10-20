@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+// import * as ReactDOM from 'react-dom'
 import * as Relay from 'react-relay'
 import {withRouter, Link} from 'react-router'
 import {connect} from 'react-redux'
@@ -10,9 +10,9 @@ import mapProps from '../../components/MapProps/MapProps'
 // import {validateModelName} from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Tether from '../../components/Tether/Tether'
-import AddModelMutation from '../../mutations/AddModelMutation'
+// import AddModelMutation from '../../mutations/AddModelMutation'
 import {sideNavSyncer} from '../../utils/sideNavSyncer'
-import {onFailureShowNotification} from '../../utils/relay'
+// import {onFailureShowNotification} from '../../utils/relay'
 import {nextStep, showDonePopup} from '../../actions/gettingStarted'
 import {showPopup} from '../../actions/popup'
 import {Project, Viewer, Model} from '../../types/types'
@@ -458,7 +458,8 @@ export class SideNav extends React.Component<Props, State> {
           Models
         </ModelsHead>
         <div className={cx(particles.overflowHidden)} style={{
-          height: this.state.modelsFit ? 'auto' : (this.state.modelsExpanded ? 74 + 36 * this.props.models.length : window.innerHeight - 456),
+          height: this.state.modelsFit
+            ? 'auto' : (this.state.modelsExpanded ? 76 + 41 * this.props.models.length : window.innerHeight - 456),
           transition: 'height .5s ease',
         }}>
           <div className={cx(
@@ -571,63 +572,63 @@ export class SideNav extends React.Component<Props, State> {
     this.props.relay.forceFetch()
   }
 
-  private toggleAddModelInput = () => {
-    if (this.state.addingNewModel && this.state.newModelIsValid) {
-      this.addModel()
-    }
+  // private toggleAddModelInput = () => {
+  //   if (this.state.addingNewModel && this.state.newModelIsValid) {
+  //     this.addModel()
+  //   }
+  //
+  //   this.setState(
+  //     {
+  //       addingNewModel: !this.state.addingNewModel,
+  //     } as State,
+  //     () => {
+  //       if (this.state.addingNewModel) {
+  //         ReactDOM.findDOMNode<HTMLInputElement>(this.refs.newModelInput).focus()
+  //       }
+  //     }
+  //   )
+  // }
 
-    this.setState(
-      {
-        addingNewModel: !this.state.addingNewModel,
-      } as State,
-      () => {
-        if (this.state.addingNewModel) {
-          ReactDOM.findDOMNode<HTMLInputElement>(this.refs.newModelInput).focus()
-        }
-      }
-    )
-  }
-
-  private addModel = () => {
-    const redirect = () => {
-      this.props.router.push(`/${this.props.params.projectName}/models/${this.state.newModelName}`)
-      this.setState({
-        addingNewModel: false,
-        newModelIsValid: true,
-        newModelName: '',
-      } as State)
-    }
-
-    if (this.state.newModelName) {
-      Relay.Store.commitUpdate(
-        new AddModelMutation({
-          modelName: this.state.newModelName,
-          projectId: this.props.project.id,
-        }),
-        {
-          onSuccess: () => {
-            analytics.track('sidenav: created model', {
-              project: this.props.params.projectName,
-              model: this.state.newModelName,
-            })
-            // getting-started onboarding step
-            if (
-              this.state.newModelName === 'Post' &&
-              this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
-            ) {
-              this.props.showDonePopup()
-              this.props.nextStep().then(redirect)
-            } else {
-              redirect()
-            }
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        }
-      )
-    }
-  }
+  // private addModel = () => {
+  //   const redirect = () => {
+  //     this.props.router.push(`/${this.props.params.projectName}/models/${this.state.newModelName}`)
+  //     this.setState({
+  //       addingNewModel: false,
+  //       newModelIsValid: true,
+  //       newModelName: '',
+  //     } as State)
+  //   }
+  //
+  //   if (this.state.newModelName) {
+  //     Relay.Store.commitUpdate(
+  //       new AddModelMutation({
+  //         modelName: this.state.newModelName,
+  //         projectId: this.props.project.id,
+  //       }),
+  //       {
+  //         onSuccess: () => {
+  //           analytics.track('sidenav: created model', {
+  //             project: this.props.params.projectName,
+  //             model: this.state.newModelName,
+  //           })
+  //           // getting-started onboarding step
+  //           if (
+  //             this.state.newModelName === 'Post' &&
+  //             this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
+  //           ) {
+  //             this.props.showDonePopup()
+  //             this.props.nextStep().then(redirect)
+  //           } else {
+  //             redirect()
+  //           }
+  //         },
+  //         onFailure: (transaction) => {
+  //           onFailureShowNotification(transaction, this.props.showNotification)
+  //         },
+  //       }
+  //     )
+  //   }
+  // }
 
   private showEndpointPopup = () => {
     const id = cuid()
