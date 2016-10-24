@@ -30,6 +30,7 @@ interface Props {
   onFocus?: () => void
   onClickOutside?: (moment: Moment) => void
   [key: string]: any
+  active: boolean
 }
 
 interface State {
@@ -102,6 +103,9 @@ export default class DatePicker extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
+    if (!this.props.active) {
+      return
+    }
     // fake event data, as the document doesn't have a value ...
     e.target.value = this.state.moment
     this.props.onKeyDown(e)

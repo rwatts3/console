@@ -14,6 +14,7 @@ interface Props {
   onClickOutside?: (ToggleSide) => void
   onKeyDown?: (e: any) => void
   onBlur?: (e: any) => void
+  active: boolean
 }
 
 interface State {
@@ -82,9 +83,14 @@ export default class ToggleButton extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
+    if (!this.props.active) {
+      return
+    }
     // fake event data, as the document doesn't have a value ...
     e.target.value = this.state.currentSide === ToggleSide.Left ? 'false' : 'true' // tslint:disable-line
-    this.props.onKeyDown(e)
+    if (typeof this.props.onKeyDown === 'function') {
+      this.props.onKeyDown(e)
+    }
   }
 
   private onUpdateSide (side) {

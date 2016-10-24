@@ -264,7 +264,8 @@ class FieldPopup extends React.Component<Props, State> {
                     {this.renderValueInput(
                       this.state.migrationValue,
                       'Migration value',
-                      this.setMigrationValue
+                      this.setMigrationValue,
+                      this.state.useMigrationValue || needsMigrationValue,
                     )}
                   </div>
                 </div>
@@ -554,7 +555,7 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({migrationValue} as State)
   }
 
-  private renderValueInput(value: any, placeholder: string, changeCallback: (v: any) => void) {
+  private renderValueInput(value: any, placeholder: string, changeCallback: (v: any) => void, active: boolean) {
     const field = {
       isList: this.state.isList,
       typeIdentifier: this.state.typeIdentifier,
@@ -571,6 +572,7 @@ class FieldPopup extends React.Component<Props, State> {
           placeholder={placeholder}
           value={valueString}
           onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
+          disabled={!active}
         />
       )
     }
@@ -584,6 +586,7 @@ class FieldPopup extends React.Component<Props, State> {
             placeholder='Default value'
             value={valueString}
             onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
+            disabled={!active}
           />
         )
       case 'Float':
@@ -595,6 +598,7 @@ class FieldPopup extends React.Component<Props, State> {
             placeholder={placeholder}
             value={valueString}
             onChange={(e: any) => changeCallback(e.target.value)}
+            disabled={!active}
           />
         )
       case 'Boolean':
@@ -604,6 +608,7 @@ class FieldPopup extends React.Component<Props, State> {
             rightText='true'
             side={valueString === 'true' ? ToggleSide.Right : ToggleSide.Left}
             onChange={(side) => changeCallback(side === ToggleSide.Left ? false : true)}
+            active={active}
           />
         )
       case 'Enum':
@@ -624,6 +629,7 @@ class FieldPopup extends React.Component<Props, State> {
             onChange={(m) => changeCallback(m.toDate())}
             defaultOpen={false}
             applyImmediately={true}
+            active={active}
           />
         )
       default:
@@ -634,6 +640,7 @@ class FieldPopup extends React.Component<Props, State> {
             placeholder={placeholder}
             value={valueString}
             onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
+            disabled={!active}
           />
         )
     }
