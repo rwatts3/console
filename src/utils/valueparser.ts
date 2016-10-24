@@ -61,7 +61,11 @@ export function atomicValueToString(value: AtomicValue, field: Field, returnNull
 
   const type = field.typeIdentifier
   if (!isScalar(type)) {
-    return (value as NonScalarValue).id
+    const nonScalarValue = value as NonScalarValue
+    if (nonScalarValue && nonScalarValue.hasOwnProperty('id')) {
+      return nonScalarValue.id
+    }
+    return null
   }
 
   switch (type) {

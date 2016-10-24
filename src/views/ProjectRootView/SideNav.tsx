@@ -55,7 +55,7 @@ interface State {
 
 const Section = styled.div`
   padding: ${variables.size38} 0 0;
-  
+
   &:last-child {
     margin-bottom: ${variables.size38}
   }
@@ -65,21 +65,21 @@ const Section = styled.div`
 
 const activeHead = `
   color: ${variables.white};
-  
+
   svg {
     fill: ${variables.white};
     stroke: none !important;
   }
-  
+
   &:hover {
     color: inherit;
-    
+
     svg {
       fill: ${variables.white};
       stroke: none !important;
     }
   }
-  
+
 `
 
 const Head = styled(Link)`
@@ -92,10 +92,10 @@ const Head = styled(Link)`
   font-weight: 600;
   color: ${variables.white60};
   transition: color ${variables.duration} linear;
-  
+
   &:hover {
     color: ${variables.white80};
-    
+
     svg {
       fill: ${variables.white80};
       stroke: none !important;
@@ -112,7 +112,7 @@ const Head = styled(Link)`
     stroke: none !important;
     transition: fill ${variables.duration} linear;
   }
-  
+
   ${props => props.active && activeHead}
 `
 
@@ -126,17 +126,17 @@ const footerSectionStyle = `
   color: ${variables.white60};
   cursor: pointer;
   transition: color ${variables.duration} linear;
-  
+
   > div {
     margin-left: ${variables.size10};
   }
-  
+
   svg {
     fill: ${variables.white60};
     transition: fill ${variables.duration} linear
 
   }
-  
+
   &:hover {
     color: ${variables.white80};
     svg {
@@ -183,7 +183,6 @@ export class SideNav extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.state.modelsFit)
 
     return (
       <div
@@ -307,7 +306,7 @@ export class SideNav extends React.Component<Props, State> {
         fill: none;
         stroke: ${variables.white} !important;
       }
-      
+
       &:hover {
         svg {
           stroke: ${variables.white} !important;
@@ -322,14 +321,14 @@ export class SideNav extends React.Component<Props, State> {
         stroke-width: 4px !important;
         transition: stroke ${variables.duration} linear;
       }
-      
+
       &:hover {
         svg {
           fill: none;
           stroke: ${variables.white80} !important;
         }
       }
-      
+
       ${props => props.active && activeRelationsHead}
     `
 
@@ -392,7 +391,7 @@ export class SideNav extends React.Component<Props, State> {
 
     const AddModel = styled.div`
       margin: -3px -4px 0 0;
-    
+
       svg {
         stroke: ${variables.white};
         stroke-width: 4px;
@@ -412,12 +411,12 @@ export class SideNav extends React.Component<Props, State> {
     const ToggleMore = styled.div`
       height: ${variables.size60};
       background: linear-gradient(to bottom, ${variables.darkerBlue0} 0%, ${variables.darkerBlue} 80%);
-      
+
       svg {
         stroke-width: 4px;
         fill: none;
       }
-      
+
       ${props => props.turned && turnedToggleMore}
     `
 
@@ -436,7 +435,7 @@ export class SideNav extends React.Component<Props, State> {
         background: ${variables.green};
         border-radius: 0 2px 2px 0;
       }
-      
+
       &:hover {
         color: inherit;
       }
@@ -447,7 +446,7 @@ export class SideNav extends React.Component<Props, State> {
       &:hover {
          color: ${variables.white60};
       }
-      
+
       ${props => props.active && activeListElement}
     `
 
