@@ -2,7 +2,6 @@
 @import '~styles/mixins';
 
 .root {
-  @include cellborder($grey2);
   z-index: 9;
   font-size: 12px;
   color: $grey5;
@@ -12,7 +11,17 @@
   position: relative;
   text-overflow: ellipsis;
   cursor: pointer;
-  background-color: #fff;
+
+  .border {
+    width: 100%;
+    flex: 1;
+    @include cellborder($grey2);
+    height: 47px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   .value {
     text-overflow: ellipsis;
@@ -65,13 +74,26 @@
   }
 
   &.editing, &.selected {
-    @include cellborder($accent-blue);
+    .border {
+      @include cellborder($accent-blue);
+    }
     z-index: 10;
     overflow: visible;
   }
 
+  &.editing {
+    .border {
+      height: 52px;
+      box-shadow: none;
+      border: 1px solid $accent-blue;
+      border-radius: 2px;
+    }
+  }
+
   &.invalid {
-    @include cellborder(#F5A623);
+    .border {
+      @include cellborder(#F5A623);
+    }
     z-index: 10;
   }
 

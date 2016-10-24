@@ -5,7 +5,7 @@ import {bindActionCreators} from 'redux'
 import {withRouter} from 'react-router'
 import {
   toggleNodeSelection, clearNodeSelection, setNodeSelection, setScrollTop, setLoading,
-  toggleNewRow, hideNewRow, toggleSearch,
+  hideNewRow, toggleSearch,
 } from '../../../actions/databrowser/ui'
 import {resetDataAndUI} from '../../../actions/databrowser/shared'
 import {
@@ -63,7 +63,6 @@ interface Props {
   closePopup: (id: string) => ReduxAction
   showDonePopup: () => ReduxAction
   newRowActive: boolean
-  toggleNewRow: () => ReduxAction
   hideNewRow: () => ReduxAction
   toggleSearch: () => ReduxAction
   setScrollTop: (scrollTop: number) => ReduxAction
@@ -543,7 +542,6 @@ const mapStateToProps = (state: StateTree) => {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      toggleNewRow,
       hideNewRow,
       toggleSearch,
       setNodeSelection,

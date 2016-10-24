@@ -92,7 +92,9 @@ export class Cell extends React.PureComponent<Props, {}> {
         onDoubleClick={() => this.startEditing()}
         ref='container'
       >
-        {this.renderContent()}
+        <div className={classes.border}>
+          {this.renderContent()}
+        </div>
       </div>
     )
   }

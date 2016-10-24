@@ -27,13 +27,13 @@ export default class NullableCell extends React.Component<Props, State> {
       <div className={classes.root}>
         {this.getSubCell()}
         <div
-          className={classnames(classes.button, classes.red)}
+          className={classnames(classes.button, classes.blue)}
           onMouseEnter={() => this.setState({isOverNullButton: true})}
           onMouseLeave={() => this.setState({isOverNullButton: false})}
           onClick={() => this.props.save(null)}
         >
           <div>
-            Set to null
+          null
           </div>
         </div>
       </div>
