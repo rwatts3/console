@@ -21,7 +21,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: -2px;
   }
 
   .value {
@@ -88,6 +87,7 @@
       box-shadow: none;
       border: 1px solid $accent-blue;
       border-radius: 2px;
+      margin-right: -2px;
     }
   }
 
