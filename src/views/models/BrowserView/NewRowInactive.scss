@@ -3,7 +3,9 @@
 
 .root {
   display: flex;
-  cursor: pointer;
+  &.active {
+    cursor: pointer;
+  }
 }
 
 .empty {

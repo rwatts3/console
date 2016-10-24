@@ -13,14 +13,32 @@ interface Props {
   height: number
 }
 
-class NewRowInactive extends React.Component<Props, {}> {
+interface State {
+  active: boolean
+}
+
+class NewRowInactive extends React.Component<Props, State> {
+
+  state = {
+    active: this.isActive(),
+  }
+
+  componentDidMount() {
+    this.setActive()
+  }
+
+  componentDidReceiveProps() {
+    this.setActive()
+  }
 
   render() {
     const fields = this.props.model.fields.edges
       .map((edge) => edge.node)
 
     return (
-      <div className={classes.root} onClick={() => this.props.toggleNewRow(fields)}>
+      <div className={classnames(classes.root, {
+        [classes.active]: this.state.active,
+      })} onClick={() => this.toggleNewRow(fields)}>
         {fields.map(function(field, index) {
           return (
             <div
@@ -58,6 +76,28 @@ class NewRowInactive extends React.Component<Props, {}> {
         </div>
       </div>
     )
+  }
+
+  private isActive = () => {
+    const { model } = this.props
+    const BLACKLIST = ['User', 'File']
+    return (!model.isSystem && !BLACKLIST.includes(model.name))
+  }
+
+  private setActive = () => {
+    const active = this.isActive()
+
+    this.setState({
+      active,
+    })
+  }
+
+  private toggleNewRow = (fields: Field[]) => {
+    // TODO get isSystem properly from the system api
+    if (this.state.active) {
+      console.log('toggling')
+      this.props.toggleNewRow(fields)
+    }
   }
 
 }
