@@ -172,6 +172,7 @@ export class SideNav extends React.Component<Props, State> {
   componentDidMount() {
     // subscribe to sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(this.fetch, this)
+    this.setModelsFit()
     window.addEventListener('resize', this.setModelsFit)
   }
 
