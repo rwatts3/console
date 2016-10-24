@@ -8,10 +8,19 @@
 }
 
 .label {
-  font-size: 14px;
-  font-weight: 600;
-  color: $grey4;
+  font-size: 12px;
+  color: $gray30;
   cursor: pointer;
+  border-radius: 1px;
+  width: 60px;
+  text-align: center;
+  line-height: 30px;
+  height: 30px;
+  background: $gray07;
+  &.active, &:hover {
+    color: #fff;
+    background: $accent-blue;
+  }
 }
 
 .sliderContainer {

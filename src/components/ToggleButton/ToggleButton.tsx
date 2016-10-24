@@ -1,5 +1,6 @@
 import * as React from 'react'
 const classes: any = require('./ToggleButton.scss')
+import {classnames} from '../../utils/classnames'
 
 export enum ToggleSide {
   Left,
@@ -50,24 +51,22 @@ export default class ToggleButton extends React.Component<Props, State> {
   render() {
     return (
       <div
-        className={classes.root}
+        className={classnames(classes.root)}
         ref='container'
         onBlur={this.props.onBlur}
       >
         <span
-          className={classes.label}
+          className={classnames(classes.label, {
+            [classes.active]: this.state.currentSide === ToggleSide.Left,
+          })}
           onClick={() => this.onUpdateSide(ToggleSide.Left)}
         >
           {this.props.leftText}
         </span>
         <span
-          className={`${classes.sliderContainer} ${this.state.currentSide === ToggleSide.Right ? classes.active : ''}`}
-          onClick={() => this.toggle()}
-        >
-          <span className={classes.slider}></span>
-        </span>
-        <span
-          className={classes.label}
+          className={classnames(classes.label, {
+            [classes.active]: this.state.currentSide === ToggleSide.Right,
+          })}
           onClick={() => this.onUpdateSide(ToggleSide.Right)}
         >
           {this.props.rightText}
@@ -87,7 +86,7 @@ export default class ToggleButton extends React.Component<Props, State> {
       return
     }
     // fake event data, as the document doesn't have a value ...
-    e.target.value = this.state.currentSide === ToggleSide.Left ? 'false' : 'true' // tslint:disable-line
+    e.target.value = this.state.currentSide === ToggleSide.Left ? 'true' : 'false' // tslint:disable-line
     if (typeof this.props.onKeyDown === 'function') {
       this.props.onKeyDown(e)
     }

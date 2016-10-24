@@ -289,7 +289,8 @@ class FieldPopup extends React.Component<Props, State> {
                     {this.renderValueInput(
                       this.state.defaultValue,
                       'Default value',
-                      this.setDefaultValue
+                      this.setDefaultValue,
+                      this.state.useDefaultValue,
                     )}
                   </div>
                 </div>
