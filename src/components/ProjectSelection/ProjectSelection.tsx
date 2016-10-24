@@ -45,12 +45,12 @@ export default class ProjectSelection extends React.Component<Props, State> {
   render () {
 
     const expandedRoot = `
-      background: ${variables.green} !important  
+      background: ${variables.green} !important
     `
 
     const Root = styled.div`
       &:hover {
-        
+
       }
       ${props => props.expanded && expandedRoot}
 
@@ -70,11 +70,11 @@ export default class ProjectSelection extends React.Component<Props, State> {
         stroke: ${variables.white};
         stroke-width: 4px;
       }
-            
+
       ${props => props.turned && turnedArrow }
     `
 
-    const SettingsLink = styled.div`
+    const SettingsLink = styled(Link)`
       padding: ${variables.size10};
       background: ${variables.gray10};
       font-size: ${variables.size14};
@@ -89,20 +89,20 @@ export default class ProjectSelection extends React.Component<Props, State> {
       cursor: pointer;
       border-radius: 2px;
       transition: color ${variables.duration} linear, background ${variables.duration} linear;
-      
+
       svg {
         fill: ${variables.white60};
         transition: fill ${variables.duration} linear;
       }
-      
+
       > div {
         margin-left: 10px;
       }
-      
+
       &:hover {
         color: ${variables.white};
         background: ${variables.gray20};
-        
+
         svg {
           fill: ${variables.white};
         }
@@ -111,7 +111,7 @@ export default class ProjectSelection extends React.Component<Props, State> {
 
     const activeListItem = `
       color: ${variables.white};
-    
+
       &:before {
         content: "";
         position: absolute;
@@ -126,26 +126,26 @@ export default class ProjectSelection extends React.Component<Props, State> {
 
     const ListItem = styled(Link)`
       transition: color ${variables.duration} linear;
-      
+
       svg {
         display: none;
         fill: ${variables.white};
       }
-      
+
       &:hover {
         color: ${variables.white};
-        
+
         svg {
           display: block;
         }
       }
-      
+
       ${props => props.active && activeListItem}
     `
 
     const AddProject = styled.div`
       margin: -3px -4px 0 0;
-    
+
       svg {
         stroke: ${variables.white};
         stroke-width: 4px;
@@ -249,11 +249,11 @@ export default class ProjectSelection extends React.Component<Props, State> {
               particles.flex,
               particles.justifyBetween,
             )}>
-              <SettingsLink>
+              <SettingsLink to={`/${this.props.params.projectName}/settings`}>
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
                 <div>Settings</div>
               </SettingsLink>
-              <SettingsLink className={cx(particles.ml10)}>
+              <SettingsLink className={cx(particles.ml10)} to={`/${this.props.params.projectName}/account/settings`}>
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/user.svg')}/>
                 <div>Account</div>
               </SettingsLink>
