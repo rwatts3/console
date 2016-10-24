@@ -10,12 +10,18 @@ import * as cx from 'classnames'
 interface Props {
   id: string
   closePopup: (id: string) => ReduxAction
-  }
+  saveModel: (modelName: string) => ReduxAction
+}
 
-  interface State {
+interface State {
+  modelName: string
 }
 
 class AddModelPopup extends React.Component<Props, State> {
+
+  state = {
+    modelName: '',
+  }
 
   render() {
 
@@ -29,11 +35,11 @@ class AddModelPopup extends React.Component<Props, State> {
       color: ${variables.gray20};
       opacity: 1;
     }
-      &::-moz-placeholder { 
+      &::-moz-placeholder {
         color: ${variables.gray20};
         opacity: 1;
       }
-      &:-ms-input-placeholder { 
+      &:-ms-input-placeholder {
         color: ${variables.gray20};
         opacity: 1;
       }
@@ -56,7 +62,7 @@ class AddModelPopup extends React.Component<Props, State> {
       border-radius: 2px;
       cursor: pointer;
       transition: color ${variables.duration} linear;
-      
+
       &:hover {
         color: ${variables.gray70};
       }
@@ -65,7 +71,7 @@ class AddModelPopup extends React.Component<Props, State> {
     const SaveButton = styled(Button)`
       background: ${variables.green};
       color: ${variables.white};
-      
+
       &:hover {
         color: ${variables.white};
       }
@@ -107,6 +113,9 @@ class AddModelPopup extends React.Component<Props, State> {
                 type='text'
                 autoFocus
                 placeholder='New Model...'
+                value={this.state.modelName}
+                onChange={e => this.setState({modelName: e.target.value})}
+                onKeyDown={e => e.keyCode === 13 && this.saveModel()}
               />
             </div>
 
@@ -123,7 +132,7 @@ class AddModelPopup extends React.Component<Props, State> {
             <Button onClick={() => this.props.closePopup(this.props.id)}>
               Cancel
             </Button>
-            <SaveButton>
+            <SaveButton onClick={this.saveModel}>
               Create
             </SaveButton>
           </div>
@@ -131,6 +140,12 @@ class AddModelPopup extends React.Component<Props, State> {
       </div>
     )
   }
+
+  private saveModel = () => {
+    this.props.saveModel(this.state.modelName)
+    this.props.closePopup(this.props.id)
+  }
+
 }
 
 const mapStateToProps = (state) => ({})

@@ -10,9 +10,9 @@ import mapProps from '../../components/MapProps/MapProps'
 // import {validateModelName} from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Tether from '../../components/Tether/Tether'
-// import AddModelMutation from '../../mutations/AddModelMutation'
+import AddModelMutation from '../../mutations/AddModelMutation'
 import {sideNavSyncer} from '../../utils/sideNavSyncer'
-// import {onFailureShowNotification} from '../../utils/relay'
+import {onFailureShowNotification} from '../../utils/relay'
 import {nextStep, showDonePopup} from '../../actions/gettingStarted'
 import {showPopup} from '../../actions/popup'
 import {Project, Viewer, Model} from '../../types/types'
@@ -577,7 +577,7 @@ export class SideNav extends React.Component<Props, State> {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
     this.props.relay.forceFetch()
   }
-
+  //
   // private toggleAddModelInput = () => {
   //   if (this.state.addingNewModel && this.state.newModelIsValid) {
   //     this.addModel()
@@ -595,46 +595,45 @@ export class SideNav extends React.Component<Props, State> {
   //   )
   // }
 
-  // private addModel = () => {
-  //   const redirect = () => {
-  //     this.props.router.push(`/${this.props.params.projectName}/models/${this.state.newModelName}`)
-  //     this.setState({
-  //       addingNewModel: false,
-  //       newModelIsValid: true,
-  //       newModelName: '',
-  //     } as State)
-  //   }
-  //
-  //   if (this.state.newModelName) {
-  //     Relay.Store.commitUpdate(
-  //       new AddModelMutation({
-  //         modelName: this.state.newModelName,
-  //         projectId: this.props.project.id,
-  //       }),
-  //       {
-  //         onSuccess: () => {
-  //           analytics.track('sidenav: created model', {
-  //             project: this.props.params.projectName,
-  //             model: this.state.newModelName,
-  //           })
-  //           // getting-started onboarding step
-  //           if (
-  //             this.state.newModelName === 'Post' &&
-  //             this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
-  //           ) {
-  //             this.props.showDonePopup()
-  //             this.props.nextStep().then(redirect)
-  //           } else {
-  //             redirect()
-  //           }
-  //         },
-  //         onFailure: (transaction) => {
-  //           onFailureShowNotification(transaction, this.props.showNotification)
-  //         },
-  //       }
-  //     )
-  //   }
-  // }
+  private addModel = (modelName: string) => {
+    const redirect = () => {
+      this.props.router.push(`/${this.props.params.projectName}/models/${modelName}`)
+      this.setState({
+        addingNewModel: false,
+        newModelIsValid: true,
+      } as State)
+    }
+
+    if (modelName) {
+      Relay.Store.commitUpdate(
+        new AddModelMutation({
+          modelName,
+          projectId: this.props.project.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('sidenav: created model', {
+              project: this.props.params.projectName,
+              model: modelName,
+            })
+            // getting-started onboarding step
+            if (
+              modelName === 'Post' &&
+              this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
+            ) {
+              this.props.showDonePopup()
+              this.props.nextStep().then(redirect)
+            } else {
+              redirect()
+            }
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        }
+      )
+    }
+  }
 
   private showEndpointPopup = () => {
     const id = cuid()
@@ -647,9 +646,13 @@ export class SideNav extends React.Component<Props, State> {
   private showAddModelPopup = () => {
     const id = cuid()
     this.props.showPopup({
-      element: <AddModelPopup id={id}/>,
+      element: <AddModelPopup id={id} saveModel={this.saveModel} />,
       id,
     })
+  }
+
+  private saveModel = (modelName: string) => {
+    this.addModel(modelName)
   }
 }
 
