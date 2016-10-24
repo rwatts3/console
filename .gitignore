@@ -12,3 +12,4 @@ lib
 .envrc
 .netlify
 yarn.lock
+.tags
