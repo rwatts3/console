@@ -19,8 +19,12 @@ interface State {
 
 class NewRowInactive extends React.Component<Props, State> {
 
-  state = {
-    active: this.isActive(),
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      active: this.isActive(),
+    }
   }
 
   componentDidMount() {
