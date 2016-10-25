@@ -85,6 +85,14 @@ export default class ToggleButton extends React.Component<Props, State> {
     if (!this.props.active) {
       return
     }
+
+    // space key
+    if (e.keyCode === 32) {
+      this.toggle()
+      e.stopPropagation()
+      return
+    }
+
     // fake event data, as the document doesn't have a value ...
     e.target.value = this.state.currentSide === ToggleSide.Left ? 'true' : 'false' // tslint:disable-line
     if (typeof this.props.onKeyDown === 'function') {
@@ -97,6 +105,10 @@ export default class ToggleButton extends React.Component<Props, State> {
     if (this.props.onChange) {
       this.props.onChange(side)
     }
+  }
+
+  private toggle () {
+    this.onUpdateSide(this.state.currentSide === ToggleSide.Left ? ToggleSide.Right : ToggleSide.Left)
   }
 
 }

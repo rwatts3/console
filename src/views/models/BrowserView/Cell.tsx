@@ -89,7 +89,10 @@ export class Cell extends React.PureComponent<Props, {}> {
         className={rootClassnames}
         onClick={() => (this.props.addnew || this.props.selected)
           ? this.startEditing() : this.props.selectCell(this.props.position)}
-        onDoubleClick={() => this.startEditing()}
+        onDoubleClick={(e) => {
+          this.stopEvent(e)
+          this.startEditing()
+        }}
         ref='container'
       >
         <div className={classes.border}>
