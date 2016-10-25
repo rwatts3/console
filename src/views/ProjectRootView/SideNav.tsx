@@ -25,6 +25,7 @@ import AddModelPopup from './AddModelPopup'
 import styled from 'styled-components'
 import * as cx from 'classnames'
 import {particles, variables, Icon} from 'graphcool-styles'
+import { ExcludeProps } from '../../utils/components'
 
 interface Props {
   params: any
@@ -82,7 +83,7 @@ const activeHead = `
 
 `
 
-const Head = styled(Link)`
+const Head = styled(ExcludeProps(Link, ['active']))`
   letter-spacing: 1px;
   line-height: 1;
   padding: 0 ${variables.size25};
@@ -440,7 +441,7 @@ export class SideNav extends React.Component<Props, State> {
         color: inherit;
       }
     `
-    const ListElement = styled(Link)`
+    const ListElement = styled(ExcludeProps(Link, ['active']))`
       transition: color ${variables.duration} linear;
 
       &:hover {
