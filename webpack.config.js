@@ -93,6 +93,9 @@ module.exports = {
       __SEGMENT_TOKEN__: '"mxShPAuQCvtbX7K1u5xcmFeqz9X7S7HN"',
       __ENABLE_SEGMENT__: false,
       __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
+      'process.env': {
+        'NODE_ENV': JSON.stringify('dev')
+      },
     }),
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',

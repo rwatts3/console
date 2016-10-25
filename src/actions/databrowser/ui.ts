@@ -140,7 +140,7 @@ export function nextCell(fields: Field[]): ReduxThunk {
     if (i === fields.length - 1) {
       // last in the row, so go to first of next row
       dispatch(selectCell({
-        row: ((selectedCell.row + (newRowActive ? 0 : 1)) % nodes.size),
+        row: (selectedCell.row + (newRowActive ? 0 : 1)) % nodes.size,
         field: fields[0].name,
       }))
     } else {
@@ -165,7 +165,7 @@ export function previousCell(fields: Field[]): ReduxThunk {
     if (i === 0) {
       // last in the row, so go to last of prev row
       dispatch(selectCell({
-        row: selectedCell.row + (newRowActive ? 0 : (nodes.size - 1)) % nodes.size,
+        row: (selectedCell.row + (newRowActive ? 0 : (nodes.size - 1))) % nodes.size,
         field: fields[fields.length - 1].name,
       }))
     } else {

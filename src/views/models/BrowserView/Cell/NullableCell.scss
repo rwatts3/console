@@ -3,17 +3,22 @@
 
 .root {
   width: 100%;
+  position: relative;
+  display: flex;
+  min-height: 52px;
 }
 
 .button {
   position: absolute;
-  top: -2px;
+  top: -1px;
   left: -47px;
   width: 50px;
+  height: calc(100% + 2px);
+  min-height: 52px;
   @include button;
   border-radius: 2px;
   border-right: none;
-  padding: 14px 10px;
+  padding: 10px;
 
   &.blue {
     border-color: rgb(74, 144, 226);

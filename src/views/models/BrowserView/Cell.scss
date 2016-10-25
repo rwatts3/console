@@ -45,15 +45,10 @@
   }
 
   textarea {
-    width: 105%;
-    height: 150%;
-    min-width: 100%;
-    min-height: 100%;
-    padding: 15px 20px;
     background: #fff;
     border: 0;
-    @include cellborder($accent-blue);
-    position: absolute;
+    margin-bottom: 10px;
+    padding: 10px;
   }
 
   select {
@@ -83,7 +78,9 @@
   &.editing {
     .border {
       background: #fff;
-      height: 52px;
+      height: auto;
+      min-height: 52px;
+      width: auto;
       box-shadow: none;
       border: 1px solid $accent-blue;
       border-radius: 2px;

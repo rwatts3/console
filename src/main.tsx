@@ -6,7 +6,7 @@ import { default as useRelay } from 'react-router-relay'
 import {Router, browserHistory, applyRouterMiddleware} from 'react-router'
 import routes from './routes'
 import {updateNetworkLayer} from './utils/relay'
-import {createStore, applyMiddleware, combineReducers, compose} from 'redux'
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
 import {Provider} from 'react-redux'
 import * as thunk from 'redux-thunk'
 import * as cookiestore from 'cookiestore'
@@ -19,6 +19,7 @@ import { reduceData as reduceDataBrowserData } from './reducers/databrowser/data
 import { reduceUI as reduceDataBrowserUI } from './reducers/databrowser/ui'
 import { reduceNotification } from './reducers/notification'
 import { StateTree } from './types/reducers'
+import logger from 'redux-logger'
 
 import loadAnalytics from './utils/analytics'
 
@@ -52,18 +53,18 @@ const reducers: StateTree = combineReducers({
     data: reduceDataBrowserData,
     ui: reduceDataBrowserUI,
   }),
-  // lastAction: (state, action) => action || null,
 })
 
+let middlewares = [thunk.default]
+
+if (process.env.NODE_ENV !== 'production') {
+  middlewares.push(logger())
+}
+
 const store = createStore(reducers, compose(
-  applyMiddleware(thunk.default),
+  applyMiddleware(...middlewares),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 ))
-
-// store.subscribe(() => {
-//   const { lastAction, databrowser: { data } } = store.getState()
-  // console.log(lastAction, data.nodes)
-// })
 
 store.dispatch(fetchGettingStartedState())
 

@@ -17,7 +17,7 @@
   line-height: 30px;
   height: 30px;
   background: $gray07;
-  &.active, &:hover {
+  &.active {
     color: #fff;
     background: $accent-blue;
   }
