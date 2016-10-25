@@ -85,10 +85,11 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 width={this.props.width}
                 height={this.props.height - this.props.headerHeight - this.props.addRowHeight}
                 style={{
-                  overflow: 'scroll',
+                  overflow: 'visible',
                   position: 'absolute',
                   width: 'auto',
                   left: 0,
+                  zIndex: 3,
 
                   // -1 as we have don't want to have a double border
                   top: this.props.headerHeight + this.props.addRowHeight,

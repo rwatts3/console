@@ -14,6 +14,8 @@ export default class StringCell extends React.Component<CellProps<string>, State
   }
 
   render() {
+    const numLines = this.props.value.split(/\r\n|\r|\n/).length
+
     return (
       <Tether
         steps={[{
@@ -41,6 +43,9 @@ export default class StringCell extends React.Component<CellProps<string>, State
           ref='input'
           defaultValue={this.props.value}
           onKeyDown={this.props.onKeyDown}
+          style={{
+            height: Math.min(Math.max(56, numLines * 20), 300),
+          }}
           onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
         />
       </Tether>

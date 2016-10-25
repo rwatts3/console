@@ -17,6 +17,7 @@ if (Datetime) {
 }
 
 require('react-datetime/css/react-datetime.css')
+require('./react-datetime.override.css')
 
 interface Props {
   applyImmediately: boolean
@@ -91,12 +92,6 @@ export default class DatePicker extends React.Component<Props, State> {
             onChange={(m) => this.onChange(m)}
             open={this.state.open}
           />
-          {!this.props.applyImmediately && this.state.open &&
-            <div className={classes.buttons}>
-              <span onClick={() => this.applyChange(this.state.moment)}>Ok</span>
-              <span onClick={() => this.onCancel()}>Cancel</span>
-            </div>
-          }
         </ClickOutside>
       </div>
     )
@@ -122,13 +117,6 @@ export default class DatePicker extends React.Component<Props, State> {
   private applyChange (m: Moment) {
     this.setState({ open: false } as State)
     this.props.onChange(m)
-  }
-
-  private onCancel () {
-    this.setState({ open: false } as State)
-    if (this.props.onCancel) {
-      this.props.onCancel()
-    }
   }
 
   private markOpen () {

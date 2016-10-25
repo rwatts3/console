@@ -99,7 +99,4 @@ export default class ToggleButton extends React.Component<Props, State> {
     }
   }
 
-  private toggle () {
-    this.onUpdateSide(this.state.currentSide === ToggleSide.Left ? ToggleSide.Right : ToggleSide.Left)
-  }
 }
