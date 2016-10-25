@@ -42,7 +42,7 @@ export default class StringCell extends React.Component<CellProps<string>, State
           type='text'
           ref='input'
           defaultValue={this.props.value}
-          onKeyDown={this.props.onKeyDown}
+          onKeyDown={this.onKeyDown}
           style={{
             height: Math.min(Math.max(56, numLines * 20), 300),
           }}
@@ -50,5 +50,12 @@ export default class StringCell extends React.Component<CellProps<string>, State
         />
       </Tether>
     )
+  }
+
+  private onKeyDown = (e: any) => {
+    if ([37,38,39,40].includes(e.keyCode)) {
+      return
+    }
+    this.props.onKeyDown(e)
   }
 }
