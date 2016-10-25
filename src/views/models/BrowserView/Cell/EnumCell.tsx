@@ -2,6 +2,7 @@ import * as React from 'react'
 import {CellProps} from './cells'
 import {stringToValue} from '../../../../utils/valueparser'
 import { Combobox } from 'react-input-enhancements'
+const classes: any = require('./EnumCell.scss')
 
 interface State {
   value: string
@@ -20,24 +21,29 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
 
   render() {
     return (
+      <div className={classes.root}>
       <Combobox
         ref={ref => this.ref = ref}
         value={this.state.value}
         onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
         onKeyDown={this.onKeyDown.bind(this)}
         options={this.props.field.enumValues}
-        onSelect={(value: string) => this.setState({value})}
+        onSelect={(value: string) => {
+          this.props.save(stringToValue(value, this.props.field))
+        }}
         autosize
+        className={classes.root}
       >
-        {inputProps =>
-          <input
+        {inputProps => {
+          return <input
             {...inputProps}
             type='text'
             placeholder='No Value'
             autoFocus
           />
-        }
+        }}
       </Combobox>
+      </div>
     )
   }
 

@@ -76,7 +76,7 @@
     "react-datetime": "^2.4.0",
     "react-dom": "^15.2.1",
     "react-helmet": "^3.1.0",
-    "react-input-enhancements": "^0.5.3",
+    "react-input-enhancements": "github:timsuchanek/react-input-enhancements",
     "react-notification-system": "^0.2.7",
     "react-redux": "^4.4.5",
     "react-relay": "^0.9.3",
