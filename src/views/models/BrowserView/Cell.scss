@@ -17,7 +17,6 @@
     flex: 1;
     @include cellborder($grey2);
     height: 47px;
-    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -83,6 +82,7 @@
 
   &.editing {
     .border {
+      background: #fff;
       height: 52px;
       box-shadow: none;
       border: 1px solid $accent-blue;
