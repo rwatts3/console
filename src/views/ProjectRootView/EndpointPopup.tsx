@@ -5,17 +5,28 @@ import {ReduxAction} from '../../types/reducers'
 import {closePopup} from '../../actions/popup'
 import styled, { keyframes } from 'styled-components'
 import {particles, variables, Icon} from 'graphcool-styles'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
 
 interface Props {
   id: string
+  projectId: string
   closePopup: (id: string) => ReduxAction
 }
 
 interface State {
+  endpoint: Endpoint
+  copied: boolean
 }
 
+type Endpoint = 'simple/v1' | 'relay/v1' | 'file/v1'
+
 class EndpointPopup extends React.Component<Props, State> {
+
+  state = {
+    endpoint: 'simple/v1' as Endpoint,
+    copied: false,
+  }
 
   render() {
 
@@ -25,11 +36,11 @@ class EndpointPopup extends React.Component<Props, State> {
     `
 
     const Separator = styled.div`
-      
+
       position: relative;
       display: flex;
       justify-content: center;
-    
+
       &:before {
         content: "";
         position: absolute;
@@ -47,7 +58,7 @@ class EndpointPopup extends React.Component<Props, State> {
       border-radius: 2px;
       cursor: default;
       color: ${variables.white};
-      
+
       &:hover {
         color: ${variables.white};
         background: ${variables.green};
@@ -61,22 +72,22 @@ class EndpointPopup extends React.Component<Props, State> {
       letter-spacing: 1px;
       cursor: pointer;
       transition: color ${variables.duration} linear, background ${variables.duration} linear;
-      
+
       &:first-child {
         border-top-left-radius: 2px;
         border-bottom-right-radius: 2px;
       }
-      
+
       &:last-child {
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
       }
-      
+
       &:hover {
         background: ${variables.gray10};
         color: ${variables.gray50};
       }
-      
+
      ${props => props.active && activeEndpointType}
     `
 
@@ -96,12 +107,12 @@ class EndpointPopup extends React.Component<Props, State> {
       i {
         transition: fill ${variables.duration} linear, background ${variables.duration} linear;
       }
-    
+
       &:hover {
         i {
           background: ${variables.gray04};
           fill: ${variables.gray60};
-        } 
+        }
       }
     `
 
@@ -110,11 +121,11 @@ class EndpointPopup extends React.Component<Props, State> {
         opacity: 0;
         transform: translate(-50%, 0);
       }
-      
+
       50% {
         opacity: 1;
       }
-    
+
       100% {
         opacity: 0;
         transform: translate(-50%, -50px);
@@ -126,8 +137,13 @@ class EndpointPopup extends React.Component<Props, State> {
       left: 50%;
       transform: translate(-50%,0);
       animation: ${movingCopyIndicator} .7s linear
-      
+
     `
+
+    const { endpoint, copied } = this.state
+    const { projectId } = this.props
+
+    const url = `https://api.graph.cool/${endpoint}/${projectId}`
 
     return (
       <div
@@ -178,9 +194,24 @@ class EndpointPopup extends React.Component<Props, State> {
                 particles.itemsCenter,
               )}
             >
-              <EndpointType active>Relay</EndpointType>
-              <EndpointType>Simple</EndpointType>
-              <EndpointType>File</EndpointType>
+              <EndpointType
+                active={endpoint === 'relay/v1'}
+                onClick={() => this.selectEndpoint('relay/v1')}
+              >
+                Relay
+              </EndpointType>
+              <EndpointType
+                active={endpoint === 'simple/v1'}
+                onClick={() => this.selectEndpoint('simple/v1')}
+              >
+                Simple
+              </EndpointType>
+              <EndpointType
+                active={endpoint === 'file/v1'}
+                onClick={() => this.selectEndpoint('file/v1')}
+              >
+                File
+              </EndpointType>
             </div>
           </Separator>
           <div className={cx(particles.flex, particles.ph38)}>
@@ -193,36 +224,41 @@ class EndpointPopup extends React.Component<Props, State> {
                 particles.relative,
               )}
             >
-              {'https://api.graph.cool/simple/v1/cim2556e300e20plm8aj7e4wo'}
+              {url}
             </EndpointField>
-            <Copy
-              className={cx(
-                particles.relative,
-                particles.bgWhite,
-                particles.selfCenter,
-                particles.br2,
-                particles.buttonShadow,
-                particles.pointer,
-              )}
-            >
-              <CopyIndicator
+            <CopyToClipboard text={url}
+              onCopy={this.onCopy}>
+              <Copy
                 className={cx(
-                  particles.o0,
-                  particles.absolute,
-                  particles.f14,
-                  particles.fw6,
-                  particles.blue,
+                  particles.relative,
+                  particles.bgWhite,
+                  particles.selfCenter,
+                  particles.br2,
+                  particles.buttonShadow,
+                  particles.pointer,
                 )}
               >
-                Copied
-              </CopyIndicator>
-              <Icon
-                width={38}
-                height={38}
-                color={variables.gray50}
-                src={require('graphcool-styles/icons/fill/copy.svg')}
-              />
-            </Copy>
+                {copied && (
+                  <CopyIndicator
+                    className={cx(
+                      particles.o0,
+                      particles.absolute,
+                      particles.f14,
+                      particles.fw6,
+                      particles.blue,
+                    )}
+                  >
+                    Copied
+                  </CopyIndicator>
+                )}
+                <Icon
+                  width={38}
+                  height={38}
+                  color={variables.gray50}
+                  src={require('graphcool-styles/icons/fill/copy.svg')}
+                />
+              </Copy>
+            </CopyToClipboard>
           </div>
           <p
             className={cx(
@@ -238,6 +274,21 @@ class EndpointPopup extends React.Component<Props, State> {
           </p>
         </Popup>
       </div>
+    )
+  }
+
+  private selectEndpoint = (endpoint: Endpoint) => {
+    this.setState({ endpoint } as State)
+  }
+
+  private onCopy = () => {
+    this.setState({ copied: true } as State)
+    // first show the animation
+    setTimeout(
+      () => {
+        this.props.closePopup(this.props.id)
+      },
+      1000
     )
   }
 }

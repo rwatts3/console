@@ -639,7 +639,7 @@ export class SideNav extends React.Component<Props, State> {
   private showEndpointPopup = () => {
     const id = cuid()
     this.props.showPopup({
-      element: <EndpointPopup id={id}/>,
+      element: <EndpointPopup id={id} projectId={this.props.project.id} />,
       id,
     })
   }
