@@ -33,6 +33,7 @@ declare module 'nock'
 declare module 'identity-obj-proxy'
 declare module 'styled-components' // https://github.com/styled-components/styled-components/issues/89
 declare module 'redux-logger'
+declare module 'react-input-enhancements'
 declare var Smooch: any
 declare var analytics: any
 declare var __BACKEND_ADDR__: any

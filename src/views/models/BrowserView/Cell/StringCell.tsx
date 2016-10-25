@@ -53,6 +53,7 @@ export default class StringCell extends React.Component<CellProps<string>, State
   }
 
   private onKeyDown = (e: any) => {
+    // filter arrow keys
     if ([37,38,39,40].includes(e.keyCode)) {
       return
     }

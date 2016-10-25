@@ -10,16 +10,19 @@ exports[`test Cell renders and runs selectCell 1`] = `
       "overflow": "visible",
     }
   }>
-  <span
-    className="value"
-    onKeyDown={[Function]}
-    style={
-      Object {
-        "cursor": "auto",
-      }
-    }>
-    some string
-  </span>
+  <div
+    className="border">
+    <span
+      className="value"
+      onKeyDown={[Function]}
+      style={
+        Object {
+          "cursor": "auto",
+        }
+      }>
+      some string
+    </span>
+  </div>
 </div>
 `;
 
@@ -35,32 +38,42 @@ exports[`test Cell renders in edit mode 1`] = `
       "overflow": "visible",
     }
   }>
-  <NullableCell
-    cell={
-      <function StringCell() {
-              var _this = _super.apply(this, arguments) || this;
-              _this.state = {
-                  mouseOverTether: false
-              };
-              return _this;
+  <div
+    className="border">
+    <NullableCell
+      cell={
+        <function StringCell() {
+                var _this = _super.apply(this, arguments) || this;
+                _this.state = {
+                    mouseOverTether: false
+                };
+                _this.onKeyDown = function (e) {
+                    // filter arrow keys
+                    if ([37, 38, 39, 40].includes(e.keyCode)) {
+                        return;
+                    }
+                    _this.props.onKeyDown(e);
+                };
+                return _this;
+            }
+          cancel={[Function]}
+          field={
+            Object {
+              "description": "",
+              "id": "cip3p48sj001e1jsmghwkdt2k",
+              "isList": false,
+              "isReadonly": true,
+              "isSystem": true,
+              "name": "description",
+              "relatedModel": null,
+              "typeIdentifier": "String",
+            }
           }
-        cancel={[Function]}
-        field={
-          Object {
-            "description": "",
-            "id": "cip3p48sj001e1jsmghwkdt2k",
-            "isList": false,
-            "isReadonly": true,
-            "isSystem": true,
-            "name": "description",
-            "relatedModel": null,
-            "typeIdentifier": "String",
-          }
-        }
-        onKeyDown={[Function]}
-        save={[Function]}
-        value="some string" />
-    }
-    save={[Function]} />
+          onKeyDown={[Function]}
+          save={[Function]}
+          value="some string" />
+      }
+      save={[Function]} />
+  </div>
 </div>
 `;

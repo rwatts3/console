@@ -2,12 +2,12 @@ exports[`test NullableCell renders 1`] = `
 <div
   className="root">
   <div
-    className="button red"
+    className="button blue"
     onClick={[Function]}
     onMouseEnter={[Function]}
     onMouseLeave={[Function]}>
     <div>
-      Set to null
+      null
     </div>
   </div>
 </div>

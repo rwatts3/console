@@ -27,6 +27,11 @@ exports[`test StringCell renders 1`] = `
     defaultValue="some string"
     onBlur={[Function]}
     onKeyDown={[Function]}
+    style={
+      Object {
+        "height": 56,
+      }
+    }
     type="text" />
 </Connect(Tether)>
 `;

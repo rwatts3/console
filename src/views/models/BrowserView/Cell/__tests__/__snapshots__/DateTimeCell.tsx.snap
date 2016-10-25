@@ -1,5 +1,6 @@
 exports[`test DateTimeCell renders 1`] = `
 <DatePicker
+  active={true}
   applyImmediately={false}
   className="datepicker"
   defaultOpen={true}
