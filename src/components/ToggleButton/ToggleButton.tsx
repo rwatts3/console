@@ -51,7 +51,7 @@ export default class ToggleButton extends React.Component<Props, State> {
   render() {
     return (
       <div
-        className={classnames(classes.root)}
+        className={classes.root}
         ref='container'
         onBlur={this.props.onBlur}
       >

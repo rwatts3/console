@@ -10,7 +10,7 @@ import {
 import {resetDataAndUI} from '../../../actions/databrowser/shared'
 import {
   setItemCount, setOrder, addNodeAsync, updateNodeAsync,
-  reloadDataAsync, loadDataAsync, deleteSelectedNodes, search,
+  reloadDataAsync, loadDataAsync, deleteSelectedNodes,
 } from '../../../actions/databrowser/data'
 import {Popup} from '../../../types/popup'
 import * as Immutable from 'immutable'
@@ -45,12 +45,14 @@ import {
 } from '../../../actions/databrowser/ui'
 import {GridPosition} from '../../../types/databrowser/ui'
 import {classnames} from '../../../utils/classnames'
+import throttle from 'lodash.throttle'
 
 interface Props {
   viewer: Viewer
   router: ReactRouter.InjectedRouter
   route: any
   params: any
+  location: any
   fields: Field[]
   project: Project
   model: Model
@@ -104,9 +106,21 @@ interface Props {
     nodeId: string,
     index: number,
   ) => ReduxThunk
-  reloadDataAsync: (lokka: any, modelNamePlural: string, fields: Field[], index?: number) => ReduxThunk
-  loadDataAsync: (lokka: any, modelNamePlural: string, field: Field[], first: number, skip: number) => ReduxThunk
-  search: (e: any, lokka: any, modelNamePlural: string, fields: Field[], index: number) => ReduxThunk
+  reloadDataAsync: (
+    lokka: any,
+    modelNamePlural: string,
+    fields: Field[],
+    index?: number,
+    searchQuery?: string,
+  ) => ReduxThunk
+  loadDataAsync: (
+    lokka: any,
+    modelNamePlural: string,
+    field: Field[],
+    first: number,
+    skip: number,
+    searchQuery?: string,
+  ) => ReduxThunk
   searchQuery: string
 }
 
@@ -116,6 +130,22 @@ class BrowserView extends React.Component<Props, {}> {
 
   private lokka: any
   private fieldColumnWidths: FieldWidths
+
+  private setSearchQueryThrottled = throttle(
+    (q: string) => {
+      let queryObject = { query: {} }
+      if (q.length > 0) {
+        queryObject.query = { q }
+      }
+      const newLocation = Object.assign({}, this.props.location, queryObject)
+      this.props.router.replace(newLocation)
+    },
+    1000,
+    {
+      // this is very important as otherwise the last change would be ignored
+      trailing: true,
+    },
+  )
 
   constructor(props: Props) {
     super(props)
@@ -148,10 +178,20 @@ class BrowserView extends React.Component<Props, {}> {
       }
     })
 
+    if (this.props.location.query.q && this.props.location.query.q.length > 0) {
+      this.props.toggleSearch()
+    }
+
   }
 
   componentWillUnmount = () => {
     this.props.resetDataAndUI()
+  }
+
+  componentDidUpdate = (prevProps) => {
+    if (this.props.location !== prevProps.location) {
+      this.reloadData()
+    }
   }
 
   render() {
@@ -183,10 +223,8 @@ class BrowserView extends React.Component<Props, {}> {
                 type='text'
                 className={classes.input}
                 autoFocus
-                value={this.props.searchQuery || ''}
-                onChange={(e) => {
-                  this.props.search(e, this.lokka, this.props.model.namePlural, this.props.fields, 0)
-                }}
+                defaultValue={this.props.location.query.q || ''}
+                onChange={this.setSearchQuery}
               />
             )}
             {this.props.searchVisible && (
@@ -475,12 +513,18 @@ class BrowserView extends React.Component<Props, {}> {
     this.reloadData()
   }
 
+  private setSearchQuery = (e: any) => {
+    this.setSearchQueryThrottled(e.target.value)
+  }
+
   private loadData = (skip: number, first: number = 50): any => {
-    return this.props.loadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, skip, first)
+    const query = this.props.location.query.q || ''
+    return this.props.loadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, skip, first, query)
   }
 
   private reloadData = (index: number = 0) => {
-    this.props.reloadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, index)
+    const query = this.props.location.query.q || ''
+    this.props.reloadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, index, query)
   }
 
   private updateEditingNode = (value: TypedValue, field: Field, callback, nodeId: string, rowIndex: number) => {
@@ -530,7 +574,6 @@ const mapStateToProps = (state: StateTree) => {
     searchVisible: state.databrowser.ui.searchVisible,
     loading: state.databrowser.ui.loading,
     editing: state.databrowser.ui.editing,
-    searchQuery: state.databrowser.data.searchQuery,
     itemCount: state.databrowser.data.itemCount,
     filter: state.databrowser.data.filter,
     orderBy: state.databrowser.data.orderBy,
@@ -564,7 +607,6 @@ function mapDispatchToProps(dispatch) {
       reloadDataAsync,
       loadDataAsync,
       deleteSelectedNodes,
-      search,
 
       // actions for tab and arrow navigation
       nextCell,

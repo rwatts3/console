@@ -37,10 +37,16 @@ export function setData(nodes: Immutable.List<Immutable.Map<string, any>>, loade
   }
 }
 
-export function reloadDataAsync(lokka: any, modelNamePlural: string, fields: Field[], index: number = 0): ReduxThunk {
+export function reloadDataAsync(
+  lokka: any,
+  modelNamePlural: string,
+  fields: Field[],
+  index: number = 0,
+  searchQuery: string = ''
+): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     dispatch(setData(Immutable.List<Immutable.Map<string, any>>(), Immutable.List<boolean>()))
-    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 50))
+    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 50, searchQuery))
       .then(() => {
         sideNavSyncer.notifySideNav()
         dispatch(setLoading(false))
@@ -52,7 +58,8 @@ export function loadDataAsync(lokka: any,
                               modelNamePlural: string,
                               fields: Field[],
                               skip: number,
-                              first: number): ReduxThunk {
+                              first: number,
+                              searchQuery: string = ''): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     const {data} = getState().databrowser
     // as we have optimistic ui updates, they trigger an unwanted reload to the InfiniteLoader
@@ -60,7 +67,7 @@ export function loadDataAsync(lokka: any,
     if (data.mutationActive) {
       return Promise.reject({})
     }
-    return queryNodes(lokka, modelNamePlural, fields, skip, first, data.searchQuery, data.orderBy)
+    return queryNodes(lokka, modelNamePlural, fields, skip, first, searchQuery, data.orderBy)
       .then(results => {
         const newNodes = results.viewer[`all${modelNamePlural}`]
           .edges.map(({node}) => {
@@ -190,14 +197,6 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
   }
 }
 
-export function search(e: any, lokka: any, modelNamePlural: string, fields: Field[], index: number = 0): ReduxThunk {
-  return (dispatch) => {
-    const value = e.target.value
-    dispatch(setSearchQuery(value))
-    dispatch(reloadDataAsync(lokka, modelNamePlural, fields, index))
-  }
-}
-
 export function updateCell(payload: {
   position: GridPosition,
   value: TypedValue
@@ -243,13 +242,6 @@ export function addNodeSuccess(payload: Immutable.Map<string,any>) {
 export function deleteNodes(payload: string[]) {
   return {
     type: Constants.DELETE_NODES,
-    payload,
-  }
-}
-
-export function setSearchQuery(payload: string) {
-  return {
-    type: Constants.SET_SEARCH_QUERY,
     payload,
   }
 }
