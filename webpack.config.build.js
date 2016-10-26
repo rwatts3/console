@@ -2,44 +2,13 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
-
-const vendor = [
-  'calculate-size',
-  'classnames',
-  'graphiql',
-  'immutable',
-  'js-cookie',
-  'lokka',
-  'lokka-transport-http',
-  'map-props',
-  'moment',
-  'normalize.css',
-  'rc-tooltip',
-  'react',
-  'react-addons-pure-render-mixin',
-  'react-autocomplete',
-  'react-click-outside',
-  'react-copy-to-clipboard',
-  'react-datetime',
-  'react-dom',
-  'react-notification-system',
-  'react-redux',
-  'react-relay',
-  'react-router',
-  'react-router-relay',
-  'react-tagsinput',
-  'react-tether',
-  'react-tooltip',
-  'react-twitter-widgets',
-  'redux',
-  'redux-thunk',
-]
+const config = require('./webpack.config')
 
 module.exports = {
   entry: {
     app: './src/main',
     styles: 'graphcool-styles/dist/styles.css',
-    vendor,
+    vendor: config.entry.vendor,
   },
   output: {
     path: './dist',
@@ -60,7 +29,7 @@ module.exports = {
       loader: 'style!css',
     }, {
       test: /\.scss$/,
-      loader: 'style!css?modules&importLoaders=1!postcss!sass',
+      loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass',
     }, {
       test: /\.ts(x?)$/,
       loader: 'babel!awesome-typescript',
