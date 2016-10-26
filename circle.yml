@@ -15,12 +15,24 @@ deployment:
   master:
     branch: master
     commands:
-      - BACKEND_ADDR=$BACKEND_MASTER_ADDR NETLIFY_ID=dashboard-graph-cool npm run deploy
+      - npm run deploy
+          environment:
+            BACKEND_ADDR: $BACKEND_MASTER_ADDR
+            AUTH0_DOMAIN: graphcool-customers.auth0.com
+            AUTH0_CLIENT_ID: Is37aESHkLDR5PQa48ZiKZtm8gVNiUWw
+            NETLIFY_ID: dashboard-graph-cool
   dev:
     branch: dev
     commands:
-      - BACKEND_ADDR=$BACKEND_DEV_ADDR NETLIFY_ID=dev-dashboard-graph-cool npm run deploy
+      - npm run deploy:
+          environment:
+            BACKEND_ADDR: $BACKEND_DEV_ADDR
+            AUTH0_DOMAIN: graphcool-customers-dev.auth0.com
+            AUTH0_CLIENT_ID: 2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm
+            NETLIFY_ID: dev-dashboard-graph-cool
   default:
     branch: /^(?!(dev|master)$).*/
     commands:
-      - BACKEND_ADDR=$BACKEND_DEV_ADDR npm run build
+      - npm run build:
+          environment:
+            BACKEND_ADDR: $BACKEND_DEV_ADDR

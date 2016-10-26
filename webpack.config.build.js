@@ -56,8 +56,8 @@ module.exports = {
     new webpack.DefinePlugin({
       __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
       __HEARTBEAT_ADDR__: process.env.HEARTBEAT_ADDR ? JSON.stringify(process.env.HEARTBEAT_ADDR.toString()) : false,
-      __AUTH0_DOMAIN__: '"graphcool-customers.auth0.com"',
-      __AUTH0_CLIENT_ID__: '"Is37aESHkLDR5PQa48ZiKZtm8gVNiUWw"',
+      __AUTH0_DOMAIN__: JSON.stringify(process.env.AUTH0_DOMAIN.toString()),
+      __AUTH0_CLIENT_ID__: JSON.stringify(process.env.AUTH0_CLIENT_ID.toString()),
       __SEGMENT_TOKEN__: '"M96lXuD90ZxkbQEQG716aySwBLllabOn"',
       __ENABLE_SEGMENT__: true,
       __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
