@@ -11,5 +11,4 @@ lib
 *.swo
 .envrc
 .netlify
-yarn.lock
 .tags
