@@ -24,7 +24,10 @@ export default class SignUpView extends React.Component<{}, State> {
 //     return (
 //       <div className='bg-accent w-100 h-100' style={{pointerEvents: 'none'}}>
 //         <PopupWrapper>
-//           <div className='flex flex-column justify-center items-center w-100 h-100 fw1' style={{pointerEvents: 'all'}}>
+//           <div
+              //   className='flex flex-column justify-center items-center w-100 h-100 fw1'
+              //   style={{pointerEvents: 'all'}}
+              // >
 //             <div
 //               className='tc bg-white br1 shadow-2'
 //               style={{
