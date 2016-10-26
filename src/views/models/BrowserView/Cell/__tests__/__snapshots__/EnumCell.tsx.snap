@@ -1,14 +1,21 @@
 exports[`test EnumCell renders 1`] = `
-<Combobox
-  autosize={true}
-  onBlur={[Function]}
-  onKeyDown={[Function]}
-  onSelect={[Function]}
-  options={
-    Array [
-      "asd",
-      "def",
-    ]
-  }
-  value="asd" />
+<ClickOutside
+  onClickOutside={[Function]}>
+  <div
+    className="root">
+    <Combobox
+      autosize={true}
+      className="root"
+      onBlur={[Function]}
+      onKeyDown={[Function]}
+      onSelect={[Function]}
+      options={
+        Array [
+          "asd",
+          "def",
+        ]
+      }
+      value="asd" />
+  </div>
+</ClickOutside>
 `;

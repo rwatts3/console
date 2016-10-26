@@ -5,5 +5,5 @@ exports[`test BooleanCell renders 1`] = `
   onClickOutside={[Function]}
   onKeyDown={[Function]}
   rightText="false"
-  side={0} />
+  side={1} />
 `;
