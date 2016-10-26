@@ -15,7 +15,7 @@ deployment:
   master:
     branch: master
     commands:
-      - npm run deploy
+      - npm run deploy:
           environment:
             BACKEND_ADDR: $BACKEND_MASTER_ADDR
             AUTH0_DOMAIN: graphcool-customers.auth0.com
