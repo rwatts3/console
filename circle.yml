@@ -12,7 +12,7 @@ test:
     - npm test
 
 deployment:
-  production:
+  master:
     branch: master
     commands:
       - BACKEND_ADDR=$BACKEND_MASTER_ADDR NETLIFY_ID=dashboard-graph-cool npm run deploy
@@ -20,3 +20,7 @@ deployment:
     branch: dev
     commands:
       - BACKEND_ADDR=$BACKEND_DEV_ADDR NETLIFY_ID=dev-dashboard-graph-cool npm run deploy
+  default:
+    branch: /^(?!(dev|master)$).*/
+    commands:
+      - BACKEND_ADDR=$BACKEND_DEV_ADDR npm run build
