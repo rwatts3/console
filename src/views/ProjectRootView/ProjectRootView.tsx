@@ -107,7 +107,7 @@ class ProjectRootView extends React.Component<Props, {}> {
   render() {
     if (!this.props.isLoggedin) {
       return (
-        <LoginView viewer={this.props.viewer}/>
+        <LoginView/>
       )
     }
 
@@ -282,7 +282,6 @@ export default Relay.createContainer(MappedProjectRootView, {
             }
           }
         }
-        ${LoginView.getFragment('viewer')}
         ${SideNav.getFragment('viewer')}
       }
     `,

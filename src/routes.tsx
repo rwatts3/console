@@ -80,7 +80,7 @@ export default (
   <Route path='/' component={RootView}>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render} />
     <Route path='token' component={TokenRedirectView} />
-    <Route path='login' component={LoginView} queries={ViewerQuery} render={render} />
+    <Route path='login' component={LoginView} render={render} />
     <Route path='reset-password' component={ResetPasswordView} />
     <Route path='signup' component={SignUpView} />
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>

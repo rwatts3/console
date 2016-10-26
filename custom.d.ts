@@ -35,13 +35,17 @@ declare module 'styled-components' // https://github.com/styled-components/style
 declare module 'redux-logger'
 declare module 'react-input-enhancements'
 declare module 'lodash.pick'
+declare module 'auth0-lock'
+
 declare var Smooch: any
 declare var analytics: any
-declare var __BACKEND_ADDR__: any
-declare var __HEARTBEAT_ADDR__: any
-declare var __SMOOCH_TOKEN__: any
-declare var __ENABLE_SEGMENT__: any
-declare var __SEGMENT_TOKEN__: any
+declare var __BACKEND_ADDR__: string
+declare var __HEARTBEAT_ADDR__: string | boolean
+declare var __SMOOCH_TOKEN__: string
+declare var __ENABLE_SEGMENT__: boolean
+declare var __SEGMENT_TOKEN__: string
+declare var __AUTH0_DOMAIN__: string
+declare var __AUTH0_CLIENT_ID__: string
 
 declare interface Window {
   analytics: any
@@ -51,7 +55,6 @@ declare interface Window {
 declare module 'cuid' {
   export default function cuid(): string
 }
-
 
 declare module 'react-relay' {
 

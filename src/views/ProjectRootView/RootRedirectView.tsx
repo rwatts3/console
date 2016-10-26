@@ -4,7 +4,6 @@ import * as Relay from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import {default as mapProps} from 'map-props'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-import LoginView from '../../views/LoginView/LoginView'
 import {Viewer} from '../../types/types'
 const classes: any = require('./RootRedirectView.scss')
 
@@ -98,7 +97,6 @@ export default Relay.createContainer(MappedRootRedirectView, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         id
-        ${LoginView.getFragment('viewer')}
         user {
           id
           projects(first: 100) {
