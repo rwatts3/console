@@ -4,6 +4,7 @@ import {ReduxAction, ReduxThunk} from '../../types/reducers'
 import {Field} from '../../types/types'
 import {nextStep} from '../gettingStarted'
 import {GridPosition} from '../../types/databrowser/ui'
+import { setNewRowShown } from './data'
 
 export function hideNewRow(): ReduxAction {
   return {
@@ -14,7 +15,12 @@ export function hideNewRow(): ReduxAction {
 export function toggleNewRow(fields: Field[]): ReduxThunk {
   return (dispatch, getState) => {
     const { newRowActive } = getState().databrowser.ui
+    const { newRowShown } = getState().databrowser.data
     const { step } = getState().gettingStarted.gettingStartedState
+
+    if (!newRowShown) {
+      dispatch(setNewRowShown())
+    }
 
     // if we're activating the new row, also select the first field
     if (!newRowActive && fields) {

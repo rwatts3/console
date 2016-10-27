@@ -19,6 +19,7 @@ export const initialState: DataBrowserDataState = {
   itemCount: 0,
   loaded: Immutable.List<boolean>(),
   mutationActive: false,
+  newRowShown: false,
 }
 
 export function reduceData(state: DataBrowserDataState = initialState, action: ReduxAction): DataBrowserDataState {
@@ -29,6 +30,10 @@ export function reduceData(state: DataBrowserDataState = initialState, action: R
       const {fieldName, value} = action.payload
       return Object.assign({}, state, {
         filter: state.filter.set(fieldName, value),
+      })
+    case Constants.SET_NEW_ROW_SHOWN:
+      return Object.assign({}, state, {
+        newRowShown: true,
       })
     case Constants.SET_ITEMCOUNT:
       return Object.assign({}, state, {

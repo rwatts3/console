@@ -28,6 +28,7 @@ Object {
     true,
   ],
   "mutationActive": true,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd3",
@@ -54,6 +55,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd3",
@@ -82,6 +84,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -135,6 +138,7 @@ Object {
     true,
   ],
   "mutationActive": true,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -189,6 +193,7 @@ Object {
     true,
   ],
   "mutationActive": true,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd4",
@@ -246,6 +251,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -297,6 +303,7 @@ Object {
     true,
   ],
   "mutationActive": true,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd3",
@@ -342,6 +349,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -396,6 +404,7 @@ Object {
     true,
   ],
   "mutationActive": true,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "name": "a4",
@@ -453,6 +462,7 @@ Object {
     true,
   ],
   "mutationActive": true,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd4",
@@ -493,6 +503,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -529,6 +540,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -561,6 +573,7 @@ Object {
   "itemCount": 0,
   "loaded": Array [],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [],
   "orderBy": Object {
     "fieldName": "id",
@@ -584,6 +597,7 @@ Object {
     true,
   ],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [
     Object {
       "id": "asd",
@@ -616,6 +630,7 @@ Object {
   "itemCount": 5,
   "loaded": Array [],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [],
   "orderBy": Object {
     "fieldName": "id",
@@ -635,6 +650,7 @@ Object {
   "itemCount": 0,
   "loaded": Array [],
   "mutationActive": false,
+  "newRowShown": false,
   "nodes": Array [],
   "orderBy": Object {
     "fieldName": "name",

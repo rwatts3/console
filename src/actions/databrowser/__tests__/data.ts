@@ -38,6 +38,7 @@ describe('async data actions', () => {
         itemCount: 0,
         loaded: Immutable.List<boolean>(),
         mutationActive: false,
+        newRowShown: false,
       },
     },
     gettingStarted: {

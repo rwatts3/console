@@ -12,6 +12,7 @@ import {isNonScalarList} from '../../utils/graphql'
 import {sideNavSyncer} from '../../utils/sideNavSyncer'
 import * as bluebird from 'bluebird'
 import {GridPosition} from '../../types/databrowser/ui'
+import {toggleNewRow} from '../../actions/databrowser/ui'
 
 export function setItemCount(count: number) {
   return {
@@ -19,6 +20,10 @@ export function setItemCount(count: number) {
     payload: count,
   }
 }
+
+export const setNewRowShown = () => ({
+  type: Constants.SET_NEW_ROW_SHOWN,
+})
 
 export function setOrder(orderBy: OrderBy): ReduxAction {
   return {
@@ -88,6 +93,13 @@ export function loadDataAsync(lokka: any,
         dispatch(setLoading(false))
         dispatch(setItemCount(results.viewer[`all${modelNamePlural}`].count))
         dispatch(setData(nodes, loaded))
+        // conditions to show the new row active
+        // 1. needs to be the first time the following conditions are true
+        // 2. node list is empty
+        // 3. search term is empty, too
+        if (nodes.size === 0 && searchQuery.length === 0 && !getState().databrowser.data.newRowShown) {
+          dispatch(toggleNewRow(fields))
+        }
       })
       .catch((err) => {
         if (err.rawError) {
