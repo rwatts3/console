@@ -88,8 +88,8 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   className={this.state.newValue ? '' : classes.disabled}
                   onClick={this.addNewValue}
                   src={require('assets/new_icons/add_new.svg')}
-                  width={14}
-                  height={14}
+                  width={24}
+                  height={24}
                 />
               </div>
               {this.state.values.map((value, index) => (
