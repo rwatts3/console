@@ -138,8 +138,13 @@ export function calculateFieldColumnWidths (width: number,
       const upperLimit = 400
 
       const idExtra = field.name === 'id' ? 50 : 0
+      const relationExtra = field.typeIdentifier === 'Relation' ? 50 : 0
 
-      return (maxWidth > upperLimit ? upperLimit : (maxWidth < lowerLimit ? lowerLimit : maxWidth)) + idExtra
+      return (
+        maxWidth > upperLimit ?
+        upperLimit :
+        (maxWidth < lowerLimit ? lowerLimit : maxWidth)
+      ) + idExtra + relationExtra
     }
   )
 

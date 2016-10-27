@@ -30,6 +30,12 @@
     display: inline-block;
     white-space: nowrap;
     line-height: 17px;
+    position: relative;
+  }
+
+  .relationlink {
+    position: absolute;
+    right: 0;
   }
 
   .id {

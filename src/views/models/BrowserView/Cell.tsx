@@ -2,12 +2,14 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
+import styled from 'styled-components'
 import {Field} from '../../../types/types'
 import NodeSelector from '../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
 import {isNonScalarList} from '../../../utils/graphql'
+import { Link } from 'react-router'
 import {connect} from 'react-redux'
 import {
   nextCell, previousCell, nextRow, previousRow, stopEditCell, editCell, unselectCell, selectCell,
@@ -15,12 +17,14 @@ import {
 import {ReduxThunk, ReduxAction} from '../../../types/reducers'
 import {GridPosition} from '../../../types/databrowser/ui'
 const classes: any = require('./Cell.scss')
+import {variables} from 'graphcool-styles'
 
 export type UpdateCallback = (success: boolean) => void
 
 interface Props {
   field: Field
   projectId: string
+  projectName: string
   nodeId: string
   value: any
   update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
@@ -265,6 +269,28 @@ export class Cell extends React.PureComponent<Props, {}> {
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
     // Do not use 'defaultValue' because it won't force an update after value change
+    const RelationLink = styled(Link)`
+      padding: ${variables.size06};
+      background: ${variables.blue};
+      font-size: ${variables.size10};
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: ${variables.white};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color ${variables.duration} linear, background ${variables.duration} linear;
+      top: 10px;
+      right: 8px;
+      position: absolute;
+
+      &:hover {
+        color: ${variables.white};
+        background: ${variables.blue80};
+      }
+    `
     return (
       <span
         className={classes.value}
@@ -272,7 +298,19 @@ export class Cell extends React.PureComponent<Props, {}> {
           cursor: this.props.field.isReadonly ? 'auto' : 'pointer',
         }}
         onKeyDown={this.onKeyDown}
-      >{valueString}</span>
+      >
+        {valueString}
+        {this.props.field.typeIdentifier === 'Relation' &&
+        !this.props.field.isList &&
+          this.props.selected &&
+          (
+            <RelationLink
+              to={`/${this.props.projectName}/models/${this.props.field.relatedModel.name}/browser?q=${valueString}`}
+            >
+              {`Go to ${this.props.field.relatedModel.name}`}
+            </RelationLink>
+        )}
+      </span>
     )
   }
 
@@ -341,6 +379,7 @@ export default Relay.createContainer(MappedCell, {
         enumValues
         relatedModel {
           ${NodeSelector.getFragment('relatedModel')}
+          name
         }
         ${RelationsPopup.getFragment('originField')}
       }

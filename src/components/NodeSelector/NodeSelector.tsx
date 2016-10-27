@@ -132,6 +132,7 @@ export default Relay.createContainer(NodeSelector, {
     relatedModel: () => Relay.QL`
       fragment on Model {
         id
+        name
         namePlural
         fields(first: 1000) {
           edges {

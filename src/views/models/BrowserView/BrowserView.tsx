@@ -182,10 +182,12 @@ class BrowserView extends React.Component<Props, {}> {
       this.props.toggleSearch()
     }
 
+    document.addEventListener('keydown', this.documentKeyDown)
   }
 
   componentWillUnmount = () => {
     this.props.resetDataAndUI()
+    document.removeEventListener('keydown', this.documentKeyDown)
   }
 
   componentDidUpdate = (prevProps) => {
@@ -439,6 +441,7 @@ class BrowserView extends React.Component<Props, {}> {
           field={field}
           value={value}
           projectId={this.props.project.id}
+          projectName={this.props.params.projectName}
           update={(value, field, callback) => this.updateEditingNode(value, field, callback, nodeId, rowIndex)}
           reload={() => this.loadData(rowIndex, 1)}
           nodeId={nodeId}
@@ -456,6 +459,14 @@ class BrowserView extends React.Component<Props, {}> {
       return 250
     } else {
       return fieldColumnWidths[this.getFieldName(index - 1)]
+    }
+  }
+
+  private documentKeyDown = (e: any): void => {
+    // match on cmd+f/ctrl+f
+    if (e.keyCode === 70 && (e.metaKey || e.ctrlKey)) {
+      this.props.toggleSearch()
+      e.preventDefault()
     }
   }
 
@@ -497,6 +508,7 @@ class BrowserView extends React.Component<Props, {}> {
           this.props.editCell(this.props.selectedCell)
           e.preventDefault()
         }
+        break
     }
   }
 
