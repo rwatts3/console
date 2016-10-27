@@ -43,7 +43,7 @@ class ModelHeader extends React.Component<Props, State> {
 
     const SettingsLink = styled(Link)`
       padding: ${variables.size10};
-      background: ${variables.gray10};
+      background: ${variables.gray04};
       font-size: ${variables.size14};
       text-transform: uppercase;
       font-weight: 600;
