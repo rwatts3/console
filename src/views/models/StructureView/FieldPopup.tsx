@@ -146,7 +146,7 @@ class FieldPopup extends React.Component<Props, State> {
                       <input
                         autoFocus={!this.props.field}
                         type='text'
-                        placeholder='Fieldname'
+                        placeholder='fieldname'
                         defaultValue={this.state.name}
                         onChange={(e: any) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
                         onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
