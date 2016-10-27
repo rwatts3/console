@@ -6,50 +6,18 @@
   height: calc(#{$headerHeight} + 1px);
   display: flex;
   align-items: center;
-  border-bottom: 1px solid $grey2;
   top: 0;
   left: 0;
 }
 
 .left {
-  width: 100%;
   margin-left: 40px;
-}
-
-.endpoint {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
-
-  .item {
-    font-size: 13px;
-    font-weight: 600;
-    color: $grey4;
-    margin-right: 15px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
+  flex: 1;
 }
 
 .right {
-  color: $grey3;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 14px;
-  margin-right: 40px;
-  cursor: pointer;
-  white-space: nowrap;
-
-  .label {
-    cursor: pointer
-  }
-
-  svg {
-    fill: $grey3;
-    margin-left: 20px;
-  }
+  margin-top: 20px;
+  margin-right: 20px;
 }
 
 .userDropdown {

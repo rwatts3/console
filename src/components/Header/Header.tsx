@@ -1,10 +1,5 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Link } from 'react-router'
-import Icon from '../../components/Icon/Icon'
-import ApiLayover from '../../components/ApiLayover/ApiLayover'
-import ClickOutside from 'react-click-outside'
-import * as cookiestore from 'cookiestore'
 import { Project } from '../../types/types'
 const classes: any = require('./Header.scss')
 
@@ -13,6 +8,7 @@ interface Props {
   viewer: any
   project: Project
   params: any
+  renderRight?: () => JSX.Element
 }
 
 interface State {
@@ -33,73 +29,13 @@ class Header extends React.Component<Props, State> {
         <div className={classes.left}>
           {this.props.children}
         </div>
-        <div className={classes.endpoint}>
-          {this.state.endpointLayoverVisible &&
-            <ApiLayover
-              projectId={this.props.project.id}
-              close={() => this.setState({ endpointLayoverVisible: false } as State)}
-            />
-          }
-          <a
-            className={classes.item}
-            target='_blank'
-            href='http://docs.graph.cool'
-          >
-            Docs
-          </a>
-          <span
-            className={classes.item}
-            onClick={() => this.setState({ endpointLayoverVisible: !this.state.endpointLayoverVisible } as State)}
-          >
-            API Endpoint
-          </span>
-        </div>
-        {this.state.userDropdownVisible &&
-          <ClickOutside onClickOutside={(e) => {
-            e.stopPropagation()
-            this.closeUserDropdown()
-          }}>
-            <div className={classes.userDropdown}>
-              <Link
-                to={`/${this.props.params.projectName}/account`}
-                onClick={this.closeUserDropdown}
-              >
-                Account
-              </Link>
-              <div onClick={this.logout}>
-                Logout
-              </div>
-            </div>
-          </ClickOutside>
-        }
-        <div className={classes.right} onClick={this.openUserDropdown}>
-          {this.props.viewer.user.name}
-          <Icon
-            width={11}
-            height={6}
-            src={require('assets/icons/arrow.svg')}
-          />
+        <div className={classes.right}>
+          {typeof this.props.renderRight === 'function' && (
+            this.props.renderRight()
+          )}
         </div>
       </div>
     )
-  }
-
-  private openUserDropdown = () => {
-    this.setState({ userDropdownVisible: true } as State)
-  }
-
-  private closeUserDropdown = () => {
-    this.setState({ userDropdownVisible: false } as State)
-  }
-
-  private logout () {
-    analytics.track('header: logout', () => {
-      analytics.reset()
-      cookiestore.remove('graphcool_auth_token')
-      cookiestore.remove('graphcool_customer_id')
-      window.localStorage.clear()
-      window.location.pathname = '/'
-    })
   }
 }
 

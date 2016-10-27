@@ -11,8 +11,9 @@ import {Model, Viewer, Project} from '../../types/types'
 import {GettingStartedState} from '../../types/gettingStarted'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import AuthProviderPopup from './AuthProviderPopup/AuthProviderPopup'
-import {particles} from 'graphcool-styles'
+import {particles, Icon, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
+import styled from 'styled-components'
 const classes: any = require('./ModelHeader.scss')
 
 interface Props {
@@ -36,11 +37,64 @@ class ModelHeader extends React.Component<Props, State> {
   }
 
   render() {
-    const dataViewOnClick = () => {
-      if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
-        this.props.nextStep()
+
+    const structureActive = location.pathname.endsWith('structure')
+    const typeText = structureActive ? 'Structure' : 'Data'
+
+    const SettingsLink = styled(Link)`
+      padding: ${variables.size10};
+      background: ${variables.gray10};
+      font-size: ${variables.size14};
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: ${variables.gray40};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: color ${variables.duration} linear, background ${variables.duration} linear;
+
+      svg {
+        fill: ${variables.gray40};
+        stroke: ${variables.gray40};
+        transition: fill ${variables.duration} linear;
       }
-    }
+
+      > div {
+        margin-left: 10px;
+      }
+
+      &:hover {
+        color: ${variables.white};
+        background: ${variables.gray20};
+
+        svg, svg g {
+          fill: ${variables.white} !important;
+          stroke: ${variables.white} !important;
+        }
+      }
+    `
+
+    const BlueSettingsLink = styled(SettingsLink)`
+      background: ${variables.blue};
+      color: ${variables.white};
+
+      svg {
+        fill: ${variables.white};
+        stroke: ${variables.white};
+        transition: fill ${variables.duration} linear;
+      }
+
+      > div {
+        margin-left: 10px;
+      }
+
+      &:hover {
+        background: ${variables.blue80};
+      }
+    `
 
     return (
       <div className={classes.root}>
@@ -57,14 +111,54 @@ class ModelHeader extends React.Component<Props, State> {
             viewer={this.props.viewer}
             params={this.props.params}
             project={this.props.project}
+            renderRight={() => (
+              structureActive ? (
+                <Tether
+                  steps={[{
+                    step: 'STEP3_CLICK_DATA_BROWSER',
+                    title: 'Switch to the Data Browser',
+                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
+                  }]}
+                  width={280}
+                  offsetX={-35}
+                  offsetY={5}
+                >
+                  <BlueSettingsLink
+                    to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
+                    onClick={this.dataViewOnClick}
+                  >
+                    <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
+                    <div>Done Editing Structure</div>
+                  </BlueSettingsLink>
+                </Tether>
+              ) : (
+                <SettingsLink
+                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
+                >
+                  <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>
+                  <div>Edit Structure</div>
+                </SettingsLink>
+              )
+            )}
           >
             <div className={classes.info}>
               <div className={classes.title}>
                 {this.props.model.name}
+                <div className={classes.type}>{`(${typeText})`}</div>
                 {this.props.model.isSystem &&
-                <span className={classes.system}>System</span>
+                  <span className={classes.system}>System</span>
                 }
-                <span className={classes.itemCount}>{this.props.model.itemCount} items</span>
+                <Icon
+                  width={32}
+                  height={32}
+                  src={require('graphcool-styles/icons/fill/settings.svg')}
+                  color={variables.gray10}
+                  className={cx(
+                    particles.ml6,
+                    particles.mt6,
+                    particles.pointer,
+                  )}
+                />
               </div>
               <div className={classes.titleDescription}>
                 <ModelDescription model={this.props.model}/>
@@ -74,32 +168,6 @@ class ModelHeader extends React.Component<Props, State> {
         </div>
         <div className={classes.bottom}>
           <div className={classes.tabs}>
-            <Tether
-              steps={[{
-                step: 'STEP3_CLICK_DATA_BROWSER',
-                title: 'Switch to the Data Browser',
-                description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
-              }]}
-              width={280}
-              offsetX={-35}
-              offsetY={5}
-            >
-              <Link
-                to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
-                className={classes.tab}
-                activeClassName={classes.active}
-                onClick={dataViewOnClick}
-              >
-                Data Browser
-              </Link>
-            </Tether>
-            <Link
-              to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
-              className={classes.tab}
-              activeClassName={classes.active}
-            >
-              Structure
-            </Link>
             {this.props.model.name === 'User' &&
             <div
               className={cx(
@@ -126,6 +194,12 @@ class ModelHeader extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private dataViewOnClick = () => {
+    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
+      this.props.nextStep()
+    }
   }
 }
 

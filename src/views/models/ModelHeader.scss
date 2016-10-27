@@ -9,7 +9,6 @@
 
 .top {
   height: calc(#{$headerHeight} + 1px);
-  border-bottom: 1px solid $grey2;
 
   .info {
     display: flex;
@@ -19,11 +18,17 @@
   }
 
   .title {
-    font-weight: 600;
-    font-size: 20px;
+    font-weight: 300;
+    font-size: 38px;
+    margin-top: 30px;
     color: $grey5;
     display: flex;
     align-items: center;
+
+    .type {
+      margin-left: 10px;
+      color: $grey3;
+    }
 
     .system {
       font-weight: 400;
@@ -98,4 +103,5 @@
   align-items: center;
   padding-right: 20px;
   position: relative;
+  bottom: -25px;
 }
