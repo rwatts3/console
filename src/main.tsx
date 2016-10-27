@@ -29,7 +29,7 @@ if (__HEARTBEAT_ADDR__ && cookiestore.has('graphcool_auth_token')) {
   drumstick.start({
     endpoint: __HEARTBEAT_ADDR__,
     payload: {
-      resource: 'dashboard',
+      resource: 'console',
       token: cookiestore.get('graphcool_auth_token'),
     },
     frequency: 60 * 1000,
