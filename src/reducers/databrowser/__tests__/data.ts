@@ -1,6 +1,6 @@
 import { reduceData, initialState } from '../data'
 import {
-  setOrder, setItemCount, setSearchQuery, setData, mutationRequest,
+  setOrder, setItemCount, setData, mutationRequest,
   addNodeRequest, mutationError, deleteNodes, mutationSuccess, updateCell, addNodeSuccess,
 } from '../../../actions/databrowser/data'
 import * as Immutable from 'immutable'
@@ -48,12 +48,6 @@ describe('databrowser reducer', () => {
 
   it('should set the item count', () => {
     const state = reduceData(initialState, setItemCount(5))
-
-    expect(state).toMatchSnapshot()
-  })
-
-  it('should set the search query', () => {
-    const state = reduceData(initialState, setSearchQuery('some query'))
 
     expect(state).toMatchSnapshot()
   })

@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import {Field} from '../../../types/types'
 import NodeSelector from '../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from './RelationsPopup'
@@ -11,13 +11,15 @@ import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
 import {isNonScalarList} from '../../../utils/graphql'
 import { Link } from 'react-router'
 import {connect} from 'react-redux'
+import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   nextCell, previousCell, nextRow, previousRow, stopEditCell, editCell, unselectCell, selectCell,
 } from '../../../actions/databrowser/ui'
 import {ReduxThunk, ReduxAction} from '../../../types/reducers'
 import {GridPosition} from '../../../types/databrowser/ui'
 const classes: any = require('./Cell.scss')
-import {variables} from 'graphcool-styles'
+import { variables, particles } from 'graphcool-styles'
+import * as cx from 'classnames'
 
 export type UpdateCallback = (success: boolean) => void
 
@@ -58,7 +60,11 @@ interface Props {
   loaded: boolean[]
 }
 
-export class Cell extends React.PureComponent<Props, {}> {
+interface State {
+  copied: boolean
+}
+
+export class Cell extends React.PureComponent<Props, State> {
 
   refs: {
     [key: string]: any
@@ -71,6 +77,9 @@ export class Cell extends React.PureComponent<Props, {}> {
     super(props)
 
     this.escaped = false
+    this.state = {
+      copied: false,
+    }
   }
 
   render(): JSX.Element {
@@ -269,7 +278,7 @@ export class Cell extends React.PureComponent<Props, {}> {
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
     // Do not use 'defaultValue' because it won't force an update after value change
-    const RelationLink = styled(Link)`
+    const CellLink = styled(Link)`
       padding: ${variables.size06};
       background: ${variables.blue};
       font-size: ${variables.size10};
@@ -291,6 +300,28 @@ export class Cell extends React.PureComponent<Props, {}> {
         background: ${variables.blue80};
       }
     `
+    const movingCopyIndicator = keyframes`
+      0% {
+        opacity: 0;
+        transform: translate(420%, 0);
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(420%, -50px);
+      }
+    `
+
+    const CopyIndicator = styled.div`
+      position: fixed;
+      transform: translate(420%, 0);
+      animation: ${movingCopyIndicator} .7s linear
+
+    `
     return (
       <span
         className={classes.value}
@@ -304,11 +335,40 @@ export class Cell extends React.PureComponent<Props, {}> {
         !this.props.field.isList &&
           this.props.selected &&
           (
-            <RelationLink
+            <CellLink
               to={`/${this.props.projectName}/models/${this.props.field.relatedModel.name}/browser?q=${valueString}`}
             >
               {`Go to ${this.props.field.relatedModel.name}`}
-            </RelationLink>
+            </CellLink>
+        )}
+        {this.props.field.isReadonly &&
+         this.props.selected &&
+          (
+          <div>
+            <CopyToClipboard text={valueString} onCopy={() => {
+              this.setState({copied: true} as State)
+              console.log('setting state')
+            }}>
+              <CellLink
+                onClick={e => e.preventDefault()}
+              >
+                {'Copy'}
+              </CellLink>
+            </CopyToClipboard>
+            {this.state.copied && (
+              <CopyIndicator
+                className={cx(
+                  particles.o0,
+                  particles.absolute,
+                  particles.f14,
+                  particles.fw6,
+                  particles.blue,
+                )}
+              >
+                Copied
+              </CopyIndicator>
+            )}
+          </div>
         )}
       </span>
     )

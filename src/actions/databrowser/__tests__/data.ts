@@ -22,7 +22,6 @@ describe('async data actions', () => {
         },
         editing: false,
         browserViewRef: null,
-        searchQuery: null,
       },
       data: {
         nodes: Immutable.List<Immutable.Map<string, any>>(),
@@ -39,7 +38,6 @@ describe('async data actions', () => {
         itemCount: 0,
         loaded: Immutable.List<boolean>(),
         mutationActive: false,
-        searchQuery: '',
       },
     },
     gettingStarted: {

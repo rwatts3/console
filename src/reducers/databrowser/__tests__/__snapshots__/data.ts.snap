@@ -38,7 +38,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -65,7 +64,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -102,7 +100,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -156,7 +153,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -215,7 +211,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -269,7 +264,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -313,7 +307,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -367,7 +360,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -425,7 +417,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -484,7 +475,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -521,7 +511,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -558,7 +547,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -578,7 +566,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -615,7 +602,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -635,7 +621,6 @@ Object {
     "fieldName": "id",
     "order": "DESC",
   },
-  "searchQuery": "",
 }
 `;
 
@@ -655,26 +640,5 @@ Object {
     "fieldName": "name",
     "order": "ASC",
   },
-  "searchQuery": "",
-}
-`;
-
-exports[`databrowser reducer should set the search query 1`] = `
-Object {
-  "backup": Object {
-    "itemCount": 0,
-    "loaded": Array [],
-    "nodes": Array [],
-  },
-  "filter": Object {},
-  "itemCount": 0,
-  "loaded": Array [],
-  "mutationActive": false,
-  "nodes": Array [],
-  "orderBy": Object {
-    "fieldName": "id",
-    "order": "DESC",
-  },
-  "searchQuery": "some query",
 }
 `;

@@ -6,11 +6,11 @@
     "lint": "tslint \"src/**/*.ts{,x}\"",
     "start": "GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack-dev-server --hot --inline --progress --history-api-fallback --host 0.0.0.0 --port 4000",
     "test": "npm run lint && jest",
-    "test-changed": "jest --onlyChanged",
+    "test-quick": "jest",
     "test-watch": "jest --watch"
   },
   "pre-commit": [
-    "test-changed"
+    "test-quick"
   ],
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
