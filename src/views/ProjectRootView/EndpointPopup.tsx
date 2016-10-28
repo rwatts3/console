@@ -269,8 +269,9 @@ class EndpointPopup extends React.Component<Props, State> {
               particles.black50,
             )}
           >
-            {'Here\'s space for a short description what to do with the endpoint(s). ' +
-            'A link to the documentation could also be helpful.'}
+          {
+            // tslint:disable-next-line
+        }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} href='https://docs.graph.cool/reference/simple-api#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} href='https://docs.graph.cool/examples'>check out some code examples</a>.
           </p>
         </Popup>
       </div>
