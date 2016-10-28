@@ -28,7 +28,10 @@ class AuthProviderPopup extends React.Component<Props, State> {
         className={cx($p.flex, $p.justifyCenter, $p.itemsCenter, $p.h100, $p.w100, $p.bgWhite50)}
         style={{ pointerEvents: 'all' }}
       >
-        <div className={cx($p.bgWhite, $p.br2, $p.buttonShadow)} style={{ width: 900 }}>
+        <div
+          className={cx($p.bgWhite, $p.br2, $p.buttonShadow, $p.overflowYScroll)}
+          style={{ width: 900, maxHeight: '100vh' }}
+        >
           <div className={cx($p.bgGreen, $p.flex, $p.justifyBetween, $p.itemsCenter, $p.white, $p.pa25)}>
             <div className={cx($p.f38, $p.fw3)}>
               Authentication Methods
