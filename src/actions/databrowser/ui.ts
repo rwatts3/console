@@ -5,6 +5,7 @@ import {Field} from '../../types/types'
 import {nextStep} from '../gettingStarted'
 import {GridPosition} from '../../types/databrowser/ui'
 import { setNewRowShown } from './data'
+import {SYSTEM_MODELS_PLURAL} from '../../constants/system'
 
 export function hideNewRow(): ReduxAction {
   return {
@@ -12,8 +13,11 @@ export function hideNewRow(): ReduxAction {
   }
 }
 
-export function toggleNewRow(fields: Field[]): ReduxThunk {
+export function toggleNewRow(fields: Field[], modelNamePlural: string): ReduxThunk {
   return (dispatch, getState) => {
+    if (SYSTEM_MODELS_PLURAL.includes(modelNamePlural)) {
+      return
+    }
     const { newRowActive } = getState().databrowser.ui
     const { newRowShown } = getState().databrowser.data
     const { step } = getState().gettingStarted.gettingStartedState
@@ -183,7 +187,7 @@ export function previousCell(fields: Field[]): ReduxThunk {
   }
 }
 
-export function nextRow(fields: Field[]): ReduxThunk {
+export function nextRow(fields: Field[], modelNamePlural: string): ReduxThunk {
   return (dispatch, getState) => {
     if (!fields) {
       return
@@ -194,7 +198,7 @@ export function nextRow(fields: Field[]): ReduxThunk {
     const rowIndex: number = selectedCell.row === nodes.size - 1 ? selectedCell.row : selectedCell.row + 1
 
     if (rowIndex === -1 && !newRowActive) {
-      dispatch(toggleNewRow(fields))
+      dispatch(toggleNewRow(fields, modelNamePlural))
     }
 
     dispatch(selectCell({
@@ -204,7 +208,7 @@ export function nextRow(fields: Field[]): ReduxThunk {
   }
 }
 
-export function previousRow(fields: Field[]): ReduxThunk {
+export function previousRow(fields: Field[], modelNamePlural: string): ReduxThunk {
   return (dispatch, getState) => {
     if (!fields) {
       return
@@ -215,7 +219,7 @@ export function previousRow(fields: Field[]): ReduxThunk {
     const rowIndex = selectedCell.row === -1 ? -1 : (((selectedCell.row - 1 + 1 + nodes.size) % nodes.size) - 1)
 
     if (rowIndex === -1 && !newRowActive) {
-      dispatch(toggleNewRow(fields))
+      dispatch(toggleNewRow(fields, modelNamePlural))
     }
 
     dispatch(selectCell({

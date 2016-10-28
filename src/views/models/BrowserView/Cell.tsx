@@ -29,6 +29,7 @@ interface Props {
   projectName: string
   nodeId: string
   value: any
+  modelNamePlural: string
   update: (value: TypedValue, field: Field, callback: UpdateCallback) => void
   reload: () => void
   // rowSelected is the selection for deletion
@@ -51,8 +52,8 @@ interface Props {
 
   nextCell: (fields: Field[]) => ReduxThunk
   previousCell: (fields: Field[]) => ReduxThunk
-  nextRow: (fields: Field[]) => ReduxThunk
-  previousRow: (fields: Field[]) => ReduxThunk
+  nextRow: (fields: Field[], modelNamePlural: string) => ReduxThunk
+  previousRow: (fields: Field[], modelNamePlural: string) => ReduxThunk
 
   position: GridPosition
   fields: Field[]
@@ -211,7 +212,7 @@ export class Cell extends React.PureComponent<Props, State> {
       case 38:
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
-        this.props.previousRow(this.props.fields)
+        this.props.previousRow(this.props.fields, this.props.modelNamePlural)
         break
       case 9:
       case 39:
@@ -227,7 +228,7 @@ export class Cell extends React.PureComponent<Props, State> {
       case 40:
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
-        this.props.nextRow(this.props.fields)
+        this.props.nextRow(this.props.fields, this.props.modelNamePlural)
         break
       case 13:
         // in the new row case, the row needs the event, so let it bubble up

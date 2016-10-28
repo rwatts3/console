@@ -4,12 +4,13 @@ import {toggleNewRow} from '../../../actions/databrowser/ui'
 import {Model, Field} from '../../../types/types'
 import Icon from '../../../components/Icon/Icon'
 import {classnames} from '../../../utils/classnames'
+import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 
 interface Props {
   columnWidths: {[key: string]: number}
   model: Model
-  toggleNewRow: (fields: Field[]) => any
+  toggleNewRow: (fields: Field[], modelNamePlural: String) => any
   height: number
 }
 
@@ -84,8 +85,8 @@ class NewRowInactive extends React.Component<Props, State> {
 
   private isActive = () => {
     const { model } = this.props
-    const BLACKLIST = ['User', 'File']
-    return (!model.isSystem && !BLACKLIST.includes(model.name))
+
+    return (!model.isSystem && !SYSTEM_MODELS.includes(model.name))
   }
 
   private setActive = () => {
@@ -99,7 +100,7 @@ class NewRowInactive extends React.Component<Props, State> {
   private toggleNewRow = (fields: Field[]) => {
     // TODO get isSystem properly from the system api
     if (this.state.active) {
-      this.props.toggleNewRow(fields)
+      this.props.toggleNewRow(fields, this.props.model.namePlural)
     }
   }
 
