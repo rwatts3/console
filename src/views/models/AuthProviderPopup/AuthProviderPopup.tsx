@@ -104,7 +104,7 @@ class AuthProviderPopup extends React.Component<Props, State> {
             <AuthProviderSidePanel
               project={this.props.project}
               selectedType={this.state.selectedType}
-              forceFetchRoot={this.props.forceFetchRoot}
+              forceFetchRoot={location.reload.bind(location)}
             />
           </div>
         </div>
