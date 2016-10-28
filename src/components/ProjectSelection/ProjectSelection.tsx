@@ -2,26 +2,38 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
-import { Project } from '../../types/types'
+import {Project, Model} from '../../types/types'
+import {showNotification} from '../../actions/notification'
 import styled from 'styled-components'
 import * as cx from 'classnames'
+import ClickOutside from 'react-click-outside'
 import {particles, variables, Icon} from 'graphcool-styles'
+import * as cookiestore from 'cookiestore'
+import {ShowNotificationCallback} from '../../types/utils'
+import { connect } from 'react-redux'
+const classes: any = require('./ProjectSelection.scss')
 
 interface Props {
   params: any
   add: () => void
   selectedProject: Project
   projects: Project[]
+  router: any
+  model: Model
+  project: Project
+  showNotification: ShowNotificationCallback
 }
 
 interface State {
   expanded: boolean,
+  userDropdownVisible: boolean,
 }
 
-export default class ProjectSelection extends React.Component<Props, State> {
+class ProjectSelection extends React.Component<Props, State> {
 
   state = {
     expanded: false,
+    userDropdownVisible: false,
   }
 
   shouldComponentUpdate: any
@@ -33,7 +45,7 @@ export default class ProjectSelection extends React.Component<Props, State> {
   }
 
   _toggle = () => {
-    this.setState({ expanded: !this.state.expanded })
+    this.setState({ expanded: !this.state.expanded } as State)
   }
 
   _onSelectProject = () => {
@@ -253,9 +265,28 @@ export default class ProjectSelection extends React.Component<Props, State> {
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
                 <div>Settings</div>
               </SettingsLink>
-              <SettingsLink className={cx(particles.ml10)} to={`/${this.props.params.projectName}/account/settings`}>
+              <SettingsLink className={cx(particles.ml10)} onClick={this.openUserDropdown}>
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/user.svg')}/>
                 <div>Account</div>
+                {this.state.userDropdownVisible &&
+                  <ClickOutside onClickOutside={(e) => {
+                    e.stopPropagation()
+                    this.closeUserDropdown()
+                  }}>
+                    <div className={classes.userDropdown}>
+                      <Link
+                        to={`/${this.props.params.projectName}/account`}
+                        onClick={this.closeUserDropdown}
+                      >
+                        Account
+                      </Link>
+                      <div onClick={this.logout}>
+                        Logout
+                      </div>
+                    </div>
+                  </ClickOutside>
+                }
+
               </SettingsLink>
             </div>
             <div
@@ -300,7 +331,7 @@ export default class ProjectSelection extends React.Component<Props, State> {
                   )}
                     onClick={this._onSelectProject}
                     to={`/${project.name}`}
-                    active={true}
+                    active={project.id === this.props.selectedProject.id}
                   >
                     <div className={cx(particles.ml10)}>{project.name}</div>
                     <div title='Duplicate'>
@@ -334,4 +365,26 @@ export default class ProjectSelection extends React.Component<Props, State> {
       </Root>
     )
   }
+
+  private openUserDropdown = () => {
+    this.setState({userDropdownVisible: true} as State)
+  }
+
+  private closeUserDropdown = () => {
+    this.setState({userDropdownVisible: false} as State)
+  }
+
+  private logout () {
+    analytics.track('header: logout', () => {
+      analytics.reset()
+      cookiestore.remove('graphcool_auth_token')
+      cookiestore.remove('graphcool_customer_id')
+      window.localStorage.clear()
+      window.location.pathname = '/'
+    })
+  }
 }
+
+export default connect(null, {
+  showNotification,
+})(ProjectSelection)

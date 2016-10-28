@@ -1,6 +1,6 @@
 export function validateModelName (modelName: string): boolean {
-  // model name should start with a capital letter and only contain letters
-  return /^[A-Z]/.test(modelName) && /^[a-zA-Z]+$/.test(modelName)
+  // model name should start with a capital letter and only contains alphanumeric characters
+  return /^[A-Z]/.test(modelName) && /^[a-zA-Z0-9]+$/.test(modelName)
 }
 
 export function validateProjectName (projectName: string): boolean {

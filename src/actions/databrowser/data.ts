@@ -98,7 +98,7 @@ export function loadDataAsync(lokka: any,
         // 2. node list is empty
         // 3. search term is empty, too
         if (nodes.size === 0 && searchQuery.length === 0 && !getState().databrowser.data.newRowShown) {
-          dispatch(toggleNewRow(fields))
+          dispatch(toggleNewRow(fields, modelNamePlural))
         }
       })
       .catch((err) => {

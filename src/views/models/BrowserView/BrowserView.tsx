@@ -48,7 +48,8 @@ import {classnames} from '../../../utils/classnames'
 import throttle from 'lodash.throttle'
 
 interface Props {
-  viewer: Viewer
+  relay: Relay.RelayProp
+  viewer: Viewer & { model: Model }
   router: ReactRouter.InjectedRouter
   route: any
   params: any
@@ -75,8 +76,8 @@ interface Props {
 
   nextCell: (fields: Field[]) => ReduxThunk
   previousCell: (fields: Field[]) => ReduxThunk
-  nextRow: (fields: Field[]) => ReduxThunk
-  previousRow: (fields: Field[]) => ReduxThunk
+  nextRow: (fields: Field[], modelNamePlural: string) => ReduxThunk
+  previousRow: (fields: Field[], modelNamePlural: string) => ReduxThunk
 
   editCell: (position: GridPosition) => ReduxAction
   setNodeSelection: (ids: Immutable.List<string>) => ReduxAction
@@ -190,8 +191,10 @@ class BrowserView extends React.Component<Props, {}> {
     document.removeEventListener('keydown', this.documentKeyDown)
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.location !== prevProps.location) {
+  componentDidUpdate = (prevProps: Props) => {
+    // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
+    if (this.props.location !== prevProps.location || this.props.viewer.model !== prevProps.viewer.model) {
+      console.log('reload')
       this.reloadData()
     }
   }
@@ -207,6 +210,7 @@ class BrowserView extends React.Component<Props, {}> {
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
+          forceFetchRoot={this.props.relay.forceFetch}
         >
           <div
             className={classnames(classes.button, classes.search, {
@@ -447,6 +451,7 @@ class BrowserView extends React.Component<Props, {}> {
           nodeId={nodeId}
           rowIndex={rowIndex}
           fields={this.props.fields}
+          modelNamePlural={this.props.model.namePlural}
         />
       )
     }
@@ -485,7 +490,7 @@ class BrowserView extends React.Component<Props, {}> {
         e.preventDefault()
         break
       case 38:
-        this.props.previousRow(this.props.fields)
+        this.props.previousRow(this.props.fields, this.props.model.namePlural)
         e.preventDefault()
         break
       case 9:
@@ -499,7 +504,7 @@ class BrowserView extends React.Component<Props, {}> {
         e.preventDefault()
         break
       case 40:
-        this.props.nextRow(this.props.fields)
+        this.props.nextRow(this.props.fields, this.props.model.namePlural)
         e.preventDefault()
         break
       case 13:

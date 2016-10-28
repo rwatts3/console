@@ -1,24 +1,20 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Link, withRouter} from 'react-router'
+import { Link, withRouter } from 'react-router'
 import FieldRow from './FieldRow'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
 import Tether from '../../../components/Tether/Tether'
 import ModelHeader from '../ModelHeader'
-import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
-import {Field, Model, Viewer, Project} from '../../../types/types'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {showNotification} from '../../../actions/notification'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {isScalar} from '../../../utils/graphql'
-import {nextStep} from '../../../actions/gettingStarted'
-import {validateModelName} from '../../../utils/nameValidator'
-import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
+import { Field, Model, Viewer, Project } from '../../../types/types'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { showNotification } from '../../../actions/notification'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { isScalar } from '../../../utils/graphql'
+import { nextStep } from '../../../actions/gettingStarted'
 const classes: any = require('./StructureView.scss')
 
 interface Props {
@@ -39,15 +35,7 @@ interface Props {
   showNotification: ShowNotificationCallback
 }
 
-interface State {
-  menuDropdownVisible: boolean
-}
-
-class StructureView extends React.Component<Props, State> {
-
-  state = {
-    menuDropdownVisible: false,
-  }
+class StructureView extends React.Component<Props, {}> {
 
   componentDidMount() {
     analytics.track('models/structure: viewed', {
@@ -68,6 +56,7 @@ class StructureView extends React.Component<Props, State> {
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
+          forceFetchRoot={this.props.relay.forceFetch}
         >
           <Tether
             steps={[{
@@ -96,24 +85,6 @@ class StructureView extends React.Component<Props, State> {
               <span>Create Field</span>
             </Link>
           </Tether>
-          {!this.props.model.isSystem &&
-          <div className={classes.button} onClick={this.toggleMenuDropdown}>
-            <Icon
-              width={16}
-              height={16}
-              src={require('assets/icons/more.svg')}
-            />
-          </div>}
-          {this.state.menuDropdownVisible &&
-          <div className={classes.menuDropdown}>
-            <div onClick={this.renameModel}>
-              Rename Model
-            </div>
-            <div onClick={this.deleteModel}>
-              Delete Model
-            </div>
-          </div>
-          }
         </ModelHeader>
         <div className={classes.table}>
           <div className={classes.tableHead}>
@@ -158,9 +129,9 @@ class StructureView extends React.Component<Props, State> {
                 </div>
               </div>
               {relations.length === 0 &&
-                <div className={classes.noRelations}>
-                  No Relations
-                </div>
+              <div className={classes.noRelations}>
+                No Relations
+              </div>
               }
               {relations.map((field) => (
                 <FieldRow
@@ -181,73 +152,12 @@ class StructureView extends React.Component<Props, State> {
     )
   }
 
-  private toggleMenuDropdown = () => {
-    this.setState({menuDropdownVisible: !this.state.menuDropdownVisible} as State)
-  }
-
   private handleCreateFieldClick = (e: any) => {
     if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL')) {
       this.props.nextStep()
     }
   }
 
-  private renameModel = () => {
-    let modelName = window.prompt('Model name:')
-    while (modelName != null && !validateModelName(modelName)) {
-      modelName = window.prompt('The inserted model name was invalid. Enter a valid model name, ' +
-                                'like "Model" or "MyModel" (first-letter capitalized and no spaces):')
-    }
-    const redirect = () => {
-      this.props.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
-    }
-
-    if (modelName) {
-      Relay.Store.commitUpdate(
-        new UpdateModelNameMutation({
-          name: modelName,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
-            analytics.track('model renamed', {
-              project: this.props.params.projectName,
-              model: modelName,
-            })
-            redirect()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        }
-      )
-    }
-  }
-
-  private deleteModel = () => {
-    this.toggleMenuDropdown()
-
-    if (window.confirm('Do you really want to delete this model?')) {
-      this.props.router.replace(`/${this.props.params.projectName}/models`)
-
-      Relay.Store.commitUpdate(
-        new DeleteModelMutation({
-          projectId: this.props.project.id,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
-            analytics.track('models/structure: deleted model', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
-            })
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        }
-      )
-    }
-  }
 }
 
 // id field should always be first
@@ -298,60 +208,60 @@ export default Relay.createContainer(MappedStructureView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    id
-                    isSystem
-                    possibleRelatedPermissionPaths(first: 100) {
-                        edges {
-                            node {
-                                fields {
-                                    id
-                                    name
-                                    typeIdentifier
-                                }
-                            }
-                        }
-                    }
-                    fields(first: 100) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                relation {
-                                    name
-                                }
-                                ${FieldRow.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          id
+          isSystem
+          possibleRelatedPermissionPaths(first: 100) {
+            edges {
+              node {
+                fields {
+                  id
+                  name
+                  typeIdentifier
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    name
-                    models(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
-                                    id
-                                    name
-                                    relation {
-                                        id
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+              }
             }
-        `,
-    },
+          }
+          fields(first: 100) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                relation {
+                  name
+                }
+                ${FieldRow.getFragment('field')}
+              }
+            }
+          }
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
+                  id
+                  name
+                  relation {
+                    id
+                  }
+                }
+              }
+            }
+          }
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })

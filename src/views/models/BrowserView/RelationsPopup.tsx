@@ -5,7 +5,9 @@ import {Field, Node} from '../../../types/types'
 import {isScalar} from '../../../utils/graphql'
 import {getLokka} from '../../../utils/simpleapi'
 import Icon from '../../../components/Icon/Icon'
-import Popup from '../../../components/Popup/Popup'
+import * as cx from 'classnames'
+import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
+import {particles} from 'graphcool-styles'
 const classes: any = require('./RelationsPopup.scss')
 
 interface Props {
@@ -67,73 +69,84 @@ class RelationsPopup extends React.Component<Props, State> {
       ))
 
     return (
-      <Popup onClickOutside={this.props.onCancel} height='80%'>
-        <div className={classes.root}>
-          <div className={classes.header}>
-            <div className={classes.filter}>
-              <Icon
-                src={require('assets/new_icons/search.svg')}
-                width={30}
-                height={30}
-              />
-              <input
-                type='text'
-                placeholder='Filter...'
-                value={this.state.filter}
-                onChange={(e: any) => this.setState({ filter: e.target.value } as State)}
-              />
-            </div>
-            <div className={classes.selection}>
-              <div
-                className={`${this.state.selection === Selection.All ? classes.active : ''}`}
-                onClick={() => this.setState({ selection: Selection.All } as State)}
-              >
-                All
+      <PopupWrapper onClickOutside={this.props.onCancel}>
+        <div
+          className={cx(
+            particles.flex,
+            particles.bgBlack50,
+            particles.w100,
+            particles.h100,
+            particles.justifyCenter,
+            particles.itemsCenter,
+          )}
+        >
+          <div className={classes.root}>
+            <div className={classes.header}>
+              <div className={classes.filter}>
+                <Icon
+                  src={require('assets/new_icons/search.svg')}
+                  width={30}
+                  height={30}
+                />
+                <input
+                  type='text'
+                  placeholder='Filter...'
+                  value={this.state.filter}
+                  onChange={(e: any) => this.setState({ filter: e.target.value } as State)}
+                />
               </div>
-              <div
-                className={`${this.state.selection === Selection.Related ? classes.active : ''}`}
-                onClick={() => this.setState({ selection: Selection.Related } as State)}
-              >
-                Related
-              </div>
-              <div
-                className={`${this.state.selection === Selection.Unrelated ? classes.active : ''}`}
-                onClick={() => this.setState({ selection: Selection.Unrelated } as State)}
-              >
-                Unrelated
-              </div>
-            </div>
-          </div>
-          <div className={classes.list}>
-            {filteredNodes.map(({ isRelated, node }) => (
-              <div
-                key={node.id}
-                className={`${classes.item} ${isRelated ? classes.related : ''}`}
-                onClick={() => this.toggleRelation(isRelated, node.id)}
-              >
-                <div className={classes.check}>
-                  <Icon
-                    width={23}
-                    height={23}
-                    src={require('assets/new_icons/check.svg')}
-                  />
+              <div className={classes.selection}>
+                <div
+                  className={`${this.state.selection === Selection.All ? classes.active : ''}`}
+                  onClick={() => this.setState({ selection: Selection.All } as State)}
+                >
+                  All
                 </div>
-                <div>{JSON.stringify(node, null, 2)}</div>
+                <div
+                  className={`${this.state.selection === Selection.Related ? classes.active : ''}`}
+                  onClick={() => this.setState({ selection: Selection.Related } as State)}
+                >
+                  Related
+                </div>
+                <div
+                  className={`${this.state.selection === Selection.Unrelated ? classes.active : ''}`}
+                  onClick={() => this.setState({ selection: Selection.Unrelated } as State)}
+                >
+                  Unrelated
+                </div>
               </div>
-            ))}
-          </div>
-          <div className={classes.footer}>
-            {this.state.success &&
-              <div className={classes.savedIndicator}>
-                All changes saved
+            </div>
+            <div className={classes.list}>
+              {filteredNodes.map(({ isRelated, node }) => (
+                <div
+                  key={node.id}
+                  className={`${classes.item} ${isRelated ? classes.related : ''}`}
+                  onClick={() => this.toggleRelation(isRelated, node.id)}
+                >
+                  <div className={classes.check}>
+                    <Icon
+                      width={23}
+                      height={23}
+                      src={require('assets/new_icons/check.svg')}
+                    />
+                  </div>
+                  <div>{JSON.stringify(node, null, 2)}</div>
+                </div>
+              ))}
+            </div>
+            <div className={classes.footer}>
+              {this.state.success &&
+                <div className={classes.savedIndicator}>
+                  All changes saved
+                </div>
+              }
+              <div className={classes.close} onClick={this.props.onCancel}>
+                Close
               </div>
-            }
-            <div className={classes.close} onClick={this.props.onCancel}>
-              Close
             </div>
           </div>
         </div>
-      </Popup>
+      </PopupWrapper>
     )
   }
 

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {withRouter} from 'react-router'
-import Header from '../../components/Header/Header'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {Viewer, Project} from '../../types/types'
 import {ShowNotificationCallback} from '../../types/utils'
@@ -52,15 +51,6 @@ class ProjectSettingsView extends React.Component<Props, State> {
   render() {
     return (
       <div className={classes.root}>
-        <Header
-          viewer={this.props.viewer}
-          params={this.props.params}
-          project={this.props.viewer.project}
-        >
-          <div>
-            Project
-          </div>
-        </Header>
         <div>
           <div className={classes.category}>
             <div className={classes.title}>
@@ -241,33 +231,31 @@ export default Relay.createContainer(MappedProjectSettingsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                project: projectByName(projectName: $projectName) {
-                    ${Header.getFragment('project')}
-                    name
-                    id
-                    permanentAuthTokens (first: 1000) {
-                        edges {
-                            node {
-                                ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
-                                id
-                                name
-                                token
-                            }
-                        }
-                    }
-                }
-                user {
-                    projects(first: 1000) {
-                        edges {
-                            node
-                        }
-                    }
-                }
-                ${Header.getFragment('viewer')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          name
+          id
+          permanentAuthTokens (first: 1000) {
+            edges {
+              node {
+                ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
+                id
+                name
+                token
+              }
             }
-        `,
-    },
+          }
+        }
+        user {
+          projects(first: 1000) {
+            edges {
+              node
+            }
+          }
+        }
+      }
+    `,
+  },
 })

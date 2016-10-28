@@ -4,7 +4,6 @@ import * as Relay from 'react-relay'
 import {withRouter, Link} from 'react-router'
 import {connect} from 'react-redux'
 import cuid from 'cuid'
-import {bindActionCreators} from 'redux'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from '../../components/MapProps/MapProps'
 // import {validateModelName} from '../../utils/nameValidator'
@@ -181,6 +180,12 @@ export class SideNav extends React.Component<Props, State> {
     // unsubscribe from sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(null, null)
     window.removeEventListener('resize', this.setModelsFit)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.models.length !== prevProps.models.length) {
+      this.setModelsFit()
+    }
   }
 
   render() {
@@ -657,19 +662,16 @@ export class SideNav extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    gettingStartedState: state.gettingStarted.gettingStartedState,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({nextStep, showDonePopup, showNotification, showPopup}, dispatch)
-}
-
 const ReduxContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+  state => ({
+    gettingStartedState: state.gettingStarted.gettingStartedState,
+  }),
+  {
+    nextStep,
+    showDonePopup,
+    showNotification,
+    showPopup,
+  }
 )(withRouter(SideNav))
 
 const MappedSideNav = mapProps({

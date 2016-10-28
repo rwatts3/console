@@ -84,6 +84,7 @@ class NewRow extends React.Component<Props, State> {
                 value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
                 cancel={this.props.cancel}
                 projectId={this.props.projectId}
+                modelNamePlural={this.props.model.namePlural}
                 reload={() => null}
                 rowIndex={-1}
               />

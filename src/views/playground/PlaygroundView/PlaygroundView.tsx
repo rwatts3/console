@@ -12,7 +12,6 @@ import { saveQuery } from '../../../utils/QueryHistoryStorage'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import QueryHistory from '../../../components/QueryHistory/QueryHistory'
-import Header from '../../../components/Header/Header'
 import Icon from '../../../components/Icon/Icon'
 import * as cookiestore from 'cookiestore'
 import endpoints from '../../../utils/endpoints'
@@ -197,13 +196,6 @@ class PlaygroundView extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <Helmet title='Playground' />
-        <Header
-          viewer={this.props.viewer}
-          params={this.props.params}
-          project={this.props.viewer.project}
-        >
-          {/*<div className={particles.primary}>Playground</div>*/}
-        </Header>
         <div className={classes.head}>
           <div
             className={classes.history}
@@ -348,9 +340,7 @@ export default Relay.createContainer(MappedPlaygroudView, {
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
           id
-          ${Header.getFragment('project')}
         }
-        ${Header.getFragment('viewer')}
       }
     `,
   },

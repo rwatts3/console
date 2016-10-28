@@ -14,7 +14,7 @@ export default class StringCell extends React.Component<CellProps<string>, State
   }
 
   render() {
-    const numLines = this.props.value.split(/\r\n|\r|\n/).length
+    const numLines = this.props.value ? this.props.value.split(/\r\n|\r|\n/).length : 1
 
     return (
       <Tether

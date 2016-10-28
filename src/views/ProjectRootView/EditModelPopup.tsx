@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
 import {ReduxAction} from '../../types/reducers'
 import {closePopup} from '../../actions/popup'
 import styled from 'styled-components'
@@ -10,8 +9,10 @@ import {validateModelName} from '../../utils/nameValidator'
 
 interface Props {
   id: string
+  modelName: string
   closePopup: (id: string) => ReduxAction
   saveModel: (modelName: string) => ReduxAction
+  deleteModel: () => ReduxAction
 }
 
 interface State {
@@ -19,10 +20,10 @@ interface State {
   showError: boolean
 }
 
-class AddModelPopup extends React.Component<Props, State> {
+class EditModelPopup extends React.Component<Props, State> {
 
   state = {
-    modelName: '',
+    modelName: this.props.modelName,
     showError: false,
   }
 
@@ -68,6 +69,15 @@ class AddModelPopup extends React.Component<Props, State> {
 
       &:hover {
         color: ${variables.gray70};
+      }
+    `
+
+    const DeleteButton = styled(Button)`
+      background: ${variables.red};
+      color: ${variables.white};
+
+      &:hover {
+        color: ${variables.white};
       }
     `
 
@@ -117,7 +127,7 @@ class AddModelPopup extends React.Component<Props, State> {
                 )}
                 type='text'
                 autoFocus
-                placeholder='New Model...'
+                placeholder='Model Name...'
                 value={this.state.modelName}
                 onChange={e => this.setState({modelName: e.target.value} as State)}
                 onKeyDown={e => e.keyCode === 13 && this.saveModel()}
@@ -134,16 +144,26 @@ class AddModelPopup extends React.Component<Props, State> {
               particles.justifyBetween,
             )}
           >
-            <Button onClick={() => this.props.closePopup(this.props.id)}>
-              Cancel
-            </Button>
-            <SaveButton onClick={this.saveModel}>
-              Create
-            </SaveButton>
+            <DeleteButton onClick={this.deleteModel}>
+              Delete
+            </DeleteButton>
+            <div>
+              <SaveButton onClick={this.saveModel}>
+                Save
+              </SaveButton>
+              <Button onClick={() => this.props.closePopup(this.props.id)}>
+                Cancel
+              </Button>
+            </div>
           </div>
         </Popup>
       </div>
     )
+  }
+
+  private deleteModel = () => {
+    this.props.deleteModel()
+    this.props.closePopup(this.props.id)
   }
 
   private saveModel = () => {
@@ -153,19 +173,15 @@ class AddModelPopup extends React.Component<Props, State> {
       return
     }
 
-    this.props.saveModel(modelName)
+    this.props.saveModel(this.state.modelName)
     this.props.closePopup(this.props.id)
   }
 
 }
 
-const mapStateToProps = (state) => ({})
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({closePopup}, dispatch)
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddModelPopup)
+  null,
+  {
+    closePopup,
+  }
+)(EditModelPopup)

@@ -3,7 +3,12 @@ import {Field} from '../types/types'
 import {isScalar} from './graphql'
 import {TypedValue, NonScalarValue, ScalarValue, AtomicValue} from '../types/utils'
 
-export function valueToString(value: TypedValue, field: Field, returnNullAsString: boolean): string {
+export function valueToString(
+  value: TypedValue,
+  field: Field,
+  returnNullAsString: boolean,
+  ignoreJson: boolean = false
+): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''
   }
@@ -27,6 +32,9 @@ export function valueToString(value: TypedValue, field: Field, returnNullAsStrin
     }
 
   } else {
+    if (field.typeIdentifier === 'Json' && ignoreJson) {
+      return value as string
+    }
     return atomicValueToString(value as AtomicValue, field, returnNullAsString)
   }
 }

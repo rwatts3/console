@@ -12,11 +12,11 @@ describe('nameValidator', () => {
     expect(nameValidator.validateModelName('m')).toBe(false)
   })
 
-  it('should deny model names containing numbers', () => {
-    expect(nameValidator.validateModelName('model1')).toBe(false)
+  it('should allow model names with numbers', () => {
+    expect(nameValidator.validateModelName('Model1')).toBe(true)
     expect(nameValidator.validateModelName('1')).toBe(false)
     expect(nameValidator.validateModelName('1model')).toBe(false)
-    expect(nameValidator.validateModelName('mod1el')).toBe(false)
+    expect(nameValidator.validateModelName('Mod1el')).toBe(true)
   })
 
   it('should deny model names containing spaces', () => {
