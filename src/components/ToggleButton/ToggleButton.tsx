@@ -16,6 +16,7 @@ interface Props {
   onKeyDown?: (e: any) => void
   onBlur?: (e: any) => void
   active: boolean
+  ignoreKeyDown?: boolean
 }
 
 interface State {
@@ -29,6 +30,8 @@ export default class ToggleButton extends React.Component<Props, State> {
     container: Element
   }
 
+  rendered: number
+
   constructor (props) {
     super(props)
 
@@ -36,6 +39,7 @@ export default class ToggleButton extends React.Component<Props, State> {
       currentSide: this.props.side,
     }
 
+    this.rendered = Date.now()
   }
 
   componentDidMount() {
@@ -59,7 +63,7 @@ export default class ToggleButton extends React.Component<Props, State> {
           className={classnames(classes.label, {
             [classes.active]: this.state.currentSide === ToggleSide.Left,
           })}
-          onClick={() => this.onUpdateSide(ToggleSide.Left)}
+          onClick={() => this.onUpdateClick(ToggleSide.Left)}
         >
           {this.props.leftText}
         </span>
@@ -67,7 +71,7 @@ export default class ToggleButton extends React.Component<Props, State> {
           className={classnames(classes.label, {
             [classes.active]: this.state.currentSide === ToggleSide.Right,
           })}
-          onClick={() => this.onUpdateSide(ToggleSide.Right)}
+          onClick={() => this.onUpdateClick(ToggleSide.Right)}
         >
           {this.props.rightText}
         </span>
@@ -82,6 +86,10 @@ export default class ToggleButton extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
+    // we don't want to interfer with inputs
+    if (e.target instanceof HTMLInputElement) {
+      return
+    }
     if (!this.props.active) {
       return
     }
@@ -98,6 +106,15 @@ export default class ToggleButton extends React.Component<Props, State> {
     if (typeof this.props.onKeyDown === 'function') {
       this.props.onKeyDown(e)
     }
+  }
+
+  private onUpdateClick (side) {
+    // due to #332 it is important to ignore the first click
+    if (Date.now() - this.rendered < 500) {
+      return
+    }
+
+    this.onUpdateSide(side)
   }
 
   private onUpdateSide (side) {
