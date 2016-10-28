@@ -182,6 +182,12 @@ export class SideNav extends React.Component<Props, State> {
     window.removeEventListener('resize', this.setModelsFit)
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.models.length !== prevProps.models.length) {
+      this.setModelsFit()
+    }
+  }
+
   render() {
 
     return (
