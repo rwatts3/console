@@ -65,14 +65,16 @@ class ProjectRootView extends React.Component<Props, {}> {
         'Product': 'Dashboard',
       })
 
-      Smooch.init({
-        appToken: __SMOOCH_TOKEN__,
-        givenName: this.props.user.crm.information.name,
-        email: this.props.user.crm.information.email,
-        customText: {
-          headerText: 'Can I help you? 🙌',
-        },
-      })
+      if (Smooch) {
+        Smooch.init({
+          appToken: __SMOOCH_TOKEN__,
+          givenName: this.props.user.crm.information.name,
+          email: this.props.user.crm.information.email,
+          customText: {
+            headerText: 'Can I help you? 🙌',
+          },
+        })
+      }
     } else {
       analytics.identify({
         'Product': 'Dashboard',
