@@ -563,7 +563,7 @@ class FieldPopup extends React.Component<Props, State> {
     } as Field
 
     const wrappedValue = value
-    const valueString = valueToString(wrappedValue, field, false)
+    const valueString = valueToString(wrappedValue, field, false, true)
 
     if (field.isList) {
       return (
@@ -640,7 +640,9 @@ class FieldPopup extends React.Component<Props, State> {
             ref='input'
             placeholder={placeholder}
             value={valueString}
-            onChange={(e: any) => changeCallback((e.target as HTMLInputElement).value)}
+            onChange={(e: any) => {
+              changeCallback((e.target as HTMLInputElement).value)
+            }}
             disabled={!active}
           />
         )
