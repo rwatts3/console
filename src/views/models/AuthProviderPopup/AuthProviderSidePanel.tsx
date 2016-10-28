@@ -50,6 +50,7 @@ interface Props {
   selectedType: AuthProviderType
   project: Project
   showNotification: ShowNotificationCallback
+  forceFetchRoot: () => void
 }
 
 interface State {
@@ -315,6 +316,12 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         auth0: authProvider.auth0,
       }),
       {
+        onSuccess: () => {
+          console.log(this.props)
+          // The force fetching because authproviders are too complicated to selective choose the config
+          // forceFetchRoot gets passed down from StuctureView/BrowserView which is needed to reflect all affected data
+          this.props.forceFetchRoot()
+        },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
         },

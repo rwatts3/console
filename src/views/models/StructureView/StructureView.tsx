@@ -1,20 +1,20 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Link, withRouter} from 'react-router'
+import { Link, withRouter } from 'react-router'
 import FieldRow from './FieldRow'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import Icon from '../../../components/Icon/Icon'
 import Tether from '../../../components/Tether/Tether'
 import ModelHeader from '../ModelHeader'
-import {Field, Model, Viewer, Project} from '../../../types/types'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {showNotification} from '../../../actions/notification'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {isScalar} from '../../../utils/graphql'
-import {nextStep} from '../../../actions/gettingStarted'
+import { Field, Model, Viewer, Project } from '../../../types/types'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { showNotification } from '../../../actions/notification'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { isScalar } from '../../../utils/graphql'
+import { nextStep } from '../../../actions/gettingStarted'
 const classes: any = require('./StructureView.scss')
 
 interface Props {
@@ -56,6 +56,7 @@ class StructureView extends React.Component<Props, {}> {
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
+          forceFetchRoot={this.props.relay.forceFetch}
         >
           <Tether
             steps={[{
@@ -128,9 +129,9 @@ class StructureView extends React.Component<Props, {}> {
                 </div>
               </div>
               {relations.length === 0 &&
-                <div className={classes.noRelations}>
-                  No Relations
-                </div>
+              <div className={classes.noRelations}>
+                No Relations
+              </div>
               }
               {relations.map((field) => (
                 <FieldRow
@@ -207,60 +208,60 @@ export default Relay.createContainer(MappedStructureView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    id
-                    isSystem
-                    possibleRelatedPermissionPaths(first: 100) {
-                        edges {
-                            node {
-                                fields {
-                                    id
-                                    name
-                                    typeIdentifier
-                                }
-                            }
-                        }
-                    }
-                    fields(first: 100) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                relation {
-                                    name
-                                }
-                                ${FieldRow.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          id
+          isSystem
+          possibleRelatedPermissionPaths(first: 100) {
+            edges {
+              node {
+                fields {
+                  id
+                  name
+                  typeIdentifier
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    name
-                    models(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
-                                    id
-                                    name
-                                    relation {
-                                        id
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+              }
             }
-        `,
-    },
+          }
+          fields(first: 100) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                relation {
+                  name
+                }
+                ${FieldRow.getFragment('field')}
+              }
+            }
+          }
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
+                  id
+                  name
+                  relation {
+                    id
+                  }
+                }
+              }
+            }
+          }
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })

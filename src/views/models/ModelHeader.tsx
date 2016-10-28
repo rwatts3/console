@@ -35,6 +35,7 @@ interface Props {
   router: any
   showNotification: ShowNotificationCallback
   showPopup: (popup: Popup) => void
+  forceFetchRoot: () => void
 }
 
 interface State {
@@ -114,6 +115,7 @@ class ModelHeader extends React.Component<Props, State> {
           <AuthProviderPopup
             project={this.props.project}
             close={() => this.setState({ authProviderPopupVisible: false } as State)}
+            forceFetchRoot={this.props.forceFetchRoot}
           />
         </PopupWrapper>
         }

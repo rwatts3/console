@@ -9,6 +9,7 @@ import { Project, AuthProviderType } from '../../../types/types'
 interface Props {
   project: Project
   close: () => void
+  forceFetchRoot: () => void
 }
 
 interface State {
@@ -103,6 +104,7 @@ class AuthProviderPopup extends React.Component<Props, State> {
             <AuthProviderSidePanel
               project={this.props.project}
               selectedType={this.state.selectedType}
+              forceFetchRoot={this.props.forceFetchRoot}
             />
           </div>
         </div>

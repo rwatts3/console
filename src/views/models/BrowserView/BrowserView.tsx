@@ -48,7 +48,8 @@ import {classnames} from '../../../utils/classnames'
 import throttle from 'lodash.throttle'
 
 interface Props {
-  viewer: Viewer
+  relay: Relay.RelayProp
+  viewer: Viewer & { model: Model }
   router: ReactRouter.InjectedRouter
   route: any
   params: any
@@ -190,8 +191,10 @@ class BrowserView extends React.Component<Props, {}> {
     document.removeEventListener('keydown', this.documentKeyDown)
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.location !== prevProps.location) {
+  componentDidUpdate = (prevProps: Props) => {
+    // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
+    if (this.props.location !== prevProps.location || this.props.viewer.model !== prevProps.viewer.model) {
+      console.log('reload')
       this.reloadData()
     }
   }
@@ -207,6 +210,7 @@ class BrowserView extends React.Component<Props, {}> {
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
+          forceFetchRoot={this.props.relay.forceFetch}
         >
           <div
             className={classnames(classes.button, classes.search, {
