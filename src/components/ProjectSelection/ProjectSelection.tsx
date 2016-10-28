@@ -2,12 +2,15 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
-import { Project } from '../../types/types'
+import {Project, Model} from '../../types/types'
+import {showNotification} from '../../actions/notification'
 import styled from 'styled-components'
 import * as cx from 'classnames'
 import ClickOutside from 'react-click-outside'
-import * as cookiestore from 'cookiestore'
 import {particles, variables, Icon} from 'graphcool-styles'
+import * as cookiestore from 'cookiestore'
+import {ShowNotificationCallback} from '../../types/utils'
+import { connect } from 'react-redux'
 const classes: any = require('./ProjectSelection.scss')
 
 interface Props {
@@ -15,6 +18,10 @@ interface Props {
   add: () => void
   selectedProject: Project
   projects: Project[]
+  router: any
+  model: Model
+  project: Project
+  showNotification: ShowNotificationCallback
 }
 
 interface State {
@@ -22,7 +29,7 @@ interface State {
   userDropdownVisible: boolean,
 }
 
-export default class ProjectSelection extends React.Component<Props, State> {
+class ProjectSelection extends React.Component<Props, State> {
 
   state = {
     expanded: false,
@@ -377,3 +384,7 @@ export default class ProjectSelection extends React.Component<Props, State> {
     })
   }
 }
+
+export default connect(null, {
+  showNotification,
+})(ProjectSelection)

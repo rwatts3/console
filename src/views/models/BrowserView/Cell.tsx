@@ -347,7 +347,6 @@ export class Cell extends React.PureComponent<Props, State> {
           <div>
             <CopyToClipboard text={valueString} onCopy={() => {
               this.setState({copied: true} as State)
-              console.log('setting state')
             }}>
               <CellLink
                 onClick={e => e.preventDefault()}

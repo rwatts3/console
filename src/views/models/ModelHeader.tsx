@@ -1,9 +1,9 @@
 import * as React from 'react'
+import {showNotification} from '../../actions/notification'
 import * as Relay from 'react-relay'
 import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
 import {nextStep} from '../../actions/gettingStarted'
-import {Link} from 'react-router'
+import {Link, withRouter} from 'react-router'
 import ModelDescription from './ModelDescription'
 import Tether from '../../components/Tether/Tether'
 import Header from '../../components/Header/Header'
@@ -11,9 +11,17 @@ import {Model, Viewer, Project} from '../../types/types'
 import {GettingStartedState} from '../../types/gettingStarted'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import AuthProviderPopup from './AuthProviderPopup/AuthProviderPopup'
-import {particles, Icon, variables} from 'graphcool-styles'
+import { Icon, particles, variables } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
+import UpdateModelNameMutation from '../../mutations/UpdateModelNameMutation'
+import EditModelPopup from '../ProjectRootView/EditModelPopup'
+import DeleteModelMutation from '../../mutations/DeleteModelMutation'
+import {ShowNotificationCallback} from '../../types/utils'
+import {onFailureShowNotification} from '../../utils/relay'
+import cuid from 'cuid'
+import {Popup} from '../../types/popup'
+import {showPopup} from '../../actions/popup'
 const classes: any = require('./ModelHeader.scss')
 
 interface Props {
@@ -24,6 +32,9 @@ interface Props {
   nextStep: any
   viewer: Viewer
   project: Project
+  router: any
+  showNotification: ShowNotificationCallback
+  showPopup: (popup: Popup) => void
 }
 
 interface State {
@@ -153,6 +164,7 @@ class ModelHeader extends React.Component<Props, State> {
                   height={32}
                   src={require('graphcool-styles/icons/fill/settings.svg')}
                   color={variables.gray10}
+                  onClick={this.openEditModelModal}
                   className={cx(
                     particles.ml6,
                     particles.mt6,
@@ -196,6 +208,72 @@ class ModelHeader extends React.Component<Props, State> {
     )
   }
 
+  private openEditModelModal = () => {
+    const id = cuid()
+    this.props.showPopup({
+      element: <EditModelPopup
+        id={id}
+        projectId={this.props.project.id}
+        modelName={this.props.model.name}
+        saveModel={this.renameModel}
+        deleteModel={this.deleteModel}
+      />,
+      id,
+    })
+  }
+
+  private renameModel = (modelName: string) => {
+    const redirect = () => {
+      this.props.router.replace(`/${this.props.params.projectName}/models/${modelName}`)
+    }
+
+    if (modelName) {
+      Relay.Store.commitUpdate(
+        new UpdateModelNameMutation({
+          name: modelName,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('model renamed', {
+              project: this.props.params.projectName,
+              model: modelName,
+            })
+            redirect()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        }
+      )
+    }
+  }
+
+  private deleteModel = () => {
+
+    if (window.confirm('Do you really want to delete this model?')) {
+      this.props.router.replace(`/${this.props.params.projectName}/models`)
+
+      Relay.Store.commitUpdate(
+        new DeleteModelMutation({
+          projectId: this.props.project.id,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            analytics.track('models/structure: deleted model', {
+              project: this.props.params.projectName,
+              model: this.props.params.modelName,
+            })
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        }
+      )
+    }
+  }
+
   private dataViewOnClick = () => {
     if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
       this.props.nextStep()
@@ -203,20 +281,16 @@ class ModelHeader extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    gettingStartedState: state.gettingStarted.gettingStartedState,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({nextStep}, dispatch)
-}
-
 const ReduxContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ModelHeader)
+  state => ({
+    gettingStartedState: state.gettingStarted.gettingStartedState,
+  }),
+  {
+    nextStep,
+    showNotification,
+    showPopup,
+  }
+)(withRouter(ModelHeader))
 
 export default Relay.createContainer(ReduxContainer, {
   initialVariables: {

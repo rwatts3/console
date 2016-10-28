@@ -149,7 +149,7 @@ class ProjectRootView extends React.Component<Props, {}> {
           </div>
         </div>
         {this.props.popup.popups.map(popup =>
-          <PopupWrapper key={popup.id}>
+          <PopupWrapper key={popup.id} id={popup.id}>
             {popup.element}
           </PopupWrapper>
         )}
