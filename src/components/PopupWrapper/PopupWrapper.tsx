@@ -6,6 +6,7 @@ import {ReduxAction} from '../../types/reducers'
 interface Props {
   id?: string
   closePopup: (id: string) => ReduxAction
+  onClickOutside?: (e: any) => void
 }
 
 class PopupWrapper extends React.Component<Props, {}> {
@@ -35,6 +36,9 @@ class PopupWrapper extends React.Component<Props, {}> {
     // close the popup
     if (this.refs.container.children[0] !== e.target) {
       return
+    }
+    if (typeof this.props.onClickOutside === 'function') {
+      this.props.onClickOutside(e)
     }
     if (this.props.id && this.props.id.length > 0) {
       this.props.closePopup(this.props.id)

@@ -334,6 +334,7 @@ export class Cell extends React.PureComponent<Props, State> {
         {valueString}
         {this.props.field.typeIdentifier === 'Relation' &&
         !this.props.field.isList &&
+          this.props.value !== null &&
           this.props.selected &&
           (
             <CellLink

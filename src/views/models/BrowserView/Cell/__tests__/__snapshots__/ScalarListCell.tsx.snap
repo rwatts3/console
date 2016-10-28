@@ -1,91 +1,93 @@
 exports[`test ScalarListCell renders 1`] = `
-<Popup
-  height="80%"
+<Connect(PopupWrapper)
   onClickOutside={[Function]}>
   <div
-    className="root">
+    className="flex bgBlack50 w100 h100 justifyCenter itemsCenter">
     <div
-      className="header">
+      className="root">
       <div
-        className="filter">
-        <Icon
-          height={30}
-          src="test-file-stub"
-          width={30} />
-        <input
-          onChange={[Function]}
-          placeholder="Filter..."
-          type="text"
-          value="" />
-        <Icon
-          className="setNull"
-          height={30}
-          onClick={[Function]}
-          src="test-file-stub"
-          width={30} />
-      </div>
-    </div>
-    <div
-      className="list">
-      <div
-        className="item addBox"
-        onClick={[Function]}>
-        <span
-          className="addNewText">
-          Add new item ...
-        </span>
-        <Icon
-          className="disabled"
-          height={24}
-          onClick={[Function]}
-          src="test-file-stub"
-          width={24} />
-      </div>
-      <div
-        className="item existing"
-        onClick={[Function]}>
-        <div>
-          1
+        className="header">
+        <div
+          className="filter">
+          <Icon
+            height={30}
+            src="test-file-stub"
+            width={30} />
+          <input
+            onChange={[Function]}
+            placeholder="Filter..."
+            type="text"
+            value="" />
+          <Icon
+            className="setNull"
+            height={30}
+            onClick={[Function]}
+            src="test-file-stub"
+            width={30} />
         </div>
-        <Icon
-          height={14}
-          onClick={[Function]}
-          src="test-file-stub"
-          width={14} />
       </div>
       <div
-        className="item existing"
-        onClick={[Function]}>
-        <div>
-          2
+        className="list">
+        <div
+          className="item addBox"
+          onClick={[Function]}>
+          <span
+            className="addNewText">
+            Add new item ...
+          </span>
+          <Icon
+            className="disabled"
+            height={24}
+            onClick={[Function]}
+            src="test-file-stub"
+            width={24} />
         </div>
-        <Icon
-          height={14}
-          onClick={[Function]}
-          src="test-file-stub"
-          width={14} />
-      </div>
-      <div
-        className="item existing"
-        onClick={[Function]}>
-        <div>
-          3
+        <div
+          className="item existing"
+          onClick={[Function]}>
+          <div>
+            1
+          </div>
+          <Icon
+            height={14}
+            onClick={[Function]}
+            src="test-file-stub"
+            width={14} />
         </div>
-        <Icon
-          height={14}
-          onClick={[Function]}
-          src="test-file-stub"
-          width={14} />
+        <div
+          className="item existing"
+          onClick={[Function]}>
+          <div>
+            2
+          </div>
+          <Icon
+            height={14}
+            onClick={[Function]}
+            src="test-file-stub"
+            width={14} />
+        </div>
+        <div
+          className="item existing"
+          onClick={[Function]}>
+          <div>
+            3
+          </div>
+          <Icon
+            height={14}
+            onClick={[Function]}
+            src="test-file-stub"
+            width={14} />
+        </div>
       </div>
-    </div>
-    <div
-      className="footer">
       <div
-        className="close"
-        onClick={[Function]}>
-        Close
+        className="footer">
+        <div
+          className="close"
+          onClick={[Function]}>
+          Close
+        </div>
       </div>
     </div>
   </div>
-</Popup>
+</Connect(PopupWrapper)>
 `;

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {withRouter} from 'react-router'
-import Popup from '../../components/Popup/Popup'
+import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import RelationSelector from './RelationSelector'
 import RelationExplanation from '../../components/RelationExplanation/RelationExplanation'
 import GeneratedMutations from '../../components/GeneratedMutations/GeneratedMutations'
@@ -17,6 +17,8 @@ import {onFailureShowNotification} from '../../utils/relay'
 import {getModelName, getModelNamePlural} from '../../utils/namegetter'
 import Help from '../../components/Help/Help'
 import {Transaction} from 'react-relay'
+import {particles} from 'graphcool-styles'
+import * as cx from 'classnames'
 
 const classes: any = require('./RelationPopup.scss')
 
@@ -59,161 +61,172 @@ class RelationPopup extends React.Component<Props, State> {
   render(): JSX.Element {
     const models = this.props.viewer.project.models.edges.map((edge) => edge.node)
     return (
-      <Popup onClickOutside={this.close} height={'100%'}>
-        <div className={classes.root}>
-          <div className={classes.header}>
-            {this.props.viewer.relation ? 'Edit Relation' : 'New Relation'}
-          </div>
-          <div className={classes.container}>
-            <div className={classes.content}>
-              <div className={classes.title}>
-                Relation Schema
-              </div>
-              <div className={classes.settings}>
+      <PopupWrapper onClickOutside={this.close}>
+        <div
+          className={cx(
+            particles.flex,
+            particles.bgBlack50,
+            particles.w100,
+            particles.h100,
+            particles.justifyCenter,
+            particles.itemsCenter,
+          )}
+        >
+          <div className={classes.root}>
+            <div className={classes.header}>
+              {this.props.viewer.relation ? 'Edit Relation' : 'New Relation'}
+            </div>
+            <div className={classes.container}>
+              <div className={classes.content}>
+                <div className={classes.title}>
+                  Relation Schema
+                </div>
+                <div className={classes.settings}>
+                  <div className={classes.container}>
+                    <RelationSelector
+                      models={models}
+                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                      fieldOnRightModelName={this.state.fieldOnRightModelName}
+                      fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                      fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                      leftModelId={this.state.leftModelId}
+                      rightModelId={this.state.rightModelId}
+                      onFieldOnLeftModelNameChange={
+                        (val) => this.setState({
+                            fieldOnLeftModelName: val,
+                            fieldsEdited: true,
+                          } as State)
+                      }
+                      onFieldOnRightModelNameChange={
+                        (val) => this.setState({
+                            fieldOnRightModelName: val,
+                            fieldsEdited: true,
+                          } as State)
+                      }
+                      onFieldOnLeftModelIsListChange={
+                        (val) => this.setState(
+                          {
+                            fieldOnLeftModelIsList: val,
+                          } as State,
+                          this.prepopulateFields)
+                      }
+                      onFieldOnRightModelIsListChange={
+                        (val) => this.setState(
+                          {
+                            fieldOnRightModelIsList: val,
+                          } as State,
+                          this.prepopulateFields)
+                      }
+                      onLeftModelIdChange={this.handleLeftModelIdChange}
+                      onRightModelIdChange={this.handleRightModelIdChange}
+                    />
+                  </div>
+                </div>
+                {this.state.leftModelId && this.state.rightModelId &&
+                <div className={classes.descriptors}>
+                  <div className={classes.name}>
+                    <label>Name</label>
+                    <input
+                      id='nameInput'
+                      autoFocus={!this.props.viewer.relation}
+                      ref='input'
+                      type='text'
+                      placeholder='+ Add Relation Name'
+                      value={this.state.name}
+                      onChange={(e: any) => this.setState(
+                        {
+                          name: e.target.value,
+                          alertHint: !validateModelName(e.target.value) || e.target.value === '',
+                        } as State)}
+                    />
+                    {this.state.alertHint &&
+                    <Help
+                      size={35}
+                      text={'The relation name has to be capitalized.'}
+                      placement={'right'}
+                    />
+                    }
+                  </div>
+                  <div className={classes.description}>
+                    <input
+                      type='text'
+                      placeholder='+ Add Description'
+                      value={this.state.description}
+                      onChange={(e: any) => this.setState({ description: e.target.value } as State)}
+                    />
+                  </div>
+                </div>
+                }
+                {this.state.leftModelId && this.state.rightModelId && this.state.name &&
                 <div className={classes.container}>
-                  <RelationSelector
-                    models={models}
-                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
-                    fieldOnRightModelName={this.state.fieldOnRightModelName}
-                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
-                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
-                    leftModelId={this.state.leftModelId}
-                    rightModelId={this.state.rightModelId}
-                    onFieldOnLeftModelNameChange={
-                      (val) => this.setState({
-                          fieldOnLeftModelName: val,
-                          fieldsEdited: true,
-                        } as State)
-                    }
-                    onFieldOnRightModelNameChange={
-                      (val) => this.setState({
-                          fieldOnRightModelName: val,
-                          fieldsEdited: true,
-                        } as State)
-                    }
-                    onFieldOnLeftModelIsListChange={
-                      (val) => this.setState(
-                        {
-                          fieldOnLeftModelIsList: val,
-                        } as State,
-                        this.prepopulateFields)
-                    }
-                    onFieldOnRightModelIsListChange={
-                      (val) => this.setState(
-                        {
-                          fieldOnRightModelIsList: val,
-                        } as State,
-                        this.prepopulateFields)
-                    }
-                    onLeftModelIdChange={this.handleLeftModelIdChange}
-                    onRightModelIdChange={this.handleRightModelIdChange}
-                  />
-                </div>
-              </div>
-              {this.state.leftModelId && this.state.rightModelId &&
-              <div className={classes.descriptors}>
-                <div className={classes.name}>
-                  <label>Name</label>
-                  <input
-                    id='nameInput'
-                    autoFocus={!this.props.viewer.relation}
-                    ref='input'
-                    type='text'
-                    placeholder='+ Add Relation Name'
-                    value={this.state.name}
-                    onChange={(e: any) => this.setState(
-                      {
-                        name: e.target.value,
-                        alertHint: !validateModelName(e.target.value) || e.target.value === '',
-                      } as State)}
-                  />
-                  {this.state.alertHint &&
-                  <Help
-                    size={35}
-                    text={'The relation name has to be capitalized.'}
-                    placement={'right'}
-                  />
-                  }
-                </div>
-                <div className={classes.description}>
-                  <input
-                    type='text'
-                    placeholder='+ Add Description'
-                    value={this.state.description}
-                    onChange={(e: any) => this.setState({ description: e.target.value } as State)}
-                  />
-                </div>
-              </div>
-              }
-              {this.state.leftModelId && this.state.rightModelId && this.state.name &&
-              <div className={classes.container}>
-                <div className={classes.additionalInfo}>
-                  <div
-                    className={classnames(classes.tabbutton, this.state.showExplanation ? classes.active : '')}
-                    onClick={() => this.setState({showExplanation: true} as State)}
-                  >
-                    <Help
-                      size={12}
-                      text={'These sentences express your specified schema in natural language.'}
-                      placement={'left'}
-                    />
-                    <div className={classes.tabheader}>
-                      Relation Explanation
+                  <div className={classes.additionalInfo}>
+                    <div
+                      className={classnames(classes.tabbutton, this.state.showExplanation ? classes.active : '')}
+                      onClick={() => this.setState({showExplanation: true} as State)}
+                    >
+                      <Help
+                        size={12}
+                        text={'These sentences express your specified schema in natural language.'}
+                        placement={'left'}
+                      />
+                      <div className={classes.tabheader}>
+                        Relation Explanation
+                      </div>
+                    </div>
+                    <div
+                      className={classnames(classes.tabbutton, !this.state.showExplanation ? classes.active : '')}
+                      onClick={() => this.setState({showExplanation: false} as State)}
+                    >
+                      <Help
+                        size={12}
+                        text={'There are the mutations that your relation schema would generate'}
+                        placement={'top'}
+                      />
+                      <div className={classes.tabheader}>
+                       Generated Mutations
+                      </div>
                     </div>
                   </div>
-                  <div
-                    className={classnames(classes.tabbutton, !this.state.showExplanation ? classes.active : '')}
-                    onClick={() => this.setState({showExplanation: false} as State)}
-                  >
-                    <Help
-                      size={12}
-                      text={'There are the mutations that your relation schema would generate'}
-                      placement={'top'}
+                  <div className={classes.explanation}>
+                    {this.state.showExplanation &&
+                    <RelationExplanation
+                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                      fieldOnRightModelName={this.state.fieldOnRightModelName}
+                      fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                      fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                      leftModelId={this.state.leftModelId}
+                      rightModelId={this.state.rightModelId}
+                      project={this.props.viewer.project}
                     />
-                    <div className={classes.tabheader}>
-                     Generated Mutations
-                    </div>
+                    }
+                    {!this.state.showExplanation &&
+                    <GeneratedMutations
+                      models={models}
+                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                      fieldOnRightModelName={this.state.fieldOnRightModelName}
+                      fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
+                      fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
+                      leftModelId={this.state.leftModelId}
+                      rightModelId={this.state.rightModelId}
+                      relationName={this.state.name}
+                    />
+                    }
                   </div>
                 </div>
-                <div className={classes.explanation}>
-                  {this.state.showExplanation &&
-                  <RelationExplanation
-                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
-                    fieldOnRightModelName={this.state.fieldOnRightModelName}
-                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
-                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
-                    leftModelId={this.state.leftModelId}
-                    rightModelId={this.state.rightModelId}
-                    project={this.props.viewer.project}
-                  />
-                  }
-                  {!this.state.showExplanation &&
-                  <GeneratedMutations
-                    models={models}
-                    fieldOnLeftModelName={this.state.fieldOnLeftModelName}
-                    fieldOnRightModelName={this.state.fieldOnRightModelName}
-                    fieldOnLeftModelIsList={this.state.fieldOnLeftModelIsList}
-                    fieldOnRightModelIsList={this.state.fieldOnRightModelIsList}
-                    leftModelId={this.state.leftModelId}
-                    rightModelId={this.state.rightModelId}
-                    relationName={this.state.name}
-                  />
-                  }
-                </div>
+                }
               </div>
-              }
             </div>
-          </div>
-          <div className={classes.buttons}>
-            <div onClick={this.close}>
-              Cancel
-            </div>
-            <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
-              {this.props.viewer.relation ? 'Save' : 'Create'}
+            <div className={classes.buttons}>
+              <div onClick={this.close}>
+                Cancel
+              </div>
+              <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
+                {this.props.viewer.relation ? 'Save' : 'Create'}
+              </div>
             </div>
           </div>
         </div>
-      </Popup>
+      </PopupWrapper>
     )
   }
 
