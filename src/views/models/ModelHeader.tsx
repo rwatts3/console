@@ -179,28 +179,26 @@ class ModelHeader extends React.Component<Props, State> {
           </Header>
         </div>
         <div className={classes.bottom}>
-          <div className={classes.tabs}>
+          <div className={classes.buttons}>
             {this.props.model.name === 'User' &&
             <div
               className={cx(
-                particles.f14,
-                particles.pa10,
-                particles.pointer,
-                particles.ttu,
-                particles.bgWhite,
-                particles.black50,
-                particles.lhSolid,
-                particles.fw6,
-                particles.buttonShadow,
-                particles.tracked,
-              )}
+                  particles.f14,
+                  particles.pa10,
+                  particles.pointer,
+                  particles.ttu,
+                  particles.bgWhite,
+                  particles.black50,
+                  particles.lhSolid,
+                  particles.fw6,
+                  particles.buttonShadow,
+                  particles.tracked,
+                )}
               onClick={() => this.setState({ authProviderPopupVisible: true } as State)}
             >
               Configure Auth Provider
             </div>
             }
-          </div>
-          <div className={classes.buttons}>
             {this.props.children}
           </div>
         </div>
