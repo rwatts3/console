@@ -1,11 +1,13 @@
 import * as React from 'react'
-import Popup from '../../../../components/Popup/Popup'
+import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
 import Icon from '../../../../components/Icon/Icon'
 import {getScalarEditCell, CellRequirements} from './cellgenerator'
 import {AtomicValue} from '../../../../types/utils'
 import {atomicValueToString} from '../../../../utils/valueparser'
 import {Field} from '../../../../types/types'
 import {classnames} from '../../../../utils/classnames'
+import * as cx from 'classnames'
+import {particles} from 'graphcool-styles'
 const classes: any = require('./ScalarListCell.scss')
 
 interface State {
@@ -42,79 +44,90 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       },
     }
     return (
-      <Popup height='80%' onClickOutside={this.handleClose}>
-        <div className={classes.root}>
-          <div className={classes.header}>
-            <div className={classes.filter}>
-              <Icon
-                src={require('assets/new_icons/search.svg')}
-                width={30}
-                height={30}
-              />
-              <input
-                type='text'
-                placeholder='Filter...'
-                value={this.state.filter}
-                onChange={(e: any) => null}
-              />
-              <Icon
-                className={classes.setNull}
-                src={require('assets/icons/delete.svg')}
-                width={30}
-                height={30}
-                onClick={() => {
-                  this.props.methods.save(null)
-                  this.props.methods.cancel()
-                }}
-              />
-            </div>
-          </div>
-          <div className={classes.list}>
-              <div
-                className={classnames(classes.item, classes.addBox)}
-                onClick={ () => this.setState({isEditing: true} as State)}
-              >
-                {this.state.isEditing && (
-                  <div className={classes.inputWrapper}>
-                  {getScalarEditCell(requirements)}
-                  </div>
-                )}
-                {!this.state.isEditing && (
-                  <span className={classes.addNewText}>
-                      {this.state.newValue ? this.state.newValue : 'Add new item ...'}
-                  </span>
-                )}
+      <PopupWrapper onClickOutside={this.handleClose}>
+        <div
+          className={cx(
+            particles.flex,
+            particles.bgBlack50,
+            particles.w100,
+            particles.h100,
+            particles.justifyCenter,
+            particles.itemsCenter,
+          )}
+        >
+          <div className={classes.root}>
+            <div className={classes.header}>
+              <div className={classes.filter}>
                 <Icon
-                  className={this.state.newValue ? '' : classes.disabled}
-                  onClick={this.addNewValue}
-                  src={require('assets/new_icons/add_new.svg')}
-                  width={24}
-                  height={24}
+                  src={require('assets/new_icons/search.svg')}
+                  width={30}
+                  height={30}
+                />
+                <input
+                  type='text'
+                  placeholder='Filter...'
+                  value={this.state.filter}
+                  onChange={(e: any) => null}
+                />
+                <Icon
+                  className={classes.setNull}
+                  src={require('assets/icons/delete.svg')}
+                  width={30}
+                  height={30}
+                  onClick={() => {
+                    this.props.methods.save(null)
+                    this.props.methods.cancel()
+                  }}
                 />
               </div>
-              {this.state.values.map((value, index) => (
+            </div>
+            <div className={classes.list}>
                 <div
-                  key={index}
-                  className={classnames(classes.item, classes.existing)}
-                  onClick={() => null}
+                  className={classnames(classes.item, classes.addBox)}
+                  onClick={ () => this.setState({isEditing: true} as State)}
                 >
-                  <div>{atomicValueToString(value, this.props.field, true)}</div>
+                  {this.state.isEditing && (
+                    <div className={classes.inputWrapper}>
+                    {getScalarEditCell(requirements)}
+                    </div>
+                  )}
+                  {!this.state.isEditing && (
+                    <span className={classes.addNewText}>
+                        {this.state.newValue ? this.state.newValue : 'Add new item ...'}
+                    </span>
+                  )}
                   <Icon
-                    src={require('assets/new_icons/remove.svg')}
-                    width={14}
-                    height={14}
-                    onClick={() => this.handleDeleteValue(index)}
+                    className={this.state.newValue ? '' : classes.disabled}
+                    onClick={this.addNewValue}
+                    src={require('assets/new_icons/add_new.svg')}
+                    width={24}
+                    height={24}
                   />
                 </div>
-              ))}
-          </div>
-          <div className={classes.footer}>
-            <div className={classes.close} onClick={this.handleClose}>
-              Close
+                {this.state.values.map((value, index) => (
+                  <div
+                    key={index}
+                    className={classnames(classes.item, classes.existing)}
+                    onClick={() => null}
+                  >
+                    <div>{atomicValueToString(value, this.props.field, true)}</div>
+                    <Icon
+                      src={require('assets/new_icons/remove.svg')}
+                      width={14}
+                      height={14}
+                      onClick={() => this.handleDeleteValue(index)}
+                    />
+                  </div>
+                ))}
+            </div>
+            <div className={classes.footer}>
+              <div className={classes.close} onClick={this.handleClose}>
+                Close
+              </div>
             </div>
           </div>
         </div>
-      </Popup>
+      </PopupWrapper>
     )
   }
 

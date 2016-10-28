@@ -91,10 +91,13 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                   left: 0,
                   zIndex: 3,
 
-                  // -1 as we have don't want to have a double border
-                  top: this.props.headerHeight + this.props.addRowHeight,
-                  transform: `translate3d(0px, ${(this.props.newRowActive &&
-                    this.props.loadedList.size > 0) ? 10 : 0}px, 0px)`,
+                  // WARNING: Due to https://bugs.chromium.org/p/chromium/issues/detail?id=20574
+                  // it's not possible to use transform here yet, because we have popups as children
+                  // we need to refactor the popup infrastructure before
+                  top: this.props.headerHeight +
+                    this.props.addRowHeight +
+                    ((this.props.newRowActive &&
+                      this.props.loadedList.size > 0) ? 10 : 0),
                   transition: '.3s all',
                 }}
                 cellStyle={{position: 'absolute'}}
