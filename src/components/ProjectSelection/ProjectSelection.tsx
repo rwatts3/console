@@ -331,7 +331,7 @@ class ProjectSelection extends React.Component<Props, State> {
                   )}
                     onClick={this._onSelectProject}
                     to={`/${project.name}`}
-                    active={true}
+                    active={project.id === this.props.selectedProject.id}
                   >
                     <div className={cx(particles.ml10)}>{project.name}</div>
                     <div title='Duplicate'>
