@@ -29,9 +29,7 @@ test('Cell renders and runs selectCell', () => {
         isList: false,
         isSystem: true,
         typeIdentifier: 'String',
-        relatedModel: {
-          name: 'Other',
-        },
+        relatedModel: null,
       }}
       addnew={false}
       backgroundColor='#fff'
@@ -138,9 +136,7 @@ test('Cell renders in edit mode', () => {
         isList: false,
         isSystem: true,
         typeIdentifier: 'String',
-        relatedModel: {
-          name: 'Other',
-        },
+        relatedModel: null,
       }}
       addnew={false}
       backgroundColor='#fff'
