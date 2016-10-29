@@ -322,7 +322,7 @@ export class Cell extends React.PureComponent<Props, State> {
       transform: translate(420%, 0);
       animation: ${movingCopyIndicator} .7s linear
     `
-    const cellLinkUrl = `/${this.props.projectName}/models/${this.props.field.relatedModel.name}/databrowser?q=${valueString}` // tslint:disable-line
+    const cellLinkUrl = () => `/${this.props.projectName}/models/${this.props.field.relatedModel.name}/databrowser?q=${valueString}` // tslint:disable-line
 
     return (
       <span
@@ -338,7 +338,7 @@ export class Cell extends React.PureComponent<Props, State> {
           this.props.value !== null &&
           this.props.selected &&
           (
-            <CellLink to={cellLinkUrl}>
+            <CellLink to={cellLinkUrl()}>
               {`Go to ${this.props.field.relatedModel.name}`}
             </CellLink>
         )}

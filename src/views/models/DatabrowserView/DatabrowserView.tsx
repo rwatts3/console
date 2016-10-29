@@ -642,7 +642,7 @@ const ReduxContainer = connect(
   mapDispatchToProps
 )(withRouter(DatabrowserView))
 
-const MappedBrowserView = mapProps({
+const MappedDatabrowserView = mapProps({
   params: (props) => props.params,
   fields: (props) => (
     props.viewer.model.fields.edges
@@ -653,7 +653,7 @@ const MappedBrowserView = mapProps({
   viewer: (props) => props.viewer,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedBrowserView, {
+export default Relay.createContainer(MappedDatabrowserView, {
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router

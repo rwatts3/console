@@ -65,9 +65,7 @@ exports[`test Cell renders in edit mode 1`] = `
               "isReadonly": true,
               "isSystem": true,
               "name": "description",
-              "relatedModel": Object {
-                "name": "Other",
-              },
+              "relatedModel": null,
               "typeIdentifier": "String",
             }
           }
