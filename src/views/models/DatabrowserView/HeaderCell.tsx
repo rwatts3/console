@@ -32,7 +32,7 @@ class HeaderCell extends React.Component<Props, {}> {
       type = `${type}!`
     }
 
-    const editUrl = `/${params.projectName}/models/${params.modelName}/structure/edit/${field.name}`
+    const editUrl = `/${params.projectName}/models/${params.modelName}/schema/edit/${field.name}`
 
     return (
       <div

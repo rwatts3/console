@@ -381,8 +381,8 @@ export class SideNav extends React.Component<Props, State> {
 
   private renderModels = () => {
     const modelActive = (model) => (
-      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/structure`) ||
-      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/browser`)
+      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/schema`) ||
+      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/databrowser`)
     )
 
     // const modelsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/models`)

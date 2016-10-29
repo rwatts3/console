@@ -17,10 +17,10 @@ import SignUpView from './views/SignUpView/SignUpView'
 import AccountView from './views/account/AccountView/AccountView'
 import SettingsTab from './views/account/AccountView/SettingsTab'
 import ResetPasswordView from './views/account/ResetPasswordView/ResetPasswordView'
-import BrowserView from './views/models/BrowserView/BrowserView'
+import DatabrowserView from './views/models/DatabrowserView/DatabrowserView'
 import ModelRedirectView from './views/models/ModelRedirectView'
-import FieldPopup from './views/models/StructureView/FieldPopup'
-import StructureView from './views/models/StructureView/StructureView'
+import FieldPopup from './views/models/SchemaView/FieldPopup'
+import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 
 const ViewerQuery = {
@@ -90,11 +90,11 @@ export default (
       </Route>
       <Route path='models'>
         <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render} />
-        <Route path=':modelName/structure' component={StructureView} queries={ViewerQuery} render={render}>
+        <Route path=':modelName/schema' component={SchemaView} queries={ViewerQuery} render={render}>
           <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />
           <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render} />
         </Route>
-        <Route path=':modelName/browser' component={BrowserView} queries={ViewerQuery} render={render} />
+        <Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render} />
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>

@@ -198,7 +198,7 @@ export class Cell extends React.PureComponent<Props, State> {
     }
 
     // stopEvent is needed, as the event could bubble up to the keyDown listener we attached
-    // in the BrowserView
+    // in the DatabrowserView
     // for some events, stopImmediatePropagation is needed. But not all events provide that interface,
     // as we get browser based events and synthetic React events
     // so we have so check for the existence of the function
@@ -321,8 +321,9 @@ export class Cell extends React.PureComponent<Props, State> {
       position: fixed;
       transform: translate(420%, 0);
       animation: ${movingCopyIndicator} .7s linear
-
     `
+    const cellLinkUrl = `/${this.props.projectName}/models/${this.props.field.relatedModel.name}/databrowser?q=${valueString}` // tslint:disable-line
+
     return (
       <span
         className={classes.value}
@@ -337,9 +338,7 @@ export class Cell extends React.PureComponent<Props, State> {
           this.props.value !== null &&
           this.props.selected &&
           (
-            <CellLink
-              to={`/${this.props.projectName}/models/${this.props.field.relatedModel.name}/browser?q=${valueString}`}
-            >
+            <CellLink to={cellLinkUrl}>
               {`Go to ${this.props.field.relatedModel.name}`}
             </CellLink>
         )}
