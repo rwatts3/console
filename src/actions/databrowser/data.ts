@@ -193,7 +193,7 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
       concurrency: 5,
     })
       .then((res) => {
-        analytics.track('models/browser: deleted node', {
+        analytics.track('models/databrowser: deleted node', {
           project: projectName,
           model: modelName,
         })

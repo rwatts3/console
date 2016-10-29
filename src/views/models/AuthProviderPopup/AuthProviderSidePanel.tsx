@@ -319,7 +319,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         onSuccess: () => {
           console.log(this.props)
           // The force fetching because authproviders are too complicated to selective choose the config
-          // forceFetchRoot gets passed down from StuctureView/BrowserView which is needed to reflect all affected data
+          // forceFetchRoot gets passed down from StuctureView/DatabrowserView which is needed to reflect all affected data
           this.props.forceFetchRoot()
         },
         onFailure: (transaction) => {

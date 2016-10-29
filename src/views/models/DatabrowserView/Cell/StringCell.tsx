@@ -26,7 +26,7 @@ export default class StringCell extends React.Component<CellProps<string>, State
           }, {
             step: 'STEP3_CLICK_ENTER_DESCRIPTION',
             title: 'Now enter a cool description.',
-            description: `We're gonna put "#graphcool" in the description.`, // tslint:disable-line
+            description: `Please put "#graphcool" in the description.`, // tslint:disable-line
             buttonText: 'Copy example value',
             copyText: '#graphcool',
           },

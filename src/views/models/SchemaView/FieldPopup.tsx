@@ -406,7 +406,7 @@ class FieldPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/structure: created field', {
+          analytics.track('models/schema: created field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
             field: name,
@@ -459,7 +459,7 @@ class FieldPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/structure: updated field', {
+          analytics.track('models/schema: updated field', {
             project: this.props.params.projectName,
             model: this.props.params.modelName,
             field: name,

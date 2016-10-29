@@ -50,8 +50,9 @@ class ModelHeader extends React.Component<Props, State> {
 
   render() {
 
-    const structureActive = location.pathname.endsWith('structure')
-    const typeText = structureActive ? 'Structure' : 'Data'
+    // TODO @timsuchanek this dependency should be injected via props and shouldn't depend on the global location!
+    const schemaActive = location.pathname.endsWith('schema')
+    const typeText = schemaActive ? 'Schema' : 'Databrowser'
 
     const SettingsLink = styled(Link)`
       padding: ${variables.size10};
@@ -125,31 +126,31 @@ class ModelHeader extends React.Component<Props, State> {
             params={this.props.params}
             project={this.props.project}
             renderRight={() => (
-              structureActive ? (
+              schemaActive ? (
                 <Tether
                   steps={[{
                     step: 'STEP3_CLICK_DATA_BROWSER',
-                    title: 'Switch to the Data Browser',
-                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
+                    title: 'Switch to the Databrowser',
+                    description: 'In the Databrowser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
                   }]}
                   width={280}
                   offsetX={-35}
                   offsetY={5}
                 >
                   <BlueSettingsLink
-                    to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
+                    to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/databrowser`}
                     onClick={this.dataViewOnClick}
                   >
                     <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
-                    <div>Done Editing Structure</div>
+                    <div>Done editing Schema</div>
                   </BlueSettingsLink>
                 </Tether>
               ) : (
                 <SettingsLink
-                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
+                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema`}
                 >
                   <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>
-                  <div>Edit Structure</div>
+                  <div>Edit Schema</div>
                 </SettingsLink>
               )
             )}
@@ -157,7 +158,7 @@ class ModelHeader extends React.Component<Props, State> {
             <div className={classes.info}>
               <div className={classes.title}>
                 {this.props.model.name}
-                <div className={classes.type}>{`(${typeText})`}</div>
+                <div className={classes.type}>({typeText})</div>
                 {this.props.model.isSystem &&
                   <span className={classes.system}>System</span>
                 }
@@ -261,7 +262,7 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/structure: deleted model', {
+            analytics.track('models/schema: deleted model', {
               project: this.props.params.projectName,
               model: this.props.params.modelName,
             })
