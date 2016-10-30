@@ -23,6 +23,7 @@ import cuid from 'cuid'
 import {Popup} from '../../types/popup'
 import {showPopup} from '../../actions/popup'
 const classes: any = require('./ModelHeader.scss')
+const headerClasses: any = require('../../components/Header/Header.scss')
 
 interface Props {
   children: Element
@@ -111,39 +112,67 @@ class ModelHeader extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         {this.state.authProviderPopupVisible &&
-        <PopupWrapper>
-          <AuthProviderPopup
-            project={this.props.project}
-            close={() => this.setState({ authProviderPopupVisible: false } as State)}
-            forceFetchRoot={this.props.forceFetchRoot}
-          />
-        </PopupWrapper>
+          <PopupWrapper>
+            <AuthProviderPopup
+              project={this.props.project}
+              close={() => this.setState({ authProviderPopupVisible: false } as State)}
+              forceFetchRoot={this.props.forceFetchRoot}
+            />
+          </PopupWrapper>
         }
         <div className={classes.top}>
           <Header
             viewer={this.props.viewer}
             params={this.props.params}
             project={this.props.project}
-            renderRight={() => (
-              structureActive ? (
-                <Tether
-                  steps={[{
-                    step: 'STEP3_CLICK_DATA_BROWSER',
-                    title: 'Switch to the Data Browser',
-                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
-                  }]}
-                  width={280}
-                  offsetX={-35}
-                  offsetY={5}
-                >
+            left={false}
+          >
+            <div className={headerClasses.left}>
+              <div className={classes.info}>
+                <div className={classes.title}>
+                  {this.props.model.name}
+                  <div className={classes.type}>{`(${typeText})`}</div>
+                  {this.props.model.isSystem &&
+                    <span className={classes.system}>System</span>
+                  }
+                  <Icon
+                    width={32}
+                    height={32}
+                    src={require('graphcool-styles/icons/fill/settings.svg')}
+                    color={variables.gray10}
+                    onClick={this.openEditModelModal}
+                    className={cx(
+                      particles.ml6,
+                      particles.mt6,
+                      particles.pointer,
+                    )}
+                  />
+                </div>
+                <div className={classes.titleDescription}>
+                  <ModelDescription model={this.props.model}/>
+                </div>
+              </div>
+            </div>
+            <div className={headerClasses.right}>
+              {structureActive ? (
                   <BlueSettingsLink
                     to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
                     onClick={this.dataViewOnClick}
                   >
                     <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
-                    <div>Done Editing Structure</div>
+                    <Tether
+                      steps={[{
+                      step: 'STEP3_CLICK_DATA_BROWSER',
+                      title: 'Switch to the Data Browser',
+                      description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
+                    }]}
+                      width={280}
+                      offsetX={-35}
+                      offsetY={5}
+                    >
+                      <div>Done Editing Structure</div>
+                    </Tether>
                   </BlueSettingsLink>
-                </Tether>
               ) : (
                 <SettingsLink
                   to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
@@ -151,32 +180,7 @@ class ModelHeader extends React.Component<Props, State> {
                   <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>
                   <div>Edit Structure</div>
                 </SettingsLink>
-              )
-            )}
-          >
-            <div className={classes.info}>
-              <div className={classes.title}>
-                {this.props.model.name}
-                <div className={classes.type}>{`(${typeText})`}</div>
-                {this.props.model.isSystem &&
-                  <span className={classes.system}>System</span>
-                }
-                <Icon
-                  width={32}
-                  height={32}
-                  src={require('graphcool-styles/icons/fill/settings.svg')}
-                  color={variables.gray10}
-                  onClick={this.openEditModelModal}
-                  className={cx(
-                    particles.ml6,
-                    particles.mt6,
-                    particles.pointer,
-                  )}
-                />
-              </div>
-              <div className={classes.titleDescription}>
-                <ModelDescription model={this.props.model}/>
-              </div>
+              )}
             </div>
           </Header>
         </div>

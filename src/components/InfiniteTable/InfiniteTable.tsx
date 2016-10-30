@@ -104,7 +104,6 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 rowHeight={this.props.rowHeight}
                 columnCount={this.props.columnCount}
                 columnWidth={this.props.columnWidth}
-                overscanRowCount={10}
                 rowCount={this.props.rowCount}
                 cellRenderer={this.renderCell}
                 onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}

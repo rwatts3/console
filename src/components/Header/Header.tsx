@@ -8,7 +8,7 @@ interface Props {
   viewer: any
   project: Project
   params: any
-  renderRight?: () => JSX.Element
+  left?: boolean
 }
 
 interface State {
@@ -24,16 +24,21 @@ class Header extends React.Component<Props, State> {
   }
 
   render () {
+    let { left } = this.props
+
+    if (typeof left !== 'boolean') {
+      left = true
+    }
+
     return (
       <div className={classes.root}>
-        <div className={classes.left}>
-          {this.props.children}
-        </div>
-        <div className={classes.right}>
-          {typeof this.props.renderRight === 'function' && (
-            this.props.renderRight()
-          )}
-        </div>
+        {left ? (
+          <div className={classes.left}>
+            {this.props.children}
+          </div>
+        ) : (
+          this.props.children
+        )}
       </div>
     )
   }
