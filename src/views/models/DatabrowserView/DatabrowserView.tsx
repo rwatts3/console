@@ -194,7 +194,6 @@ class DatabrowserView extends React.Component<Props, {}> {
   componentDidUpdate = (prevProps: Props) => {
     // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
     if (this.props.location !== prevProps.location || this.props.viewer.model !== prevProps.viewer.model) {
-      console.log('reload')
       this.reloadData()
     }
   }

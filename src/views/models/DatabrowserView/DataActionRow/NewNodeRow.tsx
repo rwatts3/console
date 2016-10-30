@@ -59,8 +59,8 @@ class NewNodeRow extends React.Component<Props, State> {
           title: `Awesome! Let's create one more.`,
           description: 'Hint: You can also use your keyboard to navigate between fields (Tab or Shift+Tab) and submit (Enter).', // tslint:disable-line
         }]}
-        offsetX={315}
-        offsetY={5}
+        offsetX={0}
+        offsetY={-10}
         width={351}
         horizontal='left'
       >

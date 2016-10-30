@@ -44,7 +44,18 @@ class NewRowInactive extends React.Component<Props, State> {
       <div className={classnames(classes.root, {
         [classes.active]: this.state.active,
       })} onClick={() => this.toggleNewRow(fields)}>
-        {fields.map(function(field, index) {
+      {SYSTEM_MODELS.includes(this.props.model.name) ? (
+        <div
+          className={classes.cell}
+          style={{
+            width: '100%',
+            paddingLeft: 15,
+          }}
+        >
+          This is a system model. Nodes can only be added via the api.
+        </div>
+      ) : (
+        fields.map(function(field, index) {
           return (
             <div
               key={field.id}
@@ -64,12 +75,14 @@ class NewRowInactive extends React.Component<Props, State> {
                     height={12}
                     src={require('assets/new_icons/add-plain.svg')}
                   />
-                  <span>add new node ...</span>
+                  <span>
+                  </span>
                 </div>
               )}
             </div>
           )
-        }.bind(this))}
+        }.bind(this))
+      )}
         <div
           style={{
                 width: 250,

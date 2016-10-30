@@ -522,7 +522,8 @@ export class SideNav extends React.Component<Props, State> {
               title: 'Create a "Post" Model',
               description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
             }]}
-            offsetY={this.state.addingNewModel ? -75 : -5}
+            offsetY={-5}
+            offsetX={-13}
             width={350}
           >
             <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
