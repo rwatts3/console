@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { isScalar } from '../../../utils/graphql'
 import { nextStep } from '../../../actions/gettingStarted'
-const classes: any = require('./StructureView.scss')
+const classes: any = require('./SchemaView.scss')
 
 interface Props {
   params: any
@@ -35,10 +35,10 @@ interface Props {
   showNotification: ShowNotificationCallback
 }
 
-class StructureView extends React.Component<Props, {}> {
+class SchemaView extends React.Component<Props, {}> {
 
   componentDidMount() {
-    analytics.track('models/structure: viewed', {
+    analytics.track('models/schema: viewed', {
       model: this.props.params.modelName,
     })
   }
@@ -75,7 +75,7 @@ class StructureView extends React.Component<Props, {}> {
             <Link
               className={`${classes.button} ${classes.green}`}
               onClick={this.handleCreateFieldClick}
-              to={`${urlPrefix}/models/${this.props.params.modelName}/structure/create`}
+              to={`${urlPrefix}/models/${this.props.params.modelName}/schema/create`}
             >
               <Icon
                 width={16}
@@ -182,9 +182,9 @@ function mapDispatchToProps(dispatch) {
 const ReduxContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withRouter(StructureView))
+)(withRouter(SchemaView))
 
-const MappedStructureView = mapProps({
+const MappedSchemaView = mapProps({
   relay: (props) => props.relay,
   viewer: (props) => props.viewer,
   params: (props) => props.params,
@@ -203,7 +203,7 @@ const MappedStructureView = mapProps({
   project: (props) => props.viewer.project,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedStructureView, {
+export default Relay.createContainer(MappedSchemaView, {
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router

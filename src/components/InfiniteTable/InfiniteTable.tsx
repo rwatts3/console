@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Immutable from 'immutable'
 import {InfiniteLoader, Grid} from 'react-virtualized'
 import {Model, Project, FieldWidths} from '../../types/types'
-import DataActionRow from '../../views/models/BrowserView/DataActionRow'
+import DataActionRow from '../../views/models/DatabrowserView/DataActionRow'
 import {GridPosition} from '../../types/databrowser/ui'
 
 interface Props {

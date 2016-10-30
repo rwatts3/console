@@ -51,8 +51,8 @@ class ModelHeader extends React.Component<Props, State> {
 
   render() {
 
-    const structureActive = location.pathname.endsWith('structure')
-    const typeText = structureActive ? 'Structure' : 'Data'
+    const schemaActive = location.pathname.endsWith('schema')
+    const schemaTypeText = schemaActive ? 'Schema' : 'Data'
 
     const SettingsLink = styled(Link)`
       padding: ${variables.size10};
@@ -131,7 +131,7 @@ class ModelHeader extends React.Component<Props, State> {
               <div className={classes.info}>
                 <div className={classes.title}>
                   {this.props.model.name}
-                  <div className={classes.type}>{`(${typeText})`}</div>
+                  <div className={classes.type}>{`(${schemaTypeText})`}</div>
                   {this.props.model.isSystem &&
                     <span className={classes.system}>System</span>
                   }
@@ -154,9 +154,9 @@ class ModelHeader extends React.Component<Props, State> {
               </div>
             </div>
             <div className={headerClasses.right}>
-              {structureActive ? (
+              {schemaActive ? (
                   <BlueSettingsLink
-                    to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/browser`}
+                    to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/databrowser`}
                     onClick={this.dataViewOnClick}
                   >
                     <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
@@ -170,15 +170,15 @@ class ModelHeader extends React.Component<Props, State> {
                       offsetX={-35}
                       offsetY={5}
                     >
-                      <div>Done Editing Structure</div>
+                      <div>Done Editing Schema</div>
                     </Tether>
                   </BlueSettingsLink>
               ) : (
                 <SettingsLink
-                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure`}
+                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema`}
                 >
                   <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>
-                  <div>Edit Structure</div>
+                  <div>Edit Schema</div>
                 </SettingsLink>
               )}
             </div>
@@ -265,7 +265,7 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/structure: deleted model', {
+            analytics.track('models/schema: deleted model', {
               project: this.props.params.projectName,
               model: this.props.params.modelName,
             })

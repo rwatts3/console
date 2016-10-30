@@ -15,7 +15,7 @@ exports[`test StringCell renders 1`] = `
       Object {
         "buttonText": "Copy example value",
         "copyText": "#graphcool",
-        "description": "We\'re gonna put \"#graphcool\" in the description.",
+        "description": "Please put \"#graphcool\" in the description.",
         "step": "STEP3_CLICK_ENTER_DESCRIPTION",
         "title": "Now enter a cool description.",
       },

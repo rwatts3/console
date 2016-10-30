@@ -12,7 +12,7 @@ export default class AddFieldCell extends React.Component<Props, {}> {
     return (
       <div className={classes.root}>
         <Link
-          to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/structure/create`}
+          to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema/create`}
         >
           Add Field
         </Link>

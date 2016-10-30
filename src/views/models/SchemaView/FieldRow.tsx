@@ -55,7 +55,7 @@ class FieldRow extends React.Component<Props, State> {
 
     let suffix
     if (isScalar(field.typeIdentifier)) {
-      suffix = `/models/${this.props.params.modelName}/structure/edit/${this.props.field.name}`
+      suffix = `/models/${this.props.params.modelName}/schema/edit/${this.props.field.name}`
     } else {
       suffix = `/relations/edit/${this.props.field.relation.name}`
     }
@@ -148,7 +148,7 @@ class FieldRow extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/structure: deleted field', {
+            analytics.track('models/schema: deleted field', {
               project: this.props.params.projectName,
               model: this.props.params.modelName,
               field: this.props.field.name,
@@ -178,7 +178,7 @@ class FieldRow extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/structure: edited description')
+          analytics.track('models/schema: edited description')
 
           this.setState({
             editDescription: false,

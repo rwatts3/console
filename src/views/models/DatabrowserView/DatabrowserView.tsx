@@ -39,7 +39,7 @@ import ProgressIndicator from '../../../components/ProgressIndicator/ProgressInd
 import {startProgress, incrementProgress} from '../../../actions/progressIndicator'
 import {StateTree, ReduxAction, ReduxThunk} from '../../../types/reducers'
 import cuid from 'cuid'
-const classes: any = require('./BrowserView.scss')
+const classes: any = require('./DatabrowserView.scss')
 import {
   nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef,
 } from '../../../actions/databrowser/ui'
@@ -125,7 +125,7 @@ interface Props {
   searchQuery: string
 }
 
-class BrowserView extends React.Component<Props, {}> {
+class DatabrowserView extends React.Component<Props, {}> {
 
   shouldComponentUpdate: any
 
@@ -161,7 +161,7 @@ class BrowserView extends React.Component<Props, {}> {
   }
 
   componentDidMount = () => {
-    analytics.track('models/browser: viewed', {
+    analytics.track('models/databrowser: viewed', {
       model: this.props.params.modelName,
     })
 
@@ -639,9 +639,9 @@ function mapDispatchToProps(dispatch) {
 const ReduxContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(BrowserView))
+)(withRouter(DatabrowserView))
 
-const MappedBrowserView = mapProps({
+const MappedDatabrowserView = mapProps({
   params: (props) => props.params,
   fields: (props) => (
     props.viewer.model.fields.edges
@@ -652,7 +652,7 @@ const MappedBrowserView = mapProps({
   viewer: (props) => props.viewer,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedBrowserView, {
+export default Relay.createContainer(MappedDatabrowserView, {
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router
