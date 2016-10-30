@@ -143,7 +143,7 @@ $tableHeadExpanded: 100px;
 }
 
 .table {
-  height: calc(100% - 127px - 1px);
+  height: calc(100vh - 127px - 1px);
   overflow-x: scroll;
 
   &.loading {
