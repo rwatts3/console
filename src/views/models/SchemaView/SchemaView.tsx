@@ -64,7 +64,8 @@ class SchemaView extends React.Component<Props, {}> {
               title: 'Create a field for the image URL',
             }, {
               step: 'STEP2_CREATE_FIELD_DESCRIPTION',
-              title: 'Good job! Create another field called "description" which is of type "String"',
+              title: 'Good job!',
+              description: 'Create another field called "description" which is of type "String"',
             }]}
             offsetX={5}
             offsetY={5}
