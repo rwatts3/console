@@ -1,54 +1,45 @@
 import * as React from 'react'
-import Tether from '../../../../components/Tether/Tether'
 import {CellProps} from './cells'
 import {stringToValue} from '../../../../utils/valueparser'
+import { connect } from 'react-redux'
+import {nextStep} from '../../../../actions/gettingStarted'
 
-interface State {
-  mouseOverTether: boolean
+// extend the interface for the onboarding functionality
+declare module './cells' {
+  interface CellProps<T> {
+    nextStep?: () => void
+    step?: string
+  }
 }
 
-export default class StringCell extends React.Component<CellProps<string>, State> {
+export class StringCell extends React.Component<CellProps<string>, {}> {
 
-  state = {
-    mouseOverTether: false,
+  refs: {
+    input: HTMLInputElement
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.refs.input.value = nextProps.value
+    }
   }
 
   render() {
     const numLines = this.props.value ? this.props.value.split(/\r\n|\r|\n/).length : 1
 
     return (
-      <Tether
-        steps={[{
-            step: 'STEP3_CLICK_ENTER_IMAGEURL',
-            title: 'Enter an image url such this one.',
-            buttonText: 'Copy example value',
-            copyText: 'http://i.imgur.com/5ACuqm4.jpg',
-          }, {
-            step: 'STEP3_CLICK_ENTER_DESCRIPTION',
-            title: 'Now enter a cool description.',
-            description: `Please put "#graphcool" in the description.`, // tslint:disable-line
-            buttonText: 'Copy example value',
-            copyText: '#graphcool',
-          },
-        ]}
-        width={300}
-        offsetX={-35}
-        offsetY={5}
-        onMouseEnter={() => this.setState({mouseOverTether: true})}
-        onMouseLeave={() => this.setState({mouseOverTether: false})}
-      >
-        <textarea
-          autoFocus
-          type='text'
-          ref='input'
-          defaultValue={this.props.value}
-          onKeyDown={this.onKeyDown}
-          style={{
-            height: Math.min(Math.max(56, numLines * 20), 300),
-          }}
-          onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
-        />
-      </Tether>
+      <textarea
+        autoFocus
+        type='text'
+        ref='input'
+        defaultValue={this.props.value}
+        onKeyDown={this.onKeyDown}
+        style={{
+          height: Math.min(Math.max(56, numLines * 20), 300),
+        }}
+        onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
+        onChange={this.onChange}
+      />
     )
   }
 
@@ -59,4 +50,27 @@ export default class StringCell extends React.Component<CellProps<string>, State
     }
     this.props.onKeyDown(e)
   }
+
+  private onChange = (e: any) => {
+    if (typeof this.props.nextStep !== 'function') {
+      return
+    }
+    if (
+      e.target.value.includes('#graphcool') &&
+      this.props.field.name === 'description' &&
+      this.props.field.model.name === 'Post' &&
+      // very important, otherwise each additional keystroke step through all steps
+      this.props.step === 'STEP3_CLICK_ENTER_DESCRIPTION'
+    ) {
+      this.props.save(e.target.value)
+      this.props.nextStep()
+    }
+  }
 }
+
+export default connect(
+  state => ({
+    step: state.gettingStarted.gettingStartedState.step,
+  }),
+  { nextStep }
+)(StringCell)

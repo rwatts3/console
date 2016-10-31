@@ -82,12 +82,12 @@ class FieldPopup extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (this.state.name === 'imageUrl' &&
-        this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
+      this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
       this.props.nextStep()
     }
 
     if (this.state.typeIdentifier === 'String' &&
-        this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_IMAGEURL')) {
+      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_IMAGEURL')) {
       this.props.nextStep()
     }
   }
@@ -307,6 +307,7 @@ class FieldPopup extends React.Component<Props, State> {
                   offsetX={5}
                   offsetY={5}
                   width={240}
+                  zIndex={2000}
                 >
                   <button
                     className={`${classes.button} ${this.isValid() ? classes.green : classes.disabled}`}

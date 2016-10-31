@@ -4,15 +4,17 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {nextStep} from '../../../actions/gettingStarted'
 import {GettingStartedState} from '../../../types/gettingStarted'
-import {StateTree} from '../../../types/reducers'
+import {StateTree, ReduxAction} from '../../../types/reducers'
 import Cell from './Cell'
 import {TypedValue} from '../../../types/utils'
-import {Model, Field} from '../../../types/types'
+import {Model, Field, TetherStep} from '../../../types/types'
 import {getFirstInputFieldIndex, getDefaultFieldValues} from '../utils'
 import Icon from '../../../components/Icon/Icon'
 import {classnames} from '../../../utils/classnames'
 import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')
+import Tether from '../../../components/Tether/Tether'
+import {nextCell} from '../../../actions/databrowser/ui'
 
 interface Props {
   model: Model
@@ -22,6 +24,7 @@ interface Props {
   cancel: () => void
   gettingStarted: GettingStartedState
   nextStep: () => any
+  nextCell: (fields: Field[]) => ReduxAction
   width: number
   loading: boolean
   loaded: Immutable.List<boolean>
@@ -49,13 +52,18 @@ class NewRow extends React.Component<Props, State> {
     }
   }
 
-  render() {
-    const fields = this.props.model.fields.edges
+  getFields = () => {
+    return this.props.model.fields.edges
       .map((edge) => edge.node)
+  }
+
+  render() {
+    const fields = this.getFields()
 
       // .sort(compareFields) // TODO remove this once field ordering is implemented
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
+    const { step } = this.props.gettingStarted
 
     return (
       <div
@@ -69,27 +77,39 @@ class NewRow extends React.Component<Props, State> {
         onKeyDown={this.keyDown}
       >
         {fields.map((field, index) => {
-          return (
-          <div
-            key={field.id}
-            style={{width: this.props.columnWidths[field.name]}}
-          >
-              <Cell
-                needsFocus={this.state.shouldFocus ? index === inputIndex : false}
-                addnew={true}
-                field={field}
-                fields={fields}
-                width={this.props.columnWidths[field.name]}
-                update={this.update}
-                value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
-                cancel={this.props.cancel}
-                projectId={this.props.projectId}
-                modelNamePlural={this.props.model.namePlural}
-                reload={() => null}
-                rowIndex={-1}
-              />
-            </div>
-          )
+          if (
+            (step === 'STEP3_CLICK_ENTER_IMAGEURL' && field.name === 'imageUrl') ||
+            (step === 'STEP3_CLICK_ENTER_DESCRIPTION' && field.name === 'description')
+          ) {
+            return (
+              <Tether
+                steps={[{
+                    step: 'STEP3_CLICK_ENTER_IMAGEURL',
+                    title: 'Enter an image url such as this one.',
+                    buttonText: 'Copy example value',
+                    copyText: 'http://i.imgur.com/5ACuqm4.jpg',
+                  }, {
+                    step: 'STEP3_CLICK_ENTER_DESCRIPTION',
+                    title: 'Now enter a cool description.',
+                    description: `Please put "#graphcool" in the description.`, // tslint:disable-line
+                    buttonText: 'Copy example value',
+                    copyText: '#graphcool',
+                  },
+                ]}
+                width={300}
+                offsetX={5}
+                offsetY={0}
+                zIndex={2000}
+                onClick={this.handleTetherClick}
+              >
+                {this.renderCell(field, index, inputIndex, fields)}
+              </Tether>
+              )
+          } else {
+            return (
+              this.renderCell(field, index, inputIndex, fields)
+            )
+          }
         })}
         <div
           className={classnames(classes.buttons, {
@@ -104,18 +124,53 @@ class NewRow extends React.Component<Props, State> {
               className={classes.cancel}
             />
           </button>
-          <button onClick={this.add}>
-            <Icon
-              width={24}
-              height={24}
-              src={require('assets/new_icons/check.svg')}
-              className={classes.add}
-            />
-          </button>
+
+          <Tether
+            steps={[{
+              step: 'STEP3_CLICK_SAVE_NODE1',
+              title: 'Save the node',
+            }]}
+            width={280}
+            offsetX={5}
+            offsetY={-10}
+            zIndex={2000}
+            horizontal='right'
+          >
+            <button onClick={this.add}>
+              <Icon
+                width={24}
+                height={24}
+                src={require('assets/new_icons/check.svg')}
+                className={classes.add}
+              />
+            </button>
+          </Tether>
         </div>
       </div>
     )
   }
+
+  private renderCell = (field, index, inputIndex, fields) => (
+    <div
+      key={field.id}
+      style={{width: this.props.columnWidths[field.name]}}
+    >
+      <Cell
+        needsFocus={this.state.shouldFocus ? index === inputIndex : false}
+        addnew={true}
+        field={field}
+        fields={fields}
+        width={this.props.columnWidths[field.name]}
+        update={this.update}
+        value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
+        cancel={this.props.cancel}
+        projectId={this.props.projectId}
+        modelNamePlural={this.props.model.namePlural}
+        reload={() => null}
+        rowIndex={-1}
+      />
+    </div>
+  )
 
   private add = () => {
     // don't add when we're loading already new data
@@ -126,7 +181,34 @@ class NewRow extends React.Component<Props, State> {
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
     if (allRequiredFieldsGiven) {
+      this.props.nextStep()
       this.props.add(this.state.fieldValues)
+    }
+  }
+
+  private handleTetherClick = (e: any, tether: TetherStep) => {
+    if (tether.step === 'STEP3_CLICK_ENTER_IMAGEURL') {
+      const fields = this.getFields()
+      const imageUrlField = fields.find(field => field.name === 'imageUrl')
+
+      this.update(tether.copyText as TypedValue, imageUrlField, () => {
+        this.props.nextCell(this.getFields())
+        this.props.nextStep()
+      })
+    }
+
+    if (tether.step === 'STEP3_CLICK_ENTER_DESCRIPTION') {
+      const fields = this.getFields()
+      const descriptionField = fields.find(field => field.name === 'description')
+
+      this.update(tether.copyText as TypedValue, descriptionField, () => {
+        setTimeout(
+          () => {
+            this.props.nextStep()
+          },
+          1000
+        )
+      })
     }
   }
 
@@ -152,7 +234,7 @@ const mapStateToProps = (state: StateTree) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ nextStep }, dispatch)
+  return bindActionCreators({ nextStep, nextCell }, dispatch)
 }
 
 const MappedNewRow = connect(mapStateToProps, mapDispatchToProps)(NewRow)

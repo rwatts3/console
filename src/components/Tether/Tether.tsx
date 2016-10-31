@@ -1,18 +1,10 @@
 import * as React from 'react'
 import TetherComponent from 'react-tether'
 import {connect} from 'react-redux'
-import {Step,GettingStartedState} from '../../types/gettingStarted'
+import {GettingStartedState} from '../../types/gettingStarted'
 import {classnames} from '../../utils/classnames'
-import CopyToClipboard from 'react-copy-to-clipboard'
+import {TetherStep} from '../../types/types'
 const classes: any = require('./Tether.scss')
-
-interface TetherStep {
-  step: Step
-  title: string
-  description?: string
-  buttonText?: string
-  copyText?: string
-}
 
 interface Props {
   steps: TetherStep[]
@@ -26,6 +18,7 @@ interface Props {
   zIndex?: number
   onMouseEnter: () => any
   onMouseLeave: () => any
+  onClick?: (e: any, step: TetherStep) => void
 }
 
 class Tether extends React.Component<Props, {}> {
@@ -36,6 +29,17 @@ class Tether extends React.Component<Props, {}> {
     width: 220,
     side: 'bottom',
     horizontal: 'left',
+  }
+
+  refs: {
+    container: any
+  }
+
+  componentDidMount() {
+    // assure that tether is in screen
+    if (this.refs.container && typeof this.refs.container.scrollIntoViewIfNeeded === 'function') {
+      this.refs.container.scrollIntoViewIfNeeded()
+    }
   }
 
   render() {
@@ -62,6 +66,7 @@ class Tether extends React.Component<Props, {}> {
           style={{width: this.props.width, zIndex: 9}}
           onMouseEnter={this.props.onMouseEnter}
           onMouseLeave={this.props.onMouseLeave}
+          ref='container'
         >
           <div className={classes.title}>
             {step.title}
@@ -72,17 +77,20 @@ class Tether extends React.Component<Props, {}> {
           </div>
           }
           {step.buttonText &&
-            <CopyToClipboard
-              text={step.copyText}
+            <div
+                className='flex justify-center mb3 mt2'
+                onClick={(e: any) => {
+                  if (typeof this.props.onClick === 'function') {
+                    this.props.onClick(e, step)
+                  }
+                }}
             >
-            <div className='flex justify-center mb3 mt2'>
               <div
                 className='pa2 br2 bg-transparent tc ba b--white white pointer dim'
               >
                 {step.buttonText}
               </div>
             </div>
-            </CopyToClipboard>
           }
         </div>
         }

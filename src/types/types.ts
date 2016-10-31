@@ -201,3 +201,11 @@ declare global {
     scrollIntoViewIfNeeded(centerIfNeeded: boolean): void
   }
 }
+
+export interface TetherStep {
+  step: Step
+  title: string
+  description?: string
+  buttonText?: string
+  copyText?: string
+}

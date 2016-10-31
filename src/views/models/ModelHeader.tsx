@@ -167,8 +167,9 @@ class ModelHeader extends React.Component<Props, State> {
                       description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
                     }]}
                       width={280}
-                      offsetX={-35}
+                      offsetX={-50}
                       offsetY={5}
+                      zIndex={2000}
                     >
                       <div>Done Editing Schema</div>
                     </Tether>
