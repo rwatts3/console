@@ -117,14 +117,27 @@ class NewRow extends React.Component<Props, State> {
               className={classes.cancel}
             />
           </button>
-          <button onClick={this.add}>
-            <Icon
-              width={24}
-              height={24}
-              src={require('assets/new_icons/check.svg')}
-              className={classes.add}
-            />
-          </button>
+
+          <Tether
+            steps={[{
+              step: 'STEP3_CLICK_SAVE_NODE1',
+              title: 'Save the node',
+            }]}
+            width={280}
+            offsetX={5}
+            offsetY={-10}
+            zIndex={2000}
+            horizontal='right'
+          >
+            <button onClick={this.add}>
+              <Icon
+                width={24}
+                height={24}
+                src={require('assets/new_icons/check.svg')}
+                className={classes.add}
+              />
+            </button>
+          </Tether>
         </div>
       </div>
     )
@@ -161,6 +174,7 @@ class NewRow extends React.Component<Props, State> {
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
     if (allRequiredFieldsGiven) {
+      this.props.nextStep()
       this.props.add(this.state.fieldValues)
     }
   }

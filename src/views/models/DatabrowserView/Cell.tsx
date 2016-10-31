@@ -437,6 +437,9 @@ export default Relay.createContainer(MappedCell, {
         isReadonly
         typeIdentifier
         enumValues
+        model {
+          name
+        }
         relatedModel {
           ${NodeSelector.getFragment('relatedModel')}
           name

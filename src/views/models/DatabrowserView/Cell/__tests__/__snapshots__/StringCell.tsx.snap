@@ -3,6 +3,7 @@ exports[`test StringCell renders 1`] = `
   autoFocus={true}
   defaultValue="some string"
   onBlur={[Function]}
+  onChange={[Function]}
   onKeyDown={[Function]}
   style={
     Object {

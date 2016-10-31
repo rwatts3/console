@@ -1,5 +1,5 @@
 import * as React from 'react' // tslint:disable-line
-import StringCell from '../StringCell'
+import {StringCell} from '../StringCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 
