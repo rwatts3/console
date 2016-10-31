@@ -14,6 +14,16 @@ declare module './cells' {
 
 export class StringCell extends React.Component<CellProps<string>, {}> {
 
+  refs: {
+    input: HTMLInputElement
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.refs.input.value = nextProps.value
+    }
+  }
+
   render() {
     const numLines = this.props.value ? this.props.value.split(/\r\n|\r|\n/).length : 1
 
