@@ -19,8 +19,11 @@ class OnboardingPopup extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div className='flex justify-center items-center h-100 w-100 bg-white-50' style={{pointerEvents: 'all'}}>
-        <div className='bg-white br-2 flex shadow-2' style={{ minWidth: 1000, maxWidth: 1200 }}>
+      <div
+        className='flex justify-center items-center h-100 bg-white-50'
+        style={{ pointerEvents: 'all', width: 'calc(100% - 266px)' }}
+      >
+        <div className='bg-white br-2 flex shadow-2' style={{ maxWidth: 'calc(98vw - 266px)' }}>
           <div className='w-70 pa-60 tc fw1'>
             <div className='ttu' style={{ letterSpacing: 2 }}>Getting Started</div>
             <div className='f-38 lh-1-4 mv-25'>
