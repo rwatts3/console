@@ -29,12 +29,13 @@ class PlaygroundBPopup extends React.Component<Props, State> {
     const hovering = this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART2')
     return (
       <div
-        className='flex justify-center items-start w-100 h-100'
+        className='flex justify-center items-start h-100'
         style={{
           transition: 'background-color 0.3s ease',
           backgroundColor: hovering ? 'rgba(255,255,255,0.5)' : 'transparent',
           pointerEvents: 'none',
           overflow: hovering ? 'auto' : 'hidden',
+          width: 'calc(100% - 266px)',
         }}
       >
         <div

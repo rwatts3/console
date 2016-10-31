@@ -247,7 +247,7 @@ class PlaygroundView extends React.Component<Props, State> {
             />
         </div>
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
-          <PopupWrapper>
+          <PopupWrapper blur={true}>
             <PlaygroundAPopup />
           </PopupWrapper>
         }

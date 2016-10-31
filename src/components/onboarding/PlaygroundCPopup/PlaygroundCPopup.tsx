@@ -97,218 +97,210 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     const downloadUrl = (example) => `${__BACKEND_ADDR__}/resources/getting-started-example?repository=${examples[example].path}&project_id=${this.props.projectId}` // tslint:disable-line
     return (
       <div
-        className='w-100 h-100'
+        className='flex justify-center items-start w-100 h-100'
         style={{
-          paddingRight: 266,
-          paddingLeft: 300,
+          transition: 'background-color 0.3s ease',
+          backgroundColor: hovering ? 'rgba(255,255,255,0.7)' : 'transparent',
+          width: 'calc(100% - 266px)',
+          pointerEvents: 'none',
+          overflow: 'hidden',
         }}
       >
         <div
-          className='flex justify-center items-start w-100 h-100'
+          ref='scroller'
+          className='flex justify-center w-100'
           style={{
-            transition: 'background-color 0.3s ease',
-            backgroundColor: hovering ? 'rgba(255,255,255,0.7)' : 'transparent',
-
-            pointerEvents: 'none',
-            overflow: 'hidden',
+            transition: 'height 0.5s ease',
+            height: hovering ? '100%' : mouseOver ? '190%' : '210%',
+            pointerEvents: hovering ? 'all' : 'none',
+            cursor: hovering ? 'auto' : 'pointer',
+            overflow: hovering ? 'auto' : 'hidden',
+            alignItems: selectedExample ? 'flex-start' : 'center',
           }}
         >
           <div
-            ref='scroller'
-            className='flex justify-center w-100'
+            className='bg-white br-2 shadow-2 mv-96'
             style={{
-              transition: 'height 0.5s ease',
-              height: hovering ? '100%' : mouseOver ? '190%' : '210%',
-              pointerEvents: hovering ? 'all' : 'none',
-              cursor: hovering ? 'auto' : 'pointer',
-              overflow: hovering ? 'auto' : 'hidden',
-              alignItems: selectedExample ? 'flex-start' : 'center',
+              minWidth: 600,
+              maxWidth: 800,
+              pointerEvents: 'all',
+            }}
+            onMouseLeave={() => this.setState({ mouseOver: false })}
+            onMouseEnter={() => this.setState({ mouseOver: true })}
+            onClick={(e: any) => {
+              if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')) {
+                this.props.nextStep()
+              }
             }}
           >
+            <div className='ma-16 tc pb-25'>
+              <div className='fw3 ma-38 f-38'>
+                You did it! Time to run an example.
+              </div>
+              <div className='fw2 f-16 mh-96 lh-1-4'>
+                You have successfully set up your own Instagram backend.{' '}
+                When building an app with Graphcool you can easily explore queries in the{' '}
+                playground and "copy &amp; paste" selected queries into your code.{' '}
+                Of course, to do so, you need to implement the frontend first.
+              </div>
+              <div className='fw2 f-16 mh-96 lh-1-4 mt-16'>
+                <div>We put together a simple app to show and add posts</div>
+                <div>using the backend you just built, to test and run it locally.</div>
+              </div>
+            </div>
+            <div className='ma-16 tc pb-25'>
+              <div className='fw3 ma-38 f-25'>
+                Select your preferred technology to download the example.
+              </div>
+              <div className='flex justify-between items-center w-100' ref='exampleAnchor'>
+                <div
+                  className={classnames(
+                    classes.exampleButton,
+                    selectedExample === 'ReactRelay' ? classes.active : ''
+                  )}
+                  onClick={() => this.props.selectExample('ReactRelay')}
+                >
+                  React + Relay
+                </div>
+                <div
+                  className={classnames(
+                    classes.exampleButton,
+                    selectedExample === 'ReactApollo' ? classes.active : ''
+                  )}
+                  onClick={() => this.props.selectExample('ReactApollo')}
+                >
+                  React + Apollo
+                </div>
+                <div
+                  className={classnames(
+                    classes.exampleButton,
+                    selectedExample === 'AngularApollo' ? classes.active : ''
+                  )}
+                  onClick={() => this.props.selectExample('AngularApollo')}
+                >
+                  Angular + Apollo
+                </div>
+              </div>
+            </div>
+          {selectedExample &&
+          <div>
+            <div className='w-100'>
+              <iframe
+                className='w-100'
+                height='480'
+                allowFullScreen
+                frameBorder='0'
+                src={`https://www.youtube.com/embed/${this.getExampleVideoUrl(selectedExample)}`}
+              />
+            </div>
             <div
-              className='bg-white br-2 shadow-2 mv-96'
+              className='w-100 pa-25'
               style={{
-                minWidth: 600,
-                maxWidth: 800,
-                pointerEvents: 'all',
-              }}
-              onMouseLeave={() => this.setState({ mouseOver: false })}
-              onMouseEnter={() => this.setState({ mouseOver: true })}
-              onClick={(e: any) => {
-                if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')) {
-                  this.props.nextStep()
-                }
+                backgroundColor: '#FEF5D2',
               }}
             >
-              <div className='ma-16 tc pb-25'>
-                <div className='fw3 ma-38 f-38'>
-                  You did it! Time to run an example.
-                </div>
-                <div className='fw2 f-16 mh-96 lh-1-4'>
-                  You have successfully set up your own Instagram backend.{' '}
-                  When building an app with Graphcool you can easily explore queries in the{' '}
-                  playground and "copy &amp; paste" selected queries into your code.{' '}
-                  Of course, to do so, you need to implement the frontend first.
-                </div>
-                <div className='fw2 f-16 mh-96 lh-1-4 mt-16'>
-                  <div>We put together a simple app to show and add posts</div>
-                  <div>using the backend you just built, to test and run it locally.</div>
-                </div>
+              <div className='mt-25 mb-38 w-100 flex justify-center'>
+                <a
+                  href={downloadUrl(selectedExample)}
+                  className='pa-16 white'
+                  style={{
+                    backgroundColor: '#4A90E2',
+                  }}
+                >
+                  Download example
+                </a>
               </div>
-              <div className='ma-16 tc pb-25'>
-                <div className='fw3 ma-38 f-25'>
-                  Select your preferred technology to download the example.
+              <div className='code dark-gray'>
+                <div className='black-50'>
+                  # To see the example in action, run the following commands:
                 </div>
-                <div className='flex justify-between items-center w-100' ref='exampleAnchor'>
-                  <div
-                    className={classnames(
-                      classes.exampleButton,
-                      selectedExample === 'ReactRelay' ? classes.active : ''
-                    )}
-                    onClick={() => this.props.selectExample('ReactRelay')}
-                  >
-                    React + Relay
+                <div className='mv-16'>
+                  <div className='black'>
+                    npm install
                   </div>
-                  <div
-                    className={classnames(
-                      classes.exampleButton,
-                      selectedExample === 'ReactApollo' ? classes.active : ''
-                    )}
-                    onClick={() => this.props.selectExample('ReactApollo')}
-                  >
-                    React + Apollo
-                  </div>
-                  <div
-                    className={classnames(
-                      classes.exampleButton,
-                      selectedExample === 'AngularApollo' ? classes.active : ''
-                    )}
-                    onClick={() => this.props.selectExample('AngularApollo')}
-                  >
-                    Angular + Apollo
+                  <div className='black'>
+                    npm start
                   </div>
                 </div>
+                <div className='black-50'>
+                  # You can now open the app on localhost:3000
+                </div>
+                <div className='black-50'>
+                  # Please come back to this page once you're done. We're waiting here. 💤
+                </div>
               </div>
-            {selectedExample &&
-            <div>
-              <div className='w-100'>
-                <iframe
-                  className='w-100'
-                  height='480'
-                  allowFullScreen
-                  frameBorder='0'
-                  src={`https://www.youtube.com/embed/${this.getExampleVideoUrl(selectedExample)}`}
-                />
+              {this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') &&
+              <div className='w-100 mv-96 flex justify-center'>
+                <Loading />
               </div>
-              <div
-                className='w-100 pa-25'
-                style={{
-                  backgroundColor: '#FEF5D2',
-                }}
-              >
-                <div className='mt-25 mb-38 w-100 flex justify-center'>
+              }
+            </div>
+          </div>
+          }
+        {this.props.gettingStartedState.isCurrentStep('STEP5_DONE') &&
+          <div className='w-100 mb-96' ref='congratsAnchor'>
+            <div className='flex items-center flex-column pv-60 fw1'>
+              <div className='f-96'>
+                🎉
+              </div>
+              <div className='f-38 mt-38'>
+                Congratulations!
+              </div>
+              <div className='f-38 mt-16'>
+                We knew you had it in you.
+              </div>
+              <div className='f-16 mv-38'>
+                Now go out there and build amazing things!
+              </div>
+            </div>
+            <div className='flex justify-between ph-25 pv-16'>
+              <div className='w-50 pr-16'>
+                <div className='ttu ls-2 f-16 fw1 lh-1-4'>
+                  Get started on your own<br />with those excellent tutorials
+                </div>
+                <div className='mv-38'>
+                  {guides.map(guide => this.renderBox(guide))}
+                </div>
+              </div>
+              <div className='w-50 pl-16'>
+                <div className='ttu ls-2 f-16 fw1 lh-1-4'>
+                  Get more out of Graphcool<br />with our guides
+                </div>
+                <div className={`h-100 justify-start flex flex-column mv-38 ${classes.guides}`}>
                   <a
-                    href={downloadUrl(selectedExample)}
-                    className='pa-16 white'
-                    style={{
-                      backgroundColor: '#4A90E2',
-                    }}
+                    href='https://docs.graph.cool/guides/declaring-relations-between-your-models'
+                    className={`${classes.one} fw4 black db flex items-center mb-25`}
+                    target='_blank'
                   >
-                    Download example
+                    Declaring Relations
+                  </a>
+                  <a
+                    href='https://docs.graph.cool/guides/implementing-business-logic-using-actions'
+                    className={`${classes.two} fw4 black db flex items-center mb-25`}
+                    target='_blank'
+                  >
+                    Implementing Business Logic
+                  </a>
+                  <a
+                    href='https://docs.graph.cool/guides/thinking-in-terms-of-graphs'
+                    target='_blank'
+                    className={`${classes.three} fw4 black db flex items-center mb-25`}
+                  >
+                    Thinking in terms of graphs
                   </a>
                 </div>
-                <div className='code dark-gray'>
-                  <div className='black-50'>
-                    # To see the example in action, run the following commands:
-                  </div>
-                  <div className='mv-16'>
-                    <div className='black'>
-                      npm install
-                    </div>
-                    <div className='black'>
-                      npm start
-                    </div>
-                  </div>
-                  <div className='black-50'>
-                    # You can now open the app on localhost:3000
-                  </div>
-                  <div className='black-50'>
-                    # Please come back to this page once you're done. We're waiting here. 💤
-                  </div>
-                </div>
-                {this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') &&
-                <div className='w-100 mv-96 flex justify-center'>
-                  <Loading />
-                </div>
-                }
               </div>
             </div>
-            }
-          {this.props.gettingStartedState.isCurrentStep('STEP5_DONE') &&
-            <div className='w-100 mb-96' ref='congratsAnchor'>
-              <div className='flex items-center flex-column pv-60 fw1'>
-                <div className='f-96'>
-                  🎉
-                </div>
-                <div className='f-38 mt-38'>
-                  Congratulations!
-                </div>
-                <div className='f-38 mt-16'>
-                  We knew you had it in you.
-                </div>
-                <div className='f-16 mv-38'>
-                  Now go out there and build amazing things!
-                </div>
-              </div>
-              <div className='flex justify-between ph-25 pv-16'>
-                <div className='w-50 pr-16'>
-                  <div className='ttu ls-2 f-16 fw1 lh-1-4'>
-                    Get started on your own<br />with those excellent tutorials
-                  </div>
-                  <div className='mv-38'>
-                    {guides.map(guide => this.renderBox(guide))}
-                  </div>
-                </div>
-                <div className='w-50 pl-16'>
-                  <div className='ttu ls-2 f-16 fw1 lh-1-4'>
-                    Get more out of Graphcool<br />with our guides
-                  </div>
-                  <div className={`h-100 justify-start flex flex-column mv-38 ${classes.guides}`}>
-                    <a
-                      href='https://docs.graph.cool/guides/declaring-relations-between-your-models'
-                      className={`${classes.one} fw4 black db flex items-center mb-25`}
-                      target='_blank'
-                    >
-                      Declaring Relations
-                    </a>
-                    <a
-                      href='https://docs.graph.cool/guides/implementing-business-logic-using-actions'
-                      className={`${classes.two} fw4 black db flex items-center mb-25`}
-                      target='_blank'
-                    >
-                      Implementing Business Logic
-                    </a>
-                    <a
-                      href='https://docs.graph.cool/guides/thinking-in-terms-of-graphs'
-                      target='_blank'
-                      className={`${classes.three} fw4 black db flex items-center mb-25`}
-                    >
-                      Thinking in terms of graphs
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className='flex w-100 justify-center'>
-                <div
-                  className='f-25 mv-16 pv-16 ph-60 ls-1 ttu pointer bg-accent white dim'
-                  onClick={this.props.nextStep}
-                >
-                  Finish Onboarding
-                </div>
+            <div className='flex w-100 justify-center'>
+              <div
+                className='f-25 mv-16 pv-16 ph-60 ls-1 ttu pointer bg-accent white dim'
+                onClick={this.props.nextStep}
+              >
+                Finish Onboarding
               </div>
             </div>
-            }
-            </div>
+          </div>
+          }
           </div>
         </div>
       </div>

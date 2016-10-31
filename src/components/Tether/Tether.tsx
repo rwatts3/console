@@ -38,6 +38,17 @@ class Tether extends React.Component<Props, {}> {
     horizontal: 'left',
   }
 
+  refs: {
+    container: any
+  }
+
+  componentDidMount() {
+    // assure that tether is in screen
+    if (this.refs.container && typeof this.refs.container.scrollIntoViewIfNeeded === 'function') {
+      this.refs.container.scrollIntoViewIfNeeded()
+    }
+  }
+
   render() {
     const step = this.props.steps.find((s) => this.props.gettingStartedState.isCurrentStep(s.step))
     const isBottom = this.props.side === 'bottom'
@@ -62,6 +73,7 @@ class Tether extends React.Component<Props, {}> {
           style={{width: this.props.width, zIndex: 9}}
           onMouseEnter={this.props.onMouseEnter}
           onMouseLeave={this.props.onMouseLeave}
+          ref='container'
         >
           <div className={classes.title}>
             {step.title}

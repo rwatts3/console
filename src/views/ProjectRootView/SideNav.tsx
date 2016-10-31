@@ -264,7 +264,7 @@ export class SideNav extends React.Component<Props, State> {
                 title: 'Open the Playground',
                 description: 'Now that we have defined our data model and added example data it\'s time to send some queries to our backend!', // tslint:disable-line
               }]}
-            offsetY={this.state.addingNewModel ? -75 : -5}
+            offsetY={-20}
             width={280}
           >
             <div>Playground</div>

@@ -13,6 +13,7 @@ import Icon from '../../../components/Icon/Icon'
 import {classnames} from '../../../utils/classnames'
 import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')
+import Tether from '../../../components/Tether/Tether'
 
 interface Props {
   model: Model
@@ -56,6 +57,7 @@ class NewRow extends React.Component<Props, State> {
       // .sort(compareFields) // TODO remove this once field ordering is implemented
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
+    const { step } = this.props.gettingStarted
 
     return (
       <div
@@ -69,27 +71,38 @@ class NewRow extends React.Component<Props, State> {
         onKeyDown={this.keyDown}
       >
         {fields.map((field, index) => {
-          return (
-          <div
-            key={field.id}
-            style={{width: this.props.columnWidths[field.name]}}
-          >
-              <Cell
-                needsFocus={this.state.shouldFocus ? index === inputIndex : false}
-                addnew={true}
-                field={field}
-                fields={fields}
-                width={this.props.columnWidths[field.name]}
-                update={this.update}
-                value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
-                cancel={this.props.cancel}
-                projectId={this.props.projectId}
-                modelNamePlural={this.props.model.namePlural}
-                reload={() => null}
-                rowIndex={-1}
-              />
-            </div>
-          )
+          if (
+            (step === 'STEP3_CLICK_ENTER_IMAGEURL' && field.name === 'imageUrl') ||
+            (step === 'STEP3_CLICK_ENTER_DESCRIPTION' && field.name === 'description')
+          ) {
+            return (
+              <Tether
+                steps={[{
+                    step: 'STEP3_CLICK_ENTER_IMAGEURL',
+                    title: 'Enter an image url such as this one.',
+                    buttonText: 'Copy example value',
+                    copyText: 'http://i.imgur.com/5ACuqm4.jpg',
+                  }, {
+                    step: 'STEP3_CLICK_ENTER_DESCRIPTION',
+                    title: 'Now enter a cool description.',
+                    description: `Please put "#graphcool" in the description.`, // tslint:disable-line
+                    buttonText: 'Copy example value',
+                    copyText: '#graphcool',
+                  },
+                ]}
+                width={300}
+                offsetX={5}
+                offsetY={0}
+                zIndex={2000}
+              >
+                {this.renderCell(field, index, inputIndex, fields)}
+              </Tether>
+              )
+          } else {
+            return (
+              this.renderCell(field, index, inputIndex, fields)
+            )
+          }
         })}
         <div
           className={classnames(classes.buttons, {
@@ -116,6 +129,28 @@ class NewRow extends React.Component<Props, State> {
       </div>
     )
   }
+
+  private renderCell = (field, index, inputIndex, fields) => (
+    <div
+      key={field.id}
+      style={{width: this.props.columnWidths[field.name]}}
+    >
+      <Cell
+        needsFocus={this.state.shouldFocus ? index === inputIndex : false}
+        addnew={true}
+        field={field}
+        fields={fields}
+        width={this.props.columnWidths[field.name]}
+        update={this.update}
+        value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
+        cancel={this.props.cancel}
+        projectId={this.props.projectId}
+        modelNamePlural={this.props.model.namePlural}
+        reload={() => null}
+        rowIndex={-1}
+      />
+    </div>
+  )
 
   private add = () => {
     // don't add when we're loading already new data

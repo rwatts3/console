@@ -6,6 +6,7 @@ import Icon from '../../../components/Icon/Icon'
 import {classnames} from '../../../utils/classnames'
 import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
+import Tether from '../../../components/Tether/Tether'
 
 interface Props {
   columnWidths: {[key: string]: number}
@@ -52,36 +53,32 @@ class NewRowInactive extends React.Component<Props, State> {
             paddingLeft: 15,
           }}
         >
-          This is a system model. Nodes can only be added via the api.
+          This is a system model. Nodes can only be added via the API.
         </div>
       ) : (
-        fields.map(function(field, index) {
-          return (
-            <div
-              key={field.id}
-              style={{
-                width: this.props.columnWidths[field.name] + (index === fields.length - 1 ? 1 : 0),
-                height: this.props.height,
-              }}
-              className={classnames(classes.cell, {
-                [classes.last]: index === fields.length - 1,
-              })}
-              onKeyDown={this.handleKeyDown}
-            >
-              {index === 0 && (
-                <div className={classes.add}>
-                  <Icon
-                    width={12}
-                    height={12}
-                    src={require('assets/new_icons/add-plain.svg')}
-                  />
-                  <span>
-                  </span>
-                </div>
-              )}
-            </div>
-          )
-        }.bind(this))
+        fields.map((field, index) => {
+          if (index === fields.length - 1) {
+            return (
+              <Tether
+                steps={[{
+                  step: 'STEP3_CLICK_ADD_NODE2',
+                  title: `Awesome! Let's create one more.`,
+                  description: 'Hint: You can also use your keyboard to navigate between fields (Tab or Shift+Tab) and submit (Enter).', // tslint:disable-line
+                }]}
+                offsetX={0}
+                offsetY={-10}
+                width={351}
+                horizontal='left'
+              >
+                {this.renderField(field, index, fields)}
+              </Tether>
+            )
+          } else {
+            return (
+              this.renderField(field, index, fields)
+            )
+          }
+        })
       )}
         <div
           style={{
@@ -92,6 +89,45 @@ class NewRowInactive extends React.Component<Props, State> {
         >
           <div></div>
         </div>
+      </div>
+    )
+  }
+  private renderField = (field, index, fields) => {
+    return (
+      <div
+        key={field.id}
+        style={{
+          width: this.props.columnWidths[field.name] + (index === fields.length - 1 ? 1 : 0),
+          height: this.props.height,
+        }}
+        className={classnames(classes.cell, {
+          [classes.last]: index === fields.length - 1,
+        })}
+      >
+        {index === 0 && (
+          <div className={classes.add}>
+            <Tether
+              steps={[{
+                step: 'STEP3_CLICK_ADD_NODE1',
+                title: 'Create a Node',
+                description: 'Items in your data belonging to a certain model are called nodes. Create a new post node and provide values for the "imageUrl" and "description" fields.', // tslint:disable-line
+              }]}
+              offsetX={0}
+              offsetY={-10}
+              width={351}
+              horizontal='left'
+            >
+              <Icon
+                width={12}
+                height={12}
+                src={require('assets/new_icons/add-plain.svg')}
+              />
+            </Tether>
+            <span>
+              add new node ...
+            </span>
+          </div>
+        )}
       </div>
     )
   }

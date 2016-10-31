@@ -44,9 +44,6 @@ exports[`test Cell renders in edit mode 1`] = `
       cell={
         <function StringCell() {
                 var _this = _super.apply(this, arguments) || this;
-                _this.state = {
-                    mouseOverTether: false
-                };
                 _this.onKeyDown = function (e) {
                     // filter arrow keys
                     if ([37, 38, 39, 40].includes(e.keyCode)) {
