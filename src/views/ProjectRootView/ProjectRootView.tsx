@@ -144,7 +144,7 @@ class ProjectRootView extends React.Component<Props, {}> {
               {this.props.children}
             </div>
             {this.props.gettingStartedState.isActive() &&
-            <div className='flex bg-accent' style={{ flex: '0 0 266px', zIndex: 1000 }}>
+            <div className='flex bg-accent' style={{ flex: '0 0 266px', zIndex: 1000, height: '100vh' }}>
               <OnboardSideNav params={this.props.params}/>
             </div>
             }
