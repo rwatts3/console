@@ -143,20 +143,6 @@ class PlaygroundView extends React.Component<Props, State> {
 
   render () {
     const fetcher = (graphQLParams) => {
-      if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1')) {
-        const { query } = graphQLParams
-        if (query.includes('allPosts') && query.includes('imageUrl') && query.includes('description')) {
-          this.props.nextStep()
-        }
-      }
-
-      if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) {
-        const { query } = graphQLParams
-        if (query.includes('allPosts') && query.includes('filter') &&
-            query.includes('description_contains')) {
-          this.props.nextStep()
-        }
-      }
 
       return fetch(`${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.viewer.project.id}`, { // tslint:disable-line
         method: 'post',
@@ -170,6 +156,21 @@ class PlaygroundView extends React.Component<Props, State> {
       .then((response) => {
         // exclude IntrospectionQuery
         if (response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
+          if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1')) {
+            const { query } = graphQLParams
+            if (query.includes('allPosts') && query.includes('imageUrl') && query.includes('description')) {
+              this.props.nextStep()
+            }
+          }
+
+          if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) {
+            const { query } = graphQLParams
+            if (query.includes('allPosts') && query.includes('filter') &&
+              query.includes('description_contains')) {
+              this.props.nextStep()
+            }
+          }
+
           analytics.track('playground: run', {
             project: this.props.params.projectName,
             endpoint: this.state.selectedEndpoint,
