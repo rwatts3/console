@@ -86,13 +86,13 @@ class NewRow extends React.Component<Props, State> {
                 steps={[{
                     step: 'STEP3_CLICK_ENTER_IMAGEURL',
                     title: 'Enter an image url such as this one.',
-                    buttonText: 'Copy example value',
+                    buttonText: 'Use example value',
                     copyText: 'http://i.imgur.com/5ACuqm4.jpg',
                   }, {
                     step: 'STEP3_CLICK_ENTER_DESCRIPTION',
                     title: 'Now enter a cool description.',
                     description: `Please put "#graphcool" in the description.`, // tslint:disable-line
-                    buttonText: 'Copy example value',
+                    buttonText: 'Use example value',
                     copyText: '#graphcool',
                   },
                 ]}
@@ -181,7 +181,6 @@ class NewRow extends React.Component<Props, State> {
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
     if (allRequiredFieldsGiven) {
-      this.props.nextStep()
       this.props.add(this.state.fieldValues)
     }
   }
