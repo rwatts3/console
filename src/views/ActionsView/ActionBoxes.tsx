@@ -1,5 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import styled from 'styled-components'
 import {
   Action,
   Project,
@@ -8,6 +9,8 @@ import {
   ActionHandlerType,
 } from '../../types/types'
 import { buildClientSchema } from 'graphql'
+import {particles, variables} from 'graphcool-styles'
+import * as cx from 'classnames'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
 import AddActionMutation from '../../mutations/AddActionMutation'
@@ -104,12 +107,56 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   render() {
+    const Button = styled.button`
+      padding: ${variables.size16};
+      font-size: ${variables.size16};
+      border: none;
+      background: none;
+      color: ${variables.gray50};
+      border-radius: 2px;
+      cursor: pointer;
+      transition: color ${variables.duration} linear;
+
+      &:hover {
+        color: ${variables.gray70};
+      }
+    `
+
+    const DeleteButton = styled(Button)`
+      background: ${variables.red};
+      color: ${variables.white};
+
+      &:hover {
+        color: ${variables.white};
+      }
+    `
     return (
       <div className={classes.root}>
         <div>
           {!this.props.action &&
-          <div className={classes.header}>
-            New Action
+          <div className={cx(
+            classes.header,
+            particles.flex,
+            particles.justifyBetween,
+          )}>
+
+            <div className={cx(
+              particles.contentStart,
+            )}>
+              New Action
+            </div>
+            <div className={cx(
+              particles.flex,
+              particles.justifyBetween,
+            )}>
+
+              <DeleteButton className={cx(
+                particles.mr25,
+              )
+
+            } onClick={this.cancel}>Cancel</DeleteButton>
+              {this.renderConfirm()}
+            </div>
           </div>
           }
           <input
@@ -136,10 +183,7 @@ class ActionBoxes extends React.Component<Props, State> {
             disabled={!this.state.triggerValid}
           />
         </div>
-        <div className={classes.buttons}>
-          <div onClick={this.cancel}>Cancel</div>
-          {this.renderConfirm()}
-        </div>
+
       </div>
     )
   }
@@ -251,7 +295,11 @@ class ActionBoxes extends React.Component<Props, State> {
   private renderConfirm = () => {
     if (!this.state.changesMade || !this.state.triggerValid || !this.state.handlerValid) {
       return (
-        <div>No changes</div>
+        <div className={cx(
+          particles.f16,
+          particles.pa16,
+        )
+        }>No changes</div>
       )
     }
 
