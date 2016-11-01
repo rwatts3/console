@@ -55,7 +55,7 @@ class ModelHeader extends React.Component<Props, State> {
     const schemaActive = location.pathname.endsWith('schema')
     const schemaTypeText = schemaActive ? 'Schema' : 'Data'
     const {model} = this.props
-    const isSystem = model.isSystem || SYSTEM_MODELS.includes(model.name)
+    const isSystem = model && (model.isSystem || SYSTEM_MODELS.includes(model.name))
 
     const SettingsLink = styled(Link)`
       padding: ${variables.size10};

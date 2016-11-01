@@ -96,7 +96,7 @@ class FieldPopup extends React.Component<Props, State> {
     window.addEventListener('keydown', this.listenForKeys, false)
     const {field, router, params} = this.props
 
-    if (field.isSystem) {
+    if (field && field.isSystem) {
       router.replace({
         pathname: `/${params.projectName}/models/${params.modelName}/schema`,
       })
