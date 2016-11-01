@@ -186,9 +186,9 @@ class DatabrowserView extends React.Component<Props, {}> {
     document.removeEventListener('keydown', this.documentKeyDown)
   }
 
-  componentDidUpdate = (prevProps: Props) => {
+  componentWillReceiveProps = (nextProps: Props) => {
     // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
-    if (this.props.location !== prevProps.location || this.props.viewer.model !== prevProps.viewer.model) {
+    if (this.props.location !== nextProps.location || this.props.viewer.model !== nextProps.viewer.model) {
       this.reloadData()
     }
   }

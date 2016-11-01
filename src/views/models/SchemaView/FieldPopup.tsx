@@ -94,6 +94,13 @@ class FieldPopup extends React.Component<Props, State> {
 
   componentWillMount() {
     window.addEventListener('keydown', this.listenForKeys, false)
+    const {field, router, params} = this.props
+
+    if (field.isSystem) {
+      router.replace({
+        pathname: `/${params.projectName}/models/${params.modelName}/schema`,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -700,6 +707,7 @@ export default Relay.createContainer(MappedFieldPopup, {
           typeIdentifier
           isRequired
           isList
+          isSystem
           enumValues
           defaultValue
           relation {
