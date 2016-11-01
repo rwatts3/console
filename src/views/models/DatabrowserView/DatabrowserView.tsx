@@ -432,13 +432,16 @@ class DatabrowserView extends React.Component<Props, {}> {
     } else {
       const value = node.get(field.name)
       const {selectedCell} = this.props
-      const selected = selectedCell.row === rowIndex && selectedCell.field === field.name
+      const rowHasCursor = selectedCell.row === rowIndex
+      const selected = rowHasCursor && selectedCell.field === field.name
 
       if (!selected) {
         return (
           <LightCell
             value={value}
             field={field}
+            rowSelected={this.isSelected(nodeId)}
+            rowHasCursor={rowHasCursor}
             onClick={() => this.props.selectCell({ row: rowIndex, field: field.name })}
             onDoubleClick={() => this.props.editCell({ row: rowIndex, field: field.name })}
           />
