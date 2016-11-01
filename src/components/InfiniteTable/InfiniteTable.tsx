@@ -51,7 +51,10 @@ export default class InfiniteTable extends React.Component<Props, {}> {
           threshold={this.props.threshold}
           rowCount={this.props.rowCount}
           loadMoreRows={this.loadMoreRows}
-          isRowLoaded={({index}) => this.props.loadedList.get(index)}
+          isRowLoaded={({index}) => {
+            const loaded = this.props.loadedList.get(index)
+            return loaded
+          }}
           >
           {({onRowsRendered, registerChild}) => (
             <div
@@ -108,6 +111,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 cellRenderer={this.renderCell}
                 onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
                 scrollToRow={this.props.selectedCell.row}
+                overscanRowCount={20}
               />
             </div>
           )}
