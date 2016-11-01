@@ -156,7 +156,6 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   componentWillMount = () => {
-    this.props.setItemCount(this.props.model.itemCount)
     this.reloadData()
   }
 

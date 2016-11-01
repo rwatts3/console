@@ -44,7 +44,6 @@ export function reduceData(state: DataBrowserDataState = initialState, action: R
       return Object.assign({}, state, {
         nodes,
         loaded,
-        itemCount: nodes.size,
       })
     case Constants.SET_NODES:
       return Object.assign({}, state, {
