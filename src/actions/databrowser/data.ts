@@ -51,7 +51,7 @@ export function reloadDataAsync(
 ): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     dispatch(setData(Immutable.List<Immutable.Map<string, any>>(), Immutable.List<boolean>()))
-    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 50, searchQuery))
+    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 100, searchQuery))
       .then(() => {
         sideNavSyncer.notifySideNav()
         dispatch(setLoading(false))

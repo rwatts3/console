@@ -52,9 +52,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
           rowCount={this.props.rowCount}
           loadMoreRows={this.loadMoreRows}
           isRowLoaded={({index}) => {
-            console.log(this.props.loadedList)
             const loaded = this.props.loadedList.get(index)
-            console.log('loaded', loaded)
             return loaded
           }}
           >
@@ -113,6 +111,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 cellRenderer={this.renderCell}
                 onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
                 scrollToRow={this.props.selectedCell.row}
+                overscanRowCount={20}
               />
             </div>
           )}

@@ -385,27 +385,13 @@ export class Cell extends React.PureComponent<Props, State> {
 
 const MappedCell = connect(
   (state, props) => {
-    const {rowIndex, field, addnew} = props
+    const {rowIndex, field, addnew, selected} = props
     const { selectedCell, editing, newRowActive, writing } = state.databrowser.ui
 
-    const cellEditing = !writing && (editing || ((field.isList) ? false : addnew))
-
-    if (selectedCell.row === rowIndex && selectedCell.field === field.name) {
-      return {
-        selected: true,
-        editing: cellEditing,
-        position: {
-          row: rowIndex,
-          field: field.name,
-        },
-        newRowActive,
-        rowHasCursor: selectedCell.row === rowIndex,
-      }
-    }
+    const cellEditing = selected && !writing && (editing || ((field.isList) ? false : addnew))
 
     return {
-      selected: false,
-      editing: false,
+      editing: cellEditing,
       position: {
         row: rowIndex,
         field: field.name,
