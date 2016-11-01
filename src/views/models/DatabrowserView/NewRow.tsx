@@ -181,7 +181,6 @@ class NewRow extends React.Component<Props, State> {
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
     if (allRequiredFieldsGiven) {
-      this.props.nextStep()
       this.props.add(this.state.fieldValues)
     }
   }

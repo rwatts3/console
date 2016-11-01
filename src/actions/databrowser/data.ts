@@ -131,6 +131,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
         if (model.name === 'Post' && (
             gettingStartedState.isCurrentStep('STEP3_CLICK_ENTER_DESCRIPTION') ||
             gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE1') ||
+            gettingStartedState.isCurrentStep('STEP3_CLICK_SAVE_NODE1') ||
             gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE2')
           )) {
           dispatch(showDonePopup())
