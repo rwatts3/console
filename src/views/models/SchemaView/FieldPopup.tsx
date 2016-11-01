@@ -271,7 +271,11 @@ class FieldPopup extends React.Component<Props, State> {
                     {this.renderValueInput(
                       this.state.migrationValue,
                       'Migration value',
-                      this.setMigrationValue,
+                      (value: any) => {
+                        if (!this.state.isList) {
+                          this.setMigrationValue(value)
+                        }
+                      },
                       this.state.useMigrationValue || needsMigrationValue,
                     )}
                   </div>
@@ -449,7 +453,7 @@ class FieldPopup extends React.Component<Props, State> {
 
     const field = {isList, typeIdentifier} as Field
     const wrappedMigrationValue = this.state.migrationValue
-    const migrationValue = (this.needsMigrationValue() || this.state.useMigrationValue) && !isList
+    const migrationValue = (this.needsMigrationValue() || this.state.useMigrationValue)
       ? valueToString(wrappedMigrationValue, field, true)
       : null
 
@@ -504,11 +508,12 @@ class FieldPopup extends React.Component<Props, State> {
       return false
     }
 
-    const changedType = this.props.field && this.state.typeIdentifier !== this.props.field.typeIdentifier
+    const changedScalar = this.props.field && (this.state.isList !== this.props.field.isList)
+    const changedType = this.props.field && (this.state.typeIdentifier !== this.props.field.typeIdentifier)
     const changedRequired = this.props.field && !this.props.field.isRequired && this.state.isRequired
     const newRequiredField = !this.props.field && this.state.isRequired
 
-    return changedType || changedRequired || newRequiredField
+    return changedScalar || changedType || changedRequired || newRequiredField
   }
 
   private updateTypeIdentifier(typeIdentifier: string) {
