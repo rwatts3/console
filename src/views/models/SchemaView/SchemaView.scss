@@ -10,21 +10,33 @@
   margin-left: 10px;
 
   &.green {
-    border-color: $accent;
     color: $accent;
-    background: #fff;
+    background: $lightGreen;
 
     &:hover {
-      background: $accent;
-      color: #fff;
+      background: $lightGreen;
+      color: $accent;
 
       svg {
         fill: #fff;
       }
     }
-
     svg {
       fill: $accent;
+    }
+  }
+  &.yellow {
+    color: $lightBrown;
+    background: $lightYellow;
+    &:hover {
+      background: $lightYellow;
+      color: $lightBrown;
+      svg {
+        fill: #fff;
+      }
+    }
+    svg {
+      fill: $lightBrown;
     }
   }
 }
@@ -94,6 +106,7 @@
     color: $grey4;
     border-bottom: 1px solid $grey2;
     padding: 0 40px;
+    padding-top: 25px;
     height: 68px;
     display: flex;
     align-items: center;
@@ -106,3 +119,4 @@
     padding-bottom: 60px;
   }
 }
+
