@@ -73,7 +73,11 @@ class FieldRow extends React.Component<Props, State> {
           }
           </Link>
           <Link className={classes.type} to={editLink}>
-            <span>{type}</span>
+            { !isScalar(field.typeIdentifier) ?
+              <span>{field.relatedModel.name}</span>
+              : <span>{type}</span>
+            }
+
           </Link>
           <div className={classes.description}>
             {this.renderDescription()}
@@ -297,6 +301,9 @@ export default Relay.createContainer(MappedFieldRow, {
                 isUnique
                 isList
                 description
+                relatedModel{
+                    name
+                }
                 permissions(first: 100) {
                     edges {
                         node {
