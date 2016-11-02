@@ -5,7 +5,7 @@ import {bindActionCreators} from 'redux'
 import {withRouter} from 'react-router'
 import {
   toggleNodeSelection, clearNodeSelection, setNodeSelection, setScrollTop, setLoading,
-  hideNewRow, toggleSearch,
+  hideNewRow, toggleSearch, selectCell,
 } from '../../../actions/databrowser/ui'
 import {resetDataAndUI} from '../../../actions/databrowser/shared'
 import {
@@ -46,6 +46,7 @@ import {
 import {GridPosition} from '../../../types/databrowser/ui'
 import {classnames} from '../../../utils/classnames'
 import throttle from 'lodash.throttle'
+import {LightCell} from './LightCell'
 
 interface Props {
   relay: Relay.RelayProp
@@ -79,6 +80,7 @@ interface Props {
   nextRow: (fields: Field[], modelNamePlural: string) => ReduxThunk
   previousRow: (fields: Field[], modelNamePlural: string) => ReduxThunk
 
+  selectCell: (position: GridPosition) => ReduxAction
   editCell: (position: GridPosition) => ReduxAction
   setNodeSelection: (ids: Immutable.List<string>) => ReduxAction
   deleteSelectedNodes: (lokka: any, projectName: string, modeName: string) => ReduxThunk
@@ -97,31 +99,25 @@ interface Props {
   nodes: Immutable.List<Immutable.Map<string, any>>
   loaded: Immutable.List<boolean>
   addNodeAsync: (lokka: any, model: Model, fields: Field[], fieldValues: { [key: string]: any }) => ReduxThunk
-  updateNodeAsync: (
-    lokka: any,
-    model: Model,
-    fields: Field[],
-    value: TypedValue,
-    field: Field,
-    callback,
-    nodeId: string,
-    index: number,
-  ) => ReduxThunk
-  reloadDataAsync: (
-    lokka: any,
-    modelNamePlural: string,
-    fields: Field[],
-    index?: number,
-    searchQuery?: string,
-  ) => ReduxThunk
-  loadDataAsync: (
-    lokka: any,
-    modelNamePlural: string,
-    field: Field[],
-    first: number,
-    skip: number,
-    searchQuery?: string,
-  ) => ReduxThunk
+  updateNodeAsync: (lokka: any,
+                    model: Model,
+                    fields: Field[],
+                    value: TypedValue,
+                    field: Field,
+                    callback,
+                    nodeId: string,
+                    index: number,) => ReduxThunk
+  reloadDataAsync: (lokka: any,
+                    modelNamePlural: string,
+                    fields: Field[],
+                    index?: number,
+                    searchQuery?: string,) => ReduxThunk
+  loadDataAsync: (lokka: any,
+                  modelNamePlural: string,
+                  field: Field[],
+                  first: number,
+                  skip: number,
+                  searchQuery?: string,) => ReduxThunk
   searchQuery: string
 }
 
@@ -134,9 +130,9 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   private setSearchQueryThrottled = throttle(
     (q: string) => {
-      let queryObject = { query: {} }
+      let queryObject = {query: {}}
       if (q.length > 0) {
-        queryObject.query = { q }
+        queryObject.query = {q}
       }
       const newLocation = Object.assign({}, this.props.location, queryObject)
       this.props.router.replace(newLocation)
@@ -156,7 +152,6 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   componentWillMount = () => {
-    this.props.setItemCount(this.props.model.itemCount)
     this.reloadData()
   }
 
@@ -191,9 +186,9 @@ class DatabrowserView extends React.Component<Props, {}> {
     document.removeEventListener('keydown', this.documentKeyDown)
   }
 
-  componentDidUpdate = (prevProps: Props) => {
+  componentWillReceiveProps = (nextProps: Props) => {
     // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
-    if (this.props.location !== prevProps.location || this.props.viewer.model !== prevProps.viewer.model) {
+    if (this.props.location !== nextProps.location || this.props.viewer.model !== nextProps.viewer.model) {
       this.reloadData()
     }
   }
@@ -274,7 +269,7 @@ class DatabrowserView extends React.Component<Props, {}> {
                   <InfiniteTable
                     selectedCell={this.props.selectedCell}
                     loadedList={this.props.loaded}
-                    minimumBatchSize={50}
+                    minimumBatchSize={100}
                     width={this.props.fields.reduce((sum, {name}) => sum + this.fieldColumnWidths[name], 0) + 40 + 250}
                     height={height}
                     scrollTop={this.props.scrollTop}
@@ -436,9 +431,26 @@ class DatabrowserView extends React.Component<Props, {}> {
       )
     } else {
       const value = node.get(field.name)
+      const {selectedCell} = this.props
+      const rowHasCursor = selectedCell.row === rowIndex
+      const selected = rowHasCursor && selectedCell.field === field.name
+
+      if (!selected) {
+        return (
+          <LightCell
+            value={value}
+            field={field}
+            rowSelected={this.isSelected(nodeId)}
+            rowHasCursor={rowHasCursor}
+            onClick={() => this.props.selectCell({ row: rowIndex, field: field.name })}
+            onDoubleClick={() => this.props.editCell({ row: rowIndex, field: field.name })}
+          />
+        )
+      }
 
       return (
         <Cell
+          selected={selected}
           rowSelected={this.isSelected(nodeId)}
           backgroundColor='#fff'
           field={field}
@@ -630,6 +642,7 @@ function mapDispatchToProps(dispatch) {
       nextRow,
       previousRow,
 
+      selectCell,
       editCell,
       setBrowserViewRef,
     },
@@ -657,39 +670,39 @@ export default Relay.createContainer(MappedDatabrowserView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          name
-          namePlural
-          itemCount
-          fields(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                typeIdentifier
-                isList
-                isReadonly
-                defaultValue
-                relatedModel {
-                  name
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                model: modelByName(projectName: $projectName, modelName: $modelName) {
+                    name
+                    namePlural
+                    itemCount
+                    fields(first: 1000) {
+                        edges {
+                            node {
+                                id
+                                name
+                                typeIdentifier
+                                isList
+                                isReadonly
+                                defaultValue
+                                relatedModel {
+                                    name
+                                }
+                                ${HeaderCell.getFragment('field')}
+                                ${Cell.getFragment('field')}
+                            }
+                        }
+                    }
+                    ${NewRow.getFragment('model')}
+                    ${ModelHeader.getFragment('model')}
                 }
-                ${HeaderCell.getFragment('field')}
-                ${Cell.getFragment('field')}
-              }
+                project: projectByName(projectName: $projectName) {
+                    id
+                    ${ModelHeader.getFragment('project')}
+                }
+                ${ModelHeader.getFragment('viewer')}
             }
-          }
-          ${NewRow.getFragment('model')}
-          ${ModelHeader.getFragment('model')}
-        }
-        project: projectByName(projectName: $projectName) {
-          id
-          ${ModelHeader.getFragment('project')}
-        }
-        ${ModelHeader.getFragment('viewer')}
-      }
-    `,
-  },
+        `,
+    },
 })

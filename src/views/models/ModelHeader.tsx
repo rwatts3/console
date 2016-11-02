@@ -22,6 +22,7 @@ import {onFailureShowNotification} from '../../utils/relay'
 import cuid from 'cuid'
 import {Popup} from '../../types/popup'
 import {showPopup} from '../../actions/popup'
+import {SYSTEM_MODELS} from '../../constants/system'
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
 
@@ -53,6 +54,8 @@ class ModelHeader extends React.Component<Props, State> {
 
     const schemaActive = location.pathname.endsWith('schema')
     const schemaTypeText = schemaActive ? 'Schema' : 'Data'
+    const {model} = this.props
+    const isSystem = model && (model.isSystem || SYSTEM_MODELS.includes(model.name))
 
     const SettingsLink = styled(Link)`
       padding: ${variables.size10};
@@ -132,21 +135,22 @@ class ModelHeader extends React.Component<Props, State> {
                 <div className={classes.title}>
                   {this.props.model.name}
                   <div className={classes.type}>{`(${schemaTypeText})`}</div>
-                  {this.props.model.isSystem &&
+                  {isSystem ?
                     <span className={classes.system}>System</span>
+                    :
+                    <Icon
+                      width={32}
+                      height={32}
+                      src={require('graphcool-styles/icons/fill/settings.svg')}
+                      color={variables.gray10}
+                      onClick={this.openEditModelModal}
+                      className={cx(
+                        particles.ml6,
+                        particles.mt6,
+                        particles.pointer,
+                      )}
+                    />
                   }
-                  <Icon
-                    width={32}
-                    height={32}
-                    src={require('graphcool-styles/icons/fill/settings.svg')}
-                    color={variables.gray10}
-                    onClick={this.openEditModelModal}
-                    className={cx(
-                      particles.ml6,
-                      particles.mt6,
-                      particles.pointer,
-                    )}
-                  />
                 </div>
                 <div className={classes.titleDescription}>
                   <ModelDescription model={this.props.model}/>
@@ -214,6 +218,11 @@ class ModelHeader extends React.Component<Props, State> {
   }
 
   private openEditModelModal = () => {
+    const {model} = this.props
+    if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
+      return
+    }
+
     const id = cuid()
     this.props.showPopup({
       element: <EditModelPopup

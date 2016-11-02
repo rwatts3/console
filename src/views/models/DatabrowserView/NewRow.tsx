@@ -15,6 +15,7 @@ import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')
 import Tether from '../../../components/Tether/Tether'
 import {nextCell} from '../../../actions/databrowser/ui'
+import {GridPosition} from '../../../types/databrowser/ui'
 
 interface Props {
   model: Model
@@ -25,6 +26,7 @@ interface Props {
   gettingStarted: GettingStartedState
   nextStep: () => any
   nextCell: (fields: Field[]) => ReduxAction
+  selectedCell: GridPosition
   width: number
   loading: boolean
   loaded: Immutable.List<boolean>
@@ -157,6 +159,7 @@ class NewRow extends React.Component<Props, State> {
     >
       <Cell
         needsFocus={this.state.shouldFocus ? index === inputIndex : false}
+        selected={this.props.selectedCell.row === -1 && this.props.selectedCell.field === field.name}
         addnew={true}
         field={field}
         fields={fields}
@@ -181,7 +184,6 @@ class NewRow extends React.Component<Props, State> {
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
     if (allRequiredFieldsGiven) {
-      this.props.nextStep()
       this.props.add(this.state.fieldValues)
     }
   }
@@ -223,13 +225,13 @@ class NewRow extends React.Component<Props, State> {
     this.setState({fieldValues, shouldFocus: false} as State)
     callback()
   }
-
 }
 
 const mapStateToProps = (state: StateTree) => {
   return {
     gettingStarted: state.gettingStarted.gettingStartedState,
     writing: state.databrowser.ui.writing,
+    selectedCell: state.databrowser.ui.selectedCell,
   }
 }
 

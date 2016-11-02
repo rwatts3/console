@@ -51,7 +51,7 @@ export function reloadDataAsync(
 ): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     dispatch(setData(Immutable.List<Immutable.Map<string, any>>(), Immutable.List<boolean>()))
-    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 50, searchQuery))
+    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 100, searchQuery))
       .then(() => {
         sideNavSyncer.notifySideNav()
         dispatch(setLoading(false))
@@ -131,6 +131,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
         if (model.name === 'Post' && (
             gettingStartedState.isCurrentStep('STEP3_CLICK_ENTER_DESCRIPTION') ||
             gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE1') ||
+            gettingStartedState.isCurrentStep('STEP3_CLICK_SAVE_NODE1') ||
             gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE2')
           )) {
           dispatch(showDonePopup())

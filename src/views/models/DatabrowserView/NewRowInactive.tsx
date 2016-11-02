@@ -69,6 +69,7 @@ class NewRowInactive extends React.Component<Props, State> {
                 offsetY={-10}
                 width={351}
                 horizontal='left'
+                key='STEP3_CLICK_ADD_NODE2'
               >
                 {this.renderField(field, index, fields)}
               </Tether>
