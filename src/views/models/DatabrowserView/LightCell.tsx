@@ -10,10 +10,12 @@ interface Props {
   onDoubleClick: () => void
   value: string
   field: Field
+  rowSelected?: boolean
+  rowHasCursor?: boolean
 }
 export class LightCell extends React.PureComponent<Props, {}> {
   render() {
-    const {onClick, onDoubleClick, value, field} = this.props
+    const {onClick, onDoubleClick, value, field, rowSelected, rowHasCursor} = this.props
     const valueString = valueToString(value, field, true)
 
     return (
@@ -22,12 +24,17 @@ export class LightCell extends React.PureComponent<Props, {}> {
         onDoubleClick={onDoubleClick}
         className={cx(
           classes.root,
-          particles.justifyCenter,
           particles.contentCenter,
           particles.overflowVisible,
+          particles.flexAuto,
+          {
+            [particles.bgWhite]: (!rowHasCursor && !rowSelected),
+            [particles.bgBlue]: rowSelected,
+            [particles.white]: rowSelected,
+          }
         )}
       >
-        <div className={classes.border}>
+        <div className={cx(classes.border, particles.flexAuto)}>
           <div className={classes.value}>
             {valueString}
           </div>

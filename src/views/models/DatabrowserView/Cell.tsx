@@ -96,7 +96,6 @@ export class Cell extends React.PureComponent<Props, State> {
     return (
       <div
         style={{
-          justifyContent: 'center',
           alignItems: 'center',
           overflow: 'visible',
         }}
@@ -109,7 +108,7 @@ export class Cell extends React.PureComponent<Props, State> {
         }}
         ref='container'
       >
-        <div className={classes.border}>
+        <div className={cx(classes.border, particles.flexAuto)}>
           {this.renderContent()}
         </div>
       </div>
