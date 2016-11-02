@@ -5,6 +5,7 @@
   height: calc(#{$headerHeight} + 1px + 60px);
   border-bottom: 1px solid $grey2;
   background-color: #fff;
+
 }
 
 .top {
@@ -105,4 +106,5 @@
   position: relative;
   margin-left: auto;
   bottom: -25px;
+  flex: 1;
 }

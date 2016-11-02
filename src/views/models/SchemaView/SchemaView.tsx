@@ -16,7 +16,7 @@ import {bindActionCreators} from 'redux'
 import {nextStep} from '../../../actions/gettingStarted'
 const classes: any = require('./SchemaView.scss')
 import * as cx from 'classnames'
-import {virtual, particles} from 'graphcool-styles'
+import {virtual, particles} from 'graphcool-styles' import {isScalar} from "../../../utils/graphql";
 
 interface Props {
   params: any
@@ -35,8 +35,19 @@ interface Props {
   relay: Relay.RelayProp
   showNotification: ShowNotificationCallback
 }
+interface State {
+  activeFields: SelectedFieldsType
+}
 
-class SchemaView extends React.Component<Props, {}> {
+enum SelectedFieldsType {All, Scalar, Relations}
+class SchemaView extends React.Component<Props, State> {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      activeFields: SelectedFieldsType.All,
+    }
+  }
 
   componentDidMount() {
     analytics.track('models/schema: viewed', {
@@ -45,9 +56,17 @@ class SchemaView extends React.Component<Props, {}> {
   }
 
   render() {
-
-    const {fields} = this.props
-
+    const {activeFields} = this.state
+    const fields = this.props.fields.filter(field => {
+      switch (activeFields) {
+        case SelectedFieldsType.All:
+          return true
+        case SelectedFieldsType.Scalar:
+          return isScalar(field.typeIdentifier)
+        case SelectedFieldsType.Relations:
+          return !isScalar(field.typeIdentifier)
+      }
+    })
     const urlPrefix = `/${this.props.params.projectName}`
     return (
       <div className={classes.root}>
@@ -103,6 +122,37 @@ class SchemaView extends React.Component<Props, {}> {
             />
             <span>New Relation</span>
           </Link>
+          <div className={`${classes.group} `}>
+            <Link
+              className={cx(
+                classes.group_button,
+                {
+                  [classes.selected]: this.state.activeFields === SelectedFieldsType.All,
+                }
+              )}
+              onClick={() => this.handleFilterClick(SelectedFieldsType.All)}
+            >All
+            </Link>
+            <Link
+              className={cx(
+                classes.group_button,
+                {
+                  [classes.selected]: this.state.activeFields === SelectedFieldsType.Scalar,
+                }
+              )}
+              onClick={() => this.handleFilterClick(SelectedFieldsType.Scalar}
+            >Scalar
+            </Link>
+            <Link
+              className={cx(
+                classes.group_button,
+                {
+                  [classes.selected]: this.state.activeFields === SelectedFieldsType.Relations,
+                }
+              )}
+              onClick={() => this.handleFilterClick(SelectedFieldsType.Relations)}
+            >Relations</Link>
+          </div>
         </ModelHeader>
         <div className={classes.table}>
           <div className={classes.tableHead}>
@@ -138,6 +188,10 @@ class SchemaView extends React.Component<Props, {}> {
     if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL')) {
       this.props.nextStep()
     }
+  }
+
+  private handleFilterClick = (filter: SelectedFieldsType) => {
+    this.setState({activeFields: filter})
   }
 
 }
