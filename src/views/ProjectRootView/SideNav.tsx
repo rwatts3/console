@@ -494,7 +494,7 @@ export class SideNav extends React.Component<Props, State> {
                 particles.flex,
                 particles.justifyBetween,
               )}>
-                <div className={cx(particles.pl6)}>{model.name}</div>
+                <div className={cx(particles.pl6, particles.mra)}>{model.name}</div>
                 <div>{model.itemCount}</div>
               </ListElement>
             ))}

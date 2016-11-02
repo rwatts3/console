@@ -24,9 +24,9 @@ export class LightCell extends React.PureComponent<Props, {}> {
         onDoubleClick={onDoubleClick}
         className={cx(
           classes.root,
-          particles.justifyCenter,
           particles.contentCenter,
           particles.overflowVisible,
+          particles.flexAuto,
           {
             [particles.bgWhite]: (!rowHasCursor && !rowSelected),
             [particles.bgBlue]: rowSelected,
@@ -34,7 +34,7 @@ export class LightCell extends React.PureComponent<Props, {}> {
           }
         )}
       >
-        <div className={classes.border}>
+        <div className={cx(classes.border, particles.flexAuto)}>
           <div className={classes.value}>
             {valueString}
           </div>

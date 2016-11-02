@@ -6,12 +6,11 @@ exports[`test Cell renders and runs selectCell 1`] = `
   style={
     Object {
       "alignItems": "center",
-      "justifyContent": "center",
       "overflow": "visible",
     }
   }>
   <div
-    className="border">
+    className="border flexAuto">
     <span
       className="value"
       onKeyDown={[Function]}
@@ -34,12 +33,11 @@ exports[`test Cell renders in edit mode 1`] = `
   style={
     Object {
       "alignItems": "center",
-      "justifyContent": "center",
       "overflow": "visible",
     }
   }>
   <div
-    className="border">
+    className="border flexAuto">
     <NullableCell
       cell={
         <function Connect(props, context) {
