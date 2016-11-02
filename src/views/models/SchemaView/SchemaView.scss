@@ -7,7 +7,12 @@
 
 .button {
   @include button;
+  padding: 5px 10px;
   margin-left: 10px;
+  border-radius: 2px;
+  border: 0px solid $white90;
+  font-size: 16px;
+
 
   &.green {
     color: $accent;

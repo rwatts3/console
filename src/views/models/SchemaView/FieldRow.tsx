@@ -15,6 +15,8 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 const classes: any = require('./FieldRow.scss')
+import * as cx from 'classnames'
+import {virtual, particles, $p} from 'graphcool-styles'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -74,7 +76,18 @@ class FieldRow extends React.Component<Props, State> {
           </Link>
           <Link className={classes.type} to={editLink}>
             { !isScalar(field.typeIdentifier) ?
-              <span>{field.relatedModel.name}</span>
+              <span>
+                <div className={cx(
+                particles.flex,
+              )}> <Icon
+                  className={cx(
+                    particles.mr4,
+                )}
+                  width={16}
+                  height={16}
+                  src={require('assets/new_icons/link.svg')}
+                />
+                  {field.relatedModel.name}</div></span>
               : <span>{type}</span>
             }
 

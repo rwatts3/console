@@ -9,10 +9,11 @@
   padding: 10px 19px;
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 12px;
   display: flex;
   align-items: center;
-  border-radius: 1px;
+  border: 1px solid $grey4;
+  border-radius: 4px;
   color: $grey4;
   cursor: pointer;
 
@@ -25,6 +26,7 @@
       fill: $grey5;
     }
   }
+
   span {
     margin-left: 11px;
     white-space: nowrap;
@@ -60,9 +62,9 @@
 
 @mixin cellborder($color) {
   box-shadow:
-    1px 0 0 0 $color,
-    0 1px 0 0 $color,
-    1px 1px 0 0 $color, /* Just to fix the corner */
-    1px 0 0 0 $color inset,
-    0 1px 0 0 $color inset;
+          1px 0 0 0 $color,
+          0 1px 0 0 $color,
+          1px 1px 0 0 $color, /* Just to fix the corner */
+          1px 0 0 0 $color inset,
+          0 1px 0 0 $color inset;
 }
