@@ -22,6 +22,7 @@ import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
+import PermissionsView from './views/PermissionsView/PermissionsView'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -97,6 +98,7 @@ export default (
         <Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render} />
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
+      <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render} />
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
         <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render} />
         <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render} />

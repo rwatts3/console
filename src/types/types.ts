@@ -114,7 +114,24 @@ export interface Model {
   itemCount: number
   description: string
   isSystem: boolean
+  permissions: ModelPermission[]
 }
+
+export interface ModelPermission {
+  id: string
+  fieldIds?: string[]
+  ruleWebhookUrl: string
+  rule: Rule
+  ruleName?: string
+  ruleGraphQuery?: string
+  applyToWholeModel: boolean
+  isActive: boolean
+  operation: Operation
+  userType: UserType
+}
+
+export type Rule = 'NONE' | 'GRAPH' | 'WEBHOOK'
+export type Operation = 'READ' | 'CREATE' | 'UPDATE' | 'DELETE'
 
 export type ActionTriggerType = 'MUTATION_MODEL' | 'MUTATION_RELATION'
 export type ActionHandlerType = 'WEBHOOK'

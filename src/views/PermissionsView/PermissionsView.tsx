@@ -1,27 +1,33 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Helmet from 'react-helmet'
-import mapProps from '../../../components/MapProps/MapProps'
-import {Model} from '../../../types/types'
+import mapProps from '../../components/MapProps/MapProps'
+import {Project} from '../../types/types'
+import PermissionsList from './PermissionsList/PermissionsList'
+import PermissionsHeader from './PermissionsHeader/PermissionsHeader'
 
 interface Props {
   params: any
   router: ReactRouter.InjectedRouter
-  models: Model[]
+  project: Project
 }
 
 class PermissionsView extends React.Component<Props, {}> {
   render() {
+    const {project} = this.props
+
     return (
       <div>
         <Helmet title='Permissions'/>
+        <PermissionsHeader />
+        <PermissionsList project={project} />
       </div>
     )
   }
 }
 
 const MappedPermissionsView = mapProps({
-  params: (props) => props.params,
+  project: props => props.viewer.project,
 })(PermissionsView)
 
 export default Relay.createContainer(MappedPermissionsView, {
@@ -32,14 +38,7 @@ export default Relay.createContainer(MappedPermissionsView, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
-          models(first: 100) {
-            edges {
-              node {
-                name
-                itemCount
-              }
-            }
-          }
+          ${PermissionsList.getFragment('project')}
         }
       }
     `,
