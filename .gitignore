@@ -12,3 +12,4 @@ lib
 .envrc
 .netlify
 .tags
+.yarnclean
