@@ -5,6 +5,7 @@
   height: calc(#{$headerHeight} + 1px + 60px);
   border-bottom: 1px solid $grey2;
   background-color: #fff;
+
 }
 
 .top {
@@ -98,6 +99,15 @@
   }
 }
 
+.buttons_schema {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+  position: relative;
+  margin-left: auto;
+  bottom: -25px;
+  flex: 1;
+}
 .buttons {
   display: flex;
   align-items: center;
