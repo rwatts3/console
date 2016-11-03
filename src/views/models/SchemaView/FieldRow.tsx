@@ -16,7 +16,7 @@ import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 const classes: any = require('./FieldRow.scss')
 import * as cx from 'classnames'
-import {virtual, particles, $p} from 'graphcool-styles'
+import {particles} from 'graphcool-styles'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -146,7 +146,8 @@ class FieldRow extends React.Component<Props, State> {
             }
           </div>
         </div>
-        }{!field.isSystem &&
+        }
+        {!field.isSystem &&
       <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
         <Link className={classes.fieldName} to={editLink}>
           <span className={classes.name}>{field.name}</span>
