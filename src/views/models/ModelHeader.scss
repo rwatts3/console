@@ -99,7 +99,7 @@
   }
 }
 
-.buttons {
+.buttons_schema {
   display: flex;
   align-items: center;
   padding-right: 20px;
@@ -107,4 +107,12 @@
   margin-left: auto;
   bottom: -25px;
   flex: 1;
+}
+.buttons {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+  position: relative;
+  margin-left: auto;
+  bottom: -25px;
 }

@@ -191,7 +191,8 @@ class ModelHeader extends React.Component<Props, State> {
           </Header>
         </div>
         <div className={classes.bottom}>
-          <div className={cx(classes.buttons, particles.z5, {
+          <div className={cx(
+            schemaActive ? classes.buttons_schema : classes.buttons, particles.z5, {
             [this.props.buttonsClass]: this.props.buttonsClass && this.props.buttonsClass.length > 0,
           })}>
             {this.props.model.name === 'User' &&
