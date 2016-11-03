@@ -16,8 +16,8 @@ import {bindActionCreators} from 'redux'
 import {nextStep} from '../../../actions/gettingStarted'
 const classes: any = require('./SchemaView.scss')
 import * as cx from 'classnames'
-import {virtual, particles} from 'graphcool-styles'
-import {isScalar} from "../../../utils/graphql"
+import { particles} from 'graphcool-styles'
+import {isScalar} from '../../../utils/graphql'
 
 interface Props {
   params: any
