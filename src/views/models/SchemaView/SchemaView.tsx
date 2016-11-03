@@ -4,7 +4,6 @@ import {Link, withRouter} from 'react-router'
 import FieldRow from './FieldRow'
 import mapProps from '../../../components/MapProps/MapProps'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
-import Icon from '../../../components/Icon/Icon'
 import Tether from '../../../components/Tether/Tether'
 import ModelHeader from '../ModelHeader'
 import {Field, Model, Viewer, Project} from '../../../types/types'
@@ -16,7 +15,7 @@ import {bindActionCreators} from 'redux'
 import {nextStep} from '../../../actions/gettingStarted'
 const classes: any = require('./SchemaView.scss')
 import * as cx from 'classnames'
-import { particles} from 'graphcool-styles'
+import {Icon, particles, variables} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
 
 interface Props {
@@ -106,7 +105,10 @@ class SchemaView extends React.Component<Props, State> {
               <Icon
                 width={16}
                 height={16}
-                src={require('assets/new_icons/add_field.svg')}
+                src={require('graphcool-styles/icons/stroke/addFull.svg')}
+                stroke={true}
+                strokeWidth={3}
+                color={variables.accent}
               />
               <span>New Field</span>
             </Link>
@@ -119,7 +121,10 @@ class SchemaView extends React.Component<Props, State> {
             <Icon
               width={16}
               height={16}
-              src={require('assets/new_icons/add_relation.svg')}
+              src={require('graphcool-styles/icons/stroke/addFull.svg')}
+              color={variables.lightBrown}
+              stroke={true}
+              strokeWidth={3}
             />
             <span>New Relation</span>
           </Link>

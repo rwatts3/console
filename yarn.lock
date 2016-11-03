@@ -2849,9 +2849,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-styles@0.0.32:
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.32.tgz#f4ba6112517bec4ad822b6cbca41092a97b1def0"
+graphcool-styles@0.0.35:
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.35.tgz#23eb21a056d2776202e22152fa300ad06eb2e438"
   dependencies:
     object-assign "^4.1.0"
 

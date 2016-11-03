@@ -9,14 +9,13 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {Field, Model} from '../../../types/types'
 import Permissions from './Permissions'
 import Constraints from './Constraints'
-import Icon from '../../../components/Icon/Icon'
 import {isScalar} from '../../../utils/graphql'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 const classes: any = require('./FieldRow.scss')
 import * as cx from 'classnames'
-import {particles} from 'graphcool-styles'
+import {Icon, particles} from 'graphcool-styles'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -85,7 +84,7 @@ class FieldRow extends React.Component<Props, State> {
                 )}
                   width={16}
                   height={16}
-                  src={require('assets/new_icons/link.svg')}
+                  src={require('graphcool-styles/icons/stroke/link.svg')}
                 />
                   {field.relatedModel.name}</div></span>
               : <span>{type}</span>
@@ -132,7 +131,7 @@ class FieldRow extends React.Component<Props, State> {
             <Icon
               width={20}
               height={20}
-              src={require('assets/icons/lock.svg')}
+              src={require('graphcool-styles/icons/stroke/lock.svg')}
             />
             }
             {!field.isSystem && isScalar(field.typeIdentifier) &&
@@ -141,6 +140,8 @@ class FieldRow extends React.Component<Props, State> {
                   width={20}
                   height={20}
                   src={require('assets/icons/delete.svg')}
+                  strokeWidth={2}
+                  stroke={true}
                 />
               </span>
             }
@@ -148,18 +149,18 @@ class FieldRow extends React.Component<Props, State> {
         </div>
         }
         {!field.isSystem &&
-      <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
-        <Link className={classes.fieldName} to={editLink}>
-          <span className={classes.name}>{field.name}</span>
-          {field.isSystem &&
-          <span className={classes.system}>System</span>
-          }{ !isScalar(field.typeIdentifier) &&
-        <span className={classes.relation}>Relation</span>
-        }
-        </Link>
-        <Link className={classes.type} to={editLink}>
-          { !isScalar(field.typeIdentifier) ?
-            <span>
+        <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
+          <Link className={classes.fieldName} to={editLink}>
+            <span className={classes.name}>{field.name}</span>
+            {field.isSystem &&
+            <span className={classes.system}>System</span>
+            }{ !isScalar(field.typeIdentifier) &&
+          <span className={classes.relation}>Relation</span>
+          }
+          </Link>
+          <Link className={classes.type} to={editLink}>
+            { !isScalar(field.typeIdentifier) ?
+              <span>
                 <div className={cx(
                 particles.flex,
               )}> <Icon
@@ -168,68 +169,66 @@ class FieldRow extends React.Component<Props, State> {
                 )}
                   width={16}
                   height={16}
-                  src={require('assets/new_icons/link.svg')}
+                  src={require('graphcool-styles/icons/stroke/link.svg')}
                 />
                   {field.relatedModel.name}</div></span>
-            : <span>{type}</span>
-          }
-        </Link>
-        <div className={classes.description}>
-          {this.renderDescription()}
-        </div>
-        <div
-          className={`${classes.constraints} ${this.state.detailsState === 'CONSTRAINTS' ? classes.active : '' }`}
-          onClick={() => this.toggleConstraints()}
-        >
-          {field.isUnique &&
-          <span className={classes.label}>Unique</span>
-          }
-          {!field.isUnique &&
-          <span className={`${classes.label} ${classes.add}`}>
+              : <span>{type}</span>
+            }
+          </Link>
+          <div className={classes.description}>
+            {this.renderDescription()}
+          </div>
+          <div
+            className={`${classes.constraints} ${this.state.detailsState === 'CONSTRAINTS' ? classes.active : '' }`}
+            onClick={() => this.toggleConstraints()}
+          >
+            {field.isUnique &&
+            <span className={classes.label}>Unique</span>
+            }
+            {!field.isUnique &&
+            <span className={`${classes.label} ${classes.add}`}>
                 Add Constraint
               </span>
-          }
-        </div>
-        <div
-          className={`${classes.permissions} ${this.state.detailsState === 'PERMISSIONS' ? classes.active : '' }`}
-          onClick={() => this.togglePermissions()}
-        >
-          {field.permissions.edges.length === 0 &&
-          <span className={`${classes.label} ${classes.add}`}>
+            }
+          </div>
+          <div
+            className={`${classes.permissions} ${this.state.detailsState === 'PERMISSIONS' ? classes.active : '' }`}
+            onClick={() => this.togglePermissions()}
+          >
+            {field.permissions.edges.length === 0 &&
+            <span className={`${classes.label} ${classes.add}`}>
                 Add Permission
               </span>
-          }
-          {this.renderPermissionList()}
-        </div>
-        <div className={classes.controls}>
-          {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
-          <Link to={editLink}>
+            }
+            {this.renderPermissionList()}
+          </div>
+          <div className={classes.controls}>
+            {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
+            <Link to={editLink}>
+              <Icon
+                width={20}
+                height={20}
+                src={require('assets/icons/edit.svg')}
+              />
+            </Link>
+            }
+            {field.isSystem &&
             <Icon
               width={20}
               height={20}
-              src={require('assets/icons/edit.svg')}
+              src={require('graphcool-styles/icons/stroke/lock.svg')}
             />
-          </Link>
-          }
-          {field.isSystem &&
-          <Icon
-            width={20}
-            height={20}
-            src={require('assets/icons/lock.svg')}
-          />
-          }
-          {!field.isSystem && isScalar(field.typeIdentifier) &&
-          <span onClick={() => this.deleteField()}>
+            }
+            <span onClick={() => this.deleteField()}>
                 <Icon
                   width={20}
                   height={20}
                   src={require('assets/icons/delete.svg')}
                 />
               </span>
-          }
+          </div>
         </div>
-      </div>
-      }
+        }
         {this.state.detailsState === 'PERMISSIONS' &&
         <Permissions
           route={this.props.route}
