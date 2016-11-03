@@ -11,7 +11,7 @@ import {Model, Viewer, Project} from '../../types/types'
 import {GettingStartedState} from '../../types/gettingStarted'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import AuthProviderPopup from './AuthProviderPopup/AuthProviderPopup'
-import { Icon, particles, variables } from 'graphcool-styles'
+import {Icon, particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import UpdateModelNameMutation from '../../mutations/UpdateModelNameMutation'
@@ -116,13 +116,13 @@ class ModelHeader extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         {this.state.authProviderPopupVisible &&
-          <PopupWrapper>
-            <AuthProviderPopup
-              project={this.props.project}
-              close={() => this.setState({ authProviderPopupVisible: false } as State)}
-              forceFetchRoot={this.props.forceFetchRoot}
-            />
-          </PopupWrapper>
+        <PopupWrapper>
+          <AuthProviderPopup
+            project={this.props.project}
+            close={() => this.setState({ authProviderPopupVisible: false } as State)}
+            forceFetchRoot={this.props.forceFetchRoot}
+          />
+        </PopupWrapper>
         }
         <div className={classes.top}>
           <Header
@@ -160,25 +160,25 @@ class ModelHeader extends React.Component<Props, State> {
             </div>
             <div className={headerClasses.right}>
               {schemaActive ? (
-                  <BlueSettingsLink
-                    to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/databrowser`}
-                    onClick={this.dataViewOnClick}
-                  >
-                    <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
-                    <Tether
-                      steps={[{
+                <BlueSettingsLink
+                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/databrowser`}
+                  onClick={this.dataViewOnClick}
+                >
+                  <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
+                  <Tether
+                    steps={[{
                       step: 'STEP3_CLICK_DATA_BROWSER',
                       title: 'Switch to the Data Browser',
                       description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).', // tslint:disable-line
                     }]}
-                      width={280}
-                      offsetX={-50}
-                      offsetY={5}
-                      zIndex={2000}
-                    >
-                      <div>Done Editing Schema</div>
-                    </Tether>
-                  </BlueSettingsLink>
+                    width={280}
+                    offsetX={-50}
+                    offsetY={5}
+                    zIndex={2000}
+                  >
+                    <div>Done Editing Schema</div>
+                  </Tether>
+                </BlueSettingsLink>
               ) : (
                 <SettingsLink
                   to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema`}
@@ -198,6 +198,7 @@ class ModelHeader extends React.Component<Props, State> {
             {this.props.model.name === 'User' &&
             <div
               className={cx(
+                  particles.ml10,
                   particles.f14,
                   particles.pa10,
                   particles.pointer,
@@ -209,9 +210,9 @@ class ModelHeader extends React.Component<Props, State> {
                   particles.buttonShadow,
                   particles.tracked,
                 )}
-              onClick={() => this.setState({ authProviderPopupVisible: true } as State)}
-            >
-              Configure Auth Provider
+              onClick={() => this.setState({authProviderPopupVisible: true} as State)}
+              >
+                Configure Auth Provider
             </div>
             }
             {this.props.children}
@@ -314,26 +315,26 @@ export default Relay.createContainer(ReduxContainer, {
   initialVariables: {
     projectName: null, // injected from router
   },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        ${Header.getFragment('viewer')}
-      }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        ${Header.getFragment('project')}
-        ${AuthProviderPopup.getFragment('project')}
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        itemCount
-        isSystem
-        ${ModelDescription.getFragment('model')}
-      }
-    `,
-  },
+    fragments: {
+        viewer: () => Relay.QL`
+            fragment on Viewer {
+                ${Header.getFragment('viewer')}
+            }
+        `,
+        project: () => Relay.QL`
+            fragment on Project {
+                ${Header.getFragment('project')}
+                ${AuthProviderPopup.getFragment('project')}
+            }
+        `,
+        model: () => Relay.QL`
+            fragment on Model {
+                id
+                name
+                itemCount
+                isSystem
+                ${ModelDescription.getFragment('model')}
+            }
+        `,
+    },
 })
