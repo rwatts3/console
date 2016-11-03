@@ -217,7 +217,8 @@ class EndpointPopup extends React.Component<Props, State> {
           <div className={cx(particles.flex, particles.ph38)}>
             <EndpointField
               className={cx(
-                particles.f25,
+                particles.flexAuto,
+                particles.f16,
                 particles.fw3,
                 particles.pv38,
                 particles.overflowHidden,
