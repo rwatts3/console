@@ -330,7 +330,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
   private getExampleVideoUrl = (example: Example): string => {
     switch (example) {
       case 'ReactRelay': return '_dj9Os2ev4M'
-      case 'ReactApollo': return '_dj9Os2ev4M'
+      case 'ReactApollo': return '9nlwyPUPXjQ'
       case 'AngularApollo': return '_dj9Os2ev4M'
     }
   }
