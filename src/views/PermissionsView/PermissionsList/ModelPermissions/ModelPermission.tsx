@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {ModelPermission} from '../../../../types/types'
+import {$p} from 'graphcool-styles'
 
 interface Props {
   permission: ModelPermission
@@ -10,7 +11,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   render() {
     const {permission} = this.props
     return (
-      <div>
+      <div className={$p.pa16}>
         <div>
           Operation: {permission.operation}
         </div>

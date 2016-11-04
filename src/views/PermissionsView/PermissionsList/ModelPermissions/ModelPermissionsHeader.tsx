@@ -2,34 +2,78 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {Model, ModelPermission} from '../../../../types/types'
-import {Icon} from 'graphcool-styles'
+import {Icon, $p, variables} from 'graphcool-styles'
+import PermissionIcon from './PermissionIcon'
+import * as cx from 'classnames'
 
 interface Props {
   model: Model
   permissions: ModelPermission[]
 }
 
-export type Operation = 'READ' | 'CREATE' | 'UPDATE' | 'DELETE'
+const operations = ['READ', 'UPDATE', 'CREATE', 'DELETE']
+
 class ModelPermissionsHeader extends React.Component<Props, {}> {
+  enhancePermissions(permissions: ModelPermission[]) {
+    let todo = operations.slice()
+
+    permissions.forEach(permission => {
+      if (todo.includes(permission.operation)) {
+        const i = todo.indexOf(permission.operation)
+        todo.splice(i, 1)
+      }
+    })
+
+    return todo.map(operation => ({
+      operation,
+      isActive: false,
+    })).concat(permissions)
+  }
   render() {
     const {model, permissions} = this.props
+    const enhancedPermissions = this.enhancePermissions(permissions)
     return (
-      <div>
-        <h1>{model.name}</h1>
-        {permissions.map(permission => {
-          switch (permission.operation) {
-            case 'READ':
-              return <Icon key={permission.id} src='graphcool-styles/icons/fill/apolloLogo.svg' />
-            case 'CREATE':
-              return <Icon key={permission.id} src='graphcool-styles/icons/fill/angularLogo.svg' />
-            case 'UPDATE':
-              return <Icon key={permission.id} src='graphcool-styles/icons/fill/graphcoolLogoSpaced.svg' />
-            case 'DELETE':
-              return <Icon key={permission.id} src='graphcool-styles/icons/fill/reactLogo.svg' />
-            default:
-              return <Icon key={permission.id} src='graphcool-styles/icons/fill/relayLogo.svg' />
-          }
-        })}
+      <div className={cx($p.flex, $p.flexRow, $p.justifyBetween)}>
+        <h2 className={cx($p.black50, $p.fw4)}>{model.name}</h2>
+        <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
+          <div className={cx($p.flex, $p.flexRow)}>
+            {enhancedPermissions.map(permission => {
+              return <PermissionIcon
+                operation={permission.operation}
+                isActive={permission.isActive}
+                className={$p.ml6}
+              />
+            })}
+          </div>
+          <div
+            className={cx(
+              $p.f14,
+              $p.pa10,
+              $p.pointer,
+              $p.ttu,
+              $p.bgWhite,
+              $p.black50,
+              $p.lhSolid,
+              $p.fw6,
+              $p.buttonShadow,
+              $p.tracked,
+              $p.flex,
+              $p.flexRow,
+
+              // spacing
+              $p.ml38,
+            )}
+          >
+            <Icon
+              src={require('graphcool-styles/icons/stroke/add.svg')}
+              stroke={true}
+              strokeWidth={2}
+              color={variables.gray50}
+            />
+            New Permission
+          </div>
+
+        </div>
       </div>
     )
   }

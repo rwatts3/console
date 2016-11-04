@@ -23,6 +23,7 @@ import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
+import ShowRoom from './views/ShowRoom/ShowRoom'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -84,6 +85,7 @@ export default (
     <Route path='login' component={LoginView} render={render} />
     <Route path='reset-password' component={ResetPasswordView} />
     <Route path='signup' component={SignUpView} />
+    <Route path='showroom' component={ShowRoom} />
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render} />

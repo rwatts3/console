@@ -7,7 +7,7 @@ import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {Field, Model} from '../../../types/types'
-import Permissions from './Permissions'
+// import Permissions from './Permissions'
 import Constraints from './Constraints'
 import Icon from '../../../components/Icon/Icon'
 import {isScalar} from '../../../utils/graphql'
@@ -94,12 +94,12 @@ class FieldRow extends React.Component<Props, State> {
             className={`${classes.permissions} ${this.state.detailsState === 'PERMISSIONS' ? classes.active : '' }`}
             onClick={() => this.togglePermissions()}
           >
-            {field.permissions.edges.length === 0 &&
-              <span className={`${classes.label} ${classes.add}`}>
-                Add Permission
-              </span>
-            }
-            {this.renderPermissionList()}
+            {/*{field.permissions.edges.length === 0 &&*/}
+              {/*<span className={`${classes.label} ${classes.add}`}>*/}
+                {/*Add Permission*/}
+              {/*</span>*/}
+            {/*}*/}
+            {/*{this.renderPermissionList()}*/}
           </div>
           <div className={classes.controls}>
             {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
@@ -122,14 +122,14 @@ class FieldRow extends React.Component<Props, State> {
             }
           </div>
         </div>
-        {this.state.detailsState === 'PERMISSIONS' &&
-          <Permissions
-            route={this.props.route}
-            field={field}
-            params={this.props.params}
-            possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
-          />
-        }
+        {/*{this.state.detailsState === 'PERMISSIONS' &&*/}
+          {/*<Permissions*/}
+            {/*route={this.props.route}*/}
+            {/*field={field}*/}
+            {/*params={this.props.params}*/}
+            {/*possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}*/}
+          {/*/>*/}
+        {/*}*/}
         {this.state.detailsState === 'CONSTRAINTS' &&
           <Constraints
             field={field}
@@ -250,32 +250,32 @@ class FieldRow extends React.Component<Props, State> {
     )
   }
 
-  private renderPermissionList = () => {
-    const permissionCount = this.props.field.permissions.edges.map((edge) => edge.node).reduce(
-      (prev, node) => {
-        if (!prev[node.userType]) {
-          prev[node.userType] = 1
-        } else {
-          prev[node.userType]++
-        }
-        return prev
-      },
-      {})
-    const permissions = []
-    for (let key in permissionCount) {
-      if (permissionCount.hasOwnProperty(key)) {
-        permissions.push(
-          <span
-            key={key}
-            className={classes.label}
-          >
-            {permissionCount[key] > 1 ? `${permissionCount[key]}x ${key}` : `${key}`}
-          </span>
-        )
-      }
-    }
-    return permissions
-  }
+  // private renderPermissionList = () => {
+  //   const permissionCount = this.props.field.permissions.edges.map((edge) => edge.node).reduce(
+  //     (prev, node) => {
+  //       if (!prev[node.userType]) {
+  //         prev[node.userType] = 1
+  //       } else {
+  //         prev[node.userType]++
+  //       }
+  //       return prev
+  //     },
+  //     {})
+  //   const permissions = []
+  //   for (let key in permissionCount) {
+  //     if (permissionCount.hasOwnProperty(key)) {
+  //       permissions.push(
+  //         <span
+  //           key={key}
+  //           className={classes.label}
+  //         >
+  //           {permissionCount[key] > 1 ? `${permissionCount[key]}x ${key}` : `${key}`}
+  //         </span>
+  //       )
+  //     }
+  //   }
+  //   return permissions
+  // }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -296,18 +296,9 @@ export default Relay.createContainer(MappedFieldRow, {
         isUnique
         isList
         description
-        permissions(first: 100) {
-          edges {
-            node {
-              id
-              userType
-            }
-          }
-        }
         relation {
             name
         }
-        ${Permissions.getFragment('field')}
       }
     `,
   },

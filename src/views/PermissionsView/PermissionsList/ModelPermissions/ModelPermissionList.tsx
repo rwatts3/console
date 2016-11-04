@@ -3,11 +3,12 @@ import * as Relay from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {ModelPermission} from '../../../../types/types'
 import ModelPermissionComponent from './ModelPermission'
+import {$p} from 'graphcool-styles'
+import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 
 interface Props {
   permissions: ModelPermission[]
 }
-
 // const sort = {
 //   READ: 0,
 //   CREATE: 1,
@@ -19,11 +20,12 @@ class ModelPermissionsList extends React.Component<Props, {}> {
   render() {
     const {permissions} = this.props
     return (
-      <div>
-        <h1>ModelPermissionsList</h1>
-        {permissions.map(permission =>
-          <ModelPermissionComponent key={permission.id} permission={permission} />
-        )}
+      <div className={$p.pa16}>
+        <ScrollBox>
+          {permissions.map(permission =>
+            <ModelPermissionComponent key={permission.id} permission={permission} />
+          )}
+        </ScrollBox>
       </div>
     )
   }

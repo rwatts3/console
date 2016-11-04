@@ -5,6 +5,8 @@ import mapProps from '../../components/MapProps/MapProps'
 import {Project} from '../../types/types'
 import PermissionsList from './PermissionsList/PermissionsList'
 import PermissionsHeader from './PermissionsHeader/PermissionsHeader'
+import {$p} from 'graphcool-styles'
+import * as cx from 'classnames'
 
 interface Props {
   params: any
@@ -15,9 +17,14 @@ interface Props {
 class PermissionsView extends React.Component<Props, {}> {
   render() {
     const {project} = this.props
-
     return (
-      <div>
+      <div
+        className={cx(
+          $p.flex,
+          $p.flexColumn,
+          $p.bgBlack04,
+        )}
+      >
         <Helmet title='Permissions'/>
         <PermissionsHeader />
         <PermissionsList project={project} />
