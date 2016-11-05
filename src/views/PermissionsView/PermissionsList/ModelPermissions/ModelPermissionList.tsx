@@ -1,13 +1,13 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
-import {ModelPermission} from '../../../../types/types'
+import {ModelPermission, Model} from '../../../../types/types'
 import ModelPermissionComponent from './ModelPermission'
 import {$p} from 'graphcool-styles'
-import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 
 interface Props {
   permissions: ModelPermission[]
+  model: Model
 }
 // const sort = {
 //   READ: 0,
@@ -18,14 +18,12 @@ interface Props {
 
 class ModelPermissionsList extends React.Component<Props, {}> {
   render() {
-    const {permissions} = this.props
+    const {permissions, model} = this.props
     return (
       <div className={$p.pa16}>
-        <ScrollBox>
-          {permissions.map(permission =>
-            <ModelPermissionComponent key={permission.id} permission={permission} />
-          )}
-        </ScrollBox>
+        {permissions.map(permission =>
+          <ModelPermissionComponent key={permission.id} permission={permission} model={model} />
+        )}
       </div>
     )
   }
@@ -33,12 +31,10 @@ class ModelPermissionsList extends React.Component<Props, {}> {
 
 const MappedPermissionsList = mapProps({
   permissions: props => props.model.permissions.edges.map(edge => edge.node),
+  model: props => props.model,
 })(ModelPermissionsList)
 
 export default Relay.createContainer(MappedPermissionsList, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
   fragments: {
     model: () => Relay.QL`
       fragment on Model {
@@ -50,6 +46,7 @@ export default Relay.createContainer(MappedPermissionsList, {
             }
           }
         }
+        ${ModelPermissionComponent.getFragment('model')}
       }
     `,
   },

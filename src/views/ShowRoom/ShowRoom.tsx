@@ -2,6 +2,7 @@ import * as React from 'react' // tslint:disable-line
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
 import PermissionIcon from '../PermissionsView/PermissionsList/ModelPermissions/PermissionIcon'
+import NewToggleButton from '../PermissionsView/PermissionsList/ModelPermissions/NewToggleButton'
 
 const ShowRoom = () => {
   return (
@@ -24,6 +25,10 @@ const ShowRoom = () => {
             </div>
           ))}
         </div>
+      </div>
+      <div>
+        <h1>Toggle Button</h1>
+        <NewToggleButton defaultChecked={true} />
       </div>
     </div>
   )

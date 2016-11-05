@@ -92,7 +92,7 @@ export interface Relation {
   fieldOnRightModel: Field
 }
 
-export type UserType = 'GUEST' | 'AUTHENTICATED' | 'RELATED'
+export type UserType = 'PUBLIC' | 'AUTHENTICATED'
 
 export interface Permission {
   id: string

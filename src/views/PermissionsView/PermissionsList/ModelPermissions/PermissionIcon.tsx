@@ -12,7 +12,7 @@ function getIconSettings(operation: Operation) {
           src: require('graphcool-styles/icons/stroke/viewSpaced.svg'),
           color: variables.pblue,
         },
-        containerClass: cx($p.bgPblue20)
+        containerClass: cx($p.bgPblue20),
       }
     case 'CREATE':
       return {
@@ -20,7 +20,7 @@ function getIconSettings(operation: Operation) {
           src: require('graphcool-styles/icons/stroke/editAddSpaced.svg'),
           color: variables.pgreen,
         },
-        containerClass: cx($p.bgPlightgreen50)
+        containerClass: cx($p.bgPlightgreen50),
       }
     case 'UPDATE':
       return {
@@ -28,7 +28,7 @@ function getIconSettings(operation: Operation) {
           src: require('graphcool-styles/icons/stroke/editSpaced.svg'),
           color: variables.pbrown,
         },
-        containerClass: cx($p.bgPyellow40)
+        containerClass: cx($p.bgPyellow40),
       }
     case 'DELETE':
       return {
@@ -36,7 +36,7 @@ function getIconSettings(operation: Operation) {
           src: require('graphcool-styles/icons/stroke/deleteSpaced.svg'),
           color: variables.pred,
         },
-        containerClass: cx($p.bgPred20)
+        containerClass: cx($p.bgPred20),
       }
     default:
       return null

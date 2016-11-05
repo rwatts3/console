@@ -5,20 +5,28 @@ import mapProps from '../../../components/MapProps/MapProps'
 import ModelPermissions from './ModelPermissions/ModelPermissions'
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
+import ScrollBox from '../../../components/ScrollBox/ScrollBox'
+import styled from 'styled-components'
 
 interface Props {
   models: Model[]
 }
 
+const Container = styled.div`
+  height: calc(100vh - 100px);
+`
+
 class PermissionsList extends React.Component<Props, {}> {
   render() {
     const {models} = this.props
     return (
-      <div className={cx($p.pa16, $p.bgWhite, $p.bt, $p.bBlack10)}>
-        {models.map(model =>
-          <ModelPermissions key={model.id} model={model}/>
-        )}
-      </div>
+        <Container className={cx($p.bgWhite, $p.bt, $p.bBlack10)}>
+          <ScrollBox>
+            {models.map(model =>
+              <ModelPermissions key={model.id} model={model}/>
+            )}
+          </ScrollBox>
+        </Container>
     )
   }
 }

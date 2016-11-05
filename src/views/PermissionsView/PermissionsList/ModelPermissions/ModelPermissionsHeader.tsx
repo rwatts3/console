@@ -33,44 +33,46 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
     const {model, permissions} = this.props
     const enhancedPermissions = this.enhancePermissions(permissions)
     return (
-      <div className={cx($p.flex, $p.flexRow, $p.justifyBetween)}>
-        <h2 className={cx($p.black50, $p.fw4)}>{model.name}</h2>
+      <div className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}>
+        <h2 className={cx($p.black50, $p.fw4, $p.ph6, $p.bgWhite)}>{model.name}</h2>
         <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
-          <div className={cx($p.flex, $p.flexRow)}>
-            {enhancedPermissions.map(permission => {
+          <div className={cx($p.flex, $p.flexRow, $p.ph6, $p.bgWhite)}>
+            {enhancedPermissions.map((permission, index) => {
               return <PermissionIcon
                 operation={permission.operation}
                 isActive={permission.isActive}
-                className={$p.ml6}
+                className={cx(
+                  {
+                    [$p.ml6]: index !== 0,
+                  })}
               />
             })}
           </div>
-          <div
-            className={cx(
-              $p.f14,
-              $p.pa10,
-              $p.pointer,
-              $p.ttu,
-              $p.bgWhite,
-              $p.black50,
-              $p.lhSolid,
-              $p.fw6,
-              $p.buttonShadow,
-              $p.tracked,
-              $p.flex,
-              $p.flexRow,
-
-              // spacing
-              $p.ml38,
-            )}
-          >
-            <Icon
-              src={require('graphcool-styles/icons/stroke/add.svg')}
-              stroke={true}
-              strokeWidth={2}
-              color={variables.gray50}
-            />
-            New Permission
+          <div className={cx($p.ml25)}>
+            <div
+              className={cx(
+                $p.f14,
+                $p.pa10,
+                $p.pointer,
+                $p.ttu,
+                $p.bgWhite,
+                $p.black50,
+                $p.lhSolid,
+                $p.fw6,
+                $p.buttonShadow,
+                $p.tracked,
+                $p.flex,
+                $p.flexRow,
+              )}
+            >
+              <Icon
+                src={require('graphcool-styles/icons/stroke/add.svg')}
+                stroke={true}
+                strokeWidth={2}
+                color={variables.gray50}
+              />
+              New Permission
+            </div>
           </div>
 
         </div>
