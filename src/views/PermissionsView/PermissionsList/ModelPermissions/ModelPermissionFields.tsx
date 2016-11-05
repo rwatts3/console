@@ -5,6 +5,7 @@ import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {isScalar} from '../../../../utils/graphql'
+import PermissionField from './PermissionField'
 
 interface Props {
   permission: ModelPermission
@@ -13,19 +14,16 @@ interface Props {
 
 class ModelPermissionFields extends React.Component<Props, {}> {
   render() {
-    const {permission: {fieldIds}, fields} = this.props
+    const {permission: {fieldIds, applyToWholeModel}, fields} = this.props
     return (
-      <div className={cx($p.flex, $p.flexRow, $p.ml16, $p.itemsCenter)}>
-        <div className={cx($p.black50)}>in</div>
-        {fields && fields.map(field =>
-          <div
-            key={field.id}
-            className={cx($p.bgBlack10, $p.ph6, $p.black40, $p.dib, $p.ml10, $p.code, $p.br1, {
-              [$p.o50]: !fieldIds.includes(field.id),
-            })}
-          >{field.name}</div>
-        )}
-      </div>
+      fields && fields.length > 0 && (
+        <div className={cx($p.flex, $p.flexRow, $p.ml16, $p.itemsCenter)}>
+          <div className={cx($p.black50)}>in</div>
+          {fields.map(field =>
+            <PermissionField disabled={!fieldIds.includes(field.id) && !applyToWholeModel} name={field.name} />
+          )}
+        </div>
+      )
     )
   }
 }
@@ -58,6 +56,7 @@ export default Relay.createContainer(MappedModelPermissionFields, {
       fragment on ModelPermission {
         fieldIds
         operation
+        applyToWholeModel
       }
     `,
     model: () => Relay.QL`
