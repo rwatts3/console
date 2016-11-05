@@ -195,7 +195,7 @@ class ModelHeader extends React.Component<Props, State> {
             schemaActive ? classes.buttons_schema : classes.buttons, particles.z5, {
             [this.props.buttonsClass]: this.props.buttonsClass && this.props.buttonsClass.length > 0,
           })}>
-            {this.props.model.name === 'User' &&
+            {this.props.model.name === 'User' && !schemaActive &&
             <div
               className={cx(
                   particles.ml10,
