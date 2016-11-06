@@ -8,6 +8,7 @@ import PermissionLabel from './PermissionLabel'
 import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
 import {Link, withRouter} from 'react-router'
+import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
 
 interface Props {
   permission: ModelPermission
@@ -15,7 +16,7 @@ interface Props {
   params: any
 }
 
-const LinkContainer = styled(Link)`
+const Container = styled.div`
   height: 60px;
   &:not(:last-child) {
     border-bottom: 1px solid ${variables.gray07};
@@ -42,16 +43,18 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   render() {
     const {permission, model, params: {projectName}} = this.props
     return (
-      <LinkContainer
+      <Container
         className={cx(
           $p.flex,
           $p.flexRow,
           $p.justifyBetween,
           $p.itemsCenter,
         )}
-        to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
       >
-        <div className={cx($p.flex, $p.flexRow)}>
+        <Link
+          className={cx($p.flex, $p.flexRow)}
+          to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
+        >
           <PermissionType className={cx(
             $p.flex,
             $p.flexRow,
@@ -81,11 +84,21 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
           {['READ', 'CREATE', 'UPDATE'].includes(permission.operation) && (
             <ModelPermissionFields permission={permission} model={model} />
           )}
-        </div>
+        </Link>
         <div>
-          <NewToggleButton defaultChecked={permission.isActive} />
+          <NewToggleButton defaultChecked={permission.isActive} onChange={this.toggleActiveState} />
         </div>
-      </LinkContainer>
+      </Container>
+    )
+  }
+
+  private toggleActiveState = () => {
+    const {permission} = this.props
+    Relay.Store.commitUpdate(
+      new ToggleActivePermissionMutation({id: permission.id, isActive: !permission.isActive}),
+      {
+        onFailure: (transaction) => console.log(transaction),
+      },
     )
   }
 }
