@@ -17,7 +17,7 @@ class ModelPermissionFields extends React.Component<Props, {}> {
     const {permission: {fieldIds, applyToWholeModel, isActive}, fields} = this.props
     return (
       fields && fields.length > 0 && (
-        <div className={cx($p.flex, $p.flexRow, $p.ml16, $p.itemsCenter)}>
+        <div className={cx($p.flex, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowXScroll)}>
           <div className={cx($p.black50)}>in</div>
           {fields.map(field =>
             <PermissionField
