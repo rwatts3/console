@@ -7,13 +7,15 @@ import NewToggleButton from './NewToggleButton'
 import PermissionLabel from './PermissionLabel'
 import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
+import {Link, withRouter} from 'react-router'
 
 interface Props {
   permission: ModelPermission
   model: Model
+  params: any
 }
 
-const Container = styled.div`
+const LinkContainer = styled(Link)`
   height: 60px;
   &:not(:last-child) {
     border-bottom: 1px solid ${variables.gray07};
@@ -38,14 +40,17 @@ const Arrow = styled.div`
 
 class ModelPermissionComponent extends React.Component<Props, {}> {
   render() {
-    const {permission, model} = this.props
+    const {permission, model, params: {projectName}} = this.props
     return (
-      <Container className={cx(
-        $p.flex,
-        $p.flexRow,
-        $p.justifyBetween,
-        $p.itemsCenter,
-      )}>
+      <LinkContainer
+        className={cx(
+          $p.flex,
+          $p.flexRow,
+          $p.justifyBetween,
+          $p.itemsCenter,
+        )}
+        to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
+      >
         <div className={cx($p.flex, $p.flexRow)}>
           <PermissionType className={cx(
             $p.flex,
@@ -80,15 +85,16 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
         <div>
           <NewToggleButton defaultChecked={permission.isActive} />
         </div>
-      </Container>
+      </LinkContainer>
     )
   }
 }
 
-export default Relay.createContainer(ModelPermissionComponent, {
+export default Relay.createContainer(withRouter(ModelPermissionComponent), {
   fragments: {
     permission: () => Relay.QL`
       fragment on ModelPermission {
+        id
         operation
         userType
         fieldIds
@@ -98,6 +104,8 @@ export default Relay.createContainer(ModelPermissionComponent, {
     `,
     model: () => Relay.QL`
       fragment on Model {
+        id
+        name
         ${ModelPermissionFields.getFragment('model')}
       }
     `,

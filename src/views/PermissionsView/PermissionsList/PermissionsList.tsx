@@ -10,6 +10,7 @@ import styled from 'styled-components'
 
 interface Props {
   models: Model[]
+  params: any
 }
 
 const Container = styled.div`
@@ -18,12 +19,12 @@ const Container = styled.div`
 
 class PermissionsList extends React.Component<Props, {}> {
   render() {
-    const {models} = this.props
+    const {models, params} = this.props
     return (
         <Container className={cx($p.bgWhite, $p.bt, $p.bBlack10)}>
           <ScrollBox>
             {models.map(model =>
-              <ModelPermissions key={model.id} model={model}/>
+              <ModelPermissions params={params} key={model.id} model={model}/>
             )}
           </ScrollBox>
         </Container>
@@ -39,6 +40,7 @@ export default Relay.createContainer(MappedPermissionsList, {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {
+        name
         models(first: 100) {
           edges {
             node {

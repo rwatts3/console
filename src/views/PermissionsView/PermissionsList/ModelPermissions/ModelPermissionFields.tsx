@@ -14,13 +14,17 @@ interface Props {
 
 class ModelPermissionFields extends React.Component<Props, {}> {
   render() {
-    const {permission: {fieldIds, applyToWholeModel}, fields} = this.props
+    const {permission: {fieldIds, applyToWholeModel, isActive}, fields} = this.props
     return (
       fields && fields.length > 0 && (
         <div className={cx($p.flex, $p.flexRow, $p.ml16, $p.itemsCenter)}>
           <div className={cx($p.black50)}>in</div>
           {fields.map(field =>
-            <PermissionField disabled={!fieldIds.includes(field.id) && !applyToWholeModel} name={field.name} />
+            <PermissionField
+              key={field.id}
+              disabled={(!fieldIds.includes(field.id) && !applyToWholeModel) || !isActive}
+              name={field.name}
+            />
           )}
         </div>
       )
@@ -57,6 +61,7 @@ export default Relay.createContainer(MappedModelPermissionFields, {
         fieldIds
         operation
         applyToWholeModel
+        isActive
       }
     `,
     model: () => Relay.QL`

@@ -8,6 +8,7 @@ import {$p} from 'graphcool-styles'
 interface Props {
   permissions: ModelPermission[]
   model: Model
+  params: any
 }
 // const sort = {
 //   READ: 0,
@@ -18,11 +19,16 @@ interface Props {
 
 class ModelPermissionsList extends React.Component<Props, {}> {
   render() {
-    const {permissions, model} = this.props
+    const {permissions, model, params} = this.props
     return (
       <div className={$p.pa16}>
         {permissions.map(permission =>
-          <ModelPermissionComponent key={permission.id} permission={permission} model={model} />
+          <ModelPermissionComponent
+            key={permission.id}
+            permission={permission}
+            model={model}
+            params={params}
+          />
         )}
       </div>
     )

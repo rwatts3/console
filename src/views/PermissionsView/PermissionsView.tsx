@@ -10,13 +10,13 @@ import * as cx from 'classnames'
 
 interface Props {
   params: any
-  router: ReactRouter.InjectedRouter
   project: Project
+  children: JSX.Element
 }
 
 class PermissionsView extends React.Component<Props, {}> {
   render() {
-    const {project} = this.props
+    const {project, params} = this.props
     return (
       <div
         className={cx(
@@ -27,7 +27,8 @@ class PermissionsView extends React.Component<Props, {}> {
       >
         <Helmet title='Permissions'/>
         <PermissionsHeader />
-        <PermissionsList project={project} />
+        <PermissionsList params={params} project={project} />
+        {this.props.children}
       </div>
     )
   }

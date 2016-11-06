@@ -5,10 +5,13 @@ import {Model, ModelPermission} from '../../../../types/types'
 import {Icon, $p, variables} from 'graphcool-styles'
 import PermissionIcon from './PermissionIcon'
 import * as cx from 'classnames'
+import cuid from 'cuid'
+import {Link} from 'react-router'
 
 interface Props {
   model: Model
   permissions: ModelPermission[]
+  params: any
 }
 
 const operations = ['READ', 'UPDATE', 'CREATE', 'DELETE']
@@ -24,31 +27,37 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
       }
     })
 
+    // create "fake" permissions to show not active permissions in the ui
     return todo.map(operation => ({
       operation,
       isActive: false,
+      id: cuid(),
     })).concat(permissions)
   }
   render() {
-    const {model, permissions} = this.props
+    const {model, permissions, params} = this.props
     const enhancedPermissions = this.enhancePermissions(permissions)
     return (
       <div className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}>
         <h2 className={cx($p.black50, $p.fw4, $p.ph6, $p.bgWhite)}>{model.name}</h2>
         <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
           <div className={cx($p.flex, $p.flexRow, $p.ph6, $p.bgWhite)}>
-            {enhancedPermissions.map((permission, index) => {
-              return <PermissionIcon
-                operation={permission.operation}
-                isActive={permission.isActive}
-                className={cx(
-                  {
-                    [$p.ml6]: index !== 0,
-                  })}
-              />
-            })}
+            {enhancedPermissions.map((permission, index) =>
+              (
+                <PermissionIcon
+                  key={permission.id}
+                  operation={permission.operation}
+                  isActive={permission.isActive}
+                  className={cx(
+                    {
+                      [$p.ml6]: index !== 0,
+                    }
+                  )}
+                />
+              )
+            )}
           </div>
-          <div className={cx($p.ml25)}>
+          <Link className={cx($p.ml25)} to={`/${params.projectName}/permissions/${model.name}/create`}>
             <div
               className={cx(
                 $p.f14,
@@ -73,7 +82,7 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
               />
               New Permission
             </div>
-          </div>
+          </Link>
 
         </div>
       </div>
@@ -87,9 +96,6 @@ const MappedPermissionsList = mapProps({
 })(ModelPermissionsHeader)
 
 export default Relay.createContainer(MappedPermissionsList, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
   fragments: {
     model: () => Relay.QL`
       fragment on Model {
@@ -97,6 +103,7 @@ export default Relay.createContainer(MappedPermissionsList, {
         permissions(first: 100) {
           edges {
             node {
+              id
               isActive
               operation
             }

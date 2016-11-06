@@ -9,6 +9,7 @@ import styled from 'styled-components'
 
 interface Props {
   model: Model
+  params: any
 }
 
 const Container = styled.div`
@@ -25,12 +26,12 @@ const Container = styled.div`
 
 class PermissionsList extends React.Component<Props, {}> {
   render() {
-    const {model} = this.props
+    const {model, params} = this.props
     return (
       <Container className={cx($p.mt38, $p.mb16, $p.relative, $p.z5)}>
         <div className={$p.ph16}>
-          <ModelPermissionsHeader model={model} />
-          <ModelPermissionsList model={model} />
+          <ModelPermissionsHeader params={params} model={model} />
+          <ModelPermissionsList params={params} model={model} />
         </div>
       </Container>
     )
@@ -38,9 +39,6 @@ class PermissionsList extends React.Component<Props, {}> {
 }
 
 export default Relay.createContainer(PermissionsList, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
   fragments: {
     model: () => Relay.QL`
       fragment on Model {
