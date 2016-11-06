@@ -132,7 +132,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
               <div>
               <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                {`signinUser(digits: { email, password })`}
+                {`signinUser(email: { email, password })`}
               </span>
               </div>
             </div>
