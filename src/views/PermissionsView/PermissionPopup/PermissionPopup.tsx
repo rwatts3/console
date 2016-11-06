@@ -8,6 +8,7 @@ import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import {withRouter} from 'react-router'
 import styled from 'styled-components'
 import PermissionPopupHeader from './PermissionPopupHeader'
+import PermissionPopupFooter from './PermissionPopupFooter'
 
 interface Props {
   params: any
@@ -22,12 +23,10 @@ const Container = styled.div`
 
 class PermissionsView extends React.Component<Props, {}> {
   render() {
-    const {params, router} = this.props
+    const {params} = this.props
     return (
       <PopupWrapper
-        onClickOutside={() => {
-          router.push(`/${params.projectName}/permissions`)
-        }}
+        onClickOutside={this.handleCancel}
       >
         <div
           className={cx(
@@ -48,10 +47,20 @@ class PermissionsView extends React.Component<Props, {}> {
             )}
           >
             <PermissionPopupHeader params={params} />
+            <PermissionPopupFooter onCancel={this.handleCancel} onCreate={this.handleCreate} params={params} />
           </Container>
         </div>
       </PopupWrapper>
     )
+  }
+
+  private handleCreate = () => {
+    // do stuff :)
+  }
+
+  private handleCancel = () => {
+    const {router, params} = this.props
+    router.push(`/${params.projectName}/permissions`)
   }
 }
 
