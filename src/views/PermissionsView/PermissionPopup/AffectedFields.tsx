@@ -57,8 +57,13 @@ class AffectedFields extends React.Component<Props, {}> {
           </div>
           <div className={$p.black50}>The Fields that are affected by this permission</div>
           <div className={$p.mt16}>
-            {
-              fieldsFiltered
+            {fieldsFiltered.length === 0 && (
+              <div className={$p.brown}>
+                No fields can be effected by this permission,
+                as mutation permissions can't be applied to readonly fields
+              </div>
+            )}
+            {fieldsFiltered
               .map(field => (
                 <PermissionField
                   key={field.id}
