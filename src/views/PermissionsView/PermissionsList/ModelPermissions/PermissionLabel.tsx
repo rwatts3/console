@@ -45,7 +45,7 @@ const PermissionLabel = (props) => {
   `
 
   return (
-    <div className={cx($p.br1, $p.ph6, $p.dib, containerClass, className, {
+    <div className={cx($p.br1, $p.ph6, $p.dib, $p.nowrap, containerClass, className, {
       [$p.o50]: !isActive,
     })}>
       <Text>{text}</Text>

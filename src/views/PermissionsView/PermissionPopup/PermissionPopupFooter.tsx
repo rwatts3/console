@@ -8,12 +8,13 @@ const Container = styled.div`
 `
 
 const Button = styled.button`
-      transition: color ${variables.duration} linear;
+  transition: color ${variables.duration} linear;
 
-      &:hover {
-        color: ${variables.gray70};
-      }
-    `
+  &:hover {
+    opacity: 0.7;
+  }
+`
+
 export default (props) => (
   <Container className={cx($p.flex, $p.justifyBetween, $p.white, $p.itemsCenter, $p.bt, $p.ph25)}>
     <div onClick={props.onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
@@ -24,9 +25,8 @@ export default (props) => (
         $p.white,
         $p.br2,
         {
-          [$p.bgBlack10]: !props.isValid,
-          [$p.bgGreen]: props.isValid,
-          [$p.pointer]: props.isValid,
+          [cx($p.bgBlack10, $p.noEvents)]: !props.isValid,
+          [cx($p.bgGreen, $p.pointer)]: props.isValid,
         }
       )}
       onClick={(e: any) => props.isValid && props.onCreate && props.onCreate(e)}

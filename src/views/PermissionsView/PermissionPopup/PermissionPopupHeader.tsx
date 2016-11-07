@@ -10,7 +10,7 @@ const Container = styled.div`
 export default (props) => (
   <Container className={cx($p.bgGreen, $p.flex, $p.justifyStart, $p.white, $p.itemsCenter)}>
     <div className={cx($p.f25, $p.fw6, $p.flex, $p.flexRow, $p.ml38)}>
-      Permissions for
+      New Permission for
       <div className={cx($p.f25, $p.fw4, $p.bgWhite, $p.green, $p.ph10, $p.br2, $p.ml10)}>
         {props.params.modelName}
       </div>

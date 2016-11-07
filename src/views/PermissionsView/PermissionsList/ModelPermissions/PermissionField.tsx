@@ -3,16 +3,20 @@ import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
 
 export default (props) => {
-  const {name, disabled, selected} = props
+  const {name, disabled, selected, className, onClick} = props
   return (
     <div
-      className={cx($p.ph6, $p.dib, $p.ml10, $p.code, $p.br1, {
-        [$p.o50]: disabled,
-        [$p.bgBlack10]: !selected,
-        [$p.black40]: !selected,
-        [$p.bgBlue]: selected,
-        [$p.white]: selected,
-      })}
+      className={cx(
+        $p.ph6, $p.dib, $p.mr10, $p.code, $p.br1, {
+          [$p.o50]: disabled,
+          [$p.bgBlack10]: !selected,
+          [$p.black40]: !selected,
+          [$p.bgBlue]: selected,
+          [$p.white]: selected,
+        },
+        className
+      )}
+      onClick={onClick}
     >
       {name}
     </div>

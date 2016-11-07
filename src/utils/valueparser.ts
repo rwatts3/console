@@ -1,5 +1,5 @@
 import {isValidDateTime, isValidEnum} from './utils'
-import {Field} from '../types/types'
+import {Field, Operation} from '../types/types'
 import {isScalar} from './graphql'
 import {TypedValue, NonScalarValue, ScalarValue, AtomicValue} from '../types/utils'
 
@@ -159,4 +159,14 @@ export function isJSON(jsonString: string): boolean {
     return false
   }
   return true
+}
+
+export function validPermissionField(operation: Operation, field: Field) {
+  if (['CREATE', 'UPDATE'].includes(operation) && field.isReadonly) {
+    return false
+  }
+  if (isScalar(field.typeIdentifier)) {
+    return true
+  }
+  return false
 }

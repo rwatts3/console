@@ -25,6 +25,7 @@ const Container = styled.div`
 
 const PermissionType = styled.div`
   width: 170px;
+  min-width: 170px;
 `
 
 const Arrow = styled.div`
@@ -52,7 +53,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
         )}
       >
         <Link
-          className={cx($p.flex, $p.flexRow, $p.overflowHidden)}
+          className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1)}
           to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
         >
           <PermissionType className={cx(
@@ -63,7 +64,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
             $p.relative,
           )}>
             <h3 className={cx($p.black50, $p.f16)}>
-              {permission.userType === 'PUBLIC' ? 'Everyone' : 'Authenticated'}
+              {permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'}
             </h3>
             <Arrow className={cx(
               $p.justifyEnd,

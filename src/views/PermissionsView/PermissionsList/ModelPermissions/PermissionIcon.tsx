@@ -43,7 +43,12 @@ function getIconSettings(operation: Operation) {
   }
 }
 
-const DisabledIcon = styled(Icon)`
+const Container = styled.div`
+  width: 26px;
+  height: 26px;
+`
+
+const DisabledContainer = styled(Container)`
   &:after {
     content: "";
     position: absolute;
@@ -51,20 +56,15 @@ const DisabledIcon = styled(Icon)`
     left: 0;
     width: 100%;
     height: 1px;
-    background: ${$p.bBlack10};
-    transform: rotate(45deg);
+    background-color: ${variables.gray10};
+    transform: rotate(-45deg);
   }
-`
-
-const Container = styled.div`
-  width: 26px;
-  height: 26px;
 `
 
 const PermissionIcon = (props) => {
   const {operation, isActive, className} = props
 
-  const IconClass = isActive ? DisabledIcon : Icon
+  const ContainerClass = isActive ? Container : DisabledContainer
   let {icon, containerClass} = getIconSettings(operation)
 
   let inactiveColor = {}
@@ -78,9 +78,11 @@ const PermissionIcon = (props) => {
   }
 
   return (
-    <Container className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.br100, containerClass, className)}>
-      <IconClass {...icon} {...inactiveColor} stroke={true} strokeWidth={2} width={24} height={24} />
-    </Container>
+    <ContainerClass
+      className={cx($p.flex, $p.relative, $p.itemsCenter, $p.justifyCenter, $p.br100, containerClass, className)}
+    >
+      <Icon {...icon} {...inactiveColor} stroke={true} strokeWidth={2} width={24} height={24} />
+    </ContainerClass>
   )
 }
 
