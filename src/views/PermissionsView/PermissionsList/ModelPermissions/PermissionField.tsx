@@ -7,7 +7,7 @@ export default (props) => {
   return (
     <div
       className={cx(
-        $p.ph6, $p.dib, $p.mr10, $p.code, $p.br1, {
+        $p.ph6, $p.dib, $p.code, $p.br1, {
           [$p.o50]: disabled,
           [$p.bgBlack10]: !selected,
           [$p.black40]: !selected,

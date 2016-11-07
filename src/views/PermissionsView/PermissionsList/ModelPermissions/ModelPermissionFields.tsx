@@ -46,6 +46,7 @@ class ModelPermissionFields extends React.Component<Props, {}> {
                   key={field.id}
                   disabled={(!fieldIds.includes(field.id) && !applyToWholeModel) || !isActive}
                   name={field.name}
+                  className={$p.ml10}
                 />
               )}
             </div>

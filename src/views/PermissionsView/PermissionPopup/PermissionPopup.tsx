@@ -25,6 +25,7 @@ interface State {
   selectedOperation: Operation
   fieldIds: string[]
   userType: UserType
+  applyToWholeModel: boolean
 }
 
 const Container = styled.div`
@@ -36,6 +37,7 @@ class PermissionPopup extends React.Component<Props, State> {
     selectedOperation: null,
     fieldIds: [],
     userType: 'EVERYONE' as UserType,
+    applyToWholeModel: false,
   }
 
   setOperation = (operation: Operation) => {
@@ -60,13 +62,18 @@ class PermissionPopup extends React.Component<Props, State> {
     this.setState({userType} as State)
   }
 
+  toggleApplyToWholeModel = () => {
+    const {applyToWholeModel} = this.state
+    this.setState({applyToWholeModel: !applyToWholeModel} as State)
+  }
+
   isValid = () => {
     return this.state.selectedOperation !== null
   }
 
   render() {
     const {params, model} = this.props
-    const {selectedOperation, fieldIds, userType} = this.state
+    const {selectedOperation, fieldIds, userType, applyToWholeModel} = this.state
     return (
       <PopupWrapper
         onClickOutside={this.handleCancel}
@@ -98,6 +105,8 @@ class PermissionPopup extends React.Component<Props, State> {
                 model={model}
                 fieldIds={fieldIds}
                 toggleField={this.toggleField}
+                toggleApplyToWholeModel={this.toggleApplyToWholeModel}
+                applyToWholeModel={applyToWholeModel}
               />
             )}
             {selectedOperation !== null && (
