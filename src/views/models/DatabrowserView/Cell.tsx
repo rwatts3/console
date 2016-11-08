@@ -192,7 +192,7 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private onKeyDown = (e: any): void => {
-    if (e.keyCode === 13 && e.shiftKey) {
+    if (e.shiftKey && e.keyCode !== 9) {
       return
     }
 
