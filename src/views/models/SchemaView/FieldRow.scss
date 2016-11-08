@@ -37,6 +37,7 @@
   display: flex;
   align-items: center;
   padding-right: 20px;
+  overflow: hidden;
 }
 
 .fieldName {
@@ -47,6 +48,8 @@
     color: $grey5;
     font-family: Monaco, monospace;
     font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .relation{
