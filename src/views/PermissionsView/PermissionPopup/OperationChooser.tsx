@@ -75,6 +75,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
           )}
           {operations.map(operation => (
             <div
+              key={operation.operation}
               className={cx($p.relative, $p.flex1, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
               onClick={() => setOperation(operation.operation as Operation)}
             >

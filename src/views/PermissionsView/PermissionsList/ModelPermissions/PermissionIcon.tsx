@@ -3,13 +3,14 @@ import * as cx from 'classnames'
 import {$p, Icon, variables} from 'graphcool-styles'
 import styled from 'styled-components'
 import {Operation} from '../../../../types/types'
+import {icons} from '../../../../utils/permission'
 
 function getIconSettings(operation: Operation) {
   switch (operation) {
     case 'READ':
       return {
         icon: {
-          src: require('graphcool-styles/icons/stroke/viewSpaced.svg'),
+          src: icons.READ,
           color: variables.pblue,
         },
         containerClass: cx($p.bgPblue20),
@@ -17,7 +18,7 @@ function getIconSettings(operation: Operation) {
     case 'CREATE':
       return {
         icon: {
-          src: require('graphcool-styles/icons/stroke/editAddSpaced.svg'),
+          src: icons.CREATE,
           color: variables.pgreen,
         },
         containerClass: cx($p.bgPlightgreen50),
@@ -25,7 +26,7 @@ function getIconSettings(operation: Operation) {
     case 'UPDATE':
       return {
         icon: {
-          src: require('graphcool-styles/icons/stroke/editSpaced.svg'),
+          src: icons.UPDATE,
           color: variables.pbrown,
         },
         containerClass: cx($p.bgPyellow40),
@@ -33,7 +34,7 @@ function getIconSettings(operation: Operation) {
     case 'DELETE':
       return {
         icon: {
-          src: require('graphcool-styles/icons/stroke/deleteSpaced.svg'),
+          src: icons.DELETE,
           color: variables.pred,
         },
         containerClass: cx($p.bgPred20),

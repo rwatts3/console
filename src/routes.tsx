@@ -23,7 +23,7 @@ import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
-import PermissionPopup from './views/PermissionsView/PermissionPopup/PermissionPopup'
+import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 
 const ViewerQuery = {
@@ -31,6 +31,16 @@ const ViewerQuery = {
     query {
       viewer {
         ${Component.getFragment('viewer', variables)}
+      }
+    }
+  `,
+}
+
+const NodeQuery = {
+  node: (Component, variables) => Relay.QL`
+    query {
+      node: node(id: $id) {
+        ${Component.getFragment('node', variables)}
       }
     }
   `,
@@ -102,8 +112,8 @@ export default (
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
-        <Route path=':modelName/edit/:permissionId' component={PermissionPopup} queries={ViewerQuery} render={render} />
-        <Route path=':modelName/create' component={PermissionPopup} queries={ViewerQuery} render={render} />
+        <Route path=':modelName/edit/:id' component={EditPermissionPopup} queries={NodeQuery} render={render} />
+        <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
         <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render} />

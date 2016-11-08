@@ -1,5 +1,5 @@
 import * as Relay from 'react-relay'
-import {UserType, ModelPermission} from '../../types/types'
+import {ModelPermission} from '../../types/types'
 
 interface Response {
 }
@@ -25,6 +25,12 @@ export default class UpdatePermissionMutation extends Relay.Mutation<ModelPermis
         modelPermission: this.props.id,
       },
     }]
+  }
+
+  getOptimisticResponse () {
+    return {
+      modelPermission: this.props,
+    }
   }
 
   getVariables () {

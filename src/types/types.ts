@@ -11,6 +11,7 @@ interface RelayEdge<T> {
 export interface Viewer {
   id: string
   user: Customer
+  model: Model
 }
 
 export interface Customer {
@@ -120,7 +121,7 @@ export interface Model {
 export interface ModelPermission {
   id: string
   fieldIds?: string[]
-  ruleWebhookUrl: string
+  ruleWebhookUrl?: string
   rule: Rule
   ruleName?: string
   ruleGraphQuery?: string

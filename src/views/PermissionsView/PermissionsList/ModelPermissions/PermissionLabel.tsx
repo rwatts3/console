@@ -3,30 +3,31 @@ import * as cx from 'classnames'
 import {$p, variables} from 'graphcool-styles'
 import styled from 'styled-components'
 import {Operation} from '../../../../types/types'
+import {texts} from '../../../../utils/permission'
 
 function getTagSettings(operation: Operation) {
   switch (operation) {
     case 'READ':
       return {
-        text: 'View Data',
+        text: texts.READ,
         color: variables.pblue,
         containerClass: cx($p.bgPblue20),
       }
     case 'CREATE':
       return {
-        text: 'Create Node',
+        text: texts.CREATE,
         color: variables.pgreen,
         containerClass: cx($p.bgPlightgreen50),
       }
     case 'UPDATE':
       return {
-        text: 'Edit Data',
+        text: texts.UPDATE,
         color: variables.pbrown,
         containerClass: cx($p.bgPyellow40),
       }
     case 'DELETE':
       return {
-        text: 'Delete Node',
+        text: texts.DELETE,
         color: variables.pred,
         containerClass: cx($p.bgPred20),
       }

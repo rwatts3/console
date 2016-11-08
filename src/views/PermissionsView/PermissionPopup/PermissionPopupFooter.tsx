@@ -29,9 +29,23 @@ export default (props) => (
           [cx($p.bgGreen, $p.pointer)]: props.isValid,
         }
       )}
-      onClick={(e: any) => props.isValid && props.onCreate && props.onCreate(e)}
+      onClick={(e: any) => {
+        if (!props.isValid) {
+          return
+        }
+
+        if (props.editing) {
+          props.onUpdate(e)
+        } else {
+          props.onCreate(e)
+        }
+      }}
     >
-      Create Permission
+      {props.editing ? (
+        'Update Permission'
+      ) : (
+        'Create Permission'
+      )}
     </Button>
   </Container>
 )

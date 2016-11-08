@@ -83,7 +83,9 @@ class AffectedFields extends React.Component<Props, {}> {
 }
 
 const MappedAffectedFields = mapProps({
-  fields: props => props.model.fields.edges.map(edge => edge.node),
+  fields: props => {
+    return props.model.fields.edges.map(edge => edge.node)
+  },
 })(AffectedFields)
 
 export default Relay.createContainer(MappedAffectedFields, {
