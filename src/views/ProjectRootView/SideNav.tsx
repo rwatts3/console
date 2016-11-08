@@ -224,9 +224,9 @@ export class SideNav extends React.Component<Props, State> {
           )}
           style={{ height: '70px' }}
         >
-          <FooterSection>
+          <FooterSection onClick={this.showEndpointPopup}>
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
-            <div onClick={this.showEndpointPopup}>Endpoints</div>
+            <div>Endpoints</div>
           </FooterSection>
           <FooterLink href='https://docs.graph.cool' target='_blank'>
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
