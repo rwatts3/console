@@ -285,13 +285,6 @@ class EndpointPopup extends React.Component<Props, State> {
 
   private onCopy = () => {
     this.setState({ copied: true } as State)
-    // first show the animation
-    setTimeout(
-      () => {
-        this.props.closePopup(this.props.id)
-      },
-      1000
-    )
   }
 }
 
