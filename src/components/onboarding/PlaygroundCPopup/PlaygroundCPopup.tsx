@@ -331,7 +331,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     switch (example) {
       case 'ReactRelay': return '_dj9Os2ev4M'
       case 'ReactApollo': return '9nlwyPUPXjQ'
-      case 'AngularApollo': return 'EzD5fJ-uniI?list=PLn2e1F9Rfr6ma8vYKNs3gtjaCmR9csj1-'
+      case 'AngularApollo': return 'EzD5fJ-uniI'
     }
   }
 }
