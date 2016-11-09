@@ -223,7 +223,7 @@ export class SideNav extends React.Component<Props, State> {
           <ScrollBox>
             {this.renderModels()}
             {this.renderRelations()}
-            {/*this.renderPermissions()*/}
+            {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
           </ScrollBox>
@@ -306,20 +306,20 @@ export class SideNav extends React.Component<Props, State> {
     )
   }
 
-//  private renderPermissions = () => {
-//    const permissionsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/permissions`)
-//    return (
-//      <Section>
-//        <Head
-//          to={`/${this.props.params.projectName}/permissions`}
-//          active={permissionsPageActive}
-//        >
-//          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/permissions.svg')}/>
-//          <div>Permissions</div>
-//        </Head>
-//      </Section>
-//    )
-//  }
+ private renderPermissions = () => {
+   const permissionsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/permissions`)
+   return (
+     <Section>
+       <Head
+         to={`/${this.props.params.projectName}/permissions`}
+         active={permissionsPageActive}
+       >
+         <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/permissions.svg')}/>
+         <div>Permissions</div>
+       </Head>
+     </Section>
+   )
+ }
 
   private renderRelations = () => {
     const relationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/relations`)

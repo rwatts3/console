@@ -5,6 +5,7 @@ machine:
 dependencies:
   override:
     - npm install -g yarn
+    - yarn cache clean
     - yarn install
 
 test:
