@@ -299,7 +299,11 @@ class ProjectSelection extends React.Component<Props, State> {
                 flexGrow: 2,
               }}
             >
-              <ScrollBox>
+              <ScrollBox
+                style={{
+                  height: 'calc(100vh - 155px)',
+                }}
+              >
                 <div className={cx(
                 particles.lhSolid,
                 particles.flex,
