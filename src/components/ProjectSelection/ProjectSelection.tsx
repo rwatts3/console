@@ -232,6 +232,7 @@ class ProjectSelection extends React.Component<Props, State> {
               style={{
                 marginRight: '-3px',
               }}
+              onclick={this.closeProjectsList}
             >
               <Icon
                 width={18}
@@ -368,6 +369,10 @@ class ProjectSelection extends React.Component<Props, State> {
         }
       </Root>
     )
+  }
+
+  private closeProjectsList = () => {
+    this.setState({expanded: false} as State)
   }
 
   private openUserDropdown = () => {
