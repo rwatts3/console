@@ -300,7 +300,7 @@ export class SideNav extends React.Component<Props, State> {
           active={actionsPageActive}
         >
           <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/actions.svg')}/>
-          <div>Actions</div>
+          <div>Mutation Callbacks</div>
         </Head>
       </Section>
     )

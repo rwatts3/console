@@ -42,7 +42,7 @@ class ActionsView extends React.Component<Props, State> {
   render() {
     return (
       <div className={classes.root}>
-        <Helmet title='Actions' />
+        <Helmet title='Mutation Callbacks' />
         {!this.state.showAddRow &&
           <Header
               viewer={this.props.viewer}
@@ -56,7 +56,7 @@ class ActionsView extends React.Component<Props, State> {
                     height={16}
                     src={require('assets/icons/add.svg')}
                   />
-                  <span>Create Action</span>
+                  <span>Create Mutation Callback</span>
                 </div>
               </div>
 

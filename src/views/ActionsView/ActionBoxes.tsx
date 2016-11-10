@@ -143,7 +143,7 @@ class ActionBoxes extends React.Component<Props, State> {
             <div className={cx(
               particles.contentStart,
             )}>
-              New Action
+              New Mutation Callback
             </div>
             <div className={cx(
               particles.flex,
