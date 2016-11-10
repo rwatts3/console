@@ -2849,9 +2849,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-styles@0.0.32:
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.32.tgz#f4ba6112517bec4ad822b6cbca41092a97b1def0"
+graphcool-styles@0.0.41:
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.41.tgz#28db724f88330badf5821f915c21bb9727a2c251"
   dependencies:
     object-assign "^4.1.0"
 
@@ -4004,7 +4004,7 @@ lodash.isarray@^3.0.0:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
 
-lodash.isequal@^4.1.1:
+lodash.isequal, lodash.isequal@^4.1.1:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.4.0.tgz#6295768e98e14dc15ce8d362ef6340db82852031"
 

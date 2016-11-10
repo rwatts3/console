@@ -232,6 +232,7 @@ class ProjectSelection extends React.Component<Props, State> {
               style={{
                 marginRight: '-3px',
               }}
+              onclick={this.closeProjectsList}
             >
               <Icon
                 width={18}
@@ -299,7 +300,11 @@ class ProjectSelection extends React.Component<Props, State> {
                 flexGrow: 2,
               }}
             >
-              <ScrollBox>
+              <ScrollBox
+                style={{
+                  height: 'calc(100vh - 155px)',
+                }}
+              >
                 <div className={cx(
                 particles.lhSolid,
                 particles.flex,
@@ -364,6 +369,10 @@ class ProjectSelection extends React.Component<Props, State> {
         }
       </Root>
     )
+  }
+
+  private closeProjectsList = () => {
+    this.setState({expanded: false} as State)
   }
 
   private openUserDropdown = () => {

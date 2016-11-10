@@ -23,6 +23,7 @@ export default class DateTimeCell extends React.Component<CellProps<Date>, {}> {
         active={true}
         onChange={(m: Moment | string) => this.props.save(this.resolveInput(m))}
         onCancel={() => this.props.cancel()}
+        autoClose={this.props.inList}
         defaultOpen={true}
         applyImmediately={false}
         onKeyDown={this.props.onKeyDown}

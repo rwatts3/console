@@ -16,7 +16,13 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
   constructor(props) {
     super(props)
     this.state = {
-      value: this.props.value ? this.props.value : 'standard value',
+      value: this.props.value,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.value !== nextProps.value) {
+      this.setState({value: nextProps.value})
     }
   }
 
@@ -31,10 +37,10 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
           <Combobox
             ref={ref => this.ref = ref}
             value={this.state.value}
-            onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
             onKeyDown={this.onKeyDown.bind(this)}
             options={this.props.field.enumValues}
             onSelect={(value: string) => {
+              this.setState({value})
               this.props.save(stringToValue(value, this.props.field))
             }}
             autosize

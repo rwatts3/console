@@ -22,12 +22,25 @@ import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
+import PermissionsView from './views/PermissionsView/PermissionsView'
+import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
+import ShowRoom from './views/ShowRoom/ShowRoom'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
     query {
       viewer {
         ${Component.getFragment('viewer', variables)}
+      }
+    }
+  `,
+}
+
+const NodeQuery = {
+  node: (Component, variables) => Relay.QL`
+    query {
+      node: node(id: $id) {
+        ${Component.getFragment('node', variables)}
       }
     }
   `,
@@ -83,6 +96,7 @@ export default (
     <Route path='login' component={LoginView} render={render} />
     <Route path='reset-password' component={ResetPasswordView} />
     <Route path='signup' component={SignUpView} />
+    <Route path='showroom' component={ShowRoom} />
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render} />
@@ -96,6 +110,10 @@ export default (
         </Route>
         <Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render} />
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
+      </Route>
+      <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
+        <Route path=':modelName/edit/:id' component={EditPermissionPopup} queries={NodeQuery} render={render} />
+        <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
         <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render} />

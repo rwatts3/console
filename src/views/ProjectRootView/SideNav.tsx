@@ -23,7 +23,7 @@ import EndpointPopup from './EndpointPopup'
 import AddModelPopup from './AddModelPopup'
 import styled from 'styled-components'
 import * as cx from 'classnames'
-import {particles, variables, Icon} from 'graphcool-styles'
+import {$p, variables, Icon} from 'graphcool-styles'
 import { ExcludeProps } from '../../utils/components'
 
 interface Props {
@@ -40,6 +40,7 @@ interface Props {
   router: ReactRouter.InjectedRouter
   showDonePopup: () => void
   showPopup: (popup: Popup) => void
+  itemCount: number
 }
 
 interface State {
@@ -49,6 +50,7 @@ interface State {
   newModelIsValid: boolean
   modelsExpanded: boolean
   modelsFit: boolean
+  itemCounts: { [key: string]: number }
 }
 
 // Section (Models, Relations, Permissions, etc.)
@@ -165,6 +167,7 @@ export class SideNav extends React.Component<Props, State> {
       newModelIsValid: true,
       modelsExpanded: false,
       modelsFit: true,
+      itemCounts: {},
     }
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
@@ -188,45 +191,59 @@ export class SideNav extends React.Component<Props, State> {
     }
   }
 
+  // ulgy hack, needed until Relay 2.0 is out.
+  // https://github.com/facebook/relay/issues/1311
+  // we add nodes in lokka/redux, it's hard to notify relay, so let's do it independent from relay
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.itemCount !== this.props.itemCount || nextProps.params.modelName !== this.props.params.modelName) {
+      const itemCounts = this.state.itemCounts
+      this.setState({
+        itemCounts: Object.assign({}, itemCounts, {
+          [this.props.params.modelName]: nextProps.itemCount,
+        }),
+      } as State)
+    }
+  }
+
   render() {
 
     return (
       <div
         className={cx(
-          particles.relative,
-          particles.w100,
-          particles.h100,
-          particles.white,
-          particles.bgDarkBlue,
-          particles.f14,
+          $p.relative,
+          $p.w100,
+          $p.h100,
+          $p.white,
+          $p.bgDarkBlue,
+          $p.f14,
         )}
         onMouseLeave={() => this.setState({forceShowModels: false} as State)}
       >
-        <div className={cx(particles.h100)} style={{ paddingBottom: '70px' }}>
+        <div className={cx($p.h100)} style={{ paddingBottom: '70px' }}>
           <ScrollBox>
             {this.renderModels()}
             {this.renderRelations()}
-            {/*this.renderPermissions()*/}
+            {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
           </ScrollBox>
         </div>
         <div
           className={cx(
-            particles.absolute,
-            particles.w100,
-            particles.bottom0,
-            particles.flex,
-            particles.itemsCenter,
-            particles.justifyBetween,
-            particles.bgDarkerBlue,
-            particles.white60,
+            $p.absolute,
+            $p.w100,
+            $p.bottom0,
+            $p.flex,
+            $p.itemsCenter,
+            $p.justifyBetween,
+            $p.bgDarkerBlue,
+            $p.white60,
           )}
           style={{ height: '70px' }}
         >
-          <FooterSection>
+          <FooterSection onClick={this.showEndpointPopup}>
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
-            <div onClick={this.showEndpointPopup}>Endpoints</div>
+            <div>Endpoints</div>
           </FooterSection>
           <FooterLink href='https://docs.graph.cool' target='_blank'>
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
@@ -289,20 +306,20 @@ export class SideNav extends React.Component<Props, State> {
     )
   }
 
-//  private renderPermissions = () => {
-//    const permissionsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/permissions`)
-//    return (
-//      <Section>
-//        <Head
-//          to={`/${this.props.params.projectName}/permissions`}
-//          active={permissionsPageActive}
-//        >
-//          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/permissions.svg')}/>
-//          <div>Permissions</div>
-//        </Head>
-//      </Section>
-//    )
-//  }
+ private renderPermissions = () => {
+   const permissionsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/permissions`)
+   return (
+     <Section>
+       <Head
+         to={`/${this.props.params.projectName}/permissions`}
+         active={permissionsPageActive}
+       >
+         <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/permissions.svg')}/>
+         <div>Permissions</div>
+       </Head>
+     </Section>
+   )
+ }
 
   private renderRelations = () => {
     const relationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/relations`)
@@ -458,14 +475,14 @@ export class SideNav extends React.Component<Props, State> {
 
     return (
       <Section className={cx(
-        particles.relative,
-        particles.bgDarkerBlue,
+        $p.relative,
+        $p.bgDarkerBlue,
       )}>
         <ModelsHead to={`/${this.props.params.projectName}/models`}>
           Models
         </ModelsHead>
         <div
-          className={cx(particles.overflowHidden)}
+          className={cx($p.overflowHidden)}
           style={{
             height: this.state.modelsFit
               ? 'auto' : (this.state.modelsExpanded ? 76 + 41 * this.props.models.length : window.innerHeight - 456),
@@ -474,10 +491,10 @@ export class SideNav extends React.Component<Props, State> {
         >
           <div
             className={cx(
-              particles.flex,
-              particles.flexColumn,
-              particles.pt16,
-              this.state.modelsFit ? particles.pb38 : particles.pb60
+              $p.flex,
+              $p.flexColumn,
+              $p.pt16,
+              this.state.modelsFit ? $p.pb38 : $p.pb60
             )}
           >
             {this.props.models && this.props.models.map((model) => (
@@ -486,16 +503,23 @@ export class SideNav extends React.Component<Props, State> {
                 to={`/${this.props.params.projectName}/models/${model.name}`}
                 active={modelActive(model)}
                 className={cx(
-                particles.relative,
-                particles.pv10,
-                particles.fw6,
-                particles.white30,
-                particles.ph25,
-                particles.flex,
-                particles.justifyBetween,
+                $p.relative,
+                $p.pv10,
+                $p.fw6,
+                $p.white30,
+                $p.ph25,
+                $p.flex,
+                $p.justifyBetween,
               )}>
-                <div className={cx(particles.pl6, particles.mra)}>{model.name}</div>
-                <div>{model.itemCount}</div>
+                <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
+                  <div>{model.name}</div>
+                  {model.isSystem && (
+                    <div
+                      className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
+                    >System</div>
+                  )}
+                </div>
+                <div>{this.state.itemCounts[model.name] || model.itemCount}</div>
               </ListElement>
             ))}
           </div>
@@ -504,15 +528,15 @@ export class SideNav extends React.Component<Props, State> {
 
         <AddModel
           className={cx(
-            particles.absolute,
-            particles.top38,
-            particles.right25,
-            particles.lhSolid,
-            particles.ba,
-            particles.brPill,
-            particles.bWhite,
-            particles.pointer,
-            particles.o60
+            $p.absolute,
+            $p.top38,
+            $p.right25,
+            $p.lhSolid,
+            $p.ba,
+            $p.brPill,
+            $p.bWhite,
+            $p.pointer,
+            $p.o60
           )}
           onClick={this.showAddModelPopup}
         >
@@ -533,14 +557,14 @@ export class SideNav extends React.Component<Props, State> {
           <ToggleMore
             onClick={() => this.setState({modelsExpanded: !this.state.modelsExpanded} as State )}
             className={cx(
-              particles.absolute,
-              particles.bottom0,
-              particles.left0,
-              particles.w100,
-              particles.flex,
-              particles.justifyCenter,
-              particles.itemsCenter,
-              particles.pointer,
+              $p.absolute,
+              $p.bottom0,
+              $p.left0,
+              $p.w100,
+              $p.flex,
+              $p.justifyCenter,
+              $p.itemsCenter,
+              $p.pointer,
             )}
             turned={this.state.modelsExpanded}
           >
@@ -552,8 +576,8 @@ export class SideNav extends React.Component<Props, State> {
               src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
               onClick={this.toggleModels}
               className={cx(
-                particles.brPill,
-                particles.bgDarkBlue
+                $p.brPill,
+                $p.bgDarkBlue
               )}
             />
           </ToggleMore>
@@ -666,6 +690,7 @@ export class SideNav extends React.Component<Props, State> {
 const ReduxContainer = connect(
   state => ({
     gettingStartedState: state.gettingStarted.gettingStartedState,
+    itemCount: state.databrowser.data.itemCount,
   }),
   {
     nextStep,
@@ -704,6 +729,7 @@ export default Relay.createContainer(MappedSideNav, {
               id
               name
               itemCount
+              isSystem
             }
           }
         }

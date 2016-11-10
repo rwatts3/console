@@ -24,7 +24,7 @@ import NewRow from './NewRow'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import {getDefaultFieldValues, calculateFieldColumnWidths} from '../utils'
+import {calculateFieldColumnWidths} from '../utils'
 import {Field, Model, Viewer, Project, OrderBy, FieldWidths} from '../../../types/types'
 import ModelHeader from '../ModelHeader'
 import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
@@ -34,11 +34,11 @@ import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
 import {AutoSizer} from 'react-virtualized'
 import Cell from './Cell'
 import LoadingCell from './LoadingCell'
-import {getLokka, addNodes} from './../../../utils/relay'
-import ProgressIndicator from '../../../components/ProgressIndicator/ProgressIndicator'
+import {getLokka} from './../../../utils/relay'
+// import ProgressIndicator from '../../../components/ProgressIndicator/ProgressIndicator'
 import {startProgress, incrementProgress} from '../../../actions/progressIndicator'
 import {StateTree, ReduxAction, ReduxThunk} from '../../../types/reducers'
-import cuid from 'cuid'
+// import cuid from 'cuid'
 const classes: any = require('./DatabrowserView.scss')
 import {
   nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef,
@@ -188,8 +188,13 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   componentWillReceiveProps = (nextProps: Props) => {
     // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
-    if (this.props.location !== nextProps.location || this.props.viewer.model !== nextProps.viewer.model) {
-      this.reloadData()
+    if (
+      this.props.location.pathname !== nextProps.location.pathname
+      || this.props.location.search !== nextProps.location.search
+      || this.props.location.query !== nextProps.location.query
+      || this.props.viewer.model !== nextProps.viewer.model
+    ) {
+      this.reloadData(0, nextProps)
     }
   }
 
@@ -237,14 +242,16 @@ class DatabrowserView extends React.Component<Props, {}> {
               />
             )}
           </div>
-          <input type='file' onChange={this.handleImport} id='fileselector' className='dn'/>
-          <label htmlFor='fileselector' className={classes.button}>
-            <Icon
-              width={16}
-              height={16}
-              src={require('assets/new_icons/down.svg')}
-            />
-          </label>
+          {/* Disabling the import icon until we have proper documentation
+           https://github.com/graphcool/console/issues/286 */}
+          {/*<input type='file' onChange={this.handleImport} id='fileselector' className='dn'/>*/}
+          {/*<label htmlFor='fileselector' className={classes.button}>*/}
+          {/*<Icon*/}
+          {/*width={16}*/}
+          {/*height={16}*/}
+          {/*src={require('assets/new_icons/down.svg')}*/}
+          {/*/>*/}
+          {/*</label>*/}
           <div className={classes.button} onClick={() => this.reloadData(Math.floor(this.props.scrollTop / 47))}>
             <Icon
               width={16}
@@ -267,6 +274,7 @@ class DatabrowserView extends React.Component<Props, {}> {
                 // 250 comes from the sidebar, 40 is the spacing left to the sidebar
                 return (
                   <InfiniteTable
+                    params={this.props.params}
                     selectedCell={this.props.selectedCell}
                     loadedList={this.props.loaded}
                     minimumBatchSize={100}
@@ -312,38 +320,39 @@ class DatabrowserView extends React.Component<Props, {}> {
     )
   }
 
-  private handleImport = (e: any) => {
-    const file = e.target.files[0]
-    const reader = new FileReader()
-    reader.onloadend = this.parseImport
-    reader.readAsText(file)
-  }
+  // private handleImport = (e: any) => {
+  //   const file = e.target.files[0]
+  //   const reader = new FileReader()
+  //   reader.onloadend = this.parseImport
+  //   reader.readAsText(file)
+  // }
 
-  private parseImport = (e: any) => {
-    const data = JSON.parse(e.target.result)
-    const values = []
-    data.forEach(item => {
-      const fieldValues = getDefaultFieldValues(this.props.model.fields.edges.map((edge) => edge.node))
-      Object.keys(item).forEach((key) => fieldValues[key].value = item[key])
-      values.push(fieldValues)
-    })
-    const promises = []
-    const chunk = 10
-    const total = Math.max(1, Math.floor(values.length / chunk))
-    const id = cuid()
-    this.props.startProgress()
-    this.props.showPopup({
-      element: <ProgressIndicator title='Importing' total={total}/>,
-      id,
-    })
-    for (let i = 0; i < total; i++) {
-      promises.push(
-        addNodes(this.lokka, this.props.params.modelName, values.slice(i * chunk, i * chunk + chunk), this.props.fields)
-          .then(() => this.props.incrementProgress())
-      )
-    }
-    Promise.all(promises).then(() => this.reloadData(0)).then(() => this.props.closePopup(id))
-  }
+  // private parseImport = (e: any) => {
+  //   const data = JSON.parse(e.target.result)
+  //   const values = []
+  //   data.forEach(item => {
+  //     const fieldValues = getDefaultFieldValues(this.props.model.fields.edges.map((edge) => edge.node))
+  //     Object.keys(item).forEach((key) => fieldValues[key].value = item[key])
+  //     values.push(fieldValues)
+  //   })
+  //   const promises = []
+  //   const chunk = 10
+  //   const total = Math.max(1, Math.floor(values.length / chunk))
+  //   const id = cuid()
+  //   this.props.startProgress()
+  //   this.props.showPopup({
+  //     element: <ProgressIndicator title='Importing' total={total}/>,
+  //     id,
+  //   })
+  //   for (let i = 0; i < total; i++) {
+  //     promises.push(
+  //       addNodes(
+  //          this.lokka, this.props.params.modelName, values.slice(i * chunk, i * chunk + chunk), this.props.fields)
+  //         .then(() => this.props.incrementProgress())
+  //     )
+  //   }
+  //   Promise.all(promises).then(() => this.reloadData(0)).then(() => this.props.closePopup(id))
+  // }
 
   private loadingCellRenderer = ({columnIndex}) => {
     if (columnIndex === 0) {
@@ -487,6 +496,10 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   private onKeyDown = (e: any): void => {
+    // we don't want to interfer with inputs
+    if (e.target instanceof HTMLInputElement) {
+      return
+    }
     if (e.keyCode === 13 && e.shiftKey) {
       return
     }
@@ -520,7 +533,7 @@ class DatabrowserView extends React.Component<Props, {}> {
         break
       case 13:
         const selectedField = this.props.fields.find(f => f.name === this.props.selectedCell.field)
-        if (!selectedField.isReadonly) {
+        if (selectedField && !selectedField.isReadonly) {
           this.props.editCell(this.props.selectedCell)
           e.preventDefault()
         }
@@ -550,8 +563,10 @@ class DatabrowserView extends React.Component<Props, {}> {
     return this.props.loadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, skip, first, query)
   }
 
-  private reloadData = (index: number = 0) => {
-    const query = this.props.location.query.q || ''
+  private reloadData = (index: number = 0, nextProps: Props = null) => {
+    let query = (nextProps ? nextProps.location.query.q : this.props.location.query.q) || ''
+    // remove whitespaces from the end of the string
+    query = query.replace(/\s*$/, '')
     this.props.reloadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, index, query)
   }
 
@@ -670,39 +685,39 @@ export default Relay.createContainer(MappedDatabrowserView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    name
-                    namePlural
-                    itemCount
-                    fields(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                isList
-                                isReadonly
-                                defaultValue
-                                relatedModel {
-                                    name
-                                }
-                                ${HeaderCell.getFragment('field')}
-                                ${Cell.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${NewRow.getFragment('model')}
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          name
+          namePlural
+          itemCount
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                isList
+                isReadonly
+                defaultValue
+                relatedModel {
+                  name
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+                ${HeaderCell.getFragment('field')}
+                ${Cell.getFragment('field')}
+              }
             }
-        `,
-    },
+          }
+          ${NewRow.getFragment('model')}
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })

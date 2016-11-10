@@ -7,14 +7,15 @@ import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {Field, Model} from '../../../types/types'
-import Permissions from './Permissions'
+// import Permissions from './Permissions'
 import Constraints from './Constraints'
-import Icon from '../../../components/Icon/Icon'
 import {isScalar} from '../../../utils/graphql'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 const classes: any = require('./FieldRow.scss')
+import * as cx from 'classnames'
+import {Icon, particles} from 'graphcool-styles'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -42,9 +43,8 @@ class FieldRow extends React.Component<Props, State> {
     detailsState: null,
   }
 
-  render () {
-    const { field } = this.props
-
+  render() {
+    const {field} = this.props
     let type: string = field.typeIdentifier
     if (field.isList) {
       type = `[${type}]`
@@ -64,15 +64,110 @@ class FieldRow extends React.Component<Props, State> {
 
     return (
       <div className={classes.root}>
+        {field.isSystem &&
+        <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
+          <div className={classes.fieldName}>
+            <span className={classes.name}>{field.name}</span>
+            <span className={classes.system}>System</span>
+            { !isScalar(field.typeIdentifier) &&
+            <span className={classes.relation}>Relation</span>
+            }
+          </div>
+          <div className={classes.type}>
+            { !isScalar(field.typeIdentifier) ?
+              <span>
+                <div className={cx(
+                particles.flex,
+              )}> <Icon
+                  className={cx(
+                    particles.mr4,
+                )}
+                  width={16}
+                  height={16}
+                  src={require('graphcool-styles/icons/stroke/link.svg')}
+                />
+                  {field.relatedModel.name}</div></span>
+              : <span>{type}</span>
+            }
+          </div>
+          <div className={classes.description}>
+            {this.renderDescription()}
+          </div>
+          <div
+            className={`${classes.constraints} ${this.state.detailsState === 'CONSTRAINTS' ? classes.active : '' }`}
+            onClick={() => this.toggleConstraints()}
+          >
+            {field.isUnique &&
+            <span className={classes.label}>Unique</span>
+            }
+            {!field.isUnique &&
+            <span className={`${classes.label} ${classes.add}`}>
+                Add Constraint
+              </span>
+            }
+          </div>
+          <div
+            className={`${classes.permissions} ${this.state.detailsState === 'PERMISSIONS' ? classes.active : '' }`}
+            onClick={() => this.togglePermissions()}
+          >
+          </div>
+          <div className={classes.controls}>
+            {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
+            <Link to={editLink}>
+              <Icon
+                width={20}
+                height={20}
+                src={require('assets/icons/edit.svg')}
+              />
+            </Link>
+            }
+            {field.isSystem &&
+            <Icon
+              width={20}
+              height={20}
+              src={require('graphcool-styles/icons/stroke/lock.svg')}
+            />
+            }
+            {!field.isSystem && isScalar(field.typeIdentifier) &&
+            <span onClick={() => this.deleteField()}>
+                <Icon
+                  width={20}
+                  height={20}
+                  src={require('assets/icons/delete.svg')}
+                  strokeWidth={2}
+                  stroke={true}
+                />
+              </span>
+            }
+          </div>
+        </div>
+        }
+        {!field.isSystem &&
         <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
           <Link className={classes.fieldName} to={editLink}>
             <span className={classes.name}>{field.name}</span>
             {field.isSystem &&
-              <span className={classes.system}>System</span>
-            }
+            <span className={classes.system}>System</span>
+            }{ !isScalar(field.typeIdentifier) &&
+          <span className={classes.relation}>Relation</span>
+          }
           </Link>
           <Link className={classes.type} to={editLink}>
-            <span>{type}</span>
+            { !isScalar(field.typeIdentifier) ?
+              <span>
+                <div className={cx(
+                particles.flex,
+              )}> <Icon
+                  className={cx(
+                    particles.mr4,
+                )}
+                  width={16}
+                  height={16}
+                  src={require('graphcool-styles/icons/stroke/link.svg')}
+                />
+                  {field.relatedModel.name}</div></span>
+              : <span>{type}</span>
+            }
           </Link>
           <div className={classes.description}>
             {this.renderDescription()}
@@ -82,64 +177,51 @@ class FieldRow extends React.Component<Props, State> {
             onClick={() => this.toggleConstraints()}
           >
             {field.isUnique &&
-              <span className={classes.label}>Unique</span>
+            <span className={classes.label}>Unique</span>
             }
             {!field.isUnique &&
-              <span className={`${classes.label} ${classes.add}`}>
+            <span className={`${classes.label} ${classes.add}`}>
                 Add Constraint
               </span>
             }
           </div>
-          <div
-            className={`${classes.permissions} ${this.state.detailsState === 'PERMISSIONS' ? classes.active : '' }`}
-            onClick={() => this.togglePermissions()}
-          >
-            {field.permissions.edges.length === 0 &&
-              <span className={`${classes.label} ${classes.add}`}>
-                Add Permission
-              </span>
-            }
-            {this.renderPermissionList()}
-          </div>
           <div className={classes.controls}>
             {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
-              <Link to={editLink}>
-                <Icon
-                  width={20}
-                  height={20}
-                  src={require('assets/icons/edit.svg')}
-                />
-              </Link>
+            <Link to={editLink}>
+              <Icon
+                width={20}
+                height={20}
+                src={require('assets/icons/edit.svg')}
+              />
+            </Link>
             }
-            {!field.isSystem && isScalar(field.typeIdentifier) &&
-              <span onClick={() => this.deleteField()}>
+            {field.isSystem &&
+            <Icon
+              width={20}
+              height={20}
+              src={require('graphcool-styles/icons/stroke/lock.svg')}
+            />
+            }
+            <span onClick={() => this.deleteField()}>
                 <Icon
                   width={20}
                   height={20}
                   src={require('assets/icons/delete.svg')}
                 />
               </span>
-            }
           </div>
         </div>
-        {this.state.detailsState === 'PERMISSIONS' &&
-          <Permissions
-            route={this.props.route}
-            field={field}
-            params={this.props.params}
-            possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
-          />
         }
         {this.state.detailsState === 'CONSTRAINTS' &&
-          <Constraints
-            field={field}
-          />
+        <Constraints
+          field={field}
+        />
         }
       </div>
     )
   }
 
-  private deleteField () {
+  private deleteField() {
     if (window.confirm(`Do you really want to delete "${this.props.field.name}"?`)) {
       Relay.Store.commitUpdate(
         new DeleteFieldMutation({
@@ -162,14 +244,14 @@ class FieldRow extends React.Component<Props, State> {
     }
   }
 
-  private saveDescription (e) {
+  private saveDescription(e) {
     const description = e.target.value
     if (this.props.field.description === description) {
-      this.setState({ editDescription: false } as State)
+      this.setState({editDescription: false} as State)
       return
     }
 
-    this.setState({ editDescriptionPending: true } as State)
+    this.setState({editDescriptionPending: true} as State)
 
     Relay.Store.commitUpdate(
       new UpdateFieldDescriptionMutation({
@@ -196,23 +278,23 @@ class FieldRow extends React.Component<Props, State> {
     )
   }
 
-  private togglePermissions () {
+  private togglePermissions() {
     const detailsState = this.state.detailsState === 'PERMISSIONS' ? null : 'PERMISSIONS' as DetailsState
-    this.setState({ detailsState } as State)
+    this.setState({detailsState} as State)
   }
 
-  private toggleConstraints () {
+  private toggleConstraints() {
     const detailsState = this.state.detailsState === 'CONSTRAINTS' ? null : 'CONSTRAINTS' as DetailsState
-    this.setState({ detailsState } as State)
+    this.setState({detailsState} as State)
   }
 
-  private renderDescription () {
+  private renderDescription() {
     if (this.props.field.relation) {
       return
     }
     if (this.state.editDescriptionPending) {
       return (
-        <Loading color='#B9B9C8' />
+        <Loading color='#B9B9C8'/>
       )
     }
 
@@ -250,32 +332,32 @@ class FieldRow extends React.Component<Props, State> {
     )
   }
 
-  private renderPermissionList = () => {
-    const permissionCount = this.props.field.permissions.edges.map((edge) => edge.node).reduce(
-      (prev, node) => {
-        if (!prev[node.userType]) {
-          prev[node.userType] = 1
-        } else {
-          prev[node.userType]++
-        }
-        return prev
-      },
-      {})
-    const permissions = []
-    for (let key in permissionCount) {
-      if (permissionCount.hasOwnProperty(key)) {
-        permissions.push(
-          <span
-            key={key}
-            className={classes.label}
-          >
-            {permissionCount[key] > 1 ? `${permissionCount[key]}x ${key}` : `${key}`}
-          </span>
-        )
-      }
-    }
-    return permissions
-  }
+  // private renderPermissionList = () => {
+  //   const permissionCount = this.props.field.permissions.edges.map((edge) => edge.node).reduce(
+  //     (prev, node) => {
+  //       if (!prev[node.userType]) {
+  //         prev[node.userType] = 1
+  //       } else {
+  //         prev[node.userType]++
+  //       }
+  //       return prev
+  //     },
+  //     {})
+  //   const permissions = []
+  //   for (let key in permissionCount) {
+  //     if (permissionCount.hasOwnProperty(key)) {
+  //       permissions.push(
+  //         <span
+  //           key={key}
+  //           className={classes.label}
+  //         >
+  //           {permissionCount[key] > 1 ? `${permissionCount[key]}x ${key}` : `${key}`}
+  //         </span>
+  //       )
+  //     }
+  //   }
+  //   return permissions
+  // }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -296,18 +378,12 @@ export default Relay.createContainer(MappedFieldRow, {
         isUnique
         isList
         description
-        permissions(first: 100) {
-          edges {
-            node {
-              id
-              userType
-            }
-          }
+        relatedModel {
+          name
         }
         relation {
             name
         }
-        ${Permissions.getFragment('field')}
       }
     `,
   },

@@ -6,7 +6,6 @@ exports[`test EnumCell renders 1`] = `
     <Combobox
       autosize={true}
       className="root"
-      onBlur={[Function]}
       onKeyDown={[Function]}
       onSelect={[Function]}
       options={

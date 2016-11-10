@@ -134,7 +134,7 @@ export function calculateFieldColumnWidths (width: number,
       const headerWidth = calculateSize(`${field.name} ${getFieldTypeName(field)}`, headerFontOptions).width + 90
 
       const maxWidth = Math.max(...cellWidths, headerWidth)
-      const lowerLimit = 150
+      const lowerLimit = field.typeIdentifier === 'DateTime' ? 250 : 150
       const upperLimit = 400
 
       const idExtra = field.name === 'id' ? 50 : 0

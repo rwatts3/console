@@ -92,7 +92,7 @@ class AddProjectPopup extends React.Component<Props, State> {
                 particles.orange,
                 particles.f14,
               )}>
-                Models must begin with an uppercase letter
+                Projects must begin with an uppercase letter
               </Warning>
               <NameInput
                 className={cx(

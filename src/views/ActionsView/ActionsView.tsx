@@ -43,24 +43,25 @@ class ActionsView extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <Helmet title='Actions' />
-        <Header
-          viewer={this.props.viewer}
-          params={this.props.params}
-          project={this.props.viewer.project}
-        >
-         {!this.state.showAddRow &&
-          <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>
-            <div className={`${classes.button} ${classes.green}`}>
-              <Icon
-                width={16}
-                height={16}
-                src={require('assets/icons/add.svg')}
-              />
-              <span>Create Action</span>
-            </div>
-          </div>
-         }
-        </Header>
+        {!this.state.showAddRow &&
+          <Header
+              viewer={this.props.viewer}
+              params={this.props.params}
+              project={this.props.viewer.project}
+            >
+              <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>
+                <div className={`${classes.button} ${classes.green}`}>
+                  <Icon
+                    width={16}
+                    height={16}
+                    src={require('assets/icons/add.svg')}
+                  />
+                  <span>Create Action</span>
+                </div>
+              </div>
+
+          </Header>
+        }
         <div className={classes.content}>
           <ScrollBox>
             {this.state.showAddRow &&
