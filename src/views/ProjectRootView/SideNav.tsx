@@ -515,7 +515,7 @@ export class SideNav extends React.Component<Props, State> {
                   <div>{model.name}</div>
                   {model.isSystem && (
                     <div
-                      className={cx($p.ph6, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
+                      className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
                     >System</div>
                   )}
                 </div>
