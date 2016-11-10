@@ -27,6 +27,10 @@ const DASHBOARD_ADMIN = {
   id: 'ADMIN',
 }
 
+const GUEST = {
+  id: 'EVERYONE',
+}
+
 const DEFAULT_QUERY = `{
   allUsers {
     id
@@ -72,6 +76,7 @@ interface State {
 class PlaygroundView extends React.Component<Props, State> {
 
   private lokka: any
+  private guestLokka: any
 
   constructor (props: Props) {
     super(props)
@@ -80,14 +85,16 @@ class PlaygroundView extends React.Component<Props, State> {
     const token = cookiestore.get('graphcool_auth_token')
     const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:playground' }
     const transport = new Transport(clientEndpoint, { headers })
+    const guestTransport = new Transport(clientEndpoint)
 
     this.lokka = new Lokka({ transport })
+    this.guestLokka = new Lokka({ transport: guestTransport })
 
     const usedPlayground = window.localStorage.getItem(`used-playground-${this.props.viewer.project.id}`)
     const isOnboarding = props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')
 
     this.state = {
-      users: [DASHBOARD_ADMIN],
+      users: [DASHBOARD_ADMIN, GUEST],
       historyVisible: false,
       query: isOnboarding ? ONBOARDING_QUERY_PART1 : usedPlayground ? undefined : DEFAULT_QUERY,
       variables: undefined,
@@ -131,7 +138,7 @@ class PlaygroundView extends React.Component<Props, State> {
     this.lokka.query(query)
       .then((results) => {
         const users = results.viewer.allUsers.edges.map((edge) => edge.node)
-        this.setState({ users: [DASHBOARD_ADMIN, ...users] } as State)
+        this.setState({ users: [DASHBOARD_ADMIN, GUEST, ...users] } as State)
       })
   }
 
@@ -148,7 +155,9 @@ class PlaygroundView extends React.Component<Props, State> {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.state.selectedUserToken || this.state.adminToken}`,
+          'Authorization': this.state.selectedUserId === GUEST.id ?
+            '' :
+            `Bearer ${this.state.selectedUserToken || this.state.adminToken}`,
           'X-GraphCool-Source': 'dashboard:playground',
         },
         body: JSON.stringify(graphQLParams),
@@ -287,7 +296,7 @@ class PlaygroundView extends React.Component<Props, State> {
   private changeUser = (e) => {
     const selectedUserId = e.target.value
 
-    if (selectedUserId === DASHBOARD_ADMIN.id) {
+    if (selectedUserId === DASHBOARD_ADMIN.id || selectedUserId === GUEST.id) {
       this.setState({ selectedUserId, selectedUserToken: null } as State)
     } else {
       Relay.Store.commitUpdate(
