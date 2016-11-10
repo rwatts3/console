@@ -11,6 +11,13 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.value !== nextProps.value) {
+      const valueString = valueToString(nextProps.value, this.props.field, false)
+      this.setState({valueString})
+    }
+  }
+
   handleChange = (e: any) => {
 
     if (e.target.value === '') {

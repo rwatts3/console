@@ -22,6 +22,7 @@ require('./react-datetime.override.css')
 interface Props {
   applyImmediately: boolean
   defaultOpen: boolean
+  autoClose?: boolean
   className?: string
   defaultValue: Date
   onChange: (m: Moment) => void
@@ -81,9 +82,14 @@ export default class DatePicker extends React.Component<Props, State> {
         onClick={() => this.markOpen()}
         ref='container'
       >
-        <ClickOutside onClickOutside={() =>
-          typeof this.props.onClickOutside === 'function' && this.props.onClickOutside(this.state.moment)
-        }>
+        <ClickOutside onClickOutside={() => {
+          if (this.props.autoClose) {
+            this.setState({open: false} as State)
+          }
+          if (typeof this.props.onClickOutside === 'function') {
+            this.props.onClickOutside(this.state.moment)
+          }
+        }}>
           <Datetime
             {...passThroughProps}
             className={classes.datetime}

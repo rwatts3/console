@@ -19,6 +19,7 @@ export interface CellRequirements {
   field: Field
   projectId: string
   nodeId: string
+  inList?: boolean
   methods: {
     save: (val: any, keepEditing?: any) => void
     cancel: (reload?: boolean) => void
@@ -150,6 +151,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
         />
       )
     case 'DateTime':
+      // we don't need inList for the other components yet
       return (
         <DateTimeCell
           cancel={reqs.methods.cancel}
@@ -157,6 +159,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           save={reqs.methods.save}
           value={reqs.value}
           field={reqs.field}
+          inList={reqs.inList}
         />
       )
     default:

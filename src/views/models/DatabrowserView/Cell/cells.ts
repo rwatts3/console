@@ -7,6 +7,7 @@ export interface CellProps<T> {
   cancel?: () => void,
   onKeyDown?: (event: any) => void,
   field?: Field,
+  inList?: boolean
 }
 
 export interface CellState {

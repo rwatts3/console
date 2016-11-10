@@ -5,6 +5,7 @@ import NewRow from '../NewRow'
 import NewRowInactive from '../NewRowInactive'
 import {Grid} from 'react-virtualized'
 import {ActionRowState} from '../../../../types/databrowser/actionrow'
+import {GridPosition} from '../../../../types/databrowser/ui'
 
 interface Props {
   width: number
@@ -17,6 +18,7 @@ interface Props {
   fieldColumnWidths: {[key: string]: number}
   actionRow?: ActionRowState
   newRowActive: boolean
+  selectedCell: GridPosition
 }
 
 interface State {
@@ -57,7 +59,7 @@ class NewNodeRow extends React.Component<Props, State> {
           left: 40,
           width: 'auto',
           top: this.props.headerHeight,
-          zIndex: this.props.newRowActive ? 4 : 2,
+          zIndex: !this.props.newRowActive ? 2 : this.props.selectedCell.row === -1 ? 4 : 2,
         }}
         cellStyle={{position: 'absolute'}}
         rowHeight={this.props.height}
@@ -73,6 +75,7 @@ class NewNodeRow extends React.Component<Props, State> {
 const MappedDataActionRow = connect(state => {
   return {
     newRowActive: state.databrowser.ui.newRowActive,
+    selectedCell: state.databrowser.ui.selectedCell,
   }
 })(NewNodeRow)
 

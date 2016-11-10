@@ -12,6 +12,13 @@ export default class IntCell extends React.Component<CellProps<number>, CellStat
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.value !== nextProps.value) {
+      const valueString = valueToString(nextProps.value, this.props.field, false)
+      this.setState({valueString})
+    }
+  }
+
   render() {
     return (
       <input

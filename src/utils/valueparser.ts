@@ -91,7 +91,7 @@ export function atomicValueToString(value: AtomicValue, field: Field, returnNull
   }
 }
 
-export function stringToValue(rawValue: string, field: Field): TypedValue {
+export function stringToValue(rawValue: string, field: Field, forceScalar: boolean = false): TypedValue {
   if (rawValue === null) {
     return null
   }
@@ -100,7 +100,7 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
     return typeIdentifier === 'String' ? '' : null
   }
 
-  if (!isScalar(typeIdentifier)) {
+  if (!isScalar(typeIdentifier) && !forceScalar) {
     if (isList) {
       try {
         let json = JSON.parse(rawValue)
@@ -120,7 +120,7 @@ export function stringToValue(rawValue: string, field: Field): TypedValue {
     return {id: rawValue}
   }
 
-  if (isList) {
+  if (isList && !forceScalar) {
     if (typeIdentifier === 'Enum') {
       return rawValue.slice(1, -1).split(',').map((value) => value.trim())
     }

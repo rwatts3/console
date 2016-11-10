@@ -3,13 +3,14 @@ exports[`test ScalarListCell renders 1`] = `
   onClickOutside={[Function]}>
   <div
     className="flex bgBlack50 w100 h100 justifyCenter itemsCenter">
-    <div
-      className="root">
+    <styled.div
+      className="bgWhite flex flexColumn relative">
       <div
         className="header">
         <div
           className="filter">
           <Icon
+            color="rgba(42,126,210,1)"
             height={30}
             src="test-file-stub"
             width={30} />
@@ -19,7 +20,7 @@ exports[`test ScalarListCell renders 1`] = `
             type="text"
             value="" />
           <Icon
-            className="setNull"
+            color="rgba(242,92,84,1)"
             height={30}
             onClick={[Function]}
             src="test-file-stub"
@@ -27,9 +28,9 @@ exports[`test ScalarListCell renders 1`] = `
         </div>
       </div>
       <div
-        className="list">
+        className="flexAuto">
         <div
-          className="item addBox"
+          className="f14 flex flexRow justifyBetween black50 bb bBlack10 pa25 itemsCenter"
           onClick={[Function]}>
           <span
             className="addNewText">
@@ -37,57 +38,72 @@ exports[`test ScalarListCell renders 1`] = `
           </span>
           <Icon
             className="disabled"
-            height={24}
+            color="rgba(42,126,210,1)"
+            height={30}
             onClick={[Function]}
             src="test-file-stub"
-            width={24} />
+            width={30} />
         </div>
         <div
-          className="item existing"
-          onClick={[Function]}>
-          <div>
-            1
-          </div>
-          <Icon
-            height={14}
-            onClick={[Function]}
-            src="test-file-stub"
-            width={14} />
-        </div>
-        <div
-          className="item existing"
-          onClick={[Function]}>
-          <div>
-            2
-          </div>
-          <Icon
-            height={14}
-            onClick={[Function]}
-            src="test-file-stub"
-            width={14} />
-        </div>
-        <div
-          className="item existing"
-          onClick={[Function]}>
-          <div>
-            3
-          </div>
-          <Icon
-            height={14}
-            onClick={[Function]}
-            src="test-file-stub"
-            width={14} />
+          className="overflowYScroll flexAuto"
+          style={
+            Object {
+              "maxHeight": "calc(100vh - 294px)",
+            }
+          }>
+          <styled.div
+            className="f14 flex flexRow justifyBetween black50 bb bBlack10 pa25 itemsCenter"
+            onClick={[Function]}>
+            <div>
+              1
+            </div>
+            <Icon
+              color="rgba(242,92,84,1)"
+              height={30}
+              onClick={[Function]}
+              src="test-file-stub"
+              width={30} />
+          </styled.div>
+          <styled.div
+            className="f14 flex flexRow justifyBetween black50 bb bBlack10 pa25 itemsCenter"
+            onClick={[Function]}>
+            <div>
+              2
+            </div>
+            <Icon
+              color="rgba(242,92,84,1)"
+              height={30}
+              onClick={[Function]}
+              src="test-file-stub"
+              width={30} />
+          </styled.div>
+          <styled.div
+            className="f14 flex flexRow justifyBetween black50 bb bBlack10 pa25 itemsCenter"
+            onClick={[Function]}>
+            <div>
+              3
+            </div>
+            <Icon
+              color="rgba(242,92,84,1)"
+              height={30}
+              onClick={[Function]}
+              src="test-file-stub"
+              width={30} />
+          </styled.div>
         </div>
       </div>
       <div
-        className="footer">
-        <div
-          className="close"
+        className="bgBlack04 pa25 flex flexRow justifyBetween itemsCenter">
+        <styled.button
           onClick={[Function]}>
-          Close
-        </div>
+          Cancel
+        </styled.button>
+        <styled.button
+          onClick={[Function]}>
+          Save
+        </styled.button>
       </div>
-    </div>
+    </styled.div>
   </div>
 </Connect(PopupWrapper)>
 `;

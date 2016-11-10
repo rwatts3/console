@@ -36,6 +36,7 @@ declare module 'redux-logger'
 declare module 'react-input-enhancements'
 declare module 'lodash.pick'
 declare module 'lodash.throttle'
+declare module 'lodash.isequal'
 declare module 'auth0-lock'
 
 declare var Smooch: any

@@ -61,6 +61,7 @@
     "graphcool-styles": "0.0.41",
     "graphiql": "^0.7.3",
     "immutable": "^3.8.1",
+    "lodash.isequal": "^4.4.0",
     "lodash.pick": "^4.4.0",
     "lodash.throttle": "^4.1.1",
     "lokka": "^1.7.0",
