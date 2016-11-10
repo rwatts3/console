@@ -287,9 +287,20 @@ class FieldPopup extends React.Component<Props, State> {
                       <input
                         type='checkbox'
                         checked={this.state.useDefaultValue}
-                        onChange={(e: any) => this.setState({
-                            useDefaultValue: (e.target as HTMLInputElement).checked,
-                          } as State)}
+                        onChange={(e: any) => {
+                          const useDefaultValue = (e.target as HTMLInputElement).checked
+                          const {typeIdentifier, enumValues} = this.state
+                          if (useDefaultValue && typeIdentifier === 'Enum') {
+                            this.setState({
+                              useDefaultValue,
+                              defaultValue: enumValues.length > 0 && enumValues[0],
+                            } as State)
+                          } else {
+                            this.setState({
+                              useDefaultValue,
+                            } as State)
+                          }
+                        }}
                       />
                       Default value
                     </label>
