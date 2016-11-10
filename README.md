@@ -26,6 +26,8 @@ npm install -g yarn
 yarn install
 # run local server on :4000 using the offical Graphcool API
 env BACKEND_ADDR="https://dev.api.graph.cool" npm start
+# or for fish shell users
+set -x BACKEND_ADDR https://dev.api.graph.cool npm start
 ```
 ### IDE Setup (Webstorm)
 
