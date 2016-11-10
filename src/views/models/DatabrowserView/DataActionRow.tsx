@@ -16,6 +16,7 @@ interface Props {
   actionRow: ActionRowState
   deleteSelectedNodes: () => void
   fieldColumnWidths: number
+  params: any
 }
 
 class DataActionRow extends React.Component<Props, {}> {

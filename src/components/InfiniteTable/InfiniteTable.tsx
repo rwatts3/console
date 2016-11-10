@@ -39,6 +39,7 @@ interface Props {
   deleteSelectedNodes: () => any
 
   selectedCell: GridPosition
+  params: any
 }
 
 export default class InfiniteTable extends React.Component<Props, {}> {
@@ -82,6 +83,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 fieldColumnWidths={this.props.fieldColumnWidths}
                 deleteSelectedNodes={this.props.deleteSelectedNodes}
                 ref={registerChild}
+                params={this.props.params}
               />
               <Grid
                 ref={registerChild}

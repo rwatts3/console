@@ -19,6 +19,7 @@ interface Props {
   actionRow?: ActionRowState
   newRowActive: boolean
   selectedCell: GridPosition
+  params: any
 }
 
 interface State {
@@ -42,6 +43,7 @@ class NewNodeRow extends React.Component<Props, State> {
 
     return (
       <NewRowInactive
+        params={this.props.params}
         model={this.props.model}
         columnWidths={this.props.fieldColumnWidths}
         height={this.props.height}

@@ -7,12 +7,14 @@ import {classnames} from '../../../utils/classnames'
 import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 import Tether from '../../../components/Tether/Tether'
+import {Link} from 'react-router'
 
 interface Props {
   columnWidths: {[key: string]: number}
   model: Model
   toggleNewRow: (fields: Field[], modelNamePlural: String) => any
   height: number
+  params: any
 }
 
 interface State {
@@ -42,9 +44,11 @@ class NewRowInactive extends React.Component<Props, State> {
       .map((edge) => edge.node)
 
     return (
-      <div className={classnames(classes.root, {
-        [classes.active]: this.state.active,
-      })} onClick={() => this.toggleNewRow(fields)}>
+      <div
+        className={classnames(classes.root, {
+          [classes.active]: this.state.active,
+        })}
+      >
       {SYSTEM_MODELS.includes(this.props.model.name) ? (
         <div
           className={classes.cell}
@@ -56,40 +60,50 @@ class NewRowInactive extends React.Component<Props, State> {
           This is a system model. Nodes can only be added via the API.
         </div>
       ) : (
-        fields.map((field, index) => {
-          if (index === fields.length - 1) {
-            return (
-              <Tether
-                steps={[{
-                  step: 'STEP3_CLICK_ADD_NODE2',
-                  title: `Awesome! Let's create one more.`,
-                  description: 'Hint: You can also use your keyboard to navigate between fields (Tab or Shift+Tab) and submit (Enter).', // tslint:disable-line
-                }]}
-                offsetX={0}
-                offsetY={-10}
-                width={351}
-                horizontal='left'
-                key='STEP3_CLICK_ADD_NODE2'
-              >
-                {this.renderField(field, index, fields)}
-              </Tether>
-            )
-          } else {
-            return (
-              this.renderField(field, index, fields)
-            )
-          }
-        })
-      )}
         <div
+          className={classnames(classes.root, {
+            [classes.active]: this.state.active,
+          })}
+          onClick={(e: any) => {
+            this.toggleNewRow(fields)
+          }}
+        >
+          {fields.map((field, index) => {
+            if (index === fields.length - 1) {
+              return (
+                <Tether
+                  steps={[{
+                    step: 'STEP3_CLICK_ADD_NODE2',
+                    title: `Awesome! Let's create one more.`,
+                    description: 'Hint: You can also use your keyboard to navigate between fields (Tab or Shift+Tab) and submit (Enter).', // tslint:disable-line
+                  }]}
+                  offsetX={0}
+                  offsetY={-10}
+                  width={351}
+                  horizontal='left'
+                  key='STEP3_CLICK_ADD_NODE2'
+                >
+                  {this.renderField(field, index, fields)}
+                </Tether>
+              )
+            } else {
+              return (
+                this.renderField(field, index, fields)
+              )
+            }
+          })}
+        </div>
+      )}
+        <Link
           style={{
-                width: 250,
-                height: this.props.height,
-              }}
+            width: 250,
+            height: this.props.height,
+          }}
           className={classes.loading}
+          to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema/create`}
         >
           <div></div>
-        </div>
+        </Link>
       </div>
     )
   }

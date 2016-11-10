@@ -243,14 +243,14 @@ class DatabrowserView extends React.Component<Props, {}> {
             )}
           </div>
           {/* Disabling the import icon until we have proper documentation
-          https://github.com/graphcool/console/issues/286 */}
+           https://github.com/graphcool/console/issues/286 */}
           {/*<input type='file' onChange={this.handleImport} id='fileselector' className='dn'/>*/}
           {/*<label htmlFor='fileselector' className={classes.button}>*/}
-            {/*<Icon*/}
-              {/*width={16}*/}
-              {/*height={16}*/}
-              {/*src={require('assets/new_icons/down.svg')}*/}
-            {/*/>*/}
+          {/*<Icon*/}
+          {/*width={16}*/}
+          {/*height={16}*/}
+          {/*src={require('assets/new_icons/down.svg')}*/}
+          {/*/>*/}
           {/*</label>*/}
           <div className={classes.button} onClick={() => this.reloadData(Math.floor(this.props.scrollTop / 47))}>
             <Icon
@@ -274,6 +274,7 @@ class DatabrowserView extends React.Component<Props, {}> {
                 // 250 comes from the sidebar, 40 is the spacing left to the sidebar
                 return (
                   <InfiniteTable
+                    params={this.props.params}
                     selectedCell={this.props.selectedCell}
                     loadedList={this.props.loaded}
                     minimumBatchSize={100}
@@ -684,39 +685,39 @@ export default Relay.createContainer(MappedDatabrowserView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    name
-                    namePlural
-                    itemCount
-                    fields(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                isList
-                                isReadonly
-                                defaultValue
-                                relatedModel {
-                                    name
-                                }
-                                ${HeaderCell.getFragment('field')}
-                                ${Cell.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${NewRow.getFragment('model')}
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          name
+          namePlural
+          itemCount
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                isList
+                isReadonly
+                defaultValue
+                relatedModel {
+                  name
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+                ${HeaderCell.getFragment('field')}
+                ${Cell.getFragment('field')}
+              }
             }
-        `,
-    },
+          }
+          ${NewRow.getFragment('model')}
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })
