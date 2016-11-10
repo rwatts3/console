@@ -40,11 +40,17 @@ class ModelPermissionFields extends React.Component<Props, {}> {
             <div
               className={cx($p.relative, $p.flex, $p.flex1, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowXScroll)}
             >
-              <div className={cx($p.black50)}>in</div>
-              {fields.map(field =>
+              <div className={cx($p.black50)}>
+                {applyToWholeModel ? (
+                  'in all Fields'
+                ) : (
+                  'in'
+                )}
+              </div>
+              {!applyToWholeModel && fields.map(field =>
                 <PermissionField
                   key={field.id}
-                  disabled={(!fieldIds.includes(field.id) && !applyToWholeModel) || !isActive}
+                  disabled={!fieldIds.includes(field.id) || !isActive}
                   name={field.name}
                   className={$p.ml10}
                 />
