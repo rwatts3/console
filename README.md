@@ -22,14 +22,15 @@ master | dev
 
 ```sh
 # install dependencies
-npm install
+npm install -g yarn
+yarn install
 # run local server on :4000 using the offical Graphcool API
 env BACKEND_ADDR="https://dev.api.graph.cool" npm start
 ```
 ### IDE Setup (Webstorm)
 
 We use a different version of TypeScript than the default Webstorm TypeScript compiler. That's why you have to do the following to get rid of all TypeScript errors.
-Please run `npm install` before the setup.
+Please run `yarn install` before the setup.
 
 1. Go to the `Preferences` _(macOS: "⌘ + ,")_ window
 2. In the left list menu **select** `Languages & Frameworks > TypeScript`
