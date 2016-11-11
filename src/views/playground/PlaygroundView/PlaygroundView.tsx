@@ -18,7 +18,7 @@ import endpoints from '../../../utils/endpoints'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
 import LoginClientUserMutation from '../../../mutations/LoginClientUserMutation'
 import {GettingStartedState} from '../../../types/gettingStarted'
-import {nextStep} from '../../../actions/gettingStarted'
+import {nextStep, previousStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
@@ -62,6 +62,7 @@ interface Props {
   params: any
   gettingStartedState: GettingStartedState
   nextStep: () => any
+  previousStep: () => any
 }
 
 interface State {
@@ -281,7 +282,9 @@ class PlaygroundView extends React.Component<Props, State> {
               $p.left0,
               $p.right0,
               $p.z3,
+              $p.pointer,
             )}
+            onClick={this.props.previousStep}
           >
             <div className='mw6 bg-accent br-2 tl shadow-2'>
               <div className='w-100 pa-16 white fw8' style={{backgroundColor: '#00A854'}}>
@@ -290,6 +293,33 @@ class PlaygroundView extends React.Component<Props, State> {
               <div className='w-100 pa-16 black-50 lh-1-4'>
                 If you're stuck, try the auto completion or look into the docs to get an overview.
                 If that doesn't help, try the chat.
+              </div>
+            </div>
+          </div>
+        )}
+        {this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2') && (
+          <div
+            className={cx(
+              $p.flex,
+              $p.justifyCenter,
+              $p.itemsCenter,
+              $p.absolute,
+              $p.bottom0,
+              $p.pa25,
+              $p.left0,
+              $p.right0,
+              $p.z3,
+              $p.pointer,
+            )}
+            onClick={this.props.previousStep}
+          >
+            <div className='mw6 bg-accent br-2 tl shadow-2'>
+              <div className='w-100 pa-16 white fw8' style={{ backgroundColor: '#00A854' }}>
+                Query all posts that contain the #graphcool hashtag in their description.
+              </div>
+              <div className='w-100 pa-16 black-50 lh-1-4'>
+                Use the built-in filter "description_contains".{' '}
+                If you need more information, look in the docs section or open up the chat!
               </div>
             </div>
           </div>
@@ -363,7 +393,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ nextStep }, dispatch)
+  return bindActionCreators({ nextStep, previousStep }, dispatch)
 }
 
 const MappedPlaygroudView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
