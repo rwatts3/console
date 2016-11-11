@@ -20,6 +20,8 @@ import LoginClientUserMutation from '../../../mutations/LoginClientUserMutation'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import {nextStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
+import * as cx from 'classnames'
+import {$p} from 'graphcool-styles'
 
 require('graphiql/graphiql.css')
 
@@ -267,6 +269,31 @@ class PlaygroundView extends React.Component<Props, State> {
             <PlaygroundBPopup />
           </PopupWrapper>
         }
+        {this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1') && (
+          <div
+            className={cx(
+              $p.flex,
+              $p.justifyCenter,
+              $p.itemsCenter,
+              $p.absolute,
+              $p.bottom0,
+              $p.pa25,
+              $p.left0,
+              $p.right0,
+              $p.z3,
+            )}
+          >
+            <div className='mw6 bg-accent br-2 tl shadow-2'>
+              <div className='w-100 pa-16 white fw8' style={{backgroundColor: '#00A854'}}>
+                Query all posts with the imageUrl and description
+              </div>
+              <div className='w-100 pa-16 black-50 lh-1-4'>
+                If you're stuck, try the auto completion or look into the docs to get an overview.
+                If that doesn't help, try the chat.
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }

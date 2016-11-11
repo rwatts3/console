@@ -43,10 +43,10 @@ class PlaygroundAPopup extends React.Component<Props, {}> {
   render() {
     return (
       <div
-        className='flex justify-center items-start bg-white-50 h-100 overflow-auto'
+        className='flex justify-center items-center bg-white-50 h-100 overflow-auto'
         style={{ pointerEvents: 'all', width: 'calc(100% - 266px)' }}
       >
-        <div className='bg-white br-2 shadow-2 mv-60' style={{ minWidth: 600, maxWidth: 900 }}>
+        <div className='bg-white br-2 shadow-2' style={{ minWidth: 600, maxWidth: 900 }}>
           <Steps ref='steps'>
             <div className='ma-25 tc pt-16'>
               <div className='fw2 ls-2 mv-60'>OUR PLAYGROUND</div>
@@ -79,6 +79,7 @@ class PlaygroundAPopup extends React.Component<Props, {}> {
                 <Icon
                   src={require('graphcool-styles/icons/stroke/arrowRight.svg')}
                   stroke={true}
+                  strokeWidth={2}
                   color={variables.green}
                   className={$p.ml6}
                   width={20}
@@ -120,7 +121,7 @@ class PlaygroundAPopup extends React.Component<Props, {}> {
                     width={20}
                     height={20}
                   />
-                  <div>How it works</div>
+                  <div>Intro</div>
                 </PrevButton>
                 <NextButton
                   className={cx(
@@ -150,7 +151,7 @@ class PlaygroundAPopup extends React.Component<Props, {}> {
                 </NextButton>
             </div>
 
-            <div className='tc pa-25 bg-gray-06 pt-38 h-100'>
+            <div className='tc pa-25 bg-gray-06 pt-38 h-100 flex flex-column justify-center'>
               <div className='fw4 ls-2 pt-25 pb-38 accent'>
                 HERE'S YOUR FIRST TASK:
               </div>
@@ -199,7 +200,7 @@ class PlaygroundAPopup extends React.Component<Props, {}> {
                   width={20}
                   height={20}
                 />
-                <div>Your Task</div>
+                <div>How it works</div>
               </PrevButton>
 
             </div>
