@@ -8,6 +8,8 @@ import RelationRow from './RelationRow'
 import {Link} from 'react-router'
 import Icon from '../../components/Icon/Icon'
 const classes: any = require('./RelationsView.scss')
+import * as cx from 'classnames'
+import {$p} from 'graphcool-styles'
 
 interface Props {
   viewer: Viewer & { project: Project }
@@ -42,7 +44,6 @@ class RelationsView extends React.Component<Props, {}> {
           </div>
         </Header>
         <div className={classes.content}>
-          {this.props.children}
           <ScrollBox>
             {this.props.viewer.project.relations.edges.map((edge) => edge.node).map((relation) => (
               <div key={relation.id}>
@@ -53,8 +54,45 @@ class RelationsView extends React.Component<Props, {}> {
                 />
               </div>
             ))}
+            {this.props.viewer.project.relations.edges.length === 0 && (
+              <div className={cx($p.flex, $p.h100, $p.w100, $p.itemsCenter, $p.justifyCenter)}>
+                <div
+                  className={cx($p.flex, $p.flexColumn, $p.justifyCenter, $p.mb38)}
+                >
+                  <h2 className={cx($p.fw3, $p.mb16)}>Welcome to our Relations feature</h2>
+                  <div className={cx($p.flex, $p.flexRow)}>
+                    <div className={cx($p.flexAuto)}>
+                      <div className={cx($p.black50)}>
+                        Here you can create relations between Models.
+                      </div>
+                      <div className={$p.black50}>
+                        To learn more about relations, please have a look in our docs.
+                      </div>
+                    </div>
+                    <div className={$p.ml10}>
+                      <a
+                        className={cx(
+                          $p.pa16,
+                          $p.f16,
+                          $p.white,
+                          $p.br2,
+                          $p.bgGreen,
+                          $p.pointer,
+                          $p.db,
+                        )}
+                        href='http://graph.cool/docs/reference/platform/relations'
+                        target='_blank'
+                      >
+                        Docs
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </ScrollBox>
         </div>
+        {this.props.children}
       </div>
     )
   }

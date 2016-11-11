@@ -50,7 +50,11 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
           dispatch(update(gettingStarted, gettingStartedSkipped, onboardingStatusId, gettingStartedExample))
           resolve()
         },
-        onFailure: reject,
+        onFailure: (err) => {
+          // Error
+          console.error(err)
+          reject()
+        },
       })
   })
 }

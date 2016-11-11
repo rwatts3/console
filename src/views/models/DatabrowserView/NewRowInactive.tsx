@@ -57,7 +57,6 @@ class NewRowInactive extends React.Component<Props, State> {
             paddingLeft: 15,
           }}
         >
-          This is a system model. Nodes can only be added via the API.
         </div>
       ) : (
         <div
