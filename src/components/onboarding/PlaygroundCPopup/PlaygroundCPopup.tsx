@@ -8,6 +8,8 @@ import Loading from '../../Loading/Loading'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import {Example} from '../../../types/types'
 const classes: any = require('./PlaygroundCPopup.scss')
+import {$p} from 'graphcool-styles'
+import * as cx from 'classnames'
 
 interface Tutorial {
   title: string
@@ -227,6 +229,18 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                 </div>
                 <div className='black-50'>
                   # Please come back to this page once you're done. We're waiting here. 💤
+                </div>
+                <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyCenter, $p.mt25)}>
+                  <a href='#' onClick={
+                    (e: any) => {
+                      e.preventDefault()
+                      // we need to skip the 'STEP5_WAITING' step
+                      this.props.nextStep()
+                      this.props.nextStep()
+                    }
+                  }>
+                    Skip
+                  </a>
                 </div>
               </div>
               {this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') &&
