@@ -8,6 +8,7 @@ import Constants from '../constants/gettingStarted'
 import IconNotification from '../components/IconNotification/IconNotification'
 import cuid from 'cuid'
 import {showPopup} from '../actions/popup'
+import {forceShowNewRow} from './databrowser/ui'
 
 export function showDonePopup() {
   const id = cuid()
@@ -55,7 +56,7 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
           console.error(err)
           reject()
         },
-      })
+    })
   })
 }
 
@@ -120,5 +121,141 @@ export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => 
         }
       })
     })
+  }
+}
+// dependencies so that the steps' tethers are shown
+// 'STEP0_OVERVIEW',
+// -> nothing needed
+// 'STEP1_CREATE_POST_MODEL',
+// -> nothing needed
+// 'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
+// -> route: http://domain/projectName/models/Post/schema
+//   'STEP2_ENTER_FIELD_NAME_IMAGEURL',
+// -> route: http://domain/projectName/models/Post/schema/create
+//   'STEP2_SELECT_TYPE_IMAGEURL',
+// -> route: http://domain/projectName/models/Post/schema/create
+//   'STEP2_CLICK_CONFIRM_IMAGEURL',
+// -> route: http://domain/projectName/models/Post/schema/create
+//   'STEP2_CREATE_FIELD_DESCRIPTION',
+// -> route: http://domain/projectName/models/Post/schema
+//   'STEP3_CLICK_DATA_BROWSER',
+// -> route: http://domain/projectName/models/Post/schema
+//   'STEP3_CLICK_ADD_NODE1',
+// -> route: http://domain/projectName/models/Post/databrowser
+//   -> redux: newRowActive: true
+// 'STEP3_CLICK_ENTER_IMAGEURL',
+// -> route: http://domain/projectName/models/Post/databrowser
+//   -> redux: newRowActive: true
+// 'STEP3_CLICK_ENTER_DESCRIPTION',
+// -> route: http://domain/projectName/models/Post/databrowser
+//   -> redux: newRowActive: true
+// 'STEP3_CLICK_SAVE_NODE1',
+// -> route: http://domain/projectName/models/Post/databrowser
+//   -> redux: newRowActive: true
+// 'STEP3_CLICK_ADD_NODE2',
+// -> route: http://domain/projectName/models/Post/databrowser
+//   'STEP4_CLICK_PLAYGROUND',
+// -> nothing needed
+// 'STEP4_CLICK_BEGIN_PART1',
+// -> route: http://domain/projectName/playground
+//   'STEP4_WAITING_PART1',
+// -> route: http://domain/projectName/playground
+//   'STEP4_CLICK_TEASER_PART2',
+// -> route: http://domain/projectName/playground
+//   'STEP4_CLICK_BEGIN_PART2',
+// -> route: http://domain/projectName/playground
+//   'STEP4_WAITING_PART2',
+// -> route: http://domain/projectName/playground
+//   'STEP4_CLICK_TEASER_STEP5',
+// -> route: http://domain/projectName/playground
+//   'STEP5_SELECT_EXAMPLE',
+// -> route: http://domain/projectName/playground
+//   'STEP5_WAITING',
+// -> route: http://domain/projectName/playground
+//   'STEP5_DONE',
+// -> route: http://domain/projectName/playground
+//   'STEP6_CLOSED',
+// -> route: http://domain/projectName/playground
+
+export function showCurrentStep(router: ReactRouter.InjectedRouter, params: any) {
+  return (dispatch, getState) => {
+    const {step} = getState().gettingStarted.gettingStartedState
+
+    console.log('showing current step', step)
+    switch (step) {
+      case 'STEP0_OVERVIEW':
+        break
+      case 'STEP1_CREATE_POST_MODEL':
+        break
+      case 'STEP2_CLICK_CREATE_FIELD_IMAGEURL':
+        router.push(`/${params.projectName}/models/Post/schema`)
+        break
+      case 'STEP2_ENTER_FIELD_NAME_IMAGEURL':
+        router.push(`/${params.projectName}/models/Post/schema/create`)
+        break
+      case 'STEP2_SELECT_TYPE_IMAGEURL':
+        router.push(`/${params.projectName}/models/Post/schema/create`)
+        break
+      case 'STEP2_CLICK_CONFIRM_IMAGEURL':
+        router.push(`/${params.projectName}/models/Post/schema/create`)
+        break
+      case 'STEP2_CREATE_FIELD_DESCRIPTION':
+        router.push(`/${params.projectName}/models/Post/schema`)
+        break
+      case 'STEP3_CLICK_DATA_BROWSER':
+        router.push(`/${params.projectName}/models/Post/schema`)
+        break
+      case 'STEP3_CLICK_ADD_NODE1':
+        dispatch(forceShowNewRow())
+        router.push(`/${params.projectName}/models/Post/databrowser`)
+        break
+      case 'STEP3_CLICK_ENTER_IMAGEURL':
+        dispatch(forceShowNewRow())
+        router.push(`/${params.projectName}/models/Post/databrowser`)
+        break
+      case 'STEP3_CLICK_ENTER_DESCRIPTION':
+        dispatch(forceShowNewRow())
+        router.push(`/${params.projectName}/models/Post/databrowser`)
+        break
+      case 'STEP3_CLICK_SAVE_NODE1':
+        dispatch(forceShowNewRow())
+        router.push(`/${params.projectName}/models/Post/databrowser`)
+        break
+      case 'STEP3_CLICK_ADD_NODE2':
+        router.push(`/${params.projectName}/models/Post/databrowser`)
+        break
+      case 'STEP4_CLICK_PLAYGROUND':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP4_CLICK_BEGIN_PART1':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP4_WAITING_PART1':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP4_CLICK_TEASER_PART2':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP4_CLICK_BEGIN_PART2':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP4_WAITING_PART2':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP4_CLICK_TEASER_STEP5':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP5_SELECT_EXAMPLE':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP5_WAITING':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP5_DONE':
+        router.push(`/${params.projectName}/playground`)
+        break
+      case 'STEP6_CLOSED':
+        break
+    }
   }
 }

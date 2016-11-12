@@ -81,6 +81,7 @@ class NewRowInactive extends React.Component<Props, State> {
                   width={351}
                   horizontal='left'
                   key='STEP3_CLICK_ADD_NODE2'
+                  zIndex={1000}
                 >
                   {this.renderField(field, index, fields)}
                 </Tether>
