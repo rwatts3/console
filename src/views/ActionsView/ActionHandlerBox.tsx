@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {classnames} from '../../utils/classnames'
 import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionHandlerBox.scss')

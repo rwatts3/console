@@ -1,6 +1,6 @@
 import * as React from 'react'
 import TemporaryNotification from '../TemporaryNotification/TemporaryNotification'
-import Icon from '../Icon/Icon'
+import {Icon} from 'graphcool-styles'
 
 interface Props {
   id: string

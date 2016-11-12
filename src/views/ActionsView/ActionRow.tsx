@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import Toggle from 'react-toggle-button'
 import { Action } from '../../types/types'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import UpdateActionMutation from '../../mutations/UpdateActionMutation'
 import DeleteActionMutation from '../../mutations/DeleteActionMutation'
 const classes: any = require('./ActionRow.scss')

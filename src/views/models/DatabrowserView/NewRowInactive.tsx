@@ -2,7 +2,7 @@ import * as React from 'react'
 import {connect} from 'react-redux'
 import {toggleNewRow} from '../../../actions/databrowser/ui'
 import {Model, Field} from '../../../types/types'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {classnames} from '../../../utils/classnames'
 import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')

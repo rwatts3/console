@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {connect} from 'react-redux'
-import Icon from '../../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 const classes: any = require('./DeleteNodeRow.scss')
 import * as Immutable from 'immutable'
 import {clearNodeSelection} from '../../../../actions/databrowser/ui'

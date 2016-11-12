@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import {PermanentAuthToken} from '../../types/types'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import DeletePermanentAuthTokenMutation from '../../mutations/DeletePermanentAuthTokenMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {connect} from 'react-redux'

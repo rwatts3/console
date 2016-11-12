@@ -6,7 +6,7 @@ import Header from '../../components/Header/Header'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import ActionRow from './ActionRow'
 import ActionBoxes from './ActionBoxes'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import Helmet from 'react-helmet'
 const classes: any = require('./ActionsView.scss')
 import {$p} from 'graphcool-styles'

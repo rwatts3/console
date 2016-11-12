@@ -6,7 +6,7 @@ import {Project, Viewer} from '../../types/types'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import RelationRow from './RelationRow'
 import {Link} from 'react-router'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 const classes: any = require('./RelationsView.scss')
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'

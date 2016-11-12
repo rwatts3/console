@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {ShowNotificationCallback} from '../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'

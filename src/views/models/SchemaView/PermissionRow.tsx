@@ -13,7 +13,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 const classes: any = require('./PermissionRow.scss')
 
 interface Props {

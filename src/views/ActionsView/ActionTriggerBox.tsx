@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import ActionTrigger from './ActionTrigger'
 import Tooltip from 'rc-tooltip'

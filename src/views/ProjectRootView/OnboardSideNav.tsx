@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {nextStep, previousStep, skip, showCurrentStep} from '../../actions/gettingStarted'
 import {GettingStartedState} from '../../types/gettingStarted'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 
 interface Props {
   params: any

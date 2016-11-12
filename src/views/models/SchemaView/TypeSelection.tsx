@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { findDOMNode } from 'react-dom'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import ScrollBox from '../../../components/ScrollBox/ScrollBox'
 import ClickOutside from 'react-click-outside'
 const classes: any = require('./TypeSelection.scss')

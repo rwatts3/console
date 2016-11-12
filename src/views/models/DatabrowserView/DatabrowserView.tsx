@@ -15,7 +15,7 @@ import {
 import {Popup} from '../../../types/popup'
 import * as Immutable from 'immutable'
 import * as PureRenderMixin from 'react-addons-pure-render-mixin'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import {showNotification} from '../../../actions/notification'

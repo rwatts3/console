@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { findDOMNode } from 'react-dom'
 import Tooltip from 'rc-tooltip'
-import Icon from '../Icon/Icon'
+import {Icon} from 'graphcool-styles'
 const classes: any = require('./Help.scss')
 
 require('rc-tooltip/assets/bootstrap.css')
