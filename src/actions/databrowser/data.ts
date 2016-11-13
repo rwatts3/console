@@ -21,6 +21,20 @@ export function setItemCount(count: number) {
   }
 }
 
+export function increaseCountChange(modelName: string) {
+  return {
+    type: Constants.INCREASE_COUNT_CHANGE,
+    payload: modelName,
+  }
+}
+
+export function decreaseCountChange(modelName: string) {
+  return {
+    type: Constants.DECREASE_COUNT_CHANGE,
+    payload: modelName,
+  }
+}
+
 export const setNewRowShown = () => ({
   type: Constants.SET_NEW_ROW_SHOWN,
 })
@@ -120,6 +134,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
     const values = Object.keys(fieldValues).mapToObject(key => key, key => fieldValues[key].value)
 
     dispatch(addNodeRequest(Immutable.Map<string, any>(values)))
+    dispatch(increaseCountChange(model.name))
 
     return addRelayNode(lokka, model.name, fieldValues, fields)
       .then(res => {
@@ -140,6 +155,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
       })
       .catch((err) => {
         dispatch(mutationError())
+        dispatch(decreaseCountChange(model.name))
         if (err.rawError) {
           err.rawError.forEach(error => dispatch(showNotification({ message: error.message, level: 'error' })))
         }
@@ -189,6 +205,9 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
     dispatch(mutationRequest())
     dispatch(deleteNodes(ids))
     dispatch(clearNodeSelection())
+    for (let i = 0; i < ids.length; i++) {
+      dispatch(decreaseCountChange(modelName))
+    }
 
     return bluebird.map(ids, id => deleteNode(lokka, modelName, id), {
       concurrency: 5,
@@ -202,6 +221,9 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
       })
       .catch((err) => {
         dispatch(mutationError())
+        for (let i = 0; i < ids.length; i++) {
+          dispatch(increaseCountChange(modelName))
+        }
         if (err.rawError) {
           err.rawError.forEach((error) => this.props.showNotification({message: error.message, level: 'error'}))
         }

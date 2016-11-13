@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as Immutable from 'immutable'
 // import * as ReactDOM from 'react-dom'
 import * as Relay from 'react-relay'
 import {withRouter, Link} from 'react-router'
@@ -41,6 +42,7 @@ interface Props {
   showDonePopup: () => void
   showPopup: (popup: Popup) => void
   itemCount: number
+  countChanges: Immutable.Map<string, number>
 }
 
 interface State {
@@ -50,7 +52,6 @@ interface State {
   newModelIsValid: boolean
   modelsExpanded: boolean
   modelsFit: boolean
-  itemCounts: { [key: string]: number }
 }
 
 // Section (Models, Relations, Permissions, etc.)
@@ -167,7 +168,6 @@ export class SideNav extends React.Component<Props, State> {
       newModelIsValid: true,
       modelsExpanded: false,
       modelsFit: true,
-      itemCounts: {},
     }
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
@@ -188,20 +188,6 @@ export class SideNav extends React.Component<Props, State> {
   componentDidUpdate(prevProps) {
     if (this.props.models.length !== prevProps.models.length) {
       this.setModelsFit()
-    }
-  }
-
-  // ulgy hack, needed until Relay 2.0 is out.
-  // https://github.com/facebook/relay/issues/1311
-  // we add nodes in lokka/redux, it's hard to notify relay, so let's do it independent from relay
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.itemCount !== this.props.itemCount || nextProps.params.modelName !== this.props.params.modelName) {
-      const itemCounts = this.state.itemCounts
-      this.setState({
-        itemCounts: Object.assign({}, itemCounts, {
-          [this.props.params.modelName]: nextProps.itemCount,
-        }),
-      } as State)
     }
   }
 
@@ -519,7 +505,7 @@ export class SideNav extends React.Component<Props, State> {
                     >System</div>
                   )}
                 </div>
-                <div>{this.state.itemCounts[model.name] || model.itemCount}</div>
+                <div>{model.itemCount + (this.props.countChanges.get(model.name) || 0)}</div>
               </ListElement>
             ))}
           </div>
@@ -691,6 +677,7 @@ const ReduxContainer = connect(
   state => ({
     gettingStartedState: state.gettingStarted.gettingStartedState,
     itemCount: state.databrowser.data.itemCount,
+    countChanges: state.databrowser.data.countChanges,
   }),
   {
     nextStep,
