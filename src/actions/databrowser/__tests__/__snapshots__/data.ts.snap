@@ -114,7 +114,7 @@ Array [
     "type": "ADD_NODE_REQUEST",
   },
   Object {
-    "payload": "Artist",
+    "payload": "asldkaslkdj",
     "type": "INCREASE_COUNT_CHANGE",
   },
   Object {
@@ -250,7 +250,7 @@ Array [
     "type": "ADD_NODE_REQUEST",
   },
   Object {
-    "payload": "Artist",
+    "payload": "asldkaslkdj",
     "type": "INCREASE_COUNT_CHANGE",
   },
   Object {
@@ -296,7 +296,7 @@ Array [
     "type": "DATABROWSER_UI_CLEAR_NODE_SELECTION",
   },
   Object {
-    "payload": "Artist",
+    "payload": "asldkaslkdj",
     "type": "DECREASE_COUNT_CHANGE",
   },
   Object {
@@ -574,7 +574,7 @@ Array [
     "type": "ADD_NODE_REQUEST",
   },
   Object {
-    "payload": "Artist",
+    "payload": "asldkaslkdj",
     "type": "INCREASE_COUNT_CHANGE",
   },
   Object {

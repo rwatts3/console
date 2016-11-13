@@ -87,7 +87,7 @@ interface Props {
   selectCell: (position: GridPosition) => ReduxAction
   editCell: (position: GridPosition) => ReduxAction
   setNodeSelection: (ids: Immutable.List<string>) => ReduxAction
-  deleteSelectedNodes: (lokka: any, projectName: string, modeName: string) => ReduxThunk
+  deleteSelectedNodes: (lokka: any, projectName: string, modeName: string, model: Model) => ReduxThunk
   toggleNodeSelection: (id: string) => ReduxAction
   searchVisible: boolean
   selectedNodeIds: Immutable.List<string>
@@ -644,7 +644,12 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   private deleteSelectedNodes = () => {
     if (confirm(`Do you really want to delete ${this.props.selectedNodeIds.size} node(s)?`)) {
-      this.props.deleteSelectedNodes(this.lokka, this.props.params.projectName, this.props.params.modelName)
+      this.props.deleteSelectedNodes(
+        this.lokka,
+        this.props.params.projectName,
+        this.props.params.modelName,
+        this.props.model
+      )
     }
   }
 }
@@ -731,6 +736,7 @@ export default Relay.createContainer(MappedDatabrowserView, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         model: modelByName(projectName: $projectName, modelName: $modelName) {
+          id
           name
           namePlural
           itemCount

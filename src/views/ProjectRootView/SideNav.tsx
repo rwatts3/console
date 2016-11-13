@@ -505,7 +505,7 @@ export class SideNav extends React.Component<Props, State> {
                     >System</div>
                   )}
                 </div>
-                <div>{model.itemCount + (this.props.countChanges.get(model.name) || 0)}</div>
+                <div>{model.itemCount + (this.props.countChanges.get(model.id) || 0)}</div>
               </ListElement>
             ))}
           </div>
