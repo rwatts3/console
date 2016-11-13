@@ -33,15 +33,24 @@ const operations = [
 ]
 
 const Placeholder = styled.div`
+  top: 50%;
+  transform: translateY(-50%);
   left: -10px;
 `
 
 const OperationButton = styled.div`
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   &:not(.${$p.bgBlue}):hover {
     background-color: ${variables.gray04};
     position: absolute;
     padding: 6px;
   }
+`
+
+const Operations = styled.div`
+  height: 35px;
 `
 
 export default class OperationChooser extends React.Component<Props, {}> {
@@ -56,7 +65,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
           <h2 className={cx($p.fw3, $p.mb10)}>Operation</h2>
           <div className={$p.black50}>The Operation that needs to be restricted by the permission</div>
         </div>
-        <div
+        <Operations
           className={cx(
             $p.bgBlack04,
             $p.flex,
@@ -80,8 +89,8 @@ export default class OperationChooser extends React.Component<Props, {}> {
               onClick={() => setOperation(operation.operation as Operation)}
             >
               <OperationButton
-                className={cx($p.nowrap, $p.flex, $p.flexRow, $p.itemsCenter, {
-                  [cx($p.bgBlue, $p.br2, $p.absolute, $p.ph10, $p.pv8)]: operation.operation === selectedOperation,
+                className={cx($p.nowrap, $p.flex, $p.flexRow, $p.itemsCenter, $p.absolute, {
+                  [cx($p.bgBlue, $p.br2, $p.ph10, $p.pv8)]: operation.operation === selectedOperation,
                 })}
               >
                 <Icon
@@ -104,7 +113,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
               </OperationButton>
             </div>
           ))}
-        </div>
+        </Operations>
       </div>
     )
   }
