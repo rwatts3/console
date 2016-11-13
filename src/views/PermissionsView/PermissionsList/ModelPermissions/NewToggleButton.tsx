@@ -51,7 +51,7 @@ export default class NewToggleButton extends React.Component<Props, {}> {
         <ToggleInput
           type='checkbox'
           className={$p.dn}
-          defaultChecked={this.props.defaultChecked}
+          checked={this.props.defaultChecked}
           onChange={this.props.onChange}
         />
         <Slider className={cx(
