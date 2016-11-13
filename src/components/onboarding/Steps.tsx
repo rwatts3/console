@@ -69,8 +69,9 @@ export default class Steps extends React.Component<Props, State> {
             {React.Children.map(this.props.children, (child, i) => (
               <Dot
                 className={cx(
-                  $p.br100, $p.ml10, $p.pointer,
+                  $p.br100, $p.pointer,
                   {
+                    [$p.ml10]: i !== 0,
                     [$p.bgGreen]: i === activeIndex,
                     [$p.bgGreen30]: i !== activeIndex,
                   }

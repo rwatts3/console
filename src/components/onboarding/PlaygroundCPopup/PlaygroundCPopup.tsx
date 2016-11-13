@@ -128,8 +128,10 @@ class PlaygroundCPopup extends React.Component<Props, State> {
               pointerEvents: 'all',
             }}
             onMouseLeave={() => this.setState({ mouseOver: false })}
-            onMouseEnter={() => this.setState({ mouseOver: true })}
-            onClick={(e: any) => {
+            onMouseEnter={() => {
+              this.setState({ mouseOver: true })
+            }}
+            onMouseOver={(e: any) => {
               if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')) {
                 this.props.nextStep()
               }
@@ -235,6 +237,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                     (e: any) => {
                       e.preventDefault()
                       // we need to skip the 'STEP5_WAITING' step
+                      this.props.nextStep()
                       this.props.nextStep()
                       this.props.nextStep()
                     }

@@ -32,6 +32,13 @@ const NextButton = styled.button`
   right: 25px;
 `
 
+const TopWrapper = styled.div`
+  i {
+    flex-direction: row;
+    justify-content: center;
+  }
+`
+
 class PlaygroundBPopup extends React.Component<Props, State> {
 
   state = {
@@ -68,7 +75,7 @@ class PlaygroundBPopup extends React.Component<Props, State> {
           className='flex justify-center items-center w-100'
           style={{
             transition: 'height 0.5s ease',
-            height: hovering ? '100%' : mouseOver ? '200%' : '230%',
+            height: hovering ? '100%' : mouseOver ? '180%' : '200%',
             pointerEvents: hovering ? 'all' : 'none',
             cursor: hovering ? 'auto' : 'pointer',
           }}
@@ -88,6 +95,16 @@ class PlaygroundBPopup extends React.Component<Props, State> {
               }
             }}
           >
+            <TopWrapper className={cx($p.flexRow, $p.justifyCenter, $p.w100, $p.pt25, $p.pb16)}>
+              <Icon
+                src={require('graphcool-styles/icons/stroke/arrowTop.svg')}
+                stroke={true}
+                color={variables.black}
+                strokeWidth={2}
+                width={24}
+                height={24}
+              />
+            </TopWrapper>
             <Steps ref='steps'>
 
               <div className='pa-25 pt-38 mb-60 tc pb-38'>
