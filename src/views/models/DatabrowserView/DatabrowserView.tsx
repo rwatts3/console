@@ -49,6 +49,7 @@ import {GridPosition} from '../../../types/databrowser/ui'
 import {classnames} from '../../../utils/classnames'
 import throttle from 'lodash.throttle'
 import {LightCell} from './LightCell'
+import tracker from '../../../utils/metrics'
 
 const DOCS_PREFIX = 'http://graph.cool/docs/reference/platform/system-artifacts'
 
@@ -160,8 +161,8 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   componentDidMount = () => {
-    analytics.track('models/databrowser: viewed', {
-      model: this.props.params.modelName,
+    tracker.track({
+      key: 'console/databrowser/viewed',
     })
 
     this.props.router.setRouteLeaveHook(this.props.route, () => {

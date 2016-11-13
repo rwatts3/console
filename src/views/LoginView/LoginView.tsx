@@ -9,10 +9,6 @@ interface State {
 
 export default class LoginView extends React.Component<Props, State> {
 
-  componentDidMount () {
-    analytics.track('login: viewed')
-  }
-
   render () {
     return (
       <Auth0LockWrapper initialScreen='login'/>

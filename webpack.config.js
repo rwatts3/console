@@ -92,8 +92,8 @@ module.exports = {
       __HEARTBEAT_ADDR__: false,
       __AUTH0_DOMAIN__: '"graphcool-customers-dev.auth0.com"',
       __AUTH0_CLIENT_ID__: '"2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm"',
-      __SEGMENT_TOKEN__: '"mxShPAuQCvtbX7K1u5xcmFeqz9X7S7HN"',
-      __ENABLE_SEGMENT__: false,
+      __METRICS_ENDPOINT__: '"https://api.graph.cool/simple/v1/cislqwo6e039e01171nzb9mxw"',
+      __GA_CODE__: '"UA-74131346-2"',
       __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
       'process.env': {
         'NODE_ENV': JSON.stringify('dev')

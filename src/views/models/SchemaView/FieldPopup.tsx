@@ -24,6 +24,7 @@ import {showNotification} from '../../../actions/notification'
 import {connect} from 'react-redux'
 import {nextStep, showDonePopup} from '../../../actions/gettingStarted'
 import {bindActionCreators} from 'redux'
+import tracker from '../../../utils/metrics'
 const classes: any = require('./FieldPopup.scss')
 
 require('react-tagsinput/react-tagsinput.css')
@@ -99,6 +100,16 @@ class FieldPopup extends React.Component<Props, State> {
     if (field && field.isSystem) {
       router.replace({
         pathname: `/${params.projectName}/models/${params.modelName}/schema`,
+      })
+    }
+
+    if (this.props.field) {
+      tracker.track({
+        key: 'console/schema/update-field/opened-popup',
+      })
+    } else {
+      tracker.track({
+        key: 'console/schema/create-field/opened-popup',
       })
     }
   }
@@ -429,11 +440,11 @@ class FieldPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/schema: created field', {
-            project: this.props.params.projectName,
-            model: this.props.params.modelName,
-            field: name,
+          tracker.track({
+            key: 'console/schema/create-field/completed',
+            name,
           })
+
           this.close()
         },
         onFailure: (transaction) => {
@@ -482,10 +493,9 @@ class FieldPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/schema: updated field', {
-            project: this.props.params.projectName,
-            model: this.props.params.modelName,
-            field: name,
+          tracker.track({
+            key: 'console/schema/update-field/completed',
+            name,
           })
 
           this.close()

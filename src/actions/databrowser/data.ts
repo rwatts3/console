@@ -13,6 +13,7 @@ import {sideNavSyncer} from '../../utils/sideNavSyncer'
 import * as bluebird from 'bluebird'
 import {GridPosition} from '../../types/databrowser/ui'
 import {toggleNewRow} from '../../actions/databrowser/ui'
+import tracker from '../../utils/metrics'
 
 export function setItemCount(count: number) {
   return {
@@ -212,10 +213,10 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
     return bluebird.map(ids, id => deleteNode(lokka, modelName, id), {
       concurrency: 5,
     })
-      .then((res) => {
-        analytics.track('models/databrowser: deleted node', {
-          project: projectName,
-          model: modelName,
+      .then(() => {
+        tracker.track({
+          key: 'console/databrowser/delete-nodes-completed',
+          count: ids.length,
         })
         dispatch(mutationSuccess())
       })

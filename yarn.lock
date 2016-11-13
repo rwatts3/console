@@ -46,6 +46,10 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-ga":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@types/react-ga/-/react-ga-1.4.5.tgz#f0e1a498781dc794302ab0b0687fc54a0a8650a1"
+
 "@types/react-router@^2.0.36":
   version "2.0.38"
   resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-2.0.38.tgz#24a4612cfd97f6ddbf3b32e0c2c9b942899aa36d"
@@ -2849,6 +2853,10 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+graphcool-metrics:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.0.2.tgz#78f42d5cb350818bfa33d8288aa8b33c4a4eda32"
+
 graphcool-styles@0.0.46:
   version "0.0.46"
   resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.46.tgz#69abb173312376c0bd5234deb99e894065f57a3a"
@@ -5420,6 +5428,12 @@ react-deep-force-update@^1.0.0:
 "react-dom@^15.0.0 || ^16.0.0", react-dom@^15.2.1, react-dom@^15.3.2:
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
+
+react-ga:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.1.2.tgz#7af206c5e8761d7176e15773fe826acdb70ac653"
+  dependencies:
+    object-assign "^4.0.1"
 
 react-helmet@^3.1.0:
   version "3.1.0"

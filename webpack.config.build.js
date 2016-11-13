@@ -58,8 +58,8 @@ module.exports = {
       __HEARTBEAT_ADDR__: process.env.HEARTBEAT_ADDR ? JSON.stringify(process.env.HEARTBEAT_ADDR.toString()) : false,
       __AUTH0_DOMAIN__: JSON.stringify(process.env.AUTH0_DOMAIN.toString()),
       __AUTH0_CLIENT_ID__: JSON.stringify(process.env.AUTH0_CLIENT_ID.toString()),
-      __SEGMENT_TOKEN__: '"M96lXuD90ZxkbQEQG716aySwBLllabOn"',
-      __ENABLE_SEGMENT__: true,
+      __METRICS_ENDPOINT__: process.env.METRICS_ENDPOINT ? JSON.stringify(process.env.METRICS_ENDPOINT.toString()) : false,
+      __GA_CODE__: process.env.GA_CODE ? JSON.stringify(process.env.GA_CODE.toString()) : false,
       __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
       'process.env': {
         'NODE_ENV': JSON.stringify('production')

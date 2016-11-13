@@ -25,6 +25,7 @@ import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
 import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
+import tracker from './utils/metrics'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -50,7 +51,9 @@ const NodeQuery = {
 const render = ({ error, props, routerProps, element }) => {
   if (error) {
     const err = error.source.errors[0]
-    analytics.track('error', {
+
+    tracker.track({
+      key: 'console/unexpected-error',
       error: JSON.stringify(err),
     })
 
