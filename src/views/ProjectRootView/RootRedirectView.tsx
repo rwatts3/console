@@ -59,9 +59,10 @@ class RootRedirectView extends React.Component<Props, {}> {
           }),
         {
           onSuccess: () => {
-            analytics.track('global: created project', {
-              project: projectName,
-            })
+            // TODO migrate to tracker
+            // analytics.track('global: created project', {
+            //   project: projectName,
+            // })
             this.props.router.replace(`/${projectName}`)
           },
         })

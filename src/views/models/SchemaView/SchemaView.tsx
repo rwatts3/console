@@ -50,9 +50,10 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    analytics.track('models/schema: viewed', {
-      model: this.props.params.modelName,
-    })
+    // TODO migrate to tracker
+    // analytics.track('models/schema: viewed', {
+    //   model: this.props.params.modelName,
+    // })
   }
 
   render() {

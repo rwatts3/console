@@ -285,7 +285,8 @@ class PermissionRow extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/fields: deleted permission')
+            // TODO migrate to tracker
+            // analytics.track('models/fields: deleted permission')
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)

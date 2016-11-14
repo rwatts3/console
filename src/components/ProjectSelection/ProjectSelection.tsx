@@ -52,7 +52,8 @@ class ProjectSelection extends React.Component<Props, State> {
   _onSelectProject = () => {
     this._toggle()
 
-    analytics.track('sidenav: selected project')
+    // TODO migrate to tracker
+    // analytics.track('sidenav: selected project')
   }
 
   render () {

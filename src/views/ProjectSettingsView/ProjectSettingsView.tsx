@@ -216,7 +216,8 @@ class ProjectSettingsView extends React.Component<Props, State> {
     window.getSelection().removeAllRanges()
     window.getSelection().addRange(range)
 
-    analytics.track('header: projectid copied')
+    // TODO migrate to tracker
+    // analytics.track('header: projectid copied')
   }
 
 }

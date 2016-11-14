@@ -230,11 +230,12 @@ class FieldRow extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/schema: deleted field', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
-              field: this.props.field.name,
-            })
+            // TODO migrate to tracker
+            // analytics.track('models/schema: deleted field', {
+            //   project: this.props.params.projectName,
+            //   model: this.props.params.modelName,
+            //   field: this.props.field.name,
+            // })
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -260,7 +261,8 @@ class FieldRow extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/schema: edited description')
+          // TODO migrate to tracker
+          // analytics.track('models/schema: edited description')
 
           this.setState({
             editDescription: false,

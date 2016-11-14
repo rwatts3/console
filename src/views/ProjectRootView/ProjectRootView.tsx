@@ -72,9 +72,10 @@ class ProjectRootView extends React.Component<Props, {}> {
         })
       }
     } else {
-      analytics.identify({
-        'Product': 'Dashboard',
-      })
+      // TODO migrate to tracker
+      // analytics.identify({
+      //   'Product': 'Dashboard',
+      // })
     }
   }
 
@@ -90,13 +91,16 @@ class ProjectRootView extends React.Component<Props, {}> {
       this.updateForceFetching()
 
       if (gettingStartedSkipped) {
-        analytics.track(`getting-started: skipped at ${prevGettingStarted}`)
+        // TODO migrate to tracker
+        // analytics.track(`getting-started: skipped at ${prevGettingStarted}`)
       } else {
-        analytics.track(`getting-started: finished ${prevGettingStarted}`)
+        // TODO migrate to tracker
+        // analytics.track(`getting-started: finished ${prevGettingStarted}`)
       }
-      analytics.identify(this.props.user.id, {
-        'Getting Started Status': gettingStarted,
-      })
+      // TODO migrate to tracker
+      // analytics.identify(this.props.user.id, {
+      //   'Getting Started Status': gettingStarted,
+      // })
     } else if (this.props.pollGettingStartedOnboarding !== prevProps.pollGettingStartedOnboarding) {
       this.updateForceFetching()
     }
@@ -204,9 +208,10 @@ class ProjectRootView extends React.Component<Props, {}> {
         }),
         {
           onSuccess: () => {
-            analytics.track('sidenav: created project', {
-              project: projectName,
-            })
+            // TODO migrate to tracker
+            // analytics.track('sidenav: created project', {
+            //   project: projectName,
+            // })
             this.props.router.replace(`${projectName}`)
           },
         }

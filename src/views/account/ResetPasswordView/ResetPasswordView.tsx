@@ -37,9 +37,10 @@ export default class ResetPasswordView extends React.Component<{}, State> {
           cookiestore.set('graphcool_customer_id', response.resetPassword.user.id)
           updateNetworkLayer()
 
-          analytics.track('reset-password', () => {
-            window.location.href = '/'
-          })
+          // TODO migrate to tracker
+          // analytics.track('reset-password', () => {
+          //   window.location.href = '/'
+          // })
         },
         onFailure: (transaction) => {
           alert(transaction.getError())
