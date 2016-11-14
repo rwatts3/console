@@ -33,7 +33,12 @@ export class CodeGenerator {
 
     return `
 const client = new Lokka({
-  transport: new Transport('${this.endpointUrl}')
+  transport: new Transport(
+    '${this.endpointUrl}',
+    // {
+    //   Authorization: 'Bearer YOUR_AUTH_TOKEN',
+    // }
+   )
 });
 `
     }
@@ -71,7 +76,7 @@ require('isomorphic-fetch')
     if (this.client === 'lokka') {
       return `function getItems() {
   return client.query(\`
-  ${query.split('\n').map((line, i) => (i !== 0 ? '    ' : '') + line).join('\n')}
+  ${query.split('\n').map((line, i) => '    ' + line).join('\n')}
   \`)
 }`
     }
@@ -100,10 +105,13 @@ require('isomorphic-fetch')
   }
 
   private getMutation(query: string) {
+    const curlyIndex = query.indexOf('{')
+
+    const strippedQuery = query.slice(curlyIndex, query.length)
     if (this.client === 'lokka') {
       return `function setItem() {
 return client.mutate(\`
-  ${query.split('\n').map((line, i) => (i !== 0 ? '    ' : '') + line).join('\n')}
+${strippedQuery.split('\n').map((line, i) => '    ' + line).join('\n')}
   \`)
 }`
     }
