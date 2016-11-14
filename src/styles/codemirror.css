@@ -1,0 +1,4 @@
+.code-generation-popup .CodeMirror {
+    height: auto !important;
+    padding: 10px;
+}

@@ -1,5 +1,6 @@
 import {Step} from './gettingStarted'
 
+
 interface RelayConnection<T> {
   edges: RelayEdge<T>[]
 }
@@ -31,6 +32,9 @@ export interface CrmCustomerInformation {
   name: string
   email: string
 }
+
+export type Environment = 'Node' | 'Browser'
+export type GraphQLClient = 'fetch' | 'lokka' | 'relay' | 'apollo'
 
 export type Example = 'ReactRelay' | 'ReactApollo' | 'AngularApollo'
 

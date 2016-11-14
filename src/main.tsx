@@ -24,6 +24,7 @@ import logger from 'redux-logger'
 import loadAnalytics from './utils/analytics'
 
 import './utils/polyfils'
+import {reduceCodeGeneration} from './reducers/codeGeneration'
 
 if (__HEARTBEAT_ADDR__ && cookiestore.has('graphcool_auth_token')) {
   drumstick.start({
@@ -53,6 +54,7 @@ const reducers: StateTree = combineReducers({
     data: reduceDataBrowserData,
     ui: reduceDataBrowserUI,
   }),
+  codeGeneration: reduceCodeGeneration,
 })
 
 let middlewares = [thunk.default]

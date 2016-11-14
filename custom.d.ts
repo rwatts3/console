@@ -38,6 +38,7 @@ declare module 'lodash.pick'
 declare module 'lodash.throttle'
 declare module 'lodash.isequal'
 declare module 'auth0-lock'
+declare module 'react-codemirror'
 
 declare var Smooch: any
 declare var analytics: any

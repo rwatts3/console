@@ -1612,6 +1612,10 @@ code-point-at@^1.0.0:
   dependencies:
     number-is-nan "^1.0.0"
 
+codemirror, codemirror@^5.13.4:
+  version "5.20.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.20.2.tgz#918e0ece96d57a99030b2f8b33011284bed5217a"
+
 codemirror-graphql@^0.5.7:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.5.7.tgz#5165eb08e2a85f8e754be3b946487262098be208"
@@ -4008,6 +4012,10 @@ lodash.curry@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.curry/-/lodash.curry-4.1.1.tgz#248e36072ede906501d75966200a86dab8b23170"
 
+lodash.debounce@^4.0.4:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+
 lodash.deburr@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.deburr/-/lodash.deburr-3.2.0.tgz#6da8f54334a366a7cf4c4c76ef8d80aa1b365ed5"
@@ -5392,6 +5400,14 @@ react-base16-styling@^0.4.3, react-base16-styling@^0.4.6:
 "react-click-outside@github:tj/react-click-outside":
   version "1.1.0"
   resolved "https://codeload.github.com/tj/react-click-outside/tar.gz/82d51114d841a151e6285ac542d6fd98690910e6"
+
+react-codemirror:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/react-codemirror/-/react-codemirror-0.2.6.tgz#e71e35717ce6effae68df1dbf2b5a75b84a44f84"
+  dependencies:
+    classnames "^2.2.3"
+    codemirror "^5.13.4"
+    lodash.debounce "^4.0.4"
 
 react-copy-to-clipboard@^4.2.1:
   version "4.2.3"
