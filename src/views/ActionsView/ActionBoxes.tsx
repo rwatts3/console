@@ -9,8 +9,7 @@ import {
   ActionHandlerType,
 } from '../../types/types'
 import { buildClientSchema } from 'graphql'
-import {particles, variables} from 'graphcool-styles'
-import * as cx from 'classnames'
+import {particles, variables, $p} from 'graphcool-styles'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
 import AddActionMutation from '../../mutations/AddActionMutation'
@@ -21,6 +20,7 @@ import { UpdateTriggerPayload } from './ActionTriggerBox'
 import { UpdateHandlerPayload } from './ActionHandlerBox'
 import { isValidUrl } from '../../utils/utils'
 const classes: any = require('./ActionBoxes.scss')
+import * as cx from 'classnames'
 
 interface Props {
   action?: Action
@@ -133,32 +133,39 @@ class ActionBoxes extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <div>
-          {!this.props.action &&
-          <div className={cx(
-            classes.header,
-            particles.flex,
-            particles.justifyBetween,
-          )}>
-
-            <div className={cx(
-              particles.contentStart,
-            )}>
-              New Mutation Callback
-            </div>
-            <div className={cx(
+          <div
+            className={cx(
+              classes.header,
               particles.flex,
               particles.justifyBetween,
-            )}>
-
-              <DeleteButton className={cx(
-                particles.mr25,
-              )
-
-            } onClick={this.cancel}>Cancel</DeleteButton>
+            )}
+          >
+            <div
+              className={cx(
+                particles.contentStart,
+              )}
+            >
+              {!this.props.action ?
+                'New Mutation Callback' : 'Edit Mutation Callback'
+              }
+            </div>
+            <div
+              className={cx(
+                particles.flex,
+                particles.justifyBetween,
+              )}
+            >
+              <DeleteButton
+                className={cx(
+                  particles.mr25,
+                )}
+                onClick={this.cancel}
+              >
+                Cancel
+              </DeleteButton>
               {this.renderConfirm()}
             </div>
           </div>
-          }
           <input
             className={classes.description}
             placeholder={'+ Add Description'}
@@ -304,7 +311,19 @@ class ActionBoxes extends React.Component<Props, State> {
     }
 
     return (
-      <div onClick={this.submit}>Confirm</div>
+      <div
+        className={cx(
+          $p.pa16,
+          $p.f16,
+          $p.white,
+          $p.br2,
+          $p.bgGreen,
+          $p.pointer,
+        )}
+        onClick={this.submit}
+      >
+        Confirm
+      </div>
     )
   }
 }
