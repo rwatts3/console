@@ -629,10 +629,11 @@ export class SideNav extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('sidenav: created model', {
-              project: this.props.params.projectName,
-              model: modelName,
-            })
+            // TODO migrate to tracker
+            // analytics.track('sidenav: created model', {
+            //   project: this.props.params.projectName,
+            //   model: modelName,
+            // })
             // getting-started onboarding step
             if (
               modelName === 'Post' &&

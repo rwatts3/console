@@ -255,10 +255,11 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('model renamed', {
-              project: this.props.params.projectName,
-              model: modelName,
-            })
+            // TODO migrate to tracker
+            // analytics.track('model renamed', {
+            //   project: this.props.params.projectName,
+            //   model: modelName,
+            // })
             redirect()
           },
           onFailure: (transaction) => {

@@ -51,7 +51,7 @@ import throttle from 'lodash.throttle'
 import {LightCell} from './LightCell'
 import tracker from '../../../utils/metrics'
 
-const DOCS_PREFIX = 'http://graph.cool/docs/reference/platform/system-artifacts'
+const DOCS_PREFIX = 'https://docs.graph.cool/reference/platform/system-artifacts'
 
 interface Props {
   relay: Relay.RelayProp

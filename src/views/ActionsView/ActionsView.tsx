@@ -118,7 +118,7 @@ class ActionsView extends React.Component<Props, State> {
                           $p.pointer,
                           $p.db,
                         )}
-                        href='http://graph.cool/docs/reference/platform/mutation-callbacks'
+                        href='https://docs.graph.cool/reference/platform/mutation-callbacks'
                         target='_blank'
                       >
                         Docs

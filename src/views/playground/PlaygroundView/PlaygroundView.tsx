@@ -146,9 +146,10 @@ class PlaygroundView extends React.Component<Props, State> {
   }
 
   componentDidMount () {
-    analytics.track('playground: viewed', {
-      project: this.props.params.projectName,
-    })
+    // TODO migrate to tracker
+    // analytics.track('playground: viewed', {
+    //   project: this.props.params.projectName,
+    // })
   }
 
   render () {
@@ -183,10 +184,11 @@ class PlaygroundView extends React.Component<Props, State> {
             }
           }
 
-          analytics.track('playground: run', {
-            project: this.props.params.projectName,
-            endpoint: this.state.selectedEndpoint,
-          })
+          // TODO migrate to tracker
+          // analytics.track('playground: run', {
+          //   project: this.props.params.projectName,
+          //   endpoint: this.state.selectedEndpoint,
+          // })
 
           // save query for query history
           const query = {
@@ -344,10 +346,11 @@ class PlaygroundView extends React.Component<Props, State> {
     this.setState({ selectedEndpoint } as State)
     window.localStorage.setItem('SELECTED_ENDPOINT', selectedEndpoint)
 
-    analytics.track('playground: endpoint changed', {
-      project: this.props.params.projectName,
-      endpoint: selectedEndpoint,
-    })
+    // TODO migrate to tracker
+    // analytics.track('playground: endpoint changed', {
+    //   project: this.props.params.projectName,
+    //   endpoint: selectedEndpoint,
+    // })
   }
 
   private changeUser = (e) => {
@@ -368,10 +371,11 @@ class PlaygroundView extends React.Component<Props, State> {
               selectedUserToken: response.signinClientUser.token,
             } as State)
 
-            analytics.track('playground: user changed', {
-              project: this.props.params.projectName,
-              customerId: selectedUserId,
-            })
+            // TODO migrate to tracker
+            // analytics.track('playground: user changed', {
+            //   project: this.props.params.projectName,
+            //   customerId: selectedUserId,
+            // })
           },
           onFailure: (transaction) => {
             alert(transaction.getError())
