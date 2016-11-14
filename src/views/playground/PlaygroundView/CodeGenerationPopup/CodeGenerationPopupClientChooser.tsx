@@ -15,8 +15,8 @@ const ConditionButton = styled.div`
 const clients = [
   'lokka',
   'fetch',
-  'apollo',
-  'relay',
+  // 'apollo',
+  // 'relay',
 ]
 
 const Chooser = (props) => (
@@ -48,6 +48,7 @@ const Chooser = (props) => (
                 className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
                 onClick={() => props.setClient(env)}
                 style={{width: width + 15}}
+                key={env}
               >
                 <ConditionButton
                   className={cx($p.nowrap, $p.absolute, $p.ph10, $p.flex, $p.flexRow, $p.itemsCenter, {

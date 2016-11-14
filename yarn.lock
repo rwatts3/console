@@ -1612,13 +1612,13 @@ code-point-at@^1.0.0:
   dependencies:
     number-is-nan "^1.0.0"
 
-codemirror, codemirror@^5.13.4:
+codemirror-graphql@^0.5.8:
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.5.8.tgz#b57a56841b32fb571919f116ba6ee0c7fb97a581"
+
+codemirror@^5.13.4:
   version "5.20.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.20.2.tgz#918e0ece96d57a99030b2f8b33011284bed5217a"
-
-codemirror-graphql@^0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.5.7.tgz#5165eb08e2a85f8e754be3b946487262098be208"
 
 codemirror@^5.15.2:
   version "5.19.0"
@@ -2862,12 +2862,12 @@ graphcool-styles@0.0.46:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphiql@^0.7.3:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-0.7.8.tgz#b8765d542ff6c3d51e67325a262c32dfc0f4becb"
+graphiql:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-0.8.0.tgz#9a6ff1ca15dec23d5981967735bb2ea465271b1e"
   dependencies:
     codemirror "^5.15.2"
-    codemirror-graphql "^0.5.7"
+    codemirror-graphql "^0.5.8"
     marked "^0.3.5"
 
 graphql-config-parser@^1.1.1:

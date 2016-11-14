@@ -13,7 +13,6 @@ import {closePopup} from '../../../../actions/popup'
 
 interface Props {
   query?: string
-  mutation?: string
   params: any
   router: ReactRouter.InjectedRouter
   closePopup: (id: string) => void
@@ -25,9 +24,13 @@ const Container = styled.div`
   width: 800px;
 `
 
+const ContainerWrapper = styled.div`
+  max-height: 100vh;
+`
+
 class CodeGenerationPopup extends React.Component<Props, {}> {
   render() {
-    const {query, mutation, params, id, endpointUrl} = this.props
+    const {query, params, id, endpointUrl} = this.props
     const queryActive = query && query.length > 0
     return (
       <PopupWrapper
@@ -43,13 +46,12 @@ class CodeGenerationPopup extends React.Component<Props, {}> {
             $p.overflowHidden,
           )}
         >
-          <div className={cx($p.h100, $p.overflowScroll)}>
+          <ContainerWrapper className={cx($p.overflowScroll, $p.buttonShadow)}>
             <Container
               className={cx(
                 $p.bgWhite,
                 $p.br2,
                 $p.flex,
-                $p.buttonShadow,
                 $p.flexColumn,
                 $p.overflowXHidden,
               )}
@@ -63,10 +65,9 @@ class CodeGenerationPopup extends React.Component<Props, {}> {
               <CodeGenerationPopupCode
                 endpointUrl={endpointUrl}
                 query={query}
-                mutation={mutation}
               />
             </Container>
-          </div>
+          </ContainerWrapper>
         </div>
       </PopupWrapper>
     )

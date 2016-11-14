@@ -430,7 +430,6 @@ class PlaygroundView extends React.Component<Props, State> {
       element: (
         <CodeGenerationPopup
           query={lastQuery}
-          mutation=''
           params={params}
           id={this.id}
           endpointUrl={this.getEndpoint()}

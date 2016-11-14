@@ -46,6 +46,7 @@ const Chooser = (props) => (
                 className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
                 onClick={() => props.setEnvironment(env)}
                 style={{width: width + 15}}
+                key={env}
               >
                 <ConditionButton
                   className={cx($p.nowrap, $p.absolute, $p.ph10, $p.flex, $p.flexRow, $p.itemsCenter, {
