@@ -13,11 +13,26 @@ import {sideNavSyncer} from '../../utils/sideNavSyncer'
 import * as bluebird from 'bluebird'
 import {GridPosition} from '../../types/databrowser/ui'
 import {toggleNewRow} from '../../actions/databrowser/ui'
+import tracker from '../../utils/metrics'
 
 export function setItemCount(count: number) {
   return {
     type: Constants.SET_ITEMCOUNT,
     payload: count,
+  }
+}
+
+export function increaseCountChange(modelName: string) {
+  return {
+    type: Constants.INCREASE_COUNT_CHANGE,
+    payload: modelName,
+  }
+}
+
+export function decreaseCountChange(modelName: string) {
+  return {
+    type: Constants.DECREASE_COUNT_CHANGE,
+    payload: modelName,
   }
 }
 
@@ -120,6 +135,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
     const values = Object.keys(fieldValues).mapToObject(key => key, key => fieldValues[key].value)
 
     dispatch(addNodeRequest(Immutable.Map<string, any>(values)))
+    dispatch(increaseCountChange(model.id))
 
     return addRelayNode(lokka, model.name, fieldValues, fields)
       .then(res => {
@@ -140,6 +156,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
       })
       .catch((err) => {
         dispatch(mutationError())
+        dispatch(decreaseCountChange(model.id))
         if (err.rawError) {
           err.rawError.forEach(error => dispatch(showNotification({ message: error.message, level: 'error' })))
         }
@@ -181,7 +198,7 @@ export function updateNodeAsync(lokka: any,
   }
 }
 
-export function deleteSelectedNodes(lokka: any, projectName: string, modelName: string): ReduxThunk {
+export function deleteSelectedNodes(lokka: any, projectName: string, modelName: string, model: Model): ReduxThunk {
   return (dispatch, getState) => {
     const { selectedNodeIds } = getState().databrowser.ui
     const ids = selectedNodeIds.toArray()
@@ -189,19 +206,25 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
     dispatch(mutationRequest())
     dispatch(deleteNodes(ids))
     dispatch(clearNodeSelection())
+    for (let i = 0; i < ids.length; i++) {
+      dispatch(decreaseCountChange(model.id))
+    }
 
     return bluebird.map(ids, id => deleteNode(lokka, modelName, id), {
       concurrency: 5,
     })
-      .then((res) => {
-        analytics.track('models/databrowser: deleted node', {
-          project: projectName,
-          model: modelName,
+      .then(() => {
+        tracker.track({
+          key: 'console/databrowser/delete-nodes-completed',
+          count: ids.length,
         })
         dispatch(mutationSuccess())
       })
       .catch((err) => {
         dispatch(mutationError())
+        for (let i = 0; i < ids.length; i++) {
+          dispatch(increaseCountChange(model.id))
+        }
         if (err.rawError) {
           err.rawError.forEach((error) => this.props.showNotification({message: error.message, level: 'error'}))
         }

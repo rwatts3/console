@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {ReduxAction} from '../../types/reducers'
@@ -15,14 +16,16 @@ interface Props {
 }
 
 interface State {
-  modelName: string
   showError: boolean
 }
 
 class AddModelPopup extends React.Component<Props, State> {
 
+  refs: {
+    input: HTMLInputElement,
+  }
+
   state = {
-    modelName: '',
     showError: false,
   }
 
@@ -118,9 +121,9 @@ class AddModelPopup extends React.Component<Props, State> {
                 type='text'
                 autoFocus
                 placeholder='New Model...'
-                value={this.state.modelName}
-                onChange={e => this.setState({modelName: e.target.value} as State)}
+                defaultValue=''
                 onKeyDown={e => e.keyCode === 13 && this.saveModel()}
+                ref='input'
               />
             </div>
 
@@ -147,7 +150,7 @@ class AddModelPopup extends React.Component<Props, State> {
   }
 
   private saveModel = () => {
-    const { modelName } = this.state
+    const modelName = (ReactDOM.findDOMNode(this.refs.input) as HTMLInputElement).value
     if (modelName != null && !validateModelName(modelName)) {
       this.setState({showError: true} as State)
       return

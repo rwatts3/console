@@ -23,6 +23,7 @@ import cuid from 'cuid'
 import {Popup} from '../../types/popup'
 import {showPopup} from '../../actions/popup'
 import {SYSTEM_MODELS} from '../../constants/system'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
 
@@ -280,9 +281,9 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/schema: deleted model', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
+            tracker.track({
+              key: 'console/schema/delete-model-completed',
+              name: this.props.model.name,
             })
           },
           onFailure: (transaction) => {
@@ -315,26 +316,26 @@ export default Relay.createContainer(ReduxContainer, {
   initialVariables: {
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                ${Header.getFragment('viewer')}
-            }
-        `,
-        project: () => Relay.QL`
-            fragment on Project {
-                ${Header.getFragment('project')}
-                ${AuthProviderPopup.getFragment('project')}
-            }
-        `,
-        model: () => Relay.QL`
-            fragment on Model {
-                id
-                name
-                itemCount
-                isSystem
-                ${ModelDescription.getFragment('model')}
-            }
-        `,
-    },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        ${Header.getFragment('viewer')}
+      }
+    `,
+    project: () => Relay.QL`
+      fragment on Project {
+        ${Header.getFragment('project')}
+        ${AuthProviderPopup.getFragment('project')}
+      }
+    `,
+    model: () => Relay.QL`
+      fragment on Model {
+        id
+        name
+        itemCount
+        isSystem
+        ${ModelDescription.getFragment('model')}
+      }
+    `,
+  },
 })

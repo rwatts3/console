@@ -20,6 +20,7 @@ import {update} from '../../actions/gettingStarted'
 import {Viewer, Customer, Project} from '../../types/types'
 import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectRootView.scss')
 
 require('../../styles/core.scss')
@@ -58,12 +59,7 @@ class ProjectRootView extends React.Component<Props, {}> {
 
   componentWillMount() {
     if (this.props.isLoggedin) {
-      analytics.identify(this.props.user.id, {
-        name: this.props.user.crm.information.name,
-        email: this.props.user.crm.information.email,
-        'Getting Started Status': this.props.user.crm.onboardingStatus.gettingStarted,
-        'Product': 'Dashboard',
-      })
+      tracker.identify(this.props.user.id)
 
       if (Smooch) {
         Smooch.init({

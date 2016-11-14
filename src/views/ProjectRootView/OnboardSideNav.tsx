@@ -3,9 +3,9 @@ import {classnames} from '../../utils/classnames'
 import {withRouter} from 'react-router'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {nextStep, previousStep, skip} from '../../actions/gettingStarted'
+import {nextStep, previousStep, skip, showCurrentStep} from '../../actions/gettingStarted'
 import {GettingStartedState} from '../../types/gettingStarted'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 
 interface Props {
   params: any
@@ -14,6 +14,7 @@ interface Props {
   nextStep: () => Promise<any>
   previousStep: () => Promise<any>
   skip: () => Promise<any>
+  showCurrentStep: (router: ReactRouter.InjectedRouter, params: any) => void
 }
 
 interface StepData {
@@ -78,6 +79,12 @@ class OnboardSideNav extends React.Component<Props, {}> {
               Show task again
             </div>
             }
+            <div
+              className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer'
+              onClick={() => this.props.showCurrentStep(this.props.router, this.props.params)}
+            >
+              Continue in current Step
+            </div>
           </div>
           <div>
             <div className='f-16 black-50 mh-25 mb-25 lh-1-4'>
@@ -101,12 +108,13 @@ class OnboardSideNav extends React.Component<Props, {}> {
     return (
       <div
         className={classnames(
-          'flex black-30 mb-16 items-center w-100',
+          'flex black-30 mb-16 items-center w-100 pointer',
           {
-            'white': isActive,
+            'white pointer': isActive,
             'strike': isComplete,
           }
         )}
+        onClick={() => isActive && this.props.showCurrentStep(this.props.router, this.props.params)}
       >
         <div
           style={{ width: 23, height: 23, borderRadius: 11.5, fontSize: 12 }}
@@ -163,7 +171,7 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({nextStep, previousStep, skip}, dispatch)
+  return bindActionCreators({nextStep, previousStep, skip, showCurrentStep}, dispatch)
 }
 
 export default connect(

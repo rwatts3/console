@@ -9,7 +9,7 @@ import Cell from './Cell'
 import {TypedValue} from '../../../types/utils'
 import {Model, Field, TetherStep} from '../../../types/types'
 import {getFirstInputFieldIndex, getDefaultFieldValues} from '../utils'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {classnames} from '../../../utils/classnames'
 import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')

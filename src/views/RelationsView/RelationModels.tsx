@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
 import {Model} from '../../types/types'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {classnames} from '../../utils/classnames'
 const classes: any = require('./RelationModels.scss')
 

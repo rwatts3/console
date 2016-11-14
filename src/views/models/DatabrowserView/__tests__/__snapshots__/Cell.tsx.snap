@@ -16,7 +16,7 @@ exports[`test Cell renders and runs selectCell 1`] = `
       onKeyDown={[Function]}
       style={
         Object {
-          "cursor": "auto",
+          "cursor": "default",
         }
       }>
       some string

@@ -4,6 +4,7 @@ import * as lokka from 'lokka'
 import * as Immutable from 'immutable'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import {ActionRowState} from '../../../types/databrowser/actionrow'
+import {Model} from '../../../types/types'
 
 describe('async data actions', () => {
   const store = mockStore({
@@ -39,6 +40,7 @@ describe('async data actions', () => {
         loaded: Immutable.List<boolean>(),
         mutationActive: false,
         newRowShown: false,
+        countChanges: Immutable.Map<string, number>(),
       },
     },
     gettingStarted: {
@@ -104,6 +106,7 @@ describe('async data actions', () => {
     itemCount: 3,
     name: 'Artist',
     namePlural: 'Artists',
+    id: 'asldkaslkdj',
   }
 
   const fieldValues = {
@@ -181,6 +184,7 @@ describe('async data actions', () => {
         lokka,
         'some project',
         'Artist',
+        model as Model,
       ))
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()

@@ -2,7 +2,7 @@ import * as React from 'react'
 import {connect} from 'react-redux'
 import {toggleNewRow} from '../../../actions/databrowser/ui'
 import {Model, Field} from '../../../types/types'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {classnames} from '../../../utils/classnames'
 import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
@@ -57,7 +57,6 @@ class NewRowInactive extends React.Component<Props, State> {
             paddingLeft: 15,
           }}
         >
-          This is a system model. Nodes can only be added via the API.
         </div>
       ) : (
         <div
@@ -82,6 +81,7 @@ class NewRowInactive extends React.Component<Props, State> {
                   width={351}
                   horizontal='left'
                   key='STEP3_CLICK_ADD_NODE2'
+                  zIndex={1000}
                 >
                   {this.renderField(field, index, fields)}
                 </Tether>

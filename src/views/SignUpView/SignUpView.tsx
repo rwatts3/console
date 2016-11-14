@@ -2,7 +2,7 @@ import * as React from 'react'
 // import { Link } from 'react-router'
 import Auth0LockWrapper from '../../components/Auth0LockWrapper/Auth0LockWrapper'
 // import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
-// import Icon from '../../components/Icon/Icon'
+// import {Icon} from 'graphcool-styles'
 
 interface State {
   // name: string

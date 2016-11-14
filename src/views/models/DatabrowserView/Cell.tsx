@@ -288,7 +288,7 @@ export class Cell extends React.PureComponent<Props, State> {
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      cursor: default;
       border-radius: 2px;
       transition: color ${variables.duration} linear, background ${variables.duration} linear;
       top: 10px;
@@ -327,7 +327,7 @@ export class Cell extends React.PureComponent<Props, State> {
       <span
         className={classes.value}
         style={{
-          cursor: this.props.field.isReadonly ? 'auto' : 'pointer',
+          cursor: 'default',
         }}
         onKeyDown={this.onKeyDown}
       >

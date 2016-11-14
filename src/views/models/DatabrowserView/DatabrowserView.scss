@@ -130,7 +130,7 @@ $tableHeadExpanded: 100px;
 }
 
 .loadingOverlay {
-  top: calc(#{$headerHeight} + 1px);
+  top: calc(125px);
   height: calc(100% - 127px - 1px);
   left: 0;
   position: absolute;

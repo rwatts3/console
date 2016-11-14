@@ -14,13 +14,14 @@ interface Props {
 class ModelRedirectView extends React.Component<Props, {}> {
 
   componentWillMount() {
-    if (!this.props.model) {
+    const {model} = this.props
+    if (!model) {
       // redirect to project root, as this was probably a non-existing model
       this.props.router.replace(`/${this.props.params.projectName}/models`)
     } else {
       // redirect to browser if model already has nodes
-      const subView = this.props.model.itemCount === 0 ? 'schema' : 'databrowser'
-      this.props.router.replace(`/${this.props.params.projectName}/models/${this.props.model.name}/${subView}`)
+      const subView = (model.itemCount === 0 && !model.isSystem) ? 'schema' : 'databrowser'
+      this.props.router.replace(`/${this.props.params.projectName}/models/${model.name}/${subView}`)
     }
   }
 
@@ -59,6 +60,7 @@ export default Relay.createContainer(MappedModelRedirectView, {
             edges {
               node {
                 name
+                isSystem
                 itemCount
               }
             }

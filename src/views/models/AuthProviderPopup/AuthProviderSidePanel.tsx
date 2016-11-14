@@ -9,6 +9,8 @@ import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import {Project, AuthProvider, AuthProviderType} from '../../../types/types'
 import {ShowNotificationCallback} from '../../../types/utils'
+import * as cx from 'classnames'
+import {$p} from 'graphcool-styles'
 
 interface AuthText {
   title: string
@@ -53,8 +55,21 @@ interface Props {
   forceFetchRoot: () => void
 }
 
+interface AuthProviderErrors {
+  auth0: {
+    clientId: boolean
+    domain: boolean
+    clientSecret: boolean
+  }
+  digits: {
+    consumerKey: boolean
+    consumerSecret: boolean
+  }
+}
+
 interface State {
   authProvider: AuthProvider
+  errors: AuthProviderErrors
   hasChanged: boolean
 }
 
@@ -66,6 +81,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     this.state = {
       authProvider: this.getAuthProvider(props),
       hasChanged: false,
+      errors: this.initErrors(),
     }
   }
 
@@ -73,17 +89,17 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     this.setState({
       authProvider: this.getAuthProvider(props),
       hasChanged: false,
-    })
+    } as State)
   }
 
   render() {
-    const {authProvider} = this.state
+    const {authProvider, errors} = this.state
     const text = texts[this.props.selectedType]
 
     return (
       <div className='flex flex-column justify-between w-100'>
         <div className='flex flex-column'>
-          <div className='w-100 white pa-38 fw1 bg-black-80 relative'>
+          <div className='w-100 white pa-25 fw1 bg-black-80 relative'>
             {authProvider.isEnabled &&
             <div
               className='absolute pa-6 bg-accent white ttu br-1 fw5'
@@ -105,7 +121,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
             </div>
           </div>
           {authProvider.type === 'AUTH_PROVIDER_EMAIL' &&
-          <div className='flex w-100 bg-black-70 justify-between white pa-38'>
+          <div className='flex w-100 bg-black-70 justify-between white pa-25'>
             <div className='w-30 pr2 flex flex-column'>
               <div className='b mb-16 white-50'>
                 Generated Fields
@@ -139,7 +155,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
           </div>
           }
           {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
-          <div className='flex w-100 bg-black-70 justify-between white pa-38'>
+          <div className='flex w-100 bg-black-70 justify-between white pa-25'>
             <div className='w-30 pr2 flex flex-column'>
               <div className='b mb-16 white-50'>
                 Generated Fields
@@ -168,7 +184,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
           </div>
           }
           {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
-          <div className='pa-38 flex flex-column fw1'>
+          <div className='pa-25 flex flex-column fw1'>
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
               className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
@@ -178,6 +194,9 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onChange={(e: any) => this.setIn(['digits', 'consumerKey'], e.target.value)}
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
+            {errors.digits.consumerKey &&
+              <div className={cx($p.f12, $p.orange)}>The Consumer Key is required</div>
+            }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
               className='pa-16 bg-black-05 br-2 bn f-25'
@@ -187,10 +206,13 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onChange={(e: any) => this.setIn(['digits', 'consumerSecret'], e.target.value)}
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
+            {errors.digits.consumerSecret &&
+              <div className={cx($p.f12, $p.orange)}>The Consumer Secret is required</div>
+            }
           </div>
           }
           {authProvider.type === 'AUTH_PROVIDER_AUTH0' &&
-          <div className='flex w-100 bg-black-70 justify-between white pa-38'>
+          <div className='flex w-100 bg-black-70 justify-between white pa-25'>
             <div className='w-30 pr2 flex flex-column'>
               <div className='b mb-16 white-50'>
                 Generated Fields
@@ -229,6 +251,9 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onChange={(e: any) => this.setIn(['auth0', 'domain'], e.target.value)}
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
+            {errors.auth0.domain &&
+              <div className={cx($p.f12, $p.orange)}>The Domain is required</div>
+            }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
               className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
@@ -238,6 +263,9 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onChange={(e: any) => this.setIn(['auth0', 'clientId'], e.target.value)}
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
+            {errors.auth0.clientId &&
+              <div className={cx($p.f12, $p.orange)}>The Client ID is required</div>
+            }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
               className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
@@ -247,6 +275,9 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onChange={(e: any) => this.setIn(['auth0', 'clientSecret'], e.target.value)}
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
+            {errors.auth0.clientSecret &&
+              <div className={cx($p.f12, $p.orange)}>The Client Secret is required</div>
+            }
           </div>
           }
         </div>
@@ -277,11 +308,62 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     )
   }
 
+  private initErrors = () => {
+    return {
+      auth0: {
+        clientId: false,
+        domain: false,
+        clientSecret: false,
+      },
+      digits: {
+        consumerKey: false,
+        consumerSecret: false,
+      },
+    }
+  }
+
+  private validateAuthProvider = () => {
+    const {type, digits, auth0} = this.state.authProvider
+
+    let errors = this.initErrors()
+    let valid = true
+
+    if (type === 'AUTH_PROVIDER_DIGITS') {
+      if (!digits.consumerKey || digits.consumerKey.length === 0) {
+        errors.digits.consumerKey = true
+        valid = false
+      }
+      if (!digits.consumerSecret || digits.consumerSecret.length === 0) {
+        errors.digits.consumerSecret = true
+        valid = false
+      }
+    }
+
+    if (type === 'AUTH_PROVIDER_AUTH0') {
+      if (!auth0.domain || auth0.domain.length === 0) {
+        errors.auth0.domain = true
+        valid = false
+      }
+      if (!auth0.clientId || auth0.clientId.length === 0) {
+        errors.auth0.clientId = true
+        valid = false
+      }
+      if (!auth0.clientSecret || auth0.clientSecret.length === 0) {
+        errors.auth0.clientSecret = true
+        valid = false
+      }
+    }
+
+    this.setState({errors} as State)
+
+    return valid
+  }
+
   private setIn = (keyPath: string[], value: any): void => {
     this.setState({
       authProvider: Immutable.fromJS(this.state.authProvider).setIn(keyPath, value).toJS(),
       hasChanged: true,
-    })
+    } as State)
   }
 
   private getAuthProvider(props: Props): AuthProvider {
@@ -289,6 +371,10 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private enable = () => {
+    if (!this.validateAuthProvider()) {
+      return
+    }
+
     this.setState(
       {
         authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', true).toJS(),

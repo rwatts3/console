@@ -114,6 +114,10 @@ Array [
     "type": "ADD_NODE_REQUEST",
   },
   Object {
+    "payload": "asldkaslkdj",
+    "type": "INCREASE_COUNT_CHANGE",
+  },
+  Object {
     "payload": Object {
       "artwork": Object {
         "id": "cilr7v2hb004a0pl8hv92r3k4",
@@ -246,6 +250,10 @@ Array [
     "type": "ADD_NODE_REQUEST",
   },
   Object {
+    "payload": "asldkaslkdj",
+    "type": "INCREASE_COUNT_CHANGE",
+  },
+  Object {
     "payload": Object {
       "artwork": Object {
         "id": "cilr7v2hb004a0pl8hv92r3k4",
@@ -286,6 +294,10 @@ Array [
   },
   Object {
     "type": "DATABROWSER_UI_CLEAR_NODE_SELECTION",
+  },
+  Object {
+    "payload": "asldkaslkdj",
+    "type": "DECREASE_COUNT_CHANGE",
   },
   Object {
     "type": "MUTATION_SUCCESS",
@@ -560,6 +572,10 @@ Array [
       "name": "some name",
     },
     "type": "ADD_NODE_REQUEST",
+  },
+  Object {
+    "payload": "asldkaslkdj",
+    "type": "INCREASE_COUNT_CHANGE",
   },
   Object {
     "payload": Object {

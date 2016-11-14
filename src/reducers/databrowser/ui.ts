@@ -28,6 +28,10 @@ export function reduceUI(state: DataBrowserUIState = initialState, action: Redux
       return Object.assign({}, state, {
         newRowActive: false,
       })
+    case Constants.FORCE_SHOW_NEW_ROW:
+      return Object.assign({}, state, {
+        newRowActive: true,
+      })
     case Constants.TOGGLE_NEW_ROW:
       return Object.assign({}, state, {
         newRowActive: !state.newRowActive,

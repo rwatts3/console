@@ -6,9 +6,11 @@ import Header from '../../components/Header/Header'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import ActionRow from './ActionRow'
 import ActionBoxes from './ActionBoxes'
-import Icon from '../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import Helmet from 'react-helmet'
 const classes: any = require('./ActionsView.scss')
+import {$p} from 'graphcool-styles'
+import * as cx from 'classnames'
 
 interface Props {
   viewer: Viewer & { project: Project }
@@ -42,7 +44,7 @@ class ActionsView extends React.Component<Props, State> {
   render() {
     return (
       <div className={classes.root}>
-        <Helmet title='Actions' />
+        <Helmet title='Mutation Callbacks' />
         {!this.state.showAddRow &&
           <Header
               viewer={this.props.viewer}
@@ -56,7 +58,7 @@ class ActionsView extends React.Component<Props, State> {
                     height={16}
                     src={require('assets/icons/add.svg')}
                   />
-                  <span>Create Action</span>
+                  <span>Create Mutation Callback</span>
                 </div>
               </div>
 
@@ -65,12 +67,12 @@ class ActionsView extends React.Component<Props, State> {
         <div className={classes.content}>
           <ScrollBox>
             {this.state.showAddRow &&
-            <ActionBoxes
-              project={this.props.viewer.project}
-              action={null}
-              relay={this.props.relay}
-              close={() => this.setState({ showAddRow: false } as State)}
-            />
+              <ActionBoxes
+                project={this.props.viewer.project}
+                action={null}
+                relay={this.props.relay}
+                close={() => this.setState({ showAddRow: false } as State)}
+              />
             }
             {this.props.viewer.project.actions.edges.map((edge) => edge.node).map((action) => (
               <div key={action.id}>
@@ -89,6 +91,43 @@ class ActionsView extends React.Component<Props, State> {
                 }
               </div>
             ))}
+            {this.props.viewer.project.actions.edges.length === 0 && (
+              <div className={cx($p.flex, $p.h100, $p.w100, $p.itemsCenter, $p.justifyCenter)}>
+                <div
+                  className={cx($p.flex, $p.flexColumn, $p.justifyCenter, $p.mb38, $p.pa25)}
+                  style={{maxWidth: 700}}
+                >
+                  <h2 className={cx($p.fw3, $p.mb16)}>Welcome to the Mutation Callbacks</h2>
+                  <div className={cx($p.flex, $p.flexRow)}>
+                    <div className={cx($p.flexAuto)}>
+                      <div className={cx($p.black50)}>
+                        Here you can define a custom http webhook that we call when specific mutations are performed.
+                      </div>
+                      <div className={$p.black50}>
+                        To learn more about mutation callbacks, please have a look in our docs.
+                      </div>
+                    </div>
+                    <div className={$p.ml10}>
+                      <a
+                        className={cx(
+                          $p.pa16,
+                          $p.f16,
+                          $p.white,
+                          $p.br2,
+                          $p.bgGreen,
+                          $p.pointer,
+                          $p.db,
+                        )}
+                        href='http://graph.cool/docs/reference/platform/mutation-callbacks'
+                        target='_blank'
+                      >
+                        Docs
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </ScrollBox>
         </div>
       </div>

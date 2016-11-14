@@ -1,7 +1,7 @@
 import * as React from 'react'
 const classes: any = require('./Cell.scss')
 import * as cx from 'classnames'
-import {particles} from 'graphcool-styles'
+import {$p} from 'graphcool-styles'
 import {valueToString} from '../../../utils/valueparser'
 import {Field} from '../../../types/types'
 
@@ -24,17 +24,17 @@ export class LightCell extends React.PureComponent<Props, {}> {
         onDoubleClick={onDoubleClick}
         className={cx(
           classes.root,
-          particles.contentCenter,
-          particles.overflowVisible,
-          particles.flexAuto,
+          $p.contentCenter,
+          $p.overflowVisible,
+          $p.flexAuto,
           {
-            [particles.bgWhite]: (!rowHasCursor && !rowSelected),
-            [particles.bgBlue]: rowSelected,
-            [particles.white]: rowSelected,
+            [$p.bgWhite]: (!rowHasCursor && !rowSelected),
+            [$p.bgBlue]: rowSelected,
+            [$p.white]: rowSelected,
           }
         )}
       >
-        <div className={cx(classes.border, particles.flexAuto)}>
+        <div className={cx(classes.border, $p.flexAuto)}>
           <div className={classes.value}>
             {valueString}
           </div>

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
 import {UserType, Field} from '../../../types/types'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import calculateSize from 'calculate-size'
 const classes: any = require('./PermissionType.scss')
 

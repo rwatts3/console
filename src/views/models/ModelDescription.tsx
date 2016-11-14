@@ -73,8 +73,6 @@ class ModelDescription extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models: edited description')
-
           this.setState({
             editDescription: false,
             editDescriptionPending: false,

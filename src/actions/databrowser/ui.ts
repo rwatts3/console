@@ -13,6 +13,12 @@ export function hideNewRow(): ReduxAction {
   }
 }
 
+export function forceShowNewRow() {
+  return {
+    type: Constants.FORCE_SHOW_NEW_ROW,
+  }
+}
+
 export function toggleNewRow(fields: Field[], modelNamePlural: string): ReduxThunk {
   return (dispatch, getState) => {
     if (SYSTEM_MODELS_PLURAL.includes(modelNamePlural)) {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ClickOutside from 'react-click-outside'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import Icon from '../Icon/Icon'
+import {Icon} from 'graphcool-styles'
 const classes: any = require('./ApiLayover.scss')
 
 type Endpoint = 'simple/v1' | 'relay/v1' | 'file/v1'

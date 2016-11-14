@@ -11,6 +11,7 @@ import {particles, variables, Icon} from 'graphcool-styles'
 import * as cookiestore from 'cookiestore'
 import {ShowNotificationCallback} from '../../types/utils'
 import { connect } from 'react-redux'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectSelection.scss')
 
 interface Props {
@@ -383,14 +384,17 @@ class ProjectSelection extends React.Component<Props, State> {
     this.setState({userDropdownVisible: false} as State)
   }
 
-  private logout () {
-    analytics.track('header: logout', () => {
-      analytics.reset()
-      cookiestore.remove('graphcool_auth_token')
-      cookiestore.remove('graphcool_customer_id')
-      window.localStorage.clear()
-      window.location.pathname = '/'
+  private async logout () {
+    await tracker.track({
+      key: 'console/logout',
     })
+
+    tracker.reset()
+
+    cookiestore.remove('graphcool_auth_token')
+    cookiestore.remove('graphcool_customer_id')
+    window.localStorage.clear()
+    window.location.pathname = '/'
   }
 }
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import AuthProviderSidePanel from './AuthProviderSidePanel'
-import Icon from '../../../components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import { Project, AuthProviderType } from '../../../types/types'

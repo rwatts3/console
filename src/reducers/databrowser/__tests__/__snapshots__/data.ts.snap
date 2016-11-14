@@ -22,6 +22,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": -2,
   "loaded": Array [
@@ -49,6 +50,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": -2,
   "loaded": Array [
@@ -76,6 +78,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -130,6 +133,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -184,6 +188,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 1,
   "loaded": Array [
@@ -243,6 +248,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -297,6 +303,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": -2,
   "loaded": Array [
@@ -341,6 +348,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -395,6 +403,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 1,
   "loaded": Array [
@@ -453,6 +462,7 @@ Object {
       },
     ],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 1,
   "loaded": Array [
@@ -495,6 +505,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -532,6 +543,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -569,6 +581,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [],
@@ -589,6 +602,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [
@@ -626,6 +640,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 5,
   "loaded": Array [],
@@ -646,6 +661,7 @@ Object {
     "loaded": Array [],
     "nodes": Array [],
   },
+  "countChanges": Object {},
   "filter": Object {},
   "itemCount": 0,
   "loaded": Array [],

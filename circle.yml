@@ -22,6 +22,8 @@ deployment:
             AUTH0_DOMAIN: graphcool-customers.auth0.com
             AUTH0_CLIENT_ID: Is37aESHkLDR5PQa48ZiKZtm8gVNiUWw
             NETLIFY_ID: console-graph-cool
+            GA_CODE: UA-74131346-2
+            METRICS_ENDPOINT: https://api.graph.cool/simple/v1/cislqwo6e039e01171nzb9mxw
   dev:
     branch: dev
     commands:

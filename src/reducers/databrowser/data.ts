@@ -20,6 +20,7 @@ export const initialState: DataBrowserDataState = {
   loaded: Immutable.List<boolean>(),
   mutationActive: false,
   newRowShown: false,
+  countChanges: Immutable.Map<string, number>(),
 }
 
 export function reduceData(state: DataBrowserDataState = initialState, action: ReduxAction): DataBrowserDataState {
@@ -77,6 +78,14 @@ export function reduceData(state: DataBrowserDataState = initialState, action: R
           itemCount: 0,
           loaded: Immutable.List<boolean>(),
         },
+      })
+    case Constants.INCREASE_COUNT_CHANGE:
+      return Object.assign({}, state, {
+        countChanges: state.countChanges.set(action.payload, (state.countChanges.get(action.payload) || 0) + 1),
+      })
+    case Constants.DECREASE_COUNT_CHANGE:
+      return Object.assign({}, state, {
+        countChanges: state.countChanges.set(action.payload, (state.countChanges.get(action.payload) || 0) - 1),
       })
     case Constants.ADD_NODE_REQUEST:
       return Object.assign({}, state, {
