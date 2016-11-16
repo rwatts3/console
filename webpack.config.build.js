@@ -19,37 +19,37 @@ module.exports = {
     rules: [{
       enforce: 'pre',
       test: /\.ts(x?)$/,
-      loader: 'tslint',
+      loader: 'tslint-loader',
       exclude: /node_modules/,
     }, {
       test: /\.json$/, // TODO check if still needed
-      loader: 'json',
+      loader: 'json-loader',
     }, {
       test: /\.css$/,
-      loader: 'style!css',
+      loader: 'style-loader!css-loader',
     }, {
       test: /\.scss$/,
-      loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass',
+      loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader',
     }, {
       test: /\.ts(x?)$/,
-      loader: 'babel!awesome-typescript',
+      loader: 'babel-loader!awesome-typescript-loader',
       exclude: /node_modules/,
     }, {
       test: /\.js$/,
-      loader: 'babel',
+      loader: 'babel-loader',
       exclude: /node_modules/,
     }, {
       test: /\.mp3$/,
-      loader: 'file',
+      loader: 'file-loader',
     }, {
       test: /icons\/.*\.svg$/,
-      loader: 'raw!svgo?{"plugins":[{"removeStyleElement":true}]}',
+      loader: 'raw-loader!svgo-loader?{"plugins":[{"removeStyleElement":true}]}',
     }, {
       test: /graphics\/.*\.svg$/,
-      loader: 'file',
+      loader: 'file-loader',
     }, {
       test: /(graphics|gifs)\/.*\.(png|gif)$/,
-      loader: 'file',
+      loader: 'file-loader',
     }],
   },
   plugins: [
