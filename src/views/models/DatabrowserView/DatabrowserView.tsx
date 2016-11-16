@@ -50,7 +50,7 @@ import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 
 const classes: any = require('./DatabrowserView.scss')
-const DOCS_PREFIX = 'https://docs.graph.cool/reference/platform/system-artifacts'
+const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts'
 
 interface Props {
   relay: Relay.RelayProp

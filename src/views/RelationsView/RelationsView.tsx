@@ -89,7 +89,7 @@ class RelationsView extends React.Component<Props, {}> {
                           $p.pointer,
                           $p.db,
                         )}
-                        href='https://docs.graph.cool/reference/platform/relations'
+                        href='https://graph.cool/docs/reference/platform/relations'
                         target='_blank'
                       >
                         Docs

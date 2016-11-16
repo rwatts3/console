@@ -300,7 +300,11 @@ Array [
     "type": "DECREASE_COUNT_CHANGE",
   },
   Object {
-    "type": "MUTATION_SUCCESS",
+    "type": "MUTATION_ERROR",
+  },
+  Object {
+    "payload": "asldkaslkdj",
+    "type": "INCREASE_COUNT_CHANGE",
   },
 ]
 `;

@@ -234,7 +234,7 @@ export class SideNav extends React.Component<Props, State> {
             <div>Endpoints</div>
           </FooterSection>
           <FooterLink
-            href='https://docs.graph.cool'
+            href='https://graph.cool/docs'
             target='_blank'
             onClick={() => {
               tracker.track(ConsoleEvents.Sidenav.docsOpened())
