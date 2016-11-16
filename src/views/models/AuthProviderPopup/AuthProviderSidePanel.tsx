@@ -28,8 +28,8 @@ const texts: {[key: string]: AuthText} = {
     title: 'Graphcool Email + Password',
     description: 'Use our built-in auth system that authenticates users with email and password',
     link: {
-      href: 'https://docs.graph.cool/reference/platform#temporary-authentication-token',
-      content: 'docs.graph.cool',
+      href: 'https://graph.cool/docs/reference/platform/authentication',
+      content: 'graph.cool/docs',
     },
   },
   AUTH_PROVIDER_DIGITS: {
