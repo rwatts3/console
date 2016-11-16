@@ -26,6 +26,7 @@ import PermissionsView from './views/PermissionsView/PermissionsView'
 import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import tracker from './utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -52,10 +53,7 @@ const render = ({ error, props, routerProps, element }) => {
   if (error) {
     const err = error.source.errors[0]
 
-    tracker.track({
-      key: 'console/unexpected-error',
-      error: JSON.stringify(err),
-    })
+    tracker.track(ConsoleEvents.unexpectedError({error: JSON.stringify(err)}))
 
     if (err.code === 2001) {
       cookiestore.remove('graphcool_auth_token')

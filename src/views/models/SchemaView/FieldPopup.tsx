@@ -25,6 +25,7 @@ import {connect} from 'react-redux'
 import {nextStep, showDonePopup} from '../../../actions/gettingStarted'
 import {bindActionCreators} from 'redux'
 import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 const classes: any = require('./FieldPopup.scss')
 
 require('react-tagsinput/react-tagsinput.css')
@@ -104,13 +105,9 @@ class FieldPopup extends React.Component<Props, State> {
     }
 
     if (this.props.field) {
-      tracker.track({
-        key: 'console/schema/update-field/opened-popup',
-      })
+      tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: 'Create', source: 'databrowser'}))
     } else {
-      tracker.track({
-        key: 'console/schema/create-field/opened-popup',
-      })
+      tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: 'Update', source: 'databrowser'}))
     }
   }
 
@@ -440,10 +437,7 @@ class FieldPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          tracker.track({
-            key: 'console/schema/create-field/completed',
-            name,
-          })
+          tracker.track(ConsoleEvents.Schema.Field.Popup.submitted({type: 'Create'}))
 
           this.close()
         },
@@ -493,10 +487,7 @@ class FieldPopup extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          tracker.track({
-            key: 'console/schema/update-field/completed',
-            name,
-          })
+          tracker.track(ConsoleEvents.Schema.Field.Popup.submitted({type: 'Update'}))
 
           this.close()
         },

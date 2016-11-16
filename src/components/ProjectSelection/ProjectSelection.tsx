@@ -13,6 +13,7 @@ import {ShowNotificationCallback} from '../../types/utils'
 import { connect } from 'react-redux'
 import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectSelection.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -386,9 +387,7 @@ class ProjectSelection extends React.Component<Props, State> {
   }
 
   private async logout () {
-    await tracker.track({
-      key: 'console/logout',
-    })
+    await tracker.track(ConsoleEvents.logout())
 
     tracker.reset()
 

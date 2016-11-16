@@ -2853,9 +2853,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-metrics@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.0.3.tgz#24cebc8e62c315892a809025db0813103bbd3ecf"
+graphcool-metrics@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.0.6.tgz#0800716de50b2eb507af39215b17fa5805f7e794"
 
 graphcool-styles@0.0.46:
   version "0.0.46"

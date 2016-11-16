@@ -11,6 +11,7 @@ import Auth0Lock from 'auth0-lock'
 import * as cookiestore from 'cookiestore'
 import AuthenticateCustomerMutation from '../../mutations/AuthenticateCustomerMutation'
 import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   showNotification: ShowNotificationCallback
@@ -54,9 +55,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         cookiestore.set('graphcool_auth_token', response.authenticateCustomer.token)
         cookiestore.set('graphcool_customer_id', response.authenticateCustomer.user.id)
 
-        await tracker.track({
-          key: 'console/authentication/completed',
-        })
+        await tracker.track(ConsoleEvents.Authentication.completed())
 
         window.location.pathname = '/'
       }
@@ -65,10 +64,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
         onFailureShowNotification(transaction, this.props.showNotification)
 
-        tracker.track({
-          key: 'console/authentication/failed',
-          idToken: authResult.idToken,
-        })
+        tracker.track(ConsoleEvents.Authentication.failed({idToken: authResult.idToken}))
       }
       Relay.Store.commitUpdate(new AuthenticateCustomerMutation({auth0IdToken: authResult.idToken}), {
         onSuccess,

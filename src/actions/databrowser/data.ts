@@ -14,6 +14,7 @@ import * as bluebird from 'bluebird'
 import {GridPosition} from '../../types/databrowser/ui'
 import {toggleNewRow} from '../../actions/databrowser/ui'
 import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 export function setItemCount(count: number) {
   return {
@@ -214,10 +215,8 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
       concurrency: 5,
     })
       .then(() => {
-        tracker.track({
-          key: 'console/databrowser/delete-nodes-completed',
-          count: ids.length,
-        })
+        tracker.track(ConsoleEvents.Databrowser.deleteNodesCompleted({count: ids.length}))
+
         dispatch(mutationSuccess())
       })
       .catch((err) => {
