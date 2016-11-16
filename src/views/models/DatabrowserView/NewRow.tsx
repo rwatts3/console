@@ -16,13 +16,15 @@ const classes: any = require('./NewRow.scss')
 import Tether from '../../../components/Tether/Tether'
 import {nextCell} from '../../../actions/databrowser/ui'
 import {GridPosition} from '../../../types/databrowser/ui'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   model: Model
   projectId: string
   columnWidths: {[key: string]: number}
   add: (fieldValues: { [key: string]: any }) => void
-  cancel: () => void
+  cancel: (e: any) => void
   gettingStarted: GettingStartedState
   nextStep: () => any
   nextCell: (fields: Field[]) => ReduxAction
@@ -57,6 +59,10 @@ class NewRow extends React.Component<Props, State> {
   getFields = () => {
     return this.props.model.fields.edges
       .map((edge) => edge.node)
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Databrowser.AddNode.opened())
   }
 
   render() {
@@ -118,7 +124,10 @@ class NewRow extends React.Component<Props, State> {
             [classes.loading]: loading,
           })}
         >
-          <button onClick={this.props.cancel}>
+          <button onClick={(e: any) => {
+            this.props.cancel(e)
+            tracker.track(ConsoleEvents.Databrowser.AddNode.canceled())
+          }}>
             <Icon
               width={24}
               height={24}
@@ -184,6 +193,7 @@ class NewRow extends React.Component<Props, State> {
       .mapToArray((fieldName, obj) => obj)
       .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
     if (allRequiredFieldsGiven) {
+      tracker.track(ConsoleEvents.Databrowser.AddNode.submitted())
       this.props.add(this.state.fieldValues)
     }
   }

@@ -6,6 +6,8 @@ import {nextStep} from '../gettingStarted'
 import {GridPosition} from '../../types/databrowser/ui'
 import { setNewRowShown } from './data'
 import {SYSTEM_MODELS_PLURAL} from '../../constants/system'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 export function hideNewRow(): ReduxAction {
   return {
@@ -75,6 +77,7 @@ export function clearNodeSelection(): ReduxAction {
 }
 
 export function toggleNodeSelection(id: string): ReduxAction {
+  tracker.track(ConsoleEvents.Databrowser.rowSelected())
   return {
     type: Constants.TOGGLE_NODE_SELECTION,
     payload: id,
@@ -115,6 +118,7 @@ export function unselectCell(): ReduxAction {
 }
 
 export function editCell(position: GridPosition): ReduxAction {
+  tracker.track(ConsoleEvents.Databrowser.Cell.edited())
   return {
     type: Constants.EDIT_CELL,
     payload: position,

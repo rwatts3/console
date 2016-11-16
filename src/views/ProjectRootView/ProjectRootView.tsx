@@ -22,7 +22,7 @@ import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectRootView.scss')
-
+import {ConsoleEvents} from 'graphcool-metrics'
 require('../../styles/core.scss')
 
 interface Props {
@@ -59,7 +59,7 @@ class ProjectRootView extends React.Component<Props, {}> {
 
   componentWillMount() {
     if (this.props.isLoggedin) {
-      tracker.identify(this.props.user.id)
+      tracker.identify(this.props.user.id, this.props.project.id)
 
       if (Smooch) {
         Smooch.init({
@@ -87,16 +87,14 @@ class ProjectRootView extends React.Component<Props, {}> {
     const {gettingStarted, gettingStartedSkipped} = this.props.user.crm.onboardingStatus
     const prevGettingStarted = prevProps.user.crm.onboardingStatus.gettingStarted
 
+    if (this.props.params.projectName !== prevProps.params.projectName && this.props.isLoggedin) {
+      tracker.identify(this.props.user.id, this.props.project.id)
+    }
+
     if (gettingStarted !== prevGettingStarted) {
       this.updateForceFetching()
 
-      if (gettingStartedSkipped) {
-        // TODO migrate to tracker
-        // analytics.track(`getting-started: skipped at ${prevGettingStarted}`)
-      } else {
-        // TODO migrate to tracker
-        // analytics.track(`getting-started: finished ${prevGettingStarted}`)
-      }
+      tracker.track(ConsoleEvents.Onboarding.gettingStarted({step: gettingStarted, skipped: gettingStartedSkipped}))
       // TODO migrate to tracker
       // analytics.identify(this.props.user.id, {
       //   'Getting Started Status': gettingStarted,
@@ -208,10 +206,7 @@ class ProjectRootView extends React.Component<Props, {}> {
         }),
         {
           onSuccess: () => {
-            // TODO migrate to tracker
-            // analytics.track('sidenav: created project', {
-            //   project: projectName,
-            // })
+            tracker.track(ConsoleEvents.Project.created({name: projectName}))
             this.props.router.replace(`${projectName}`)
           },
         }

@@ -5,7 +5,9 @@ import * as cookiestore from 'cookiestore'
 import {default as mapProps} from 'map-props'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
 import {Viewer} from '../../types/types'
+import tracker from '../../utils/metrics'
 const classes: any = require('./RootRedirectView.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   viewer: Viewer,
@@ -59,10 +61,7 @@ class RootRedirectView extends React.Component<Props, {}> {
           }),
         {
           onSuccess: () => {
-            // TODO migrate to tracker
-            // analytics.track('global: created project', {
-            //   project: projectName,
-            // })
+            tracker.track(ConsoleEvents.Project.created({name: projectName}))
             this.props.router.replace(`/${projectName}`)
           },
         })

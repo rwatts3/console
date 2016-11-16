@@ -20,6 +20,8 @@ import {GridPosition} from '../../../types/databrowser/ui'
 const classes: any = require('./Cell.scss')
 import { variables, particles } from 'graphcool-styles'
 import * as cx from 'classnames'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 export type UpdateCallback = (success: boolean) => void
 
@@ -170,6 +172,8 @@ export class Cell extends React.PureComponent<Props, State> {
       return
     }
 
+    tracker.track(ConsoleEvents.Databrowser.Cell.saved())
+
     if (keepEditing) {
       this.props.editCell(this.props.position)
     } else {
@@ -207,11 +211,13 @@ export class Cell extends React.PureComponent<Props, State> {
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
         this.props.previousCell(this.props.fields)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 37}}))
         break
       case 38:
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
         this.props.previousRow(this.props.fields, this.props.modelNamePlural)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 38}}))
         break
       case 9:
       case 39:
@@ -220,14 +226,17 @@ export class Cell extends React.PureComponent<Props, State> {
         // go back for shift+tab
         if (e.shiftKey) {
           this.props.previousCell(this.props.fields)
+          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 9}}))
         } else {
           this.props.nextCell(this.props.fields)
+          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 39}}))
         }
         break
       case 40:
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
         this.props.nextRow(this.props.fields, this.props.modelNamePlural)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 40}}))
         break
       case 13:
         // in the new row case, the row needs the event, so let it bubble up
@@ -347,6 +356,7 @@ export class Cell extends React.PureComponent<Props, State> {
           <div>
             <CopyToClipboard text={valueString} onCopy={() => {
               this.setState({copied: true} as State)
+              tracker.track(ConsoleEvents.Databrowser.Cell.copied())
             }}>
               <CellLink
                 onClick={e => e.preventDefault()}

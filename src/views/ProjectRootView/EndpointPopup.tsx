@@ -7,6 +7,8 @@ import styled, { keyframes } from 'styled-components'
 import {particles, variables, Icon} from 'graphcool-styles'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   id: string
@@ -26,6 +28,10 @@ class EndpointPopup extends React.Component<Props, State> {
   state = {
     endpoint: 'simple/v1' as Endpoint,
     copied: false,
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Endpoints.opened())
   }
 
   render() {
@@ -280,10 +286,12 @@ class EndpointPopup extends React.Component<Props, State> {
   }
 
   private selectEndpoint = (endpoint: Endpoint) => {
+    tracker.track(ConsoleEvents.Endpoints.selected())
     this.setState({ endpoint } as State)
   }
 
   private onCopy = () => {
+    tracker.track(ConsoleEvents.Endpoints.copied())
     this.setState({ copied: true } as State)
   }
 }

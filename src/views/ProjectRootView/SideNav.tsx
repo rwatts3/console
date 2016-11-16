@@ -26,6 +26,8 @@ import styled from 'styled-components'
 import * as cx from 'classnames'
 import {$p, variables, Icon} from 'graphcool-styles'
 import { ExcludeProps } from '../../utils/components'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -231,7 +233,13 @@ export class SideNav extends React.Component<Props, State> {
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
             <div>Endpoints</div>
           </FooterSection>
-          <FooterLink href='https://docs.graph.cool' target='_blank'>
+          <FooterLink
+            href='https://docs.graph.cool'
+            target='_blank'
+            onClick={() => {
+              tracker.track(ConsoleEvents.Sidenav.docsOpened())
+            }}
+          >
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
             <div>Docs</div>
           </FooterLink>
@@ -629,12 +637,7 @@ export class SideNav extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            // TODO migrate to tracker
-            // analytics.track('sidenav: created model', {
-            //   project: this.props.params.projectName,
-            //   model: modelName,
-            // })
-            // getting-started onboarding step
+            tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
             if (
               modelName === 'Post' &&
               this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')

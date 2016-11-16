@@ -11,6 +11,8 @@ import Helmet from 'react-helmet'
 const classes: any = require('./ActionsView.scss')
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   viewer: Viewer & { project: Project }
@@ -39,6 +41,7 @@ class ActionsView extends React.Component<Props, State> {
         return 'Are you sure you want to discard unsaved changes?'
       }
     })
+    tracker.track(ConsoleEvents.MutationCallbacks.viewed())
   }
 
   render() {

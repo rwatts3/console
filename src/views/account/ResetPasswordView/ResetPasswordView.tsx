@@ -6,6 +6,8 @@ import Loading from '../../../components/Loading/Loading'
 import { getQueryVariable } from '../../../utils/location'
 import * as cookiestore from 'cookiestore'
 import { updateNetworkLayer } from '../../../utils/relay'
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../../utils/metrics'
 const classes: any = require('./ResetPasswordView.scss')
 
 interface State {
@@ -37,10 +39,7 @@ export default class ResetPasswordView extends React.Component<{}, State> {
           cookiestore.set('graphcool_customer_id', response.resetPassword.user.id)
           updateNetworkLayer()
 
-          // TODO migrate to tracker
-          // analytics.track('reset-password', () => {
-          //   window.location.href = '/'
-          // })
+          tracker.track(ConsoleEvents.passwordReset())
         },
         onFailure: (transaction) => {
           alert(transaction.getError())

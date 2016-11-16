@@ -6,7 +6,9 @@ import {getFieldTypeName} from '../../../utils/valueparser'
 import {isScalar} from '../../../utils/graphql'
 import {Field} from '../../../types/types'
 import {classnames} from '../../../utils/classnames'
+import tracker from '../../../utils/metrics'
 const classes: any = require('./HeaderCell.scss')
+import {ConsoleEvents, SortOrder} from 'graphcool-metrics'
 
 interface Props {
   field: Field
@@ -46,7 +48,13 @@ class HeaderCell extends React.Component<Props, {}> {
             {field.name}
             <span className={classes.type}>{type}</span>
             {isScalar(field.typeIdentifier) && !field.isSystem &&
-            <Link to={editUrl} className={classes.edit}>
+            <Link
+              to={editUrl}
+              className={classes.edit}
+              onClick={() => {
+                tracker.track(ConsoleEvents.Databrowser.editFieldClicked())
+              }}
+            >
               <Icon
                 width={16}
                 height={16}
@@ -76,6 +84,10 @@ class HeaderCell extends React.Component<Props, {}> {
   private toggleSortOrder = () => {
     if (isScalar(this.props.field.typeIdentifier)) {
       this.props.toggleSortOrder()
+      tracker.track(ConsoleEvents.Databrowser.sorted({
+        order: this.props.sortOrder as SortOrder,
+        fieldName: this.props.field.name,
+      }))
     }
   }
 
@@ -84,18 +96,18 @@ class HeaderCell extends React.Component<Props, {}> {
 export default Relay.createContainer(HeaderCell, {
     fragments: {
         field: () => Relay.QL`
-            fragment on Field {
-                id
-                name
-                isList
-                typeIdentifier
-                isSystem
-                isRequired
-                enumValues
-                relatedModel {
-                  name
-                }
+          fragment on Field {
+            id
+            name
+            isList
+            typeIdentifier
+            isSystem
+            isRequired
+            enumValues
+            relatedModel {
+              name
             }
+          }
         `,
     },
 })

@@ -4,9 +4,11 @@ import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
 import {valueToString} from '../../../utils/valueparser'
 import {Field} from '../../../types/types'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents, InputSource} from 'graphcool-metrics'
 
 interface Props {
-  onClick: () => void
+  onClick: (e: any) => void
   onDoubleClick: () => void
   value: string
   field: Field
@@ -20,7 +22,10 @@ export class LightCell extends React.PureComponent<Props, {}> {
 
     return (
       <div
-        onClick={onClick}
+        onClick={(e: any) => {
+          onClick(e)
+          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: 'Click' as InputSource}))
+        }}
         onDoubleClick={onDoubleClick}
         className={cx(
           classes.root,

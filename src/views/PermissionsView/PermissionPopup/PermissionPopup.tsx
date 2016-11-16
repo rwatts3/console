@@ -14,6 +14,8 @@ import PermissionConditions from './PermissionConditions'
 import AffectedFields from './AffectedFields'
 import AddPermissionMutation from '../../../mutations/ModelPermission/AddPermissionMutation'
 import UpdatePermissionMutation from '../../../mutations/ModelPermission/UpdatePermissionMutation'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents, MutationType} from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -36,8 +38,11 @@ const Container = styled.div`
 `
 
 class PermissionPopup extends React.Component<Props, State> {
+  private mutationType: MutationType
   constructor(props) {
     super(props)
+
+    this.mutationType = props.permission ? 'Update' : 'Create'
 
     if (props.permission) {
       const {operation, fieldIds, userType, applyToWholeModel} = props.permission
@@ -56,6 +61,10 @@ class PermissionPopup extends React.Component<Props, State> {
       userType: 'EVERYONE' as UserType,
       applyToWholeModel: false,
     }
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Permissions.Popup.opened({type: this.mutationType}))
   }
 
   setOperation = (operation: Operation) => {
@@ -95,7 +104,10 @@ class PermissionPopup extends React.Component<Props, State> {
 
     return (
       <PopupWrapper
-        onClickOutside={this.closePopup}
+        onClickOutside={() => {
+          this.closePopup()
+          tracker.track(ConsoleEvents.Permissions.Popup.canceled({type: this.mutationType}))
+        }}
       >
         <div
           className={cx(
@@ -162,6 +174,7 @@ class PermissionPopup extends React.Component<Props, State> {
       rule,
       isActive,
     }
+    tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
 
     Relay.Store.commitUpdate(
       new UpdatePermissionMutation(updatedNode),
@@ -176,6 +189,7 @@ class PermissionPopup extends React.Component<Props, State> {
     const {model} = this.props
     const {selectedOperation, fieldIds, userType, applyToWholeModel} = this.state
 
+    tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     Relay.Store.commitUpdate(
       new AddPermissionMutation({
         modelId: model.id,
