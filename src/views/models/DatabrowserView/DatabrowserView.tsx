@@ -140,6 +140,7 @@ class DatabrowserView extends React.Component<Props, {}> {
       }
       const newLocation = Object.assign({}, this.props.location, queryObject)
       this.props.router.replace(newLocation)
+      tracker.track(ConsoleEvents.Databrowser.Search.entered())
     },
     1000,
     {
@@ -242,7 +243,10 @@ class DatabrowserView extends React.Component<Props, {}> {
                 height={16}
                 src={require('assets/new_icons/close.svg')}
                 className={classes.closeicon}
-                onClick={this.props.toggleSearch}
+                onClick={() => {
+                  this.props.toggleSearch()
+                  tracker.track(ConsoleEvents.Databrowser.Search.toggled())
+                }}
               />
             )}
           </div>
@@ -256,7 +260,10 @@ class DatabrowserView extends React.Component<Props, {}> {
           {/*src={require('assets/new_icons/down.svg')}*/}
           {/*/>*/}
           {/*</label>*/}
-          <div className={classes.button} onClick={() => this.reloadData(Math.floor(this.props.scrollTop / 47))}>
+          <div className={classes.button} onClick={() => {
+            this.reloadData(Math.floor(this.props.scrollTop / 47))
+            tracker.track(ConsoleEvents.Databrowser.reloaded())
+          }}>
             <Icon
               width={16}
               height={16}
@@ -551,10 +558,12 @@ class DatabrowserView extends React.Component<Props, {}> {
     switch (e.keyCode) {
       case 37:
         this.props.previousCell(this.props.fields)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 37}}))
         e.preventDefault()
         break
       case 38:
         this.props.previousRow(this.props.fields, this.props.model.namePlural)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 38}}))
         e.preventDefault()
         break
       case 9:
@@ -565,16 +574,19 @@ class DatabrowserView extends React.Component<Props, {}> {
         } else {
           this.props.nextCell(this.props.fields)
         }
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 39}}))
         e.preventDefault()
         break
       case 40:
         this.props.nextRow(this.props.fields, this.props.model.namePlural)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 40}}))
         e.preventDefault()
         break
       case 13:
         const selectedField = this.props.fields.find(f => f.name === this.props.selectedCell.field)
         if (selectedField && !selectedField.isReadonly) {
           this.props.editCell(this.props.selectedCell)
+          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 13}}))
           e.preventDefault()
         }
         break

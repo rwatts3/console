@@ -5,7 +5,9 @@ import { Action } from '../../types/types'
 import {Icon} from 'graphcool-styles'
 import UpdateActionMutation from '../../mutations/UpdateActionMutation'
 import DeleteActionMutation from '../../mutations/DeleteActionMutation'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ActionRow.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   action: Action
@@ -117,6 +119,7 @@ class ActionRow extends React.Component<Props, State> {
   }
 
   private toggleIsActive = (e: any) => {
+    tracker.track(ConsoleEvents.MutationCallbacks.toggled())
     Relay.Store.commitUpdate(
       new UpdateActionMutation({
         actionId: this.props.action.id,
@@ -129,6 +132,7 @@ class ActionRow extends React.Component<Props, State> {
     e.stopPropagation()
 
     if (window.confirm('Do you really want to delete this Action?')) {
+      tracker.track(ConsoleEvents.MutationCallbacks.deleted())
       Relay.Store.commitUpdate(
         new DeleteActionMutation({
           actionId: this.props.action.id,

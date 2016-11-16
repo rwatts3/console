@@ -25,7 +25,7 @@ import {connect} from 'react-redux'
 import {nextStep, showDonePopup} from '../../../actions/gettingStarted'
 import {bindActionCreators} from 'redux'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import {ConsoleEvents, MutationType} from 'graphcool-metrics'
 const classes: any = require('./FieldPopup.scss')
 
 require('react-tagsinput/react-tagsinput.css')
@@ -58,6 +58,8 @@ interface State {
 
 class FieldPopup extends React.Component<Props, State> {
 
+  private mutationType: MutationType
+
   constructor(props: Props) {
     super(props)
 
@@ -66,6 +68,8 @@ class FieldPopup extends React.Component<Props, State> {
     const isList = field ? field.isList : false
     const enumValues = field ? field.enumValues : []
     const tmpField = {typeIdentifier, isList, enumValues} as Field
+
+    this.mutationType = this.props.field ? 'Update' : 'Create'
 
     this.state = {
       loading: false,
@@ -104,11 +108,7 @@ class FieldPopup extends React.Component<Props, State> {
       })
     }
 
-    if (this.props.field) {
-      tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: 'Create', source: 'databrowser'}))
-    } else {
-      tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: 'Update', source: 'databrowser'}))
-    }
+    tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: this.mutationType, source: 'databrowser'}))
   }
 
   componentWillUnmount() {
@@ -165,6 +165,11 @@ class FieldPopup extends React.Component<Props, State> {
                         defaultValue={this.state.name}
                         onChange={(e: any) => this.setState({ name: (e.target as HTMLInputElement).value } as State)}
                         onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
+                        onBlur={() => {
+                          if (this.state.name && this.state.name.length > 0) {
+                            tracker.track(ConsoleEvents.Schema.Field.Popup.fieldnameEntered({type: this.mutationType}))
+                          }
+                        }}
                       />
                     </Tether>
                   </div>
@@ -188,7 +193,10 @@ class FieldPopup extends React.Component<Props, State> {
                     >
                       <TypeSelection
                         selected={this.state.typeIdentifier}
-                        select={(typeIdentifier) => this.updateTypeIdentifier(typeIdentifier)}
+                        select={(typeIdentifier) => {
+                          this.updateTypeIdentifier(typeIdentifier)
+                          tracker.track(ConsoleEvents.Schema.Field.Popup.typeSelected({type: this.mutationType}))
+                        }}
                       />
                     </Tether>
                   </div>
@@ -224,9 +232,12 @@ class FieldPopup extends React.Component<Props, State> {
                         <input
                           type='checkbox'
                           checked={this.state.isRequired}
-                          onChange={(e: any) => this.setState({
+                          onChange={(e: any) => {
+                           this.setState({
                               isRequired: (e.target as HTMLInputElement).checked,
-                            } as State)}
+                            } as State)
+                            tracker.track(ConsoleEvents.Schema.Field.Popup.requiredToggled({type: this.mutationType}))
+                          }}
                           onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
                         />
                         Required
@@ -244,7 +255,10 @@ class FieldPopup extends React.Component<Props, State> {
                         <input
                           type='checkbox'
                           checked={this.state.isList}
-                          onChange={(e: any) => this.updateIsList((e.target as HTMLInputElement).checked)}
+                          onChange={(e: any) => {
+                            this.updateIsList((e.target as HTMLInputElement).checked)
+                            tracker.track(ConsoleEvents.Schema.Field.Popup.listToggled({type: this.mutationType}))
+                          }}
                           onKeyUp={(e: any) => e.keyCode === 13 ? this.submit() : null}
                         />
                         List
@@ -283,6 +297,7 @@ class FieldPopup extends React.Component<Props, State> {
                         if (!this.state.isList) {
                           this.setMigrationValue(value)
                         }
+                        tracker.track(ConsoleEvents.Schema.Field.Popup.migrationValueEntered({type: this.mutationType}))
                       },
                       this.state.useMigrationValue || needsMigrationValue,
                     )}
@@ -326,7 +341,10 @@ class FieldPopup extends React.Component<Props, State> {
                 </div>
               </div>
               <div className={classes.foot}>
-                <div className={classes.button} onClick={() => this.close()}>
+                <div className={classes.button} onClick={() => {
+                  this.close()
+                  tracker.track(ConsoleEvents.Schema.Field.Popup.canceled({type: this.mutationType}))
+                }}>
                   Cancel
                 </div>
                 <Tether
@@ -570,6 +588,8 @@ class FieldPopup extends React.Component<Props, State> {
     if (!this.state.useDefaultValue) {
       return
     }
+
+    tracker.track(ConsoleEvents.Schema.Field.Popup.defaultValueEntered({type: this.mutationType}))
 
     this.setState({defaultValue} as State)
   }
