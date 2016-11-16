@@ -17,6 +17,8 @@ const classes: any = require('./SchemaView.scss')
 import * as cx from 'classnames'
 import {Icon, particles, variables} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../../utils/metrics'
 
 interface Props {
   params: any
@@ -50,10 +52,7 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    // TODO migrate to tracker
-    // analytics.track('models/schema: viewed', {
-    //   model: this.props.params.modelName,
-    // })
+    tracker.track(ConsoleEvents.Schema.viewed())
   }
 
   render() {

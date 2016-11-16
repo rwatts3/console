@@ -50,11 +50,10 @@ class ProjectSelection extends React.Component<Props, State> {
     this.setState({ expanded: !this.state.expanded } as State)
   }
 
-  _onSelectProject = () => {
+  _onSelectProject = (id: string) => {
     this._toggle()
 
-    // TODO migrate to tracker
-    // analytics.track('sidenav: selected project')
+    tracker.track(ConsoleEvents.Project.selected({id}))
   }
 
   render () {
@@ -337,7 +336,7 @@ class ProjectSelection extends React.Component<Props, State> {
                     particles.justifyBetween,
                     particles.itemsCenter,
                   )}
-                    onClick={this._onSelectProject}
+                    onClick={() => this._onSelectProject(project.id)}
                     to={`/${project.name}`}
                     active={project.id === this.props.selectedProject.id}
                   >

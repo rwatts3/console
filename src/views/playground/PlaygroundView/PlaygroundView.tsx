@@ -22,6 +22,8 @@ import {nextStep, previousStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 require('graphiql/graphiql.css')
 
@@ -146,10 +148,7 @@ class PlaygroundView extends React.Component<Props, State> {
   }
 
   componentDidMount () {
-    // TODO migrate to tracker
-    // analytics.track('playground: viewed', {
-    //   project: this.props.params.projectName,
-    // })
+    tracker.track(ConsoleEvents.Playground.viewed())
   }
 
   render () {
@@ -168,6 +167,9 @@ class PlaygroundView extends React.Component<Props, State> {
       })
       .then((response) => {
         // exclude IntrospectionQuery
+        if (!response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
+          tracker.track(ConsoleEvents.Playground.queryRan({type: 'Fail'}))
+        }
         if (response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
           if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1')) {
             const { query } = graphQLParams
@@ -184,11 +186,7 @@ class PlaygroundView extends React.Component<Props, State> {
             }
           }
 
-          // TODO migrate to tracker
-          // analytics.track('playground: run', {
-          //   project: this.props.params.projectName,
-          //   endpoint: this.state.selectedEndpoint,
-          // })
+          tracker.track(ConsoleEvents.Playground.queryRan({type: 'Success'}))
 
           // save query for query history
           const query = {
@@ -346,11 +344,7 @@ class PlaygroundView extends React.Component<Props, State> {
     this.setState({ selectedEndpoint } as State)
     window.localStorage.setItem('SELECTED_ENDPOINT', selectedEndpoint)
 
-    // TODO migrate to tracker
-    // analytics.track('playground: endpoint changed', {
-    //   project: this.props.params.projectName,
-    //   endpoint: selectedEndpoint,
-    // })
+    tracker.track(ConsoleEvents.Playground.endpointSelected({endpoint: selectedEndpoint}))
   }
 
   private changeUser = (e) => {
@@ -371,11 +365,7 @@ class PlaygroundView extends React.Component<Props, State> {
               selectedUserToken: response.signinClientUser.token,
             } as State)
 
-            // TODO migrate to tracker
-            // analytics.track('playground: user changed', {
-            //   project: this.props.params.projectName,
-            //   customerId: selectedUserId,
-            // })
+            tracker.track(ConsoleEvents.Playground.userSelected({userId: selectedUserId}))
           },
           onFailure: (transaction) => {
             alert(transaction.getError())
