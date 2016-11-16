@@ -10,6 +10,8 @@ import {Icon} from 'graphcool-styles'
 const classes: any = require('./RelationsView.scss')
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../utils/metrics'
 
 interface Props {
   viewer: Viewer & { project: Project }
@@ -19,6 +21,10 @@ interface Props {
 }
 
 class RelationsView extends React.Component<Props, {}> {
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Relations.viewed())
+  }
 
   render(): JSX.Element {
     return (
@@ -50,7 +56,10 @@ class RelationsView extends React.Component<Props, {}> {
                 <RelationRow
                   relation={relation}
                   project={this.props.viewer.project}
-                  onRelationDeleted={() => this.props.relay.forceFetch() /* force due to too complicated config*/}
+                  onRelationDeleted={() => {
+                    this.props.relay.forceFetch()
+                    tracker.track(ConsoleEvents.Relations.deleted())
+                  } /* force due to too complicated config*/}
                 />
               </div>
             ))}

@@ -11,6 +11,8 @@ import {Project, AuthProvider, AuthProviderType} from '../../../types/types'
 import {ShowNotificationCallback} from '../../../types/utils'
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface AuthText {
   title: string
@@ -195,7 +197,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.digits.consumerKey &&
-              <div className={cx($p.f12, $p.orange)}>The Consumer Key is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Consumer Key is required</div>
             }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
@@ -207,7 +209,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.digits.consumerSecret &&
-              <div className={cx($p.f12, $p.orange)}>The Consumer Secret is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Consumer Secret is required</div>
             }
           </div>
           }
@@ -252,7 +254,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.auth0.domain &&
-              <div className={cx($p.f12, $p.orange)}>The Domain is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Domain is required</div>
             }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
@@ -264,7 +266,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.auth0.clientId &&
-              <div className={cx($p.f12, $p.orange)}>The Client ID is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Client ID is required</div>
             }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
@@ -276,7 +278,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.auth0.clientSecret &&
-              <div className={cx($p.f12, $p.orange)}>The Client Secret is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Client Secret is required</div>
             }
           </div>
           }
@@ -375,6 +377,8 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       return
     }
 
+    tracker.track(ConsoleEvents.AuthProvider.Popup.dataEntered())
+    tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
     this.setState(
       {
         authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', true).toJS(),
@@ -384,6 +388,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private disable = () => {
+    tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
     this.setState(
       {
         authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
@@ -422,29 +427,29 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default Relay.createContainer(connect(null, mapDispatchToProps)(AuthProviderSidePanel), {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        authProviders(first: 100) {
-          edges {
-            node {
-              id
-              type
-              isEnabled
-              digits {
-                consumerKey
-                consumerSecret
-              }
-              auth0 {
-                clientId
-                clientSecret
-                domain
+    fragments: {
+        project: () => Relay.QL`
+          fragment on Project {
+            id
+            authProviders(first: 100) {
+              edges {
+                node {
+                  id
+                  type
+                  isEnabled
+                  digits {
+                    consumerKey
+                    consumerSecret
+                  }
+                  auth0 {
+                    clientId
+                    clientSecret
+                    domain
+                  }
+                }
               }
             }
           }
-        }
-      }
-    `,
-  },
+        `,
+    },
 })

@@ -257,6 +257,7 @@ class PlaygroundView extends React.Component<Props, State> {
             query={this.state.query}
             variables={this.state.variables || ''}
             onEditQuery={this.rememberPlaygroundUsed}
+            onToggleDocs={this.docsToggled}
             />
         </div>
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
@@ -328,6 +329,10 @@ class PlaygroundView extends React.Component<Props, State> {
     )
   }
 
+  private docsToggled = () => {
+    tracker.track(ConsoleEvents.Playground.docsToggled())
+  }
+
   private onHistoryQuerySelect = (query) => {
     if (query) {
       this.setState({
@@ -376,6 +381,7 @@ class PlaygroundView extends React.Component<Props, State> {
   }
 
   private rememberPlaygroundUsed = () => {
+    tracker.track(ConsoleEvents.Playground.change())
     window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
   }
 }

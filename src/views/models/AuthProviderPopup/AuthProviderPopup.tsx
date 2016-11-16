@@ -5,6 +5,8 @@ import {Icon} from 'graphcool-styles'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import { Project, AuthProviderType } from '../../../types/types'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   project: Project
@@ -20,6 +22,10 @@ class AuthProviderPopup extends React.Component<Props, State> {
 
   state: State = {
     selectedType: 'AUTH_PROVIDER_EMAIL',
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.AuthProvider.Popup.opened({source: 'user-model'}))
   }
 
   render() {
@@ -53,7 +59,10 @@ class AuthProviderPopup extends React.Component<Props, State> {
                   $p.flex, $p.pa25, $p.bb, $p.bBlack10, $p.itemsCenter, $p.pointer, $p.justifyBetween,
                   this.state.selectedType === 'AUTH_PROVIDER_EMAIL' && $p.bgBlack04
                 )}
-                onClick={() => this.setState({ selectedType: 'AUTH_PROVIDER_EMAIL' })}
+                onClick={() => {
+                  this.setState({ selectedType: 'AUTH_PROVIDER_EMAIL' })
+                  tracker.track(ConsoleEvents.AuthProvider.Popup.providerSelected())
+                }}
               >
                 <div className={cx($p.flex, $p.itemsCenter)}>
                   <Icon
@@ -77,7 +86,10 @@ class AuthProviderPopup extends React.Component<Props, State> {
                   $p.flex, $p.pa25, $p.bb, $p.bBlack10, $p.itemsCenter, $p.pointer, $p.justifyBetween,
                   this.state.selectedType === 'AUTH_PROVIDER_DIGITS' && $p.bgBlack04
                 )}
-                onClick={() => this.setState({ selectedType: 'AUTH_PROVIDER_DIGITS' })}
+                onClick={() => {
+                  this.setState({ selectedType: 'AUTH_PROVIDER_DIGITS' })
+                  tracker.track(ConsoleEvents.AuthProvider.Popup.providerSelected())
+                }}
               >
                 <img src={require('assets/graphics/digits.png')}/>
                 <div>
@@ -91,7 +103,10 @@ class AuthProviderPopup extends React.Component<Props, State> {
                   $p.flex, $p.pa25, $p.bb, $p.bBlack10, $p.itemsCenter, $p.pointer, $p.justifyBetween,
                   this.state.selectedType === 'AUTH_PROVIDER_AUTH0' && $p.bgBlack04
                 )}
-                onClick={() => this.setState({ selectedType: 'AUTH_PROVIDER_AUTH0' })}
+                onClick={() => {
+                  this.setState({ selectedType: 'AUTH_PROVIDER_AUTH0' })
+                  tracker.track(ConsoleEvents.AuthProvider.Popup.providerSelected())
+                }}
               >
                 <img src={require('assets/graphics/auth0.png')}/>
                 <div>

@@ -19,6 +19,8 @@ import Help from '../../components/Help/Help'
 import {Transaction} from 'react-relay'
 import {particles} from 'graphcool-styles'
 import * as cx from 'classnames'
+import {ConsoleEvents, MutationType} from 'graphcool-metrics'
+import tracker from '../../utils/metrics'
 
 const classes: any = require('./RelationPopup.scss')
 
@@ -51,11 +53,18 @@ class RelationPopup extends React.Component<Props, State> {
     input: HTMLInputElement
   }
 
+  private mutationType: MutationType
+
   constructor(props: Props) {
     super(props)
 
     const {relation} = this.props.viewer
+    this.mutationType = relation ? 'Update' : 'Create'
     this.state = relation ? this.getExistingRelationState() : this.getNewRelationState()
+  }
+
+  componentDidMoount() {
+    tracker.track(ConsoleEvents.Relations.Popup.opened({type: this.mutationType, source: 'schema'}))
   }
 
   render(): JSX.Element {
@@ -92,30 +101,42 @@ class RelationPopup extends React.Component<Props, State> {
                       leftModelId={this.state.leftModelId}
                       rightModelId={this.state.rightModelId}
                       onFieldOnLeftModelNameChange={
-                        (val) => this.setState({
+                        (val) => {
+                        this.setState({
                             fieldOnLeftModelName: val,
                             fieldsEdited: true,
                           } as State)
+                          tracker.track(ConsoleEvents.Relations.Popup.fieldnameChanged())
+                          }
                       }
                       onFieldOnRightModelNameChange={
-                        (val) => this.setState({
+                        (val) => {
+                        this.setState({
                             fieldOnRightModelName: val,
                             fieldsEdited: true,
                           } as State)
+                        tracker.track(ConsoleEvents.Relations.Popup.fieldnameChanged())
+                          }
                       }
                       onFieldOnLeftModelIsListChange={
-                        (val) => this.setState(
+                        (val) => {
+                        this.setState(
                           {
                             fieldOnLeftModelIsList: val,
                           } as State,
                           this.prepopulateFields)
+                          tracker.track(ConsoleEvents.Relations.Popup.cardinalityChanged())
+                        }
                       }
                       onFieldOnRightModelIsListChange={
-                        (val) => this.setState(
+                        (val) => {
+                        this.setState(
                           {
                             fieldOnRightModelIsList: val,
                           } as State,
                           this.prepopulateFields)
+                          tracker.track(ConsoleEvents.Relations.Popup.cardinalityChanged())
+                        }
                       }
                       onLeftModelIdChange={this.handleLeftModelIdChange}
                       onRightModelIdChange={this.handleRightModelIdChange}
@@ -133,11 +154,17 @@ class RelationPopup extends React.Component<Props, State> {
                       type='text'
                       placeholder='+ Add Relation Name'
                       value={this.state.name}
-                      onChange={(e: any) => this.setState(
-                        {
-                          name: e.target.value,
-                          alertHint: !validateModelName(e.target.value) || e.target.value === '',
-                        } as State)}
+                      onChange={(e: any) => {
+                        this.setState(
+                          {
+                            name: e.target.value,
+                            alertHint: !validateModelName(e.target.value) || e.target.value === '',
+                          } as State
+                        )
+                        }}
+                      onBlur={() => {
+                        tracker.track(ConsoleEvents.Relations.Popup.nameEntered())
+                      }}
                     />
                     {this.state.alertHint &&
                     <Help
@@ -153,6 +180,9 @@ class RelationPopup extends React.Component<Props, State> {
                       placeholder='+ Add Description'
                       value={this.state.description}
                       onChange={(e: any) => this.setState({ description: e.target.value } as State)}
+                      onBlur={() => {
+                        tracker.track(ConsoleEvents.Relations.Popup.descriptionAdded())
+                      }}
                     />
                   </div>
                 </div>
@@ -162,7 +192,10 @@ class RelationPopup extends React.Component<Props, State> {
                   <div className={classes.additionalInfo}>
                     <div
                       className={classnames(classes.tabbutton, this.state.showExplanation ? classes.active : '')}
-                      onClick={() => this.setState({showExplanation: true} as State)}
+                      onClick={() => {
+                        this.setState({showExplanation: true} as State)
+                        tracker.track(ConsoleEvents.Relations.Popup.explanationTabsSelected())
+                      }}
                     >
                       <Help
                         size={12}
@@ -217,7 +250,10 @@ class RelationPopup extends React.Component<Props, State> {
               </div>
             </div>
             <div className={classes.buttons}>
-              <div onClick={this.close}>
+              <div onClick={() => {
+                this.close()
+                tracker.track(ConsoleEvents.Relations.Popup.canceled({type: this.mutationType}))
+              }}>
                 Cancel
               </div>
               <div className={classnames(classes.submit, this.isValid() ? classes.valid : '')} onClick={this.submit}>
@@ -231,10 +267,12 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   private handleLeftModelIdChange = (id: string) => {
+    tracker.track(ConsoleEvents.Relations.Popup.modelChanged())
     this.setState({leftModelId: id} as State, this.prepopulateFields)
   }
 
   private handleRightModelIdChange = (id: string) => {
+    tracker.track(ConsoleEvents.Relations.Popup.modelChanged())
     this.setState({rightModelId: id} as State, this.prepopulateFields)
   }
 
@@ -314,6 +352,7 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   private submit = (): void => {
+    tracker.track(ConsoleEvents.Relations.Popup.submitted({type: this.mutationType}))
     if (this.props.viewer.relation) {
       this.update()
     } else {

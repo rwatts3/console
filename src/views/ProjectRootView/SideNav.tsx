@@ -233,7 +233,13 @@ export class SideNav extends React.Component<Props, State> {
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
             <div>Endpoints</div>
           </FooterSection>
-          <FooterLink href='https://docs.graph.cool' target='_blank'>
+          <FooterLink
+            href='https://docs.graph.cool'
+            target='_blank'
+            onClick={() => {
+              tracker.track(ConsoleEvents.Sidenav.docsOpened())
+            }}
+          >
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
             <div>Docs</div>
           </FooterLink>

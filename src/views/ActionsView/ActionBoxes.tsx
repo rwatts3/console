@@ -21,6 +21,8 @@ import { UpdateHandlerPayload } from './ActionHandlerBox'
 import { isValidUrl } from '../../utils/utils'
 const classes: any = require('./ActionBoxes.scss')
 import * as cx from 'classnames'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   action?: Action
@@ -235,6 +237,11 @@ class ActionBoxes extends React.Component<Props, State> {
     if (!this.state.changesMade || window.confirm('You have unsaved changes. Do you really want to cancel?')) {
       this.props.close()
     }
+    if (this.props.action) {
+      tracker.track(ConsoleEvents.MutationCallbacks.canceled({type: 'Update'}))
+    } else {
+      tracker.track(ConsoleEvents.MutationCallbacks.canceled({type: 'Create'}))
+    }
   }
 
   private submit = () => {
@@ -244,7 +251,9 @@ class ActionBoxes extends React.Component<Props, State> {
 
     if (this.props.action) {
       this.updateAction()
+      tracker.track(ConsoleEvents.MutationCallbacks.submitted({type: 'Update'}))
     } else {
+      tracker.track(ConsoleEvents.MutationCallbacks.submitted({type: 'Create'}))
       this.createAction()
     }
   }
