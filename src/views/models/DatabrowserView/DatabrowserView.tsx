@@ -37,11 +37,8 @@ import LoadingCell from './LoadingCell'
 import {getLokka} from './../../../utils/relay'
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
-// import ProgressIndicator from '../../../components/ProgressIndicator/ProgressIndicator'
 import {startProgress, incrementProgress} from '../../../actions/progressIndicator'
 import {StateTree, ReduxAction, ReduxThunk} from '../../../types/reducers'
-// import cuid from 'cuid'
-const classes: any = require('./DatabrowserView.scss')
 import {
   nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef,
 } from '../../../actions/databrowser/ui'
@@ -50,7 +47,9 @@ import {classnames} from '../../../utils/classnames'
 import throttle from 'lodash.throttle'
 import {LightCell} from './LightCell'
 import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
+const classes: any = require('./DatabrowserView.scss')
 const DOCS_PREFIX = 'https://docs.graph.cool/reference/platform/system-artifacts'
 
 interface Props {
@@ -161,9 +160,7 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   componentDidMount = () => {
-    tracker.track({
-      key: 'console/databrowser/viewed',
-    })
+    tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.props.router.setRouteLeaveHook(this.props.route, () => {
       if (this.props.newRowActive) {

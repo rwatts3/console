@@ -26,6 +26,7 @@ import {SYSTEM_MODELS} from '../../constants/system'
 import tracker from '../../utils/metrics'
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   children: Element
@@ -282,10 +283,7 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            tracker.track({
-              key: 'console/schema/delete-model-completed',
-              name: this.props.model.name,
-            })
+            tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update', id: this.props.model.id}))
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
