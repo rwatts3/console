@@ -40,7 +40,21 @@ exports[`test Cell renders in edit mode 1`] = `
     className="border flexAuto">
     <NullableCell
       cell={
-        <Connect(StringCell)
+        <function Connect(props, context) {
+                _classCallCheck(this, Connect);
+        
+                var _this = _possibleConstructorReturn(this, _Component.call(this, props, context));
+        
+                _this.version = version;
+                _this.store = props.store || context.store;
+        
+                (0, _invariant2["default"])(_this.store, 'Could not find "store" in either the context or ' + ('props of "' + connectDisplayName + '". ') + 'Either wrap the root component in a <Provider>, ' + ('or explicitly pass "store" as a prop to "' + connectDisplayName + '".'));
+        
+                var storeState = _this.store.getState();
+                _this.state = { storeState: storeState };
+                _this.clearCache();
+                return _this;
+              }
           cancel={[Function]}
           field={
             Object {
