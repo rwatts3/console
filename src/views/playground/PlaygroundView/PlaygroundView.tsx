@@ -381,7 +381,8 @@ class PlaygroundView extends React.Component<Props, State> {
   }
 
   private rememberPlaygroundUsed = () => {
-    tracker.track(ConsoleEvents.Playground.change())
+    // TODO re-enable but reduce to max one event
+    // tracker.track(ConsoleEvents.Playground.change())
     window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
   }
 }
