@@ -27,11 +27,11 @@ import './utils/polyfils'
 if (__HEARTBEAT_ADDR__ && cookiestore.has('graphcool_auth_token')) {
   drumstick.start({
     endpoint: __HEARTBEAT_ADDR__,
-    payload: () => {
+    payload: () => ({
       resource: 'console',
       token: cookiestore.get('graphcool_auth_token'),
       projectId: cookiestore.get('graphcool_last_used_project_id'),
-    },
+    }),
     frequency: 60 * 1000,
   })
 }
