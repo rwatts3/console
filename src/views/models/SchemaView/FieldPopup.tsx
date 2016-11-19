@@ -437,8 +437,13 @@ class FieldPopup extends React.Component<Props, State> {
 
     const field = {isList, typeIdentifier} as Field
     const wrappedMigrationValue = this.state.migrationValue
+    // TODO we need a better solution than manually patching the output of the valueToString method
+    // valueToString returns localeDate because it's used for the value in the Databrowser Cells
+    // we want the DateTime to be in the ISO format, not locale string as is returned by the valueToString method
     const migrationValue = (this.needsMigrationValue() || this.state.useMigrationValue)
-      ? valueToString(wrappedMigrationValue, field, true)
+      ? field.typeIdentifier !== 'DateTime'
+        ? valueToString(wrappedMigrationValue, field, true)
+         : wrappedMigrationValue
       : null
 
     Relay.Store.commitUpdate(
@@ -672,7 +677,7 @@ class FieldPopup extends React.Component<Props, State> {
         return (
           <Datepicker
             defaultValue={new Date(valueString)}
-            onChange={(m) => changeCallback(m.toDate())}
+            onChange={(m) => changeCallback(m.toDate().toISOString())}
             defaultOpen={false}
             applyImmediately={true}
             active={active}
