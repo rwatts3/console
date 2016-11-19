@@ -672,7 +672,7 @@ class FieldPopup extends React.Component<Props, State> {
         return (
           <Datepicker
             defaultValue={new Date(valueString)}
-            onChange={(m) => changeCallback(m.toDate())}
+            onChange={(m) => changeCallback(m.toDate().toISOString())}
             defaultOpen={false}
             applyImmediately={true}
             active={active}
