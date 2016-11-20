@@ -23,6 +23,7 @@ import {GettingStartedState} from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectRootView.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
+import drumstick from 'drumstick'
 require('../../styles/core.scss')
 
 interface Props {
@@ -55,6 +56,18 @@ class ProjectRootView extends React.Component<Props, {}> {
     this.updateForceFetching()
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
+
+    if (__HEARTBEAT_ADDR__) {
+      drumstick.start({
+        endpoint: __HEARTBEAT_ADDR__,
+        payload: () => ({
+          resource: 'console',
+          token: cookiestore.get('graphcool_auth_token'),
+          projectId: cookiestore.get('graphcool_last_used_project_id'),
+        }),
+        frequency: 60 * 1000,
+      })
+    }
   }
 
   componentWillMount() {

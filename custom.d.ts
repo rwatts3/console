@@ -1,5 +1,4 @@
 declare module 'react-router-relay'
-declare module 'react-datepicker'
 declare module 'lokka'
 declare module 'drumstick'
 declare module 'lokka-transport-http'
