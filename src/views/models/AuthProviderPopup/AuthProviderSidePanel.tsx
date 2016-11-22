@@ -234,11 +234,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                   {`createUser(authProvider: { auth0: { idToken } })`}
                 </span>
               </div>
-              <div>
-                <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                  {`signinUser(auth0: { idToken })`}
-                </span>
-              </div>
             </div>
           </div>
           }
@@ -388,13 +383,15 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private disable = () => {
-    tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
-    this.setState(
-      {
-        authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
-      } as State,
-      this.update
-    )
+    if (confirm('Do you really want to disable the Auth Provider? It will delete all auth provider related data.')) {
+      tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
+      this.setState(
+        {
+          authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
+        } as State,
+        this.update
+      )
+    }
   }
 
   private update = () => {
