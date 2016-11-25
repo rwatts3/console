@@ -105,7 +105,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
                   className={cx($p.ml6, $p.black30, $p.ttu, $p.fw6, $p.f14, {
                       [$p.black30]: operation.operation !== selectedOperation,
                       [$p.white]: operation.operation === selectedOperation,
-                    }
+                    },
                   )}
                 >
                   {operation.text}

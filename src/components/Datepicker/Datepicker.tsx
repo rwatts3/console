@@ -44,7 +44,7 @@ export default class DatePicker extends React.Component<Props, State> {
 
   refs: {
     [key: string]: any
-    container: Element
+    container: Element,
   }
 
   constructor (props) {

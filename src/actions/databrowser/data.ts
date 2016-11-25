@@ -63,7 +63,7 @@ export function reloadDataAsync(
   modelNamePlural: string,
   fields: Field[],
   index: number = 0,
-  searchQuery: string = ''
+  searchQuery: string = '',
 ): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     dispatch(setData(Immutable.List<Immutable.Map<string, any>>(), Immutable.List<boolean>()))
@@ -234,7 +234,7 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
 
 export function updateCell(payload: {
   position: GridPosition,
-  value: TypedValue
+  value: TypedValue,
 }) {
   return {
     type: Constants.UPDATE_CELL,

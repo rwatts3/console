@@ -32,7 +32,7 @@ class Tether extends React.Component<Props, {}> {
   }
 
   refs: {
-    container: any
+    container: any,
   }
 
   componentDidMount() {

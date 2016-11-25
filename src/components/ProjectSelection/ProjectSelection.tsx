@@ -358,7 +358,7 @@ class ProjectSelection extends React.Component<Props, State> {
                   particles.brPill,
                   particles.bWhite,
                   particles.pointer,
-                  particles.o80
+                  particles.o80,
                 )}
                   onClick={this.props.add}
                 >

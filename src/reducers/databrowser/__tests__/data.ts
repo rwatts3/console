@@ -24,7 +24,7 @@ function mockNodes() {
           id: 'asd3',
           name: 'a3',
         }),
-      ]
+      ],
     ),
     Immutable.List<boolean>([true, true, true]),
   )
@@ -85,7 +85,7 @@ describe('databrowser reducer', () => {
           name: 'a4',
         })),
       ],
-      [0, 1]
+      [0, 1],
     )
   })
 
@@ -135,7 +135,7 @@ function reduceAndSnapshot(
   initialState: DataBrowserDataState,
   reduce: Reducer<DataBrowserDataState>,
   actions: ReduxAction[],
-  excludeActions: number[] = []
+  excludeActions: number[] = [],
 ) {
   let lastState = initialState
   actions.forEach((action, index) => {

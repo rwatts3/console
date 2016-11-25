@@ -74,7 +74,7 @@ export default class Steps extends React.Component<Props, State> {
                     [$p.ml10]: i !== 0,
                     [$p.bgGreen]: i === activeIndex,
                     [$p.bgGreen30]: i !== activeIndex,
-                  }
+                  },
                 )}
                 onClick={() => this.setIndex(i)}
               >

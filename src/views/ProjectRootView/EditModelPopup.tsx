@@ -198,5 +198,5 @@ export default connect(
   null,
   {
     closePopup,
-  }
+  },
 )(EditModelPopup)

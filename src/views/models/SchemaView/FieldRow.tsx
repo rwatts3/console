@@ -236,7 +236,7 @@ class FieldRow extends React.Component<Props, State> {
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -271,7 +271,7 @@ class FieldRow extends React.Component<Props, State> {
             editDescriptionPending: false,
           } as State)
         },
-      }
+      },
     )
   }
 

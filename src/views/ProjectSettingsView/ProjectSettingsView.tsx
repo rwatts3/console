@@ -35,7 +35,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
 
   refs: {
     [key: string]: any
-    projectId: Element
+    projectId: Element,
   }
 
   constructor(props) {

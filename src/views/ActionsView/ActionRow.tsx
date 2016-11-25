@@ -124,7 +124,7 @@ class ActionRow extends React.Component<Props, State> {
       new UpdateActionMutation({
         actionId: this.props.action.id,
         isActive: !this.props.action.isActive,
-      })
+      }),
     )
   }
 
@@ -137,7 +137,7 @@ class ActionRow extends React.Component<Props, State> {
         new DeleteActionMutation({
           actionId: this.props.action.id,
           projectId: this.props.projectId,
-        })
+        }),
       )
     }
   }

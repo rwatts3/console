@@ -92,7 +92,7 @@ class ModelDescription extends React.Component<Props, State> {
             editDescriptionPending: false,
           })
         },
-      }
+      },
     )
   }
 }

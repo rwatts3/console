@@ -159,7 +159,7 @@ class RelationPopup extends React.Component<Props, State> {
                           {
                             name: e.target.value,
                             alertHint: !validateModelName(e.target.value) || e.target.value === '',
-                          } as State
+                          } as State,
                         )
                         }}
                       onBlur={() => {
@@ -386,7 +386,7 @@ class RelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-      }
+      },
     )
   }
 
@@ -418,7 +418,7 @@ class RelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-      }
+      },
     )
   }
 }

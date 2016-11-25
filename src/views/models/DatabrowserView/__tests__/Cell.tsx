@@ -98,7 +98,7 @@ test('Cell renders and runs selectCell', () => {
         },
       ]}
       loaded={[true,true,true,true]}
-    />
+    />,
   )
 
   component.find('.root').simulate('click')
@@ -205,7 +205,7 @@ test('Cell renders in edit mode', () => {
         },
       ]}
       loaded={[true,true,true,true]}
-    />
+    />,
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()

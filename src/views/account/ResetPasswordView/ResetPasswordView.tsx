@@ -46,7 +46,7 @@ export default class ResetPasswordView extends React.Component<{}, State> {
 
           this.setState({ loading: false } as State)
         },
-      }
+      },
     )
   }
 

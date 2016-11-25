@@ -19,7 +19,7 @@ interface AuthText {
   description: string
   link: {
     href: string
-    content: string
+    content: string,
   }
 }
 
@@ -61,11 +61,11 @@ interface AuthProviderErrors {
   auth0: {
     clientId: boolean
     domain: boolean
-    clientSecret: boolean
+    clientSecret: boolean,
   }
   digits: {
     consumerKey: boolean
-    consumerSecret: boolean
+    consumerSecret: boolean,
   }
 }
 
@@ -378,7 +378,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       {
         authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', true).toJS(),
       } as State,
-      this.update
+      this.update,
     )
   }
 
@@ -389,7 +389,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         {
           authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
         } as State,
-        this.update
+        this.update,
       )
     }
   }
@@ -414,7 +414,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
         },
-      }
+      },
     )
   }
 }

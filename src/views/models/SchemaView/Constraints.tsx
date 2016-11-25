@@ -47,7 +47,7 @@ class Constraints extends React.Component<Props, {}> {
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
         },
-      }
+      },
     )
   }
 }

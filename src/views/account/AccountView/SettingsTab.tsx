@@ -130,7 +130,7 @@ class SettingsTab extends React.Component<Props, State> {
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
         },
-      }
+      },
     )
   }
 
@@ -154,7 +154,7 @@ class SettingsTab extends React.Component<Props, State> {
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     } else {
       this.props.showNotification({message: 'Please enter the same new password twice.', level: 'error'})

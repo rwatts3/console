@@ -110,18 +110,18 @@ interface Props {
                     field: Field,
                     callback,
                     nodeId: string,
-                    index: number,) => ReduxThunk
+                    index: number) => ReduxThunk
   reloadDataAsync: (lokka: any,
                     modelNamePlural: string,
                     fields: Field[],
                     index?: number,
-                    searchQuery?: string,) => ReduxThunk
+                    searchQuery?: string) => ReduxThunk
   loadDataAsync: (lokka: any,
                   modelNamePlural: string,
                   field: Field[],
                   first: number,
                   skip: number,
-                  searchQuery?: string,) => ReduxThunk
+                  searchQuery?: string) => ReduxThunk
   searchQuery: string
 }
 
@@ -631,7 +631,7 @@ class DatabrowserView extends React.Component<Props, {}> {
       field,
       callback,
       nodeId,
-      rowIndex
+      rowIndex,
     )
   }
 
@@ -658,7 +658,7 @@ class DatabrowserView extends React.Component<Props, {}> {
         this.lokka,
         this.props.params.projectName,
         this.props.params.modelName,
-        this.props.model
+        this.props.model,
       )
     }
   }
@@ -723,7 +723,7 @@ function mapDispatchToProps(dispatch) {
 
 const ReduxContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withRouter(DatabrowserView))
 
 const MappedDatabrowserView = mapProps({

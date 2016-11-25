@@ -164,7 +164,7 @@ class ProjectRootView extends React.Component<Props, {}> {
         {this.props.popup.popups.map(popup =>
           <PopupWrapper key={popup.id} id={popup.id}>
             {popup.element}
-          </PopupWrapper>
+          </PopupWrapper>,
         )}
         {this.props.gettingStartedState.isCurrentStep('STEP0_OVERVIEW') &&
           <PopupWrapper>
@@ -193,11 +193,11 @@ class ProjectRootView extends React.Component<Props, {}> {
               this.props.update(
                 this.props.user.crm.onboardingStatus.gettingStarted,
                 this.props.user.crm.onboardingStatus.gettingStartedSkipped,
-                this.props.user.id
+                this.props.user.id,
               )
             })
           },
-          1500
+          1500,
         )
       }
     } else {
@@ -222,7 +222,7 @@ class ProjectRootView extends React.Component<Props, {}> {
             tracker.track(ConsoleEvents.Project.created({name: projectName}))
             this.props.router.replace(`${projectName}`)
           },
-        }
+        },
       )
     }
   }

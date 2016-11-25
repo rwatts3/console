@@ -51,7 +51,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(reducers, compose(
   applyMiddleware(...middlewares),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
+  window.devToolsExtension ? window.devToolsExtension() : f => f,
 ))
 
 store.dispatch(fetchGettingStartedState())
@@ -68,5 +68,5 @@ ReactDOM.render(
       />
     </Provider>
   ),
-  document.getElementById('root')
+  document.getElementById('root'),
 )

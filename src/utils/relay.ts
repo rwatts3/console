@@ -24,7 +24,7 @@ export function updateNetworkLayer (): void {
 
 export function onFailureShowNotification (
   transaction: Transaction,
-  showNotification: ShowNotificationCallback
+  showNotification: ShowNotificationCallback,
 ): void {
   const error = transaction.getError() as any
   // NOTE if error returns non-200 response, there is no `source` provided (probably because of fetch)
@@ -79,7 +79,7 @@ export function addNode(
   lokka: any,
   modelName: string,
   fieldValues: { [key: string]: any },
-  fields: Field[]
+  fields: Field[],
 ): Promise<any> {
 
   const mutation = `
@@ -94,7 +94,7 @@ export function addNodes(
   lokka: any,
   modelName: string,
   fieldValueArray: {[key: string]: any}[],
-  fields: Field[]
+  fields: Field[],
 ): Promise<any> {
   const mutations = fieldValueArray.map((value, index) => `add${index}: ${getAddMutation(modelName, value, fields)}`)
   return lokka.mutate(`{${mutations.join('\n')}}`)
@@ -157,7 +157,7 @@ export function queryNodes(
   first: number = 50,
   searchQuery: string,
   orderBy?: OrderBy,
-  subNodeLimit: number = 3
+  subNodeLimit: number = 3,
 ): Promise<any> {
 
   const fieldNames = getFieldsProjection(fields, subNodeLimit)

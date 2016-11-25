@@ -14,7 +14,7 @@ export default (props) => {
           [$p.bgBlue]: selected,
           [$p.white]: selected,
         },
-        className
+        className,
       )}
       onClick={onClick}
     >

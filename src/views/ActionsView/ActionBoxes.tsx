@@ -279,7 +279,7 @@ class ActionBoxes extends React.Component<Props, State> {
         onSuccess: () => {
           this.props.close()
         },
-      }
+      },
     )
   }
 
@@ -304,7 +304,7 @@ class ActionBoxes extends React.Component<Props, State> {
         onSuccess: () => {
           this.props.close()
         },
-      }
+      },
     )
   }
 

@@ -51,10 +51,10 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
                   className={cx(
                     {
                       [$p.ml6]: index !== 0,
-                    }
+                    },
                   )}
                 />
-              )
+              ),
             )}
           </div>
           <Link className={cx($p.ml25)} to={`/${params.projectName}/permissions/${model.name}/create`}>

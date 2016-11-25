@@ -23,7 +23,7 @@ export interface CellRequirements {
   methods: {
     save: (val: any, keepEditing?: any) => void
     cancel: (reload?: boolean) => void
-    onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void
+    onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void,
   }
 }
 

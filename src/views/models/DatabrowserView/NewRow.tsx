@@ -218,7 +218,7 @@ class NewRow extends React.Component<Props, State> {
           () => {
             this.props.nextStep()
           },
-          1000
+          1000,
         )
       })
     }

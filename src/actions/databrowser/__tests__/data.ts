@@ -168,7 +168,7 @@ describe('async data actions', () => {
         fields[1],
         () => {/* */},
         'ciu9st9820sgt0128cviki4sf',
-        0
+        0,
       ))
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()

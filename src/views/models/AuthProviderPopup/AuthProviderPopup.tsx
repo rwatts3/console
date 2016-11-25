@@ -57,7 +57,7 @@ class AuthProviderPopup extends React.Component<Props, State> {
               <div
                 className={cx(
                   $p.flex, $p.pa25, $p.bb, $p.bBlack10, $p.itemsCenter, $p.pointer, $p.justifyBetween,
-                  this.state.selectedType === 'AUTH_PROVIDER_EMAIL' && $p.bgBlack04
+                  this.state.selectedType === 'AUTH_PROVIDER_EMAIL' && $p.bgBlack04,
                 )}
                 onClick={() => {
                   this.setState({ selectedType: 'AUTH_PROVIDER_EMAIL' })
@@ -84,7 +84,7 @@ class AuthProviderPopup extends React.Component<Props, State> {
               <div
                 className={cx(
                   $p.flex, $p.pa25, $p.bb, $p.bBlack10, $p.itemsCenter, $p.pointer, $p.justifyBetween,
-                  this.state.selectedType === 'AUTH_PROVIDER_DIGITS' && $p.bgBlack04
+                  this.state.selectedType === 'AUTH_PROVIDER_DIGITS' && $p.bgBlack04,
                 )}
                 onClick={() => {
                   this.setState({ selectedType: 'AUTH_PROVIDER_DIGITS' })
@@ -101,7 +101,7 @@ class AuthProviderPopup extends React.Component<Props, State> {
               <div
                 className={cx(
                   $p.flex, $p.pa25, $p.bb, $p.bBlack10, $p.itemsCenter, $p.pointer, $p.justifyBetween,
-                  this.state.selectedType === 'AUTH_PROVIDER_AUTH0' && $p.bgBlack04
+                  this.state.selectedType === 'AUTH_PROVIDER_AUTH0' && $p.bgBlack04,
                 )}
                 onClick={() => {
                   this.setState({ selectedType: 'AUTH_PROVIDER_AUTH0' })

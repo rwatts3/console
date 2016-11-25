@@ -53,7 +53,7 @@ class ModelPermissionFields extends React.Component<Props, {}> {
                   disabled={!fieldIds.includes(field.id) || !isActive}
                   name={field.name}
                   className={$p.ml10}
-                />
+                />,
               )}
             </div>
           </ScrollBox>
@@ -75,7 +75,7 @@ const MappedModelPermissionFields = mapProps({
 
         return list
       },
-      []
+      [],
     )
   },
 })(ModelPermissionFields)

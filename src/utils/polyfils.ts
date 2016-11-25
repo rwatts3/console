@@ -11,7 +11,7 @@ Array.prototype.mapToObject = function (keyFn, valFn) {
       o[keyFn(v)] = valFn(v)
       return o
     },
-    {}
+    {},
   )
 }
 
