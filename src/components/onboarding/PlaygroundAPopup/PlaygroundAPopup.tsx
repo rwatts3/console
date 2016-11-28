@@ -29,7 +29,7 @@ const NextButton = styled.button`
 class PlaygroundAPopup extends React.Component<Props, {}> {
 
   refs: {
-    steps: any
+    steps: any,
   }
 
   nextSlide = () => {

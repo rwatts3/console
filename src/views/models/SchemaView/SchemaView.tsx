@@ -135,7 +135,7 @@ class SchemaView extends React.Component<Props, State> {
                 classes.group_button,
                 {
                   [classes.selected]: this.state.activeFields === 'All',
-                }
+                },
               )}
               onClick={() => this.handleFilterClick('All')}
             >All
@@ -145,7 +145,7 @@ class SchemaView extends React.Component<Props, State> {
                 classes.group_button,
                 {
                   [classes.selected]: this.state.activeFields === 'Scalar',
-                }
+                },
               )}
               onClick={() => this.handleFilterClick('Scalar')}
             >Scalar
@@ -155,7 +155,7 @@ class SchemaView extends React.Component<Props, State> {
                 classes.group_button,
                 {
                   [classes.selected]: this.state.activeFields === 'Relations',
-                }
+                },
               )}
               onClick={() => this.handleFilterClick('Relations')}
             >Relations</Link>

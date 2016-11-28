@@ -6,7 +6,7 @@ export interface DataBrowserDataState {
   backup: {
     nodes: Immutable.List<Immutable.Map<string, any>>
     itemCount: number
-    loaded: Immutable.List<boolean>
+    loaded: Immutable.List<boolean>,
   }
   orderBy: OrderBy
   filter: Immutable.Map<string, any>

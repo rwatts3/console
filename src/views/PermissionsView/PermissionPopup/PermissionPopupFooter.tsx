@@ -27,7 +27,7 @@ export default (props) => (
         {
           [cx($p.bgBlack10, $p.noEvents)]: !props.isValid,
           [cx($p.bgGreen, $p.pointer)]: props.isValid,
-        }
+        },
       )}
       onClick={(e: any) => {
         if (!props.isValid) {

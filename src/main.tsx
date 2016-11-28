@@ -9,8 +9,6 @@ import { updateNetworkLayer } from './utils/relay'
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
 import { Provider } from 'react-redux'
 import * as thunk from 'redux-thunk'
-import * as cookiestore from 'cookiestore'
-import drumstick from 'drumstick'
 import { reduceGettingStartedState } from './reducers/gettingStarted'
 import { fetchGettingStartedState } from './actions/gettingStarted'
 import { reducePopup } from './reducers/popup'
@@ -23,22 +21,6 @@ import logger from 'redux-logger'
 import * as ReactGA from 'react-ga'
 
 import './utils/polyfils'
-
-if (
-  __HEARTBEAT_ADDR__ &&
-  cookiestore.has('graphcool_auth_token') &&
-  cookiestore.has('graphcool_last_used_project_id')
-) {
-  drumstick.start({
-    endpoint: __HEARTBEAT_ADDR__,
-    payload: () => ({
-      resource: 'console',
-      token: cookiestore.get('graphcool_auth_token'),
-      projectId: cookiestore.get('graphcool_last_used_project_id'),
-    }),
-    frequency: 60 * 1000,
-  })
-}
 
 updateNetworkLayer()
 
@@ -69,7 +51,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(reducers, compose(
   applyMiddleware(...middlewares),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
+  window.devToolsExtension ? window.devToolsExtension() : f => f,
 ))
 
 store.dispatch(fetchGettingStartedState())
@@ -86,5 +68,5 @@ ReactDOM.render(
       />
     </Provider>
   ),
-  document.getElementById('root')
+  document.getElementById('root'),
 )

@@ -468,7 +468,7 @@ class FieldPopup extends React.Component<Props, State> {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
-      }
+      },
     )
   }
 
@@ -518,7 +518,7 @@ class FieldPopup extends React.Component<Props, State> {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
-      }
+      },
     )
   }
 
@@ -712,7 +712,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const ReduxContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withRouter(FieldPopup))
 
 const MappedFieldPopup = mapProps({

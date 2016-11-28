@@ -25,7 +25,7 @@ export default class GeneratedMutations extends React.Component<Props, {}> {
     return (
       <div className={classes.root}>
         {this.getMutations().map((mutation) =>
-        <div className={classes.mutation}>{mutation.name}({mutation.args.join(', ')})</div>
+        <div className={classes.mutation}>{mutation.name}({mutation.args.join(', ')})</div>,
         )}
       </div>
     )

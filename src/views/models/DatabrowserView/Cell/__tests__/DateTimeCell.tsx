@@ -26,7 +26,7 @@ test('DateTimeCell renders', () => {
       cancel={cancel}
       onKeyDown={onKeyDown}
       field={field}
-    />
+    />,
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()

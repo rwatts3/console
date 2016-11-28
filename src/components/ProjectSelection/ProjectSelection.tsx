@@ -358,7 +358,7 @@ class ProjectSelection extends React.Component<Props, State> {
                   particles.brPill,
                   particles.bWhite,
                   particles.pointer,
-                  particles.o80
+                  particles.o80,
                 )}
                   onClick={this.props.add}
                 >
@@ -392,7 +392,6 @@ class ProjectSelection extends React.Component<Props, State> {
 
     cookiestore.remove('graphcool_auth_token')
     cookiestore.remove('graphcool_customer_id')
-    window.localStorage.clear()
     window.location.pathname = '/'
   }
 }

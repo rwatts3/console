@@ -488,7 +488,7 @@ export class SideNav extends React.Component<Props, State> {
               $p.flex,
               $p.flexColumn,
               $p.pt16,
-              this.state.modelsFit ? $p.pb38 : $p.pb60
+              this.state.modelsFit ? $p.pb38 : $p.pb60,
             )}
           >
             {this.props.models && this.props.models.map((model) => (
@@ -530,7 +530,7 @@ export class SideNav extends React.Component<Props, State> {
             $p.brPill,
             $p.bWhite,
             $p.pointer,
-            $p.o60
+            $p.o60,
           )}
           onClick={this.showAddModelPopup}
         >
@@ -571,7 +571,7 @@ export class SideNav extends React.Component<Props, State> {
               onClick={this.toggleModels}
               className={cx(
                 $p.brPill,
-                $p.bgDarkBlue
+                $p.bgDarkBlue,
               )}
             />
           </ToggleMore>
@@ -651,7 +651,7 @@ export class SideNav extends React.Component<Props, State> {
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -688,7 +688,7 @@ const ReduxContainer = connect(
     showDonePopup,
     showNotification,
     showPopup,
-  }
+  },
 )(withRouter(SideNav))
 
 const MappedSideNav = mapProps({

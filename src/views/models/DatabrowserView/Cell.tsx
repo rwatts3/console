@@ -71,7 +71,7 @@ export class Cell extends React.PureComponent<Props, State> {
 
   refs: {
     [key: string]: any
-    container: any // needs to be any, as scrollIntoViewIfNeeded is not yet there
+    container: any, // needs to be any, as scrollIntoViewIfNeeded is not yet there
   }
 
   private escaped: boolean
@@ -418,7 +418,7 @@ const MappedCell = connect(
     previousCell,
     nextRow,
     previousRow,
-  }
+  },
 )(Cell)
 
 export default Relay.createContainer(MappedCell, {

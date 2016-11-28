@@ -375,7 +375,7 @@ class PlaygroundView extends React.Component<Props, State> {
           onFailure: (transaction) => {
             alert(transaction.getError())
           },
-        }
+        },
       )
     }
   }

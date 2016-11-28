@@ -112,7 +112,7 @@ class OnboardSideNav extends React.Component<Props, {}> {
           {
             'white pointer': isActive,
             'strike': isComplete,
-          }
+          },
         )}
         onClick={() => isActive && this.props.showCurrentStep(this.props.router, this.props.params)}
       >
@@ -126,7 +126,7 @@ class OnboardSideNav extends React.Component<Props, {}> {
               'bg-white': isActive,
               'bg-black-50': isComplete,
               'black ba b--black': !isComplete && !isActive,
-            }
+            },
           )}
         >
           {data.index}

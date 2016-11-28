@@ -41,7 +41,7 @@ class AffectedFields extends React.Component<Props, {}> {
                 {
                   [cx($p.bgBlack04, $p.black30)]: !applyToWholeModel,
                   [cx($p.bgBlue, $p.white)]: applyToWholeModel,
-                }
+                },
               )}
               onClick={toggleApplyToWholeModel}
             >
@@ -73,7 +73,7 @@ class AffectedFields extends React.Component<Props, {}> {
                   onClick={() => toggleField && toggleField(field.id)}
                   className={cx($p.pointer, $p.mr10, $p.mb10)}
                 />
-              )
+              ),
             )}
           </div>
         </div>

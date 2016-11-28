@@ -74,7 +74,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     [key: string]: any
     exampleAnchor: HTMLDivElement
     congratsAnchor: HTMLDivElement
-    scroller: HTMLDivElement
+    scroller: HTMLDivElement,
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -160,7 +160,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                 <div
                   className={classnames(
                     classes.exampleButton,
-                    selectedExample === 'ReactRelay' ? classes.active : ''
+                    selectedExample === 'ReactRelay' ? classes.active : '',
                   )}
                   onClick={() => this.props.selectExample('ReactRelay')}
                 >
@@ -169,7 +169,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                 <div
                   className={classnames(
                     classes.exampleButton,
-                    selectedExample === 'ReactApollo' ? classes.active : ''
+                    selectedExample === 'ReactApollo' ? classes.active : '',
                   )}
                   onClick={() => this.props.selectExample('ReactApollo')}
                 >
@@ -178,7 +178,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                 <div
                   className={classnames(
                     classes.exampleButton,
-                    selectedExample === 'AngularApollo' ? classes.active : ''
+                    selectedExample === 'AngularApollo' ? classes.active : '',
                   )}
                   onClick={() => this.props.selectExample('AngularApollo')}
                 >

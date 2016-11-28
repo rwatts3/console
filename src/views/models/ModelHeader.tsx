@@ -267,7 +267,7 @@ class ModelHeader extends React.Component<Props, State> {
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -289,7 +289,7 @@ class ModelHeader extends React.Component<Props, State> {
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -310,7 +310,7 @@ const ReduxContainer = connect(
     nextStep,
     showNotification,
     showPopup,
-  }
+  },
 )(withRouter(ModelHeader))
 
 export default Relay.createContainer(ReduxContainer, {

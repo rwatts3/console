@@ -7,7 +7,7 @@ export function valueToString(
   value: TypedValue,
   field: Field,
   returnNullAsString: boolean,
-  ignoreJson: boolean = false
+  ignoreJson: boolean = false,
 ): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''

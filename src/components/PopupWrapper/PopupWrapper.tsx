@@ -11,7 +11,7 @@ interface Props {
 
 class PopupWrapper extends React.Component<Props, {}> {
   refs: {
-    container: Element
+    container: Element,
   }
 
   render() {

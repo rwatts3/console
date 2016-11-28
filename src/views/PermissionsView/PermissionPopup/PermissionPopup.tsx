@@ -181,7 +181,7 @@ class PermissionPopup extends React.Component<Props, State> {
       {
         onSuccess: () => this.closePopup(),
         onFailure: (transaction) => console.log(transaction),
-      }
+      },
     )
   }
 
