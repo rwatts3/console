@@ -63,7 +63,7 @@ class RelationPopup extends React.Component<Props, State> {
     this.state = relation ? this.getExistingRelationState() : this.getNewRelationState()
   }
 
-  componentDidMoount() {
+  componentDidMount() {
     tracker.track(ConsoleEvents.Relations.Popup.opened({type: this.mutationType, source: 'schema'}))
   }
 
