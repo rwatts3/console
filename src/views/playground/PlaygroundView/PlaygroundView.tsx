@@ -22,6 +22,10 @@ import {nextStep, previousStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
+import {Popup} from '../../../types/popup'
+import {showPopup} from '../../../actions/popup'
+import cuid from 'cuid'
+import CodeGenerationPopup from './CodeGenerationPopup/CodeGenerationPopup'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 
@@ -65,6 +69,7 @@ interface Props {
   gettingStartedState: GettingStartedState
   nextStep: () => any
   previousStep: () => any
+  showPopup: (popup: Popup) => void
 }
 
 interface State {
@@ -76,12 +81,15 @@ interface State {
   selectedUserId: string
   selectedUserToken: string
   adminToken: string
+  lastQuerySuccessful: boolean
+  lastQuery: string
 }
 
 class PlaygroundView extends React.Component<Props, State> {
 
   private lokka: any
   private guestLokka: any
+  private id: string
 
   constructor (props: Props) {
     super(props)
@@ -107,7 +115,10 @@ class PlaygroundView extends React.Component<Props, State> {
       selectedUserId: DASHBOARD_ADMIN.id,
       selectedUserToken: null,
       adminToken: token,
+      lastQuerySuccessful: false,
+      lastQuery: '',
     }
+
   }
 
   componentDidUpdate (nextProps: Props) {
@@ -151,10 +162,13 @@ class PlaygroundView extends React.Component<Props, State> {
     tracker.track(ConsoleEvents.Playground.viewed())
   }
 
+  getEndpoint () {
+    return `${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.viewer.project.id}`
+  }
+
   render () {
     const fetcher = (graphQLParams) => {
-
-      return fetch(`${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.viewer.project.id}`, { // tslint:disable-line
+      return fetch(this.getEndpoint(), { // tslint:disable-line
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -195,6 +209,11 @@ class PlaygroundView extends React.Component<Props, State> {
             date: new Date(),
           }
           saveQuery(query, this.props.viewer.project.id)
+
+          this.setState({
+            lastQuerySuccessful: true,
+            lastQuery: graphQLParams.query,
+          } as State)
         }
 
         if (graphQLParams.query.includes('mutation')) {
@@ -220,7 +239,7 @@ class PlaygroundView extends React.Component<Props, State> {
                   projectId={this.props.viewer.project.id}
                   onQuerySelect={this.onHistoryQuerySelect}
                   onClickOutside={() => this.setState({historyVisible: false} as State)}
-                  />
+                />
               </div>
             }
             <Icon
@@ -229,8 +248,26 @@ class PlaygroundView extends React.Component<Props, State> {
               height={20}
               />
             <span>{this.state.historyVisible ? 'Close' : 'History'}</span>
-
           </div>
+          {this.state.lastQuerySuccessful && (
+            <div className={cx($p.h100, $p.flex, $p.justifyCenter, $p.itemsCenter)}>
+              <button
+                onClick={this.showPopup}
+                className={cx(
+                  $p.ph10,
+                  $p.pv6,
+                  $p.f14,
+                  $p.white,
+                  $p.nowrap,
+                  $p.br2,
+                  $p.bgGreen,
+                  $p.pointer,
+                )}
+              >
+                Generate Code Snippet
+              </button>
+            </div>
+          )}
           <div className={classes.endpoint}>
             <select onChange={this.changeEndpoint} value={this.state.selectedEndpoint}>
               {Object.keys(endpoints).map((endpoint) => (
@@ -385,6 +422,24 @@ class PlaygroundView extends React.Component<Props, State> {
     // tracker.track(ConsoleEvents.Playground.change())
     window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
   }
+
+  private showPopup = () => {
+    const {lastQuery} = this.state
+    const {params} = this.props
+    this.id = cuid()
+    this.props.showPopup({
+      element: (
+        <CodeGenerationPopup
+          query={lastQuery}
+          params={params}
+          id={this.id}
+          endpointUrl={this.getEndpoint()}
+        />
+      ),
+      id: this.id,
+      blurBackground: true,
+    })
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -394,7 +449,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ nextStep, previousStep }, dispatch)
+  return bindActionCreators({ nextStep, previousStep, showPopup }, dispatch)
 }
 
 const MappedPlaygroudView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
