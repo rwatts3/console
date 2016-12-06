@@ -1,5 +1,4 @@
 declare module 'react-router-relay'
-declare module 'react-datepicker'
 declare module 'lokka'
 declare module 'drumstick'
 declare module 'lokka-transport-http'
@@ -44,13 +43,12 @@ declare var analytics: any
 declare var __BACKEND_ADDR__: string
 declare var __HEARTBEAT_ADDR__: string | boolean
 declare var __SMOOCH_TOKEN__: string
-declare var __ENABLE_SEGMENT__: boolean
-declare var __SEGMENT_TOKEN__: string
+declare var __METRICS_ENDPOINT__: string
+declare var __GA_CODE__: string
 declare var __AUTH0_DOMAIN__: string
 declare var __AUTH0_CLIENT_ID__: string
 
 declare interface Window {
-  analytics: any
   devToolsExtension?: () => any
 }
 

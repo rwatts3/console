@@ -27,7 +27,7 @@ export default class ToggleButton extends React.Component<Props, State> {
 
   refs: {
     [key: string]: any
-    container: Element
+    container: Element,
   }
 
   rendered: number

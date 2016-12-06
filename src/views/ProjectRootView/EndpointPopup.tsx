@@ -7,6 +7,8 @@ import styled, { keyframes } from 'styled-components'
 import {particles, variables, Icon} from 'graphcool-styles'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   id: string
@@ -26,6 +28,10 @@ class EndpointPopup extends React.Component<Props, State> {
   state = {
     endpoint: 'simple/v1' as Endpoint,
     copied: false,
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Endpoints.opened())
   }
 
   render() {
@@ -272,7 +278,7 @@ class EndpointPopup extends React.Component<Props, State> {
           >
           {
             // tslint:disable-next-line
-        }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://docs.graph.cool/reference/simple-api#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://docs.graph.cool/examples'>check out some code examples</a>.
+        }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://graph.cool/docs/reference/simple-api#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://graph.cool/docs/examples'>check out some code examples</a>.
           </p>
         </Popup>
       </div>
@@ -280,10 +286,12 @@ class EndpointPopup extends React.Component<Props, State> {
   }
 
   private selectEndpoint = (endpoint: Endpoint) => {
+    tracker.track(ConsoleEvents.Endpoints.selected())
     this.setState({ endpoint } as State)
   }
 
   private onCopy = () => {
+    tracker.track(ConsoleEvents.Endpoints.copied())
     this.setState({ copied: true } as State)
   }
 }

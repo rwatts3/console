@@ -58,7 +58,7 @@ const Chooser = (props) => (
                     className={cx($p.ttu, $p.fw6, $p.f14, {
                     [$p.black30]: props.environment !== env,
                     [$p.white]: props.environment === env,
-                  }
+                  },
                 )}
                   >
                     {env}
@@ -79,5 +79,5 @@ export default connect(
   }),
   {
     setEnvironment,
-  }
+  },
 )(Chooser)

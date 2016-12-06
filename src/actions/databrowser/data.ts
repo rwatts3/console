@@ -13,6 +13,8 @@ import {sideNavSyncer} from '../../utils/sideNavSyncer'
 import * as bluebird from 'bluebird'
 import {GridPosition} from '../../types/databrowser/ui'
 import {toggleNewRow} from '../../actions/databrowser/ui'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 export function setItemCount(count: number) {
   return {
@@ -61,7 +63,7 @@ export function reloadDataAsync(
   modelNamePlural: string,
   fields: Field[],
   index: number = 0,
-  searchQuery: string = ''
+  searchQuery: string = '',
 ): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     dispatch(setData(Immutable.List<Immutable.Map<string, any>>(), Immutable.List<boolean>()))
@@ -212,11 +214,9 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
     return bluebird.map(ids, id => deleteNode(lokka, modelName, id), {
       concurrency: 5,
     })
-      .then((res) => {
-        analytics.track('models/databrowser: deleted node', {
-          project: projectName,
-          model: modelName,
-        })
+      .then(() => {
+        tracker.track(ConsoleEvents.Databrowser.deleteNodesCompleted({count: ids.length}))
+
         dispatch(mutationSuccess())
       })
       .catch((err) => {
@@ -234,7 +234,7 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
 
 export function updateCell(payload: {
   position: GridPosition,
-  value: TypedValue
+  value: TypedValue,
 }) {
   return {
     type: Constants.UPDATE_CELL,

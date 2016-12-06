@@ -15,7 +15,7 @@ declare module './cells' {
 export class StringCell extends React.Component<CellProps<string>, {}> {
 
   refs: {
-    input: HTMLInputElement
+    input: HTMLInputElement,
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,5 +72,5 @@ export default connect(
   state => ({
     step: state.gettingStarted.gettingStartedState.step,
   }),
-  { nextStep }
+  { nextStep },
 )(StringCell)

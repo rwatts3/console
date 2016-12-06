@@ -64,7 +64,7 @@ const MappedDataActionRow = connect(
   },
   {
     clearNodeSelection,
-  }
+  },
 )(DeleteNodeRow)
 
 export default MappedDataActionRow

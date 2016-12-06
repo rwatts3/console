@@ -19,37 +19,37 @@ module.exports = {
     rules: [{
       enforce: 'pre',
       test: /\.ts(x?)$/,
-      loader: 'tslint',
+      loader: 'tslint-loader',
       exclude: /node_modules/,
     }, {
       test: /\.json$/, // TODO check if still needed
-      loader: 'json',
+      loader: 'json-loader',
     }, {
       test: /\.css$/,
-      loader: 'style!css',
+      loader: 'style-loader!css-loader',
     }, {
       test: /\.scss$/,
-      loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass',
+      loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader',
     }, {
       test: /\.ts(x?)$/,
-      loader: 'babel!awesome-typescript',
+      loader: 'babel-loader!awesome-typescript-loader',
       exclude: /node_modules/,
     }, {
       test: /\.js$/,
-      loader: 'babel',
+      loader: 'babel-loader',
       exclude: /node_modules/,
     }, {
       test: /\.mp3$/,
-      loader: 'file',
+      loader: 'file-loader',
     }, {
       test: /icons\/.*\.svg$/,
-      loader: 'raw!svgo?{"plugins":[{"removeStyleElement":true}]}',
+      loader: 'raw-loader!svgo-loader?{"plugins":[{"removeStyleElement":true}]}',
     }, {
       test: /graphics\/.*\.svg$/,
-      loader: 'file',
+      loader: 'file-loader',
     }, {
       test: /(graphics|gifs)\/.*\.(png|gif)$/,
-      loader: 'file',
+      loader: 'file-loader',
     }],
   },
   plugins: [
@@ -58,8 +58,8 @@ module.exports = {
       __HEARTBEAT_ADDR__: process.env.HEARTBEAT_ADDR ? JSON.stringify(process.env.HEARTBEAT_ADDR.toString()) : false,
       __AUTH0_DOMAIN__: JSON.stringify(process.env.AUTH0_DOMAIN.toString()),
       __AUTH0_CLIENT_ID__: JSON.stringify(process.env.AUTH0_CLIENT_ID.toString()),
-      __SEGMENT_TOKEN__: '"M96lXuD90ZxkbQEQG716aySwBLllabOn"',
-      __ENABLE_SEGMENT__: true,
+      __METRICS_ENDPOINT__: process.env.METRICS_ENDPOINT ? JSON.stringify(process.env.METRICS_ENDPOINT.toString()) : false,
+      __GA_CODE__: process.env.GA_CODE ? JSON.stringify(process.env.GA_CODE.toString()) : false,
       __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
       'process.env': {
         'NODE_ENV': JSON.stringify('production')

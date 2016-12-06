@@ -7,6 +7,8 @@ import styled from 'styled-components'
 import {particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {validateModelName} from '../../utils/nameValidator'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   id: string
@@ -28,6 +30,10 @@ class EditModelPopup extends React.Component<Props, State> {
 
   state = {
     showError: false,
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Schema.Model.Popup.opened({type: 'Update'}))
   }
 
   render() {
@@ -154,7 +160,10 @@ class EditModelPopup extends React.Component<Props, State> {
               <SaveButton onClick={this.saveModel}>
                 Save
               </SaveButton>
-              <Button onClick={() => this.props.closePopup(this.props.id)}>
+              <Button onClick={() => {
+                this.props.closePopup(this.props.id)
+                tracker.track(ConsoleEvents.Schema.Model.Popup.canceled({type: 'Update'}))
+              }}>
                 Cancel
               </Button>
             </div>
@@ -167,11 +176,13 @@ class EditModelPopup extends React.Component<Props, State> {
   private deleteModel = () => {
     this.props.deleteModel()
     this.props.closePopup(this.props.id)
+    tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
   }
 
   private saveModel = () => {
     const modelName = (ReactDOM.findDOMNode(this.refs.input) as HTMLInputElement).value
 
+    tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Update', name: modelName}))
     if (modelName != null && !validateModelName(modelName)) {
       this.setState({showError: true} as State)
       return
@@ -187,5 +198,5 @@ export default connect(
   null,
   {
     closePopup,
-  }
+  },
 )(EditModelPopup)

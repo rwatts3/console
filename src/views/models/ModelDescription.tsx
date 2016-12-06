@@ -8,7 +8,9 @@ import { ShowNotificationCallback } from '../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ModelDescription.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   model: Model
@@ -41,6 +43,9 @@ class ModelDescription extends React.Component<Props, State> {
           type='text'
           placeholder='Description'
           defaultValue={this.props.model.description}
+          onFocus={() => {
+            tracker.track(ConsoleEvents.Schema.Model.Description.focused())
+          }}
           onBlur={this.saveDescription}
           onKeyDown={(e: any) => e.keyCode === 13 ? e.target.blur() : null}
         />
@@ -61,10 +66,12 @@ class ModelDescription extends React.Component<Props, State> {
     const description = e.target.value
     if (this.props.model.description === description) {
       this.setState({ editDescription: false } as State)
+      tracker.track(ConsoleEvents.Schema.Model.Description.blurred({type: 'Cancel'}))
       return
     }
 
     this.setState({ editDescriptionPending: true } as State)
+    tracker.track(ConsoleEvents.Schema.Model.Description.blurred({type: 'Save'}))
 
     Relay.Store.commitUpdate(
       new UpdateModelDescriptionMutation({
@@ -73,8 +80,6 @@ class ModelDescription extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models: edited description')
-
           this.setState({
             editDescription: false,
             editDescriptionPending: false,
@@ -87,7 +92,7 @@ class ModelDescription extends React.Component<Props, State> {
             editDescriptionPending: false,
           })
         },
-      }
+      },
     )
   }
 }

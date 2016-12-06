@@ -43,7 +43,7 @@ export default (props) => (
                 className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
                     [$p.black30]: props.userType !== 'EVERYONE',
                     [$p.white]: props.userType === 'EVERYONE',
-                  }
+                  },
                 )}
               >
                 Everyone
@@ -65,7 +65,7 @@ export default (props) => (
                 className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
                     [$p.black30]: props.userType !== 'AUTHENTICATED',
                     [$p.white]: props.userType === 'AUTHENTICATED',
-                  }
+                  },
                 )}
               >
                 Authenticated

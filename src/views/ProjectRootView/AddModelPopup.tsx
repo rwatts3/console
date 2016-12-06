@@ -8,6 +8,8 @@ import styled from 'styled-components'
 import {particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {validateModelName} from '../../utils/nameValidator'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   id: string
@@ -27,6 +29,10 @@ class AddModelPopup extends React.Component<Props, State> {
 
   state = {
     showError: false,
+  }
+
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Schema.Model.Popup.opened({type: 'Create'}))
   }
 
   render() {
@@ -137,7 +143,10 @@ class AddModelPopup extends React.Component<Props, State> {
               particles.justifyBetween,
             )}
           >
-            <Button onClick={() => this.props.closePopup(this.props.id)}>
+            <Button onClick={() => {
+              this.props.closePopup(this.props.id)
+              tracker.track(ConsoleEvents.Schema.Model.Popup.canceled({type: 'Create'}))
+            }}>
               Cancel
             </Button>
             <SaveButton onClick={this.saveModel}>
@@ -158,6 +167,7 @@ class AddModelPopup extends React.Component<Props, State> {
 
     this.props.saveModel(modelName)
     this.props.closePopup(this.props.id)
+    tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
   }
 
 }

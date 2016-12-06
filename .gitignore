@@ -13,3 +13,4 @@ lib
 .netlify
 .tags
 .yarnclean
+.awcache

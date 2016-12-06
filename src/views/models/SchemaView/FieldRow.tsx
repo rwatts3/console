@@ -7,15 +7,16 @@ import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {Field, Model} from '../../../types/types'
-// import Permissions from './Permissions'
 import Constraints from './Constraints'
 import {isScalar} from '../../../utils/graphql'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
-const classes: any = require('./FieldRow.scss')
 import * as cx from 'classnames'
 import {Icon, particles} from 'graphcool-styles'
+const classes: any = require('./FieldRow.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../../utils/metrics'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -230,16 +231,12 @@ class FieldRow extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/schema: deleted field', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
-              field: this.props.field.name,
-            })
+            tracker.track(ConsoleEvents.Schema.Field.Delete.completed({id: this.props.field.id}))
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -260,7 +257,7 @@ class FieldRow extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          analytics.track('models/schema: edited description')
+          tracker.track(ConsoleEvents.Schema.Field.Description.changed())
 
           this.setState({
             editDescription: false,
@@ -274,7 +271,7 @@ class FieldRow extends React.Component<Props, State> {
             editDescriptionPending: false,
           } as State)
         },
-      }
+      },
     )
   }
 

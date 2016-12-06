@@ -15,7 +15,7 @@ class TemporaryNotification extends React.Component<Props, {}> {
   componentDidMount() {
     setTimeout(
       () => this.props.closePopup(this.props.id),
-      3000
+      3000,
     )
   }
 

@@ -104,13 +104,13 @@ export function getDefaultFieldValues(fields: Field[]): { [key: string]: any } {
       (field) => ({
         value: stringToValue(field.defaultValue, field) || emptyDefault(field),
         field: field,
-      })
+      }),
     )
 }
 
 export function calculateFieldColumnWidths (width: number,
                                             fields: Field[],
-                                            nodes: Immutable.List<Immutable.Map<string, any>>
+                                            nodes: Immutable.List<Immutable.Map<string, any>>,
                                            ): FieldWidths {
   const cellFontOptions = {
     font: 'Open Sans',
@@ -145,7 +145,7 @@ export function calculateFieldColumnWidths (width: number,
         upperLimit :
         (maxWidth < lowerLimit ? lowerLimit : maxWidth)
       ) + idExtra + relationExtra
-    }
+    },
   )
 
   const totalWidth = fields.reduce((sum, {name}) => sum + widths[name], 0)

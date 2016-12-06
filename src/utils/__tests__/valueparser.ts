@@ -306,7 +306,7 @@ describe('valueToString', () => {
     const date1 = Date.now()
     const date2 = new Date(0)
     expect(
-      valueToString([date1, date2], field, true)
+      valueToString([date1, date2], field, true),
     ).toBe(`["${new Date(date1).toLocaleString()}", "${new Date(date2).toLocaleString()}"]`)
   })
 })

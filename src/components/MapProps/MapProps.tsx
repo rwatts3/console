@@ -14,7 +14,7 @@ export default function mapProps(mapping: { [key: string]: (props: any) => any }
             (acc, key) => (Object.assign({}, acc, {
               [key]: mapping[key](this.props),
             })),
-            {}
+            {},
           )
         } catch (err) {
           console.log('Caught exception in <MapProps>')

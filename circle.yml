@@ -4,9 +4,7 @@ machine:
 
 dependencies:
   override:
-    - npm install -g yarn
-    - yarn cache clean
-    - yarn install
+    - npm install
 
 test:
   override:
@@ -22,6 +20,8 @@ deployment:
             AUTH0_DOMAIN: graphcool-customers.auth0.com
             AUTH0_CLIENT_ID: Is37aESHkLDR5PQa48ZiKZtm8gVNiUWw
             NETLIFY_ID: console-graph-cool
+            GA_CODE: UA-74131346-2
+            METRICS_ENDPOINT: $METRICS_ENDPOINT_MASTER
   dev:
     branch: dev
     commands:

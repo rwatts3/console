@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { Link } from 'react-router'
 const classes: any = require('./AddFieldCell.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../../utils/metrics'
 
 interface Props {
   params: any
@@ -13,6 +15,9 @@ export default class AddFieldCell extends React.Component<Props, {}> {
       <div className={classes.root}>
         <Link
           to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema/create`}
+          onClick={() => {
+            tracker.track(ConsoleEvents.Databrowser.addFieldClicked())
+          }}
         >
           Add Field
         </Link>

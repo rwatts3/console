@@ -35,7 +35,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
 
   refs: {
     [key: string]: any
-    projectId: Element
+    projectId: Element,
   }
 
   constructor(props) {
@@ -215,8 +215,6 @@ class ProjectSettingsView extends React.Component<Props, State> {
     range.setEndAfter(projectId)
     window.getSelection().removeAllRanges()
     window.getSelection().addRange(range)
-
-    analytics.track('header: projectid copied')
   }
 
 }

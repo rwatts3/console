@@ -9,6 +9,8 @@ import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
 import {Link, withRouter} from 'react-router'
 import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
+import tracker from '../../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   permission: ModelPermission
@@ -101,6 +103,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
         onFailure: (transaction) => console.log(transaction),
       },
     )
+    tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
   }
 }
 

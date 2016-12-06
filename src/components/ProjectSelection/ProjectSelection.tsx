@@ -11,7 +11,9 @@ import {particles, variables, Icon} from 'graphcool-styles'
 import * as cookiestore from 'cookiestore'
 import {ShowNotificationCallback} from '../../types/utils'
 import { connect } from 'react-redux'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectSelection.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -48,10 +50,10 @@ class ProjectSelection extends React.Component<Props, State> {
     this.setState({ expanded: !this.state.expanded } as State)
   }
 
-  _onSelectProject = () => {
+  _onSelectProject = (id: string) => {
     this._toggle()
 
-    analytics.track('sidenav: selected project')
+    tracker.track(ConsoleEvents.Project.selected({id}))
   }
 
   render () {
@@ -334,7 +336,7 @@ class ProjectSelection extends React.Component<Props, State> {
                     particles.justifyBetween,
                     particles.itemsCenter,
                   )}
-                    onClick={this._onSelectProject}
+                    onClick={() => this._onSelectProject(project.id)}
                     to={`/${project.name}`}
                     active={project.id === this.props.selectedProject.id}
                   >
@@ -356,7 +358,7 @@ class ProjectSelection extends React.Component<Props, State> {
                   particles.brPill,
                   particles.bWhite,
                   particles.pointer,
-                  particles.o80
+                  particles.o80,
                 )}
                   onClick={this.props.add}
                 >
@@ -383,14 +385,14 @@ class ProjectSelection extends React.Component<Props, State> {
     this.setState({userDropdownVisible: false} as State)
   }
 
-  private logout () {
-    analytics.track('header: logout', () => {
-      analytics.reset()
-      cookiestore.remove('graphcool_auth_token')
-      cookiestore.remove('graphcool_customer_id')
-      window.localStorage.clear()
-      window.location.pathname = '/'
-    })
+  private async logout () {
+    await tracker.track(ConsoleEvents.logout())
+
+    tracker.reset()
+
+    cookiestore.remove('graphcool_auth_token')
+    cookiestore.remove('graphcool_customer_id')
+    window.location.pathname = '/'
   }
 }
 

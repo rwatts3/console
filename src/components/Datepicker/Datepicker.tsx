@@ -44,7 +44,7 @@ export default class DatePicker extends React.Component<Props, State> {
 
   refs: {
     [key: string]: any
-    container: Element
+    container: Element,
   }
 
   constructor (props) {
@@ -104,12 +104,17 @@ export default class DatePicker extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
+    if (e.target instanceof HTMLInputElement) {
+      return
+    }
     if (!this.props.active) {
       return
     }
     // fake event data, as the document doesn't have a value ...
     e.target.value = this.state.moment
-    this.props.onKeyDown(e)
+    if (typeof this.props.onKeyDown === 'function') {
+      this.props.onKeyDown(e)
+    }
   }
 
   private onChange (m: Moment) {

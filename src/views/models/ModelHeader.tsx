@@ -23,8 +23,10 @@ import cuid from 'cuid'
 import {Popup} from '../../types/popup'
 import {showPopup} from '../../actions/popup'
 import {SYSTEM_MODELS} from '../../constants/system'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   children: Element
@@ -182,6 +184,7 @@ class ModelHeader extends React.Component<Props, State> {
               ) : (
                 <SettingsLink
                   to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema`}
+                  onClick={this.onClickEditSchema}
                 >
                   <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>
                   <div>Edit Schema</div>
@@ -222,6 +225,10 @@ class ModelHeader extends React.Component<Props, State> {
     )
   }
 
+  private onClickEditSchema = () => {
+    tracker.track(ConsoleEvents.Databrowser.editSchemaClicked())
+  }
+
   private openEditModelModal = () => {
     const {model} = this.props
     if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
@@ -254,16 +261,13 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('model renamed', {
-              project: this.props.params.projectName,
-              model: modelName,
-            })
+            tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
             redirect()
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -280,20 +284,18 @@ class ModelHeader extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('models/schema: deleted model', {
-              project: this.props.params.projectName,
-              model: this.props.params.modelName,
-            })
+            tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
 
   private dataViewOnClick = () => {
+    tracker.track(ConsoleEvents.Schema.doneEditingClick())
     if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
       this.props.nextStep()
     }
@@ -308,33 +310,33 @@ const ReduxContainer = connect(
     nextStep,
     showNotification,
     showPopup,
-  }
+  },
 )(withRouter(ModelHeader))
 
 export default Relay.createContainer(ReduxContainer, {
   initialVariables: {
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                ${Header.getFragment('viewer')}
-            }
-        `,
-        project: () => Relay.QL`
-            fragment on Project {
-                ${Header.getFragment('project')}
-                ${AuthProviderPopup.getFragment('project')}
-            }
-        `,
-        model: () => Relay.QL`
-            fragment on Model {
-                id
-                name
-                itemCount
-                isSystem
-                ${ModelDescription.getFragment('model')}
-            }
-        `,
-    },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        ${Header.getFragment('viewer')}
+      }
+    `,
+    project: () => Relay.QL`
+      fragment on Project {
+        ${Header.getFragment('project')}
+        ${AuthProviderPopup.getFragment('project')}
+      }
+    `,
+    model: () => Relay.QL`
+      fragment on Model {
+        id
+        name
+        itemCount
+        isSystem
+        ${ModelDescription.getFragment('model')}
+      }
+    `,
+  },
 })

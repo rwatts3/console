@@ -37,11 +37,8 @@ import LoadingCell from './LoadingCell'
 import {getLokka} from './../../../utils/relay'
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
-// import ProgressIndicator from '../../../components/ProgressIndicator/ProgressIndicator'
 import {startProgress, incrementProgress} from '../../../actions/progressIndicator'
 import {StateTree, ReduxAction, ReduxThunk} from '../../../types/reducers'
-// import cuid from 'cuid'
-const classes: any = require('./DatabrowserView.scss')
 import {
   nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef,
 } from '../../../actions/databrowser/ui'
@@ -49,8 +46,11 @@ import {GridPosition} from '../../../types/databrowser/ui'
 import {classnames} from '../../../utils/classnames'
 import throttle from 'lodash.throttle'
 import {LightCell} from './LightCell'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
-const DOCS_PREFIX = 'http://graph.cool/docs/reference/platform/system-artifacts'
+const classes: any = require('./DatabrowserView.scss')
+const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts'
 
 interface Props {
   relay: Relay.RelayProp
@@ -110,18 +110,18 @@ interface Props {
                     field: Field,
                     callback,
                     nodeId: string,
-                    index: number,) => ReduxThunk
+                    index: number) => ReduxThunk
   reloadDataAsync: (lokka: any,
                     modelNamePlural: string,
                     fields: Field[],
                     index?: number,
-                    searchQuery?: string,) => ReduxThunk
+                    searchQuery?: string) => ReduxThunk
   loadDataAsync: (lokka: any,
                   modelNamePlural: string,
                   field: Field[],
                   first: number,
                   skip: number,
-                  searchQuery?: string,) => ReduxThunk
+                  searchQuery?: string) => ReduxThunk
   searchQuery: string
 }
 
@@ -140,6 +140,7 @@ class DatabrowserView extends React.Component<Props, {}> {
       }
       const newLocation = Object.assign({}, this.props.location, queryObject)
       this.props.router.replace(newLocation)
+      tracker.track(ConsoleEvents.Databrowser.Search.entered())
     },
     1000,
     {
@@ -160,9 +161,7 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   componentDidMount = () => {
-    analytics.track('models/databrowser: viewed', {
-      model: this.props.params.modelName,
-    })
+    tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.props.router.setRouteLeaveHook(this.props.route, () => {
       if (this.props.newRowActive) {
@@ -244,7 +243,10 @@ class DatabrowserView extends React.Component<Props, {}> {
                 height={16}
                 src={require('assets/new_icons/close.svg')}
                 className={classes.closeicon}
-                onClick={this.props.toggleSearch}
+                onClick={() => {
+                  this.props.toggleSearch()
+                  tracker.track(ConsoleEvents.Databrowser.Search.toggled())
+                }}
               />
             )}
           </div>
@@ -258,7 +260,10 @@ class DatabrowserView extends React.Component<Props, {}> {
           {/*src={require('assets/new_icons/down.svg')}*/}
           {/*/>*/}
           {/*</label>*/}
-          <div className={classes.button} onClick={() => this.reloadData(Math.floor(this.props.scrollTop / 47))}>
+          <div className={classes.button} onClick={() => {
+            this.reloadData(Math.floor(this.props.scrollTop / 47))
+            tracker.track(ConsoleEvents.Databrowser.reloaded())
+          }}>
             <Icon
               width={16}
               height={16}
@@ -553,10 +558,12 @@ class DatabrowserView extends React.Component<Props, {}> {
     switch (e.keyCode) {
       case 37:
         this.props.previousCell(this.props.fields)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 37}}))
         e.preventDefault()
         break
       case 38:
         this.props.previousRow(this.props.fields, this.props.model.namePlural)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 38}}))
         e.preventDefault()
         break
       case 9:
@@ -567,16 +574,19 @@ class DatabrowserView extends React.Component<Props, {}> {
         } else {
           this.props.nextCell(this.props.fields)
         }
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 39}}))
         e.preventDefault()
         break
       case 40:
         this.props.nextRow(this.props.fields, this.props.model.namePlural)
+        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 40}}))
         e.preventDefault()
         break
       case 13:
         const selectedField = this.props.fields.find(f => f.name === this.props.selectedCell.field)
         if (selectedField && !selectedField.isReadonly) {
           this.props.editCell(this.props.selectedCell)
+          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 13}}))
           e.preventDefault()
         }
         break
@@ -621,7 +631,7 @@ class DatabrowserView extends React.Component<Props, {}> {
       field,
       callback,
       nodeId,
-      rowIndex
+      rowIndex,
     )
   }
 
@@ -648,7 +658,7 @@ class DatabrowserView extends React.Component<Props, {}> {
         this.lokka,
         this.props.params.projectName,
         this.props.params.modelName,
-        this.props.model
+        this.props.model,
       )
     }
   }
@@ -713,7 +723,7 @@ function mapDispatchToProps(dispatch) {
 
 const ReduxContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withRouter(DatabrowserView))
 
 const MappedDatabrowserView = mapProps({

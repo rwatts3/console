@@ -7,6 +7,8 @@ import PermissionsList from './PermissionsList/PermissionsList'
 import PermissionsHeader from './PermissionsHeader/PermissionsHeader'
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -15,6 +17,9 @@ interface Props {
 }
 
 class PermissionsView extends React.Component<Props, {}> {
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Permissions.viewed())
+  }
   render() {
     const {project, params} = this.props
     return (

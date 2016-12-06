@@ -27,7 +27,7 @@ test('ScalarListCell renders', () => {
         save, cancel, onKeyDown,
       }}
       field={field}
-    />
+    />,
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()

@@ -28,7 +28,7 @@ class ModelPermissionsList extends React.Component<Props, {}> {
             permission={permission}
             model={model}
             params={params}
-          />
+          />,
         )}
       </div>
     )

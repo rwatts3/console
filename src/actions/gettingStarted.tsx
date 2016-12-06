@@ -106,7 +106,7 @@ export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => 
             }
           }
         }`,
-      {}
+      {},
     )
 
     return new Promise((resolve: () => any, reject: (error: Error) => any) => {

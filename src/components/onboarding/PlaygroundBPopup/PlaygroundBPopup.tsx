@@ -46,7 +46,7 @@ class PlaygroundBPopup extends React.Component<Props, State> {
   }
 
   refs: {
-    steps: any
+    steps: any,
   }
 
   nextSlide = () => {

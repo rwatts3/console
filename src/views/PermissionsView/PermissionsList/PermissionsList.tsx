@@ -24,7 +24,7 @@ class PermissionsList extends React.Component<Props, {}> {
         <Container className={cx($p.bgWhite, $p.bt, $p.bBlack10)}>
           <ScrollBox>
             {models.map(model =>
-              <ModelPermissions params={params} key={model.id} model={model}/>
+              <ModelPermissions params={params} key={model.id} model={model}/>,
             )}
           </ScrollBox>
         </Container>

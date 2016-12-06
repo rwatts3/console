@@ -51,39 +51,39 @@ module.exports = {
     rules: [{
       enforce: 'pre',
       test: /\.ts(x?)$/,
-      loader: 'tslint',
+      loader: 'tslint-loader',
       exclude: /node_modules/,
     }, {
       test: /\.json$/, // TODO check if still needed
-      loader: 'json',
+      loader: 'json-loader',
     }, {
       test: /\.css$/,
-      loader: 'style!css',
+      loader: 'style-loader!css-loader',
     }, {
       test: /\.scss$/,
       // loader: 'style!css?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap',
-      loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass',
+      loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader',
       exclude: /node_modules/,
     }, {
       test: /\.ts(x?)$/,
       exclude: /node_modules/,
-      loader: 'babel!awesome-typescript',
+      loader: 'babel-loader!awesome-typescript-loader',
     }, {
       test: /\.js$/,
-      loader: 'babel',
+      loader: 'babel-loader',
       exclude: /node_modules/,
     }, {
       test: /\.mp3$/,
-      loader: 'file',
+      loader: 'file-loader',
     }, {
       test: /icons\/.*\.svg$/,
-      loader: 'raw!svgo',
+      loader: 'raw-loader!svgo-loader',
     }, {
       test: /graphics\/.*\.svg$/,
-      loader: 'file',
+      loader: 'file-loader',
     }, {
       test: /(graphics|gifs)\/.*\.(png|gif)$/,
-      loader: 'file',
+      loader: 'file-loader',
     }],
   },
   plugins: [
@@ -92,8 +92,8 @@ module.exports = {
       __HEARTBEAT_ADDR__: false,
       __AUTH0_DOMAIN__: '"graphcool-customers-dev.auth0.com"',
       __AUTH0_CLIENT_ID__: '"2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm"',
-      __SEGMENT_TOKEN__: '"mxShPAuQCvtbX7K1u5xcmFeqz9X7S7HN"',
-      __ENABLE_SEGMENT__: false,
+      __METRICS_ENDPOINT__: false,
+      __GA_CODE__: false,
       __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
       'process.env': {
         'NODE_ENV': JSON.stringify('dev')

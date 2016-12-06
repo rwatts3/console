@@ -17,6 +17,8 @@ const classes: any = require('./SchemaView.scss')
 import * as cx from 'classnames'
 import {Icon, particles, variables} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../../utils/metrics'
 
 interface Props {
   params: any
@@ -39,31 +41,30 @@ interface State {
   activeFields: SelectedFieldsType
 }
 
-enum SelectedFieldsType {All, Scalar, Relations}
+export type SelectedFieldsType = 'All' | 'Scalar' | 'Relations'
+
 class SchemaView extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
     this.state = {
-      activeFields: SelectedFieldsType.All,
+      activeFields: 'All',
     }
   }
 
   componentDidMount() {
-    analytics.track('models/schema: viewed', {
-      model: this.props.params.modelName,
-    })
+    tracker.track(ConsoleEvents.Schema.viewed())
   }
 
   render() {
     const {activeFields} = this.state
     const fields = this.props.fields.filter(field => {
       switch (activeFields) {
-        case SelectedFieldsType.All:
+        case 'All':
           return true
-        case SelectedFieldsType.Scalar:
+        case 'Scalar':
           return isScalar(field.typeIdentifier)
-        case SelectedFieldsType.Relations:
+        case 'Relations':
           return !isScalar(field.typeIdentifier)
       }
     })
@@ -133,30 +134,30 @@ class SchemaView extends React.Component<Props, State> {
               className={cx(
                 classes.group_button,
                 {
-                  [classes.selected]: this.state.activeFields === SelectedFieldsType.All,
-                }
+                  [classes.selected]: this.state.activeFields === 'All',
+                },
               )}
-              onClick={() => this.handleFilterClick(SelectedFieldsType.All)}
+              onClick={() => this.handleFilterClick('All')}
             >All
             </Link>
             <Link
               className={cx(
                 classes.group_button,
                 {
-                  [classes.selected]: this.state.activeFields === SelectedFieldsType.Scalar,
-                }
+                  [classes.selected]: this.state.activeFields === 'Scalar',
+                },
               )}
-              onClick={() => this.handleFilterClick(SelectedFieldsType.Scalar)}
+              onClick={() => this.handleFilterClick('Scalar')}
             >Scalar
             </Link>
             <Link
               className={cx(
                 classes.group_button,
                 {
-                  [classes.selected]: this.state.activeFields === SelectedFieldsType.Relations,
-                }
+                  [classes.selected]: this.state.activeFields === 'Relations',
+                },
               )}
-              onClick={() => this.handleFilterClick(SelectedFieldsType.Relations)}
+              onClick={() => this.handleFilterClick('Relations')}
             >Relations</Link>
           </div>
         </ModelHeader>
@@ -197,6 +198,7 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   private handleFilterClick = (filter: SelectedFieldsType) => {
+    tracker.track(ConsoleEvents.Schema.Field.Filter.applied({type: filter as string}))
     this.setState({activeFields: filter})
   }
 

@@ -3,14 +3,12 @@ import * as React from 'react' // tslint:disable-line
 import * as Relay from 'react-relay'
 import * as ReactDOM from 'react-dom'
 import { default as useRelay } from 'react-router-relay'
-import {Router, browserHistory, applyRouterMiddleware} from 'react-router'
+import { Router, browserHistory, applyRouterMiddleware } from 'react-router'
 import routes from './routes'
-import {updateNetworkLayer} from './utils/relay'
+import { updateNetworkLayer } from './utils/relay'
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 import * as thunk from 'redux-thunk'
-import * as cookiestore from 'cookiestore'
-import drumstick from 'drumstick'
 import { reduceGettingStartedState } from './reducers/gettingStarted'
 import { fetchGettingStartedState } from './actions/gettingStarted'
 import { reducePopup } from './reducers/popup'
@@ -20,30 +18,20 @@ import { reduceUI as reduceDataBrowserUI } from './reducers/databrowser/ui'
 import { reduceNotification } from './reducers/notification'
 import { StateTree } from './types/reducers'
 import logger from 'redux-logger'
-
-import loadAnalytics from './utils/analytics'
+import * as ReactGA from 'react-ga'
 
 import './utils/polyfils'
 import {reduceCodeGeneration} from './reducers/codeGeneration'
 
-if (__HEARTBEAT_ADDR__ && cookiestore.has('graphcool_auth_token')) {
-  drumstick.start({
-    endpoint: __HEARTBEAT_ADDR__,
-    payload: {
-      resource: 'console',
-      token: cookiestore.get('graphcool_auth_token'),
-    },
-    frequency: 60 * 1000,
-  })
-}
-
-loadAnalytics()
-
 updateNetworkLayer()
 
-browserHistory.listen(() => {
-  analytics.page()
-})
+if (__GA_CODE__) {
+  ReactGA.initialize(__GA_CODE__)
+
+  browserHistory.listen(() => {
+    ReactGA.pageview(window.location.pathname)
+  })
+}
 
 const reducers: StateTree = combineReducers({
   gettingStarted: reduceGettingStartedState,
@@ -65,7 +53,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(reducers, compose(
   applyMiddleware(...middlewares),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
+  window.devToolsExtension ? window.devToolsExtension() : f => f,
 ))
 
 store.dispatch(fetchGettingStartedState())
@@ -82,4 +70,5 @@ ReactDOM.render(
       />
     </Provider>
   ),
-  document.getElementById('root'))
+  document.getElementById('root'),
+)

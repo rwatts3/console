@@ -20,8 +20,10 @@ import {update} from '../../actions/gettingStarted'
 import {Viewer, Customer, Project} from '../../types/types'
 import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
+import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectRootView.scss')
-
+import {ConsoleEvents} from 'graphcool-metrics'
+import drumstick from 'drumstick'
 require('../../styles/core.scss')
 
 interface Props {
@@ -54,16 +56,23 @@ class ProjectRootView extends React.Component<Props, {}> {
     this.updateForceFetching()
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
+
+    if (__HEARTBEAT_ADDR__) {
+      drumstick.start({
+        endpoint: __HEARTBEAT_ADDR__,
+        payload: () => ({
+          resource: 'console',
+          token: cookiestore.get('graphcool_auth_token'),
+          projectId: cookiestore.get('graphcool_last_used_project_id'),
+        }),
+        frequency: 60 * 1000,
+      })
+    }
   }
 
   componentWillMount() {
     if (this.props.isLoggedin) {
-      analytics.identify(this.props.user.id, {
-        name: this.props.user.crm.information.name,
-        email: this.props.user.crm.information.email,
-        'Getting Started Status': this.props.user.crm.onboardingStatus.gettingStarted,
-        'Product': 'Dashboard',
-      })
+      tracker.identify(this.props.user.id, this.props.project.id)
 
       if (Smooch) {
         Smooch.init({
@@ -76,9 +85,10 @@ class ProjectRootView extends React.Component<Props, {}> {
         })
       }
     } else {
-      analytics.identify({
-        'Product': 'Dashboard',
-      })
+      // TODO migrate to tracker
+      // analytics.identify({
+      //   'Product': 'Dashboard',
+      // })
     }
   }
 
@@ -90,17 +100,18 @@ class ProjectRootView extends React.Component<Props, {}> {
     const {gettingStarted, gettingStartedSkipped} = this.props.user.crm.onboardingStatus
     const prevGettingStarted = prevProps.user.crm.onboardingStatus.gettingStarted
 
+    if (this.props.params.projectName !== prevProps.params.projectName && this.props.isLoggedin) {
+      tracker.identify(this.props.user.id, this.props.project.id)
+    }
+
     if (gettingStarted !== prevGettingStarted) {
       this.updateForceFetching()
 
-      if (gettingStartedSkipped) {
-        analytics.track(`getting-started: skipped at ${prevGettingStarted}`)
-      } else {
-        analytics.track(`getting-started: finished ${prevGettingStarted}`)
-      }
-      analytics.identify(this.props.user.id, {
-        'Getting Started Status': gettingStarted,
-      })
+      tracker.track(ConsoleEvents.Onboarding.gettingStarted({step: gettingStarted, skipped: gettingStartedSkipped}))
+      // TODO migrate to tracker
+      // analytics.identify(this.props.user.id, {
+      //   'Getting Started Status': gettingStarted,
+      // })
     } else if (this.props.pollGettingStartedOnboarding !== prevProps.pollGettingStartedOnboarding) {
       this.updateForceFetching()
     }
@@ -153,7 +164,7 @@ class ProjectRootView extends React.Component<Props, {}> {
         {this.props.popup.popups.map(popup =>
           <PopupWrapper key={popup.id} id={popup.id}>
             {popup.element}
-          </PopupWrapper>
+          </PopupWrapper>,
         )}
         {this.props.gettingStartedState.isCurrentStep('STEP0_OVERVIEW') &&
           <PopupWrapper>
@@ -182,11 +193,11 @@ class ProjectRootView extends React.Component<Props, {}> {
               this.props.update(
                 this.props.user.crm.onboardingStatus.gettingStarted,
                 this.props.user.crm.onboardingStatus.gettingStartedSkipped,
-                this.props.user.id
+                this.props.user.id,
               )
             })
           },
-          1500
+          1500,
         )
       }
     } else {
@@ -208,12 +219,10 @@ class ProjectRootView extends React.Component<Props, {}> {
         }),
         {
           onSuccess: () => {
-            analytics.track('sidenav: created project', {
-              project: projectName,
-            })
+            tracker.track(ConsoleEvents.Project.created({name: projectName}))
             this.props.router.replace(`${projectName}`)
           },
-        }
+        },
       )
     }
   }

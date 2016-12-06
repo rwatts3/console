@@ -11,13 +11,15 @@ import {Project, AuthProvider, AuthProviderType} from '../../../types/types'
 import {ShowNotificationCallback} from '../../../types/utils'
 import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
+import tracker from '../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface AuthText {
   title: string
   description: string
   link: {
     href: string
-    content: string
+    content: string,
   }
 }
 
@@ -26,8 +28,8 @@ const texts: {[key: string]: AuthText} = {
     title: 'Graphcool Email + Password',
     description: 'Use our built-in auth system that authenticates users with email and password',
     link: {
-      href: 'https://docs.graph.cool/reference/platform#temporary-authentication-token',
-      content: 'docs.graph.cool',
+      href: 'https://graph.cool/docs/reference/platform/authentication',
+      content: 'graph.cool/docs',
     },
   },
   AUTH_PROVIDER_DIGITS: {
@@ -59,11 +61,11 @@ interface AuthProviderErrors {
   auth0: {
     clientId: boolean
     domain: boolean
-    clientSecret: boolean
+    clientSecret: boolean,
   }
   digits: {
     consumerKey: boolean
-    consumerSecret: boolean
+    consumerSecret: boolean,
   }
 }
 
@@ -195,7 +197,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.digits.consumerKey &&
-              <div className={cx($p.f12, $p.orange)}>The Consumer Key is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Consumer Key is required</div>
             }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
@@ -207,7 +209,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.digits.consumerSecret &&
-              <div className={cx($p.f12, $p.orange)}>The Consumer Secret is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Consumer Secret is required</div>
             }
           </div>
           }
@@ -232,11 +234,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                   {`createUser(authProvider: { auth0: { idToken } })`}
                 </span>
               </div>
-              <div>
-                <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                  {`signinUser(auth0: { idToken })`}
-                </span>
-              </div>
             </div>
           </div>
           }
@@ -252,7 +249,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.auth0.domain &&
-              <div className={cx($p.f12, $p.orange)}>The Domain is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Domain is required</div>
             }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
@@ -264,7 +261,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.auth0.clientId &&
-              <div className={cx($p.f12, $p.orange)}>The Client ID is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Client ID is required</div>
             }
             <FloatingInput
               labelClassName='f-25 pa-16 black-50'
@@ -276,7 +273,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               onKeyDown={e => e.keyCode === 13 && this.enable()}
             />
             {errors.auth0.clientSecret &&
-              <div className={cx($p.f12, $p.orange)}>The Client Secret is required</div>
+            <div className={cx($p.f12, $p.orange)}>The Client Secret is required</div>
             }
           </div>
           }
@@ -375,21 +372,26 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       return
     }
 
+    tracker.track(ConsoleEvents.AuthProvider.Popup.dataEntered())
+    tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
     this.setState(
       {
         authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', true).toJS(),
       } as State,
-      this.update
+      this.update,
     )
   }
 
   private disable = () => {
-    this.setState(
-      {
-        authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
-      } as State,
-      this.update
-    )
+    if (confirm('Do you really want to disable the Auth Provider? It will delete all auth provider related data.')) {
+      tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
+      this.setState(
+        {
+          authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
+        } as State,
+        this.update,
+      )
+    }
   }
 
   private update = () => {
@@ -412,7 +414,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
         },
-      }
+      },
     )
   }
 }
@@ -422,29 +424,29 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default Relay.createContainer(connect(null, mapDispatchToProps)(AuthProviderSidePanel), {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        authProviders(first: 100) {
-          edges {
-            node {
-              id
-              type
-              isEnabled
-              digits {
-                consumerKey
-                consumerSecret
-              }
-              auth0 {
-                clientId
-                clientSecret
-                domain
+    fragments: {
+        project: () => Relay.QL`
+          fragment on Project {
+            id
+            authProviders(first: 100) {
+              edges {
+                node {
+                  id
+                  type
+                  isEnabled
+                  digits {
+                    consumerKey
+                    consumerSecret
+                  }
+                  auth0 {
+                    clientId
+                    clientSecret
+                    domain
+                  }
+                }
               }
             }
           }
-        }
-      }
-    `,
-  },
+        `,
+    },
 })

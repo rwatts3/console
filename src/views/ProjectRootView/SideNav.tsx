@@ -26,6 +26,8 @@ import styled from 'styled-components'
 import * as cx from 'classnames'
 import {$p, variables, Icon} from 'graphcool-styles'
 import { ExcludeProps } from '../../utils/components'
+import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -231,7 +233,13 @@ export class SideNav extends React.Component<Props, State> {
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
             <div>Endpoints</div>
           </FooterSection>
-          <FooterLink href='https://docs.graph.cool' target='_blank'>
+          <FooterLink
+            href='https://graph.cool/docs'
+            target='_blank'
+            onClick={() => {
+              tracker.track(ConsoleEvents.Sidenav.docsOpened())
+            }}
+          >
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
             <div>Docs</div>
           </FooterLink>
@@ -480,7 +488,7 @@ export class SideNav extends React.Component<Props, State> {
               $p.flex,
               $p.flexColumn,
               $p.pt16,
-              this.state.modelsFit ? $p.pb38 : $p.pb60
+              this.state.modelsFit ? $p.pb38 : $p.pb60,
             )}
           >
             {this.props.models && this.props.models.map((model) => (
@@ -522,7 +530,7 @@ export class SideNav extends React.Component<Props, State> {
             $p.brPill,
             $p.bWhite,
             $p.pointer,
-            $p.o60
+            $p.o60,
           )}
           onClick={this.showAddModelPopup}
         >
@@ -563,7 +571,7 @@ export class SideNav extends React.Component<Props, State> {
               onClick={this.toggleModels}
               className={cx(
                 $p.brPill,
-                $p.bgDarkBlue
+                $p.bgDarkBlue,
               )}
             />
           </ToggleMore>
@@ -629,11 +637,7 @@ export class SideNav extends React.Component<Props, State> {
         }),
         {
           onSuccess: () => {
-            analytics.track('sidenav: created model', {
-              project: this.props.params.projectName,
-              model: modelName,
-            })
-            // getting-started onboarding step
+            tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
             if (
               modelName === 'Post' &&
               this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
@@ -647,7 +651,7 @@ export class SideNav extends React.Component<Props, State> {
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
           },
-        }
+        },
       )
     }
   }
@@ -684,7 +688,7 @@ const ReduxContainer = connect(
     showDonePopup,
     showNotification,
     showPopup,
-  }
+  },
 )(withRouter(SideNav))
 
 const MappedSideNav = mapProps({
