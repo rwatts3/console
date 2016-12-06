@@ -5,6 +5,7 @@ import * as Codemirror from 'react-codemirror'
 import {CodeGenerator} from '../../../../utils/codeGeneration'
 import {GraphQLClient, Environment} from '../../../../types/types'
 import {connect} from 'react-redux'
+import EditorConfiguration = CodeMirror.EditorConfiguration
 
 interface Props {
   query: string
@@ -38,7 +39,7 @@ class CodeGenerationPopupCode extends React.Component<Props, {}> {
             height: 100,
             mode: 'shell',
             theme: 'dracula',
-          }}
+          } as EditorConfiguration}
         />
         <h3 className={$p.mt16}>Code</h3>
         <Codemirror
@@ -47,7 +48,7 @@ class CodeGenerationPopupCode extends React.Component<Props, {}> {
           options={{
             mode: 'javascript',
             theme: 'dracula',
-          }}
+          } as EditorConfiguration}
         />
       </div>
     )
