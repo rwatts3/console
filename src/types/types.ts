@@ -1,6 +1,5 @@
 import {Step} from './gettingStarted'
 
-
 interface RelayConnection<T> {
   edges: RelayEdge<T>[]
 }
