@@ -4,13 +4,17 @@ import * as React                   from 'react'
 import { Link }                     from 'react-router'
 import { connect }                  from 'react-redux'
 import ClickOutside                 from 'react-click-outside'
+import * as PureRenderMixin         from 'react-addons-pure-render-mixin'
 import * as cx                      from 'classnames'
 import styled                       from 'styled-components'
 import {ConsoleEvents}              from 'graphcool-metrics'
 import * as cookiestore             from 'cookiestore'
-import * as PureRenderMixin         from 'react-addons-pure-render-mixin'
 import cuid                         from 'cuid'
-import {particles, variables, Icon} from 'graphcool-styles'
+import {
+  $p,
+  variables,
+  Icon,
+}                                   from 'graphcool-styles'
 
 import ScrollBox                    from '../../components/ScrollBox/ScrollBox'
 import tracker                      from '../../utils/metrics'
@@ -19,6 +23,7 @@ import {ShowNotificationCallback}   from '../../types/utils'
 import {Popup}                      from '../../types/popup'
 import {showNotification}           from '../../actions/notification'
 import {showPopup}                  from '../../actions/popup'
+import CloneProjectPopup            from '../../views/ProjectRootView/CloneProjectPopup'
 
 
 interface Props {
@@ -68,10 +73,9 @@ class ProjectSelection extends React.Component<Props, State> {
 
     const id = cuid()
     this.props.showPopup({
-      element: <ProjectDuplicatePopup
+      element: <CloneProjectPopup
         id={id}
         projectId={projectId}
-        onDuplicateProject={this.props.duplicateProject}
       />,
       id,
     })
@@ -190,30 +194,31 @@ class ProjectSelection extends React.Component<Props, State> {
       <Root
         expanded={this.state.expanded}
         className={cx(
-          particles.relative,
-          particles.w100,
-          particles.h100,
-          particles.white,
-          particles.z5,
-          particles.bgDarkBlue,
+          $p.relative,
+          $p.w100,
+          $p.h100,
+          $p.white,
+          $p.z5,
+          $p.bgDarkBlue,
         )}
       >
         <div
           onClick={this.toggle}
           className={cx(
-            particles.h100,
-            particles.w100,
-            particles.f20,
-            particles.flex,
-            particles.itemsCenter,
+            $p.h100,
+            $p.w100,
+            $p.f20,
+            $p.flex,
+            $p.itemsCenter,
           )}
         >
           <div
             className={cx(
-              particles.bgGreen,
-              particles.flex,
-              particles.itemsCenter,
-              particles.justifyCenter,
+              $p.bgGreen,
+              $p.flex,
+              $p.itemsCenter,
+              $p.justifyCenter,
+              $p.pointer
             )}
             style={{
               width: '67px',
@@ -230,12 +235,12 @@ class ProjectSelection extends React.Component<Props, State> {
           </div>
           <div
             className={cx(
-              particles.flex,
-              particles.justifyBetween,
-              particles.selfStretch,
-              particles.itemsCenter,
-              particles.ph25,
-              particles.pointer,
+              $p.flex,
+              $p.justifyBetween,
+              $p.selfStretch,
+              $p.itemsCenter,
+              $p.ph25,
+              $p.pointer,
             )}
             style={{
               flexGrow: 2,
@@ -247,9 +252,9 @@ class ProjectSelection extends React.Component<Props, State> {
             <Arrow
               turned={this.state.expanded}
               className={cx(
-                particles.flex,
-                particles.itemsCenter,
-                particles.brPill,
+                $p.flex,
+                $p.itemsCenter,
+                $p.brPill,
               )}
               style={{
                 marginRight: '-3px',
@@ -269,26 +274,26 @@ class ProjectSelection extends React.Component<Props, State> {
         {this.state.expanded &&
           <div
             className={cx(
-              particles.absolute,
-              particles.w100,
-              particles.vh100,
-              particles.bgGreen,
-              particles.flex,
-              particles.flexColumn,
+              $p.absolute,
+              $p.w100,
+              $p.vh100,
+              $p.bgGreen,
+              $p.flex,
+              $p.flexColumn,
 
             )}
           >
 
             <div className={cx(
-              particles.pa25,
-              particles.flex,
-              particles.justifyBetween,
+              $p.pa25,
+              $p.flex,
+              $p.justifyBetween,
             )}>
               <SettingsLink to={`/${this.props.params.projectName}/settings`}>
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
                 <div>Settings</div>
               </SettingsLink>
-              <SettingsLink className={cx(particles.ml10)} onClick={this.openUserDropdown}>
+              <SettingsLink className={cx($p.ml10)} onClick={this.openUserDropdown}>
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/user.svg')}/>
                 <div>Account</div>
                 {this.state.userDropdownVisible &&
@@ -314,8 +319,8 @@ class ProjectSelection extends React.Component<Props, State> {
             </div>
             <div
               className={cx(
-                particles.relative,
-                particles.bgBlack07,
+                $p.relative,
+                $p.bgBlack07,
 
               )}
               style={{
@@ -328,16 +333,16 @@ class ProjectSelection extends React.Component<Props, State> {
                 }}
               >
                 <div className={cx(
-                  particles.lhSolid,
-                  particles.flex,
-                  particles.itemsCenter,
-                  particles.tracked,
-                  particles.ttu,
-                  particles.fw6,
-                  particles.white80,
-                  particles.mt38,
-                  particles.ml25,
-                  particles.mb16,
+                  $p.lhSolid,
+                  $p.flex,
+                  $p.itemsCenter,
+                  $p.tracked,
+                  $p.ttu,
+                  $p.fw6,
+                  $p.white80,
+                  $p.mt38,
+                  $p.ml25,
+                  $p.mb16,
                 )}>
                   All Projects
                 </div>
@@ -345,43 +350,43 @@ class ProjectSelection extends React.Component<Props, State> {
                   <ListItem
                     key={project.name}
                     className={cx(
-                    particles.relative,
-                    particles.db,
-                    particles.f20,
-                    particles.fw4,
-                    particles.ph25,
-                    particles.pv16,
-                    particles.white60,
-                    particles.flex,
-                    particles.justifyBetween,
-                    particles.itemsCenter,
+                    $p.relative,
+                    $p.db,
+                    $p.f20,
+                    $p.fw4,
+                    $p.ph25,
+                    $p.pv16,
+                    $p.white60,
+                    $p.flex,
+                    $p.justifyBetween,
+                    $p.itemsCenter,
                   )}
                     onClick={() => this.onSelectProject(project.id)}
                     to={`/${project.name}`}
                     active={project.id === this.props.selectedProject.id}
                   >
-                    <div className={cx(particles.ml10)}>{project.name}</div>
-                    <div
+                    <div className={cx($p.ml10)}>{project.name}</div>
+                    <Link
+                      to={`/${project.name}/clone`}
                       title='Duplicate'
-                      onClick={(e: any) => this.onDuplicateClick(e, project.id)}
                     >
                       <Icon
                         src={require('graphcool-styles/icons/fill/duplicate.svg')}
                       />
-                    </div>
+                    </Link>
                   </ListItem>
                 ))}
                 <AddProject
                   className={cx(
-                    particles.absolute,
-                    particles.top38,
-                    particles.right25,
-                    particles.lhSolid,
-                    particles.ba,
-                    particles.brPill,
-                    particles.bWhite,
-                    particles.pointer,
-                    particles.o80,
+                    $p.absolute,
+                    $p.top38,
+                    $p.right25,
+                    $p.lhSolid,
+                    $p.ba,
+                    $p.brPill,
+                    $p.bWhite,
+                    $p.pointer,
+                    $p.o80,
                   )}
                   onClick={this.props.add}
                 >
@@ -422,5 +427,4 @@ class ProjectSelection extends React.Component<Props, State> {
 export default connect(null, {
   showNotification,
   showPopup,
-  duplicateProject
 })(ProjectSelection)

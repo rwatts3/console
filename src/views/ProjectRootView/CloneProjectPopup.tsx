@@ -1,9 +1,11 @@
 import * as React            from 'react'
+import * as Relay            from 'react-relay'
 import * as ReactDOM         from 'react-dom'
 import {connect}             from 'react-redux'
 import {ConsoleEvents}       from 'graphcool-metrics'
 import * as cx               from 'classnames'
 import styled                from 'styled-components'
+import {withRouter}          from 'react-router'
 import {
   $p,
   variables,
@@ -13,47 +15,85 @@ import {
 import {validateProjectName} from '../../utils/nameValidator'
 import tracker               from '../../utils/metrics'
 
-import {ReduxAction}         from '../../types/reducers'
-import {closePopup}          from '../../actions/popup'
+import mapProps              from '../../components/MapProps/MapProps'
+
+import CloneProjectMutation  from '../../mutations/CloneProjectMutation'
 
 interface Props {
-  id: string
-  modelName: string
-  duplicateProject: (projectName: string) => ReduxAction
-  closePopup: (id: string) => ReduxAction
+  router: ReactRouter.InjectedRouter
+  projectId: string
+  customerId: string
 }
 
 interface State {
   showError: boolean
+  projectName: string
+  includeData: boolean
+  includeMutationCallbacks: boolean
 }
 
-class ClodeProjectPopup extends React.Component<Props, State> {
-  refs: {
-    input: HTMLInputElement,
-  }
-
+class CloneProjectPopup extends React.Component<Props, State> {
   state = {
     showError: false,
+    projectName: '',
+    includeData: true,
+    includeMutationCallbacks: false,
   }
 
-  private saveProject = () => {
-    const projectName = (ReactDOM.findDOMNode(this.refs.input) as HTMLInputElement).value
+  private onCancelClick = () => {
+    // TODO: Track
+    this.closePopup()
+  }
 
-    tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Update', name: projectName}))
+  private onProjectNameChange = (e: any) => {
+    // TODO: track
+    this.setState({ projectName: e.target.value } as State)
+  }
+
+  private onIncludeDataToggle = () => {
+    // TODO: track
+    this.setState({ includeData: !this.state.includeData } as State)
+  }
+
+  private onIncludeMutationCallbacksToggle = () => {
+    // TODO: track
+    this.setState({ includeMutationCallbacks: !this.state.includeMutationCallbacks } as State)
+  }
+
+  private closePopup = () => {
+    this.props.router.goBack()
+  }
+
+  private cloneProject = () => {
+    const { projectId, customerId } = this.props
+    const { projectName, includeData, includeMutationCallbacks } = this.state;
 
     if (projectName != null && !validateProjectName(projectName)) {
       this.setState({showError: true} as State)
 
+      // Don't submit as long as name is invalid
       return
     }
 
-    this.props.duplicateProject(projectName)
-    this.props.closePopup(this.props.id)
-  }
+    // TODO: track
+    // tracker.track(ConsoleEvents.Permissions.Popup.submitted({
+    //   type: 'Update',
+    //   name: projectName
+    // }))
 
-  private onCancelClick = () => {
-    this.props.closePopup(this.props.id)
-    tracker.track(ConsoleEvents.Schema.Model.Popup.canceled({type: 'Update'}))
+    Relay.Store.commitUpdate(
+      new CloneProjectMutation({
+        customerId,
+        projectId,
+        includeData,
+        includeMutationCallbacks,
+        name: projectName,
+      }),
+      {
+        onSuccess: () => this.closePopup(),
+        onFailure: (transaction) => console.log(transaction),
+      },
+    )
   }
 
   componentDidMount() {
@@ -113,6 +153,17 @@ class ClodeProjectPopup extends React.Component<Props, State> {
       border-radius: 50%
     `
 
+    const CheckIconDisabled = styled.div`
+      background-color: ${variables.white};
+      display: inline-flex !important;
+      vertical-align: middle;
+      padding: 13px;
+      margin-right: 15px;
+      border-radius: 50%;
+      border: 1px solid black;
+      opacity: 0.16;
+    `
+
     const CloneButton = styled(Button)`
       background: ${variables.green};
       color: ${variables.white};
@@ -120,6 +171,36 @@ class ClodeProjectPopup extends React.Component<Props, State> {
       &:hover {
         color: ${variables.white};
       }
+    `
+
+    const NestedCheckbox = styled.div`
+      padding-left: 15px;
+    `
+
+    const NestedCheckboxes = styled.div`
+      padding-left: 12px;
+    `
+
+    const NestedCheckboxVerticalLine = styled.span`
+      position: absolute;
+      top: -25px;
+      left: 0;
+      height: 45px
+      border-left-width: 1px;
+      border-left-style: solid;
+    `
+    const NestedCheckboxHorizontalLine = styled.span`
+      position: absolute;
+      width: 15px;
+      height: 0
+      top: 20px;
+      left: 0;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+    `
+
+    const MiniHeadline = styled.div`
+      margin-top: -13px;
     `
 
     return (
@@ -134,80 +215,101 @@ class ClodeProjectPopup extends React.Component<Props, State> {
         )}
       >
         <Popup className={cx($p.bgWhite, $p.br2)} style={{pointerEvents: 'all'}}>
-          <div className={cx($p.relative, $p.pa60)}>
+          <div className={cx($p.relative, $p.pa60, $p.bb, $p.bBlack20 )}>
             <div className={cx($p.relative)}>
               {this.state.showError && (
                 <Warning
-                  className={cx(
-                  $p.absolute,
-                  $p.left0,
-                  $p.orange,
-                  $p.f14,
-                )}
+                  className={cx($p.absolute, $p.left0, $p.orange, $p.f14)}
                 >
-                  Models must begin with an uppercase letter and only contain letters and numbers
+                  Projects must begin with an uppercase letter
                 </Warning>
               )}
               <NameInput
-                className={cx(
-                  $p.fw3,
-                  $p.f38,
-                  $p.bNone,
-                  $p.lhSolid,
-                  $p.tl,
-                )}
+                className={cx($p.fw3, $p.f38, $p.bNone, $p.lhSolid, $p.tl)}
                 type='text'
                 autoFocus
                 placeholder='Clone of Instagram...'
-                onKeyDown={e => e.keyCode === 13 && this.saveProject()}
-                ref='input'
+                onKeyDown={e => e.keyCode === 13 && this.cloneProject()}
+                value={this.state.projectName}
+                onChange={this.onProjectNameChange}
               />
             </div>
           </div>
+          <MiniHeadline className={cx($p.tc)}>
+            <p className={cx($p.dib, $p.f16, $p.fw3, $p.bgWhite, $p.ph16, $p.relative)}>
+              Clone Settings
+            </p>
+          </MiniHeadline>
           <div className={cx($p.pa60, $p.f25, $p.fw3)}>
-            <p className={cx($p.mv6)}>
+            <p className={cx($p.relative, $p.z2, $p.mv6)}>
               <CheckIcon
-                color="white"
+                color='white'
                 src={require('../../assets/icons/check.svg')}
               />
               <span className={cx($p.dib, $p.vMid)}>
                 Schema
               </span>
             </p>
-            <div className={cx($p.pl25)}>
-              <p className={cx($p.mv6)}>
-                <CheckIcon
-                  color="white"
-                  src={require('../../assets/icons/check.svg')}
-                />
-                <span className={cx($p.dib, $p.vMid)}>
+            <NestedCheckboxes>
+              <NestedCheckbox
+                className={cx($p.relative, $p.mv6, $p.pointer)}
+                onClick={this.onIncludeDataToggle}
+               >
+                <NestedCheckboxVerticalLine style={{
+                  borderColor: this.state.includeData || this.state.includeMutationCallbacks
+                    ? variables.pblue
+                    : 'rgba(0,0,0,0.2)'
+                }}/>
+                <NestedCheckboxHorizontalLine style={{
+                  borderColor: this.state.includeData ? variables.pblue : 'rgba(0,0,0,0.2)'
+                }}/>
+                {
+                  this.state.includeData
+                    ? <CheckIcon
+                        color='white'
+                        src={require('../../assets/icons/check.svg')}
+                      />
+                    : <CheckIconDisabled />
+                }
+                <span className={cx($p.dib, $p.vMid, {
+                  [$p.black30]: !this.state.includeData
+                })}>
                   Data
                 </span>
-              </p>
-              <p className={cx($p.mv6)}>
-                <CheckIcon
-                  color="white"
-                  src={require('../../assets/icons/check.svg')}
-                />
-                <span className={cx($p.dib, $p.vMid)}>
+              </NestedCheckbox>
+              <NestedCheckbox
+                className={cx($p.relative, $p.mv6, $p.pointer)}
+                onClick={this.onIncludeMutationCallbacksToggle}
+              >
+                <NestedCheckboxVerticalLine style={{
+                  borderColor: this.state.includeMutationCallbacks ? variables.pblue : 'rgba(0,0,0,0.2)'
+                }}/>
+                <NestedCheckboxHorizontalLine style={{
+                  borderColor: this.state.includeMutationCallbacks ? variables.pblue : 'rgba(0,0,0,0.2)'
+                }}/>
+                {
+                  this.state.includeMutationCallbacks
+                    ? <CheckIcon
+                        color='white'
+                        src={require('../../assets/icons/check.svg')}
+                      />
+                    : <CheckIconDisabled />
+                }
+                <span className={cx($p.dib, $p.vMid, {
+                  [$p.black30]: !this.state.includeMutationCallbacks
+                 })}>
                   Mutation Callbacks
                 </span>
-              </p>
-            </div>
+              </NestedCheckbox>
+            </NestedCheckboxes>
           </div>
           <div
-            className={cx(
-              $p.bt,
-              $p.bBlack10,
-              $p.pa25,
-              $p.flex,
-              $p.justifyBetween,
-            )}
+            className={cx($p.bt, $p.bBlack10, $p.pa25, $p.flex, $p.justifyBetween)}
           >
             <Button onClick={this.onCancelClick}>
               Cancel
             </Button>
-            <CloneButton onClick={this.saveProject}>
+            <CloneButton onClick={this.cloneProject}>
               Clone
             </CloneButton>
           </div>
@@ -217,9 +319,21 @@ class ClodeProjectPopup extends React.Component<Props, State> {
   }
 }
 
-export default connect(
-  null,
-  {
-    closePopup,
+const MappedCloneProjectPopup = mapProps({
+  projectId: props => props.viewer && props.viewer.project && props.viewer.project.id || null,
+  customerId: props => props.viewer && props.viewer.user && props.viewer.user.id || null,
+})(CloneProjectPopup)
+
+export default Relay.createContainer(withRouter(MappedCloneProjectPopup), {
+  initialVariables: {
+    projectName: null, // injected from router
   },
-)(ClodeProjectPopup)
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        user { id }
+        project: projectByName(projectName: $projectName) { id }
+      }
+    `,
+  }
+})
