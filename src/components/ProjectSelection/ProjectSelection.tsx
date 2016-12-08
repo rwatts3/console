@@ -1,19 +1,25 @@
-import * as React from 'react'
-import { Link } from 'react-router'
-import * as PureRenderMixin from 'react-addons-pure-render-mixin'
-import ScrollBox from '../../components/ScrollBox/ScrollBox'
-import {Project, Model} from '../../types/types'
-import {showNotification} from '../../actions/notification'
-import styled from 'styled-components'
-import * as cx from 'classnames'
-import ClickOutside from 'react-click-outside'
-import {particles, variables, Icon} from 'graphcool-styles'
-import * as cookiestore from 'cookiestore'
-import {ShowNotificationCallback} from '../../types/utils'
-import { connect } from 'react-redux'
-import tracker from '../../utils/metrics'
 const classes: any = require('./ProjectSelection.scss')
-import {ConsoleEvents} from 'graphcool-metrics'
+
+import * as React                   from 'react'
+import { Link }                     from 'react-router'
+import { connect }                  from 'react-redux'
+import ClickOutside                 from 'react-click-outside'
+import * as cx                      from 'classnames'
+import styled                       from 'styled-components'
+import {ConsoleEvents}              from 'graphcool-metrics'
+import * as cookiestore             from 'cookiestore'
+import * as PureRenderMixin         from 'react-addons-pure-render-mixin'
+import cuid                         from 'cuid'
+import {particles, variables, Icon} from 'graphcool-styles'
+
+import ScrollBox                    from '../../components/ScrollBox/ScrollBox'
+import tracker                      from '../../utils/metrics'
+import {Project, Model}             from '../../types/types'
+import {ShowNotificationCallback}   from '../../types/utils'
+import {Popup}                      from '../../types/popup'
+import {showNotification}           from '../../actions/notification'
+import {showPopup}                  from '../../actions/popup'
+
 
 interface Props {
   params: any
@@ -24,6 +30,7 @@ interface Props {
   model: Model
   project: Project
   showNotification: ShowNotificationCallback
+  showPopup: (popup: Popup) => void
 }
 
 interface State {
@@ -46,18 +53,31 @@ class ProjectSelection extends React.Component<Props, State> {
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
-  _toggle = () => {
+  private toggle = () => {
     this.setState({ expanded: !this.state.expanded } as State)
   }
 
-  _onSelectProject = (id: string) => {
-    this._toggle()
+  private onSelectProject = (id: string) => {
+    this.toggle()
 
     tracker.track(ConsoleEvents.Project.selected({id}))
   }
 
-  render () {
+  private onDuplicateClick = (e: any, projectId: string) => {
+    e.preventDefault() // To prevent switching the project
 
+    const id = cuid()
+    this.props.showPopup({
+      element: <ProjectDuplicatePopup
+        id={id}
+        projectId={projectId}
+        onDuplicateProject={this.props.duplicateProject}
+      />,
+      id,
+    })
+  }
+
+  render () {
     const expandedRoot = `
       background: ${variables.green} !important
     `
@@ -179,7 +199,7 @@ class ProjectSelection extends React.Component<Props, State> {
         )}
       >
         <div
-          onClick={this._toggle}
+          onClick={this.toggle}
           className={cx(
             particles.h100,
             particles.w100,
@@ -308,17 +328,17 @@ class ProjectSelection extends React.Component<Props, State> {
                 }}
               >
                 <div className={cx(
-                particles.lhSolid,
-                particles.flex,
-                particles.itemsCenter,
-                particles.tracked,
-                particles.ttu,
-                particles.fw6,
-                particles.white80,
-                particles.mt38,
-                particles.ml25,
-                particles.mb16,
-              )}>
+                  particles.lhSolid,
+                  particles.flex,
+                  particles.itemsCenter,
+                  particles.tracked,
+                  particles.ttu,
+                  particles.fw6,
+                  particles.white80,
+                  particles.mt38,
+                  particles.ml25,
+                  particles.mb16,
+                )}>
                   All Projects
                 </div>
                 {this.props.projects.map((project) => (
@@ -336,12 +356,15 @@ class ProjectSelection extends React.Component<Props, State> {
                     particles.justifyBetween,
                     particles.itemsCenter,
                   )}
-                    onClick={() => this._onSelectProject(project.id)}
+                    onClick={() => this.onSelectProject(project.id)}
                     to={`/${project.name}`}
                     active={project.id === this.props.selectedProject.id}
                   >
                     <div className={cx(particles.ml10)}>{project.name}</div>
-                    <div title='Duplicate'>
+                    <div
+                      title='Duplicate'
+                      onClick={(e: any) => this.onDuplicateClick(e, project.id)}
+                    >
                       <Icon
                         src={require('graphcool-styles/icons/fill/duplicate.svg')}
                       />
@@ -350,16 +373,16 @@ class ProjectSelection extends React.Component<Props, State> {
                 ))}
                 <AddProject
                   className={cx(
-                  particles.absolute,
-                  particles.top38,
-                  particles.right25,
-                  particles.lhSolid,
-                  particles.ba,
-                  particles.brPill,
-                  particles.bWhite,
-                  particles.pointer,
-                  particles.o80,
-                )}
+                    particles.absolute,
+                    particles.top38,
+                    particles.right25,
+                    particles.lhSolid,
+                    particles.ba,
+                    particles.brPill,
+                    particles.bWhite,
+                    particles.pointer,
+                    particles.o80,
+                  )}
                   onClick={this.props.add}
                 >
                   <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
@@ -398,4 +421,6 @@ class ProjectSelection extends React.Component<Props, State> {
 
 export default connect(null, {
   showNotification,
+  showPopup,
+  duplicateProject
 })(ProjectSelection)

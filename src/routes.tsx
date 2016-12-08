@@ -24,6 +24,7 @@ import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
 import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
+import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import tracker from './utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
@@ -99,6 +100,7 @@ export default (
     <Route path='signup' component={SignUpView} />
     <Route path='showroom' component={ShowRoom} />
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
+      <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render} />
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render} />
         <IndexRedirect to='settings' />
