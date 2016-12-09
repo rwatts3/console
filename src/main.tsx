@@ -21,6 +21,7 @@ import logger from 'redux-logger'
 import * as ReactGA from 'react-ga'
 
 import './utils/polyfils'
+import {reduceCodeGeneration} from './reducers/codeGeneration'
 
 updateNetworkLayer()
 
@@ -41,6 +42,7 @@ const reducers: StateTree = combineReducers({
     data: reduceDataBrowserData,
     ui: reduceDataBrowserUI,
   }),
+  codeGeneration: reduceCodeGeneration,
 })
 
 let middlewares = [thunk.default]

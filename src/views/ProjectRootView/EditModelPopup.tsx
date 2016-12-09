@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {ReduxAction} from '../../types/reducers'
 import {closePopup} from '../../actions/popup'
 import styled from 'styled-components'
-import {particles, variables} from 'graphcool-styles'
+import {$p, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {validateModelName} from '../../utils/nameValidator'
 import tracker from '../../utils/metrics'
@@ -102,25 +102,25 @@ class EditModelPopup extends React.Component<Props, State> {
     return (
       <div
         className={cx(
-          particles.flex,
-          particles.bgBlack50,
-          particles.w100,
-          particles.h100,
-          particles.justifyCenter,
-          particles.itemsCenter,
+          $p.flex,
+          $p.bgBlack50,
+          $p.w100,
+          $p.h100,
+          $p.justifyCenter,
+          $p.itemsCenter,
         )}
       >
-        <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
-          <div className={cx(particles.relative, particles.pa60)}>
+        <Popup className={cx($p.bgWhite, $p.br2)} style={{pointerEvents: 'all'}}>
+          <div className={cx($p.relative, $p.pa60)}>
 
-            <div className={cx(particles.relative)}>
+            <div className={cx($p.relative)}>
               {this.state.showError && (
                 <Warning
                   className={cx(
-                  particles.absolute,
-                  particles.left0,
-                  particles.orange,
-                  particles.f14,
+                  $p.absolute,
+                  $p.left0,
+                  $p.orange,
+                  $p.f14,
                 )}
                 >
                   Models must begin with an uppercase letter and only contain letters and numbers
@@ -128,11 +128,11 @@ class EditModelPopup extends React.Component<Props, State> {
               )}
               <NameInput
                 className={cx(
-                  particles.fw3,
-                  particles.f38,
-                  particles.bNone,
-                  particles.lhSolid,
-                  particles.tl,
+                  $p.fw3,
+                  $p.f38,
+                  $p.bNone,
+                  $p.lhSolid,
+                  $p.tl,
                 )}
                 type='text'
                 autoFocus
@@ -146,11 +146,11 @@ class EditModelPopup extends React.Component<Props, State> {
           </div>
           <div
             className={cx(
-              particles.bt,
-              particles.bBlack10,
-              particles.pa25,
-              particles.flex,
-              particles.justifyBetween,
+              $p.bt,
+              $p.bBlack10,
+              $p.pa25,
+              $p.flex,
+              $p.justifyBetween,
             )}
           >
             <DeleteButton onClick={this.deleteModel}>
