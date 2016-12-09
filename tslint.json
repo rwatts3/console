@@ -3,6 +3,9 @@
     "tslint-config-standard"
   ],
   "rules": {
+    "no-multi-spaces": {
+      "exceptions": { "ImportDeclaration": true }
+    },
     "trailing-comma": [
       true,
       {
