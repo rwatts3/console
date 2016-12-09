@@ -43,6 +43,115 @@ interface State {
   userDropdownVisible: boolean,
 }
 
+const expandedRoot = `
+  background: ${variables.green} !important
+`
+
+const Root = styled.div`
+  &:hover {
+
+  }
+  ${props => props.expanded && expandedRoot}
+
+`
+
+const turnedArrow = `
+  transform: rotate(180deg);
+  background: ${variables.gray20};
+  svg {
+    position: relative;
+    top: 1px;
+  }
+`
+
+const Arrow = styled.div`
+  svg {
+    stroke: ${variables.white};
+    stroke-width: 4px;
+  }
+
+  ${props => props.turned && turnedArrow }
+`
+
+const SettingsLink = styled(Link)`
+  padding: ${variables.size10};
+  background: ${variables.gray10};
+  font-size: ${variables.size14};
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: ${variables.white60};
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color ${variables.duration} linear, background ${variables.duration} linear;
+
+  svg {
+    fill: ${variables.white60};
+    transition: fill ${variables.duration} linear;
+  }
+
+  > div {
+    margin-left: 10px;
+  }
+
+  &:hover {
+    color: ${variables.white};
+    background: ${variables.gray20};
+
+    svg {
+      fill: ${variables.white};
+    }
+  }
+`
+
+const activeListItem = `
+  color: ${variables.white};
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: ${variables.size06};
+    background: ${variables.white};
+    border-radius: 0 2px 2px 0;
+  }
+`
+
+const ListItem = styled(Link)`
+  transition: color ${variables.duration} linear;
+
+  svg {
+    display: none;
+    fill: ${variables.white};
+  }
+
+  &:hover {
+    color: ${variables.white};
+
+    svg {
+      display: block;
+    }
+  }
+
+  ${props => props.active && activeListItem}
+`
+
+const AddProject = styled.div`
+  margin: -3px -4px 0 0;
+
+  svg {
+    stroke: ${variables.white};
+    stroke-width: 4px;
+  }
+`
+
+
 class ProjectSelection extends React.Component<Props, State> {
 
   state = {
@@ -82,144 +191,17 @@ class ProjectSelection extends React.Component<Props, State> {
   }
 
   render () {
-    const expandedRoot = `
-      background: ${variables.green} !important
-    `
-
-    const Root = styled.div`
-      &:hover {
-
-      }
-      ${props => props.expanded && expandedRoot}
-
-    `
-
-    const turnedArrow = `
-      transform: rotate(180deg);
-      background: ${variables.gray20};
-      svg {
-        position: relative;
-        top: 1px;
-      }
-    `
-
-    const Arrow = styled.div`
-      svg {
-        stroke: ${variables.white};
-        stroke-width: 4px;
-      }
-
-      ${props => props.turned && turnedArrow }
-    `
-
-    const SettingsLink = styled(Link)`
-      padding: ${variables.size10};
-      background: ${variables.gray10};
-      font-size: ${variables.size14};
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 1px;
-      color: ${variables.white60};
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: color ${variables.duration} linear, background ${variables.duration} linear;
-
-      svg {
-        fill: ${variables.white60};
-        transition: fill ${variables.duration} linear;
-      }
-
-      > div {
-        margin-left: 10px;
-      }
-
-      &:hover {
-        color: ${variables.white};
-        background: ${variables.gray20};
-
-        svg {
-          fill: ${variables.white};
-        }
-      }
-    `
-
-    const activeListItem = `
-      color: ${variables.white};
-
-      &:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: ${variables.size06};
-        background: ${variables.white};
-        border-radius: 0 2px 2px 0;
-      }
-    `
-
-    const ListItem = styled(Link)`
-      transition: color ${variables.duration} linear;
-
-      svg {
-        display: none;
-        fill: ${variables.white};
-      }
-
-      &:hover {
-        color: ${variables.white};
-
-        svg {
-          display: block;
-        }
-      }
-
-      ${props => props.active && activeListItem}
-    `
-
-    const AddProject = styled.div`
-      margin: -3px -4px 0 0;
-
-      svg {
-        stroke: ${variables.white};
-        stroke-width: 4px;
-      }
-    `
-
     return (
       <Root
         expanded={this.state.expanded}
-        className={cx(
-          $p.relative,
-          $p.w100,
-          $p.h100,
-          $p.white,
-          $p.z5,
-          $p.bgDarkBlue,
-        )}
+        className={cx($p.relative, $p.w100, $p.h100, $p.white, $p.z5, $p.bgDarkBlue)}
       >
         <div
           onClick={this.toggle}
-          className={cx(
-            $p.h100,
-            $p.w100,
-            $p.f20,
-            $p.flex,
-            $p.itemsCenter,
-          )}
+          className={cx($p.h100, $p.w100, $p.f20, $p.flex, $p.itemsCenter)}
         >
           <div
-            className={cx(
-              $p.bgGreen,
-              $p.flex,
-              $p.itemsCenter,
-              $p.justifyCenter,
-              $p.pointer
-            )}
+            className={cx($p.bgGreen, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
             style={{
               width: '67px',
               height: '67px',
@@ -234,14 +216,7 @@ class ProjectSelection extends React.Component<Props, State> {
             />
           </div>
           <div
-            className={cx(
-              $p.flex,
-              $p.justifyBetween,
-              $p.selfStretch,
-              $p.itemsCenter,
-              $p.ph25,
-              $p.pointer,
-            )}
+            className={cx($p.flex, $p.justifyBetween, $p.selfStretch, $p.itemsCenter, $p.ph25, $p.pointer)}
             style={{
               flexGrow: 2,
             }}
@@ -251,11 +226,7 @@ class ProjectSelection extends React.Component<Props, State> {
             </div>
             <Arrow
               turned={this.state.expanded}
-              className={cx(
-                $p.flex,
-                $p.itemsCenter,
-                $p.brPill,
-              )}
+              className={cx($p.flex, $p.itemsCenter, $p.brPill)}
               style={{
                 marginRight: '-3px',
               }}
@@ -272,23 +243,8 @@ class ProjectSelection extends React.Component<Props, State> {
 
         </div>
         {this.state.expanded &&
-          <div
-            className={cx(
-              $p.absolute,
-              $p.w100,
-              $p.vh100,
-              $p.bgGreen,
-              $p.flex,
-              $p.flexColumn,
-
-            )}
-          >
-
-            <div className={cx(
-              $p.pa25,
-              $p.flex,
-              $p.justifyBetween,
-            )}>
+          <div className={cx($p.absolute, $p.w100, $p.vh100, $p.bgGreen, $p.flex, $p.flexColumn)}>
+            <div className={cx($p.pa25, $p.flex, $p.justifyBetween)}>
               <SettingsLink to={`/${this.props.params.projectName}/settings`}>
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
                 <div>Settings</div>
@@ -318,11 +274,7 @@ class ProjectSelection extends React.Component<Props, State> {
               </SettingsLink>
             </div>
             <div
-              className={cx(
-                $p.relative,
-                $p.bgBlack07,
-
-              )}
+              className={cx($p.relative, $p.bgBlack07)}
               style={{
                 flexGrow: 2,
               }}

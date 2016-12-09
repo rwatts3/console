@@ -18,6 +18,7 @@ import tracker               from '../../utils/metrics'
 import mapProps              from '../../components/MapProps/MapProps'
 
 import CloneProjectMutation  from '../../mutations/CloneProjectMutation'
+import Checkbox              from '../../components/Form/Checkbox'
 
 interface Props {
   router: ReactRouter.InjectedRouter
@@ -31,6 +32,66 @@ interface State {
   includeData: boolean
   includeMutationCallbacks: boolean
 }
+
+const Popup = styled.div`
+  width: 600px;
+  max-width: 90%;
+`
+
+const NameInput = styled.input`
+  &::-webkit-input-placeholder {
+  color: ${variables.gray20};
+  opacity: 1;
+}
+  &::-moz-placeholder {
+    color: ${variables.gray20};
+    opacity: 1;
+  }
+  &:-ms-input-placeholder {
+    color: ${variables.gray20};
+    opacity: 1;
+  }
+  &:-moz-placeholder {
+    color: ${variables.gray20};
+    opacity: 1;
+  }
+`
+
+const Warning = styled.div`
+  bottom: -44px;
+`
+
+const Button = styled.button`
+  padding: ${variables.size16};
+  font-size: ${variables.size16};
+  border: none;
+  background: none;
+  color: ${variables.gray50};
+  border-radius: 2px;
+  cursor: pointer;
+  transition: color ${variables.duration} linear;
+
+  &:hover {
+    color: ${variables.gray70};
+  }
+`
+
+const CloneButton = styled(Button)`
+  background: ${variables.green};
+  color: ${variables.white};
+
+  &:hover {
+    color: ${variables.white};
+  }
+`
+
+const MiniHeadline = styled.div`
+  margin-top: -13px;
+`
+
+const NestedCheckboxes = styled.div`
+  padding-left: 12px;
+`
 
 class CloneProjectPopup extends React.Component<Props, State> {
   state = {
@@ -101,118 +162,9 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   render() {
-    const Popup = styled.div`
-      width: 600px;
-      max-width: 90%;
-    `
-
-    const NameInput = styled.input`
-      &::-webkit-input-placeholder {
-      color: ${variables.gray20};
-      opacity: 1;
-    }
-      &::-moz-placeholder {
-        color: ${variables.gray20};
-        opacity: 1;
-      }
-      &:-ms-input-placeholder {
-        color: ${variables.gray20};
-        opacity: 1;
-      }
-      &:-moz-placeholder {
-        color: ${variables.gray20};
-        opacity: 1;
-      }
-    `
-
-    const Warning = styled.div`
-      bottom: -44px
-    `
-
-    const Button = styled.button`
-      padding: ${variables.size16};
-      font-size: ${variables.size16};
-      border: none;
-      background: none;
-      color: ${variables.gray50};
-      border-radius: 2px;
-      cursor: pointer;
-      transition: color ${variables.duration} linear;
-
-      &:hover {
-        color: ${variables.gray70};
-      }
-    `
-
-    const CheckIcon = styled(Icon)`
-      background-color: #4990E2
-      display: inline-flex !important
-      vertical-align: middle
-      padding: 5px
-      margin-right: 15px
-      border-radius: 50%
-    `
-
-    const CheckIconDisabled = styled.div`
-      background-color: ${variables.white};
-      display: inline-flex !important;
-      vertical-align: middle;
-      padding: 13px;
-      margin-right: 15px;
-      border-radius: 50%;
-      border: 1px solid black;
-      opacity: 0.16;
-    `
-
-    const CloneButton = styled(Button)`
-      background: ${variables.green};
-      color: ${variables.white};
-
-      &:hover {
-        color: ${variables.white};
-      }
-    `
-
-    const NestedCheckbox = styled.div`
-      padding-left: 15px;
-    `
-
-    const NestedCheckboxes = styled.div`
-      padding-left: 12px;
-    `
-
-    const NestedCheckboxVerticalLine = styled.span`
-      position: absolute;
-      top: -25px;
-      left: 0;
-      height: 45px
-      border-left-width: 1px;
-      border-left-style: solid;
-    `
-    const NestedCheckboxHorizontalLine = styled.span`
-      position: absolute;
-      width: 15px;
-      height: 0
-      top: 20px;
-      left: 0;
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
-    `
-
-    const MiniHeadline = styled.div`
-      margin-top: -13px;
-    `
-
     return (
       <div
-        className={cx(
-          $p.flex,
-          $p.bgBlack50,
-          $p.w100,
-          $p.h100,
-          $p.justifyCenter,
-          $p.itemsCenter,
-        )}
+        className={cx($p.flex, $p.bgBlack50, $p.w100, $p.h100, $p.justifyCenter, $p.itemsCenter)}
       >
         <Popup className={cx($p.bgWhite, $p.br2)} style={{pointerEvents: 'all'}}>
           <div className={cx($p.relative, $p.pa60, $p.bb, $p.bBlack20 )}>
@@ -241,66 +193,28 @@ class CloneProjectPopup extends React.Component<Props, State> {
             </p>
           </MiniHeadline>
           <div className={cx($p.pa60, $p.f25, $p.fw3)}>
-            <p className={cx($p.relative, $p.z2, $p.mv6)}>
-              <CheckIcon
-                color='white'
-                src={require('../../assets/icons/check.svg')}
-              />
-              <span className={cx($p.dib, $p.vMid)}>
-                Schema
-              </span>
-            </p>
+            <Checkbox
+              nested={false}
+              checked={true}
+              label='Schema'
+              onClick={() => {}}
+              forceHighlightVerticalLine={false}
+            />
             <NestedCheckboxes>
-              <NestedCheckbox
-                className={cx($p.relative, $p.mv6, $p.pointer)}
+              <Checkbox
+                checked={this.state.includeData}
                 onClick={this.onIncludeDataToggle}
-               >
-                <NestedCheckboxVerticalLine style={{
-                  borderColor: this.state.includeData || this.state.includeMutationCallbacks
-                    ? variables.pblue
-                    : 'rgba(0,0,0,0.2)'
-                }}/>
-                <NestedCheckboxHorizontalLine style={{
-                  borderColor: this.state.includeData ? variables.pblue : 'rgba(0,0,0,0.2)'
-                }}/>
-                {
-                  this.state.includeData
-                    ? <CheckIcon
-                        color='white'
-                        src={require('../../assets/icons/check.svg')}
-                      />
-                    : <CheckIconDisabled />
-                }
-                <span className={cx($p.dib, $p.vMid, {
-                  [$p.black30]: !this.state.includeData
-                })}>
-                  Data
-                </span>
-              </NestedCheckbox>
-              <NestedCheckbox
-                className={cx($p.relative, $p.mv6, $p.pointer)}
+                nested={true}
+                label='Data'
+                forceHighlightVerticalLine={this.state.includeMutationCallbacks}
+              />
+              <Checkbox
+                checked={this.state.includeMutationCallbacks}
                 onClick={this.onIncludeMutationCallbacksToggle}
-              >
-                <NestedCheckboxVerticalLine style={{
-                  borderColor: this.state.includeMutationCallbacks ? variables.pblue : 'rgba(0,0,0,0.2)'
-                }}/>
-                <NestedCheckboxHorizontalLine style={{
-                  borderColor: this.state.includeMutationCallbacks ? variables.pblue : 'rgba(0,0,0,0.2)'
-                }}/>
-                {
-                  this.state.includeMutationCallbacks
-                    ? <CheckIcon
-                        color='white'
-                        src={require('../../assets/icons/check.svg')}
-                      />
-                    : <CheckIconDisabled />
-                }
-                <span className={cx($p.dib, $p.vMid, {
-                  [$p.black30]: !this.state.includeMutationCallbacks
-                 })}>
-                  Mutation Callbacks
-                </span>
-              </NestedCheckbox>
+                nested={true}
+                label='Mutation Callbacks'
+                forceHighlightVerticalLine={false}
+              />
             </NestedCheckboxes>
           </div>
           <div
