@@ -102,7 +102,8 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    tracker.track(ConsoleEvents.Schema.Model.Popup.opened({type: 'Update'}))
+    // TODO: Track
+    // tracker.track(ConsoleEvents.Project.ClonePopup.opened())
   }
 
   render() {
@@ -174,21 +175,20 @@ class CloneProjectPopup extends React.Component<Props, State> {
 
   private onCancelClick = () => {
     // TODO: Track
+    // tracker.track(ConsoleEvents.Project.ClonePopup.canceled())
+
     this.closePopup()
   }
 
   private onProjectNameChange = (e: any) => {
-    // TODO: track
     this.setState({ projectName: e.target.value } as State)
   }
 
   private onIncludeDataToggle = () => {
-    // TODO: track
     this.setState({ includeData: !this.state.includeData } as State)
   }
 
   private onIncludeMutationCallbacksToggle = () => {
-    // TODO: track
     this.setState({ includeMutationCallbacks: !this.state.includeMutationCallbacks } as State)
   }
 
@@ -208,9 +208,10 @@ class CloneProjectPopup extends React.Component<Props, State> {
     }
 
     // TODO: track
-    // tracker.track(ConsoleEvents.Permissions.Popup.submitted({
-    //   type: 'Update',
-    //   name: projectName
+    // tracker.track(ConsoleEvents.Project.ClonePopup.submitted({
+    //   includeData,
+    //   includeMutationCallbacks
+    //   name: projectName,
     // }))
 
     Relay.Store.commitUpdate(
@@ -222,7 +223,16 @@ class CloneProjectPopup extends React.Component<Props, State> {
         name: projectName,
       }),
       {
-        onSuccess: () => this.closePopup(),
+        onSuccess: () => {
+          // TODO: track
+          // tracker.track(ConsoleEvents.Project.cloned({
+          //   includeData,
+          //   includeMutationCallbacks
+          //   name: projectName,
+          // }))
+
+          this.closePopup()
+        },
         onFailure: (transaction) => console.log(transaction),
       },
     )
