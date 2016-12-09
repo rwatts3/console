@@ -40,7 +40,7 @@ export default class CloneProjectMutation extends Relay.Mutation<Props, {}> {
       projectId: this.props.projectId,
       name: this.props.name,
       includeData: this.props.includeData,
-      includeMutationCallbacks: this.props.includeMutationCallbacks
+      includeMutationCallbacks: this.props.includeMutationCallbacks,
     }
   }
 }

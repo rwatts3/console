@@ -25,7 +25,6 @@ import {showNotification}           from '../../actions/notification'
 import {showPopup}                  from '../../actions/popup'
 import CloneProjectPopup            from '../../views/ProjectRootView/CloneProjectPopup'
 
-
 interface Props {
   params: any
   add: () => void
@@ -151,7 +150,6 @@ const AddProject = styled.div`
   }
 `
 
-
 class ProjectSelection extends React.Component<Props, State> {
 
   state = {
@@ -165,29 +163,6 @@ class ProjectSelection extends React.Component<Props, State> {
     super(props)
 
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-  }
-
-  private toggle = () => {
-    this.setState({ expanded: !this.state.expanded } as State)
-  }
-
-  private onSelectProject = (id: string) => {
-    this.toggle()
-
-    tracker.track(ConsoleEvents.Project.selected({id}))
-  }
-
-  private onDuplicateClick = (e: any, projectId: string) => {
-    e.preventDefault() // To prevent switching the project
-
-    const id = cuid()
-    this.props.showPopup({
-      element: <CloneProjectPopup
-        id={id}
-        projectId={projectId}
-      />,
-      id,
-    })
   }
 
   render () {
@@ -351,6 +326,16 @@ class ProjectSelection extends React.Component<Props, State> {
         }
       </Root>
     )
+  }
+
+  private toggle = () => {
+    this.setState({ expanded: !this.state.expanded } as State)
+  }
+
+  private onSelectProject = (id: string) => {
+    this.toggle()
+
+    tracker.track(ConsoleEvents.Project.selected({id}))
   }
 
   private closeProjectsList = () => {

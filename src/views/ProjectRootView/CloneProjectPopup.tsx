@@ -101,62 +101,6 @@ class CloneProjectPopup extends React.Component<Props, State> {
     includeMutationCallbacks: false,
   }
 
-  private onCancelClick = () => {
-    // TODO: Track
-    this.closePopup()
-  }
-
-  private onProjectNameChange = (e: any) => {
-    // TODO: track
-    this.setState({ projectName: e.target.value } as State)
-  }
-
-  private onIncludeDataToggle = () => {
-    // TODO: track
-    this.setState({ includeData: !this.state.includeData } as State)
-  }
-
-  private onIncludeMutationCallbacksToggle = () => {
-    // TODO: track
-    this.setState({ includeMutationCallbacks: !this.state.includeMutationCallbacks } as State)
-  }
-
-  private closePopup = () => {
-    this.props.router.goBack()
-  }
-
-  private cloneProject = () => {
-    const { projectId, customerId } = this.props
-    const { projectName, includeData, includeMutationCallbacks } = this.state;
-
-    if (projectName != null && !validateProjectName(projectName)) {
-      this.setState({showError: true} as State)
-
-      // Don't submit as long as name is invalid
-      return
-    }
-
-    // TODO: track
-    // tracker.track(ConsoleEvents.Permissions.Popup.submitted({
-    //   type: 'Update',
-    //   name: projectName
-    // }))
-
-    Relay.Store.commitUpdate(
-      new CloneProjectMutation({
-        customerId,
-        projectId,
-        includeData,
-        includeMutationCallbacks,
-        name: projectName,
-      }),
-      {
-        onSuccess: () => this.closePopup(),
-        onFailure: (transaction) => console.log(transaction),
-      },
-    )
-  }
-
   componentDidMount() {
     tracker.track(ConsoleEvents.Schema.Model.Popup.opened({type: 'Update'}))
   }
@@ -194,11 +138,8 @@ class CloneProjectPopup extends React.Component<Props, State> {
           </MiniHeadline>
           <div className={cx($p.pa60, $p.f25, $p.fw3)}>
             <Checkbox
-              nested={false}
               checked={true}
               label='Schema'
-              onClick={() => {}}
-              forceHighlightVerticalLine={false}
             />
             <NestedCheckboxes>
               <Checkbox
@@ -213,7 +154,6 @@ class CloneProjectPopup extends React.Component<Props, State> {
                 onClick={this.onIncludeMutationCallbacksToggle}
                 nested={true}
                 label='Mutation Callbacks'
-                forceHighlightVerticalLine={false}
               />
             </NestedCheckboxes>
           </div>
@@ -229,6 +169,62 @@ class CloneProjectPopup extends React.Component<Props, State> {
           </div>
         </Popup>
       </div>
+    )
+  }
+
+  private onCancelClick = () => {
+    // TODO: Track
+    this.closePopup()
+  }
+
+  private onProjectNameChange = (e: any) => {
+    // TODO: track
+    this.setState({ projectName: e.target.value } as State)
+  }
+
+  private onIncludeDataToggle = () => {
+    // TODO: track
+    this.setState({ includeData: !this.state.includeData } as State)
+  }
+
+  private onIncludeMutationCallbacksToggle = () => {
+    // TODO: track
+    this.setState({ includeMutationCallbacks: !this.state.includeMutationCallbacks } as State)
+  }
+
+  private closePopup = () => {
+    this.props.router.goBack()
+  }
+
+  private cloneProject = () => {
+    const { projectId, customerId } = this.props
+    const { projectName, includeData, includeMutationCallbacks } = this.state
+
+    if (projectName != null && !validateProjectName(projectName)) {
+      this.setState({showError: true} as State)
+
+      // Don't submit as long as name is invalid
+      return
+    }
+
+    // TODO: track
+    // tracker.track(ConsoleEvents.Permissions.Popup.submitted({
+    //   type: 'Update',
+    //   name: projectName
+    // }))
+
+    Relay.Store.commitUpdate(
+      new CloneProjectMutation({
+        customerId,
+        projectId,
+        includeData,
+        includeMutationCallbacks,
+        name: projectName,
+      }),
+      {
+        onSuccess: () => this.closePopup(),
+        onFailure: (transaction) => console.log(transaction),
+      },
     )
   }
 }
@@ -249,5 +245,5 @@ export default Relay.createContainer(withRouter(MappedCloneProjectPopup), {
         project: projectByName(projectName: $projectName) { id }
       }
     `,
-  }
+  },
 })

@@ -2,7 +2,7 @@ import * as React            from 'react' // tslint:disable-line
 import {
   $p,
   variables,
-  Icon
+  Icon,
 }                            from 'graphcool-styles'
 import styled                from 'styled-components'
 import * as cx               from 'classnames'
@@ -53,22 +53,22 @@ const NestedCheckboxHorizontalLine = styled.span`
 
 interface Props {
   label: string
-  onClick: () => void
   checked: boolean
-  nested: boolean
-  forceHighlightVerticalLine: boolean
+  onClick?: () => void
+  nested?: boolean
+  forceHighlightVerticalLine?: boolean
 }
 
 export default (props: Props) => {
   const nestedLines = props.nested && ([
     <NestedCheckboxVerticalLine key={0} className={cx({
        [$p.bBlue]: props.checked || props.forceHighlightVerticalLine,
-       [$p.bBlack20]: !props.checked
+       [$p.bBlack20]: !props.checked,
     })}/>,
     <NestedCheckboxHorizontalLine key={1} className={cx({
        [$p.bBlue]: props.checked,
-       [$p.bBlack20]: !props.checked
-    })}/>
+       [$p.bBlack20]: !props.checked,
+    })}/>,
   ])
 
   const icon = props.checked
@@ -82,14 +82,14 @@ export default (props: Props) => {
     <div
       className={cx($p.relative, $p.mv6, $p.pointer, {
         [$p.pl16]: props.nested,
-        [$p.z2]: !props.nested
+        [$p.z2]: !props.nested,
       })}
       onClick={props.onClick}
      >
       { nestedLines }
       { icon }
       <span className={cx($p.dib, $p.vMid, {
-        [$p.black30]: !props.checked
+        [$p.black30]: !props.checked,
       })}>
         { props.label }
       </span>
