@@ -22,6 +22,7 @@ import Checkbox              from '../../components/Form/Checkbox'
 
 interface Props {
   router: ReactRouter.InjectedRouter
+  params: any
   projectId: string
   customerId: string
 }
@@ -106,6 +107,8 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   render() {
+    const { projectName } = this.props.params
+
     return (
       <div
         className={cx($p.flex, $p.bgBlack50, $p.w100, $p.h100, $p.justifyCenter, $p.itemsCenter)}
@@ -124,7 +127,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
                 className={cx($p.fw3, $p.f38, $p.bNone, $p.lhSolid, $p.tl)}
                 type='text'
                 autoFocus
-                placeholder='Clone of Instagram...'
+                placeholder={`Clone of ${projectName}...`}
                 onKeyDown={e => e.keyCode === 13 && this.cloneProject()}
                 value={this.state.projectName}
                 onChange={this.onProjectNameChange}

@@ -37,14 +37,14 @@ const NestedCheckboxVerticalLine = styled.span`
   position: absolute;
   top: -25px;
   left: 0;
-  height: 45px;
+  height: 46px;
   border-left-width: 1px;
   border-left-style: solid;
 `
 const NestedCheckboxHorizontalLine = styled.span`
   position: absolute;
   width: 15px;
-  height: 0;
+  height: 1px;
   top: 20px;
   left: 0;
   border-bottom-width: 1px;
