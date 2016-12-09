@@ -234,8 +234,8 @@ class CloneProjectPopup extends React.Component<Props, State> {
 }
 
 const MappedCloneProjectPopup = mapProps({
-  projectId: props => props.viewer && props.viewer.project && props.viewer.project.id || null,
-  customerId: props => props.viewer && props.viewer.user && props.viewer.user.id || null,
+  projectId: props => props.viewer && props.viewer.project.id || null,
+  customerId: props => props.viewer && props.viewer.user.id || null,
 })(CloneProjectPopup)
 
 export default Relay.createContainer(withRouter(MappedCloneProjectPopup), {
