@@ -225,13 +225,11 @@ class CloneProjectPopup extends React.Component<Props, State> {
       {
         onSuccess: () => {
           // TODO: track
-          // tracker.track(ConsoleEvents.Project.cloned({
-          //   includeData,
-          //   includeMutationCallbacks
-          //   name: projectName,
-          // }))
+          // tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
 
-          this.closePopup()
+          const {router} = this.props
+
+          router.push(`/${projectName}`)
         },
         onFailure: (transaction) => console.log(transaction),
       },
