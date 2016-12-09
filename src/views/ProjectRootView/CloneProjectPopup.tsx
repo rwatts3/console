@@ -102,8 +102,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    // TODO: Track
-    // tracker.track(ConsoleEvents.Project.ClonePopup.opened())
+    tracker.track(ConsoleEvents.Project.ClonePopup.opened())
   }
 
   render() {
@@ -174,8 +173,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   private onCancelClick = () => {
-    // TODO: Track
-    // tracker.track(ConsoleEvents.Project.ClonePopup.canceled())
+    tracker.track(ConsoleEvents.Project.ClonePopup.canceled())
 
     this.closePopup()
   }
@@ -207,25 +205,23 @@ class CloneProjectPopup extends React.Component<Props, State> {
       return
     }
 
-    // TODO: track
-    // tracker.track(ConsoleEvents.Project.ClonePopup.submitted({
-    //   includeData,
-    //   includeMutationCallbacks
-    //   name: projectName,
-    // }))
+    tracker.track(ConsoleEvents.Project.ClonePopup.submitted({
+      name: projectName,
+      includeData,
+      includeMutationCallbacks,
+    }))
 
     Relay.Store.commitUpdate(
       new CloneProjectMutation({
-        customerId,
         projectId,
+        name: projectName,
+        customerId,
         includeData,
         includeMutationCallbacks,
-        name: projectName,
       }),
       {
         onSuccess: () => {
-          // TODO: track
-          // tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
+          tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
 
           const {router} = this.props
 
