@@ -106,7 +106,6 @@ class PlaygroundView extends React.Component<Props, State> {
     const usedPlayground = window.localStorage.getItem(`used-playground-${this.props.viewer.project.id}`)
     const isOnboarding = props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')
 
-
     this.state = {
       users: [DASHBOARD_ADMIN, GUEST],
       historyVisible: false,
