@@ -106,7 +106,6 @@ class PlaygroundView extends React.Component<Props, State> {
     const usedPlayground = window.localStorage.getItem(`used-playground-${this.props.viewer.project.id}`)
     const isOnboarding = props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')
 
-    console.log('calling constructor again')
 
     this.state = {
       users: [DASHBOARD_ADMIN, GUEST],
@@ -127,13 +126,11 @@ class PlaygroundView extends React.Component<Props, State> {
     if (this.props.gettingStartedState.step !== nextProps.gettingStartedState.step) {
       if (nextProps.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2') ||
           nextProps.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_PART2')) {
-        console.log('setting query to ONBOARDING_QUERY_PART1')
         this.setState({
           query: ONBOARDING_QUERY_PART1,
         } as State)
       }
       if (nextProps.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')) {
-        console.log('setting query to ONBOARDING_QUERY_PART2')
         this.setState({
           query: ONBOARDING_QUERY_PART2,
         } as State)
@@ -212,7 +209,6 @@ class PlaygroundView extends React.Component<Props, State> {
             variables: graphQLParams.variables,
             date: new Date(),
           }
-          console.log('Saving query', query)
           saveQuery(query, this.props.viewer.project.id)
 
           this.setState({
