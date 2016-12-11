@@ -241,11 +241,7 @@ class PermissionPopup extends React.Component<Props, State> {
 const MappedPermissionPopup = mapProps({
   permission: props => props.node || null,
   model: props => (props.viewer && props.viewer.model) || props.node.model,
-  isBetaCustomer: props => (props.viewer &&
-  props.viewer.user &&
-  props.viewer.user.crm &&
-  props.viewer.user.crm.information &&
-  props.viewer.user.crm.information.isBeta) || false,
+  isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
 })(PermissionPopup)
 
 export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
