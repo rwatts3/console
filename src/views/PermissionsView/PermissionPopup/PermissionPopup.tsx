@@ -261,6 +261,17 @@ export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermis
         }
       }
     `,
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
+      }
+    `,
   },
 })
 

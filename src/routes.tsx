@@ -115,7 +115,11 @@ export default (
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
-        <Route path=':modelName/edit/:id' component={EditPermissionPopup} queries={NodeQuery} render={render} />
+        <Route
+          path=':modelName/edit/:id'
+          component={EditPermissionPopup}
+          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+          render={render} />
         <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
