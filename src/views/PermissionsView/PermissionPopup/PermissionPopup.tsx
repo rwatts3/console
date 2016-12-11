@@ -149,7 +149,9 @@ class PermissionPopup extends React.Component<Props, State> {
               editing={!!this.props.permission}
               params={params}
             />
-            <OperationChooser selectedOperation={selectedOperation} setOperation={this.setOperation}/>
+            <OperationChooser
+              selectedOperation={selectedOperation}
+              setOperation={this.setOperation}/>
             {(selectedOperation !== null && ['CREATE', 'READ', 'UPDATE'].includes(selectedOperation)) && (
               <AffectedFields
                 selectedOperation={selectedOperation}
@@ -161,10 +163,15 @@ class PermissionPopup extends React.Component<Props, State> {
               />
             )}
             {selectedOperation !== null && (
-              <PermissionConditions userType={userType} isBetaCustomer={this.props.isBetaCustomer} ruleType={rule}
-                                    permissionSchema={model.permissionSchema}
-                                    ruleGraphQuery={ruleGraphQuery} setUserType={this.setUserType}
-                                    setRuleType={this.setRule} setRuleGraphQuery={this.setRuleGraphQuery}/>
+              <PermissionConditions
+                userType={userType}
+                isBetaCustomer={this.props.isBetaCustomer}
+                rule={rule}
+                permissionSchema={model.permissionSchema}
+                ruleGraphQuery={ruleGraphQuery}
+                setUserType={this.setUserType}
+                setRuleType={this.setRule}
+                setRuleGraphQuery={this.setRuleGraphQuery}/>
             )}
             <PermissionPopupFooter
               editing={!!this.props.permission}
@@ -284,8 +291,8 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
     viewer: () => Relay.QL`
       fragment on Viewer {
         user {
-          crm{
-            information{
+          crm {
+            information {
               isBeta
             }
           }
