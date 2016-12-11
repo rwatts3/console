@@ -2,3 +2,7 @@
     height: auto !important;
     padding: 10px;
 }
+
+.CodeMirror-hints-wrapper {
+    z-index: 1000
+}
