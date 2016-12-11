@@ -1,11 +1,11 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {Project, Operation, UserType, Model, ModelPermission, PermissionRuleType} from '../../../types/types'
+import { Project, Operation, UserType, Model, ModelPermission, PermissionRuleType } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import styled from 'styled-components'
 import PermissionPopupHeader from './PermissionPopupHeader'
 import PermissionPopupFooter from './PermissionPopupFooter'
@@ -15,7 +15,7 @@ import AffectedFields from './AffectedFields'
 import AddPermissionMutation from '../../../mutations/ModelPermission/AddPermissionMutation'
 import UpdatePermissionMutation from '../../../mutations/ModelPermission/UpdatePermissionMutation'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents, MutationType} from 'graphcool-metrics'
+import { ConsoleEvents, MutationType } from 'graphcool-metrics'
 
 interface Props {
   params: any

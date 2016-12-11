@@ -1,7 +1,7 @@
 import * as cookiestore from 'cookiestore'
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Route, IndexRoute, IndexRedirect} from 'react-router'
+import { Route, IndexRoute, IndexRedirect } from 'react-router'
 import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
@@ -23,11 +23,11 @@ import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
-import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
+import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import tracker from './utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`

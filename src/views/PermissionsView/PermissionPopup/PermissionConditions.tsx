@@ -1,9 +1,9 @@
 import * as React from 'react' // tslint:disable-line
-import {$p, variables, Icon} from 'graphcool-styles'
+import { $p, variables, Icon } from 'graphcool-styles'
 import styled from 'styled-components'
 import * as cx from 'classnames'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
-import {buildClientSchema} from 'graphql'
+import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
+import { buildClientSchema } from 'graphql'
 require('../../../styles/codemirror.css')
 
 const ConditionButton = styled.div`
