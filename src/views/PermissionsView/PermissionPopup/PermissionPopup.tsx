@@ -1,11 +1,11 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {Project, Operation, UserType, Model, ModelPermission} from '../../../types/types'
+import { Project, Operation, UserType, Model, ModelPermission, PermissionRuleType } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import styled from 'styled-components'
 import PermissionPopupHeader from './PermissionPopupHeader'
 import PermissionPopupFooter from './PermissionPopupFooter'
@@ -15,7 +15,7 @@ import AffectedFields from './AffectedFields'
 import AddPermissionMutation from '../../../mutations/ModelPermission/AddPermissionMutation'
 import UpdatePermissionMutation from '../../../mutations/ModelPermission/UpdatePermissionMutation'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents, MutationType} from 'graphcool-metrics'
+import { ConsoleEvents, MutationType } from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -24,6 +24,7 @@ interface Props {
   router: ReactRouter.InjectedRouter
   model?: Model
   permission?: ModelPermission
+  isBetaCustomer: boolean
 }
 
 interface State {
@@ -31,6 +32,8 @@ interface State {
   fieldIds: string[]
   userType: UserType
   applyToWholeModel: boolean
+  rule: PermissionRuleType
+  ruleGraphQuery: string
 }
 
 const Container = styled.div`
@@ -39,18 +42,21 @@ const Container = styled.div`
 
 class PermissionPopup extends React.Component<Props, State> {
   private mutationType: MutationType
+
   constructor(props) {
     super(props)
 
     this.mutationType = props.permission ? 'Update' : 'Create'
 
     if (props.permission) {
-      const {operation, fieldIds, userType, applyToWholeModel} = props.permission
+      const {operation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery} = props.permission
       this.state = {
         selectedOperation: operation,
         fieldIds,
         userType,
         applyToWholeModel,
+        rule: rule,
+        ruleGraphQuery,
       }
       return
     }
@@ -60,6 +66,8 @@ class PermissionPopup extends React.Component<Props, State> {
       fieldIds: [],
       userType: 'EVERYONE' as UserType,
       applyToWholeModel: false,
+      rule: 'NONE' as PermissionRuleType,
+      ruleGraphQuery: null,
     }
   }
 
@@ -69,6 +77,14 @@ class PermissionPopup extends React.Component<Props, State> {
 
   setOperation = (operation: Operation) => {
     this.setState({selectedOperation: operation} as State)
+  }
+
+  setRule = (rule: PermissionRuleType) => {
+    this.setState({rule} as State)
+  }
+
+  setRuleGraphQuery = (ruleGraphQuery: string) => {
+    this.setState({ruleGraphQuery} as State)
   }
 
   toggleField = (id: string) => {
@@ -100,7 +116,7 @@ class PermissionPopup extends React.Component<Props, State> {
 
   render() {
     const {params, model} = this.props
-    const {selectedOperation, fieldIds, userType, applyToWholeModel} = this.state
+    const {selectedOperation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery} = this.state
 
     return (
       <PopupWrapper
@@ -133,7 +149,9 @@ class PermissionPopup extends React.Component<Props, State> {
               editing={!!this.props.permission}
               params={params}
             />
-            <OperationChooser selectedOperation={selectedOperation} setOperation={this.setOperation} />
+            <OperationChooser
+              selectedOperation={selectedOperation}
+              setOperation={this.setOperation}/>
             {(selectedOperation !== null && ['CREATE', 'READ', 'UPDATE'].includes(selectedOperation)) && (
               <AffectedFields
                 selectedOperation={selectedOperation}
@@ -145,7 +163,15 @@ class PermissionPopup extends React.Component<Props, State> {
               />
             )}
             {selectedOperation !== null && (
-              <PermissionConditions userType={userType} setUserType={this.setUserType} />
+              <PermissionConditions
+                userType={userType}
+                isBetaCustomer={this.props.isBetaCustomer}
+                rule={rule}
+                permissionSchema={model.permissionSchema}
+                ruleGraphQuery={ruleGraphQuery}
+                setUserType={this.setUserType}
+                setRuleType={this.setRule}
+                setRuleGraphQuery={this.setRuleGraphQuery}/>
             )}
             <PermissionPopupFooter
               editing={!!this.props.permission}
@@ -162,8 +188,8 @@ class PermissionPopup extends React.Component<Props, State> {
   }
 
   private updatePermission = () => {
-    const {permission: {rule, isActive, id}} = this.props
-    const {selectedOperation, fieldIds, userType, applyToWholeModel} = this.state
+    const {permission: {isActive, id}} = this.props
+    const {selectedOperation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery} = this.state
 
     const updatedNode = {
       id,
@@ -171,7 +197,8 @@ class PermissionPopup extends React.Component<Props, State> {
       fieldIds,
       userType,
       applyToWholeModel,
-      rule,
+      rule: rule,
+      ruleGraphQuery,
       isActive,
     }
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
@@ -214,6 +241,7 @@ class PermissionPopup extends React.Component<Props, State> {
 const MappedPermissionPopup = mapProps({
   permission: props => props.node || null,
   model: props => (props.viewer && props.viewer.model) || props.node.model,
+  isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
 })(PermissionPopup)
 
 export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
@@ -227,9 +255,22 @@ export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermis
           operation
           isActive
           rule
+          ruleGraphQuery
           userType
           model {
+            permissionSchema(operation: READ)
             ${AffectedFields.getFragment('model')}
+          }
+        }
+      }
+    `,
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        user {
+          crm {
+            information {
+              isBeta
+            }
           }
         }
       }
@@ -245,9 +286,17 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
   fragments: {
     viewer: () => Relay.QL`
       fragment on Viewer {
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
         model: modelByName(projectName: $projectName, modelName: $modelName) {
           id
           name
+          permissionSchema(operation: READ)
           ${AffectedFields.getFragment('model')}
         }
       }

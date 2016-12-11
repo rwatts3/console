@@ -98,6 +98,8 @@ export interface Relation {
 
 export type UserType = 'EVERYONE' | 'AUTHENTICATED'
 
+export type PermissionRuleType = 'NONE' | 'GRAPH' | 'WEBHOOK'
+
 export interface Permission {
   id: string
   userType: UserType
@@ -119,6 +121,7 @@ export interface Model {
   description: string
   isSystem: boolean
   permissions: ModelPermission[]
+  permissionSchema: string
 }
 
 export interface ModelPermission {

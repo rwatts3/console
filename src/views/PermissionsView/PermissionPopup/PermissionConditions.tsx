@@ -1,7 +1,10 @@
 import * as React from 'react' // tslint:disable-line
-import {$p, variables, Icon} from 'graphcool-styles'
+import { $p, variables, Icon } from 'graphcool-styles'
 import styled from 'styled-components'
 import * as cx from 'classnames'
+import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
+import { buildClientSchema } from 'graphql'
+require('../../../styles/codemirror.css')
 
 const ConditionButton = styled.div`
   &:not(.${$p.bgBlue}):hover {
@@ -16,7 +19,7 @@ export default (props) => (
     >
       <h2 className={cx($p.fw3, $p.mb10)}>Conditions</h2>
       <div className={$p.black40}>The conditions that restrict the model</div>
-      <div className={cx($p.dib, $p.mt25)}>
+      <div className={cx($p.dib, $p.mt25, $p.w100)}>
         <div
           className={cx(
             $p.flex,
@@ -79,8 +82,48 @@ export default (props) => (
               />
             </ConditionButton>
           </div>
+          <div className={cx($p.flexAuto)}>
+          </div>
+          {props.isBetaCustomer && <div
+            className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyEnd, $p.pointer)}
+            onClick={() => {
+              console.log('clicked', props.rule)
+              const newRuleType = props.rule === 'NONE' ? 'GRAPH' : 'NONE'
+              if (props.setRuleType) {
+                props.setRuleType(newRuleType)
+              }
+            }}
+            style={{width: 190}}
+          >
+            <ConditionButton
+              className={cx($p.nowrap, $p.absolute, $p.ph10, $p.flex, $p.flexRow, $p.itemsCenter, {
+                  [cx($p.pv6, $p.bgBlack04)]: props.rule === 'NONE',
+                  [cx($p.bgBlue, $p.br2, $p.pv8, $p.z1)]: props.rule !== 'NONE',
+                })}
+            >
+              <div
+                className={cx($p.ml6, $p.mr6, $p.ttu, $p.fw6, $p.f14, {
+                    [$p.black30]: props.rule === 'NONE',
+                    [$p.white]: props.rule !== 'NONE',
+                  },
+                )}
+              >
+                Rule
+              </div>
+            </ConditionButton>
+          </div>}
         </div>
       </div>
+
+      {props.rule === 'GRAPH' && <div
+        className={cx($p.mt25)}>
+        <QueryEditor
+          className={cx($p.z9999)}
+          schema={buildClientSchema(JSON.parse(props.permissionSchema))}
+          value={props.ruleGraphQuery}
+          onEdit={(query) => props.setRuleGraphQuery(query)}/>
+      </div>}
+
     </div>
   </div>
 )
