@@ -75,14 +75,18 @@ class ProjectRootView extends React.Component<Props, {}> {
       tracker.identify(this.props.user.id, this.props.project.id)
 
       if (Smooch) {
-        Smooch.init({
-          appToken: __SMOOCH_TOKEN__,
-          givenName: this.props.user.crm.information.name,
-          email: this.props.user.crm.information.email,
-          customText: {
-            headerText: 'Can I help you? 🙌',
-          },
-        })
+        try {
+          Smooch.init({
+            appToken: __SMOOCH_TOKEN__,
+            givenName: this.props.user.crm.information.name,
+            email: this.props.user.crm.information.email,
+            customText: {
+              headerText: 'Can I help you? 🙌',
+            },
+          })
+        } catch (e) {
+          console.error(e)
+        }
       }
     } else {
       // TODO migrate to tracker
