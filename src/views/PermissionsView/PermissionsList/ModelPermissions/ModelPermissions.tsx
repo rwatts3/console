@@ -10,6 +10,7 @@ import styled from 'styled-components'
 interface Props {
   model: Model
   params: any
+  style: any
 }
 
 const Container = styled.div`
@@ -26,9 +27,9 @@ const Container = styled.div`
 
 class PermissionsList extends React.Component<Props, {}> {
   render() {
-    const {model, params} = this.props
+    const {model, params, style} = this.props
     return (
-      <Container className={cx($p.mt38, $p.mb16, $p.relative, $p.z5)}>
+      <Container className={cx($p.mt38, $p.mb16, $p.relative, $p.z5)} style={style}>
         <div className={$p.ph16}>
           <ModelPermissionsHeader params={params} model={model} />
           <ModelPermissionsList params={params} model={model} />
