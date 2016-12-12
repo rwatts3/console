@@ -13,8 +13,25 @@ export function randomString(length: number): string {
 }
 
 export function isValidUrl(str: string): boolean {
-  const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g) // tslint:disable-line
+  const pattern = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
   return pattern.test(str)
+}
+
+export function isValidMutationCallbackUrl(str: string): boolean {
+  const blackList = [
+    '127.0.0.1',
+    '0.0.0.0',
+    'localhost',
+  ]
+  const withoutProtocol = str.replace(/http(s)?:\/\//, '')
+  return !blackList.includes(withoutProtocol) && (isValidUrl(str) || isValidIp(withoutProtocol))
+}
+
+export function isValidIp(str: string): boolean {
+  const i = str.indexOf('/')
+  const withoutSlash = str.slice(0, i)
+  const pattern = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/
+  return pattern.test(withoutSlash)
 }
 
 export function isValidDateTime(dateTime: string): boolean {
