@@ -140,6 +140,10 @@ $tableHeadExpanded: 100px;
   align-items: center;
   justify-content: center;
   z-index: 0;
+  pointer-events: none;
+  a {
+    pointer-events: all;
+  }
 }
 
 .table {
