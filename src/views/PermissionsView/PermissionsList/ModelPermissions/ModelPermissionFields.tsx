@@ -30,33 +30,37 @@ const Container = styled.div`
   }
 `
 
+const InnerContainer = styled.div`
+  &::-webkit-scrollbar {
+   display: none;
+  }
+`
+
 class ModelPermissionFields extends React.Component<Props, {}> {
   render() {
     const {permission: {fieldIds, applyToWholeModel, isActive}, fields} = this.props
     return (
       fields && fields.length > 0 && (
-        <Container className={cx($p.flexAuto, $p.relative)}>
-          <ScrollBox>
-            <div
-              className={cx($p.relative, $p.flex, $p.flex1, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowXScroll)}
-            >
-              <div className={cx($p.black50)}>
-                {applyToWholeModel ? (
-                  'in all Fields'
-                ) : (
-                  'in'
-                )}
-              </div>
-              {!applyToWholeModel && fields.map(field =>
-                <PermissionField
-                  key={field.id}
-                  disabled={!fieldIds.includes(field.id) || !isActive}
-                  name={field.name}
-                  className={$p.ml10}
-                />,
+        <Container className={cx($p.flexAuto, $p.relative, $p.overflowHidden)}>
+          <InnerContainer
+            className={cx($p.relative, $p.flex, $p.flex1, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowXScroll)}
+          >
+            <div className={cx($p.black50)}>
+              {applyToWholeModel ? (
+                'in all Fields'
+              ) : (
+                'in'
               )}
             </div>
-          </ScrollBox>
+            {!applyToWholeModel && fields.map(field =>
+              <PermissionField
+                key={field.id}
+                disabled={!fieldIds.includes(field.id) || !isActive}
+                name={field.name}
+                className={$p.ml10}
+              />,
+            )}
+          </InnerContainer>
         </Container>
       )
     )
