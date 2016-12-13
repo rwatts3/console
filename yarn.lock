@@ -2877,11 +2877,12 @@ graphcool-metrics@0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.2.1.tgz#5b59f9a542653818b36fd0564502cf9afc722c06"
 
-graphcool-styles@^0.0.55:
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.55.tgz#45fb1fab048014eb722ad5b221c616cd7d420e57"
+graphcool-styles@0.0.66:
+  version "0.0.66"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.66.tgz#8abd3edef6d64609952373a0a4687a7f3959dcb4"
   dependencies:
     html-webpack-plugin "^2.24.1"
+    interactive "^0.1.9"
     object-assign "^4.1.0"
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
@@ -3232,6 +3233,10 @@ inquirer@^0.11.0:
     string-width "^1.0.1"
     strip-ansi "^3.0.0"
     through "^2.3.6"
+
+interactive@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/interactive/-/interactive-0.1.9.tgz#6dd3e2f9a00341863bc7dd84afce9d191b6f9e8e"
 
 interpret@^1.0.0:
   version "1.0.1"
