@@ -36,7 +36,7 @@ const texts: {[key: string]: AuthText} = {
     title: 'Digits - Two-Step Phone Authentication',
     description: 'Digits offers two-step authentification via a phone number and a code that is send to respective number.', // tslint:disable-line
     link: {
-      href: 'www.digits.com',
+      href: 'https://www.digits.com',
       content: 'www.digits.com',
     },
   },
@@ -44,7 +44,7 @@ const texts: {[key: string]: AuthText} = {
     title: 'Auth0 – Broad Authentication Solution',
     description: 'Auth0 combines a variety of authentification methods and a dashboard to organize them.',
     link: {
-      href: 'www.auth0.com',
+      href: 'https://www.auth0.com',
       content: 'www.auth0.com',
     },
   },
