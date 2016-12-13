@@ -177,6 +177,7 @@ class SchemaView extends React.Component<Props, State> {
                   route={this.props.route}
                   key={field.id}
                   field={field}
+                  projectId={this.props.project.id}
                   params={this.props.params}
                   model={this.props.model}
                   allModels={this.props.allModels}

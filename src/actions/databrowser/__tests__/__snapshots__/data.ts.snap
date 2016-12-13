@@ -5,6 +5,9 @@ Array [
     "type": "DATABROWSER_UI_SET_LOADING",
   },
   Object {
+    "type": "RESET_COUNT_CHANGE",
+  },
+  Object {
     "payload": 3,
     "type": "DATABROWSER_DATA_SETITEMCOUNT",
   },
@@ -54,6 +57,9 @@ Array [
   Object {
     "payload": false,
     "type": "DATABROWSER_UI_SET_LOADING",
+  },
+  Object {
+    "type": "RESET_COUNT_CHANGE",
   },
   Object {
     "payload": 3,
@@ -141,6 +147,9 @@ Array [
     "type": "DATABROWSER_UI_SET_LOADING",
   },
   Object {
+    "type": "RESET_COUNT_CHANGE",
+  },
+  Object {
     "payload": 3,
     "type": "DATABROWSER_DATA_SETITEMCOUNT",
   },
@@ -190,6 +199,9 @@ Array [
   Object {
     "payload": false,
     "type": "DATABROWSER_UI_SET_LOADING",
+  },
+  Object {
+    "type": "RESET_COUNT_CHANGE",
   },
   Object {
     "payload": 3,
@@ -312,6 +324,9 @@ Array [
     "type": "DATABROWSER_UI_SET_LOADING",
   },
   Object {
+    "type": "RESET_COUNT_CHANGE",
+  },
+  Object {
     "payload": 3,
     "type": "DATABROWSER_DATA_SETITEMCOUNT",
   },
@@ -359,6 +374,9 @@ Array [
   Object {
     "payload": false,
     "type": "DATABROWSER_UI_SET_LOADING",
+  },
+  Object {
+    "type": "RESET_COUNT_CHANGE",
   },
   Object {
     "payload": 3,
@@ -410,6 +428,9 @@ Array [
   Object {
     "payload": false,
     "type": "DATABROWSER_UI_SET_LOADING",
+  },
+  Object {
+    "type": "RESET_COUNT_CHANGE",
   },
   Object {
     "payload": 3,
@@ -465,6 +486,9 @@ Array [
     "type": "DATABROWSER_UI_SET_LOADING",
   },
   Object {
+    "type": "RESET_COUNT_CHANGE",
+  },
+  Object {
     "payload": 3,
     "type": "DATABROWSER_DATA_SETITEMCOUNT",
   },
@@ -514,6 +538,9 @@ Array [
   Object {
     "payload": false,
     "type": "DATABROWSER_UI_SET_LOADING",
+  },
+  Object {
+    "type": "RESET_COUNT_CHANGE",
   },
   Object {
     "payload": 3,

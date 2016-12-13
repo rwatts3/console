@@ -18,7 +18,7 @@ import ActionTriggerBox from './ActionTriggerBox'
 import ActionHandlerBox from './ActionHandlerBox'
 import { UpdateTriggerPayload } from './ActionTriggerBox'
 import { UpdateHandlerPayload } from './ActionHandlerBox'
-import { isValidUrl } from '../../utils/utils'
+import { isValidMutationCallbackUrl } from '../../utils/utils'
 const classes: any = require('./ActionBoxes.scss')
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
@@ -83,7 +83,7 @@ class ActionBoxes extends React.Component<Props, State> {
       triggerMutationModelFragment,
       schema,
       triggerValid: valid,
-      handlerValid: isValidUrl(handlerWebhookUrl),
+      handlerValid: isValidMutationCallbackUrl(handlerWebhookUrl),
       handlerWebhookUrl,
       description: action ? action.description : '',
       changesMade: false,
@@ -228,7 +228,7 @@ class ActionBoxes extends React.Component<Props, State> {
     let partialState = payload.filterNullAndUndefined() as State
     partialState.changesMade = true
     if (payload.handlerWebhookUrl) {
-      partialState.handlerValid = isValidUrl(payload.handlerWebhookUrl)
+      partialState.handlerValid = isValidMutationCallbackUrl(payload.handlerWebhookUrl)
     }
     this.setState(partialState)
   }

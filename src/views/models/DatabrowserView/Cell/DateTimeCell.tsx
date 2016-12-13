@@ -19,7 +19,7 @@ export default class DateTimeCell extends React.Component<CellProps<Date>, {}> {
     return (
       <Datepicker
         className={classes.datepicker}
-        defaultValue={this.props.value}
+        defaultValue={this.props.value || new Date()}
         active={true}
         onChange={(m: Moment | string) => this.props.save(this.resolveInput(m))}
         onCancel={() => this.props.cancel()}

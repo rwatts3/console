@@ -19,6 +19,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  #sk-holder #sk-messenger-button svg path {
+    filter: url("#dropShadow") !important;
+  }
+
   a {
     text-decoration: none;
   }

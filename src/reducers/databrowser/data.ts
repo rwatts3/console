@@ -87,6 +87,10 @@ export function reduceData(state: DataBrowserDataState = initialState, action: R
       return Object.assign({}, state, {
         countChanges: state.countChanges.set(action.payload, (state.countChanges.get(action.payload) || 0) - 1),
       })
+    case Constants.RESET_COUNT_CHANGE:
+      return Object.assign({}, state, {
+        countChanges: Immutable.Map<string, number>(),
+      })
     case Constants.ADD_NODE_REQUEST:
       return Object.assign({}, state, {
         nodes: state.nodes.unshift(action.payload),

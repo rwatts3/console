@@ -17,6 +17,7 @@ import {Icon, particles} from 'graphcool-styles'
 const classes: any = require('./FieldRow.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'
+import DeleteRelationMutation from '../../../mutations/DeleteRelationMutation'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -28,6 +29,7 @@ interface Props {
   model: Model
   possibleRelatedPermissionPaths: Field[][]
   showNotification: ShowNotificationCallback
+  projectId: string
 }
 
 interface State {
@@ -46,6 +48,11 @@ class FieldRow extends React.Component<Props, State> {
 
   render() {
     const {field} = this.props
+
+    if (!isScalar(field.typeIdentifier) && !field.relation) {
+      return null
+    }
+
     let type: string = field.typeIdentifier
     if (field.isList) {
       type = `[${type}]`
@@ -63,111 +70,44 @@ class FieldRow extends React.Component<Props, State> {
 
     const editLink = `/${this.props.params.projectName}${suffix}` // tslint:disable-line
 
+    if (!isScalar(field.typeIdentifier) && !field.relatedModel) {
+      return null
+    }
+
     return (
       <div className={classes.root}>
-        {field.isSystem &&
-        <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
-          <div className={classes.fieldName}>
-            <span className={classes.name}>{field.name}</span>
-            <span className={classes.system}>System</span>
-            { !isScalar(field.typeIdentifier) &&
-            <span className={classes.relation}>Relation</span>
-            }
-          </div>
-          <div className={classes.type}>
-            { !isScalar(field.typeIdentifier) ?
-              <span>
-                <div className={cx(
-                particles.flex,
-              )}> <Icon
-                  className={cx(
-                    particles.mr4,
-                )}
-                  width={16}
-                  height={16}
-                  src={require('graphcool-styles/icons/stroke/link.svg')}
-                />
-                  {field.relatedModel.name}</div></span>
-              : <span>{type}</span>
-            }
-          </div>
-          <div className={classes.description}>
-            {this.renderDescription()}
-          </div>
-          <div
-            className={`${classes.constraints} ${this.state.detailsState === 'CONSTRAINTS' ? classes.active : '' }`}
-            onClick={() => this.toggleConstraints()}
-          >
-            {field.isUnique &&
-            <span className={classes.label}>Unique</span>
-            }
-            {!field.isUnique &&
-            <span className={`${classes.label} ${classes.add}`}>
-                Add Constraint
-              </span>
-            }
-          </div>
-          <div
-            className={`${classes.permissions} ${this.state.detailsState === 'PERMISSIONS' ? classes.active : '' }`}
-            onClick={() => this.togglePermissions()}
-          >
-          </div>
-          <div className={classes.controls}>
-            {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
-            <Link to={editLink}>
-              <Icon
-                width={20}
-                height={20}
-                src={require('assets/icons/edit.svg')}
-              />
-            </Link>
-            }
-            {field.isSystem &&
-            <Icon
-              width={20}
-              height={20}
-              src={require('graphcool-styles/icons/stroke/lock.svg')}
-            />
-            }
-            {!field.isSystem && isScalar(field.typeIdentifier) &&
-            <span onClick={() => this.deleteField()}>
-                <Icon
-                  width={20}
-                  height={20}
-                  src={require('assets/icons/delete.svg')}
-                  strokeWidth={2}
-                  stroke={true}
-                />
-              </span>
-            }
-          </div>
-        </div>
-        }
-        {!field.isSystem &&
         <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
           <Link className={classes.fieldName} to={editLink}>
             <span className={classes.name}>{field.name}</span>
             {field.isSystem &&
-            <span className={classes.system}>System</span>
-            }{ !isScalar(field.typeIdentifier) &&
-          <span className={classes.relation}>Relation</span>
-          }
+              <span className={classes.system}>System</span>
+            }
+            { !isScalar(field.typeIdentifier) &&
+              <span className={classes.relation}>Relation</span>
+            }
           </Link>
           <Link className={classes.type} to={editLink}>
-            { !isScalar(field.typeIdentifier) ?
-              <span>
-                <div className={cx(
-                particles.flex,
-              )}> <Icon
-                  className={cx(
-                    particles.mr4,
-                )}
-                  width={16}
-                  height={16}
-                  src={require('graphcool-styles/icons/stroke/link.svg')}
-                />
-                  {field.relatedModel.name}</div></span>
-              : <span>{type}</span>
+            {!isScalar(field.typeIdentifier) ?
+              (
+                <span>
+                  <div className={cx(particles.flex)}>
+                    <Icon
+                      className={cx(
+                        particles.mr4,
+                      )}
+                      width={16}
+                      height={16}
+                      src={require('graphcool-styles/icons/stroke/link.svg')}
+                    />
+                    {field && field.relatedModel !== null && field.relatedModel.hasOwnProperty('name') && (
+                      field.relatedModel.name
+                    )}
+                  </div>
+                </span>
+              )
+              : (
+                <span>{type}</span>
+              )
             }
           </Link>
           <div className={classes.description}>
@@ -203,7 +143,9 @@ class FieldRow extends React.Component<Props, State> {
               src={require('graphcool-styles/icons/stroke/lock.svg')}
             />
             }
-            <span onClick={() => this.deleteField()}>
+            <span
+              onClick={() => isScalar(field.typeIdentifier) ? this.deleteField() : this.deleteRelation()}
+            >
                 <Icon
                   width={20}
                   height={20}
@@ -212,7 +154,6 @@ class FieldRow extends React.Component<Props, State> {
               </span>
           </div>
         </div>
-        }
         {this.state.detailsState === 'CONSTRAINTS' &&
         <Constraints
           field={field}
@@ -232,6 +173,28 @@ class FieldRow extends React.Component<Props, State> {
         {
           onSuccess: () => {
             tracker.track(ConsoleEvents.Schema.Field.Delete.completed({id: this.props.field.id}))
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        },
+      )
+    }
+  }
+
+  private deleteRelation() {
+    if (window.confirm(`Do you really want to delete the relation "${this.props.field.relation.name}"?`)) {
+      const {projectId} = this.props
+      Relay.Store.commitUpdate(
+        new DeleteRelationMutation({
+          relationId: this.props.field.relation.id,
+          projectId,
+          leftModelId: this.props.field.model.id,
+          rightModelId: this.props.field.relatedModel.id,
+        }),
+        {
+          onSuccess: () => {
+            tracker.track(ConsoleEvents.Relations.deleted())
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -329,32 +292,6 @@ class FieldRow extends React.Component<Props, State> {
     )
   }
 
-  // private renderPermissionList = () => {
-  //   const permissionCount = this.props.field.permissions.edges.map((edge) => edge.node).reduce(
-  //     (prev, node) => {
-  //       if (!prev[node.userType]) {
-  //         prev[node.userType] = 1
-  //       } else {
-  //         prev[node.userType]++
-  //       }
-  //       return prev
-  //     },
-  //     {})
-  //   const permissions = []
-  //   for (let key in permissionCount) {
-  //     if (permissionCount.hasOwnProperty(key)) {
-  //       permissions.push(
-  //         <span
-  //           key={key}
-  //           className={classes.label}
-  //         >
-  //           {permissionCount[key] > 1 ? `${permissionCount[key]}x ${key}` : `${key}`}
-  //         </span>
-  //       )
-  //     }
-  //   }
-  //   return permissions
-  // }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -375,11 +312,16 @@ export default Relay.createContainer(MappedFieldRow, {
         isUnique
         isList
         description
+        model {
+          id
+        }
         relatedModel {
+          id
           name
         }
         relation {
-            name
+          id
+          name
         }
       }
     `,

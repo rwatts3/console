@@ -57,7 +57,12 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
         await tracker.track(ConsoleEvents.Authentication.completed())
 
-        window.location.pathname = '/'
+        if (new Date().getTime() - new Date(response.authenticateCustomer.user.createdAt).getTime() < 60000) {
+          window.location.pathname = '/after-signup'
+        } else {
+          window.location.pathname = '/'
+        }
+
       }
       const onFailure = (transaction: Transaction) => {
         this._lock.show()

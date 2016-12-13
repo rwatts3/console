@@ -195,9 +195,18 @@ class RelationsPopup extends React.Component<Props, State> {
     const originFieldName = this.props.originField.name
 
     const mutationPrefix = isRelated ? 'removeFrom' : 'addTo'
-    const mutationArg1 = `${relatedFieldName}${originModelName}Id`
-    const mutationArg2 = `${originFieldName}${relatedModelName}Id`
-    const payloadName = `${relatedFieldName}${originModelName}`
+    let mutationArg1
+    let mutationArg2
+    let payloadName
+    if (originModelName === relatedModelName) {
+      mutationArg1 = `${relatedFieldName}1${originModelName}Id`
+      mutationArg2 = `${originFieldName}2${relatedModelName}Id`
+      payloadName = `${relatedFieldName}1${originModelName}`
+    } else {
+      mutationArg1 = `${relatedFieldName}${originModelName}Id`
+      mutationArg2 = `${originFieldName}${relatedModelName}Id`
+      payloadName = `${relatedFieldName}${originModelName}`
+    }
 
     const mutation = `{
       ${mutationPrefix}${relationName}(

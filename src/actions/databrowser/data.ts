@@ -107,6 +107,7 @@ export function loadDataAsync(lokka: any,
         }
 
         dispatch(setLoading(false))
+        dispatch(resetCountChange())
         dispatch(setItemCount(results.viewer[`all${modelNamePlural}`].count))
         dispatch(setData(nodes, loaded))
         // conditions to show the new row active
@@ -280,3 +281,7 @@ export function deleteNodes(payload: string[]) {
     payload,
   }
 }
+
+const resetCountChange = () => ({
+  type: Constants.RESET_COUNT_CHANGE,
+})
