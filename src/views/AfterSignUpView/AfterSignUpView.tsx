@@ -144,7 +144,7 @@ class AfterSignUpView extends React.Component<Props, State> {
     Relay.Store.commitUpdate(
       new UpdateCustomerSourceMutation({
         customerInformationId: this.props.viewer.user.crm.information.id,
-        source: source || 'skipped',
+        source: source,
       }),
       {
         onSuccess: () => {
