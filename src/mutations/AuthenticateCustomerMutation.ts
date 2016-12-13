@@ -32,6 +32,12 @@ export default class AuthenticateCustomerMutation extends Relay.Mutation<Props, 
           token
           user {
             id
+            createdAt
+            crm {
+              information {
+                source
+              }
+            }
           }
         }
       `],

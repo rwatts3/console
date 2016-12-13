@@ -14,6 +14,7 @@ import RelationPopup from './views/RelationsView/RelationPopup'
 import RelationsView from './views/RelationsView/RelationsView'
 import RootView from './views/RootView/RootView'
 import SignUpView from './views/SignUpView/SignUpView'
+import AfterSignUpView from './views/AfterSignUpView/AfterSignUpView'
 import AccountView from './views/account/AccountView/AccountView'
 import SettingsTab from './views/account/AccountView/SettingsTab'
 import ResetPasswordView from './views/account/ResetPasswordView/ResetPasswordView'
@@ -98,6 +99,7 @@ export default (
     <Route path='login' component={LoginView} render={render}/>
     <Route path='reset-password' component={ResetPasswordView}/>
     <Route path='signup' component={SignUpView}/>
+    <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
