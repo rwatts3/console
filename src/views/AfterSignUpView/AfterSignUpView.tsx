@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import { withRouter } from 'react-router'
 import {$p, $v, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import UpdateCustomerSourceMutation from '../../mutations/UpdateCustomerSourceMutation'
 import Timer = NodeJS.Timer
 
@@ -11,9 +11,14 @@ const Container = styled.div`
   max-width: 750px;
 `
 
+const CustomInputWrapper = styled.div`
+  width: 650px;
+`
+
 const CustomInput = styled.input`
   text-shadow: 0px 0px 0px #000;
   -webkit-text-fill-color: transparent;
+  width: 620px;
  
   &::-webkit-input-placeholder {
     color: ${$v.gray30};
@@ -26,6 +31,24 @@ const CommunicationIcon = styled(Icon)`
   g g path:first-child {
     fill: ${$v.gray30};
   }
+`
+
+const pulse = keyframes`
+  0% { opacity: 1; }
+  49% { opacity: 1; }
+  50% { opacity: 0; }
+  99% { opacity: 0; }
+  100% { opacity: 1; }
+`
+
+const Caret = styled.div`
+  height: 77px;
+  width: 3px;
+  background: ${$v.green};
+  position: absolute;
+  animation: ${pulse} 1s linear infinite;
+  left: 0;
+  top: -7px;
 `
 
 interface Props {
@@ -97,17 +120,24 @@ class AfterSignUpView extends React.Component<Props, State> {
               color='rgba(0,0,0,.3)'
             />
           </div>
-          <div className={cx($p.w100, $p.bb, $p.bBlack10, $p.mv38)}></div>
+          <div className={cx($p.w100, $p.bb, $p.bBlack10, $p.mv60)}></div>
           <div className={cx($p.f16, $p.fw3, $p.tc, $p.mt25)}>ONE LAST THING BEFORE WE GET STARTED</div>
-          <CustomInput
-            className={cx($p.green, $p.f38, $p.fw3, $p.w100, $p.tc, $p.mt25)}
-            placeholder='Would you tell us how you got here?'
-            autoFocus
-            value={source || ''}
-            onChange={this.onChange}
-            onKeyDown={this.onKeyDown}
-            type='text'
-          />
+          <div className={cx($p.flex, $p.justifyCenter)}>
+            <CustomInputWrapper className={cx($p.relative, $p.flex, $p.justifyCenter, $p.mt25)}>
+              {(!source || source.length === 0) && (
+                <Caret></Caret>
+              )}
+              <CustomInput
+                className={cx($p.white, $p.f38, $p.fw3, $p.tl)}
+                placeholder='Would you tell us how you got here?'
+                autoFocus
+                value={source || ''}
+                onChange={this.onChange}
+                onKeyDown={this.onKeyDown}
+                type='text'
+              />
+            </CustomInputWrapper>
+          </div>
           <div className={cx($p.flex, $p.itemsCenter, $p.justifyCenter)}>
             <div
               className={cx(
