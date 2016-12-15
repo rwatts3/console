@@ -101,8 +101,12 @@ describe('async data actions', () => {
     },
   ]
 
+  const fieldEdges = {
+    edges: fields.map(node => ({node}))
+  }
+
   const model = {
-    fields,
+    fields: fieldEdges,
     itemCount: 3,
     name: 'Artist',
     namePlural: 'Artists',

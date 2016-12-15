@@ -296,6 +296,9 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
     ids.forEach(id => {
       dispatch(decreaseCountChange(model.id))
       const node = nodes.find(n => n.get('id') === id)
+      if (!node) {
+        return
+      }
       relationFields.forEach(relationField => {
         const value = node.get(relationField.name)
         // if there were no relations, we don't have to remove any
