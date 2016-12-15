@@ -8,13 +8,23 @@ import {Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import {particles} from 'graphcool-styles'
+import {updateCell} from '../../../actions/databrowser/data'
 const classes: any = require('./RelationsPopup.scss')
+import {connect} from 'react-redux'
+import {GridPosition} from '../../../types/databrowser/ui'
+import {TypedValue, NonScalarValue} from '../../../types/utils'
+import {unionBy} from 'lodash'
 
 interface Props {
   projectId: string
   originField: Field
   originNodeId: string
   onCancel: () => void
+  updateCell: (payload: {
+    position: GridPosition,
+    value: TypedValue,
+  }) => void
+  nodes: Immutable.List<Immutable.Map<string, any>>
 }
 
 interface NodeWrapper {
@@ -35,7 +45,7 @@ class RelationsPopup extends React.Component<Props, State> {
 
   private lokka: any
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -50,18 +60,21 @@ class RelationsPopup extends React.Component<Props, State> {
     this.reload()
   }
 
-  render () {
+  render() {
     const relatedFields = this.props.originField.relatedModel.fields
     const filter = this.state.filter.toLowerCase()
     const filteredNodes = this.state.nodes
-      .filter(({ isRelated }) => {
+      .filter(({isRelated}) => {
         switch (this.state.selection) {
-          case Selection.All: return true
-          case Selection.Related: return isRelated
-          case Selection.Unrelated: return !isRelated
+          case Selection.All:
+            return true
+          case Selection.Related:
+            return isRelated
+          case Selection.Unrelated:
+            return !isRelated
         }
       })
-      .filter(({ node }) => (
+      .filter(({node}) => (
         relatedFields.edges
           .map((edge) => edge.node)
           .filter((field) => isScalar(field.typeIdentifier) && node[field.name])
@@ -117,7 +130,7 @@ class RelationsPopup extends React.Component<Props, State> {
               </div>
             </div>
             <div className={classes.list}>
-              {filteredNodes.map(({ isRelated, node }) => (
+              {filteredNodes.map(({isRelated, node}) => (
                 <div
                   key={node.id}
                   className={`${classes.item} ${isRelated ? classes.related : ''}`}
@@ -136,9 +149,9 @@ class RelationsPopup extends React.Component<Props, State> {
             </div>
             <div className={classes.footer}>
               {this.state.success &&
-                <div className={classes.savedIndicator}>
-                  All changes saved
-                </div>
+              <div className={classes.savedIndicator}>
+                All changes saved
+              </div>
               }
               <div className={classes.close} onClick={this.props.onCancel}>
                 Close
@@ -155,7 +168,7 @@ class RelationsPopup extends React.Component<Props, State> {
     const originModel = this.props.originField.model
 
     const fieldNames = relatedModel.fields.edges
-      .map(({ node }) => node)
+      .map(({node}) => node)
       .map((field) => isScalar(field.typeIdentifier)
         ? field.name
         : `${field.name} { id }`)
@@ -183,11 +196,11 @@ class RelationsPopup extends React.Component<Props, State> {
           isRelated: relatedNodes.some((relatedNode) => relatedNode.id === node.id),
         }))
 
-        this.setState({ nodes: Immutable.List(nodes) } as State)
+        this.setState({nodes: Immutable.List(nodes)} as State)
       })
   }
 
-  private toggleRelation (isRelated: boolean, nodeId: string): void {
+  private toggleRelation(isRelated: boolean, nodeId: string): void {
     const relationName = this.props.originField.relation.name
     const relatedModelName = this.props.originField.relatedModel.name
     const relatedFieldName = this.props.originField.reverseRelationField.name
@@ -198,7 +211,7 @@ class RelationsPopup extends React.Component<Props, State> {
     let mutationArg1
     let mutationArg2
     let payloadName
-    if (originModelName === relatedModelName) {
+    if (originModelName === relatedModelName && originFieldName === relatedFieldName) {
       mutationArg1 = `${relatedFieldName}1${originModelName}Id`
       mutationArg2 = `${originFieldName}2${relatedModelName}Id`
       payloadName = `${relatedFieldName}1${originModelName}`
@@ -220,15 +233,67 @@ class RelationsPopup extends React.Component<Props, State> {
     }`
     this.lokka.mutate(mutation)
       .then(this.reload)
-      .then(() => this.setState({ success: true } as State))
+      .then(() => {
+        this.handleSuccess(isRelated, nodeId)
+      })
+      .catch(err => {
+        if (err.rawError && err.rawError[0] && err.rawError[0].code === 3012) {
+          this.reload()
+          this.handleSuccess(isRelated, nodeId)
+        }
+        console.error(err)
+      })
+
+  }
+
+  private handleSuccess(isRelated: boolean, nodeId: string) {
+    this.setState({success: true} as State)
+
+    // update related node in databrowser
+    const {nodes, originField, originNodeId} = this.props
+    const i = nodes.findIndex(node => node.get('id') === nodeId)
+    const position = {
+      row: i,
+      field: originField.reverseRelationField.name,
+    } as GridPosition
+    let value
+    if (originField.reverseRelationField.isList) {
+      const relatedNode = nodes.find(node => node.get('id') === nodeId).toJS()
+      let oldValue = relatedNode[originField.reverseRelationField.name]
+      oldValue = Array.isArray(oldValue) ? oldValue : []
+      if (isRelated) {
+        value = oldValue.filter(val => val.id !== originNodeId)
+      } else {
+        value = unionBy(oldValue, [{id: originNodeId}], val => val.id)
+      }
+    } else {
+      if (isRelated) {
+        value = null
+      } else {
+        value = {
+          id: originNodeId,
+        }
+      }
+    }
+    this.props.updateCell({
+      position, value,
+    })
   }
 }
 
-export default Relay.createContainer(RelationsPopup, {
+const ReduxRelationsPopup = connect(
+  state => ({
+    nodes: state.databrowser.data.nodes,
+  }),
+  {updateCell},
+)(RelationsPopup)
+
+export default Relay.createContainer(ReduxRelationsPopup, {
   fragments: {
     originField: () => Relay.QL`
       fragment on Field {
         name
+        isList
         relatedModel {
           id
           name
@@ -243,6 +308,7 @@ export default Relay.createContainer(RelationsPopup, {
           }
         }
         reverseRelationField {
+          isList
           name
         }
         model {

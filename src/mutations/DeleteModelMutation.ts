@@ -1,8 +1,16 @@
 import * as Relay from 'react-relay'
+import {Field, RelayConnection} from '../types/types'
+import {isScalar} from '../utils/graphql'
 
 interface Props {
   modelId: string
   projectId: string
+  fields: RelayConnection<Field>
+}
+
+export interface RelationData {
+  relatedModelId: string
+  reverseRelationFieldId: string
 }
 
 export default class DeleteModelMutation extends Relay.Mutation<Props, {}> {
@@ -21,13 +29,31 @@ export default class DeleteModelMutation extends Relay.Mutation<Props, {}> {
   }
 
   getConfigs () {
-    return [{
+    const {fields} = this.props
+
+    const modelDelete = {
       type: 'NODE_DELETE',
       parentName: 'project',
       parentID: this.props.projectId,
       connectionName: 'models',
       deletedIDFieldName: 'deletedId',
-    }]
+    }
+
+    let configs = [modelDelete]
+
+    // fields
+    //   .filter(field => !isScalar(field.typeIdentifier))
+    //   .forEach(field => {
+    //     const config = {
+    //       type: 'NODE_DELETE',
+    //       parentName: 'project.models.edges.node',
+    //       parentID: this.props.projectId,
+    //       connectionName: 'models',
+    //       deletedIDFieldName: 'deletedId',
+    //     }
+    //   })
+
+    return configs
   }
 
   getVariables () {

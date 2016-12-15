@@ -16,6 +16,9 @@
   width: 100%;
   flex: 1;
   overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .header {

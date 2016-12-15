@@ -351,13 +351,21 @@ class ProjectSelection extends React.Component<Props, State> {
   }
 
   private async logout () {
-    await tracker.track(ConsoleEvents.logout())
+    try {
+      await tracker.track(ConsoleEvents.logout())
 
-    tracker.reset()
+      tracker.reset()
+    } catch (e) {
+      cookiestore.remove('graphcool_auth_token')
+      cookiestore.remove('graphcool_customer_id')
+      window.location.pathname = '/'
+      return
+    }
 
     cookiestore.remove('graphcool_auth_token')
     cookiestore.remove('graphcool_customer_id')
     window.location.pathname = '/'
+
   }
 }
 

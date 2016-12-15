@@ -281,10 +281,12 @@ class ModelHeader extends React.Component<Props, State> {
         new DeleteModelMutation({
           projectId: this.props.project.id,
           modelId: this.props.model.id,
+          fields: this.props.model.fields,
         }),
         {
           onSuccess: () => {
             tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
+            this.props.forceFetchRoot()
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -335,6 +337,22 @@ export default Relay.createContainer(ReduxContainer, {
         name
         itemCount
         isSystem
+        fields(first: 100) {
+          edges {
+            node {
+              id
+              name
+              typeIdentifier
+              relatedModel {
+                id
+              }
+              reverseRelationField {
+                name
+                id
+              }
+            }
+          }
+        }
         ${ModelDescription.getFragment('model')}
       }
     `,

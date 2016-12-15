@@ -2,12 +2,19 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import {closePopup} from '../../actions/popup'
 import {ReduxAction} from '../../types/reducers'
+import styled from 'styled-components'
 
 interface Props {
   id?: string
   closePopup: (id: string) => ReduxAction
   onClickOutside?: (e: any) => void
 }
+
+const Container = styled.div`
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
 
 class PopupWrapper extends React.Component<Props, {}> {
   refs: {
@@ -16,7 +23,7 @@ class PopupWrapper extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div
+      <Container
         className='fixed left-0 right-0 top-0 bottom-0 z-999'
         style={{
           overflow: 'scroll',
@@ -25,7 +32,7 @@ class PopupWrapper extends React.Component<Props, {}> {
         ref='container'
       >
         {this.props.children}
-      </div>
+      </Container>
     )
   }
 
@@ -34,6 +41,9 @@ class PopupWrapper extends React.Component<Props, {}> {
     // we have the background div in each popup at the moment
     // so when the first child of this container is clicked,
     // close the popup
+    if (!this.refs.container.children) {
+      return
+    }
     if (this.refs.container.children[0] !== e.target) {
       return
     }
