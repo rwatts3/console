@@ -150,6 +150,10 @@ const AddProject = styled.div`
   }
 `
 
+const ProjectName = styled.div`
+  max-width: 180px;
+`
+
 class ProjectSelection extends React.Component<Props, State> {
 
   state = {
@@ -196,9 +200,11 @@ class ProjectSelection extends React.Component<Props, State> {
               flexGrow: 2,
             }}
           >
-            <div>
-              {this.props.selectedProject.name}
-            </div>
+            <ProjectName className={cx($p.overflowHidden)}>
+              <div className={cx($p.overflowHidden, $p.toe)}>
+                {this.props.selectedProject.name}
+              </div>
+            </ProjectName>
             <Arrow
               turned={this.state.expanded}
               className={cx($p.flex, $p.itemsCenter, $p.brPill)}
@@ -277,22 +283,22 @@ class ProjectSelection extends React.Component<Props, State> {
                   <ListItem
                     key={project.name}
                     className={cx(
-                    $p.relative,
-                    $p.db,
-                    $p.f20,
-                    $p.fw4,
-                    $p.ph25,
-                    $p.pv16,
-                    $p.white60,
-                    $p.flex,
-                    $p.justifyBetween,
-                    $p.itemsCenter,
-                  )}
+                      $p.relative,
+                      $p.db,
+                      $p.f20,
+                      $p.fw4,
+                      $p.ph25,
+                      $p.pv16,
+                      $p.white60,
+                      $p.flex,
+                      $p.justifyBetween,
+                      $p.itemsCenter,
+                    )}
                     onClick={() => this.onSelectProject(project.id)}
                     to={`/${project.name}`}
                     active={project.id === this.props.selectedProject.id}
                   >
-                    <div className={cx($p.ml10)}>{project.name}</div>
+                    <div className={cx($p.ml10, $p.toe, $p.overflowHidden)}>{project.name}</div>
                     <Link
                       to={`/${project.name}/clone`}
                       title='Duplicate'
