@@ -51,6 +51,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
     this._lock.on('authenticated', (authResult) => {
       this._lock.hide()
 
+      window.localStorage.setItem('graphcool_auth_provider', authResult.idTokenPayload.sub)
       const onSuccess = async (response) => {
         cookiestore.set('graphcool_auth_token', response.authenticateCustomer.token)
         cookiestore.set('graphcool_customer_id', response.authenticateCustomer.user.id)

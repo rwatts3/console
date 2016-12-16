@@ -22,6 +22,7 @@ interface State {
   oldPassword: string
   newPasswordOne: string
   newPasswordTwo: string
+  showPassword: boolean
 }
 
 class SettingsTab extends React.Component<Props, State> {
@@ -29,16 +30,20 @@ class SettingsTab extends React.Component<Props, State> {
   constructor (props) {
     super(props)
 
+    const authProvider = window.localStorage.getItem('graphcool_auth_provider')
+
     this.state = {
       email: this.props.viewer.user.crm.information.email,
       name: this.props.viewer.user.crm.information.name,
       oldPassword: '',
       newPasswordOne: '',
       newPasswordTwo: '',
+      showPassword: authProvider && authProvider.includes('auth0'),
     }
   }
 
   render () {
+    const {showPassword} = this.state
     return (
       <div className={classes.root}>
         <div className={classes.category}>
@@ -65,32 +70,34 @@ class SettingsTab extends React.Component<Props, State> {
             onChange={(e: any) => this.setState({ email: e.target.value } as State)}
           />
         </div>
-        <div className={classes.category}>
-          <div className={classes.title}>
-            Change password
+        {showPassword && (
+          <div className={classes.category}>
+            <div className={classes.title}>
+              Change password
+            </div>
+            <input
+              type='password'
+              value={this.state.oldPassword}
+              placeholder='Enter current password'
+              className={classes.field}
+              onChange={(e: any) => this.setState({ oldPassword: e.target.value } as State)}
+            />
+            <input
+              type='password'
+              value={this.state.newPasswordOne}
+              placeholder='Choose new password'
+              className={classes.field}
+              onChange={(e: any) => this.setState({ newPasswordOne: e.target.value } as State)}
+            />
+            <input
+              type='password'
+              value={this.state.newPasswordTwo}
+              placeholder='Repeat new password'
+              className={classes.field}
+              onChange={(e: any) => this.setState({ newPasswordTwo: e.target.value } as State)}
+            />
           </div>
-          <input
-            type='password'
-            value={this.state.oldPassword}
-            placeholder='Enter current password'
-            className={classes.field}
-            onChange={(e: any) => this.setState({ oldPassword: e.target.value } as State)}
-          />
-          <input
-            type='password'
-            value={this.state.newPasswordOne}
-            placeholder='Choose new password'
-            className={classes.field}
-            onChange={(e: any) => this.setState({ newPasswordOne: e.target.value } as State)}
-          />
-          <input
-            type='password'
-            value={this.state.newPasswordTwo}
-            placeholder='Repeat new password'
-            className={classes.field}
-            onChange={(e: any) => this.setState({ newPasswordTwo: e.target.value } as State)}
-          />
-        </div>
+        )}
         <div className={classes.saveChanges} onClick={this.saveChanges}>
           Save changes
         </div>
