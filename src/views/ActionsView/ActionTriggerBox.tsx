@@ -52,9 +52,11 @@ class ActionTriggerBox extends React.Component<Props, {}> {
           {!this.props.valid &&
           <Tooltip
             placement={'bottom'}
-            overlay={<span onClick={(e) => e.stopPropagation()}>
-                Please enter a valid url.
-              </span>}
+            overlay={
+              <span onClick={(e) => e.stopPropagation()}>
+                Please specify the model and the mutation type.
+              </span>
+            }
           >
             <Icon
               width={24}
