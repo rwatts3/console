@@ -102,7 +102,7 @@ describe('async data actions', () => {
   ]
 
   const fieldEdges = {
-    edges: fields.map(node => ({node}))
+    edges: fields.map(node => ({node})),
   }
 
   const model = {
