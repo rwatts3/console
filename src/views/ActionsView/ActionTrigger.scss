@@ -4,6 +4,12 @@
   border: none;
   padding: 12px;
 
+  option {
+    margin:40px;
+    background: rgba(255,255,255,1);
+    color: black;
+  }
+
   &.modelselector {
     background-color: rgba(228, 228, 244, 0.5);
     color: #4A90E2;
