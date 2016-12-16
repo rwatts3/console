@@ -13,7 +13,7 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import * as cx from 'classnames'
-import {Icon, particles} from 'graphcool-styles'
+import {Icon, $p, $v} from 'graphcool-styles'
 const classes: any = require('./FieldRow.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'
@@ -80,20 +80,20 @@ class FieldRow extends React.Component<Props, State> {
           <Link className={classes.fieldName} to={editLink}>
             <span className={classes.name}>{field.name}</span>
             {field.isSystem &&
-              <span className={classes.system}>System</span>
+            <span className={classes.system}>System</span>
             }
             { !isScalar(field.typeIdentifier) &&
-              <span className={classes.relation}>Relation</span>
+            <span className={classes.relation}>Relation</span>
             }
           </Link>
           <Link className={classes.type} to={editLink}>
             {!isScalar(field.typeIdentifier) ?
               (
                 <span>
-                  <div className={cx(particles.flex)}>
+                  <div className={cx($p.flex)}>
                     <Icon
                       className={cx(
-                        particles.mr4,
+                        $p.mr4,
                       )}
                       width={16}
                       height={16}
@@ -106,8 +106,8 @@ class FieldRow extends React.Component<Props, State> {
                 </span>
               )
               : (
-                <span>{type}</span>
-              )
+              <span>{type}</span>
+            )
             }
           </Link>
           <div className={classes.description}>
@@ -127,39 +127,46 @@ class FieldRow extends React.Component<Props, State> {
             }
           </div>
           <div className={classes.controls}>
-            {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
-            <Link to={editLink}>
+            {field.isSystem ? (
               <Icon
                 width={20}
                 height={20}
-                src={require('assets/icons/edit.svg')}
+                stroke={true}
+                strokeWidth={2}
+                color={$v.gray40}
+                src={require('graphcool-styles/icons/stroke/lock.svg')}
               />
-            </Link>
-            }
-            {field.isSystem &&
-            <Icon
-              width={20}
-              height={20}
-              src={require('graphcool-styles/icons/stroke/lock.svg')}
-            />
-            }
-            <span
-              onClick={() => isScalar(field.typeIdentifier) ? this.deleteField() : this.deleteRelation()}
-            >
-                <Icon
-                  width={20}
-                  height={20}
-                  src={require('assets/icons/delete.svg')}
-                />
-              </span>
+            ) : (
+              <div className={cx($p.flex, $p.flexRow)}>
+                <Link to={editLink}>
+                  <Icon
+                    width={20}
+                    height={20}
+                    color={$v.gray40}
+                    src={require('assets/icons/edit.svg')}
+                  />
+                </Link>
+                <span
+                  onClick={() => isScalar(field.typeIdentifier) ? this.deleteField() : this.deleteRelation()}
+                >
+                  <Icon
+                    width={20}
+                    height={20}
+                    src={require('assets/icons/delete.svg')}
+                  />
+                </span>
+              </div>
+            )}
           </div>
         </div>
-        {this.state.detailsState === 'CONSTRAINTS' &&
-        <Constraints
-          field={field}
-        />
+        {
+          this.state.detailsState === 'CONSTRAINTS' &&
+          <Constraints
+            field={field}
+          />
         }
-      </div>
+      </
+        div >
     )
   }
 
