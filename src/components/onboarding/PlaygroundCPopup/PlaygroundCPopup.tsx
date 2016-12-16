@@ -292,7 +292,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                     Declaring Relations
                   </a>
                   <a
-                    href='https://graph.cool/docs/guides/implementing-business-logic-using-actions'
+                    href='https://graph.cool/docs/guides/implementing-business-logic-using-mutation-callbacks'
                     className={`${classes.two} fw4 black db flex items-center mb-25`}
                     target='_blank'
                   >
