@@ -1,23 +1,23 @@
 import * as Relay from 'react-relay'
 
 interface Props {
-  permissionId: string
-  fieldId: string
+  modelPermissionId: string
+  modelId: string
 }
 
 interface Response {
 }
 
-export default class DeletePermissionMutation extends Relay.Mutation<Props, Response> {
+export default class DeleteModelPermissionMutation extends Relay.Mutation<Props, Response> {
 
   getMutation () {
-    return Relay.QL`mutation{deletePermission}`
+    return Relay.QL`mutation{deleteModelPermission}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on DeletePermissionPayload {
-        field
+      fragment on DeleteModelPermissionPayload {
+        model
         deletedId
       }
     `
@@ -26,8 +26,8 @@ export default class DeletePermissionMutation extends Relay.Mutation<Props, Resp
   getConfigs () {
     return [{
       type: 'NODE_DELETE',
-      parentName: 'field',
-      parentID: this.props.fieldId,
+      parentName: 'model',
+      parentID: this.props.modelId,
       connectionName: 'permissions',
       deletedIDFieldName: 'deletedId',
     }]
@@ -35,13 +35,13 @@ export default class DeletePermissionMutation extends Relay.Mutation<Props, Resp
 
   getVariables () {
     return {
-      permissionId: this.props.permissionId,
+      modelPermissionId: this.props.modelPermissionId,
     }
   }
 
   getOptimisticResponse () {
     return {
-      deletedId: this.props.permissionId,
+      deletedId: this.props.modelPermissionId,
     }
   }
 }
