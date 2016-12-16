@@ -55,7 +55,7 @@ class ModelHeader extends React.Component<Props, State> {
 
   render() {
 
-    const schemaActive = location.pathname.endsWith('schema')
+    const schemaActive = location.pathname.includes('schema')
     const schemaTypeText = schemaActive ? 'Schema' : 'Data'
     const {model} = this.props
     const isSystem = model && (model.isSystem || SYSTEM_MODELS.includes(model.name))
