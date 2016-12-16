@@ -472,7 +472,7 @@ export class SideNav extends React.Component<Props, State> {
         $p.relative,
         $p.bgDarkerBlue,
       )}>
-        <ModelsHead to={`/${this.props.params.projectName}/models`}>
+        <ModelsHead>
           Models
         </ModelsHead>
         <div
