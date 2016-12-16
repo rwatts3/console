@@ -21,6 +21,20 @@ class PopupWrapper extends React.Component<Props, {}> {
     container: Element,
   }
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.keyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.keyDown)
+  }
+
+  keyDown = (e: KeyboardEvent) => {
+    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+      this.close(e)
+    }
+  }
+
   render() {
     return (
       <Container
