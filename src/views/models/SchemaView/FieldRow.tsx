@@ -18,6 +18,7 @@ const classes: any = require('./FieldRow.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'
 import DeleteRelationMutation from '../../../mutations/DeleteRelationMutation'
+import UpdateRelationDescriptionMutation from '../../../mutations/UpdateRelationDescriptionMutation'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -213,6 +214,7 @@ class FieldRow extends React.Component<Props, State> {
 
   private saveDescription(e) {
     const description = e.target.value
+    const {field} = this.props
     if (this.props.field.description === description) {
       this.setState({editDescription: false} as State)
       return
@@ -220,29 +222,55 @@ class FieldRow extends React.Component<Props, State> {
 
     this.setState({editDescriptionPending: true} as State)
 
-    Relay.Store.commitUpdate(
-      new UpdateFieldDescriptionMutation({
-        fieldId: this.props.field.id,
-        description,
-      }),
-      {
-        onSuccess: () => {
-          tracker.track(ConsoleEvents.Schema.Field.Description.changed())
+    if (isScalar(field.typeIdentifier)) {
+      Relay.Store.commitUpdate(
+        new UpdateFieldDescriptionMutation({
+          fieldId: this.props.field.id,
+          description,
+        }),
+        {
+          onSuccess: () => {
+            tracker.track(ConsoleEvents.Schema.Field.Description.changed())
 
-          this.setState({
-            editDescription: false,
-            editDescriptionPending: false,
-          } as State)
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
         },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({
-            editDescription: false,
-            editDescriptionPending: false,
-          } as State)
+      )
+    } else {
+      Relay.Store.commitUpdate(
+        new UpdateRelationDescriptionMutation({
+          relationId: field.relation.id,
+          description,
+        }),
+        {
+          onSuccess: () => {
+            tracker.track(ConsoleEvents.Schema.Field.Description.changed())
+
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
         },
-      },
-    )
+      )
+    }
   }
 
   private togglePermissions() {
@@ -256,14 +284,16 @@ class FieldRow extends React.Component<Props, State> {
   }
 
   private renderDescription() {
-    if (this.props.field.relation) {
-      return
-    }
     if (this.state.editDescriptionPending) {
       return (
         <Loading color='#B9B9C8'/>
       )
     }
+
+    const {field} = this.props
+    const description = isScalar(field.typeIdentifier) ?
+      field.description :
+      field.relation.description
 
     if (this.state.editDescription) {
       return (
@@ -271,14 +301,14 @@ class FieldRow extends React.Component<Props, State> {
           autoFocus
           type='text'
           placeholder='Description'
-          defaultValue={this.props.field.description}
+          defaultValue={description}
           onBlur={(e) => this.saveDescription(e)}
           onKeyDown={(e) => e.keyCode === 13 ? (e.target as HTMLInputElement).blur() : null}
         />
       )
     }
 
-    if (!this.props.field.description) {
+    if (!description) {
       return (
         <span
           className={classes.addDescription}
@@ -294,7 +324,7 @@ class FieldRow extends React.Component<Props, State> {
         className={classes.descriptionText}
         onClick={() => this.setState({ editDescription: true } as State)}
       >
-        {this.props.field.description}
+        {description}
       </span>
     )
   }
@@ -329,6 +359,7 @@ export default Relay.createContainer(MappedFieldRow, {
         relation {
           id
           name
+          description
         }
       }
     `,
