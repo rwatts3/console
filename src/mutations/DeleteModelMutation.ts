@@ -24,6 +24,7 @@ export default class DeleteModelMutation extends Relay.Mutation<Props, {}> {
       fragment on DeleteModelPayload {
         project
         deletedId
+        deletedRelationFieldIds
       }
     `
   }
@@ -39,21 +40,15 @@ export default class DeleteModelMutation extends Relay.Mutation<Props, {}> {
       deletedIDFieldName: 'deletedId',
     }
 
-    let configs = [modelDelete]
+    const deletedRelationFields = {
+      type: 'NODE_DELETE',
+      parentName: 'project',
+      parentID: this.props.projectId,
+      connectionName: 'fields',
+      deletedIDFieldName: 'deletedRelationFieldIds',
+    }
 
-    // fields
-    //   .filter(field => !isScalar(field.typeIdentifier))
-    //   .forEach(field => {
-    //     const config = {
-    //       type: 'NODE_DELETE',
-    //       parentName: 'project.models.edges.node',
-    //       parentID: this.props.projectId,
-    //       connectionName: 'models',
-    //       deletedIDFieldName: 'deletedId',
-    //     }
-    //   })
-
-    return configs
+    return [modelDelete, deletedRelationFields]
   }
 
   getVariables () {
