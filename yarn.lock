@@ -2881,9 +2881,9 @@ graphcool-metrics@0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.2.3.tgz#12152d0d7a78b07593f402b4a97ca48c266f01ff"
 
-graphcool-styles@0.0.72:
-  version "0.0.72"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.72.tgz#01f1b5e57c62701430d39233da0cfa981672bad9"
+graphcool-styles@0.0.73:
+  version "0.0.73"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.0.73.tgz#a52b4df886862ba1c4a8aa371ecd3f1a325f75d6"
   dependencies:
     html-webpack-plugin "^2.24.1"
     interactive "^0.1.9"
