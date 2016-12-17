@@ -51,6 +51,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
           onKeyDown={this.onKeyDown}
           style={{
             height: Math.min(Math.max(56, numLines * 20), 300),
+            width: '100%',
           }}
           onBlur={(e: any) => {
             this.props.save(stringToValue(e.target.value, this.props.field))
