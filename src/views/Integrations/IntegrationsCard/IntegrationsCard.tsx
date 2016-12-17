@@ -17,8 +17,10 @@ interface Props {
 const Card = styled.div`
   width: 317px;
   height: 322px;
+  margin: 12px;
   background: papayawhip;
 `
+
 const ConnectionCheckmark = styled.div`
   width: 30px;
   height: 30px;
@@ -29,28 +31,21 @@ const Logo = styled.img`
   height: 54px;
 `
 
-const ConnectionStatus = styled.div`
-  width: 109px;
-  height: 30px;
-`
-const statusStyles = {
-  activate: {
-    color: '#fff',
-    backgroundColor: '#4990E2'
-  },
-  connected: {
-    backgroundColor: 'rgba(42, 189, 60, .2)'
-  }
-}
-
 export default class IntegrationsCard extends React.Component<Props, {}> {
   render() {
     const {integration} = this.props
     return (
-      <Card className={cx($p.flex, $p.flexColumn)}>
+      <Card className={cx($p.flex, $p.flexColumn, $p.pa38, $p.buttonShadow)}>
 
         <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyEnd)}>
-          <ConnectionCheckmark className={cx($p.br100, $p.ma16)}>
+          <ConnectionCheckmark
+            className={cx(
+              $p.br100,
+              $p.flex,
+              $p.itemsCenter,
+              $p.justifyCenter
+            )}
+          >
             <Icon
               src={require('../../../assets/icons/check.svg')}
               color='#fff'
@@ -69,15 +64,27 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
           }
         >
           <Logo src={integration.logoURI} alt='integration-logo' />
-          <div>
+          <div className={cx($p.black50)}>
             {integration.description}
           </div>
-          <ConnectionStatus
-            className={cx($p.ttu, $p.br2)}
-            style={integration.connected ? statusStyles.connected : statusStyles.activate}
-          >
-            {integration.connected ? 'Connected' : 'Activate'}
-          </ConnectionStatus>
+          <div className={cx($p.flex, $p.flexRow, $p.justifyCenter, $p.itemsCenter, $p.mt38)}>
+            <div
+              className={cx(
+                $p.ttu,
+                $p.br2,
+                $p.f14,
+                $p.pv4,
+                $p.ph10,
+                $p.br2,
+                {
+                  [`${$p.green} ${$p.bgGreen20}`]: integration.connected,
+                  [`${$p.white} ${$p.bgBlue}`]: !integration.connected
+                }
+              )}
+            >
+              {integration.connected ? 'Connected' : 'Activate'}
+            </div>
+          </div>
         </div>
 
       </Card>
