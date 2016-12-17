@@ -1,18 +1,15 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Helmet from 'react-helmet'
+import IntegrationsCardGrid from './IntegrationsCardGrid/IntegrationsCardGrid'
 
-interface Props {
-  isEnabled: boolean
-}
-
-export default class IntegrationsView extends React.Component<Props, {}> {
+export default class IntegrationsView extends React.Component<{}, {}> {
 
   render() {
     return (
       <div>
         <Helmet title='Integrations' />
-        I'm the Integrations view!
+        <IntegrationsCardGrid />
       </div>
     );
   }
