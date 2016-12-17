@@ -21,15 +21,13 @@ const IntegrationsCardPlaceholder = () => {
       $p.flexColumn,
       $p.itemsCenter,
       $p.justifyCenter,
-      $p.bgBlack10,
+      $p.bgBlack04,
     )}>
-      <div className={cx($p.w60, $p.hS38, $p.mb16, $p.bgBlack20)} />
+      <div className={cx($p.w60, $p.hS38, $p.mb38, $p.bgBlack04)} />
       
-      <div>
-        <div className={cx($p.w60, $p.hS38, $p.bgBlack20)} />
-        <div className={cx($p.w60, $p.hS38, $p.bgBlack20)} />
-        <div className={cx($p.w60, $p.hS38, $p.bgBlack20)} />
-      </div>
+      <div className={cx($p.w50, $p.hS16, $p.mb4, $p.bgBlack04)} />
+      <div className={cx($p.w60, $p.hS16, $p.mb4, $p.bgBlack04)} />
+      <div className={cx($p.w40, $p.hS16, $p.mb4, $p.bgBlack04)} />
     </Card>
   )
 }
