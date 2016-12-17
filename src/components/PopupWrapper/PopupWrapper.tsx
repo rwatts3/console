@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import {closePopup} from '../../actions/popup'
 import {ReduxAction} from '../../types/reducers'
@@ -42,7 +43,7 @@ class PopupWrapper extends React.Component<Props, {}> {
         style={{
           overflow: 'scroll',
         }}
-        onClick={this.close.bind(this)}
+        onClick={this.handleClick}
         ref='container'
       >
         {this.props.children}
@@ -50,17 +51,24 @@ class PopupWrapper extends React.Component<Props, {}> {
     )
   }
 
+  private handleClick = (e: any) => {
+
+    const container: Element = ReactDOM.findDOMNode(this.refs.container)
+    if (!container.children) {
+      return
+    }
+    if (container.children[0] !== e.target) {
+      return
+    }
+
+    this.close(e)
+  }
+
   private close = (e: any) => {
     // hack.
     // we have the background div in each popup at the moment
     // so when the first child of this container is clicked,
     // close the popup
-    if (!this.refs.container.children) {
-      return
-    }
-    if (this.refs.container.children[0] !== e.target) {
-      return
-    }
     if (typeof this.props.onClickOutside === 'function') {
       this.props.onClickOutside(e)
     }
