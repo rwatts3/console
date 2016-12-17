@@ -11,7 +11,7 @@ export default class IntegrationsView extends React.Component<{}, {}> {
         <Helmet title='Integrations' />
         <IntegrationsCardGrid />
       </div>
-    );
+    )
   }
 
 }
