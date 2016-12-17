@@ -10,6 +10,8 @@ import CodeGenerationPopupEnvironmentChooser from './CodeGenerationPopupEnvironm
 import CodeGenerationPopupClientChooser from './CodeGenerationPopupClientChooser'
 import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
 import {closePopup} from '../../../../actions/popup'
+import tracker from '../../../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   query?: string
@@ -29,6 +31,9 @@ const ContainerWrapper = styled.div`
 `
 
 class CodeGenerationPopup extends React.Component<Props, {}> {
+  componentDidMount() {
+    tracker.track(ConsoleEvents.Playground.CodeGenerationPopup.opened())
+  }
   render() {
     const {query, params, id, endpointUrl} = this.props
     const queryActive = query && query.length > 0
