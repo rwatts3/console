@@ -21,6 +21,7 @@ import {particles} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {ConsoleEvents, MutationType} from 'graphcool-metrics'
 import tracker from '../../utils/metrics'
+import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
 
 const classes: any = require('./RelationPopup.scss')
 
@@ -30,6 +31,7 @@ interface Props {
   relay: Relay.RelayProp
   router: ReactRouter.InjectedRouter
   showNotification: ShowNotificationCallback
+  source: RelationsPopupSource
 }
 
 interface State {
@@ -64,7 +66,8 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    tracker.track(ConsoleEvents.Relations.Popup.opened({type: this.mutationType, source: 'schema'}))
+    const {source} = this.props
+    tracker.track(ConsoleEvents.Relations.Popup.opened({type: this.mutationType, source}))
   }
 
   render(): JSX.Element {
@@ -423,11 +426,14 @@ class RelationPopup extends React.Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
-}
-
-const MappedRelationPopup = connect(null, mapDispatchToProps)(withRouter(RelationPopup))
+const MappedRelationPopup = connect(
+  state => ({
+    source: state.popupSources.relationsPopup,
+  }),
+  {
+    showNotification,
+  },
+)(withRouter(RelationPopup))
 
 export default Relay.createContainer(MappedRelationPopup, {
   initialVariables: {

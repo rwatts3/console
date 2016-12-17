@@ -19,6 +19,9 @@ import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'
 import DeleteRelationMutation from '../../../mutations/DeleteRelationMutation'
 import UpdateRelationDescriptionMutation from '../../../mutations/UpdateRelationDescriptionMutation'
+import {setFieldPopupSource, setRelationsPopupSource} from '../../../actions/popupSources'
+import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
+import {FieldPopupSource} from 'graphcool-metrics/dist'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -31,6 +34,8 @@ interface Props {
   possibleRelatedPermissionPaths: Field[][]
   showNotification: ShowNotificationCallback
   projectId: string
+  setFieldPopupSource: (source: FieldPopupSource) => void
+  setRelationsPopupSource: (source: RelationsPopupSource) => void
 }
 
 interface State {
@@ -63,31 +68,40 @@ class FieldRow extends React.Component<Props, State> {
     }
 
     let suffix
-    if (isScalar(field.typeIdentifier)) {
-      suffix = `/models/${this.props.params.modelName}/schema/edit/${this.props.field.name}`
-    } else {
+    const isRelation = !isScalar(field.typeIdentifier)
+    if (isRelation) {
       suffix = `/relations/edit/${this.props.field.relation.name}`
+    } else {
+      suffix = `/models/${this.props.params.modelName}/schema/edit/${this.props.field.name}`
     }
 
     const editLink = `/${this.props.params.projectName}${suffix}` // tslint:disable-line
 
-    if (!isScalar(field.typeIdentifier) && !field.relatedModel) {
+    if (isRelation && !field.relatedModel) {
       return null
     }
 
     return (
       <div className={classes.root}>
         <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
-          <Link className={classes.fieldName} to={editLink}>
+          <Link
+            className={classes.fieldName}
+            to={editLink}
+            onClick={this.trackEdit}
+          >
             <span className={classes.name}>{field.name}</span>
-            {field.isSystem &&
-            <span className={classes.system}>System</span>
-            }
-            { !isScalar(field.typeIdentifier) &&
-            <span className={classes.relation}>Relation</span>
-            }
+            {field.isSystem && (
+              <span className={classes.system}>System</span>
+            )}
+            {!isScalar(field.typeIdentifier) && (
+              <span className={classes.relation}>Relation</span>
+            )}
           </Link>
-          <Link className={classes.type} to={editLink}>
+          <Link
+            className={classes.type}
+            to={editLink}
+            onClick={this.trackEdit}
+          >
             {!isScalar(field.typeIdentifier) ?
               (
                 <span>
@@ -139,7 +153,10 @@ class FieldRow extends React.Component<Props, State> {
               />
             ) : (
               <div className={cx($p.flex, $p.flexRow)}>
-                <Link to={editLink}>
+                <Link
+                  to={editLink}
+                  onClick={this.trackEdit}
+                >
                   <Icon
                     width={20}
                     height={20}
@@ -161,14 +178,24 @@ class FieldRow extends React.Component<Props, State> {
           </div>
         </div>
         {
-          this.state.detailsState === 'CONSTRAINTS' &&
-          <Constraints
-            field={field}
-          />
+          this.state.detailsState === 'CONSTRAINTS' && (
+            <Constraints
+              field={field}
+            />
+          )
         }
       </
         div >
     )
+  }
+
+  private trackEdit = () => {
+    const {field} = this.props
+    if (!isScalar(field.typeIdentifier)) {
+      this.props.setRelationsPopupSource('schema')
+    } else {
+      this.props.setFieldPopupSource('schema')
+    }
   }
 
   private deleteField() {
@@ -328,14 +355,9 @@ class FieldRow extends React.Component<Props, State> {
       </span>
     )
   }
-
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
-}
-
-const MappedFieldRow = connect(null, mapDispatchToProps)(FieldRow)
+const MappedFieldRow = connect(null, { showNotification, setFieldPopupSource, setRelationsPopupSource })(FieldRow)
 
 export default Relay.createContainer(MappedFieldRow, {
   fragments: {

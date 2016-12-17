@@ -12,12 +12,16 @@ import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../utils/metrics'
+import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
+import {setRelationsPopupSource} from '../../actions/popupSources'
+import {connect} from 'react-redux'
 
 interface Props {
   viewer: Viewer & { project: Project }
   params: string
   children: Element
   relay: any
+  setRelationsPopupSource: (source: RelationsPopupSource) => void
 }
 
 class RelationsView extends React.Component<Props, {}> {
@@ -39,6 +43,9 @@ class RelationsView extends React.Component<Props, {}> {
             <Link
               className={`${classes.button} ${classes.green}`}
               to={`/${this.props.viewer.project.name}/relations/create`}
+              onClick={() => {
+                this.props.setRelationsPopupSource('relations')
+              }}
             >
               <Icon
                 width={16}
@@ -107,7 +114,9 @@ class RelationsView extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(RelationsView, {
+const ConnectedRelationsView = connect(null, { setRelationsPopupSource })(RelationsView)
+
+export default Relay.createContainer(ConnectedRelationsView, {
   initialVariables: {
     projectName: null, // injected from router
   },
