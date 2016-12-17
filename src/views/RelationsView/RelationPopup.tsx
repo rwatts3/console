@@ -22,6 +22,7 @@ import * as cx from 'classnames'
 import {ConsoleEvents, MutationType} from 'graphcool-metrics'
 import tracker from '../../utils/metrics'
 import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
+import Alert from '../../components/Help/Alert'
 
 const classes: any = require('./RelationPopup.scss')
 
@@ -170,11 +171,11 @@ class RelationPopup extends React.Component<Props, State> {
                       }}
                     />
                     {this.state.alertHint &&
-                    <Help
-                      size={35}
-                      text={'The relation name has to be capitalized.'}
-                      placement={'right'}
-                    />
+                      <Alert
+                        size={35}
+                        text={'The relation name has to be capitalized and must only contain letters'}
+                        placement={'right'}
+                      />
                     }
                   </div>
                   <div className={classes.description}>
