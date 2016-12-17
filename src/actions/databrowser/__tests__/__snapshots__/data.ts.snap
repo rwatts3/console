@@ -280,6 +280,22 @@ Array [
     "type": "MUTATION_SUCCESS",
   },
   Object {
+    "type": "MUTATION_REQUEST",
+  },
+  Object {
+    "payload": Object {
+      "position": Object {
+        "field": "description",
+        "row": 0,
+      },
+      "value": "somedescription",
+    },
+    "type": "UPDATE_CELL",
+  },
+  Object {
+    "type": "MUTATION_SUCCESS",
+  },
+  Object {
     "payload": "asldkaslkdj",
     "type": "DECREASE_COUNT_CHANGE",
   },

@@ -71,7 +71,7 @@ describe('async data actions', () => {
       id: 'cip3p48sj001e1jsmghwkdt2k',
       name: 'description',
       description: '',
-      isReadonly: true,
+      isReadonly: false,
       isList: false,
       isSystem: true,
       typeIdentifier: 'DateTime',
@@ -81,7 +81,7 @@ describe('async data actions', () => {
       id: 'cip3p48sj001f1jsm5z015zjt',
       name: 'name',
       description: '',
-      isReadonly: true,
+      isReadonly: false,
       isList: false,
       isSystem: true,
       typeIdentifier: 'DateTime',
@@ -91,7 +91,7 @@ describe('async data actions', () => {
       id: 'cip3p48sj001g1jsmj8t36lpg',
       name: 'artwork',
       description: '',
-      isReadonly: true,
+      isReadonly: false,
       isList: false,
       isSystem: true,
       typeIdentifier: 'Relation',
@@ -145,7 +145,8 @@ describe('async data actions', () => {
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()
       })
-      .catch(() => {
+      .catch((e) => {
+        console.error(e)
         expect(false).toBe(true)
       })
   })
