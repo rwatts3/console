@@ -17,16 +17,12 @@ interface Props {
 const Card = styled.div`
   width: 317px;
   height: 322px;
-  background-color: #dedede;
+  background: papayawhip;
 `
 const ConnectionCheckmark = styled.div`
   width: 30px;
   height: 30px;
   background-color: #27AE60;
-`
-
-const IntegrationDetails = styled.div`
-  background: papayawhip;
 `
 
 const Logo = styled.img`
@@ -36,9 +32,16 @@ const Logo = styled.img`
 const ConnectionStatus = styled.div`
   width: 109px;
   height: 30px;
-  text-align: center;
-  background-color: #4990E2;
 `
+const statusStyles = {
+  activate: {
+    color: '#fff',
+    backgroundColor: '#4990E2'
+  },
+  connected: {
+    backgroundColor: 'rgba(42, 189, 60, .2)'
+  }
+}
 
 export default class IntegrationsCard extends React.Component<Props, {}> {
   render() {
@@ -47,7 +50,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
       <Card className={cx($p.flex, $p.flexColumn)}>
 
         <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyEnd)}>
-          <ConnectionCheckmark className={cx($p.br100)}>
+          <ConnectionCheckmark className={cx($p.br100, $p.ma16)}>
             <Icon
               src={require('../../../assets/icons/check.svg')}
               color='#fff'
@@ -55,17 +58,27 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
           </ConnectionCheckmark>
         </div>
 
-        <IntegrationDetails 
-          className={cx($p.tc, $p.flex, $p.flexColumn, $p.justifyAround, $p.h100)}
+        <div 
+          className={cx(
+            $p.tc,
+            $p.flex,
+            $p.flexColumn,
+            $p.justifyAround,
+            $p.h100,
+            $p.sansSerif)
+          }
         >
           <Logo src={integration.logoURI} alt='integration-logo' />
           <div>
             {integration.description}
           </div>
-          <ConnectionStatus className={cx($p.ttu)}>
+          <ConnectionStatus
+            className={cx($p.ttu, $p.br2)}
+            style={integration.connected ? statusStyles.connected : statusStyles.activate}
+          >
             {integration.connected ? 'Connected' : 'Activate'}
           </ConnectionStatus>
-        </IntegrationDetails>
+        </div>
 
       </Card>
     )
