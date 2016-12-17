@@ -132,7 +132,7 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
-      <Route path='integrations' component={IntegrationsView} render={render} />
+      <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render} />
       <IndexRedirect to='models'/>
     </Route>
   </Route>

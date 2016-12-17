@@ -11,7 +11,7 @@ interface Integration {
 }
 
 interface Props {
-  integration: Integration 
+  integration: Integration
 }
 
 const Card = styled.div`
@@ -42,7 +42,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
               $p.br100,
               $p.flex,
               $p.itemsCenter,
-              $p.justifyCenter
+              $p.justifyCenter,
             )}
           >
             <Icon
@@ -52,14 +52,14 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
           </ConnectionCheckmark>
         </div>
 
-        <div 
+        <div
           className={cx(
             $p.tc,
             $p.flex,
             $p.flexColumn,
             $p.justifyAround,
             $p.h100,
-            $p.sansSerif
+            $p.sansSerif,
           )}
         >
           <Logo src={integration.logoURI} alt='integration-logo' />
@@ -78,8 +78,8 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
                 $p.pointer,
                 {
                   [`${$p.green} ${$p.bgGreen20}`]: integration.connected,
-                  [`${$p.white} ${$p.bgBlue}`]: !integration.connected
-                }
+                  [`${$p.white} ${$p.bgBlue}`]: !integration.connected,
+                },
               )}
             >
               {integration.connected ? 'Connected' : 'Activate'}

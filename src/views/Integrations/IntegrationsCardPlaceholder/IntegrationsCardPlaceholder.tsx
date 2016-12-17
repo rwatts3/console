@@ -24,7 +24,7 @@ const IntegrationsCardPlaceholder = () => {
       $p.bgBlack04,
     )}>
       <div className={cx($p.w60, $p.hS38, $p.mb38, $p.bgBlack04)} />
-      
+
       <div className={cx($p.w50, $p.hS16, $p.mb4, $p.bgBlack04)} />
       <div className={cx($p.w60, $p.hS16, $p.mb4, $p.bgBlack04)} />
       <div className={cx($p.w40, $p.hS16, $p.mb4, $p.bgBlack04)} />
