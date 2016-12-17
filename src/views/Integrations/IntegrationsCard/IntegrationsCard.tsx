@@ -18,7 +18,6 @@ const Card = styled.div`
   width: 317px;
   height: 322px;
   margin: 12px;
-  background: papayawhip;
 `
 
 const ConnectionCheckmark = styled.div`
@@ -35,7 +34,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
   render() {
     const {integration} = this.props
     return (
-      <Card className={cx($p.flex, $p.flexColumn, $p.pa38, $p.buttonShadow)}>
+      <Card className={cx($p.flex, $p.flexColumn, $p.pa38, $p.bgWhite, $p.buttonShadow)}>
 
         <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyEnd)}>
           <ConnectionCheckmark
@@ -60,8 +59,8 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
             $p.flexColumn,
             $p.justifyAround,
             $p.h100,
-            $p.sansSerif)
-          }
+            $p.sansSerif
+          )}
         >
           <Logo src={integration.logoURI} alt='integration-logo' />
           <div className={cx($p.black50)}>
@@ -76,6 +75,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
                 $p.pv4,
                 $p.ph10,
                 $p.br2,
+                $p.pointer,
                 {
                   [`${$p.green} ${$p.bgGreen20}`]: integration.connected,
                   [`${$p.white} ${$p.bgBlue}`]: !integration.connected
