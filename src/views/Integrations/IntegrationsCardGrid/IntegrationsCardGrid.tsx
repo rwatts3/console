@@ -1,5 +1,9 @@
 import * as React from 'react'
+import * as cx from 'classnames'
+import styled from 'styled-components'
+import {$p} from 'graphcool-styles'
 import IntegrationsCard from '../IntegrationsCard/IntegrationsCard';
+import IntegrationsCardPlaceholder from '../IntegrationsCardPlaceholder/IntegrationsCardPlaceholder'
 
 const mockIntegration = {
   connected: false,
@@ -9,8 +13,31 @@ const mockIntegration = {
 
 const IntegrationsCardGrid = (props) => {
   return (
-    <div>
-      <IntegrationsCard integration={mockIntegration} />
+    <div className={cx($p.flex, $p.flexColumn)}>
+      <div className={cx($p.flex, $p.flexRow)}>
+        <IntegrationsCard integration={mockIntegration} />
+        <IntegrationsCardPlaceholder />
+        <IntegrationsCardPlaceholder />
+      </div>
+      <div className={cx($p.flex, $p.flexRow)}>
+        <IntegrationsCardPlaceholder />
+        <IntegrationsCardPlaceholder />
+        <div 
+          style={{width: '317px', height: '322px', margin: '12px'}}
+          className={cx(
+            $p.flex,
+            $p.justifyCenter,
+            $p.itemsCenter,
+            $p.ttu,
+            $p.tc,
+            $p.sansSerif,
+            $p.black20
+          )}
+        >
+          There's more<br />
+          to come
+        </div>
+      </div>
     </div>
   )
 }
