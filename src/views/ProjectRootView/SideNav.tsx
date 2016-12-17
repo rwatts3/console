@@ -324,7 +324,7 @@ export class SideNav extends React.Component<Props, State> {
           to={`/${this.props.params.projectName}/integrations`}
           active={integrationsPageActive}
         >
-          {/* <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/integrations.svg')}/> */}
+          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/integrations.svg')}/>
           <div>Integrations</div>
         </Head>
       </Section>
