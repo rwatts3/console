@@ -769,6 +769,7 @@ export default Relay.createContainer(MappedDatabrowserView, {
                 typeIdentifier
                 isList
                 isReadonly
+                isSystem
                 defaultValue
                 relatedModel {
                   id

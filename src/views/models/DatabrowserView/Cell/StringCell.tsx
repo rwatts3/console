@@ -91,7 +91,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
   private onKeyDown = (e: any) => {
     // filter arrow keys
     const numLines = e.target.value.split(/\r\n|\r|\n/).length
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && !e.metaKey) {
       if (numLines === 1) {
         this.setState({value: e.target.value + '\n'})
         this.enterPressed = true
