@@ -6,6 +6,8 @@ import {CodeGenerator} from '../../../../utils/codeGeneration'
 import {GraphQLClient, Environment} from '../../../../types/types'
 import {connect} from 'react-redux'
 import EditorConfiguration = CodeMirror.EditorConfiguration
+import {ConsoleEvents} from 'graphcool-metrics'
+import tracker from '../../../../utils/metrics'
 
 interface Props {
   query: string
@@ -40,6 +42,11 @@ class CodeGenerationPopupCode extends React.Component<Props, {}> {
             mode: 'shell',
             theme: 'dracula',
           } as EditorConfiguration}
+          onFocusChange={(focused) => {
+            if (focused) {
+              tracker.track(ConsoleEvents.Playground.CodeGenerationPopup.setupFocused())
+            }
+          }}
         />
         <h3 className={$p.mt16}>Code</h3>
         <Codemirror
@@ -49,6 +56,11 @@ class CodeGenerationPopupCode extends React.Component<Props, {}> {
             mode: 'javascript',
             theme: 'dracula',
           } as EditorConfiguration}
+          onFocusChange={(focused) => {
+            if (focused) {
+              tracker.track(ConsoleEvents.Playground.CodeGenerationPopup.codeFocused())
+            }
+          }}
         />
       </div>
     )

@@ -175,6 +175,11 @@ export function updateNodeAsync(lokka: any,
                                 nodeId: string,
                                 rowIndex: number): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
+
+    if (field.isReadonly) {
+      return Promise.reject({})
+    }
+
     dispatch(mutationRequest())
 
     // if relation to self

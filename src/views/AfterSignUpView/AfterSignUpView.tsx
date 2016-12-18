@@ -51,6 +51,14 @@ const Caret = styled.div`
   top: -7px;
 `
 
+const WelcomeIcon = styled(Icon)`
+  &:hover {
+    svg {
+      fill: ${$v.gray70};
+    }
+  }
+`
+
 interface Props {
   viewer: any
   router: ReactRouter.InjectedRouter
@@ -86,6 +94,20 @@ class AfterSignUpView extends React.Component<Props, State> {
 
   componentDidMount() {
     this.activateTimeout = setTimeout(this.activateButton, 10000)
+    if (Smooch) {
+      try {
+        Smooch.init({
+          appToken: __SMOOCH_TOKEN__,
+          givenName: this.props.viewer.user.crm.information.name,
+          email: this.props.viewer.user.crm.information.email,
+          customText: {
+            headerText: 'Can I help you? 🙌',
+          },
+        })
+      } catch (e) {
+        //
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -113,19 +135,41 @@ class AfterSignUpView extends React.Component<Props, State> {
             we will get back to you immediately.
           </p>
           <div className={cx($p.mv25, $p.w100, $p.flex, $p.justifyCenter)}>
-            <CommunicationIcon
-              src={require('graphcool-styles/icons/fill/communicationIcons.svg')}
-              width={264}
-              height={47}
-              color='rgba(0,0,0,.3)'
-            />
+            <div className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter, $p.w40)}>
+              <a href='mailto:info@graph.cool' target='_blank'>
+                <WelcomeIcon
+                  width={48}
+                  height={48}
+                  src={require('graphcool-styles/icons/fill/welcomeEmail.svg')}
+                  color={$v.gray30}
+                  className={$p.pointer}
+                />
+              </a>
+              <a href='https://slack.graph.cool' target='_blank'>
+                <WelcomeIcon
+                  width={48}
+                  height={48}
+                  src={require('graphcool-styles/icons/fill/welcomeSlack.svg')}
+                  color={$v.gray30}
+                  className={$p.pointer}
+                />
+              </a>
+              <WelcomeIcon
+                width={48}
+                height={48}
+                src={require('graphcool-styles/icons/fill/welcomeChat.svg')}
+                color={$v.gray30}
+                className={$p.pointer}
+                onClick={this.openSmooch}
+              />
+            </div>
           </div>
           <div className={cx($p.w100, $p.bb, $p.bBlack10, $p.mv60)}></div>
           <div className={cx($p.f16, $p.fw3, $p.tc, $p.mt25)}>ONE LAST THING BEFORE WE GET STARTED</div>
           <div className={cx($p.flex, $p.justifyCenter)}>
             <CustomInputWrapper className={cx($p.relative, $p.flex, $p.justifyCenter, $p.mt25)}>
               {(!source || source.length === 0) && (
-                <Caret></Caret>
+                <Caret />
               )}
               <CustomInput
                 className={cx($p.white, $p.f38, $p.fw3, $p.tl)}
@@ -162,6 +206,13 @@ class AfterSignUpView extends React.Component<Props, State> {
         </Container>
       </div>
     )
+
+  }
+
+  private openSmooch = () => {
+    if (Smooch) {
+      Smooch.open()
+    }
   }
 
   private gotoConsole = () => {
@@ -218,6 +269,7 @@ export default Relay.createContainer(withRouter(AfterSignUpView), {
             information {
               id
               name
+              email
               source
             }
           }

@@ -11,6 +11,8 @@ import {ShowNotificationCallback} from '../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
+import {setRelationsPopupSource} from '../../actions/popupSources'
+import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
 const classes: any = require('./RelationRow.scss')
 
 interface Props {
@@ -19,6 +21,7 @@ interface Props {
   project: Project
   onRelationDeleted: () => void
   showNotification: ShowNotificationCallback
+  setRelationsPopupSource: (source: RelationsPopupSource) => void
 }
 
 class RelationRow extends React.Component<Props,{}> {
@@ -26,7 +29,13 @@ class RelationRow extends React.Component<Props,{}> {
   render(): JSX.Element {
     const to = `/${this.props.project.name}/relations/edit/${this.props.relation.name}`
     return (
-      <div className={classes.root} onClick={() => this.props.router.push(to)}>
+      <div
+        className={classes.root}
+        onClick={() => {
+          this.props.setRelationsPopupSource('relations')
+          this.props.router.push(to)
+        }}
+      >
         <div className={classes.row}>
           <div>
             <div>
@@ -51,7 +60,7 @@ class RelationRow extends React.Component<Props,{}> {
           </div>
           <span className={classes.buttons}>
             <span className={classes.icon}>
-              <Link to={to}>
+              <Link to={to} onClick={() => this.props.setRelationsPopupSource('relations')}>
               <Icon
                 width={20}
                 height={20}
@@ -91,11 +100,7 @@ class RelationRow extends React.Component<Props,{}> {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
-}
-
-const MappedRelationRow = connect(null, mapDispatchToProps)(withRouter(RelationRow))
+const MappedRelationRow = connect(null, { showNotification, setRelationsPopupSource })(withRouter(RelationRow))
 
 export default Relay.createContainer(MappedRelationRow, {
   fragments: {

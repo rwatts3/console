@@ -4,6 +4,7 @@ import {ProgressIndicatorState} from '../types/progressIndicator'
 import {NotificationState} from '../types/notification'
 import {DataBrowserState} from '../types/databrowser/shared'
 import * as Bluebird from 'bluebird'
+import {PopupSourcesState} from './popupSources'
 
 export interface ReduxAction {
   type: string,
@@ -20,4 +21,5 @@ export interface StateTree {
   progressIndicator: ProgressIndicatorState
   notification: NotificationState
   databrowser: DataBrowserState
+  popupSources: PopupSourcesState
 }

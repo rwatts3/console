@@ -26,6 +26,7 @@ import {nextStep, showDonePopup} from '../../../actions/gettingStarted'
 import {bindActionCreators} from 'redux'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents, MutationType} from 'graphcool-metrics'
+import {FieldPopupSource} from 'graphcool-metrics/dist'
 const classes: any = require('./FieldPopup.scss')
 
 require('react-tagsinput/react-tagsinput.css')
@@ -40,6 +41,7 @@ interface Props {
   nextStep: any
   showNotification: ShowNotificationCallback
   showDonePopup: () => void
+  source: FieldPopupSource
 }
 
 interface State {
@@ -100,7 +102,7 @@ class FieldPopup extends React.Component<Props, State> {
 
   componentWillMount() {
     window.addEventListener('keydown', this.listenForKeys, false)
-    const {field, router, params} = this.props
+    const {field, router, params, source} = this.props
 
     if (field && field.isSystem) {
       router.replace({
@@ -108,7 +110,7 @@ class FieldPopup extends React.Component<Props, State> {
       })
     }
 
-    tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: this.mutationType, source: 'databrowser'}))
+    tracker.track(ConsoleEvents.Schema.Field.Popup.opened({type: this.mutationType, source}))
   }
 
   componentWillUnmount() {
@@ -703,6 +705,7 @@ class FieldPopup extends React.Component<Props, State> {
 const mapStateToProps = (state) => {
   return {
     gettingStartedState: state.gettingStarted.gettingStartedState,
+    source: state.popupSources.fieldPopup,
   }
 }
 

@@ -6,15 +6,19 @@ import {getFieldTypeName} from '../../../utils/valueparser'
 import {isScalar} from '../../../utils/graphql'
 import {Field} from '../../../types/types'
 import {classnames} from '../../../utils/classnames'
+import {connect} from 'react-redux'
 import tracker from '../../../utils/metrics'
 const classes: any = require('./HeaderCell.scss')
 import {ConsoleEvents, SortOrder} from 'graphcool-metrics'
+import {setFieldPopupSource} from '../../../actions/popupSources'
+import {FieldPopupSource} from 'graphcool-metrics/dist'
 
 interface Props {
   field: Field
   sortOrder?: string
   toggleSortOrder: () => void
   params: any
+  setFieldPopupSource: (source: FieldPopupSource) => void
 }
 
 class HeaderCell extends React.Component<Props, {}> {
@@ -52,6 +56,7 @@ class HeaderCell extends React.Component<Props, {}> {
               to={editUrl}
               className={classes.edit}
               onClick={() => {
+                this.props.setFieldPopupSource('databrowser')
                 tracker.track(ConsoleEvents.Databrowser.editFieldClicked())
               }}
             >
@@ -93,7 +98,11 @@ class HeaderCell extends React.Component<Props, {}> {
 
 }
 
-export default Relay.createContainer(HeaderCell, {
+const ConnectedHeaderCell = connect(null, {
+  setFieldPopupSource,
+})(HeaderCell)
+
+export default Relay.createContainer(ConnectedHeaderCell, {
     fragments: {
         field: () => Relay.QL`
           fragment on Field {
