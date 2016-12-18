@@ -296,6 +296,10 @@ Array [
     "type": "MUTATION_SUCCESS",
   },
   Object {
+    "payload": "asldkaslkdj",
+    "type": "DECREASE_COUNT_CHANGE",
+  },
+  Object {
     "type": "MUTATION_REQUEST",
   },
   Object {
@@ -306,10 +310,6 @@ Array [
   },
   Object {
     "type": "DATABROWSER_UI_CLEAR_NODE_SELECTION",
-  },
-  Object {
-    "payload": "asldkaslkdj",
-    "type": "DECREASE_COUNT_CHANGE",
   },
   Object {
     "type": "MUTATION_SUCCESS",

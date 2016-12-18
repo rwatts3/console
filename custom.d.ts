@@ -33,9 +33,6 @@ declare module 'identity-obj-proxy'
 declare module 'styled-components' // https://github.com/styled-components/styled-components/issues/89
 declare module 'redux-logger'
 declare module 'react-input-enhancements'
-declare module 'lodash.pick'
-declare module 'lodash.throttle'
-declare module 'lodash.isequal'
 declare module 'auth0-lock'
 
 declare var Smooch: any
@@ -161,6 +158,6 @@ declare module 'react-relay' {
   interface RelayProp {
     variables: any
     setVariables(variables: Object)
-    forceFetch()
+    forceFetch(opt?: any, cb?: Function)
   }
 }

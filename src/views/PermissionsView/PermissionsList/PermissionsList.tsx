@@ -21,7 +21,7 @@ class PermissionsList extends React.Component<Props, {}> {
   render() {
     const {models, params} = this.props
     return (
-        <Container className={cx($p.bgWhite, $p.bt, $p.bBlack10)}>
+        <Container className={cx($p.bgWhite, $p.bt, $p.bBlack10, $p.b)}>
           <ScrollBox>
             {models.map((model, index) =>
               <ModelPermissions

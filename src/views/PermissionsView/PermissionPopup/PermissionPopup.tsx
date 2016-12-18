@@ -16,6 +16,7 @@ import AddPermissionMutation from '../../../mutations/ModelPermission/AddPermiss
 import UpdatePermissionMutation from '../../../mutations/ModelPermission/UpdatePermissionMutation'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
+import DeleteModelPermissionMutation from '../../../mutations/DeleteModelPermissionMutation'
 
 interface Props {
   params: any
@@ -118,6 +119,10 @@ class PermissionPopup extends React.Component<Props, State> {
     const {params, model} = this.props
     const {selectedOperation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery} = this.state
 
+    if (!model) {
+      return null
+    }
+
     return (
       <PopupWrapper
         onClickOutside={() => {
@@ -179,6 +184,7 @@ class PermissionPopup extends React.Component<Props, State> {
               onCancel={this.closePopup}
               onCreate={this.createPermission}
               onUpdate={this.updatePermission}
+              onDelete={this.deletePermission}
               params={params}
             />
           </Container>
@@ -232,6 +238,22 @@ class PermissionPopup extends React.Component<Props, State> {
     )
   }
 
+  private deletePermission = () => {
+    const {permission: {id}, model} = this.props
+
+    tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
+    Relay.Store.commitUpdate(
+      new DeleteModelPermissionMutation({
+        modelPermissionId: id,
+        modelId: model.id,
+      }),
+      {
+        onSuccess: () => this.closePopup(),
+        onFailure: (transaction) => console.log(transaction),
+      },
+    )
+  }
+
   private closePopup = () => {
     const {router, params} = this.props
     router.push(`/${params.projectName}/permissions`)
@@ -240,7 +262,7 @@ class PermissionPopup extends React.Component<Props, State> {
 
 const MappedPermissionPopup = mapProps({
   permission: props => props.node || null,
-  model: props => (props.viewer && props.viewer.model) || props.node.model,
+  model: props => (props.viewer && props.viewer.model) || (props.node && props.node.model),
   isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
 })(PermissionPopup)
 

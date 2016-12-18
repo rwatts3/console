@@ -21,8 +21,8 @@ import {Viewer, Customer, Project} from '../../types/types'
 import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
-const classes: any = require('./ProjectRootView.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
+const classes: any = require('./ProjectRootView.scss')
 import drumstick from 'drumstick'
 require('../../styles/core.scss')
 
@@ -84,6 +84,15 @@ class ProjectRootView extends React.Component<Props, {}> {
               headerText: 'Can I help you? 🙌',
             },
           })
+
+          Smooch.on('message:sent', () => {
+            tracker.track(ConsoleEvents.Smooch.messageWritten())
+          })
+
+          Smooch.on('widget:opened', () => {
+            tracker.track(ConsoleEvents.Smooch.opened())
+          })
+
         } catch (e) {
           console.error(e)
         }

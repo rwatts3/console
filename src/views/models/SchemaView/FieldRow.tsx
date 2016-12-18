@@ -13,11 +13,15 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import * as cx from 'classnames'
-import {Icon, particles} from 'graphcool-styles'
+import {Icon, $p, $v} from 'graphcool-styles'
 const classes: any = require('./FieldRow.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'
 import DeleteRelationMutation from '../../../mutations/DeleteRelationMutation'
+import UpdateRelationDescriptionMutation from '../../../mutations/UpdateRelationDescriptionMutation'
+import {setFieldPopupSource, setRelationsPopupSource} from '../../../actions/popupSources'
+import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
+import {FieldPopupSource} from 'graphcool-metrics/dist'
 
 type DetailsState = 'PERMISSIONS' | 'CONSTRAINTS'
 
@@ -30,6 +34,8 @@ interface Props {
   possibleRelatedPermissionPaths: Field[][]
   showNotification: ShowNotificationCallback
   projectId: string
+  setFieldPopupSource: (source: FieldPopupSource) => void
+  setRelationsPopupSource: (source: RelationsPopupSource) => void
 }
 
 interface State {
@@ -62,38 +68,47 @@ class FieldRow extends React.Component<Props, State> {
     }
 
     let suffix
-    if (isScalar(field.typeIdentifier)) {
-      suffix = `/models/${this.props.params.modelName}/schema/edit/${this.props.field.name}`
-    } else {
+    const isRelation = !isScalar(field.typeIdentifier)
+    if (isRelation) {
       suffix = `/relations/edit/${this.props.field.relation.name}`
+    } else {
+      suffix = `/models/${this.props.params.modelName}/schema/edit/${this.props.field.name}`
     }
 
     const editLink = `/${this.props.params.projectName}${suffix}` // tslint:disable-line
 
-    if (!isScalar(field.typeIdentifier) && !field.relatedModel) {
+    if (isRelation && !field.relatedModel) {
       return null
     }
 
     return (
       <div className={classes.root}>
         <div className={`${classes.row} ${this.state.detailsState ? classes.active : ''}`}>
-          <Link className={classes.fieldName} to={editLink}>
+          <Link
+            className={classes.fieldName}
+            to={editLink}
+            onClick={this.trackEdit}
+          >
             <span className={classes.name}>{field.name}</span>
-            {field.isSystem &&
+            {field.isSystem && (
               <span className={classes.system}>System</span>
-            }
-            { !isScalar(field.typeIdentifier) &&
+            )}
+            {!isScalar(field.typeIdentifier) && (
               <span className={classes.relation}>Relation</span>
-            }
+            )}
           </Link>
-          <Link className={classes.type} to={editLink}>
+          <Link
+            className={classes.type}
+            to={editLink}
+            onClick={this.trackEdit}
+          >
             {!isScalar(field.typeIdentifier) ?
               (
                 <span>
-                  <div className={cx(particles.flex)}>
+                  <div className={cx($p.flex)}>
                     <Icon
                       className={cx(
-                        particles.mr4,
+                        $p.mr4,
                       )}
                       width={16}
                       height={16}
@@ -106,8 +121,8 @@ class FieldRow extends React.Component<Props, State> {
                 </span>
               )
               : (
-                <span>{type}</span>
-              )
+              <span>{type}</span>
+            )
             }
           </Link>
           <div className={classes.description}>
@@ -127,40 +142,60 @@ class FieldRow extends React.Component<Props, State> {
             }
           </div>
           <div className={classes.controls}>
-            {(!field.isSystem || (field.isSystem && field.name === 'roles')) &&
-            <Link to={editLink}>
+            {field.isSystem ? (
               <Icon
                 width={20}
                 height={20}
-                src={require('assets/icons/edit.svg')}
+                stroke={true}
+                strokeWidth={2}
+                color={$v.gray40}
+                src={require('graphcool-styles/icons/stroke/lock.svg')}
               />
-            </Link>
-            }
-            {field.isSystem &&
-            <Icon
-              width={20}
-              height={20}
-              src={require('graphcool-styles/icons/stroke/lock.svg')}
-            />
-            }
-            <span
-              onClick={() => isScalar(field.typeIdentifier) ? this.deleteField() : this.deleteRelation()}
-            >
-                <Icon
-                  width={20}
-                  height={20}
-                  src={require('assets/icons/delete.svg')}
-                />
-              </span>
+            ) : (
+              <div className={cx($p.flex, $p.flexRow)}>
+                <Link
+                  to={editLink}
+                  onClick={this.trackEdit}
+                >
+                  <Icon
+                    width={20}
+                    height={20}
+                    color={$v.gray40}
+                    src={require('assets/icons/edit.svg')}
+                  />
+                </Link>
+                <span
+                  onClick={() => isScalar(field.typeIdentifier) ? this.deleteField() : this.deleteRelation()}
+                >
+                  <Icon
+                    width={20}
+                    height={20}
+                    src={require('assets/icons/delete.svg')}
+                  />
+                </span>
+              </div>
+            )}
           </div>
         </div>
-        {this.state.detailsState === 'CONSTRAINTS' &&
-        <Constraints
-          field={field}
-        />
+        {
+          this.state.detailsState === 'CONSTRAINTS' && (
+            <Constraints
+              field={field}
+            />
+          )
         }
-      </div>
+      </
+        div >
     )
+  }
+
+  private trackEdit = () => {
+    const {field} = this.props
+    if (!isScalar(field.typeIdentifier)) {
+      this.props.setRelationsPopupSource('schema')
+    } else {
+      this.props.setFieldPopupSource('schema')
+    }
   }
 
   private deleteField() {
@@ -206,6 +241,7 @@ class FieldRow extends React.Component<Props, State> {
 
   private saveDescription(e) {
     const description = e.target.value
+    const {field} = this.props
     if (this.props.field.description === description) {
       this.setState({editDescription: false} as State)
       return
@@ -213,29 +249,55 @@ class FieldRow extends React.Component<Props, State> {
 
     this.setState({editDescriptionPending: true} as State)
 
-    Relay.Store.commitUpdate(
-      new UpdateFieldDescriptionMutation({
-        fieldId: this.props.field.id,
-        description,
-      }),
-      {
-        onSuccess: () => {
-          tracker.track(ConsoleEvents.Schema.Field.Description.changed())
+    if (isScalar(field.typeIdentifier)) {
+      Relay.Store.commitUpdate(
+        new UpdateFieldDescriptionMutation({
+          fieldId: this.props.field.id,
+          description,
+        }),
+        {
+          onSuccess: () => {
+            tracker.track(ConsoleEvents.Schema.Field.Description.changed())
 
-          this.setState({
-            editDescription: false,
-            editDescriptionPending: false,
-          } as State)
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
         },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({
-            editDescription: false,
-            editDescriptionPending: false,
-          } as State)
+      )
+    } else {
+      Relay.Store.commitUpdate(
+        new UpdateRelationDescriptionMutation({
+          relationId: field.relation.id,
+          description,
+        }),
+        {
+          onSuccess: () => {
+            tracker.track(ConsoleEvents.Schema.Field.Description.changed())
+
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({
+              editDescription: false,
+              editDescriptionPending: false,
+            } as State)
+          },
         },
-      },
-    )
+      )
+    }
   }
 
   private togglePermissions() {
@@ -249,14 +311,16 @@ class FieldRow extends React.Component<Props, State> {
   }
 
   private renderDescription() {
-    if (this.props.field.relation) {
-      return
-    }
     if (this.state.editDescriptionPending) {
       return (
         <Loading color='#B9B9C8'/>
       )
     }
+
+    const {field} = this.props
+    const description = isScalar(field.typeIdentifier) ?
+      field.description :
+      field.relation.description
 
     if (this.state.editDescription) {
       return (
@@ -264,14 +328,14 @@ class FieldRow extends React.Component<Props, State> {
           autoFocus
           type='text'
           placeholder='Description'
-          defaultValue={this.props.field.description}
+          defaultValue={description}
           onBlur={(e) => this.saveDescription(e)}
           onKeyDown={(e) => e.keyCode === 13 ? (e.target as HTMLInputElement).blur() : null}
         />
       )
     }
 
-    if (!this.props.field.description) {
+    if (!description) {
       return (
         <span
           className={classes.addDescription}
@@ -287,18 +351,13 @@ class FieldRow extends React.Component<Props, State> {
         className={classes.descriptionText}
         onClick={() => this.setState({ editDescription: true } as State)}
       >
-        {this.props.field.description}
+        {description}
       </span>
     )
   }
-
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
-}
-
-const MappedFieldRow = connect(null, mapDispatchToProps)(FieldRow)
+const MappedFieldRow = connect(null, { showNotification, setFieldPopupSource, setRelationsPopupSource })(FieldRow)
 
 export default Relay.createContainer(MappedFieldRow, {
   fragments: {
@@ -322,6 +381,7 @@ export default Relay.createContainer(MappedFieldRow, {
         relation {
           id
           name
+          description
         }
       }
     `,

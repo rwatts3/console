@@ -1,14 +1,9 @@
 exports[`test StringCell renders 1`] = `
-<textarea
+<input
   autoFocus={true}
-  defaultValue="some string"
   onBlur={[Function]}
   onChange={[Function]}
   onKeyDown={[Function]}
-  style={
-    Object {
-      "height": 56,
-    }
-  }
-  type="text" />
+  type="text"
+  value="some string" />
 `;

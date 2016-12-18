@@ -8,7 +8,7 @@ const classes: any = require('./ScalarListCell.scss')
 import styled from 'styled-components'
 import {variables, $p, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
-import isEqual from 'lodash.isequal'
+import {isEqual} from 'lodash'
 
 interface State {
   values: AtomicValue[]

@@ -1,6 +1,6 @@
 import {Step} from './gettingStarted'
 
-interface RelayConnection<T> {
+export interface RelayConnection<T> {
   edges: RelayEdge<T>[]
 }
 

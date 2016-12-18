@@ -1,5 +1,5 @@
 import * as React from 'react' // tslint:disable-line
-import pick from 'lodash.pick'
+import {pick} from 'lodash'
 
 export function ExcludeProps(SubComponent: any, filter: string[] = []) {
   return (props) => {

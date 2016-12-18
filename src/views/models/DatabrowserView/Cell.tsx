@@ -433,11 +433,28 @@ export default Relay.createContainer(MappedCell, {
         typeIdentifier
         enumValues
         model {
+          id
           name
         }
         relatedModel {
           ${NodeSelector.getFragment('relatedModel')}
+          id
           name
+        }
+        reverseRelationField {
+          isList
+          name
+        }
+        relationSide
+        relation {
+          fieldOnLeftModel {
+            id
+            name
+          }
+          fieldOnRightModel {
+            id
+            name
+          }
         }
         ${RelationsPopup.getFragment('originField')}
       }

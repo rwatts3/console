@@ -16,6 +16,7 @@ import { reduceProgress } from './reducers/progressIndicator'
 import { reduceData as reduceDataBrowserData } from './reducers/databrowser/data'
 import { reduceUI as reduceDataBrowserUI } from './reducers/databrowser/ui'
 import { reduceNotification } from './reducers/notification'
+import  popupSources from './reducers/popupSources'
 import { StateTree } from './types/reducers'
 import logger from 'redux-logger'
 import * as ReactGA from 'react-ga'
@@ -43,6 +44,7 @@ const reducers: StateTree = combineReducers({
     ui: reduceDataBrowserUI,
   }),
   codeGeneration: reduceCodeGeneration,
+  popupSources,
 })
 
 let middlewares = [thunk.default]

@@ -1,7 +1,9 @@
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import {closePopup} from '../../actions/popup'
 import {ReduxAction} from '../../types/reducers'
+import styled from 'styled-components'
 
 interface Props {
   id?: string
@@ -9,24 +11,57 @@ interface Props {
   onClickOutside?: (e: any) => void
 }
 
+const Container = styled.div`
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`
+
 class PopupWrapper extends React.Component<Props, {}> {
   refs: {
     container: Element,
   }
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.keyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.keyDown)
+  }
+
+  keyDown = (e: KeyboardEvent) => {
+    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+      this.close(e)
+    }
+  }
+
   render() {
     return (
-      <div
+      <Container
         className='fixed left-0 right-0 top-0 bottom-0 z-999'
         style={{
           overflow: 'scroll',
         }}
-        onClick={this.close.bind(this)}
+        onClick={this.handleClick}
         ref='container'
       >
         {this.props.children}
-      </div>
+      </Container>
     )
+  }
+
+  private handleClick = (e: any) => {
+
+    const container: Element = ReactDOM.findDOMNode(this.refs.container)
+    if (!container.children) {
+      return
+    }
+    if (container.children[0] !== e.target) {
+      return
+    }
+
+    this.close(e)
   }
 
   private close = (e: any) => {
@@ -34,9 +69,6 @@ class PopupWrapper extends React.Component<Props, {}> {
     // we have the background div in each popup at the moment
     // so when the first child of this container is clicked,
     // close the popup
-    if (this.refs.container.children[0] !== e.target) {
-      return
-    }
     if (typeof this.props.onClickOutside === 'function') {
       this.props.onClickOutside(e)
     }

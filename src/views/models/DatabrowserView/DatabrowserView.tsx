@@ -44,7 +44,7 @@ import {
 } from '../../../actions/databrowser/ui'
 import {GridPosition} from '../../../types/databrowser/ui'
 import {classnames} from '../../../utils/classnames'
-import throttle from 'lodash.throttle'
+import {throttle} from 'lodash'
 import {LightCell} from './LightCell'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
@@ -131,6 +131,7 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   private lokka: any
   private fieldColumnWidths: FieldWidths
+  private mounted: boolean
 
   private setSearchQueryThrottled = throttle(
     (q: string) => {
@@ -163,6 +164,7 @@ class DatabrowserView extends React.Component<Props, {}> {
   componentDidMount = () => {
     tracker.track(ConsoleEvents.Databrowser.viewed())
 
+    this.mounted = true
     this.props.router.setRouteLeaveHook(this.props.route, () => {
       if (this.props.newRowActive) {
         // TODO with custom dialogs use "return false" and display custom dialog
@@ -187,6 +189,7 @@ class DatabrowserView extends React.Component<Props, {}> {
   componentWillUnmount = () => {
     this.props.resetDataAndUI()
     document.removeEventListener('keydown', this.documentKeyDown)
+    this.mounted = false
   }
 
   componentWillReceiveProps = (nextProps: Props) => {
@@ -199,6 +202,13 @@ class DatabrowserView extends React.Component<Props, {}> {
     ) {
       this.reloadData(0, nextProps)
     }
+  }
+
+  forceFetch = () => {
+    this.props.relay.forceFetch({}, () => {
+      console.log('force fetched', this.props.model.namePlural, this.props.fields)
+      // this.reloadData()
+    })
   }
 
   render() {
@@ -214,7 +224,7 @@ class DatabrowserView extends React.Component<Props, {}> {
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
-          forceFetchRoot={this.props.relay.forceFetch}
+          forceFetchRoot={this.forceFetch}
         >
           <div
             className={classnames(classes.button, classes.search, {
@@ -759,8 +769,15 @@ export default Relay.createContainer(MappedDatabrowserView, {
                 typeIdentifier
                 isList
                 isReadonly
+                isSystem
                 defaultValue
                 relatedModel {
+                  id
+                  name
+                }
+                reverseRelationField {
+                  id
+                  isList
                   name
                 }
                 ${HeaderCell.getFragment('field')}

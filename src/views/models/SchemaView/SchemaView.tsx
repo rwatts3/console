@@ -15,10 +15,13 @@ import {bindActionCreators} from 'redux'
 import {nextStep} from '../../../actions/gettingStarted'
 const classes: any = require('./SchemaView.scss')
 import * as cx from 'classnames'
-import {Icon, particles, variables} from 'graphcool-styles'
+import {Icon, $p, $v} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'
+import {FieldPopupSource} from 'graphcool-metrics/dist'
+import {setFieldPopupSource, setRelationsPopupSource} from '../../../actions/popupSources'
+import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
 
 interface Props {
   params: any
@@ -32,10 +35,11 @@ interface Props {
   nextStep: () => any
   router: ReactRouter.InjectedRouter
   route: any
-  children: Element
   viewer: Viewer
   relay: Relay.RelayProp
   showNotification: ShowNotificationCallback
+  setFieldPopupSource: (source: FieldPopupSource) => void
+  setRelationsPopupSource: (source: RelationsPopupSource) => void
 }
 interface State {
   activeFields: SelectedFieldsType
@@ -74,8 +78,8 @@ class SchemaView extends React.Component<Props, State> {
         {this.props.children}
         <ModelHeader
           buttonsClass={cx(
-            particles.ml0,
-            particles.mt6,
+            $p.ml0,
+            $p.mt6,
           )}
           params={this.props.params}
           model={this.props.model}
@@ -99,7 +103,7 @@ class SchemaView extends React.Component<Props, State> {
             zIndex={2}
           >
             <Link
-              className={`${classes.button} ${classes.green}`}
+              className={cx(classes.button, classes.green, $p.buttonShadow)}
               onClick={this.handleCreateFieldClick}
               to={`${urlPrefix}/models/${this.props.params.modelName}/schema/create`}
             >
@@ -109,27 +113,27 @@ class SchemaView extends React.Component<Props, State> {
                 src={require('graphcool-styles/icons/stroke/addFull.svg')}
                 stroke={true}
                 strokeWidth={3}
-                color={variables.accent}
+                color={$v.accent}
               />
               <span>New Field</span>
             </Link>
           </Tether>
           <Link
-            className={`${classes.button} ${classes.yellow}`}
-            onClick={this.handleCreateFieldClick}
+            className={cx(classes.button, classes.yellow, $p.buttonShadow)}
+            onClick={() => this.props.setRelationsPopupSource('schema')}
             to={`${urlPrefix}/relations/create?leftModelName=${this.props.params.modelName}`}
           >
             <Icon
               width={16}
               height={16}
               src={require('graphcool-styles/icons/stroke/addFull.svg')}
-              color={variables.lightBrown}
+              color={$v.lightBrown}
               stroke={true}
               strokeWidth={3}
             />
             <span>New Relation</span>
           </Link>
-          <div className={`${classes.group} `}>
+          <div className={cx(classes.group, $p.buttonShadow)}>
             <Link
               className={cx(
                 classes.group_button,
@@ -193,6 +197,7 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   private handleCreateFieldClick = (e: any) => {
+    this.props.setFieldPopupSource('schema')
     if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL')) {
       this.props.nextStep()
     }
@@ -221,7 +226,7 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({nextStep, showNotification}, dispatch)
+  return bindActionCreators({nextStep, showNotification, setFieldPopupSource, setRelationsPopupSource}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -253,60 +258,60 @@ export default Relay.createContainer(MappedSchemaView, {
     modelName: null, // injected from router
     projectName: null, // injected from router
   },
-    fragments: {
-        viewer: () => Relay.QL`
-            fragment on Viewer {
-                model: modelByName(projectName: $projectName, modelName: $modelName) {
-                    id
-                    isSystem
-                    possibleRelatedPermissionPaths(first: 100) {
-                        edges {
-                            node {
-                                fields {
-                                    id
-                                    name
-                                    typeIdentifier
-                                }
-                            }
-                        }
-                    }
-                    fields(first: 100) {
-                        edges {
-                            node {
-                                id
-                                name
-                                typeIdentifier
-                                relation {
-                                    name
-                                }
-                                ${FieldRow.getFragment('field')}
-                            }
-                        }
-                    }
-                    ${ModelHeader.getFragment('model')}
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          id
+          isSystem
+          possibleRelatedPermissionPaths(first: 100) {
+            edges {
+              node {
+                fields {
+                  id
+                  name
+                  typeIdentifier
                 }
-                project: projectByName(projectName: $projectName) {
-                    id
-                    name
-                    models(first: 1000) {
-                        edges {
-                            node {
-                                id
-                                name
-                                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
-                                    id
-                                    name
-                                    relation {
-                                        id
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ${ModelHeader.getFragment('project')}
-                }
-                ${ModelHeader.getFragment('viewer')}
+              }
             }
-        `,
-    },
+          }
+          fields(first: 100) {
+            edges {
+              node {
+                id
+                name
+                typeIdentifier
+                relation {
+                  name
+                }
+                ${FieldRow.getFragment('field')}
+              }
+            }
+          }
+          ${ModelHeader.getFragment('model')}
+        }
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
+                  id
+                  name
+                  relation {
+                    id
+                  }
+                }
+              }
+            }
+          }
+          ${ModelHeader.getFragment('project')}
+        }
+        ${ModelHeader.getFragment('viewer')}
+      }
+    `,
+  },
 })

@@ -15,6 +15,7 @@ export default class UpdateModelNameMutation extends Relay.Mutation<Props, {}> {
     return Relay.QL`
       fragment on UpdateModelPayload {
         model
+        project
       }
     `
   }
