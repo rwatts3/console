@@ -63,13 +63,13 @@ export interface Integration {
   type: IntegrationTypeType
 }
 
-export type IntegrationNameType = 
+export type IntegrationNameType =
     'AUTH_PROVIDER_AUTH0'
   | 'AUTH_PROVIDER_DIGITS'
   | 'AUTH_PROVIDER_EMAIL'
   | 'SEARCH_PROVIDER_ALGOLIA'
 
-export type IntegrationTypeType = 'AUTH_PROVIDER' | 'SEARCH_PROVIDER'
+export type IntegrationTypeType = 'AUTH_PROVIDER' | 'SEARCH_PROVIDER'
 
 export type FieldType =
     'Relation'
