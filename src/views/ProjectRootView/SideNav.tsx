@@ -214,6 +214,7 @@ export class SideNav extends React.Component<Props, State> {
             {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
+            {this.renderIntegrations()}
           </ScrollBox>
         </div>
         <div
@@ -314,6 +315,21 @@ export class SideNav extends React.Component<Props, State> {
      </Section>
    )
  }
+
+  private renderIntegrations = () => {
+    const integrationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/integrations`)
+    return (
+      <Section>
+        <Head
+          to={`/${this.props.params.projectName}/integrations`}
+          active={integrationsPageActive}
+        >
+          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/integrations.svg')}/>
+          <div>Integrations</div>
+        </Head>
+      </Section>
+    )
+  }
 
   private renderRelations = () => {
     const relationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/relations`)

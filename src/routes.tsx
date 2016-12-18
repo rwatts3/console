@@ -27,6 +27,7 @@ import PermissionsView from './views/PermissionsView/PermissionsView'
 import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
+import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 
@@ -131,6 +132,7 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
+      <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render} />
       <IndexRedirect to='models'/>
     </Route>
   </Route>
