@@ -45,6 +45,7 @@ interface Props {
   showPopup: (popup: Popup) => void
   itemCount: number
   countChanges: Immutable.Map<string, number>
+  isBetaCustomer: boolean
 }
 
 interface State {
@@ -194,7 +195,7 @@ export class SideNav extends React.Component<Props, State> {
   }
 
   render() {
-
+    const {isBetaCustomer} = this.props
     return (
       <div
         className={cx(
@@ -214,7 +215,7 @@ export class SideNav extends React.Component<Props, State> {
             {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
-            {this.renderIntegrations()}
+            {isBetaCustomer && this.renderIntegrations()}
           </ScrollBox>
         </div>
         <div
@@ -714,6 +715,12 @@ const MappedSideNav = mapProps({
   models: (props) => props.project.models.edges
     .map((edge) => edge.node)
     .sort((a, b) => a.name.localeCompare(b.name)),
+  isBetaCustomer: props =>
+    props.viewer &&
+    props.viewer.user &&
+    props.viewer.user.crm &&
+    props.viewer.user.crm.information &&
+    props.viewer.user.crm.information.isBeta || false,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedSideNav, {
@@ -722,6 +729,11 @@ export default Relay.createContainer(MappedSideNav, {
       fragment on Viewer {
         user {
           id
+          crm {
+            information {
+              isBeta
+            }
+          }
         }
       }
     `,

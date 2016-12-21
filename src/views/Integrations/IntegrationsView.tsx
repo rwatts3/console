@@ -1,23 +1,27 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
 import Helmet from 'react-helmet'
-import IntegrationsCardGrid from './IntegrationsCardGrid/IntegrationsCardGrid'
-import IntegrationsHeader from './IntegrationsHeader/IntegrationsHeader'
+import IntegrationsCardGrid from './IntegrationsCardGrid'
+import IntegrationsHeader from './IntegrationsHeader'
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
+import {Viewer} from '../../types/types'
 
 interface Props {
-  viewer: any
+  viewer: Viewer
+  params: any
 }
 
 class IntegrationsView extends React.Component<Props, {}> {
   render() {
-    const {project} = this.props.viewer
+    const {viewer: {project}, params} = this.props
+
     return (
       <div className={cx($p.overflowScroll, $p.h100, $p.bgBlack04)}>
         <Helmet title='Integrations' />
         <IntegrationsHeader />
-        <IntegrationsCardGrid project={project} />
+        <IntegrationsCardGrid project={project} params={params} />
+        {this.props.children}
       </div>
     )
   }

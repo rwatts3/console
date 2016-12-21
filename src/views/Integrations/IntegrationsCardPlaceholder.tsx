@@ -6,7 +6,6 @@ import {$p} from 'graphcool-styles'
 const Card = styled.div`
   width: 317px;
   height: 322px;
-  margin: 12px;
 `
 
 const LogoPlaceholder = styled.div`
@@ -22,6 +21,8 @@ const IntegrationsCardPlaceholder = () => {
       $p.itemsCenter,
       $p.justifyCenter,
       $p.bgBlack04,
+      $p.mt25,
+      $p.ml25,
     )}>
       <div className={cx($p.w60, $p.hS38, $p.mb38, $p.bgBlack04)} />
 

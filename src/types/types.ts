@@ -12,6 +12,7 @@ export interface Viewer {
   id: string
   user: Customer
   model: Model
+  project: Project
 }
 
 export interface Customer {
@@ -61,6 +62,21 @@ export interface Integration {
   isEnabled: boolean
   name: IntegrationNameType
   type: IntegrationTypeType
+}
+
+export interface SearchProviderAlgolia extends Integration {
+  applicationId: string
+  apiKey: string
+  algoliaSyncQueries: RelayConnection<AlgoliaSyncQuery>
+  algoliaSchema: string
+}
+
+export interface AlgoliaSyncQuery {
+  id: string
+  indexName: string
+  fragment: string
+  isEnabled: boolean
+  model: Model
 }
 
 export type IntegrationNameType =

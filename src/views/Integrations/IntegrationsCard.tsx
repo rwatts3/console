@@ -1,23 +1,23 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import {Link} from 'react-router'
 import * as cx from 'classnames'
 import {$p, Icon} from 'graphcool-styles'
 
-// TODO move to Types dir
 interface Integration {
-  connected: boolean,
+  isEnabled: boolean,
   logoURI: string,
   description: string
+  link: string
 }
 
 interface Props {
   integration: Integration
 }
 
-const Card = styled.div`
+const LinkCard = styled(Link)`
   width: 317px;
   height: 322px;
-  margin: 12px;
 `
 
 const ConnectionCheckmark = styled.div`
@@ -34,7 +34,10 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
   render() {
     const {integration} = this.props
     return (
-      <Card className={cx($p.flex, $p.flexColumn, $p.pa38, $p.bgWhite, $p.buttonShadow)}>
+      <LinkCard
+        className={cx($p.flex, $p.flexColumn, $p.pa38, $p.bgWhite, $p.buttonShadow, $p.mt25, $p.ml25)}
+        to={integration.link}
+      >
 
         <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyEnd)}>
           <ConnectionCheckmark
@@ -46,7 +49,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
             )}
           >
             <Icon
-              src={require('../../../assets/icons/check.svg')}
+              src={require('../../assets/icons/check.svg')}
               color='#fff'
             />
           </ConnectionCheckmark>
@@ -63,7 +66,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
           )}
         >
           <Logo src={integration.logoURI} alt='integration-logo' />
-          <div className={cx($p.black50)}>
+          <div className={cx($p.black50, $p.mt16)}>
             {integration.description}
           </div>
           <div className={cx($p.flex, $p.flexRow, $p.justifyCenter, $p.itemsCenter, $p.mt38)}>
@@ -77,17 +80,17 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
                 $p.br2,
                 $p.pointer,
                 {
-                  [`${$p.green} ${$p.bgGreen20}`]: integration.connected,
-                  [`${$p.white} ${$p.bgBlue}`]: !integration.connected,
+                  [`${$p.green} ${$p.bgGreen20}`]: integration.isEnabled,
+                  [`${$p.white} ${$p.bgBlue}`]: !integration.isEnabled,
                 },
               )}
             >
-              {integration.connected ? 'Connected' : 'Activate'}
+              {integration.isEnabled ? 'Enabled' : 'Not Enabled'}
             </div>
           </div>
         </div>
 
-      </Card>
+      </LinkCard>
     )
   }
 }

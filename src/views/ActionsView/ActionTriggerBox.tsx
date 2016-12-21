@@ -6,6 +6,8 @@ import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import ActionTrigger from './ActionTrigger'
 import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionTriggerBox.scss')
+import {$p} from 'graphcool-styles'
+import * as cx from 'classnames'
 
 interface Props {
   triggerMutationModelMutationType: ActionTriggerMutationModelMutationType
@@ -88,7 +90,7 @@ class ActionTriggerBox extends React.Component<Props, {}> {
         <div className={classes.info}>
           Specify a query for your action handler payload
         </div>}
-        <div className={classes.query}>
+        <div className={cx(classes.query, $p.bgDarkerBlue)}>
           {queryEditor}
         </div>
       </div>

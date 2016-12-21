@@ -17,7 +17,11 @@ const Button = styled.button`
 
 export default (props) => (
   <Container className={cx($p.flex, $p.justifyBetween, $p.white, $p.itemsCenter, $p.bt, $p.ph25)}>
-    <div onClick={props.onDelete} className={cx($p.red, $p.pointer)}>Delete</div>
+    {props.isEditing ? (
+      <div onClick={props.onDelete} className={cx($p.red, $p.pointer)}>Delete</div>
+    ) : (
+      <div></div>
+    )}
     <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
       <div onClick={props.onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
       <Button

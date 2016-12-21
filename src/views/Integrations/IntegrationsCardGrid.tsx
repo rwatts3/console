@@ -2,23 +2,27 @@ import * as React from 'react'
 import * as cx from 'classnames'
 import * as Relay from 'react-relay'
 import styled from 'styled-components'
-import {Project} from '../../../types/types'
+import {Project} from '../../types/types'
 import {$p} from 'graphcool-styles'
-import IntegrationsCard from '../IntegrationsCard/IntegrationsCard'
-import IntegrationsCardPlaceholder from '../IntegrationsCardPlaceholder/IntegrationsCardPlaceholder'
+import IntegrationsCard from './IntegrationsCard'
+import IntegrationsCardPlaceholder from './IntegrationsCardPlaceholder'
 
 interface Props {
   project: Project
+  params: any
 }
 
 class IntegrationsCardGrid extends React.Component<Props, {}> {
   render() {
-    const connected = this.props.project.integrations.edges.length === 0
+    const isEnabled = this.props.project.integrations.edges.length > 0
+      && this.props.project.integrations.edges[0].node.isEnabled
+    const {params: {projectName}} = this.props
 
     const mockIntegration = {
-      connected,
-      logoURI: require('../../../assets/graphics/algolia-logo.svg'),
+      isEnabled,
+      logoURI: require('../../assets/graphics/algolia-logo.svg'),
       description: 'Hosted Search API that delivers instant and relevant results from the first keystroke',
+      link: `/${projectName}/integrations/algolia`,
     }
 
     return (

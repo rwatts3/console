@@ -26,6 +26,11 @@ import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
 import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
+import AlgoliaPopup from './views/Integrations/AlgoliaPopup/AlgoliaPopup'
+import {
+  AlgoliaEditIndexPopup,
+  AlgoliaCreateIndexPopup,
+} from './views/Integrations/AlgoliaPopup/AlgoliaIndexPopup/AlgoliaIndexPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
@@ -132,7 +137,20 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
-      <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render} />
+      <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
+        <Route path='algolia' component={AlgoliaPopup} queries={ViewerQuery} render={render}>
+          <Route
+            path='edit/:id'
+            component={AlgoliaEditIndexPopup}
+            queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+            render={render}/>
+          <Route
+            path='create'
+            component={AlgoliaCreateIndexPopup}
+            queries={ViewerQuery}
+            render={render}/>
+        </Route>
+      </Route>
       <IndexRedirect to='models'/>
     </Route>
   </Route>
