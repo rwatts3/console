@@ -34,7 +34,7 @@ class AlgoliaPopupIndexes extends React.Component<Props, State> {
             to={`/${params.projectName}/integrations/algolia/edit/${id}`}
           >{indexName}</Link>
           <div
-            className={cx($p.bgBlack10, $p.f16, $p.pv4, $p.ph6, $p.mt16, $p.dib)}
+            className={cx($p.bgBlack10, $p.f16, $p.pv0, $p.ph6, $p.mt16, $p.dib)}
           >
             {model.name}
           </div>
