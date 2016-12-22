@@ -12,6 +12,7 @@ export interface Viewer {
   id: string
   user: Customer
   model: Model
+  project: Project
 }
 
 export interface Customer {
@@ -52,8 +53,39 @@ export interface Project {
   actions: RelayConnection<Action>
   permanentAuthTokens: RelayConnection<PermanentAuthToken>
   authProviders: RelayConnection<AuthProvider>
+  integrations: RelayConnection<Integration>
   actionSchema: string
 }
+
+export interface Integration {
+  id: string
+  isEnabled: boolean
+  name: IntegrationNameType
+  type: IntegrationTypeType
+}
+
+export interface SearchProviderAlgolia extends Integration {
+  applicationId: string
+  apiKey: string
+  algoliaSyncQueries: RelayConnection<AlgoliaSyncQuery>
+  algoliaSchema: string
+}
+
+export interface AlgoliaSyncQuery {
+  id: string
+  indexName: string
+  fragment: string
+  isEnabled: boolean
+  model: Model
+}
+
+export type IntegrationNameType =
+    'AUTH_PROVIDER_AUTH0'
+  | 'AUTH_PROVIDER_DIGITS'
+  | 'AUTH_PROVIDER_EMAIL'
+  | 'SEARCH_PROVIDER_ALGOLIA'
+
+export type IntegrationTypeType = 'AUTH_PROVIDER' | 'SEARCH_PROVIDER'
 
 export type FieldType =
     'Relation'

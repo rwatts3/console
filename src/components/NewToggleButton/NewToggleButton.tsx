@@ -6,6 +6,8 @@ import styled from 'styled-components'
 interface Props {
   defaultChecked: boolean
   onChange?: (e: any) => void
+  style?: any
+  className?: string
 }
 
 const Container = styled.label`
@@ -27,7 +29,7 @@ const Slider = styled.div`
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 50%;
-    box-shadow: 0 1px 3px ${variables.gray10};
+    box-shadow: 0 1px 3px ${variables.gray20};
   }
 `
 
@@ -44,10 +46,14 @@ const ToggleInput = styled.input`
 export default class NewToggleButton extends React.Component<Props, {}> {
   render() {
     return (
-      <Container className={cx(
-        $p.relative,
-        $p.dib,
-      )}>
+      <Container
+        className={cx(
+          $p.relative,
+          $p.dib,
+          this.props.className,
+        )}
+        style={this.props.style}
+      >
         <ToggleInput
           type='checkbox'
           className={$p.dn}

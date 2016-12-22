@@ -45,6 +45,7 @@ interface Props {
   showPopup: (popup: Popup) => void
   itemCount: number
   countChanges: Immutable.Map<string, number>
+  isBetaCustomer: boolean
 }
 
 interface State {
@@ -194,7 +195,7 @@ export class SideNav extends React.Component<Props, State> {
   }
 
   render() {
-
+    const {isBetaCustomer} = this.props
     return (
       <div
         className={cx(
@@ -214,6 +215,7 @@ export class SideNav extends React.Component<Props, State> {
             {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
+            {isBetaCustomer && this.renderIntegrations()}
           </ScrollBox>
         </div>
         <div
@@ -314,6 +316,21 @@ export class SideNav extends React.Component<Props, State> {
      </Section>
    )
  }
+
+  private renderIntegrations = () => {
+    const integrationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/integrations`)
+    return (
+      <Section>
+        <Head
+          to={`/${this.props.params.projectName}/integrations`}
+          active={integrationsPageActive}
+        >
+          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/integrations.svg')}/>
+          <div>Integrations</div>
+        </Head>
+      </Section>
+    )
+  }
 
   private renderRelations = () => {
     const relationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/relations`)
@@ -698,6 +715,12 @@ const MappedSideNav = mapProps({
   models: (props) => props.project.models.edges
     .map((edge) => edge.node)
     .sort((a, b) => a.name.localeCompare(b.name)),
+  isBetaCustomer: props =>
+    props.viewer &&
+    props.viewer.user &&
+    props.viewer.user.crm &&
+    props.viewer.user.crm.information &&
+    props.viewer.user.crm.information.isBeta || false,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedSideNav, {
@@ -706,6 +729,11 @@ export default Relay.createContainer(MappedSideNav, {
       fragment on Viewer {
         user {
           id
+          crm {
+            information {
+              isBeta
+            }
+          }
         }
       }
     `,

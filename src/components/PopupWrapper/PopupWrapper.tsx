@@ -31,7 +31,7 @@ class PopupWrapper extends React.Component<Props, {}> {
   }
 
   keyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
       this.close(e)
     }
   }

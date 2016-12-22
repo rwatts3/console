@@ -2,7 +2,7 @@ import * as React from 'react' // tslint:disable-line
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
 import PermissionIcon from '../PermissionsView/PermissionsList/ModelPermissions/PermissionIcon'
-import NewToggleButton from '../PermissionsView/PermissionsList/ModelPermissions/NewToggleButton'
+import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
 
 const ShowRoom = () => {
   return (
