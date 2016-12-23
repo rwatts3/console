@@ -115,14 +115,15 @@ export default (props) => (
         </div>
       </div>
 
-      {props.rule === 'GRAPH' && <div
-        className={cx($p.mt25)}>
+      {props.rule === 'GRAPH' &&
+      <div className={cx($p.mt25, $p.bgDarkerBlue)}>
         <QueryEditor
           className={cx($p.z9999)}
           schema={buildClientSchema(JSON.parse(props.permissionSchema))}
           value={props.ruleGraphQuery}
           onEdit={(query) => props.setRuleGraphQuery(query)}/>
-      </div>}
+      </div>
+      }
 
     </div>
   </div>
