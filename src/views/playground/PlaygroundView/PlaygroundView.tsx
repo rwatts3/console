@@ -288,7 +288,7 @@ class PlaygroundView extends React.Component<Props, State> {
             </select>
           </div>
         </div>
-        <div className={classes.graphiql}>
+        <div className={cx(classes.graphiql, $p.bgDarkerBlue)}>
           <GraphiQL
             key={this.state.selectedEndpoint}
             fetcher={fetcher}

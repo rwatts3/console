@@ -6,7 +6,15 @@ const config = require('./webpack.config')
 
 module.exports = {
   entry: {
-    app: './src/main',
+    app: [
+      './src/main',
+      './src/styles/codemirror.css',
+      './src/styles/graphiql.css',
+      'codemirror/mode/javascript/javascript',
+      'codemirror/mode/shell/shell',
+      // 'codemirror/lib/codemirror.css',
+      'codemirror/theme/dracula.css',
+    ],
     styles: 'graphcool-styles/dist/styles.css',
     vendor: config.entry.vendor,
   },
