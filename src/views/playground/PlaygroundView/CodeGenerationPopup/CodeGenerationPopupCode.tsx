@@ -17,13 +17,6 @@ interface Props {
 }
 
 class CodeGenerationPopupCode extends React.Component<Props, {}> {
-  componentWillMount() {
-    // we need to require here, as otherwise graphiql will be broken
-    require('../../../../styles/dracula.css')
-    require('../../../../styles/codemirror.css')
-    require('codemirror/mode/javascript/javascript')
-    require('codemirror/mode/shell/shell')
-  }
   render() {
     const {client, environment, endpointUrl, query} = this.props
 
