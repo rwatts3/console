@@ -10,9 +10,16 @@ export default class JsonCell extends React.Component<CellProps<string>, {}> {
         type='text'
         ref='input'
         defaultValue={valueToString(this.props.value, this.props.field, false)}
-        onKeyDown={this.props.onKeyDown}
+        onKeyDown={this.onKeyDown}
         onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
       />
     )
+  }
+
+  private onKeyDown = (e: any) => {
+    if ([37,38,39,40].includes(e.keyCode)) {
+      return
+    }
+    this.props.onKeyDown(e)
   }
 }
