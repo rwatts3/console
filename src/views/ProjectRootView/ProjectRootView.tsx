@@ -24,6 +24,7 @@ import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 const classes: any = require('./ProjectRootView.scss')
 import drumstick from 'drumstick'
+import * as Smooch from 'smooch'
 require('../../styles/core.scss')
 
 interface Props {
