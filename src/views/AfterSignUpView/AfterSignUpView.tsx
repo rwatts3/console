@@ -6,6 +6,7 @@ import * as cx from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import UpdateCustomerSourceMutation from '../../mutations/UpdateCustomerSourceMutation'
 import Timer = NodeJS.Timer
+import * as Smooch from 'smooch'
 
 const Container = styled.div`
   max-width: 750px;
