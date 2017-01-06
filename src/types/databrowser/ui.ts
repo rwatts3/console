@@ -11,6 +11,7 @@ export interface DataBrowserUIState {
   selectedCell: GridPosition
   editing: boolean
   browserViewRef: HTMLElement
+  dataBrowserViewRef: HTMLElement
   writing: boolean
   searchQuery: string
 }
