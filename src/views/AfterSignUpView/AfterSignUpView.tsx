@@ -5,7 +5,6 @@ import {$p, $v, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import UpdateCustomerSourceMutation from '../../mutations/UpdateCustomerSourceMutation'
-import Timer = NodeJS.Timer
 import * as Smooch from 'smooch'
 
 const Container = styled.div`
@@ -72,7 +71,7 @@ interface State {
 
 class AfterSignUpView extends React.Component<Props, State> {
 
-  activateTimeout: Timer
+  activateTimeout: number
 
   constructor(props) {
     super(props)
@@ -94,7 +93,7 @@ class AfterSignUpView extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.activateTimeout = setTimeout(this.activateButton, 10000)
+    this.activateTimeout = window.setTimeout(this.activateButton, 10000)
     if (Smooch) {
       try {
         Smooch.init({

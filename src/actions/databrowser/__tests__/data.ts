@@ -4,7 +4,7 @@ import * as lokka from 'lokka'
 import * as Immutable from 'immutable'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import {ActionRowState} from '../../../types/databrowser/actionrow'
-import {Model} from '../../../types/types'
+import {Model, FieldType} from '../../../types/types'
 
 describe('async data actions', () => {
   const store = mockStore({
@@ -61,11 +61,15 @@ describe('async data actions', () => {
       id: 'cip3p48sj001d1jsmzqysd6xd',
       name: 'id',
       description: '',
-      isReadonly: true,
       isList: false,
+      isUnique: true,
       isSystem: true,
-      typeIdentifier: 'GraphQLID',
+      isReadonly: true,
+      isRequired: false,
+      typeIdentifier: 'GraphQLID' as FieldType,
       relatedModel: null,
+      enumValues: [],
+      model: null,
     },
     {
       id: 'cip3p48sj001e1jsmghwkdt2k',
@@ -74,8 +78,12 @@ describe('async data actions', () => {
       isReadonly: false,
       isList: false,
       isSystem: true,
-      typeIdentifier: 'DateTime',
+      typeIdentifier: 'DateTime' as FieldType,
       relatedModel: null,
+      isRequired: false,
+      isUnique: false,
+      enumValues: [],
+      model: null,
     },
     {
       id: 'cip3p48sj001f1jsm5z015zjt',
@@ -84,8 +92,12 @@ describe('async data actions', () => {
       isReadonly: false,
       isList: false,
       isSystem: true,
-      typeIdentifier: 'DateTime',
+      typeIdentifier: 'DateTime' as FieldType,
       relatedModel: null,
+      isRequired: false,
+      isUnique: false,
+      enumValues: [],
+      model: null,
     },
     {
       id: 'cip3p48sj001g1jsmj8t36lpg',
@@ -94,10 +106,25 @@ describe('async data actions', () => {
       isReadonly: false,
       isList: false,
       isSystem: true,
-      typeIdentifier: 'Relation',
+      typeIdentifier: 'Relation' as FieldType,
+      isRequired: false,
+      isUnique: false,
       relatedModel: {
+        id: 'imageModel',
         name: 'Image',
+        namePlural: 'Images',
+        fields: {
+          edges: []
+        },
+        unconnectedReverseRelationFieldsFrom: [],
+        itemCount: 5,
+        description: '',
+        isSystem: false,
+        permissions: [],
+        permissionSchema: '',
       },
+      enumValues: [],
+      model: null,
     },
   ]
 
@@ -111,6 +138,11 @@ describe('async data actions', () => {
     name: 'Artist',
     namePlural: 'Artists',
     id: 'asldkaslkdj',
+    unconnectedReverseRelationFieldsFrom: [],
+    description: '',
+    isSystem: false,
+    permissions: [],
+    permissionSchema: '',
   }
 
   const fieldValues = {

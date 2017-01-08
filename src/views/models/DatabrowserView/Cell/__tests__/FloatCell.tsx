@@ -2,6 +2,8 @@ import * as React from 'react' // tslint:disable-line
 import FloatCell from '../FloatCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
+import {TypedValue} from '../../../../../types/utils'
+import {FieldType} from '../../../../../types/types'
 
 test('FloatCell renders', () => {
 
@@ -15,8 +17,12 @@ test('FloatCell renders', () => {
     isReadonly: true,
     isList: false,
     isSystem: true,
-    typeIdentifier: 'Float',
+    typeIdentifier: 'Float' as FieldType,
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
   }
 
   const component = shallow(

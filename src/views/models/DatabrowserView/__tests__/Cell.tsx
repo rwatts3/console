@@ -2,6 +2,78 @@ import * as React from 'react' // tslint:disable-line
 import {Cell} from '../Cell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
+import {FieldType} from '../../../../types/types'
+
+const fields = [{
+  id: 'cip3p48sj001d1jsmzqysd6xd',
+  name: 'id',
+  description: '',
+  isReadonly: true,
+  isList: false,
+  isSystem: true,
+  typeIdentifier: 'GraphQLID' as FieldType,
+  relatedModel: null,
+  isUnique: true,
+  isRequired: false,
+  enumValues: [],
+  model: null,
+},
+  {
+    id: 'cip3p48sj001e1jsmghwkdt2k',
+    name: 'description',
+    description: '',
+    isReadonly: true,
+    isList: false,
+    isSystem: true,
+    typeIdentifier: 'DateTime' as FieldType,
+    relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
+  },
+  {
+    id: 'cip3p48sj001f1jsm5z015zjt',
+    name: 'name',
+    description: '',
+    isReadonly: true,
+    isList: false,
+    isSystem: true,
+    typeIdentifier: 'DateTime' as FieldType,
+    relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
+  },
+  {
+    id: 'cip3p48sj001g1jsmj8t36lpg',
+    name: 'artwork',
+    description: '',
+    isReadonly: true,
+    isList: false,
+    isSystem: true,
+    typeIdentifier: 'Relation' as FieldType,
+    relatedModel: {
+      id: 'imageModel',
+      name: 'Image',
+      namePlural: 'Images',
+      fields: {
+        edges: []
+      },
+      unconnectedReverseRelationFieldsFrom: [],
+      itemCount: 5,
+      description: '',
+      isSystem: false,
+      permissions: [],
+      permissionSchema: '',
+    },
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
+  },
+]
 
 test('Cell renders and runs selectCell', () => {
 
@@ -16,6 +88,7 @@ test('Cell renders and runs selectCell', () => {
   const nextRow = jest.fn()
   const previousRow = jest.fn()
 
+
   const component = shallow(
     <Cell
       projectId='asd'
@@ -28,8 +101,12 @@ test('Cell renders and runs selectCell', () => {
         isReadonly: true,
         isList: false,
         isSystem: true,
-        typeIdentifier: 'String',
+        typeIdentifier: 'String' as FieldType,
         relatedModel: null,
+        isUnique: true,
+        isRequired: false,
+        enumValues: [],
+        model: null,
       }}
       addnew={false}
       backgroundColor='#fff'
@@ -41,7 +118,7 @@ test('Cell renders and runs selectCell', () => {
       newRowActive={false}
       rowIndex={3}
       selected={false}
-      showNotification={false}
+      showNotification={() => {}}
       update={update}
       reload={reload}
       selectCell={selectCell}
@@ -53,50 +130,9 @@ test('Cell renders and runs selectCell', () => {
       nextRow={nextRow}
       previousRow={previousRow}
       position={{row: 1, field: 'id'}}
-      fields={[
-        {
-          id: 'cip3p48sj001d1jsmzqysd6xd',
-          name: 'id',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'GraphQLID',
-          relatedModel: null,
-        },
-        {
-          id: 'cip3p48sj001e1jsmghwkdt2k',
-          name: 'description',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'DateTime',
-          relatedModel: null,
-        },
-        {
-          id: 'cip3p48sj001f1jsm5z015zjt',
-          name: 'name',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'DateTime',
-          relatedModel: null,
-        },
-        {
-          id: 'cip3p48sj001g1jsmj8t36lpg',
-          name: 'artwork',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'Relation',
-          relatedModel: {
-            name: 'Image',
-          },
-        },
-      ]}
+      fields={fields}
+      modelNamePlural='Images'
+      projectName='Project'
       loaded={[true,true,true,true]}
     />,
   )
@@ -135,8 +171,12 @@ test('Cell renders in edit mode', () => {
         isReadonly: true,
         isList: false,
         isSystem: true,
-        typeIdentifier: 'String',
+        typeIdentifier: 'String' as FieldType,
         relatedModel: null,
+        isUnique: true,
+        isRequired: false,
+        enumValues: [],
+        model: null,
       }}
       addnew={false}
       backgroundColor='#fff'
@@ -144,11 +184,11 @@ test('Cell renders in edit mode', () => {
       rowHasCursor={false}
       isReadonly={false}
       needsFocus={false}
-      editing={true}
+      editing={false}
       newRowActive={false}
       rowIndex={3}
       selected={false}
-      showNotification={false}
+      showNotification={() => {}}
       update={update}
       reload={reload}
       selectCell={selectCell}
@@ -160,50 +200,9 @@ test('Cell renders in edit mode', () => {
       nextRow={nextRow}
       previousRow={previousRow}
       position={{row: 1, field: 'id'}}
-      fields={[
-        {
-          id: 'cip3p48sj001d1jsmzqysd6xd',
-          name: 'id',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'GraphQLID',
-          relatedModel: null,
-        },
-        {
-          id: 'cip3p48sj001e1jsmghwkdt2k',
-          name: 'description',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'DateTime',
-          relatedModel: null,
-        },
-        {
-          id: 'cip3p48sj001f1jsm5z015zjt',
-          name: 'name',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'DateTime',
-          relatedModel: null,
-        },
-        {
-          id: 'cip3p48sj001g1jsmj8t36lpg',
-          name: 'artwork',
-          description: '',
-          isReadonly: true,
-          isList: false,
-          isSystem: true,
-          typeIdentifier: 'Relation',
-          relatedModel: {
-            name: 'Image',
-          },
-        },
-      ]}
+      fields={fields}
+      modelNamePlural='Images'
+      projectName='Project'
       loaded={[true,true,true,true]}
     />,
   )

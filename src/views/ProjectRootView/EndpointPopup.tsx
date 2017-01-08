@@ -9,7 +9,6 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-import Timer = NodeJS.Timer
 
 interface Props {
   id: string
@@ -31,7 +30,7 @@ class EndpointPopup extends React.Component<Props, State> {
     copied: false,
   }
 
-  copyTimer: Timer
+  copyTimer: number
 
   componentWillUnmount() {
     clearTimeout(this.copyTimer)
@@ -297,11 +296,11 @@ class EndpointPopup extends React.Component<Props, State> {
     this.setState({ copied: false, endpoint } as State)
   }
 
-  private onCopy = () => {
+  private onCopy: () => any = () => {
     tracker.track(ConsoleEvents.Endpoints.copied())
-    this.setState({ copied: true } as State)
-    this.copyTimer = setTimeout(
-      () => this.setState({ copied: false } as State),
+    this.setState({copied: true} as State)
+    this.copyTimer = window.setTimeout(
+      () => this.setState({copied: false} as State),
       1000,
     )
   }

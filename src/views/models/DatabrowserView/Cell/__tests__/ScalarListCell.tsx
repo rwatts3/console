@@ -3,6 +3,7 @@ import ScalarListCell from '../ScalarListCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import {TypedValue} from '../../../../../types/utils'
+import {FieldType} from '../../../../../types/types'
 
 test('ScalarListCell renders', () => {
 
@@ -16,13 +17,19 @@ test('ScalarListCell renders', () => {
     isReadonly: true,
     isList: true,
     isSystem: true,
-    typeIdentifier: 'Int',
+    typeIdentifier: 'Int' as FieldType,
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
   }
 
   const component = shallow(
     <ScalarListCell
       value={[1,2,3]}
+      nodeId={null}
+      projectId={null}
       methods={{
         save, cancel, onKeyDown,
       }}

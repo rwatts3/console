@@ -2,6 +2,8 @@ import * as React from 'react' // tslint:disable-line
 import DateTimeCell from '../DateTimeCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
+import {FieldType} from '../../../../../types/types'
+import {TypedValue} from '../../../../../types/utils'
 
 test('DateTimeCell renders', () => {
 
@@ -15,8 +17,12 @@ test('DateTimeCell renders', () => {
     isReadonly: true,
     isList: false,
     isSystem: true,
-    typeIdentifier: 'DateTime',
+    typeIdentifier: 'DateTime' as FieldType,
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
   }
 
   const component = shallow(
