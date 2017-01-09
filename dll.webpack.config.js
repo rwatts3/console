@@ -1,7 +1,4 @@
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const cssnano = require('cssnano')
-const path = require('path')
 
 const vendor = [
   'auth0-lock',
@@ -51,27 +48,16 @@ const vendor = [
   'smooch',
   'styled-components',
   'tachyons',
+  'babel-runtime',
 ]
 
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
   entry: {
-    app: [
-      './src/main',
-      './src/styles/codemirror.css',
-      './src/styles/graphiql.css',
-      'codemirror/mode/javascript/javascript',
-      'codemirror/mode/shell/shell',
-      // 'codemirror/lib/codemirror.css',
-      'codemirror/theme/dracula.css',
-    ],
-    styles: 'graphcool-styles/dist/styles.css',
-    vendor,
+    // create two library bundles, one with jQuery and
+    // another with Angular and related libraries
+    vendor
   },
-  output: {
-    filename: '[name].[hash].js',
-    publicPath: '/',
-  },
+
   module: {
     rules: [{
       enforce: 'pre',
@@ -111,54 +97,26 @@ module.exports = {
       loader: 'file-loader',
     }],
   },
+
+  output: {
+    filename: '[name].bundle.js',
+    path: 'dll/',
+
+    // The name of the global variable which the library's
+    // require() function will be assigned to
+    library: '[name]_lib',
+  },
+
   plugins: [
-    new webpack.DefinePlugin({
-      __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
-      __HEARTBEAT_ADDR__: false,
-      __AUTH0_DOMAIN__: '"graphcool-customers-dev.auth0.com"',
-      __AUTH0_CLIENT_ID__: '"2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm"',
-      __METRICS_ENDPOINT__: false,
-      __GA_CODE__: false,
-      __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
-      'process.env': {
-        'NODE_ENV': JSON.stringify('dev')
-      },
-    }),
-    new HtmlWebpackPlugin({
-      favicon: 'static/favicon.png',
-      template: 'src/index.html',
-    }),
-    new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
-    new webpack.optimize.CommonsChunkPlugin('vendor'),
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        postcss: [
-          cssnano({
-            autoprefixer: {
-              add: true,
-              remove: true,
-              browsers: ['last 2 versions'],
-            },
-            discardComments: {
-              removeAll: true,
-            },
-            safe: true,
-          })
-        ],
-        svgo: {
-          plugins: [
-            {removeStyleElement: true},
-          ],
-        },
-      }
-    }),
-    new webpack.DllReferencePlugin({
-      context: '.',
-      manifest: require('./dll/vendor-manifest.json'),
+    new webpack.DllPlugin({
+      // The path to the manifest file which maps between
+      // modules included in a bundle and the internal IDs
+      // within that bundle
+      path: 'dll/[name]-manifest.json',
+      // The name of the global variable which the library's
+      // require function has been assigned to. This must match the
+      // output.library option above
+      name: '[name]_lib'
     }),
   ],
-  resolve: {
-    modules: [path.resolve('./src'), 'node_modules'],
-    extensions: ['.js', '.ts', '.tsx'],
-  },
 }
