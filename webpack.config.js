@@ -2,6 +2,8 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
+const cheerio = require('cheerio')
+const fs = require('fs')
 
 const vendor = [
   'auth0-lock',
@@ -127,6 +129,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',
       template: 'src/index.html',
+      templateContent: templateContent(),
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
     new webpack.optimize.CommonsChunkPlugin('vendor'),
@@ -162,3 +165,17 @@ module.exports = {
     extensions: ['.js', '.ts', '.tsx'],
   },
 }
+
+function templateContent() {
+   const html = fs.readFileSync(
+     path.resolve(process.cwd(), 'src/index.html')
+   ).toString();
+
+   const doc = cheerio(html);
+   const body = doc.find('body');
+   const dllNames = ['vendor.bundle.js']
+
+   dllNames.forEach(dllName => body.append(`<script data-dll='true' src='/${dllName}'></script>`));
+
+   return doc.toString();
+ }
