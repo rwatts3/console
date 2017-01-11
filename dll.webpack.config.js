@@ -48,7 +48,6 @@ const vendor = [
   'smooch',
   'styled-components',
   'tachyons',
-  'babel-runtime',
 ]
 
 module.exports = {

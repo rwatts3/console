@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {ReduxAction} from '../../types/reducers'
 import {closePopup} from '../../actions/popup'
-import styled, { keyframes } from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 import {particles, variables, Icon} from 'graphcool-styles'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
@@ -152,8 +152,8 @@ class EndpointPopup extends React.Component<Props, State> {
 
     `
 
-    const { endpoint, copied } = this.state
-    const { projectId } = this.props
+    const {endpoint, copied} = this.state
+    const {projectId} = this.props
 
     const url = `https://api.graph.cool/${endpoint}/${projectId}`
 
@@ -240,7 +240,7 @@ class EndpointPopup extends React.Component<Props, State> {
               {url}
             </EndpointField>
             <CopyToClipboard text={url}
-              onCopy={this.onCopy}>
+                             onCopy={this.onCopy}>
               <Copy
                 className={cx(
                   particles.relative,
@@ -282,9 +282,9 @@ class EndpointPopup extends React.Component<Props, State> {
               particles.black50,
             )}
           >
-          {
-            // tslint:disable-next-line
-        }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://graph.cool/docs/reference/simple-api#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://graph.cool/docs/examples'>check out some code examples</a>.
+            {
+              // tslint:disable-next-line
+            }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://graph.cool/docs/reference/simple-api#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://graph.cool/docs/examples'>check out some code examples</a>.
           </p>
         </Popup>
       </div>
@@ -293,7 +293,7 @@ class EndpointPopup extends React.Component<Props, State> {
 
   private selectEndpoint = (endpoint: Endpoint) => {
     tracker.track(ConsoleEvents.Endpoints.selected())
-    this.setState({ copied: false, endpoint } as State)
+    this.setState({copied: false, endpoint} as State)
   }
 
   private onCopy: () => any = () => {
