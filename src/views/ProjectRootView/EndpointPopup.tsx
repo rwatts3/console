@@ -284,7 +284,7 @@ class EndpointPopup extends React.Component<Props, State> {
           >
             {
               // tslint:disable-next-line
-            }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://graph.cool/docs/reference/simple-api#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://graph.cool/docs/examples'>check out some code examples</a>.
+            }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://graph.cool/docs/reference/simple-api/overview-heshoov3ai#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://github.com/graphcool-examples'>check out some code examples</a>.
           </p>
         </Popup>
       </div>

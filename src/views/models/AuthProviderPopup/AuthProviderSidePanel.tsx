@@ -28,7 +28,7 @@ const texts: {[key: string]: AuthText} = {
     title: 'Graphcool Email + Password',
     description: 'Use our built-in auth system that authenticates users with email and password',
     link: {
-      href: 'https://graph.cool/docs/reference/platform/authentication',
+      href: 'https://graph.cool/docs/reference/platform/authentication-wejileech9',
       content: 'graph.cool/docs',
     },
   },

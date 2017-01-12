@@ -96,7 +96,7 @@ class RelationsView extends React.Component<Props, {}> {
                           $p.pointer,
                           $p.db,
                         )}
-                        href='https://graph.cool/docs/reference/platform/relations'
+                        href='https://graph.cool/docs/faq/graphcool-relation-multiplicities-chietu0ahn'
                         target='_blank'
                       >
                         Docs
