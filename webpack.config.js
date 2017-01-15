@@ -178,4 +178,4 @@ function templateContent() {
    dllNames.forEach(dllName => body.append(`<script data-dll='true' src='/${dllName}'></script>`));
 
    return doc.toString();
- }
+}
