@@ -59,7 +59,7 @@ const fields = [{
       name: 'Image',
       namePlural: 'Images',
       fields: {
-        edges: []
+        edges: [],
       },
       unconnectedReverseRelationFieldsFrom: [],
       itemCount: 5,
@@ -87,7 +87,6 @@ test('Cell renders and runs selectCell', () => {
   const previousCell = jest.fn()
   const nextRow = jest.fn()
   const previousRow = jest.fn()
-
 
   const component = shallow(
     <Cell
@@ -118,7 +117,7 @@ test('Cell renders and runs selectCell', () => {
       newRowActive={false}
       rowIndex={3}
       selected={false}
-      showNotification={() => {}}
+      showNotification={() => {/**/}}
       update={update}
       reload={reload}
       selectCell={selectCell}
@@ -188,7 +187,7 @@ test('Cell renders in edit mode', () => {
       newRowActive={false}
       rowIndex={3}
       selected={false}
-      showNotification={() => {}}
+      showNotification={() => {/**/}}
       update={update}
       reload={reload}
       selectCell={selectCell}

@@ -114,7 +114,7 @@ describe('async data actions', () => {
         name: 'Image',
         namePlural: 'Images',
         fields: {
-          edges: []
+          edges: [],
         },
         unconnectedReverseRelationFieldsFrom: [],
         itemCount: 5,
