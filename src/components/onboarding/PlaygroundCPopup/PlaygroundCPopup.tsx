@@ -285,21 +285,21 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                 </div>
                 <div className={`h-100 justify-start flex flex-column mv-38 ${classes.guides}`}>
                   <a
-                    href='https://graph.cool/docs/guides/declaring-relations-between-your-models'
+                    href='https://graph.cool/docs/tutorials/quickstart-2-daisheeb9x'
                     className={`${classes.one} fw4 black db flex items-center mb-25`}
                     target='_blank'
                   >
                     Declaring Relations
                   </a>
                   <a
-                    href='https://graph.cool/docs/guides/implementing-business-logic-using-mutation-callbacks'
+                    href='https://graph.cool/docs/tutorials/quickstart-3-saigai7cha'
                     className={`${classes.two} fw4 black db flex items-center mb-25`}
                     target='_blank'
                   >
                     Implementing Business Logic
                   </a>
                   <a
-                    href='https://graph.cool/docs/guides/thinking-in-terms-of-graphs'
+                    href='https://graph.cool/docs/tutorials/thinking-in-terms-of-graphs-ahsoow1ool'
                     target='_blank'
                     className={`${classes.three} fw4 black db flex items-center mb-25`}
                   >
