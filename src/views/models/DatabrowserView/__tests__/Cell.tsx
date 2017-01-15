@@ -117,7 +117,11 @@ test('Cell renders and runs selectCell', () => {
       newRowActive={false}
       rowIndex={3}
       selected={false}
-      showNotification={() => {/**/}}
+      showNotification={
+        () => {
+          //
+        }
+      }
       update={update}
       reload={reload}
       selectCell={selectCell}
@@ -187,7 +191,9 @@ test('Cell renders in edit mode', () => {
       newRowActive={false}
       rowIndex={3}
       selected={false}
-      showNotification={() => {/**/}}
+      showNotification={() => {
+        //
+      }}
       update={update}
       reload={reload}
       selectCell={selectCell}
