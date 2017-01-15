@@ -6,7 +6,7 @@ import {
 import * as Immutable from 'immutable'
 import {ReduxAction} from '../../../types/reducers'
 import {DataBrowserDataState} from '../../../types/databrowser/data'
-import {Reducer} from 'Redux'
+import {Reducer} from 'redux'
 
 function mockNodes() {
   return setData(
