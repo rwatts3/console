@@ -10,7 +10,7 @@
     "test-watch": "jest --watch",
     "dll": "webpack --config dll.webpack.config.js"
   },
-  "pre-commit": [
+  "pre-push": [
     "test-quick"
   ],
   "jest": {
@@ -139,7 +139,6 @@
     "node-noop": "^1.0.0",
     "node-sass": "^3.8.0",
     "postcss-loader": "^0.9.1",
-    "pre-commit": "^1.1.3",
     "raw-loader": "^0.5.1",
     "react-addons-test-utils": "^15.3.2",
     "react-test-renderer": "^15.3.2",

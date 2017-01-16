@@ -179,13 +179,12 @@ class PermissionPopup extends React.Component<Props, State> {
                 setRuleGraphQuery={this.setRuleGraphQuery}/>
             )}
             <PermissionPopupFooter
-              editing={!!this.props.permission}
+              isEditing={!!this.props.permission}
               isValid={this.isValid()}
               onCancel={this.closePopup}
               onCreate={this.createPermission}
               onUpdate={this.updatePermission}
               onDelete={this.deletePermission}
-              params={params}
             />
           </Container>
         </div>
