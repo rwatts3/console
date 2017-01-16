@@ -15,15 +15,24 @@ const Button = styled.button`
   }
 `
 
-export default (props) => (
+interface Props {
+  isEditing: boolean
+  isValid: boolean
+  onDelete: (e: any) => void
+  onCancel: (e: any) => void
+  onUpdate: (e: any) => void
+  onCreate: (e: any) => void
+}
+
+const PermissionPopupFooter = ({isEditing, onDelete, onCancel, isValid, onUpdate, onCreate}: Props) => (
   <Container className={cx($p.flex, $p.justifyBetween, $p.white, $p.itemsCenter, $p.bt, $p.ph25)}>
-    {props.isEditing ? (
-      <div onClick={props.onDelete} className={cx($p.red, $p.pointer)}>Delete</div>
-    ) : (
-      <div></div>
-    )}
+    {isEditing ? (
+        <div onClick={onDelete} className={cx($p.red, $p.pointer)}>Delete</div>
+      ) : (
+        <div></div>
+      )}
     <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
-      <div onClick={props.onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
+      <div onClick={onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
       <Button
         className={cx(
           $p.ml25,
@@ -32,28 +41,30 @@ export default (props) => (
           $p.white,
           $p.br2,
           {
-            [cx($p.bgBlack10, $p.noEvents)]: !props.isValid,
-            [cx($p.bgGreen, $p.pointer)]: props.isValid,
+            [cx($p.bgBlack10, $p.noEvents)]: !isValid,
+            [cx($p.bgGreen, $p.pointer)]: isValid,
           },
         )}
         onClick={(e: any) => {
-          if (!props.isValid) {
+          if (!isValid) {
             return
           }
 
-          if (props.editing) {
-            props.onUpdate(e)
+          if (isEditing) {
+            onUpdate(e)
           } else {
-            props.onCreate(e)
+            onCreate(e)
           }
         }}
       >
-        {props.editing ? (
-          'Update'
-        ) : (
-          'Create'
-        )}
+        {isEditing ? (
+            'Update'
+          ) : (
+            'Create'
+          )}
       </Button>
     </div>
   </Container>
 )
+
+export default PermissionPopupFooter
