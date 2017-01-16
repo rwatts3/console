@@ -2,14 +2,21 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
+const cheerio = require('cheerio')
+const fs = require('fs')
 
 const vendor = [
+  'auth0-lock',
+  'babel-plugin-transform-async-to-generator',
+  'bluebird',
   'calculate-size',
   'classnames',
+  'cookiestore',
+  'cuid',
+  'drumstick',
   'graphiql',
-  'graphcool-styles',
   'immutable',
-  'js-cookie',
+  'lodash',
   'lokka',
   'lokka-transport-http',
   'map-props',
@@ -18,11 +25,16 @@ const vendor = [
   'rc-tooltip',
   'react',
   'react-addons-pure-render-mixin',
+  'react-addons-shallow-compare',
   'react-autocomplete',
   'react-click-outside',
+  'react-codemirror',
   'react-copy-to-clipboard',
   'react-datetime',
   'react-dom',
+  'react-ga',
+  'react-helmet',
+  'react-input-enhancements',
   'react-notification-system',
   'react-redux',
   'react-relay',
@@ -30,10 +42,17 @@ const vendor = [
   'react-router-relay',
   'react-tagsinput',
   'react-tether',
+  'react-toggle-button',
   'react-tooltip',
   'react-twitter-widgets',
+  'react-virtualized',
   'redux',
+  'redux-actions',
+  'redux-logger',
   'redux-thunk',
+  'smooch',
+  'styled-components',
+  'tachyons',
 ]
 
 module.exports = {
@@ -110,6 +129,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',
       template: 'src/index.html',
+      templateContent: templateContent(),
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
     new webpack.optimize.CommonsChunkPlugin('vendor'),
@@ -135,9 +155,27 @@ module.exports = {
         },
       }
     }),
+    new webpack.DllReferencePlugin({
+      context: '.',
+      manifest: require('./dll/vendor-manifest.json'),
+    }),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],
     extensions: ['.js', '.ts', '.tsx'],
   },
+}
+
+function templateContent() {
+   const html = fs.readFileSync(
+     path.resolve(process.cwd(), 'src/index.html')
+   ).toString();
+
+   const doc = cheerio(html);
+   const body = doc.find('body');
+   const dllNames = ['vendor.bundle.js']
+
+   dllNames.forEach(dllName => body.append(`<script data-dll='true' src='/${dllName}'></script>`));
+
+   return doc.toString();
 }

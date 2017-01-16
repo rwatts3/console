@@ -12,8 +12,6 @@ declare module 'graphql/*'
 declare module 'graphiql'
 declare module 'map-props'
 declare module 'react-twitter-widgets'
-declare module 'redux-thunk'
-declare module 'redux'
 declare module 'react-copy-to-clipboard'
 declare module 'react-click-outside'
 declare module 'react-autocomplete'
@@ -34,6 +32,7 @@ declare module 'styled-components' // https://github.com/styled-components/style
 declare module 'redux-logger'
 declare module 'react-input-enhancements'
 declare module 'auth0-lock'
+declare module 'enzyme-to-json'
 
 declare var Smooch: any
 declare var analytics: any

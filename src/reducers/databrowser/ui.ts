@@ -19,6 +19,7 @@ const initialState: DataBrowserUIState = {
   },
   editing: false,
   browserViewRef: null,
+  dataBrowserViewRef: null,
   searchQuery: null,
 }
 
@@ -110,6 +111,10 @@ export function reduceUI(state: DataBrowserUIState = initialState, action: Redux
     case Constants.SET_BROWSER_VIEW_REF:
       return Object.assign({}, state, {
         browserViewRef: action.payload,
+      })
+    case Constants.SET_DATA_BROWSER_VIEW_REF:
+      return Object.assign({}, state, {
+        dataBrowserViewRef: action.payload,
       })
     case SharedConstants.RESET:
       return initialState

@@ -2,6 +2,8 @@ import * as React from 'react' // tslint:disable-line
 import BooleanCell from '../BooleanCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
+import {TypedValue} from '../../../../../types/utils'
+import {FieldType} from '../../../../../types/types'
 
 test('BooleanCell renders', () => {
 
@@ -15,8 +17,12 @@ test('BooleanCell renders', () => {
     isReadonly: true,
     isList: false,
     isSystem: true,
-    typeIdentifier: 'Boolean',
+    typeIdentifier: 'Boolean' as FieldType,
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
   }
 
   const component = shallow(

@@ -214,6 +214,7 @@ class PlaygroundView extends React.Component<Props, State> {
             lastQuerySuccessful: true,
             lastQuery: graphQLParams.query,
             query: graphQLParams.query,
+            variables: JSON.stringify(graphQLParams.variables),
           } as State)
         }
 

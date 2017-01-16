@@ -40,7 +40,7 @@ import * as cx from 'classnames'
 import {startProgress, incrementProgress} from '../../../actions/progressIndicator'
 import {StateTree, ReduxAction, ReduxThunk} from '../../../types/reducers'
 import {
-  nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef,
+  nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef, setDataBrowserViewRef,
 } from '../../../actions/databrowser/ui'
 import {GridPosition} from '../../../types/databrowser/ui'
 import {classnames} from '../../../utils/classnames'
@@ -50,7 +50,7 @@ import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 
 const classes: any = require('./DatabrowserView.scss')
-const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts'
+const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
 
 interface Props {
   relay: Relay.RelayProp
@@ -78,6 +78,7 @@ interface Props {
   resetDataAndUI: () => ReduxAction
   clearNodeSelection: () => ReduxAction
   setBrowserViewRef: () => ReduxAction
+  setDataBrowserViewRef: (ref: Element) => void
 
   nextCell: (fields: Field[]) => ReduxThunk
   previousCell: (fields: Field[]) => ReduxThunk
@@ -132,6 +133,7 @@ class DatabrowserView extends React.Component<Props, {}> {
   private lokka: any
   private fieldColumnWidths: FieldWidths
   private mounted: boolean
+  private ref: Element
 
   private setSearchQueryThrottled = throttle(
     (q: string) => {
@@ -281,7 +283,10 @@ class DatabrowserView extends React.Component<Props, {}> {
             />
           </div>
         </ModelHeader>
-        <div className={`${classes.table} ${this.props.loading ? classes.loading : ''}`}>
+        <div
+          className={`${classes.table} ${this.props.loading ? classes.loading : ''}`}
+          ref={this.props.setDataBrowserViewRef}
+        >
           <div
             className={`${classes.tableContainer} w-100`}
             ref={this.props.setBrowserViewRef}
@@ -727,6 +732,7 @@ function mapDispatchToProps(dispatch) {
       selectCell,
       editCell,
       setBrowserViewRef,
+      setDataBrowserViewRef,
     },
     dispatch)
 }

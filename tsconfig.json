@@ -17,5 +17,9 @@
     "./src/**/*.ts",
     "./src/**/*.tsx",
     "./custom.d.ts"
-  ]
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": true,
+    "useBabel": true
+  }
 }

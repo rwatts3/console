@@ -3,6 +3,7 @@ import NullableCell from '../NullableCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import {TypedValue} from '../../../../../types/utils'
+import {FieldType} from '../../../../../types/types'
 
 test('NullableCell renders', () => {
 
@@ -16,17 +17,18 @@ test('NullableCell renders', () => {
     isReadonly: true,
     isList: false,
     isSystem: true,
-    typeIdentifier: 'Json',
+    typeIdentifier: 'Json' as FieldType,
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
   }
 
   const component = shallow(
     <NullableCell
-      value='{}'
       save={save}
-      cancel={cancel}
-      onKeyDown={onKeyDown}
-      field={field}
+      cell={null}
     />,
   )
 

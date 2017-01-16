@@ -29,7 +29,6 @@ class Header extends React.Component<Props, State> {
     if (typeof left !== 'boolean') {
       left = true
     }
-
     return (
       <div className={classes.root}>
         {left ? (

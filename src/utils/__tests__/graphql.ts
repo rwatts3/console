@@ -37,9 +37,9 @@ describe('isNonScalarList', () => {
     isList: false,
     isUnique: false,
     isSystem: false,
+    isReadonly: false,
     typeIdentifier: 'Int',
     enumValues: [],
-    permissions: null,
     model: null,
   }
 

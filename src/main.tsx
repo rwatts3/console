@@ -34,7 +34,7 @@ if (__GA_CODE__) {
   })
 }
 
-const reducers: StateTree = combineReducers({
+const reducers = combineReducers({
   gettingStarted: reduceGettingStartedState,
   popup: reducePopup,
   progressIndicator: reduceProgress,

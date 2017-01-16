@@ -21,6 +21,13 @@ export function forceShowNewRow() {
   }
 }
 
+export function setDataBrowserViewRef(ref: HTMLElement) {
+  return {
+    type: Constants.SET_DATA_BROWSER_VIEW_REF,
+    payload: ref,
+  }
+}
+
 export function toggleNewRow(fields: Field[], modelNamePlural: string): ReduxThunk {
   return (dispatch, getState) => {
     if (SYSTEM_MODELS_PLURAL.includes(modelNamePlural)) {

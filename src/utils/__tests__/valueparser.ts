@@ -16,7 +16,6 @@ const testField: Field = {
   isSystem: false,
   typeIdentifier: 'Int',
   enumValues: [],
-  permissions: null,
   model: null,
 }
 

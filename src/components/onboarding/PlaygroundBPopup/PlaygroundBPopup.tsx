@@ -116,7 +116,7 @@ class PlaygroundBPopup extends React.Component<Props, State> {
                 <div className='fw2 f-16 mh-96 mv-25 lh-1-4'>
                   Our GraphQL API includes a powerful filtering system.
                   Queries can be modified with filters to only return particular nodes.
-                  Fitlers are automatically generated based on a model's fields.
+                  Filters are automatically generated based on a model's fields.
                 </div>
                 <div>
                   <img src={require('../../../assets/gifs/playground2.gif')} />

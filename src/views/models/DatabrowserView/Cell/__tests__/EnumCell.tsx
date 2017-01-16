@@ -2,6 +2,8 @@ import * as React from 'react' // tslint:disable-line
 import EnumCell from '../EnumCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
+import {TypedValue} from '../../../../../types/utils'
+import {FieldType} from '../../../../../types/types'
 
 test('EnumCell renders', () => {
 
@@ -15,9 +17,12 @@ test('EnumCell renders', () => {
     isReadonly: true,
     isList: false,
     isSystem: true,
-    typeIdentifier: 'Enum',
-    enumValues: ['asd', 'def']
+    typeIdentifier: 'Enum' as FieldType,
+    enumValues: ['asd', 'def'],
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    model: null,
   }
 
   const component = shallow(

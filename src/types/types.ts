@@ -114,7 +114,6 @@ export interface Field {
   reverseRelationField?: Field
   relatedModel?: Model
   relation?: Relation
-  permissions: RelayConnection<Permission>
   model: Model
 }
 
@@ -131,17 +130,6 @@ export interface Relation {
 export type UserType = 'EVERYONE' | 'AUTHENTICATED'
 
 export type PermissionRuleType = 'NONE' | 'GRAPH' | 'WEBHOOK'
-
-export interface Permission {
-  id: string
-  userType: UserType
-  userPath: string[]
-  allowRead: boolean
-  allowCreate: boolean
-  allowUpdate: boolean
-  allowDelete: boolean
-  description: string
-}
 
 export interface Model {
   id: string

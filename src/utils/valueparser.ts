@@ -82,6 +82,9 @@ export function atomicValueToString(value: AtomicValue, field: Field, returnNull
     case 'Password':
       return '***************'
     case 'Json':
+      if (typeof value === 'string') {
+        return value
+      }
       return JSON.stringify(value)
     default:
       if (value === undefined) {

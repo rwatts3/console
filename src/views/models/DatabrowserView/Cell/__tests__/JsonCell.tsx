@@ -3,6 +3,7 @@ import JsonCell from '../JsonCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
 import {TypedValue} from '../../../../../types/utils'
+import {FieldType} from '../../../../../types/types'
 
 test('JsonCell renders', () => {
 
@@ -16,8 +17,12 @@ test('JsonCell renders', () => {
     isReadonly: true,
     isList: false,
     isSystem: true,
-    typeIdentifier: 'Json',
+    typeIdentifier: 'Json' as FieldType,
     relatedModel: null,
+    isUnique: true,
+    isRequired: false,
+    enumValues: [],
+    model: null,
   }
 
   const component = shallow(

@@ -21,6 +21,8 @@ master | dev
 # install dependencies
 npm install -g yarn
 yarn install
+# prebuild dependencies
+npm run dll
 # run local server on :4000 using the offical Graphcool API
 env BACKEND_ADDR="https://dev.api.graph.cool" npm start
 # or for fish shell users
