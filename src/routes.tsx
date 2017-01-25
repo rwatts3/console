@@ -19,6 +19,9 @@ import AccountView from './views/account/AccountView/AccountView'
 import SettingsTab from './views/account/AccountView/SettingsTab'
 import ResetPasswordView from './views/account/ResetPasswordView/ResetPasswordView'
 import DatabrowserView from './views/models/DatabrowserView/DatabrowserView'
+import Settings from './views/Settings/Settings'
+import Authentication from './views/Settings/Authentication/Authentication'
+import General from './views/Settings/General'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
@@ -108,6 +111,10 @@ export default (
     <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
+      <Route path='settings' component={Settings} queries={ViewerQuery} render={render}>
+        <IndexRoute component={General} render={render} />
+        <Route path='authentication' component={Authentication} render={render} />
+      </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>

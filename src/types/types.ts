@@ -17,6 +17,7 @@ export interface Viewer {
 
 export interface Customer {
   id: string
+  name: string
   projects: RelayConnection<Project>
   crm: CrmSystemBridge
 }

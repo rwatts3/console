@@ -23,11 +23,11 @@ import {showPopup} from '../../actions/popup'
 import {SYSTEM_MODELS} from '../../constants/system'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-import EditModelModal from './EditModelModal'
+import cuid from 'cuid'
+import EditModelPopup from '../ProjectRootView/EditModelPopup'
 
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
-
 
 interface Props {
   children: Element
@@ -224,13 +224,13 @@ class ModelHeader extends React.Component<Props, State> {
             {this.props.children}
           </div>
         </div>
-        <EditModelModal
-          isOpen={this.state.editModelModalOpen}
-          onRequestClose={this.handleModelModalClose}
-          contentLabel="Edit Model"
-          model={model}
-          width={500}
-        ></EditModelModal>
+        {/*<EditModelModal*/}
+          {/*isOpen={this.state.editModelModalOpen}*/}
+          {/*onRequestClose={this.handleModelModalClose}*/}
+          {/*contentLabel="Edit Model"*/}
+          {/*model={model}*/}
+          {/*width={500}*/}
+        {/*></EditModelModal>*/}
       </div>
     )
   }
@@ -240,25 +240,25 @@ class ModelHeader extends React.Component<Props, State> {
   }
 
   private openEditModelModal = () => {
-    this.setState({
-      editModelModalOpen: true,
-    } as State)
-    // const {model} = this.props
-    // if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
-    //   return
-    // }
-    //
-    // const id = cuid()
-    // this.props.showPopup({
-    //   element: <EditModelPopup
-    //     id={id}
-    //     projectId={this.props.project.id}
-    //     modelName={this.props.model.name}
-    //     saveModel={this.renameModel}
-    //     deleteModel={this.deleteModel}
-    //   />,
-    //   id,
-    // })
+    // this.setState({
+    //   editModelModalOpen: true,
+    // } as State)
+    const {model} = this.props
+    if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
+      return
+    }
+
+    const id = cuid()
+    this.props.showPopup({
+      element: <EditModelPopup
+        id={id}
+        projectId={this.props.project.id}
+        modelName={this.props.model.name}
+        saveModel={this.renameModel}
+        deleteModel={this.deleteModel}
+      />,
+      id,
+    })
   }
 
   private renameModel = (modelName: string) => {
@@ -373,7 +373,6 @@ export default Relay.createContainer(ReduxContainer, {
           }
         }
         ${ModelDescription.getFragment('model')}
-        ${EditModelModal.getFragment('model')}
       }
     `,
   },
