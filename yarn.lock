@@ -73,6 +73,12 @@
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/@types/react-ga/-/react-ga-1.4.6.tgz#73be5d19cd56c56f6319a1f3a6c57c4f911ecc39"
 
+"@types/react-modal@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@types/react-modal/-/react-modal-1.6.1.tgz#b53cffc51a746a75ebfe12e9eb1fb6d961deebce"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-router@^2.0.36":
   version "2.0.41"
   resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-2.0.41.tgz#4c2510dfa2d85651af2126aed681c70dbe2f0303"

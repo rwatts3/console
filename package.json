@@ -53,6 +53,7 @@
     "@types/react-codemirror": "^0.2.5",
     "@types/react-dom": "^0.14.14",
     "@types/react-ga": "^1.4.5",
+    "@types/react-modal": "^1.6.1",
     "@types/react-router": "^2.0.36",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "2.1.32",

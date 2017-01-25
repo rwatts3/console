@@ -15,18 +15,19 @@ import {Icon, particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import UpdateModelNameMutation from '../../mutations/UpdateModelNameMutation'
-import EditModelPopup from '../ProjectRootView/EditModelPopup'
 import DeleteModelMutation from '../../mutations/DeleteModelMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
-import cuid from 'cuid'
 import {Popup} from '../../types/popup'
 import {showPopup} from '../../actions/popup'
 import {SYSTEM_MODELS} from '../../constants/system'
 import tracker from '../../utils/metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
+import EditModelModal from './EditModelModal'
+
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
-import {ConsoleEvents} from 'graphcool-metrics'
+
 
 interface Props {
   children: Element
@@ -45,12 +46,14 @@ interface Props {
 
 interface State {
   authProviderPopupVisible: boolean
+  editModelModalOpen: boolean
 }
 
 class ModelHeader extends React.Component<Props, State> {
 
   state = {
     authProviderPopupVisible: false,
+    editModelModalOpen: false,
   }
 
   render() {
@@ -221,6 +224,13 @@ class ModelHeader extends React.Component<Props, State> {
             {this.props.children}
           </div>
         </div>
+        <EditModelModal
+          isOpen={this.state.editModelModalOpen}
+          onRequestClose={this.handleModelModalClose}
+          contentLabel="Edit Model"
+          model={model}
+          width={500}
+        ></EditModelModal>
       </div>
     )
   }
@@ -230,22 +240,25 @@ class ModelHeader extends React.Component<Props, State> {
   }
 
   private openEditModelModal = () => {
-    const {model} = this.props
-    if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
-      return
-    }
-
-    const id = cuid()
-    this.props.showPopup({
-      element: <EditModelPopup
-        id={id}
-        projectId={this.props.project.id}
-        modelName={this.props.model.name}
-        saveModel={this.renameModel}
-        deleteModel={this.deleteModel}
-      />,
-      id,
-    })
+    this.setState({
+      editModelModalOpen: true,
+    } as State)
+    // const {model} = this.props
+    // if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
+    //   return
+    // }
+    //
+    // const id = cuid()
+    // this.props.showPopup({
+    //   element: <EditModelPopup
+    //     id={id}
+    //     projectId={this.props.project.id}
+    //     modelName={this.props.model.name}
+    //     saveModel={this.renameModel}
+    //     deleteModel={this.deleteModel}
+    //   />,
+    //   id,
+    // })
   }
 
   private renameModel = (modelName: string) => {
@@ -302,6 +315,12 @@ class ModelHeader extends React.Component<Props, State> {
       this.props.nextStep()
     }
   }
+
+  private handleModelModalClose = () => {
+    this.setState({
+      editModelModalOpen: false,
+    } as State)
+  }
 }
 
 const ReduxContainer = connect(
@@ -354,6 +373,7 @@ export default Relay.createContainer(ReduxContainer, {
           }
         }
         ${ModelDescription.getFragment('model')}
+        ${EditModelModal.getFragment('model')}
       }
     `,
   },
