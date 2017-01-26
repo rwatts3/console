@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {download} from '../../../utils/download'
+import * as download from 'downloadjs'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
 

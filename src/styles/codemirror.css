@@ -8,7 +8,6 @@
     /* Set height, width, borders, and global font properties here */
     font-family: monospace;
     height: auto;
-    color: black;
 }
 
 /* PADDING */
@@ -153,7 +152,12 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 .CodeMirror {
     position: relative;
     overflow: hidden;
-    background: white;
+    background-color: rgb(15,32,45);
+}
+
+.CodeMirror-gutters {
+    border-right: none;
+    background-color: rgb(15,32,45);
 }
 
 .CodeMirror-scroll {
