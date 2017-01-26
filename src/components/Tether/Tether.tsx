@@ -19,6 +19,7 @@ interface Props {
   onMouseEnter: () => any
   onMouseLeave: () => any
   onClick?: (e: any, step: TetherStep) => void
+  style: any
 }
 
 class Tether extends React.Component<Props, {}> {
@@ -47,11 +48,17 @@ class Tether extends React.Component<Props, {}> {
     const isBottom = this.props.side === 'bottom'
     const isLeft = this.props.horizontal === 'left'
 
+    let style = {
+      zIndex: this.props.zIndex ? this.props.zIndex : 500,
+    }
+
+    if (this.props.style) {
+      style = Object.assign({}, style, this.props.style)
+    }
+
     return (
       <TetherComponent
-        style={{
-          zIndex: this.props.zIndex ? this.props.zIndex : 500,
-        }}
+        style={style}
         targetOffset={`${this.props.offsetY}px ${this.props.offsetX}px`}
         attachment={`${isBottom ? 'top' : 'bottom'} ${this.props.horizontal}`}
         targetAttachment={`${isBottom ? 'bottom' : 'top'} ${this.props.horizontal}`}

@@ -26,7 +26,6 @@ class General extends React.Component<Props, {}> {
   }
 }
 
-
 export default Relay.createContainer(General, {
   initialVariables: {
     projectName: null, // injected from router

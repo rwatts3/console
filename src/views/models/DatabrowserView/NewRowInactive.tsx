@@ -71,6 +71,9 @@ class NewRowInactive extends React.Component<Props, State> {
             if (index === fields.length - 1) {
               return (
                 <Tether
+                  style={{
+                    pointerEvents: 'none',
+                  }}
                   steps={[{
                     step: 'STEP3_CLICK_ADD_NODE2',
                     title: `Awesome! Let's create one more.`,
@@ -122,6 +125,9 @@ class NewRowInactive extends React.Component<Props, State> {
         {index === 0 && (
           <div className={classes.add}>
             <Tether
+              style={{
+                pointerEvents: 'none',
+              }}
               steps={[{
                 step: 'STEP3_CLICK_ADD_NODE1',
                 title: 'Create a Node',

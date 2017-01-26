@@ -151,38 +151,3 @@ export default Relay.createContainer(ProjectInfo, {
     `,
   },
 })
-
-
-/**
- {this.state.isEnteringProjectName ?
-  (
-      <div
-        className='value editable'
-        onClick={() => this.setState({isEnteringProjectName: true} as State)}
-      >
-        {this.props.project.name}
-      </div>
-      <Icon
-        className={$p.ml6}
-        src={require('../../../assets/icons/edit_project_name.svg')}
-        width={20}
-        height={20}
-      />
-  ) :
-  (
-    <div
-      className='value editable'
-      onClick={() => this.setState({isEnteringProjectName: true} as State)}
-    >
-      {this.props.project.name}
-    </div>
-    <Icon
-      className={$p.ml6}
-      src={require('../../../assets/icons/edit_project_name.svg')}
-      width={20}
-      height={20}
-    />
-  )
-}
-
- */

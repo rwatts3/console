@@ -65,8 +65,6 @@ class DangerZone extends React.Component<Props, {}> {
             color: rgba(242,92,84,1);
             background-color: rgba(242,92,84,.2);
           }
-
-
         `}</style>
         <div className='actionRow'>
           <div>

@@ -19,4 +19,3 @@ export default class Team extends React.Component<Props, {}> {
     )
   }
 }
-
