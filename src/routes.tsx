@@ -19,6 +19,11 @@ import AccountView from './views/account/AccountView/AccountView'
 import SettingsTab from './views/account/AccountView/SettingsTab'
 import ResetPasswordView from './views/account/ResetPasswordView/ResetPasswordView'
 import DatabrowserView from './views/models/DatabrowserView/DatabrowserView'
+import Settings from './views/Settings/Settings'
+import General from './views/Settings/General/General'
+import Authentication from './views/Settings/Authentication/Authentication'
+import Export from './views/Settings/Export/Export'
+import Team from './views/Settings/Team/Team'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
@@ -97,6 +102,12 @@ const render = ({error, props, routerProps, element}) => {
   )
 }
 /* eslint-enable react/prop-types */
+// <Route path='settings' component={Settings} render={render}>
+//   <IndexRoute component={General} queries={ViewerQuery} render={render} />
+//   <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
+  /*<Route path='export' component={Export} queries={ViewerQuery} render={render} />*/
+  /*<Route path='team' component={Team} render={render} />*/
+/*</Route>*/
 
 export default (
   <Route path='/' component={RootView}>

@@ -87,7 +87,6 @@ export default (props) => (
           {props.isBetaCustomer && <div
             className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyEnd, $p.pointer)}
             onClick={() => {
-              console.log('clicked', props.rule)
               const newRuleType = props.rule === 'NONE' ? 'GRAPH' : 'NONE'
               if (props.setRuleType) {
                 props.setRuleType(newRuleType)

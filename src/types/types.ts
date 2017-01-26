@@ -17,8 +17,18 @@ export interface Viewer {
 
 export interface Customer {
   id: string
+  name: string
   projects: RelayConnection<Project>
   crm: CrmSystemBridge
+}
+
+export type SeatStatus = 'JOINED' | 'INVITED_PROJECT' | 'INVITED_CUSTOMER'
+
+export interface Seat {
+  name: string | null
+  email: string
+  isOwner: boolean
+  status: SeatStatus
 }
 
 export interface CrmSystemBridge {
@@ -55,6 +65,7 @@ export interface Project {
   authProviders: RelayConnection<AuthProvider>
   integrations: RelayConnection<Integration>
   actionSchema: string
+  schema: string
 }
 
 export interface Integration {

@@ -28,8 +28,9 @@ import cuid from 'cuid'
 import CodeGenerationPopup from './CodeGenerationPopup/CodeGenerationPopup'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import Playground from 'graphcool-graphiql'
 
-require('graphiql/graphiql.css')
+require('graphcool-graphiql/graphiql_dark.css')
 
 const DASHBOARD_ADMIN = {
   id: 'ADMIN',
@@ -166,139 +167,45 @@ class PlaygroundView extends React.Component<Props, State> {
     return `${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.viewer.project.id}`
   }
 
-  render () {
-    const fetcher = (graphQLParams) => {
-      return fetch(this.getEndpoint(), { // tslint:disable-line
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.state.selectedUserId === GUEST.id ?
-            '' :
-            `Bearer ${this.state.selectedUserToken || this.state.adminToken}`,
-          'X-GraphCool-Source': 'dashboard:playground',
-        },
-        body: JSON.stringify(graphQLParams),
-      })
-      .then((response) => {
-        // exclude IntrospectionQuery
-        if (!response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
-          tracker.track(ConsoleEvents.Playground.queryRan({type: 'Fail'}))
-        }
-        if (response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
-          if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1')) {
-            const { query } = graphQLParams
-            if (query.includes('allPosts') && query.includes('imageUrl') && query.includes('description')) {
-              this.props.nextStep()
-            }
-          }
-
-          if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) {
-            const { query } = graphQLParams
-            if (query.includes('allPosts') && query.includes('filter') &&
-              query.includes('description_contains')) {
-              this.props.nextStep()
-            }
-          }
-
-          tracker.track(ConsoleEvents.Playground.queryRan({type: 'Success'}))
-
-          // save query for query history
-          const query = {
-            query: graphQLParams.query,
-            variables: graphQLParams.variables,
-            date: new Date(),
-          }
-          saveQuery(query, this.props.viewer.project.id)
-
-          this.setState({
-            lastQuerySuccessful: true,
-            lastQuery: graphQLParams.query,
-            query: graphQLParams.query,
-            variables: JSON.stringify(graphQLParams.variables),
-          } as State)
-        }
-
-        if (graphQLParams.query.includes('mutation')) {
-          // update side nav item count when we did a mutation
-          sideNavSyncer.notifySideNav()
-        }
-
-        return response.json()
-      })
+  handleResponse = (graphQLParams, response) => {
+    if (!response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
+      tracker.track(ConsoleEvents.Playground.queryRan({type: 'Fail'}))
     }
+    if (response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1')) {
+        const { query } = graphQLParams
+        if (query.includes('allPosts') && query.includes('imageUrl') && query.includes('description')) {
+          this.props.nextStep()
+        }
+      }
+
+      if (this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) {
+        const { query } = graphQLParams
+        if (query.includes('allPosts') && query.includes('filter') &&
+          query.includes('description_contains')) {
+          this.props.nextStep()
+        }
+      }
+
+      tracker.track(ConsoleEvents.Playground.queryRan({type: 'Success'}))
+    }
+
+    if (graphQLParams.query.includes('mutation')) {
+      // update side nav item count when we did a mutation
+      sideNavSyncer.notifySideNav()
+    }
+  }
+
+  render () {
 
     return (
       <div className={classes.root}>
         <Helmet title='Playground' />
-        <div className={classes.head}>
-          <div
-            className={classes.history}
-            onClick={() => this.setState({ historyVisible: true } as State)}
-          >
-            {this.state.historyVisible &&
-              <div className={classes.historyOverlay}>
-                <QueryHistory
-                  projectId={this.props.viewer.project.id}
-                  onQuerySelect={this.onHistoryQuerySelect}
-                  onClickOutside={() => this.setState({historyVisible: false} as State)}
-                />
-              </div>
-            }
-            <Icon
-              src={require(`assets/icons/${this.state.historyVisible ? 'close' : 'history'}.svg`)}
-              width={20}
-              height={20}
-              />
-            <span>{this.state.historyVisible ? 'Close' : 'History'}</span>
-          </div>
-          {this.state.lastQuerySuccessful && (
-            <div className={cx($p.h100, $p.flex, $p.justifyCenter, $p.itemsCenter)}>
-              <button
-                onClick={this.showPopup}
-                className={cx(
-                  $p.ph10,
-                  $p.pv6,
-                  $p.f14,
-                  $p.white,
-                  $p.nowrap,
-                  $p.br2,
-                  $p.bgGreen,
-                  $p.pointer,
-                )}
-              >
-                Generate Code Snippet
-              </button>
-            </div>
-          )}
-          <div className={classes.endpoint}>
-            <select onChange={this.changeEndpoint} value={this.state.selectedEndpoint}>
-              {Object.keys(endpoints).map((endpoint) => (
-                <option key={endpoint} value={endpoint}>{endpoints[endpoint].title}</option>
-              ))}
-            </select>
-          </div>
-          <div className={classes.user}>
-            <select value={this.state.selectedUserId} onChange={this.changeUser}>
-              {this.state.users.map((user) => {
-                return (
-                  <option key={user.id} value={user.id}>
-                    {user.id}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
-        </div>
-        <div className={cx(classes.graphiql, $p.bgDarkerBlue)}>
-          <GraphiQL
-            key={this.state.selectedEndpoint}
-            fetcher={fetcher}
-            query={this.state.query}
-            variables={this.state.variables || ''}
-            onEditQuery={this.rememberPlaygroundUsed}
-            onToggleDocs={this.docsToggled}
-            />
-        </div>
+        <Playground
+          authToken={this.state.adminToken}
+          projectId={this.props.viewer.project.id}
+          onSuccess={this.handleResponse}
+        />
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
           <PopupWrapper blur={true}>
             <PlaygroundAPopup />
@@ -383,48 +290,6 @@ class PlaygroundView extends React.Component<Props, State> {
     this.setState({ historyVisible: false } as State)
   }
 
-  private changeEndpoint = (e) => {
-    const selectedEndpoint = e.target.value
-    this.setState({ selectedEndpoint } as State)
-    window.localStorage.setItem('SELECTED_ENDPOINT', selectedEndpoint)
-
-    tracker.track(ConsoleEvents.Playground.endpointSelected({endpoint: selectedEndpoint}))
-  }
-
-  private changeUser = (e) => {
-    const selectedUserId = e.target.value
-
-    if (selectedUserId === DASHBOARD_ADMIN.id || selectedUserId === GUEST.id) {
-      this.setState({ selectedUserId, selectedUserToken: null } as State)
-    } else {
-      Relay.Store.commitUpdate(
-        new LoginClientUserMutation({
-          clientUserId: selectedUserId,
-          projectId: this.props.viewer.project.id,
-        }),
-        {
-          onSuccess: (response) => {
-            this.setState({
-              selectedUserId,
-              selectedUserToken: response.signinClientUser.token,
-            } as State)
-
-            tracker.track(ConsoleEvents.Playground.userSelected({userId: selectedUserId}))
-          },
-          onFailure: (transaction) => {
-            alert(transaction.getError())
-          },
-        },
-      )
-    }
-  }
-
-  private rememberPlaygroundUsed = () => {
-    // TODO re-enable but reduce to max one event
-    // tracker.track(ConsoleEvents.Playground.change())
-    window.localStorage.setItem(`used-playground-${this.props.viewer.project.id}`, 'true')
-  }
-
   private showPopup = () => {
     const {lastQuery} = this.state
     const {params} = this.props
@@ -470,3 +335,5 @@ export default Relay.createContainer(MappedPlaygroudView, {
     `,
   },
 })
+
+// httpApiPrefix={__BACKEND_ADDR__}

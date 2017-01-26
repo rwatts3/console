@@ -38,11 +38,6 @@ class EditModelPopup extends React.Component<Props, State> {
 
   render() {
 
-    const Popup = styled.div`
-      width: 600px;
-      max-width: 90%;
-    `
-
     const NameInput = styled.input`
       &::-webkit-input-placeholder {
       color: ${variables.gray20};
@@ -110,7 +105,15 @@ class EditModelPopup extends React.Component<Props, State> {
           $p.itemsCenter,
         )}
       >
-        <Popup className={cx($p.bgWhite, $p.br2)} style={{pointerEvents: 'all'}}>
+        <style jsx={true}>{`
+          .popup {
+            @inherit: .bgWhite, .br2;
+            pointer-events: all;
+            width: 600px;
+            max-width: 90%;
+          }
+        `}</style>
+        <div className='popup'>
           <div className={cx($p.relative, $p.pa60)}>
 
             <div className={cx($p.relative)}>
@@ -168,7 +171,7 @@ class EditModelPopup extends React.Component<Props, State> {
               </Button>
             </div>
           </div>
-        </Popup>
+        </div>
       </div>
     )
   }
