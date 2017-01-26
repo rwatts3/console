@@ -1,36 +1,54 @@
 import * as React from 'react'
 import {PermanentAuthToken} from '../../../types/types'
+import Tokens from './Tokens'
+import * as Relay from 'react-relay'
 
-interface State {
-  newTokenName: string
-}
-
-interface Props {
-  authTokens: PermanentAuthToken[]
-}
-
-export default class Authentication extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-  }
+class Authentication extends React.Component<{}, {}> {
 
   render() {
     return (
-      <div>
+      <div className='container'>
         <style jsx={true}>{`
+
+          .container {
+            @inherit: .br, .ph38;
+            max-width: 700px;
+            border-color: rgba( 229, 229, 229, 1);
+          }
+
+          .headerContent {
+            @inherit: .pt60, .pb25, .ph25, .bb, .bBlack10;
+          }
+
           .headerTitle {
-            @inherit: .black30, .f14, .fw6, .ttu;
+            @inherit: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
           }
 
           .headerDescription {
-            @inherit: .black50, .f16;
+            @inherit: .pt6, .mt4, .black50, .f16;
           }
         `}</style>
-        <div className='headerTitle'>Permanent Auth Tokens</div>
-        <div className='headerDescription'>You can use Permanent Access Tokens to grant access to authenticated
-        actions as an alternative way to creating an authenticated user.</div>
+        <div>
+          <div className='headerContent'>
+            <div className='headerTitle'>Permanent Auth Tokens</div>
+            <div className='headerDescription'>
+              You can use Permanent Access Tokens to grant access to authenticated
+              actions as an alternative way to creating an authenticated user.
+            </div>
+          </div>
+          {/*<Tokens authTokens={[]} projectId={this.props.viewer.project.id}/>*/}
+          <Tokens authTokens={[]} projectId=''/>
+        </div>
       </div>
     )
   }
 }
+
+export default Relay.createContainer(Authentication, {
+  fragments: {
+    project: () => Relay.QL`
+      fragment on Project {
+        ${Tokens.getFragment('project')}
+      }`,
+  },
+})

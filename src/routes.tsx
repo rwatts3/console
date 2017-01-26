@@ -21,6 +21,7 @@ import ResetPasswordView from './views/account/ResetPasswordView/ResetPasswordVi
 import DatabrowserView from './views/models/DatabrowserView/DatabrowserView'
 import Settings from './views/Settings/Settings'
 import Authentication from './views/Settings/Authentication/Authentication'
+import Export from './views/Settings/Export/Export'
 import General from './views/Settings/General'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
@@ -114,6 +115,7 @@ export default (
       <Route path='settings' component={Settings} queries={ViewerQuery} render={render}>
         <IndexRoute component={General} render={render} />
         <Route path='authentication' component={Authentication} render={render} />
+        <Route path='export' component={Export} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>

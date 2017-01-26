@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../types/types'
 import TabBar from './TabBar'
+import Tokens from './Authentication/Tokens'
+import Authentication from './Authentication/Authentication'
 
 interface Props {
   viewer: Viewer
@@ -17,7 +19,7 @@ class Settings extends React.Component<Props, {}> {
   render() {
     return (
 
-      <div className='topHeader'>
+      <div>
         <style jsx={true}>{`
 
           .topHeader {
@@ -29,8 +31,10 @@ class Settings extends React.Component<Props, {}> {
           }
 
         `}</style>
-        <div className='topHeaderContent'>Settings</div>
-        <TabBar params={this.props.params} />
+        <div className='topHeader'>
+          <div className='topHeaderContent'>Settings</div>
+          <TabBar params={this.props.params} />
+        </div>
         {this.props.children}
       </div>
     )
@@ -42,12 +46,12 @@ export default Relay.createContainer(Settings, {
     projectName: null, // injected from router
   },
   fragments: {
-    viewer: () => Relay.QL`
-
+    viewer: () => Relay.QL`      
       fragment on Viewer {
-        id
-        user {
+        project: projectByName(projectName: $projectName) {
           name
+          id
+          ${Authentication.getFragment('project')}
         }
       }
     `,
