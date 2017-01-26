@@ -33,6 +33,7 @@ declare module 'redux-logger'
 declare module 'react-input-enhancements'
 declare module 'auth0-lock'
 declare module 'enzyme-to-json'
+declare module 'graphcool-graphiql'
 
 declare var Smooch: any
 declare var analytics: any

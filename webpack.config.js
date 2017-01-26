@@ -61,11 +61,12 @@ module.exports = {
     app: [
       './src/main',
       './src/styles/codemirror.css',
-      './src/styles/graphiql.css',
+      // './src/styles/graphiql.css',
       'codemirror/mode/javascript/javascript',
       'codemirror/mode/shell/shell',
       // 'codemirror/lib/codemirror.css',
-      'codemirror/theme/dracula.css',
+      // 'codemirror/theme/dracula.css',
+      'graphcool-graphiql/graphiql_dark.css',
     ],
     styles: 'graphcool-styles/dist/styles.css',
     vendor,
@@ -93,7 +94,6 @@ module.exports = {
       exclude: /node_modules/,
     }, {
       test: /\.ts(x?)$/,
-      exclude: /node_modules/,
       loader: 'babel-loader!awesome-typescript-loader',
     }, {
       test: /\.js$/,
@@ -103,7 +103,7 @@ module.exports = {
       test: /\.mp3$/,
       loader: 'file-loader',
     }, {
-      test: /icons\/.*\.svg$/,
+      test: /(icons|node_modules)\/.*\.svg$/,
       loader: 'raw-loader!svgo-loader',
     }, {
       test: /graphics\/.*\.svg$/,
