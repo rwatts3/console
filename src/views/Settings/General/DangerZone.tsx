@@ -8,7 +8,7 @@ interface Props {
 
 }
 
-export default class General extends React.Component<Props, State> {
+export default class DangerZone extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -18,7 +18,7 @@ export default class General extends React.Component<Props, State> {
 
   render() {
     return (
-      <div>General</div>
+      <div></div>
     )
   }
 }
