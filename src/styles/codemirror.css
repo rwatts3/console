@@ -8,7 +8,6 @@
     /* Set height, width, borders, and global font properties here */
     font-family: monospace;
     height: auto;
-    color: black;
 }
 
 /* PADDING */
@@ -143,47 +142,6 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 
 
 
-/* THEME
-
-    Name:       dracula
-    Author:     Michael Kaminsky (http://github.com/mkaminsky11)
-
-    Original dracula color scheme by Zeno Rocha (https://github.com/zenorocha/dracula-theme)
-
-*/
-
-.CodeMirror, .CodeMirror-gutters {
-    background: none !important;
-    color: white !important;
-    border: none;
-}
-.cm-s-default .CodeMirror-gutters { color: rgba(0,0,0,0.1); }
-.cm-s-default .CodeMirror-cursor { border-left: solid thin #f8f8f0; }
-.cm-s-default .CodeMirror-linenumber { color: rgba(255,255,255,0.2); }
-.cm-s-default .CodeMirror-selected { background: rgba(255, 255, 255, 0.10); }
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: rgba(255, 255, 255, 0.01); }
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: rgba(255, 255, 255, 0.01); }
-.cm-s-default span.cm-comment { color: #6272a4; }
-.cm-s-default span.cm-string, .cm-s-default span.cm-string-2 { color: #f1fa8c; }
-.cm-s-default span.cm-number { color: #bd93f9; }
-.cm-s-default span.cm-variable { color: #50fa7b; }
-.cm-s-default span.cm-variable-2 { color: white; }
-.cm-s-default span.cm-def { color: #ffb86c; }
-.cm-s-default span.cm-keyword { color: #ff79c6; }
-.cm-s-default span.cm-operator { color: #ff79c6; }
-.cm-s-default span.cm-keyword { color: #ff79c6; }
-.cm-s-default span.cm-atom { color: #bd93f9; }
-.cm-s-default span.cm-meta { color: #f8f8f2; }
-.cm-s-default span.cm-tag { color: #ff79c6; }
-.cm-s-default span.cm-attribute { color: #50fa7b; }
-.cm-s-default span.cm-qualifier { color: #50fa7b; }
-.cm-s-default span.cm-property { color: #66d9ef; }
-.cm-s-default span.cm-builtin { color: #50fa7b; }
-.cm-s-default span.cm-variable-3 { color: #50fa7b; }
-
-.CodeMirror-activeline-background { background: rgba(255,255,255,0.1); }
-.CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
-
 
 
 /* STOP */
@@ -194,7 +152,12 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 .CodeMirror {
     position: relative;
     overflow: hidden;
-    background: white;
+    background-color: rgb(15,32,45);
+}
+
+.CodeMirror-gutters {
+    border-right: none;
+    background-color: rgb(15,32,45);
 }
 
 .CodeMirror-scroll {
