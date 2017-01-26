@@ -56,6 +56,7 @@ export interface Project {
   authProviders: RelayConnection<AuthProvider>
   integrations: RelayConnection<Integration>
   actionSchema: string
+  schema: string
 }
 
 export interface Integration {

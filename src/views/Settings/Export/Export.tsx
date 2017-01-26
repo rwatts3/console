@@ -1,14 +1,13 @@
 import * as React from 'react'
-
-interface State {
-
-}
+import {download} from '../../../utils/download'
+import * as Relay from 'react-relay'
+import {Viewer} from '../../../types/types'
 
 interface Props {
-
+  viewer: Viewer
 }
 
-export default class Export extends React.Component<Props, State> {
+class Export extends React.Component<Props, {}> {
 
   constructor(props) {
     super(props)
@@ -41,7 +40,7 @@ export default class Export extends React.Component<Props, State> {
           }
 
           .button {
-            @inherit: .green, .f16, .pv10, .ph16, .mh60, .pointer, .nowrap;
+            @inherit: .green, .f16, .pv10, .ph16, .mh60, .pointer, .br2, .nowrap;
             background-color: rgba(28,191,50,.2);
           }
 
@@ -62,8 +61,8 @@ export default class Export extends React.Component<Props, State> {
           <div>
             <div className='exportDataTitle'>Export data</div>
             <div className='exportDataDescription'>
-              This is the schema representing the models and fields of your project.
-              For example, you can use it to generate a blueprint of it.
+              This is the data of your project that is stored to in the nodes.
+              Here you can download everything.
             </div>
           </div>
           <div className='button'>
@@ -78,13 +77,37 @@ export default class Export extends React.Component<Props, State> {
               For example, you can use it to generate a blueprint of it.
             </div>
           </div>
-          <div className='button'>
+          <div
+            className='button'
+            onClick={this.exportSchema}
+          >
             Export Schema
           </div>
         </div>
-
-
       </div>
     )
   }
+
+  private exportSchema = (): void => {
+    console.log('Export Schema')
+    download(this.props.viewer.project.schema, 'schema', '')
+  }
+
 }
+
+export default Relay.createContainer(Export, {
+  initialVariables: {
+    projectName: null, // injected from router
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          name
+          id
+          schema
+        }
+      }
+    `,
+  },
+})

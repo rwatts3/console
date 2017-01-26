@@ -114,8 +114,8 @@ export default (
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='settings' component={Settings} queries={ViewerQuery} render={render}>
         <IndexRoute component={General} render={render} />
-        <Route path='authentication' component={Authentication} render={render} />
-        <Route path='export' component={Export} render={render} />
+        <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
+        <Route path='export' component={Export} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>

@@ -1,9 +1,13 @@
 import * as React from 'react'
-import {PermanentAuthToken} from '../../../types/types'
+import {PermanentAuthToken, Viewer} from '../../../types/types'
 import Tokens from './Tokens'
 import * as Relay from 'react-relay'
 
-class Authentication extends React.Component<{}, {}> {
+interface Props {
+  viewer: Viewer
+}
+
+class Authentication extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -36,8 +40,7 @@ class Authentication extends React.Component<{}, {}> {
               actions as an alternative way to creating an authenticated user.
             </div>
           </div>
-          {/*<Tokens authTokens={[]} projectId={this.props.viewer.project.id}/>*/}
-          <Tokens authTokens={[]} projectId=''/>
+          <Tokens project={this.props.viewer.project} />
         </div>
       </div>
     )
@@ -45,10 +48,18 @@ class Authentication extends React.Component<{}, {}> {
 }
 
 export default Relay.createContainer(Authentication, {
+  initialVariables: {
+    projectName: null, // injected from router
+  },
   fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        ${Tokens.getFragment('project')}
-      }`,
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          name
+          id
+          ${Tokens.getFragment('project')}
+        }
+      }
+    `,
   },
 })

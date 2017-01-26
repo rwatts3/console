@@ -51,7 +51,7 @@ export default Relay.createContainer(Settings, {
         project: projectByName(projectName: $projectName) {
           name
           id
-          ${Authentication.getFragment('project')}
+          schema
         }
       }
     `,
