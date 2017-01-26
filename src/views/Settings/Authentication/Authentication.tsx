@@ -55,8 +55,6 @@ export default Relay.createContainer(Authentication, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
-          name
-          id
           ${Tokens.getFragment('project')}
         }
       }

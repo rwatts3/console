@@ -1,16 +1,12 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
-import {Viewer} from '../../types/types'
 import TabBar from './TabBar'
-import Tokens from './Authentication/Tokens'
-import Authentication from './Authentication/Authentication'
 
 interface Props {
-  viewer: Viewer
+  children?: JSX.Element
   params: any
 }
 
-class Settings extends React.Component<Props, {}> {
+export default class Settings extends React.Component<Props, {}> {
 
   constructor(props) {
     super(props)
@@ -41,19 +37,3 @@ class Settings extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(Settings, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`      
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          name
-          id
-          schema
-        }
-      }
-    `,
-  },
-})

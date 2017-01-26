@@ -1,14 +1,11 @@
 import * as React from 'react'
-
-interface State {
-
-}
+import * as Relay from 'react-relay'
 
 interface Props {
 
 }
 
-export default class Team extends React.Component<Props, State> {
+export default class Team extends React.Component<Props, {}> {
 
   constructor(props) {
     super(props)
@@ -22,3 +19,4 @@ export default class Team extends React.Component<Props, State> {
     )
   }
 }
+

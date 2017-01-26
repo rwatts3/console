@@ -1,24 +1,32 @@
 import * as React from 'react'
-
-interface State {
-
-}
+import * as Relay from 'react-relay'
 
 interface Props {
-
+  isPending: boolean
+  isCurrentUser: boolean
+  isProjectOwner: boolean
 }
 
-export default class MemberRow extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {}
-  }
+export default class MemberRow extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div></div>
+      <div className='container'>
+        <style jsx={true}>{`
+          .container {
+            @inherit: .flex, .itemsCenter;
+          }
+        `}</style>
+        {this.props.isPending ?
+          (
+            <div>Pending</div>
+          ) :
+          (
+            <div>Member</div>
+          )
+        }
+      </div>
     )
+
   }
 }

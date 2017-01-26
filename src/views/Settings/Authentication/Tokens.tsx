@@ -62,7 +62,7 @@ class Tokens extends React.Component<Props, State> {
           }
 
           .inputField {
-            @inherit: .pl6, .f25, .fw3, .w100;
+            @inherit: .f25, .fw3, .w100;
             color: rgba(42,127,211,1);
           }
 
