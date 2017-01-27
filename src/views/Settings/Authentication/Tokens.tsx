@@ -97,6 +97,7 @@ class Tokens extends React.Component<Props, State> {
             <div className='inputContainer'>
               <input
                 className='inputField'
+                autoFocus={true}
                 placeholder='Define a name for the token ...'
                 value={this.state.newTokenName}
                 onKeyDown={this.handleKeyDown}
