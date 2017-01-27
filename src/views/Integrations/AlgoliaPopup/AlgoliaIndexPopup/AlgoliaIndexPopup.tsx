@@ -156,8 +156,8 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
     const {fragment, fragmentValid, title, selectedModel} = this.state
     const {algolia} = this.props
 
-    this.close()
     if (this.validate()) {
+      this.close()
       Relay.Store.commitUpdate(
         new AddAlgoliaSyncQueryMutation({
           modelId: selectedModel.id,
