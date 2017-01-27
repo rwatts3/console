@@ -28,22 +28,31 @@ export default ({params}: Props) => {
       <Link
         className='linkStyle'
         activeClassName='activeLinkStyle'
-        to={`/${params.projectName}/settings/general`}>
+        to={`/${params.projectName}/settings/general`}
+      >
           General
       </Link>
       <Link
         className='linkStyle'
         activeClassName='activeLinkStyle'
-        to={`/${params.projectName}/settings/authentication`}>
+        to={`/${params.projectName}/settings/authentication`}
+      >
           Authentication
       </Link>
       <Link
         className='linkStyle'
         activeClassName='activeLinkStyle'
-        to={`/${params.projectName}/settings/export`}>
+        to={`/${params.projectName}/settings/export`}
+      >
         Export
       </Link>
-      <Link className='linkStyle' activeClassName='activeLinkStyle'>Team</Link>
+      <Link
+        className='linkStyle'
+        activeClassName='activeLinkStyle'
+        to={`/${params.projectName}/settings/team`}
+      >
+        Team
+      </Link>
       <Link className='linkStyle' activeClassName='activeLinkStyle'>Billing</Link>
     </div>
   )

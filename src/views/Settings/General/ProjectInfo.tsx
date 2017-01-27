@@ -124,7 +124,7 @@ class ProjectInfo extends React.Component<Props, State> {
                 onMouseLeave={() => this.setState({isHoveringProjectName: false} as State)}
                 onClick={() => this.setState({
                     isEnteringProjectName: true,
-                    isHoveringProjectName: false
+                    isHoveringProjectName: false,
                   } as State)}
               >
                 <div
