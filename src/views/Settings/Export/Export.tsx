@@ -15,7 +15,6 @@ class Export extends React.Component<Props, {}> {
 
   constructor(props) {
     super(props)
-
     this.state = {}
   }
 

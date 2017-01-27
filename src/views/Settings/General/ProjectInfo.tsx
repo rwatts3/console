@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {$p} from 'graphcool-styles'
+import {$p, $v} from 'graphcool-styles'
 import UpdateProjectMutation from '../../../mutations/UpdateProjectMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {onFailureShowNotification} from '../../../utils/relay'
@@ -32,6 +32,8 @@ class ProjectInfo extends React.Component<Props, State> {
     isHoveringProjectName: false,
     projectIdCopied: false,
   }
+
+  copyTimer: number
 
   render() {
     return (
