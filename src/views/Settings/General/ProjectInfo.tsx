@@ -81,6 +81,43 @@ class ProjectInfo extends React.Component<Props, State> {
             color: rgba(241,143,1,1);
           }
 
+          @keyframes movingCopyIndicator {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, 0);
+            }
+
+            50% {
+              opacity: 1;
+            }
+
+            100% {
+              opacity: 0;
+              transform: translate(-50%, -50px);
+            }
+          }
+
+          .copyIndicator {
+            top: -20px;
+            left: 50%;
+            transform: translate(-50%,0);
+            animation: movingCopyIndicator .7s linear;
+          }
+
+          .copy {
+            i {
+              transition: fill .1s linear, background .1s linear;
+            }
+
+            &:hover {
+              i {
+                background: rgba(0,0,0,0.04);
+                fill: rgba(0,0,0,0.6);
+              }
+            }
+          }
+
+
         `}</style>
 
         {this.state.isEnteringProjectName ?
@@ -157,15 +194,26 @@ class ProjectInfo extends React.Component<Props, State> {
             <div className='value'>{this.props.project.id}</div>
             <CopyToClipboard
               text={this.props.project.id}
-              onCopy={() => this.setState({projectIdCopied: true} as State)}
-            >
-              <Icon
-                className={cx($p.ml10, $p.pointer, $p.buttonShadow)}
-                color={'rgba(0,0,0,.5)'}
-                src={require('../../../assets/icons/copy.svg')}
-                width={34}
-                height={34}
-              />
+              onCopy={this.onCopy}>
+              >
+              <div
+                className='copy relative bgWhite selfCenter br2 buttonShadow pointer'
+              >
+                {this.state.projectIdCopied && (
+                  <div
+                    className='copyIndicator o0 absolute f14 fw6 blue'
+                  >
+                    Copied
+                  </div>
+                )}
+                <Icon
+                  className={cx($p.ml10, $p.pointer, $p.buttonShadow)}
+                  color={'rgba(0,0,0,.5)'}
+                  src={require('../../../assets/icons/copy.svg')}
+                  width={34}
+                  height={34}
+                />
+              </div>
             </CopyToClipboard>
           </div>
         </div>
@@ -198,6 +246,15 @@ class ProjectInfo extends React.Component<Props, State> {
         isEnteringProjectName: false,
       } as State)
     }
+  }
+
+  private onCopy: () => any = () => {
+    // tracker.track(ConsoleEvents.Endpoints.copied())
+    this.setState({projectIdCopied: true} as State)
+    this.copyTimer = window.setTimeout(
+      () => this.setState({projectIdCopied: false} as State),
+      1000,
+    )
   }
 
 }
