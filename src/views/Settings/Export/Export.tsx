@@ -65,7 +65,10 @@ class Export extends React.Component<Props, {}> {
               Here you can download everything.
             </div>
           </div>
-          <div className='button'>
+          <div
+            className='button'
+            onClick={this.exportData}
+          >
             Export Data
           </div>
         </div>
@@ -89,7 +92,10 @@ class Export extends React.Component<Props, {}> {
   }
 
   private exportSchema = (): void => {
-    console.log('Export Schema')
+    download(this.props.viewer.project.schema, 'schema', '')
+  }
+
+  private exportData = (): void => {
     download(this.props.viewer.project.schema, 'schema', '')
   }
 

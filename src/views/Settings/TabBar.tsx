@@ -26,8 +26,9 @@ export default ({params}: Props) => {
 
       `}</style>
       <Link
-        className={location.pathname.endsWith('settings') ? 'activeLinkStyle' : 'linkStyle'}
-        to={`/${params.projectName}/settings`}>
+        className='linkStyle'
+        activeClassName='activeLinkStyle'
+        to={`/${params.projectName}/settings/general`}>
           General
       </Link>
       <Link

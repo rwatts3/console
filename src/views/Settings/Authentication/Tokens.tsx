@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {PermanentAuthToken, Project, Viewer} from '../../../types/types'
+import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$p} from 'graphcool-styles'
 import AddPermanentAuthTokenMutation from '../../../mutations/AddPermanentAuthTokenMutation'
@@ -7,6 +7,11 @@ import * as Relay from 'react-relay'
 import * as cx from 'classnames'
 import TokenRow from './TokenRow'
 import DeletePermanentAuthTokenMutation from '../../../mutations/DeletePermanentAuthTokenMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface State {
   isEnteringTokenName: boolean
@@ -15,6 +20,7 @@ interface State {
 
 interface Props {
   project: Project
+  showNotification: ShowNotificationCallback
 }
 
 class Tokens extends React.Component<Props, State> {
@@ -132,7 +138,7 @@ class Tokens extends React.Component<Props, State> {
                   src={require('../../../assets/icons/addFull.svg')}
                   width={12}
                   height={12}
-                  color={tokens.length > 0 ? 'rgba(0,0,0,.5)' : 'rgba(42,127,211,1)'}
+                  color={tokens.length > 0 ? 'rgba(0,0,0,.3)' : 'rgba(42,127,211,1)'}
                   stroke={true}
                   strokeWidth={8}
                 />
@@ -185,15 +191,18 @@ class Tokens extends React.Component<Props, State> {
         tokenId: token.id,
       }),
       {
-        onSuccess: () => {
-          console.log('SUCCESS')
-        },
-        onFailure: (transaction) => console.error('could not add token, an error occured'),
+        onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
       })
   }
 }
 
-export default Relay.createContainer(Tokens, {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedTokens = connect(null, mapDispatchToProps)(Tokens)
+
+export default Relay.createContainer(mappedTokens, {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {

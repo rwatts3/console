@@ -13,7 +13,14 @@ class General extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div>
+      <div className='container'>
+        <style jsx={true}>{`
+          .container {
+            @inherit: .br;
+            max-width: 700px;
+            border-color: rgba( 229, 229, 229, 1);
+          }
+        `}</style>
         <ProjectInfo
           project={this.props.viewer.project}
         />
@@ -25,7 +32,6 @@ class General extends React.Component<Props, {}> {
     )
   }
 }
-
 
 export default Relay.createContainer(General, {
   initialVariables: {

@@ -2496,6 +2496,10 @@ dot-prop@^3.0.0:
   dependencies:
     is-obj "^1.0.0"
 
+downloadjs@^1.4.7:
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/downloadjs/-/downloadjs-1.4.7.tgz#f69f96f940e0d0553dac291139865a3cd0101e3c"
+
 drumstick@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/drumstick/-/drumstick-1.0.8.tgz#3cc7c4252cc1d6e61dd2638aa001ac4d5977f6aa"

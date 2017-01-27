@@ -41,15 +41,15 @@ export default class TokenRow extends React.Component<Props, {}> {
         <div className='headerRow'>
           <Icon
             src={require('../../../assets/icons/lock.svg')}
-            width={10}
-            height={13}
+            width={14}
+            height={20}
           />
           <div className='title'>{this.props.permanentAuthToken.name}</div>
           <Icon
             className={$p.pointer}
             src={require('../../../assets/icons/trash.svg')}
-            width={12}
-            height={13}
+            width={16}
+            height={17}
             onClick={() => this.props.deleteSystemToken(this.props.permanentAuthToken)}
           />
         </div>

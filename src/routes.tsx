@@ -114,7 +114,7 @@ export default (
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <Route path='settings' component={Settings} render={render}>
-        <IndexRoute component={General} queries={ViewerQuery} render={render} />
+        <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
         <Route path='team' component={Team} render={render} />
