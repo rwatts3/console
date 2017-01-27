@@ -148,7 +148,7 @@
     "netlify-cli": "^1.0.3",
     "nock": "^8.1.0",
     "node-noop": "^1.0.0",
-    "node-sass": "^3.8.0",
+    "node-sass": "4.4.0",
     "postcss-loader": "^0.9.1",
     "raw-loader": "^0.5.1",
     "react-addons-test-utils": "^15.3.2",
