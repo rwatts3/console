@@ -120,15 +120,6 @@ class ModelHeader extends React.Component<Props, State> {
 
     return (
       <div className={classes.root}>
-        {this.state.authProviderPopupVisible &&
-        <PopupWrapper>
-          <AuthProviderPopup
-            project={this.props.project}
-            close={() => this.setState({ authProviderPopupVisible: false } as State)}
-            forceFetchRoot={this.props.forceFetchRoot}
-          />
-        </PopupWrapper>
-        }
         <div className={classes.top}>
           <Header
             viewer={this.props.viewer}
@@ -202,24 +193,29 @@ class ModelHeader extends React.Component<Props, State> {
             [this.props.buttonsClass]: this.props.buttonsClass && this.props.buttonsClass.length > 0,
           })}>
             {this.props.model.name === 'User' && !schemaActive &&
-            <div
+            <Link
               className={cx(
-                  particles.ml10,
-                  particles.f14,
-                  particles.pa10,
-                  particles.pointer,
-                  particles.ttu,
-                  particles.bgWhite,
-                  particles.black50,
-                  particles.lhSolid,
-                  particles.fw6,
-                  particles.buttonShadow,
-                  particles.tracked,
-                )}
-              onClick={() => this.setState({authProviderPopupVisible: true} as State)}
-              >
+                particles.ml10,
+                particles.f14,
+                particles.pa10,
+                particles.pointer,
+                particles.ttu,
+                particles.bgWhite,
+                particles.black50,
+                particles.lhSolid,
+                particles.fw6,
+                particles.buttonShadow,
+                particles.tracked,
+              )}
+              to={{
+                pathname: `/${this.props.params.projectName}/integrations/authentication/email`,
+                state: {
+                  returnTo: location.pathname,
+                },
+              }}
+            >
                 Configure Auth Provider
-            </div>
+            </Link>
             }
             {this.props.children}
           </div>
@@ -347,7 +343,6 @@ export default Relay.createContainer(ReduxContainer, {
     project: () => Relay.QL`
       fragment on Project {
         ${Header.getFragment('project')}
-        ${AuthProviderPopup.getFragment('project')}
       }
     `,
     model: () => Relay.QL`

@@ -9,12 +9,15 @@ import {Viewer} from '../../types/types'
 
 interface Props {
   viewer: Viewer
+  location: any
   params: any
 }
 
 class IntegrationsView extends React.Component<Props, {}> {
   render() {
-    const {viewer: {project}, params} = this.props
+    const {viewer: {project}, params, location} = this.props
+
+    console.log('location in integrationsview', location)
 
     return (
       <div className={cx($p.overflowScroll, $p.h100, $p.bgBlack04)}>

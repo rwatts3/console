@@ -27,6 +27,7 @@ import Team from './views/Settings/Team/Team'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
+import AuthProviderPopup from './views/models/AuthProviderPopup/AuthProviderPopup'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
 import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
@@ -161,6 +162,7 @@ export default (
             queries={ViewerQuery}
             render={render}/>
         </Route>
+        <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
       </Route>
       <IndexRedirect to='models'/>
     </Route>

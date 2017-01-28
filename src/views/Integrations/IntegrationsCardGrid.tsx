@@ -18,19 +18,33 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
       && this.props.project.integrations.edges[0].node.isEnabled
     const {params: {projectName}} = this.props
 
-    const mockIntegration = {
+    const algoliaIntegration = {
       isEnabled,
       logoURI: require('../../assets/graphics/algolia-logo.svg'),
       description: 'Hosted Search API that delivers instant and relevant results from the first keystroke',
       link: `/${projectName}/integrations/algolia`,
     }
 
+    const auth0Integration = {
+      isEnabled: null,
+      logoURI: require('assets/graphics/auth0-logo-blue.svg'),
+      description: 'Add authentication to your web and mobile apps in under 10 minutes',
+      link: `/${projectName}/integrations/authentication/auth0`,
+    }
+
+    const digitsIntegration = {
+      isEnabled: null,
+      logoURI: require('assets/graphics/digits.png'),
+      description: 'No more passwords. Powerful login that grows your mobile graph',
+      link: `/${projectName}/integrations/authentication/digits`,
+    }
+
     return (
       <div className={cx($p.flex, $p.flexColumn)}>
         <div className={cx($p.flex, $p.flexRow)}>
-          <IntegrationsCard integration={mockIntegration} />
-          <IntegrationsCardPlaceholder />
-          <IntegrationsCardPlaceholder />
+          <IntegrationsCard integration={algoliaIntegration} />
+          <IntegrationsCard integration={auth0Integration} />
+          <IntegrationsCard integration={digitsIntegration} />
         </div>
         <div className={cx($p.flex, $p.flexRow)}>
           <IntegrationsCardPlaceholder />
