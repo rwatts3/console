@@ -8,21 +8,18 @@ interface Props {
 export default ({params}: Props) => {
 
   return (
-    <div className='tabBarContainer'>
+    <div className='flex'>
       <style jsx={true} global>{`
 
-        .tabBarContainer {
-          @inherit: .flex;
+      .linkStyle {
+        @inherit: .ttu, .fw6, .black20, .ph25, .pv16, .bBlack10;
+      }
 
-          .linkStyle {
-            @inherit: .ttu, .fw6, .black20, .ph25, .pv16, .bb, .bBlack10;
-          }
+      .linkStyle.activeLinkStyle {
+        @inherit: .ttu, .fw6, .black50, .ph25, .pv16, .bgWhite, .bt, .bl, .br, .br2, .bw2, .bBlack10;
+        margin-bottom: -2px;
 
-          .linkStyle.activeLinkStyle {
-            @inherit: .ttu, .fw6, .black50, .ph25, .pv16, .bgWhite, .bt, .bl, .br, .br2, .bw2, .bBlack10;
-          }
-
-        }
+      }
 
       `}</style>
       <Link
