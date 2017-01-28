@@ -1,7 +1,7 @@
 import * as cookiestore from 'cookiestore'
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Route, IndexRoute, IndexRedirect } from 'react-router'
+import { Route, IndexRoute, IndexRedirect, Redirect } from 'react-router'
 import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
@@ -119,6 +119,7 @@ export default (
     <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
+    <Redirect from="settings" to="settings/general" />
       <Route path='settings' component={Settings} render={render}>
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
