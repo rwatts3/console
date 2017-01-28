@@ -13,6 +13,10 @@ import AlgoliaPopupIndexes from './AlgoliaPopupIndexes'
 import AlgoliaPopupFooter from './AlgoliaPopupFooter'
 import mapProps from '../../../components/MapProps/MapProps'
 import UpdateSearchProviderAlgolia from '../../../mutations/UpdateSearchProviderAlgolia'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {ShowNotificationCallback} from '../../../types/utils'
 
 interface Props {
   viewer: Viewer
@@ -20,6 +24,8 @@ interface Props {
   router: ReactRouter.InjectedRouter
   algolia: SearchProviderAlgolia
   projectId: string
+  showNotification: ShowNotificationCallback
+  relay: any
 }
 
 interface State {
@@ -61,7 +67,7 @@ class AlgoliaPopup extends React.Component<Props, State> {
             $p.justifyCenter,
             $p.itemsCenter,
             $p.h100,
-            $p.bgWhite50,
+            $p.bgWhite80,
           )}
         >
           <Container
@@ -83,6 +89,7 @@ class AlgoliaPopup extends React.Component<Props, State> {
                 applicationIdChange={this.applicationIdChange}
                 isEnabledChange={this.isEnabledChange}
                 connected={algolia.isEnabled}
+                close={this.close}
               />
               <AlgoliaPopupIndexes algolia={algolia} params={params} />
             </ScrollContainer>
@@ -132,9 +139,21 @@ class AlgoliaPopup extends React.Component<Props, State> {
         applicationId,
         projectId,
       }),
+      {
+        onSuccess: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        },
+      },
     )
   }
 }
+
+const ReduxContainer = connect(null, {
+  showNotification,
+})(AlgoliaPopup)
 
 const MappedAlgoliaPopup = mapProps({
   projectId: props => props.viewer.project.id,
@@ -146,7 +165,7 @@ const MappedAlgoliaPopup = mapProps({
 
     return null
   },
-})(AlgoliaPopup)
+})(ReduxContainer)
 
 export default Relay.createContainer(withRouter(MappedAlgoliaPopup), {
   initialVariables: {

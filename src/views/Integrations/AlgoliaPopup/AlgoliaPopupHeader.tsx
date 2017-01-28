@@ -1,12 +1,13 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { $p } from 'graphcool-styles'
+import {$p, $v} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Viewer, SearchProviderAlgolia} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import FloatingInput from '../../../components/FloatingInput/FloatingInput'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
+import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 
 interface Props {
   apiKeyChange: (e: any) => void
@@ -16,6 +17,7 @@ interface Props {
   applicationId: string
   isEnabled: boolean
   connected: boolean
+  close: Function
 }
 
 const Paragraph = styled.p`
@@ -28,7 +30,8 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
   }
 
   render() {
-    const {isEnabledChange, apiKeyChange, applicationIdChange, apiKey, applicationId, isEnabled, connected} = this.props
+    const {isEnabledChange, apiKeyChange, applicationIdChange, apiKey, applicationId, isEnabled, connected, close}
+      = this.props
 
     return (
       <div className={cx($p.bgBlack04, $p.pa38, $p.relative)}>
@@ -66,6 +69,21 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
           >
             {connected ? 'Enabled' : 'Enable'}
           </div>
+          <style jsx global>{`
+            .algolia-popup-x {
+              @inherit: .absolute, .right0, .top0, .pointer, .pt38, .pr38;
+            }
+          `}</style>
+          <Icon
+            src={require('graphcool-styles/icons/stroke/cross.svg')}
+            stroke={true}
+            width={25}
+            height={25}
+            strokeWidth={2}
+            className='algolia-popup-x'
+            color={$v.gray50}
+            onClick={close}
+          />
         </div>
         <div className={cx($p.mt38)}>
           <FloatingInput
@@ -84,6 +102,17 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
             value={apiKey || ''}
             onChange={apiKeyChange}
           />
+          <style jsx>{`
+            .info {
+              @inherit: .f12, .orange;
+            }
+          `}</style>
+          {(!apiKey || apiKey.length === 0) && (
+            <div className='info'>
+              Please create a new API Key and <b>do not use the Admin Key</b>.
+              The new API Key needs the ACL "Add records" and "Delete records".
+            </div>
+          )}
         </div>
       </div>
     )
