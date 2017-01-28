@@ -420,7 +420,7 @@ aws4@^1.2.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.5.0.tgz#0a29ffb79c31c9e712eeb087e8e7a64b4a56d755"
 
-babel-cli@^6.11.4:
+babel-cli@^6.11.4, babel-cli@^6.9.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babel-cli/-/babel-cli-6.18.0.tgz#92117f341add9dead90f6fa7d0a97c0cc08ec186"
   dependencies:
@@ -441,7 +441,7 @@ babel-cli@^6.11.4:
   optionalDependencies:
     chokidar "^1.0.0"
 
-babel-cli@^6.22.2, babel-cli@^6.9.0:
+babel-cli@^6.22.2:
   version "6.22.2"
   resolved "https://registry.yarnpkg.com/babel-cli/-/babel-cli-6.22.2.tgz#3f814c8acf52759082b8fedd9627f938936ab559"
   dependencies:
@@ -470,7 +470,7 @@ babel-code-frame@^6.20.0, babel-code-frame@^6.22.0:
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-babel-core@^6.0.0, babel-core@^6.18.0:
+babel-core@^6.0.0, babel-core@^6.11.4, babel-core@^6.18.0, babel-core@^6.9.1:
   version "6.20.0"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.20.0.tgz#ab0d7176d9dea434e66badadaf92237865eab1ec"
   dependencies:
@@ -494,7 +494,7 @@ babel-core@^6.0.0, babel-core@^6.18.0:
     slash "^1.0.0"
     source-map "^0.5.0"
 
-babel-core@^6.11.4, babel-core@^6.22.0, babel-core@^6.22.1, babel-core@^6.9.1:
+babel-core@^6.22.0, babel-core@^6.22.1:
   version "6.22.1"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.22.1.tgz#9c5fd658ba1772d28d721f6d25d968fc7ae21648"
   dependencies:
@@ -1268,24 +1268,24 @@ babel-preset-stage-3@^6.17.0, babel-preset-stage-3@^6.22.0:
     babel-plugin-transform-exponentiation-operator "^6.22.0"
     babel-plugin-transform-object-rest-spread "^6.22.0"
 
-babel-register@^6.11.6, babel-register@^6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/babel-register/-/babel-register-6.22.0.tgz#a61dd83975f9ca4a9e7d6eff3059494cd5ea4c63"
+babel-register@^6.11.6, babel-register@^6.18.0:
+  version "6.18.0"
+  resolved "https://registry.yarnpkg.com/babel-register/-/babel-register-6.18.0.tgz#892e2e03865078dd90ad2c715111ec4449b32a68"
   dependencies:
-    babel-core "^6.22.0"
-    babel-runtime "^6.22.0"
+    babel-core "^6.18.0"
+    babel-runtime "^6.11.6"
     core-js "^2.4.0"
     home-or-tmp "^2.0.0"
     lodash "^4.2.0"
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-register@^6.18.0:
-  version "6.18.0"
-  resolved "https://registry.yarnpkg.com/babel-register/-/babel-register-6.18.0.tgz#892e2e03865078dd90ad2c715111ec4449b32a68"
+babel-register@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-register/-/babel-register-6.22.0.tgz#a61dd83975f9ca4a9e7d6eff3059494cd5ea4c63"
   dependencies:
-    babel-core "^6.18.0"
-    babel-runtime "^6.11.6"
+    babel-core "^6.22.0"
+    babel-runtime "^6.22.0"
     core-js "^2.4.0"
     home-or-tmp "^2.0.0"
     lodash "^4.2.0"
@@ -3192,9 +3192,9 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@^1.2.7:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.2.7.tgz#f16f5b488c3ecd2172000e6eb46fd0ab574763ae"
+graphcool-graphiql@1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.2.8.tgz#e0e35b6dbe5171524a5aff53d451e6351b3102be"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"
@@ -6256,7 +6256,7 @@ react-document-title@2.0.1:
   dependencies:
     react-side-effect "^1.0.2"
 
-"react-dom@^15.0.0 || ^16.0.0", react-dom@^15.2.1:
+"react-dom@^15.0.0 || ^16.0.0", react-dom@^15.2.1, react-dom@^15.3.2:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.1.tgz#d54c913261aaedb17adc20410d029dcc18a1344a"
   dependencies:
@@ -6264,7 +6264,7 @@ react-document-title@2.0.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
-react-dom@^15.3.2, react-dom@^15.4.2:
+react-dom@^15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.2.tgz#015363f05b0a1fd52ae9efdd3a0060d90695208f"
   dependencies:
