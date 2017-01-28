@@ -43,32 +43,8 @@ class ProjectInfo extends React.Component<Props, State> {
   render() {
     return (
 
-      <div className='container'>
+      <div className='flex flexColumn pt38 pl60'>
         <style jsx={true}>{`
-
-          .container {
-            @inherit: .flex, .flexColumn, .pt38, .pl60;
-          }
-
-          .infoBox {
-            @inherit: .flex, .flexColumn, .pl16, .pt16, .pb25;
-          }
-
-          .title {
-            @inherit: .black, .o40, .f14;
-          }
-
-          .value {
-            @inherit: .fw3, .f25, .pt6;
-          }
-
-          .editable {
-            @inherit: .pointer;
-          }
-
-          .centeredRow {
-            @inherit: .flex, .itemsCenter;
-          }
 
           .inputField {
             @inherit: .f25, .fw3, .w100, .pt6;
@@ -103,33 +79,19 @@ class ProjectInfo extends React.Component<Props, State> {
           }
 
           .copyIndicator {
-            top: -20px;
+            top: -30px;
             left: 50%;
             transform: translate(-50%,0);
             animation: movingCopyIndicator .7s linear;
           }
 
-          .copy {
-            i {
-              transition: fill .1s linear, background .1s linear;
-            }
-
-            &:hover {
-              i {
-                background: rgba(0,0,0,0.04);
-                fill: rgba(0,0,0,0.6);
-              }
-            }
-          }
-
-
         `}</style>
 
         {this.state.isEnteringProjectName ?
           (
-            <div className='infoBox'>
-              <div className='centeredRow'>
-                <div className='title'>Project Name</div>
+            <div className='flex flexColumn pl16 pt16 pb25'>
+              <div className='flex itemsCenter'>
+                <div className='black o40 f14'>Project Name</div>
                 <div
                   className='resetButton'
                   onClick={() => this.setState({isEnteringProjectName: false} as State)}
@@ -137,7 +99,7 @@ class ProjectInfo extends React.Component<Props, State> {
                   Reset
                 </div>
               </div>
-              <div className='centeredRow'>
+              <div className='flex itemsCenter'>
                 <input
                   autoFocus={true}
                   className='inputField'
@@ -153,14 +115,13 @@ class ProjectInfo extends React.Component<Props, State> {
                 </div>
               </div>
             </div>
-
           )
           :
           (
-            <div className='infoBox'>
-              <div className='title'>Project Name</div>
+            <div className='flex flexColumn pl16 pt16 pb25'>
+              <div className='black o40 f14'>Project Name</div>
               <div
-                className='centeredRow editable'
+                className='flex itemsCenter pointer'
                 onMouseEnter={() => this.setState({isHoveringProjectName: true} as State)}
                 onMouseLeave={() => this.setState({isHoveringProjectName: false} as State)}
                 onClick={() => this.setState({
@@ -169,7 +130,7 @@ class ProjectInfo extends React.Component<Props, State> {
                   } as State)}
               >
                 <div
-                  className='value'
+                  className='fw3 f25 pt6'
                 >
                   {this.props.project.name}
                 </div>
@@ -184,34 +145,34 @@ class ProjectInfo extends React.Component<Props, State> {
 
           )
         }
-        <div className='infoBox'>
-          <div className='centeredRow'>
+        <div className='flex flexColumn pl16 pt16 pb25'>
+          <div className='flex itemsCenter'>
             <Icon
               className={$p.mr6}
               src={require('../../../assets/icons/lock.svg')}
               width={14}
               height={20}
             />
-            <div className='title'>Project ID</div>
+            <div className='black o40 f14'>Project ID</div>
           </div>
-          <div className='centeredRow'>
-            <div className='value'>{this.props.project.id}</div>
+          <div className='flex itemsCenter'>
+            <div className='fw3 f25 pt6'>{this.props.project.id}</div>
             <CopyToClipboard
               text={this.props.project.id}
-              onCopy={this.onCopy}>
-              >
+              onCopy={this.onCopy}
+            >
               <div
-                className='copy relative bgWhite selfCenter br2 buttonShadow pointer'
+                className='relative bgWhite selfCenter br2 pointer'
               >
                 {this.state.projectIdCopied && (
                   <div
-                    className='copyIndicator o0 absolute f14 fw6 blue'
+                    className='copyIndicator absolute f14 fw6 blue'
                   >
                     Copied
                   </div>
                 )}
                 <Icon
-                  className={cx($p.ml10, $p.pointer, $p.buttonShadow)}
+                  className='ml10 pointer buttonShadow'
                   color={'rgba(0,0,0,.5)'}
                   src={require('../../../assets/icons/copy.svg')}
                   width={34}
@@ -253,7 +214,6 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   private onCopy: () => any = () => {
-    // tracker.track(ConsoleEvents.Endpoints.copied())
     this.setState({projectIdCopied: true} as State)
     this.copyTimer = window.setTimeout(
       () => this.setState({projectIdCopied: false} as State),
@@ -279,3 +239,4 @@ export default Relay.createContainer(mappedProjectInfo, {
     `,
   },
 })
+

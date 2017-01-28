@@ -15,6 +15,8 @@ interface State {
 
 export default class TokenRow extends React.Component<Props, State> {
 
+  copyTimer: number
+
   state = {
     copied: false,
     isHovered: false,
@@ -50,6 +52,29 @@ export default class TokenRow extends React.Component<Props, State> {
             @inherit: .f25, .fw3, .mt10, .overflowXHidden, .nowrap;
           }
 
+          @keyframes movingCopyIndicator {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, 0);
+            }
+
+            50% {
+              opacity: 1;
+            }
+
+            100% {
+              opacity: 0;
+              transform: translate(-50%, -50px);
+            }
+          }
+
+          .copyIndicator {
+            top: -30px;
+            left: 96.5%;
+            transform: translate(-50%,0);
+            animation: movingCopyIndicator .7s linear;
+          }
+
         `}</style>
         <div className='headerRow'>
           <Icon
@@ -68,16 +93,24 @@ export default class TokenRow extends React.Component<Props, State> {
         </div>
         <CopyToClipboard
           text={this.props.permanentAuthToken.token}
-          onCopy={() => this.setState({copied: true} as State)}
+          onCopy={this.onCopy}
         >
-          <div className='flex itemsCenter pointer'>
-            <div className='relative f25 fw3 mt10 overflowXHidden nowrap'>
+          <div className='flex itemsCenter pointer relative'>
+            <div className='f25 fw3 mt10 overflowXHidden nowrap'>
               {this.props.permanentAuthToken.token}
             </div>
+
+            {this.state.copied &&
+            <div
+              className='copyIndicator absolute f14 fw6 blue'
+            >
+              Copied
+            </div>
+            }
             {this.state.isHovered &&
             <Icon
               className='ml10 buttonShadow'
-              color={'rgba(0,0,0,.5)'}
+              color='rgba(0,0,0,.5)'
               src={require('../../../assets/icons/copy.svg')}
               width={34}
               height={34}
@@ -86,6 +119,15 @@ export default class TokenRow extends React.Component<Props, State> {
           </div>
         </CopyToClipboard>
       </div>
+    )
+  }
+
+  private onCopy: () => any = () => {
+    console.log('copy')
+    this.setState({copied: true} as State)
+    this.copyTimer = window.setTimeout(
+      () => this.setState({copied: false, isHovered: false} as State),
+      1000,
     )
   }
 
