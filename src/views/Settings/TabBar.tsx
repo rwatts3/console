@@ -43,14 +43,14 @@ export default ({params}: Props) => {
       >
         Export
       </Link>
-      <Link
-        className='linkStyle'
-        activeClassName='activeLinkStyle'
-        to={`/${params.projectName}/settings/team`}
-      >
-        Team
-      </Link>
-      <Link className='linkStyle' activeClassName='activeLinkStyle'>Billing</Link>
+      {/*<Link*/}
+        {/*className='linkStyle'*/}
+        {/*activeClassName='activeLinkStyle'*/}
+        {/*to={`/${params.projectName}/settings/team`}*/}
+      {/*>*/}
+        {/*Team*/}
+      {/*</Link>*/}
+      {/*<Link className='linkStyle' activeClassName='activeLinkStyle'>Billing</Link>*/}
     </div>
   )
 

@@ -5,6 +5,8 @@ import {Viewer} from '../../../types/types'
 import * as cookiestore from 'cookiestore'
 import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
+import * as CodeMirror from 'react-codemirror'
+import EditorConfiguration = CodeMirror.EditorConfiguration
 
 interface Props {
   viewer: Viewer
@@ -89,6 +91,18 @@ class Export extends React.Component<Props, {}> {
             Export Schema
           </div>
         </div>
+        {/*<div*/}
+        {/*className='hS96'*/}
+        {/*style={{maxHeight: '100px'}}*/}
+        {/*>*/}
+          {/*<CodeMirror*/}
+            {/*options={{*/}
+              {/*theme: 'dracula',*/}
+              {/*height: 100,*/}
+            {/*} as EditorConfiguration }*/}
+            {/*value={this.props.viewer.project.schema}*/}
+          {/*/>*/}
+        {/*</div>*/}
       </div>
     )
   }
