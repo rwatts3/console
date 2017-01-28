@@ -2,6 +2,11 @@ import * as React from 'react'
 import * as download from 'downloadjs'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
+import * as cookiestore from 'cookiestore'
+import {Lokka} from 'lokka'
+import {Transport} from 'lokka-transport-http'
+import * as CodeMirror from 'react-codemirror'
+import EditorConfiguration = CodeMirror.EditorConfiguration
 
 interface Props {
   viewer: Viewer
@@ -11,7 +16,6 @@ class Export extends React.Component<Props, {}> {
 
   constructor(props) {
     super(props)
-
     this.state = {}
   }
 
@@ -59,19 +63,22 @@ class Export extends React.Component<Props, {}> {
         `}</style>
         <div className='exportDataContainer'>
           <div>
-            <div className='exportDataTitle'>Export data</div>
+            <div className='exportDataTitle'>Data data</div>
             <div className='exportDataDescription'>
               This is the data of your project that is stored to in the nodes.
               Here you can download everything.
             </div>
           </div>
-          <div className='button'>
+          <div
+            className='button'
+            onClick={this.exportData}
+          >
             Export Data
           </div>
         </div>
         <div className='exportSchemaContainer'>
           <div>
-            <div className='exportSchemaTitle'>Export data</div>
+            <div className='exportSchemaTitle'>Export Schema</div>
             <div className='exportSchemaDescription'>
               This is the schema representing the models and fields of your project.
               For example, you can use it to generate a blueprint of it.
@@ -84,13 +91,48 @@ class Export extends React.Component<Props, {}> {
             Export Schema
           </div>
         </div>
+        {/*<div*/}
+        {/*className='hS96'*/}
+        {/*style={{maxHeight: '100px'}}*/}
+        {/*>*/}
+          {/*<CodeMirror*/}
+            {/*options={{*/}
+              {/*theme: 'dracula',*/}
+              {/*height: 100,*/}
+            {/*} as EditorConfiguration }*/}
+            {/*value={this.props.viewer.project.schema}*/}
+          {/*/>*/}
+        {/*</div>*/}
       </div>
     )
   }
 
   private exportSchema = (): void => {
-    console.log('Export Schema')
     download(this.props.viewer.project.schema, 'schema', '')
+  }
+
+  private getLokka(projectId: string): any {
+    const token = cookiestore.get('graphcool_auth_token')
+    const headers = { Authorization: `Bearer ${token}` }
+    const transport = new Transport(`${__BACKEND_ADDR__}/system`, { headers })
+    return new Lokka({transport})
+  }
+
+  private exportData = (): void => {
+    const lokka = this.getLokka(this.props.viewer.project.id)
+    lokka.mutate(`
+       {
+        exportData(input:{
+          projectId: "${this.props.viewer.project.id}"
+          clientMutationId: "asd"
+        }) {
+          url
+        }
+      }
+    `).then((response) => {
+        console.log('url:', response.exportData.url)
+        download(response.exportData.url)
+    })
   }
 
 }

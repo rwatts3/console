@@ -149,7 +149,6 @@ class EndpointPopup extends React.Component<Props, State> {
       left: 50%;
       transform: translate(-50%,0);
       animation: ${movingCopyIndicator} .7s linear
-
     `
 
     const {endpoint, copied} = this.state
