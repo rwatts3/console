@@ -1,19 +1,20 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import {withRouter} from 'react-router'
 import ResetProjectDataMutation from '../../../mutations/ResetProjectDataMutation'
 import ResetProjectSchemaMutation from '../../../mutations/ResetProjectSchemaMutation'
 import DeleteProjectMutation from '../../../mutations/DeleteProjectMutation'
-import {Viewer} from '../../../types/types'
+import {Viewer, Project} from '../../../types/types'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {withRouter} from 'react-router'
 import {ShowNotificationCallback} from '../../../types/utils'
 
 interface Props {
   viewer: Viewer
-  params: any
   showNotification: ShowNotificationCallback
+  project: Project
+  router: ReactRouter.InjectedRouter
 }
 
 interface State {
@@ -167,16 +168,15 @@ class DangerZone extends React.Component<Props, State> {
     if (window.confirm('Do you really want to reset the project data?')) {
       Relay.Store.commitUpdate(
         new ResetProjectDataMutation({
-          projectId: this.props.viewer.project.id,
+          projectId: this.props.project.id,
         }),
         {
           onSuccess: () => {
-            console.log('SUCCESS')
-            // this.props.router.replace(`/${this.props.params.projectName}/playground`)
+            this.props.showNotification({message: 'All nodes were deleted', level: 'success'})
+            this.props.router.replace(`/${this.props.project.name}/settings/general`)
           },
-          onFailure: () => {
-            console.error('Couldn ot delete stuff')
-            // this.props.router.replace(`/${this.props.params.projectName}/playground`)
+          onFailure: (transaction) => {
+            this.props.showNotification({message: transaction.getError().message, level: 'error'})
           },
         })
     }
@@ -186,11 +186,15 @@ class DangerZone extends React.Component<Props, State> {
     if (window.confirm('Do you really want to reset the project data and models? ')) {
       Relay.Store.commitUpdate(
         new ResetProjectSchemaMutation({
-          projectId: this.props.viewer.project.id,
+          projectId: this.props.project.id,
         }),
         {
           onSuccess: () => {
-            // this.props.router.replace(`/${this.props.params.projectName}/playground`)
+            this.props.showNotification({message: 'All nodes and models were deleted', level: 'success'})
+            this.props.router.replace(`/${this.props.project.name}/settings/general`)
+          },
+          onFailure: (transaction) => {
+            this.props.showNotification({message: transaction.getError().message, level: 'error'})
           },
         })
     }
@@ -205,16 +209,15 @@ class DangerZone extends React.Component<Props, State> {
     } else if (window.confirm('Do you really want to delete this project?')) {
       Relay.Store.commitUpdate(
         new DeleteProjectMutation({
-          projectId: this.props.viewer.project.id,
+          projectId: this.props.project.id,
           customerId: this.props.viewer.user.id,
         }),
         {
           onSuccess: () => {
-            // TODO replace hard reload
-            // was added because deleting the last project caused
-            // a relay issue
-            window.location.pathname = '/'
+            this.props.router.replace(`/`)
+            this.props.showNotification({message: 'Your project was deleted', level: 'success'})
           },
+
         })
     }
   }
@@ -228,16 +231,9 @@ const mapDispatchToProps = (dispatch) => {
 const MappedDangerZone = connect(null, mapDispatchToProps)(withRouter(DangerZone))
 
 export default Relay.createContainer(MappedDangerZone, {
-  initialVariables: {
-    projectName: 'Hallo', // TODO
-  },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-        }
         user {
           id
           projects(first: 10) {
@@ -246,5 +242,11 @@ export default Relay.createContainer(MappedDangerZone, {
         }
       }
     `,
+    project: () => Relay.QL`
+      fragment on Project {
+        id
+        name
+      }
+    `
   },
 })

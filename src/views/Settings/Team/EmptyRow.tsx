@@ -4,6 +4,10 @@ import {$p} from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import * as cx from 'classnames'
 import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
 
 interface State {
   email: string
@@ -14,9 +18,10 @@ interface Props {
   hasAddFunctionality: boolean
   numberOfLeftSeats?: number
   projectId?: string
+  showNotification: ShowNotificationCallback
 }
 
-export default class EmptyRow extends React.Component<Props, State> {
+class EmptyRow extends React.Component<Props, State> {
 
   state = {
     email: '',
@@ -165,11 +170,21 @@ export default class EmptyRow extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          console.log('added person with email: ', email)
+          this.setState({isEnteringEmail: false} as State)
+          this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
         },
-        onFailure: (transaction) => console.error('could not invite person, an error occurred', transaction),
+        onFailure: (transaction) => {
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+        }
       },
     )
   }
 
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedEmptyRow = connect(null, mapDispatchToProps)(EmptyRow)
+export default mappedEmptyRow

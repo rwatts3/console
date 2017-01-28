@@ -165,7 +165,7 @@ class Tokens extends React.Component<Props, State> {
   }
 
   private deleteSystemToken = (token): void => {
-    console.log('delete token' + token.name)
+    if (window.confirm(`Do you really want to delete token \'${token.name}\'?`)) {
     Relay.Store.commitUpdate(
       new DeletePermanentAuthTokenMutation({
         projectId: this.props.project.id,
@@ -174,6 +174,7 @@ class Tokens extends React.Component<Props, State> {
       {
         onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
       })
+    }
   }
 }
 

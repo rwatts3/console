@@ -1,8 +1,9 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import {withRouter} from 'react-router'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {$p, $v} from 'graphcool-styles'
+import {$p} from 'graphcool-styles'
 import UpdateProjectMutation from '../../../mutations/UpdateProjectMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {onFailureShowNotification} from '../../../utils/relay'
@@ -10,11 +11,15 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import * as cx from 'classnames'
+
+// Note: the checks for this.props.project are there to make the UI
+// look better when a project gets deleted - otherwise there is a flicker
+// before the reload is triggered where the UI looks weird
 
 interface Props {
   project: Project
   showNotification: ShowNotificationCallback
+  router: ReactRouter.InjectedRouter
 }
 
 interface State {
@@ -92,27 +97,32 @@ class ProjectInfo extends React.Component<Props, State> {
             <div className='flex flexColumn pl16 pt16 pb25'>
               <div className='flex itemsCenter'>
                 <div className='black o40 f14'>Project Name</div>
+                {(this.state.newProjectName !== this.props.project.name) &&
                 <div
                   className='resetButton'
                   onClick={() => this.setState({isEnteringProjectName: false} as State)}
                 >
                   Reset
                 </div>
+                }
               </div>
               <div className='flex itemsCenter'>
                 <input
                   autoFocus={true}
                   className='inputField'
                   value={this.state.newProjectName}
+                  onBlur={() => this.setState({isEnteringProjectName: false} as State)}
                   onKeyDown={this.handleKeyDown}
                   onChange={(e: any) => this.setState({newProjectName: e.target.value} as State)}
                 />
-                <div
+                {(this.state.newProjectName !== this.props.project.name) &&
+                (<div
                   className='saveButton'
                   onClick={this.saveSettings}
                 >
                   Save
                 </div>
+                )}
               </div>
             </div>
           )
@@ -132,7 +142,7 @@ class ProjectInfo extends React.Component<Props, State> {
                 <div
                   className='fw3 f25 pt6'
                 >
-                  {this.props.project.name}
+                  {this.props.project && this.props.project.name}
                 </div>
                 {this.state.isHoveringProjectName && (<Icon
                   className={$p.ml6}
@@ -156,9 +166,9 @@ class ProjectInfo extends React.Component<Props, State> {
             <div className='black o40 f14'>Project ID</div>
           </div>
           <div className='flex itemsCenter'>
-            <div className='fw3 f25 pt6'>{this.props.project.id}</div>
+            <div className='fw3 f25 pt6'>{this.props.project && this.props.project.id}</div>
             <CopyToClipboard
-              text={this.props.project.id}
+              text={this.props.project && this.props.project.id}
               onCopy={this.onCopy}
             >
               <div
@@ -171,6 +181,7 @@ class ProjectInfo extends React.Component<Props, State> {
                     Copied
                   </div>
                 )}
+                {this.props.project &&
                 <Icon
                   className='ml10 pointer buttonShadow'
                   color={'rgba(0,0,0,.5)'}
@@ -178,6 +189,7 @@ class ProjectInfo extends React.Component<Props, State> {
                   width={34}
                   height={34}
                 />
+                }
               </div>
             </CopyToClipboard>
           </div>
@@ -195,10 +207,12 @@ class ProjectInfo extends React.Component<Props, State> {
         }),
       {
         onSuccess: () => {
-          // this.props.router.replace(`/${this.state.projectName}/`)
+          const message = 'Successfully renamed project to: ' + this.state.newProjectName
+          this.props.showNotification({message: message, level: 'success'})
+          this.props.router.replace(`/${this.state.newProjectName}/settings/general`)
         },
         onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
         },
       })
   }
@@ -229,7 +243,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedProjectInfo = connect(null, mapDispatchToProps)(ProjectInfo)
 
-export default Relay.createContainer(mappedProjectInfo, {
+export default Relay.createContainer(withRouter(mappedProjectInfo), {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {

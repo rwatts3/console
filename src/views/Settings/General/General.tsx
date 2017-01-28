@@ -6,7 +6,6 @@ import DangerZone from './DangerZone'
 
 interface Props {
   viewer: Viewer
-  params: any
 }
 
 class General extends React.Component<Props, {}> {
@@ -26,7 +25,7 @@ class General extends React.Component<Props, {}> {
         />
         <DangerZone
           viewer={this.props.viewer}
-          params={this.props.params}
+          project={this.props.viewer.project}
         />
       </div>
     )
@@ -42,7 +41,9 @@ export default Relay.createContainer(General, {
       fragment on Viewer {
         ${DangerZone.getFragment('viewer')},
         project: projectByName(projectName: $projectName) {
-          ${ProjectInfo.getFragment('project')}   
+          ${DangerZone.getFragment('project')},
+          ${ProjectInfo.getFragment('project')}  
+          name
         }
       }
     `,
