@@ -1,9 +1,7 @@
 import * as React from 'react'
 import {PermanentAuthToken} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {$p} from 'graphcool-styles'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import * as cx from 'classnames'
 
 interface Props {
   permanentAuthToken: PermanentAuthToken
@@ -12,12 +10,14 @@ interface Props {
 
 interface State {
   copied: boolean
+  isHovered: boolean
 }
 
 export default class TokenRow extends React.Component<Props, State> {
 
   state = {
     copied: false,
+    isHovered: false,
   }
 
   constructor(props) {
@@ -26,7 +26,11 @@ export default class TokenRow extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className='container'>
+      <div
+        className='container'
+        onMouseEnter={() => this.setState({isHovered: true} as State)}
+        onMouseLeave={() => this.setState({isHovered: false} as State)}
+      >
         <style jsx={true}>{`
 
           .container {
@@ -55,31 +59,32 @@ export default class TokenRow extends React.Component<Props, State> {
           />
           <div className='title'>{this.props.permanentAuthToken.name}</div>
           <Icon
-            className={$p.pointer}
+            className='pointer'
             src={require('../../../assets/icons/trash.svg')}
             width={16}
             height={17}
             onClick={() => this.props.deleteSystemToken(this.props.permanentAuthToken)}
           />
         </div>
-        <div className='flex'>
-          <div className='relative f25 fw3 mt10 overflowXHidden nowrap'>
-            {this.props.permanentAuthToken.token}
+        <CopyToClipboard
+          text={this.props.permanentAuthToken.token}
+          onCopy={() => this.setState({copied: true} as State)}
+        >
+          <div className='flex itemsCenter pointer'>
+            <div className='relative f25 fw3 mt10 overflowXHidden nowrap'>
+              {this.props.permanentAuthToken.token}
+            </div>
+            {this.state.isHovered &&
+            <Icon
+              className='ml10 buttonShadow'
+              color={'rgba(0,0,0,.5)'}
+              src={require('../../../assets/icons/copy.svg')}
+              width={34}
+              height={34}
+            />
+            }
           </div>
-          {/*<CopyToClipboard*/}
-            {/*text={this.props.permanentAuthToken.token}*/}
-            {/*onCopy={() => this.setState({copied: true} as State)}*/}
-          {/*>*/}
-            {/*<Icon*/}
-              {/*className={cx($p.ml10, $p.pointer, $p.buttonShadow)}*/}
-              {/*color={'rgba(0,0,0,.5)'}*/}
-              {/*src={require('../../../assets/icons/copy.svg')}*/}
-              {/*width={34}*/}
-              {/*height={34}*/}
-            {/*/>*/}
-          {/*</CopyToClipboard>*/}
-        </div>
-
+        </CopyToClipboard>
       </div>
     )
   }

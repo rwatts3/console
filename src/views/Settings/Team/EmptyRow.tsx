@@ -165,14 +165,11 @@ export default class EmptyRow extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          console.log('SUCCESS')
+          console.log('added person with email: ', email)
         },
-        onFailure: (transaction) => console.error('could not submit token, an error occurred', transaction),
-      }
+        onFailure: (transaction) => console.error('could not invite person, an error occurred', transaction),
+      },
     )
   }
-
-
-
 
 }
