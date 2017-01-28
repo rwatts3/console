@@ -11,13 +11,13 @@ export default class MemberRow extends React.Component<Props, {}> {
   colors = ['blueCircle', 'violetCircle', 'orangeCircle', 'redCircle', 'greenCircle']
 
   render() {
-    return this.props.seat.status !== 'JOINED' ?
+    return this.props.seat.status === 'JOINED' ?
           (
             <div className='container'>
               <style jsx={true}>{`
 
                 .container {
-                  @inherit: .flex, .itemsCenter, .ph16, .mb38;
+                  @inherit: .flex, .itemsCenter, .ph16, .mb16;
                   height: 69px;
                 }
 
@@ -61,7 +61,7 @@ export default class MemberRow extends React.Component<Props, {}> {
             </div>
           ) :
           (
-            <div className='flex justifyBetween itemsCenter w100 ph10 mb38'>
+            <div className='flex justifyBetween itemsCenter w100 ph10 mb16'>
               <div className='f25 fw3 black50'>{this.props.seat.email}</div>
               <div className='ttu lightOrange f14'>Pending</div>
             </div>

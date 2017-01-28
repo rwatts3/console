@@ -3,6 +3,7 @@ import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
+// import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
 
 interface Props {
   viewer: Viewer
@@ -13,9 +14,8 @@ class Team extends React.Component<Props, {}> {
   availableSeats: number = 4
 
   render() {
-    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
 
-    console.log(seats)
+    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
 
     const numberOfEmptyRows = this.availableSeats - seats.length
 
@@ -34,7 +34,7 @@ class Team extends React.Component<Props, {}> {
           }
         `}</style>
         {seats.map(seat =>
-          (<MemberRow key={seat.email} seat={seat} />)
+          (<MemberRow key={seat.email} seat={seat} />),
         )}
         <div className='mt38'>
           {numbers.map((i) => (
@@ -42,12 +42,14 @@ class Team extends React.Component<Props, {}> {
               key={i}
               hasAddFunctionality={i === 0}
               numberOfLeftSeats={i === 0 && numberOfEmptyRows}
+              projectId={i === 0 && this.props.viewer.project.id}
             />
           ))}
         </div>
       </div>
     )
   }
+
 }
 
 export default Relay.createContainer(Team, {
@@ -58,6 +60,7 @@ export default Relay.createContainer(Team, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
+          id
           seats(first: 1000) {
             edges {
               node {

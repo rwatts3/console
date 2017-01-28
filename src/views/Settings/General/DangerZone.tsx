@@ -229,7 +229,7 @@ const MappedDangerZone = connect(null, mapDispatchToProps)(withRouter(DangerZone
 
 export default Relay.createContainer(MappedDangerZone, {
   initialVariables: {
-    projectName: 'Test', // TODO
+    projectName: 'Hallo', // TODO
   },
   fragments: {
     viewer: () => Relay.QL`

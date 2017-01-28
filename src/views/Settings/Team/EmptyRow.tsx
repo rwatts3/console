@@ -1,7 +1,9 @@
 import * as React from 'react'
+import * as Relay from 'react-relay'
 import {$p} from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import * as cx from 'classnames'
+import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
 
 interface State {
   email: string
@@ -11,6 +13,7 @@ interface State {
 interface Props {
   hasAddFunctionality: boolean
   numberOfLeftSeats?: number
+  projectId?: string
 }
 
 export default class EmptyRow extends React.Component<Props, State> {
@@ -145,12 +148,31 @@ export default class EmptyRow extends React.Component<Props, State> {
 
   private handleKeyDown = (e) => {
     if (e.keyCode === 13) {
-      console.log('enter')
+      this.addCollaborator(this.state.email)
     } else if (e.keyCode === 27) {
       this.setState({
         isEnteringEmail: false,
       } as State)
     }
   }
+
+  private addCollaborator(email: string): void {
+    console.log('add with email', email)
+    Relay.Store.commitUpdate(
+      new InviteCollaboratorMutation({
+        projectId: this.props.projectId,
+        email: email,
+      }),
+      {
+        onSuccess: () => {
+          console.log('SUCCESS')
+        },
+        onFailure: (transaction) => console.error('could not submit token, an error occurred', transaction),
+      }
+    )
+  }
+
+
+
 
 }

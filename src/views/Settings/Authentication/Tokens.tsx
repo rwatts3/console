@@ -181,7 +181,8 @@ class Tokens extends React.Component<Props, State> {
             isEnteringTokenName: false} as State)
         },
         onFailure: (transaction) => console.error('could not submit token, an error occured'),
-      })
+      },
+    )
   }
 
   private deleteSystemToken = (token): void => {
