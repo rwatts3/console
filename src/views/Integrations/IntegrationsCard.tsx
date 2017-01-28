@@ -39,6 +39,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
         to={integration.link}
       >
 
+        {/*
         <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyEnd)}>
           <ConnectionCheckmark
             className={cx(
@@ -54,7 +55,7 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
             />
           </ConnectionCheckmark>
         </div>
-
+         */}
         <div
           className={cx(
             $p.tc,
@@ -65,28 +66,32 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
             $p.sansSerif,
           )}
         >
-          <Logo src={integration.logoURI} alt='integration-logo' />
+          <div>
+            <Logo src={integration.logoURI} alt='integration-logo' />
+          </div>
           <div className={cx($p.black50, $p.mt16)}>
             {integration.description}
           </div>
           <div className={cx($p.flex, $p.flexRow, $p.justifyCenter, $p.itemsCenter, $p.mt38)}>
-            <div
-              className={cx(
-                $p.ttu,
-                $p.br2,
-                $p.f14,
-                $p.pv4,
-                $p.ph10,
-                $p.br2,
-                $p.pointer,
-                {
-                  [`${$p.green} ${$p.bgGreen20}`]: integration.isEnabled,
-                  [`${$p.white} ${$p.bgBlue}`]: !integration.isEnabled,
-                },
-              )}
-            >
-              {integration.isEnabled ? 'Enabled' : 'Not Enabled'}
-            </div>
+            {typeof integration.isEnabled === 'boolean' && (
+              <div
+                className={cx(
+                  $p.ttu,
+                  $p.br2,
+                  $p.f14,
+                  $p.pv4,
+                  $p.ph10,
+                  $p.br2,
+                  $p.pointer,
+                  {
+                    [`${$p.green} ${$p.bgGreen20}`]: integration.isEnabled,
+                    [`${$p.white} ${$p.bgBlue}`]: !integration.isEnabled,
+                  },
+                )}
+              >
+                {integration.isEnabled ? 'Enabled' : 'Not Enabled'}
+              </div>
+            )}
           </div>
         </div>
 
