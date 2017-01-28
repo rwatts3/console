@@ -103,7 +103,8 @@ class DangerZone extends React.Component<Props, State> {
             </div>
           </div>
           <div
-            className={`actionButton ${this.state.hoveredRowIndex === 0 ? 'hoveredOrangeActionButton' : 'orangeActionButton'}`}
+            className={`actionButton ${this.state.hoveredRowIndex === 0 ?
+              'hoveredOrangeActionButton' : 'orangeActionButton'}`}
             onClick={this.onClickResetProjectData}
             onMouseEnter={() => this.setState({hoveredRowIndex: 0} as State)}
             onMouseLeave={() => this.setState({hoveredRowIndex: -1} as State)}
@@ -127,7 +128,8 @@ class DangerZone extends React.Component<Props, State> {
             </div>
           </div>
           <div
-            className={`actionButton ${this.state.hoveredRowIndex === 1 ? 'hoveredOrangeActionButton' : 'orangeActionButton'}`}
+            className={`actionButton ${this.state.hoveredRowIndex === 1 ?
+              'hoveredOrangeActionButton' : 'orangeActionButton'}`}
             onClick={this.onClickResetCompleteProject}
             onMouseEnter={() => this.setState({hoveredRowIndex: 1} as State)}
             onMouseLeave={() => this.setState({hoveredRowIndex: -1} as State)}
@@ -149,7 +151,8 @@ class DangerZone extends React.Component<Props, State> {
               That's the point of no return.</div>
             </div>
             <div
-              className={`actionButton ${this.state.hoveredRowIndex === 2 ? 'hoveredRedActionButton' : 'redActionButton'}`}
+              className={`actionButton ${this.state.hoveredRowIndex === 2 ?
+                'hoveredRedActionButton' : 'redActionButton'}`}
               onClick={this.onClickDeleteProject}
               onMouseEnter={() => this.setState({hoveredRowIndex: 2} as State)}
               onMouseLeave={() => this.setState({hoveredRowIndex: -1} as State)}
@@ -226,7 +229,7 @@ const MappedDangerZone = connect(null, mapDispatchToProps)(withRouter(DangerZone
 
 export default Relay.createContainer(MappedDangerZone, {
   initialVariables: {
-    projectName: 'Test', // TODO
+    projectName: 'Hallo', // TODO
   },
   fragments: {
     viewer: () => Relay.QL`

@@ -208,7 +208,7 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   forceFetch = () => {
     this.props.relay.forceFetch({}, () => {
-      console.log('force fetched', this.props.model.namePlural, this.props.fields)
+      // console.log('force fetched', this.props.model.namePlural, this.props.fields)
       // this.reloadData()
     })
   }

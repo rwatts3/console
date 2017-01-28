@@ -3,9 +3,8 @@ import * as download from 'downloadjs'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
 import * as cookiestore from 'cookiestore'
-import {DefaultNetworkLayer} from 'react-relay'
-import { Lokka } from 'lokka'
-import { Transport } from 'lokka-transport-http'
+import {Lokka} from 'lokka'
+import {Transport} from 'lokka-transport-http'
 
 interface Props {
   viewer: Viewer
@@ -121,8 +120,6 @@ class Export extends React.Component<Props, {}> {
         download(response.exportData.url)
     })
   }
-
-
 
 }
 

@@ -67,15 +67,17 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
   }
   componentDidMount() {
     const {relay, selectedModel} = this.props
-    relay.setVariables({
-      selectedModelId: selectedModel.id,
-      modelIdExists: true,
-    })
+    relay.forceFetch(
+      {
+        selectedModelId: selectedModel.id,
+        modelIdExists: true,
+      },
+    )
   }
   componentWillReceiveProps(nextProps) {
     const {relay} = this.props
     if (nextProps.selectedModel !== this.props.selectedModel) {
-      relay.setVariables({
+      relay.forceFetch({
         selectedModelId: nextProps.selectedModel.id,
         modelIdExists: true,
       })
@@ -94,7 +96,13 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
     const {fragment, onFragmentChange} = this.props
     const {schema} = this.state
     return (
-      <div className={cx($p.bgDarkerBlue, $p.w50, $p.pb38)}>
+      <div className={cx($p.bgDarkerBlue, $p.w50, $p.pb38, 'root')}>
+        <style jsx>{`
+          .root {
+            @inherit: .overflowScroll;
+            max-height: calc(100vh - 100px);
+          }
+        `}</style>
         <QueryEditor
           schema={schema}
           value={fragment}

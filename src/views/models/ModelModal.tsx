@@ -5,7 +5,6 @@ import {Model} from '../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$v} from 'graphcool-styles'
 
-
 interface Props {
   isOpen: boolean
   contentLabel: string

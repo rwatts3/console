@@ -26,14 +26,19 @@ interface State {
 
 class ProjectInfo extends React.Component<Props, State> {
 
-  state = {
-    isEnteringProjectName: false,
-    newProjectName: '',
-    isHoveringProjectName: false,
-    projectIdCopied: false,
-  }
-
   copyTimer: number
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isEnteringProjectName: false,
+      newProjectName: props.project.name,
+      isHoveringProjectName: false,
+      projectIdCopied: false,
+    }
+
+  }
 
   render() {
     return (
@@ -136,7 +141,6 @@ class ProjectInfo extends React.Component<Props, State> {
                 <input
                   autoFocus={true}
                   className='inputField'
-                  placeholder={this.props.project.name}
                   value={this.state.newProjectName}
                   onKeyDown={this.handleKeyDown}
                   onChange={(e: any) => this.setState({newProjectName: e.target.value} as State)}
@@ -161,7 +165,7 @@ class ProjectInfo extends React.Component<Props, State> {
                 onMouseLeave={() => this.setState({isHoveringProjectName: false} as State)}
                 onClick={() => this.setState({
                     isEnteringProjectName: true,
-                    isHoveringProjectName: false
+                    isHoveringProjectName: false,
                   } as State)}
               >
                 <div

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {PermanentAuthToken, Viewer} from '../../../types/types'
+import {Viewer} from '../../../types/types'
 import Tokens from './Tokens'
 import * as Relay from 'react-relay'
 

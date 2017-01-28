@@ -102,6 +102,12 @@ const render = ({error, props, routerProps, element}) => {
   )
 }
 /* eslint-enable react/prop-types */
+// <Route path='settings' component={Settings} render={render}>
+//   <IndexRoute component={General} queries={ViewerQuery} render={render} />
+//   <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
+  /*<Route path='export' component={Export} queries={ViewerQuery} render={render} />*/
+  /*<Route path='team' component={Team} render={render} />*/
+/*</Route>*/
 
 export default (
   <Route path='/' component={RootView}>
@@ -117,7 +123,7 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
-        <Route path='team' component={Team} render={render} />
+        <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>

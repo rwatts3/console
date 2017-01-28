@@ -24,27 +24,26 @@ interface Props {
 export default ({onCancel, isValid, onUpdate}: Props) => (
   <Container className={cx($p.flex, $p.justifyBetween, $p.white, $p.itemsCenter, $p.bt, $p.ph25)}>
     <div onClick={onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
-    <Button
-      className={cx(
-        $p.ml25,
-        $p.pa16,
-        $p.f16,
-        $p.white,
-        $p.br2,
-        {
-          [cx($p.bgBlack10, $p.noEvents)]: !isValid,
-          [cx($p.bgGreen, $p.pointer)]: isValid,
-        },
-      )}
-      onClick={(e: any) => {
-        if (!isValid) {
-          return
-        }
-
-        onUpdate(e)
-      }}
-    >
-      Update
-    </Button>
+    {isValid && (
+      <Button
+        className={cx(
+          $p.ml25,
+          $p.pa16,
+          $p.f16,
+          $p.white,
+          $p.br2,
+          $p.bgGreen,
+          $p.pointer,
+        )}
+        onClick={(e: any) => {
+          if (!isValid) {
+            return
+          }
+          onUpdate(e)
+        }}
+      >
+        Update
+      </Button>
+    )}
   </Container>
 )

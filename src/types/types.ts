@@ -18,6 +18,7 @@ export interface Viewer {
 export interface Customer {
   id: string
   name: string
+  email: string
   projects: RelayConnection<Project>
   crm: CrmSystemBridge
 }
@@ -66,6 +67,7 @@ export interface Project {
   integrations: RelayConnection<Integration>
   actionSchema: string
   schema: string
+  seats: RelayConnection<Seat>
 }
 
 export interface Integration {
