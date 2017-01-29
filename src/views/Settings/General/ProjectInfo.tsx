@@ -253,4 +253,3 @@ export default Relay.createContainer(withRouter(mappedProjectInfo), {
     `,
   },
 })
-

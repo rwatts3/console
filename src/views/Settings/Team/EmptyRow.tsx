@@ -175,7 +175,7 @@ class EmptyRow extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           this.props.showNotification({message: transaction.getError().message, level: 'error'})
-        }
+        },
       },
     )
   }

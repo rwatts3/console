@@ -247,6 +247,6 @@ export default Relay.createContainer(MappedDangerZone, {
         id
         name
       }
-    `
+    `,
   },
 })

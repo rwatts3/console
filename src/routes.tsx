@@ -113,7 +113,7 @@ export default (
     <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
-    <Redirect from="settings" to="settings/general" />
+    <Redirect from='settings' to='settings/general' />
       <Route path='settings' component={Settings} render={render}>
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
