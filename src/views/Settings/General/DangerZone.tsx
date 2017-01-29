@@ -100,7 +100,7 @@ class DangerZone extends React.Component<Props, State> {
             <div
               className={`f16 ${this.state.hoveredRowIndex === 0 ? 'solidOrange' : 'black50'}`}
             >
-              Delete all Nodes, but keep Models and Fields.
+              Delete all Nodes, but keep Models and Fields
             </div>
           </div>
           <div
@@ -125,7 +125,7 @@ class DangerZone extends React.Component<Props, State> {
             <div
               className={`f16 ${this.state.hoveredRowIndex === 1 ? 'solidOrange' : 'black50'}`}
             >
-              Delete everything inside the project.
+              Delete everything inside the project
             </div>
           </div>
           <div
@@ -149,7 +149,7 @@ class DangerZone extends React.Component<Props, State> {
             <div
               className='f16 deleteRed100'
             >
-              That's the point of no return.</div>
+              That's the point of no return</div>
             </div>
             <div
               className={`actionButton ${this.state.hoveredRowIndex === 2 ?
