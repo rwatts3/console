@@ -4,6 +4,7 @@ import {RelationPopupDisplayState} from '../../types/types'
 
 interface Props {
   displayState: RelationPopupDisplayState
+  switchDisplayState: Function
 }
 
 export default class CreateRelationHeader extends React.Component<Props, {}> {
@@ -14,7 +15,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
 
     return (
       <div className={`flex itemsEnd justifyBetween
-        ${this.props.displayState === 'DEFINE_RELATION' ? 'bgBlack02' : 'bgWhite'}`}>
+        ${displayState === 'DEFINE_RELATION' ? 'bgBlack02' : 'bgWhite'}`}>
         <style jsx={true}>{`
 
           .newRelationBanner {
@@ -23,7 +24,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
           }
 
           .titleTab {
-            @inherit: .pv16, .mh6, .ph10, .f12, .fw6, .ttu;
+            @inherit: .pv16, .mh6, .ph10, .f12, .fw6, .ttu, .pointer;
           }
 
           .selectedTitle {
@@ -41,10 +42,16 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
           <div className='pr6  mr6'>
             <div className='newRelationBanner'>New Relation</div>
           </div>
-          <div className={`titleTab ${displayState === 'DEFINE_RELATION' ? 'green' : 'black30'}`}>
+          <div
+            className={`titleTab ${displayState === 'DEFINE_RELATION' ? 'green' : 'black30'}`}
+            onClick={() => this.props.switchDisplayState('DEFINE_RELATION' as RelationPopupDisplayState)}
+          >
             Define Relations
           </div>
-          <div className={`titleTab ${displayState === 'SET_MUTATIONS' ? 'green' : 'black30'}`}>
+          <div
+            className={`titleTab ${displayState === 'SET_MUTATIONS' ? 'green' : 'black30'}`}
+            onClick={() => this.props.switchDisplayState('SET_MUTATIONS' as RelationPopupDisplayState)}
+          >
             Set Mutations
           </div>
         </div>

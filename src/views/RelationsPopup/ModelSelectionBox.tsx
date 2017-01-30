@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Model, Field} from '../../types/types'
 import {Icon} from 'graphcool-styles'
+import { Combobox } from 'react-input-enhancements'
 
 interface State {
   dropdownExpanded: boolean
@@ -10,6 +11,7 @@ interface State {
 interface Props {
   relatedField: Field | null
   many: boolean
+  models: Model[]
 }
 
 export default class ModelSelectionBox extends React.Component<Props, State> {
@@ -36,13 +38,18 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
         `}</style>
         <div className={`flex itemsCenter justifyBetween pv8 ph16 ${this.state.model ? 'bgBlue' : 'bgBlue20'}`}>
           <div className={`titleText ${this.state.model ? 'white' : 'blue'}`}>Select Model</div>
-          <Icon
-            rotate={90}
-            src={require('graphcool-styles/icons/fill/triangle.svg')}
-            width={8}
-            height={7}
-            color='blue'
+          <div
+            className='pointer'
+            onClick={() => this.setState({dropdownExpanded: true} as State)}
+          >
+            <Icon
+              rotate={90}
+              src={require('graphcool-styles/icons/fill/triangle.svg')}
+              width={8}
+              height={7}
+              color='blue'
             />
+          </div>
         </div>
         <div className='ph16 pv8 bgWhite'>
           <div className='black40 f14'>related field:</div>

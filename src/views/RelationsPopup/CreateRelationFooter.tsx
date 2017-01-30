@@ -13,7 +13,8 @@ export default class CreateRelationFooter extends React.Component<Props, {}> {
       <div className='container'>
         <style jsx={true}>{`
           .container {
-            @inherit: .flex, .ph25, .pv16, .justifyBetween, .itemsCenter, .bgBlack02, .bt, .bBlack10;
+            @inherit: .flex, .ph25, .pv16, .justifyBetween, .itemsCenter, .bt, .bBlack10, .bgBlack02;
+            height: 77px;
           }
 
           .toggleDisplayStateButton {

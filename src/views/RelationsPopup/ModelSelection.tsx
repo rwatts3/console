@@ -14,7 +14,7 @@ export default class ModelSelection extends React.Component<Props, {}> {
       <div className='container'>
         <style jsx={true}>{`
           .container {
-            @inherit: .flex, .ph38, .pt38, .justifyBetween;
+            @inherit: .flex, .ph38, .pt38, .justifyBetween, .h100;
           }
 
           .greenLine {

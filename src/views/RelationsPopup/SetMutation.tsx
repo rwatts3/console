@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Relation} from '../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
+import MutationsInfoBox from './MutationsInfoBox'
 
 interface State {
   isEnteringRelationName: boolean
@@ -23,16 +24,19 @@ export default class SetMutation extends React.Component<Props, State> {
   }
 
   render() {
+
+    const {isEnteringRelationName, isEnteringRelationDescription, relationName, relationDescription} = this.state
+
     return (
       <div className='container'>
         <style jsx={true}>{`
 
           .container {
-            @inherit: .ph38, .pt38, .bgWhite;
+            @inherit: .ph16, .pt38, .bgWhite;
           }
 
           .relationNameInputField {
-            @inherit: .f38, .fw3, .w100;
+            @inherit: .f38, .fw3, .w100, .ph25;
             color: rgba(42,127,211,1);
           }
 
@@ -40,7 +44,7 @@ export default class SetMutation extends React.Component<Props, State> {
             @inherit: .f16;
           }
         `}</style>
-        {this.state.isEnteringRelationName ?
+        {isEnteringRelationName ?
           (
             <input
               className='relationNameInputField'
@@ -53,13 +57,13 @@ export default class SetMutation extends React.Component<Props, State> {
           )
           :
           (
-            <div className='.f38 fw3 black50'>{this.state.relationName}</div>
+            <div className='ph25 f38 fw3 black50'>{relationName}</div>
           )
         }
-        {this.state.isEnteringRelationDescription ?
+        {isEnteringRelationDescription ?
           (
             <input
-              className='descriptionInputField'
+              className='descriptionInputField ph25'
               autoFocus={true}
               placeholder='Set a description for the relation...'
               value={this.state.relationName}
@@ -68,8 +72,8 @@ export default class SetMutation extends React.Component<Props, State> {
             />
           )
           :
-          this.state.relationName.length === 0 && (
-            <div className='flex itemsCenter mv25'>
+          relationDescription.length === 0 && (
+            <div className='flex itemsCenter mv25 ph25'>
               <Icon
                 src={require('../../assets/icons/edit_circle_gray.svg')}
                 width={26}
@@ -78,13 +82,12 @@ export default class SetMutation extends React.Component<Props, State> {
               <div className='f16 black50 ml16'>add description </div>
             </div>
           ) ||
-          this.state.relationName.length > 0 && (<div className='f16 black50'>{this.state.relationName}</div>)
-
+          relationDescription.length > 0 && (<div className='f16 black50'>{relationDescription}</div>)
         }
+        <MutationsInfoBox/>
       </div>
     )
   }
-
 
   private handleKeyDown = (e) => {
     if (e.keyCode === 13) {

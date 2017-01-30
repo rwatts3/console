@@ -1,5 +1,6 @@
 import * as React from 'react'
-import {RelationPopupDisplayState} from '../../types/types'
+import * as Relay from 'react-relay'
+import {RelationPopupDisplayState, Viewer} from '../../types/types'
 import CreateRelationHeader from './CreateRelationHeader'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import {withRouter} from 'react-router'
@@ -13,16 +14,18 @@ interface State {
 
 interface Props {
   router: ReactRouter.InjectedRouter
+  viewer: Viewer
 }
 
 class CreateRelationPopup extends React.Component<Props, State> {
 
   state = {
-    // displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
-    displayState: 'SET_MUTATIONS' as RelationPopupDisplayState,
+    displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
+    // displayState: 'SET_MUTATIONS' as RelationPopupDisplayState,
   }
 
   render() {
+    console.log(this.props.viewer.project.models.edges)
     return (
       <PopupWrapper onClickOutside={this.close}>
         <style jsx={true}>{`
@@ -32,19 +35,24 @@ class CreateRelationPopup extends React.Component<Props, State> {
           }
         `}</style>
         <div className='flex itemsCenter justifyCenter w100 h100'>
-          <div className={`content ${this.state.displayState === 'DEFINE_RELATION' ? 'bgBlack02' : 'bgWhite'}`}>
-            <CreateRelationHeader
-              displayState={this.state.displayState}
-            />
-            {
-              this.state.displayState === 'DEFINE_RELATION' ?
-                <DefineRelation />
-                :
-                <SetMutation />
-            }
-            <CreateRelationFooter
-              displayState={this.state.displayState}
-            />
+          <div className='content'>
+            <div className='flex flexColumn justifyBetween h100'>
+              <div>
+                <CreateRelationHeader
+                  displayState={this.state.displayState}
+                  switchDisplayState={this.switchToDisplayState}
+                />
+                {
+                  this.state.displayState === 'DEFINE_RELATION' ?
+                    <DefineRelation />
+                    :
+                    <SetMutation />
+                }
+              </div>
+              <CreateRelationFooter
+                displayState={this.state.displayState}
+              />
+            </div>
           </div>
         </div>
       </PopupWrapper>
@@ -54,6 +62,35 @@ class CreateRelationPopup extends React.Component<Props, State> {
   private close = () => {
     this.props.router.goBack()
   }
+
+  private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
+    console.log('new display state: ', displayState)
+    console.log(this.state)
+    if (displayState !== this.state.displayState) {
+      this.setState({displayState: displayState} as State)
+    }
+  }
 }
 
-export default withRouter(CreateRelationPopup)
+
+
+export default Relay.createContainer(withRouter(CreateRelationPopup), {
+  initialVariables: {
+    projectName: null, // injected from router
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          models(first: 1000) {
+            edges {
+              node {
+                name
+              }
+            }
+          }
+        }
+      }
+    `,
+  },
+})
