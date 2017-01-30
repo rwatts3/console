@@ -162,7 +162,7 @@ class ProjectRootView extends React.Component<Props, {}> {
           </div>
           <div className={classnames(classes.content, 'flex')}>
             <div
-              className='overflow-hidden'
+              className='overflow-auto'
               style={{
                 flex: `0 0 calc(100%${this.props.gettingStartedState.isActive() ? ' - 266px' : ''})`,
               }}>
