@@ -11,6 +11,7 @@ import OnboardingPopup from '../../components/onboarding/OnboardingPopup/Onboard
 import PlaygroundCPopup from '../../components/onboarding/PlaygroundCPopup/PlaygroundCPopup'
 import {connect} from 'react-redux'
 import {validateProjectName} from '../../utils/nameValidator'
+import {retryUntilDone} from '../../utils/utils'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
 import OnboardSideNav from './OnboardSideNav'
@@ -24,7 +25,6 @@ import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 const classes: any = require('./ProjectRootView.scss')
 import drumstick from 'drumstick'
-import * as Smooch from 'smooch'
 require('../../styles/core.scss')
 
 interface Props {
@@ -75,29 +75,26 @@ class ProjectRootView extends React.Component<Props, {}> {
     if (this.props.isLoggedin) {
       tracker.identify(this.props.user.id, this.props.project.id)
 
-      if (Smooch) {
-        try {
-          Smooch.init({
-            appToken: __SMOOCH_TOKEN__,
-            givenName: this.props.user.crm.information.name,
+      retryUntilDone((done) => {
+        if (window.Intercom) {
+          Intercom('boot', {
+            app_id: __INTERCOM_ID__,
+            user_id: this.props.user.id,
             email: this.props.user.crm.information.email,
-            customText: {
-              headerText: 'Can I help you? 🙌',
-            },
+            name: this.props.user.crm.information.name,
           })
 
-          Smooch.on('message:sent', () => {
-            tracker.track(ConsoleEvents.Smooch.messageWritten())
-          })
+          // TODO adjusts events to Intercom
+          // Smooch.on('message:sent', () => {
+          //   tracker.track(ConsoleEvents.Smooch.messageWritten())
+          // })
 
-          Smooch.on('widget:opened', () => {
-            tracker.track(ConsoleEvents.Smooch.opened())
-          })
+          // Smooch.on('widget:opened', () => {
+          //   tracker.track(ConsoleEvents.Smooch.opened())
+          // })
 
-        } catch (e) {
-          console.error(e)
         }
-      }
+      })
     } else {
       // TODO migrate to tracker
       // analytics.identify({

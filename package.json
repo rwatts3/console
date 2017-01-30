@@ -113,7 +113,6 @@
     "redux-actions": "^0.12.0",
     "redux-logger": "^2.7.0",
     "redux-thunk": "^2.1.0",
-    "smooch": "^3.9.3",
     "styled-components": "^1.1.1",
     "styled-jsx": "git+https://github.com/timsuchanek/styled-jsx#build",
     "styled-jsx-postcss": "git+https://github.com/timsuchanek/styled-jsx-postcss#build",
