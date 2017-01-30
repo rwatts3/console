@@ -69,16 +69,19 @@ export function retryUntilDone(fn: (done: () => void) => void, options: RetryUnt
   let tries = 0
   let shouldBreak = false
 
-  let interval = setInterval(() => {
-    tries++
+  let interval = setInterval(
+    () => {
+      tries++
 
-    fn(() => {
-      clearInterval(interval)
-    })
+        fn(() => {
+        clearInterval(interval)
+      })
 
-    if (tries < maxRetries) {
-      clearInterval(interval)
-    }
-  }, timeout)
+      if (tries < maxRetries) {
+        clearInterval(interval)
+      }
+    },
+    timeout
+  )
 
 }
