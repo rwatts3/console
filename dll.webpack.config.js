@@ -45,7 +45,6 @@ const vendor = [
   'redux-actions',
   'redux-logger',
   'redux-thunk',
-  'smooch',
   'styled-components',
   'tachyons',
 ]

@@ -5,7 +5,7 @@ import {$p, $v, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import UpdateCustomerSourceMutation from '../../mutations/UpdateCustomerSourceMutation'
-import * as Smooch from 'smooch'
+import {retryUntilDone} from '../../utils/utils'
 
 const Container = styled.div`
   max-width: 750px;
@@ -94,20 +94,17 @@ class AfterSignUpView extends React.Component<Props, State> {
 
   componentDidMount() {
     this.activateTimeout = window.setTimeout(this.activateButton, 10000)
-    if (Smooch) {
-      try {
-        Smooch.init({
-          appToken: __SMOOCH_TOKEN__,
-          givenName: this.props.viewer.user.crm.information.name,
+
+    retryUntilDone((done) => {
+      if (window.Intercom) {
+        Intercom('boot', {
+          app_id: __INTERCOM_ID__,
+          user_id: this.props.viewer.user.id,
           email: this.props.viewer.user.crm.information.email,
-          customText: {
-            headerText: 'Can I help you? 🙌',
-          },
+          name: this.props.viewer.user.crm.information.name,
         })
-      } catch (e) {
-        //
       }
-    }
+    })
   }
 
   componentWillUnmount() {
@@ -160,7 +157,7 @@ class AfterSignUpView extends React.Component<Props, State> {
                 src={require('graphcool-styles/icons/fill/welcomeChat.svg')}
                 color={$v.gray30}
                 className={$p.pointer}
-                onClick={this.openSmooch}
+                onClick={this.openIntercom}
               />
             </div>
           </div>
@@ -209,9 +206,9 @@ class AfterSignUpView extends React.Component<Props, State> {
 
   }
 
-  private openSmooch = () => {
-    if (Smooch) {
-      Smooch.open()
+  private openIntercom = () => {
+    if (window.Intercom) {
+      Intercom('show')
     }
   }
 

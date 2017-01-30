@@ -50,7 +50,6 @@ const vendor = [
   'redux-actions',
   'redux-logger',
   'redux-thunk',
-  'smooch',
   'styled-components',
   'tachyons',
 ]
@@ -121,9 +120,9 @@ module.exports = {
       __AUTH0_CLIENT_ID__: '"2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm"',
       __METRICS_ENDPOINT__: false,
       __GA_CODE__: false,
-      __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
+      __INTERCOM_ID__: '"rqszgt2h"',
       'process.env': {
-        'NODE_ENV': JSON.stringify('dev')
+        'NODE_ENV': JSON.stringify('dev'),
       },
     }),
     new HtmlWebpackPlugin({
