@@ -1,12 +1,15 @@
 import * as React from 'react'
-import {PermanentAuthToken, Project, Viewer} from '../../../types/types'
+import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {$p} from 'graphcool-styles'
 import AddPermanentAuthTokenMutation from '../../../mutations/AddPermanentAuthTokenMutation'
 import * as Relay from 'react-relay'
-import * as cx from 'classnames'
 import TokenRow from './TokenRow'
 import DeletePermanentAuthTokenMutation from '../../../mutations/DeletePermanentAuthTokenMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface State {
   isEnteringTokenName: boolean
@@ -15,6 +18,7 @@ interface State {
 
 interface Props {
   project: Project
+  showNotification: ShowNotificationCallback
 }
 
 class Tokens extends React.Component<Props, State> {
@@ -33,15 +37,8 @@ class Tokens extends React.Component<Props, State> {
     const tokens = this.props.project.permanentAuthTokens.edges.map(edge => edge.node)
 
     return (
-      <div className='container'>
+      <div className='pt25'>
         <style jsx={true}>{`
-          .container {
-            @inherit: .pt25;
-          }
-
-          .addToken {
-            @inherit: .flex, .pointer, .pl25;
-          }
 
           .blueCircle {
             @inherit: .flex, .justifyCenter, .itemsCenter, .br100, .mr16, .hS25, .wS25;
@@ -66,18 +63,6 @@ class Tokens extends React.Component<Props, State> {
             color: rgba(42,127,211,1);
           }
 
-          .inputContainer {
-            @inherit: .flex, .pl25;
-          }
-
-          .iconContainer {
-            @inherit: .flex, .itemsCenter;
-          }
-
-          .icon {
-            @inherit: .mh10, .pointer;
-          }
-
         `}</style>
         {tokens.map((token) => (
           <TokenRow
@@ -88,17 +73,18 @@ class Tokens extends React.Component<Props, State> {
         ))}
         {this.state.isEnteringTokenName ?
           (
-            <div className='inputContainer'>
+            <div className='flex pl25'>
               <input
                 className='inputField'
+                autoFocus={true}
                 placeholder='Define a name for the token ...'
                 value={this.state.newTokenName}
                 onKeyDown={this.handleKeyDown}
                 onChange={(e: any) => this.setState({newTokenName: e.target.value} as State)}
               />
-              <div className='iconContainer'>
+              <div className='flex itemsCenter'>
                 <Icon
-                  className={cx($p.mh10, $p.pointer)}
+                  className='mh10 pointer'
                   src={require('../../../assets/icons/cross_red.svg')}
                   width={15}
                   height={15}
@@ -109,7 +95,7 @@ class Tokens extends React.Component<Props, State> {
                   }
                 />
                 <Icon
-                  className={cx($p.mh10, $p.pointer)}
+                  className='mh10 pointer'
                   src={require('../../../assets/icons/confirm.svg')}
                   width={35}
                   height={35}
@@ -120,7 +106,7 @@ class Tokens extends React.Component<Props, State> {
           ) :
           (
             <div
-              className='addToken'
+              className='flex pointer pl25'
               onClick={() => {
                 this.setState({
                   isEnteringTokenName: true,
@@ -132,7 +118,7 @@ class Tokens extends React.Component<Props, State> {
                   src={require('../../../assets/icons/addFull.svg')}
                   width={12}
                   height={12}
-                  color={tokens.length > 0 ? 'rgba(0,0,0,.5)' : 'rgba(42,127,211,1)'}
+                  color={tokens.length > 0 ? 'rgba(0,0,0,.3)' : 'rgba(42,127,211,1)'}
                   stroke={true}
                   strokeWidth={8}
                 />
@@ -174,26 +160,31 @@ class Tokens extends React.Component<Props, State> {
             isEnteringTokenName: false} as State)
         },
         onFailure: (transaction) => console.error('could not submit token, an error occured'),
-      })
+      },
+    )
   }
 
   private deleteSystemToken = (token): void => {
-    console.log('delete token' + token.name)
+    if (window.confirm(`Do you really want to delete token \'${token.name}\'?`)) {
     Relay.Store.commitUpdate(
       new DeletePermanentAuthTokenMutation({
         projectId: this.props.project.id,
         tokenId: token.id,
       }),
       {
-        onSuccess: () => {
-          console.log('SUCCESS')
-        },
-        onFailure: (transaction) => console.error('could not add token, an error occured'),
+        onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
       })
+    }
   }
 }
 
-export default Relay.createContainer(Tokens, {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedTokens = connect(null, mapDispatchToProps)(Tokens)
+
+export default Relay.createContainer(mappedTokens, {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {

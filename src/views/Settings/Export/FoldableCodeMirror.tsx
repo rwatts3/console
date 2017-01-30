@@ -8,7 +8,7 @@ interface State {
 interface Props {
   maxHeight: number
   options: any
-  schema: string
+  value: string
 }
 
 export default class FoldableCodeMirror extends React.Component<Props, State> {
@@ -17,24 +17,54 @@ export default class FoldableCodeMirror extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      isFolded: true,
+      isFolded: false,
     }
   }
 
   render() {
     return this.state.isFolded ? (
-      <div style={{maxHeight: this.props.maxHeight}}>
+      <div
+        className='h100'
+        style={{maxHeight: this.props.maxHeight}}>
         <CodeMirror
           options={this.props.options}>
-          code={this.props.schema}
+          value={this.props.value}
         </CodeMirror>
       </div>
       ) : (
         <CodeMirror
           options={this.props.options}>
-          code={this.props.schema}
+          value={this.props.value}
         </CodeMirror>
       )
 
   }
 }
+
+/*
+<Codemirror
+  key={projectSetup}
+  value={projectSetup}
+  options={{
+            height: 100,
+            mode: 'shell',
+            theme: 'dracula',
+          } as EditorConfiguration}
+  onFocusChange={(focused) => {
+            if (focused) {
+              tracker.track(ConsoleEvents.Playground.CodeGenerationPopup.setupFocused())
+            }
+          }}
+/>
+*/
+/*
+<CodeMirror
+value={getGraphQLCode(props.literal.trim())}
+options={{
+  lineNumbers: true,
+    mode: props.language,
+    readOnly: true,
+    lineWrapping: true,
+}}
+/>
+  */

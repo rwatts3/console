@@ -1,112 +1,198 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
+import {withRouter} from 'react-router'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$p} from 'graphcool-styles'
 import UpdateProjectMutation from '../../../mutations/UpdateProjectMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
+import CopyToClipboard from 'react-copy-to-clipboard'
+
+// Note: the checks for this.props.project are there to make the UI
+// look better when a project gets deleted - otherwise there is a flicker
+// before the reload is triggered where the UI looks weird
 
 interface Props {
   project: Project
+  showNotification: ShowNotificationCallback
+  router: ReactRouter.InjectedRouter
 }
 
 interface State {
   isEnteringProjectName: boolean
   newProjectName: string
+  isHoveringProjectName: boolean
+  projectIdCopied: boolean
 }
 
 class ProjectInfo extends React.Component<Props, State> {
 
-  state = {
-    isEnteringProjectName: false,
-    newProjectName: '',
+  copyTimer: number
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isEnteringProjectName: false,
+      newProjectName: props.project.name,
+      isHoveringProjectName: false,
+      projectIdCopied: false,
+    }
+
   }
 
   render() {
     return (
 
-      <div className='container'>
+      <div className='flex flexColumn pt38 pl60'>
         <style jsx={true}>{`
 
-          .container {
-            @inherit: .flex, .flexColumn, .pt38, .pl60;
-          }
-
-          .infoBox {
-            @inherit: .flex, .flexColumn, .pl16, .pt16, .pb25;
-          }
-
-          .title {
-            @inherit: .black, .o40, .f14;
-          }
-
-          .value {
-            @inherit: .fw3, .f25, .pt6;
-          }
-
-          .editable {
-            @inherit: .pointer;
-          }
-
-          .centeredRow {
-            @inherit: .flex, .itemsCenter;
-          }
-
           .inputField {
-            @inherit: .f25, .fw3, .w100;
+            @inherit: .f25, .fw3, .w100, .pt6;
+            max-width: 300px;
             color: rgba(42,127,211,1);
           }
 
+          .saveButton {
+            @inherit: .ph10, .pv6, .fw6, .ttu, .f14, .buttonShadow, .pointer;
+            color: rgba(42,127,211,1);
+          }
+
+          .resetButton {
+            @inherit: .underline, .pl6, .f14, .fw6, .pointer;
+            color: rgba(241,143,1,1);
+          }
+
+          @keyframes movingCopyIndicator {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, 0);
+            }
+
+            50% {
+              opacity: 1;
+            }
+
+            100% {
+              opacity: 0;
+              transform: translate(-50%, -50px);
+            }
+          }
+
+          .copyIndicator {
+            top: -30px;
+            left: 50%;
+            transform: translate(-50%,0);
+            animation: movingCopyIndicator .7s linear;
+          }
+
         `}</style>
-        <div className='infoBox'>
-          <div className='title'>Project Name</div>
-          {this.state.isEnteringProjectName ?
-            (
-              <div className='centeredRow'>
+
+        {this.state.isEnteringProjectName ?
+          (
+            <div className='flex flexColumn pl16 pt16 pb25'>
+              <div className='flex itemsCenter'>
+                <div className='black o40 f14'>Project Name</div>
+                {(this.state.newProjectName !== this.props.project.name) &&
+                <div
+                  className='resetButton'
+                  onClick={() => this.setState({isEnteringProjectName: false} as State)}
+                >
+                  Reset
+                </div>
+                }
+              </div>
+              <div className='flex itemsCenter'>
                 <input
+                  autoFocus={true}
                   className='inputField'
-                  placeholder='Define a name for the token ...'
                   value={this.state.newProjectName}
+                  onBlur={() => this.setState({isEnteringProjectName: false} as State)}
                   onKeyDown={this.handleKeyDown}
                   onChange={(e: any) => this.setState({newProjectName: e.target.value} as State)}
                 />
-                <Icon
-                  className={$p.ml6}
-                  src={require('../../../assets/icons/edit_project_name.svg')}
-                  width={20}
-                  height={20}
-                />
-              </div>
-            )
-            :
-            (
-              <div className='centeredRow'>
-                <div
-                  className='value editable'
-                  onClick={() => this.setState({isEnteringProjectName: true} as State)}
+                {(this.state.newProjectName !== this.props.project.name) &&
+                (<div
+                  className='saveButton'
+                  onClick={this.saveSettings}
                 >
-                  {this.props.project.name}
+                  Save
                 </div>
-                <Icon
+                )}
+              </div>
+            </div>
+          )
+          :
+          (
+            <div className='flex flexColumn pl16 pt16 pb25'>
+              <div className='black o40 f14'>Project Name</div>
+              <div
+                className='flex itemsCenter pointer'
+                onMouseEnter={() => this.setState({isHoveringProjectName: true} as State)}
+                onMouseLeave={() => this.setState({isHoveringProjectName: false} as State)}
+                onClick={() => this.setState({
+                    isEnteringProjectName: true,
+                    isHoveringProjectName: false,
+                  } as State)}
+              >
+                <div
+                  className='fw3 f25 pt6'
+                >
+                  {this.props.project && this.props.project.name}
+                </div>
+                {this.state.isHoveringProjectName && (<Icon
                   className={$p.ml6}
                   src={require('../../../assets/icons/edit_project_name.svg')}
                   width={20}
                   height={20}
-                />
+                />)}
               </div>
-            )
-          }
-        </div>
-        <div className='infoBox'>
-          <div className='centeredRow'>
+            </div>
+
+          )
+        }
+        <div className='flex flexColumn pl16 pt16 pb25'>
+          <div className='flex itemsCenter'>
             <Icon
               className={$p.mr6}
               src={require('../../../assets/icons/lock.svg')}
-              width={10}
-              height={13}
+              width={14}
+              height={20}
             />
-            <div className='title'>Project Id</div>
+            <div className='black o40 f14'>Project ID</div>
           </div>
-          <div className='value'>{this.props.project.id}</div>
+          <div className='flex itemsCenter'>
+            <div className='fw3 f25 pt6'>{this.props.project && this.props.project.id}</div>
+            <CopyToClipboard
+              text={this.props.project && this.props.project.id}
+              onCopy={this.onCopy}
+            >
+              <div
+                className='relative bgWhite selfCenter br2 pointer'
+              >
+                {this.state.projectIdCopied && (
+                  <div
+                    className='copyIndicator absolute f14 fw6 blue'
+                  >
+                    Copied
+                  </div>
+                )}
+                {this.props.project &&
+                <Icon
+                  className='ml10 pointer buttonShadow'
+                  color={'rgba(0,0,0,.5)'}
+                  src={require('../../../assets/icons/copy.svg')}
+                  width={34}
+                  height={34}
+                />
+                }
+              </div>
+            </CopyToClipboard>
+          </div>
         </div>
       </div>
     )
@@ -121,10 +207,12 @@ class ProjectInfo extends React.Component<Props, State> {
         }),
       {
         onSuccess: () => {
-          // this.props.router.replace(`/${this.state.projectName}/`)
+          const message = 'Successfully renamed project to: ' + this.state.newProjectName
+          this.props.showNotification({message: message, level: 'success'})
+          this.props.router.replace(`/${this.state.newProjectName}/settings/general`)
         },
         onFailure: (transaction) => {
-          // onFailureShowNotification(transaction, this.props.showNotification)
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
         },
       })
   }
@@ -139,9 +227,23 @@ class ProjectInfo extends React.Component<Props, State> {
     }
   }
 
+  private onCopy: () => any = () => {
+    this.setState({projectIdCopied: true} as State)
+    this.copyTimer = window.setTimeout(
+      () => this.setState({projectIdCopied: false} as State),
+      1000,
+    )
+  }
+
 }
 
-export default Relay.createContainer(ProjectInfo, {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedProjectInfo = connect(null, mapDispatchToProps)(ProjectInfo)
+
+export default Relay.createContainer(withRouter(mappedProjectInfo), {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {

@@ -6,20 +6,26 @@ import DangerZone from './DangerZone'
 
 interface Props {
   viewer: Viewer
-  params: any
 }
 
 class General extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div>
+      <div className='container'>
+        <style jsx={true}>{`
+          .container {
+            @inherit: .br;
+            max-width: 700px;
+            border-color: rgba( 229, 229, 229, 1);
+          }
+        `}</style>
         <ProjectInfo
           project={this.props.viewer.project}
         />
         <DangerZone
           viewer={this.props.viewer}
-          params={this.props.params}
+          project={this.props.viewer.project}
         />
       </div>
     )
@@ -35,7 +41,9 @@ export default Relay.createContainer(General, {
       fragment on Viewer {
         ${DangerZone.getFragment('viewer')},
         project: projectByName(projectName: $projectName) {
-          ${ProjectInfo.getFragment('project')}   
+          ${DangerZone.getFragment('project')},
+          ${ProjectInfo.getFragment('project')}  
+          name
         }
       }
     `,
