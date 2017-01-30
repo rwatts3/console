@@ -15,7 +15,7 @@ export default class Settings extends React.Component<Props, {}> {
   render() {
     return (
       <div className='settings'>
-        <style jsx global>{`
+        <style jsx>{`
           .settings {
             .topHeader {
               @inherit: .bgBlack04, .bb;

@@ -12,7 +12,7 @@ class Authentication extends React.Component<Props, {}> {
   render() {
     return (
       <div className='authentication-container'>
-        <style jsx global>{`
+        <style jsx>{`
 
           .authentication-container {
             @inherit: .br, .ph38;
