@@ -115,7 +115,7 @@
     "redux-thunk": "^2.1.0",
     "smooch": "^3.9.3",
     "styled-components": "^1.1.1",
-    "styled-jsx": "git+https://github.com/timsuchanek/styled-jsx#build",
+    "styled-jsx": "0.5.2",
     "styled-jsx-postcss": "git+https://github.com/timsuchanek/styled-jsx-postcss#build",
     "tachyons": "^4.5.2"
   },

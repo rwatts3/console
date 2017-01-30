@@ -88,3 +88,7 @@ if (!Element.prototype.hasOwnProperty('scrollIntoViewIfNeeded')) {
     }
   }
 }
+
+export function lowercaseFirstLetter(str: string): string {
+  return str.charAt(0).toLowerCase() + str.slice(1);
+}

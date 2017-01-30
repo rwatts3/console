@@ -25,7 +25,9 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.viewer.project.models.edges)
+
+    const models = this.props.viewer.project.models.edges.map(edge => edge.node)
+
     return (
       <PopupWrapper onClickOutside={this.close}>
         <style jsx={true}>{`
@@ -44,7 +46,9 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 />
                 {
                   this.state.displayState === 'DEFINE_RELATION' ?
-                    <DefineRelation />
+                    <DefineRelation
+                      models={models}
+                    />
                     :
                     <SetMutation />
                 }
@@ -86,6 +90,7 @@ export default Relay.createContainer(withRouter(CreateRelationPopup), {
             edges {
               node {
                 name
+                namePlural
               }
             }
           }
