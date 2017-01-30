@@ -23,7 +23,7 @@ import Settings from './views/Settings/Settings'
 import General from './views/Settings/General/General'
 import Authentication from './views/Settings/Authentication/Authentication'
 import Export from './views/Settings/Export/Export'
-import Team from './views/Settings/Team/Team'
+// import Team from './views/Settings/Team/Team'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/SchemaView/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
@@ -41,6 +41,7 @@ import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
+import CreateRelationPopup from './views/RelationsPopup/CreateRelationPopup'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -143,7 +144,7 @@ export default (
         <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
-        <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render}/>
+        <Route path='create' component={CreateRelationPopup} render={render}/>
         <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
