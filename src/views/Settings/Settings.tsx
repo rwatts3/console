@@ -14,17 +14,15 @@ export default class Settings extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div className='settings'>
+      <div>
         <style jsx>{`
-          .settings {
-            .topHeader {
-              @inherit: .bgBlack04, .bb;
-              border-color: rgba(229,229,229,1);
-            }
+          .topHeader {
+            @inherit: .bgBlack04, .bb, .bBlack10;
+            border-color: rgb(229,229,229);
+          }
 
-            .top-header-content {
-              @inherit: .f38, .fw3, .pl25, .pt16, .mb38;
-            }
+          .top-header-content {
+            @inherit: .f38, .fw3, .pl25, .pt16, .mb38;
           }
         `}</style>
         <div className='topHeader'>
