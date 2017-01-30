@@ -81,7 +81,7 @@ export function retryUntilDone(fn: (done: () => void) => void, options: RetryUnt
         clearInterval(interval)
       }
     },
-    timeout
+    timeout,
   )
 
 }
