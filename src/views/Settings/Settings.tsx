@@ -19,7 +19,7 @@ export default class Settings extends React.Component<Props, {}> {
           .settings {
             .topHeader {
               @inherit: .bgBlack04, .bb;
-              border-color: rgba( 229, 229, 229, 1);
+              border-color: rgba(229,229,229,1);
             }
 
             .top-header-content {
