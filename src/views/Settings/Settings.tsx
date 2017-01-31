@@ -14,22 +14,19 @@ export default class Settings extends React.Component<Props, {}> {
 
   render() {
     return (
-
       <div>
-        <style jsx={true}>{`
-
+        <style jsx>{`
           .topHeader {
-            @inherit: .bgBlack04, .bb;
-            border-color: rgba( 229, 229, 229, 1);
+            @inherit: .bgBlack04, .bb, .bBlack10;
+            border-color: rgb(229,229,229);
           }
 
-          .topHeaderContent {
+          .top-header-content {
             @inherit: .f38, .fw3, .pl25, .pt16, .mb38;
           }
-
         `}</style>
         <div className='topHeader'>
-          <div className='topHeaderContent'>Settings</div>
+          <div className='top-header-content'>Settings</div>
           <TabBar params={this.props.params} />
         </div>
         {this.props.children}

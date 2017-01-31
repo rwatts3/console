@@ -57,36 +57,33 @@ export function debounce(func, wait) {
   }
 }
 
-if (!Element.prototype.hasOwnProperty('scrollIntoViewIfNeeded')) {
-  Element.prototype.scrollIntoViewIfNeeded = function (centerIfNeeded) {
-    centerIfNeeded = arguments.length === 0 ? true : !!centerIfNeeded
+interface RetryUntilDoneOptions {
+  maxRetries?: number
+  timeout?: number
+}
 
-    const parent = this.parentNode
-    const parentComputedStyle = window.getComputedStyle(parent, null)
-    const parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width'), 10)
-    const parentBorderLeftWidth = parseInt(parentComputedStyle.getPropertyValue('border-left-width'), 10)
-    const overTop = this.offsetTop - parent.offsetTop < parent.scrollTop
-    const overBottom = (this.offsetTop - parent.offsetTop + this.clientHeight - parentBorderTopWidth) >
-        (parent.scrollTop + parent.clientHeight)
-    const overLeft = this.offsetLeft - parent.offsetLeft < parent.scrollLeft
-    const overRight = (this.offsetLeft - parent.offsetLeft + this.clientWidth - parentBorderLeftWidth) >
-        (parent.scrollLeft + parent.clientWidth)
-    const alignWithTop = overTop && !overBottom
+export function retryUntilDone(fn: (done: () => void) => void, options: RetryUntilDoneOptions = {}): void {
+  const maxRetries = options.maxRetries || 100
+  const timeout = options.timeout || 100
 
-    if ((overTop || overBottom) && centerIfNeeded) {
-      parent.scrollTop = this.offsetTop - parent.offsetTop - parent.clientHeight / 2
-        - parentBorderTopWidth + this.clientHeight / 2
-    }
+  let tries = 0
+  let shouldBreak = false
 
-    if ((overLeft || overRight) && centerIfNeeded) {
-      parent.scrollLeft = this.offsetLeft - parent.offsetLeft - parent.clientWidth / 2
-        - parentBorderLeftWidth + this.clientWidth / 2
-    }
+  let interval = setInterval(
+    () => {
+      tries++
 
-    if ((overTop || overBottom || overLeft || overRight) && !centerIfNeeded) {
-      this.scrollIntoView(alignWithTop)
-    }
-  }
+        fn(() => {
+        clearInterval(interval)
+      })
+
+      if (tries < maxRetries) {
+        clearInterval(interval)
+      }
+    },
+    timeout,
+  )
+
 }
 
 export function lowercaseFirstLetter(str: string): string {

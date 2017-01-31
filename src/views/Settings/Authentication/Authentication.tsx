@@ -11,26 +11,27 @@ class Authentication extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div className='container'>
-        <style jsx={true}>{`
+      <div className='authentication-container'>
+        <style jsx>{`
 
-          .container {
+          .authentication-container {
             @inherit: .br, .ph38;
             max-width: 700px;
             border-color: rgba( 229, 229, 229, 1);
+
+            .headerContent {
+              @inherit: .pt60, .pb25, .ph25, .bb, .bBlack10;
+            }
+
+            .headerTitle {
+              @inherit: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
+            }
+
+            .headerDescription {
+              @inherit: .pt6, .mt4, .black50, .f16;
+            }
           }
 
-          .headerContent {
-            @inherit: .pt60, .pb25, .ph25, .bb, .bBlack10;
-          }
-
-          .headerTitle {
-            @inherit: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
-          }
-
-          .headerDescription {
-            @inherit: .pt6, .mt4, .black50, .f16;
-          }
         `}</style>
         <div>
           <div className='headerContent'>

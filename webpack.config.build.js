@@ -69,9 +69,9 @@ module.exports = {
       __AUTH0_CLIENT_ID__: JSON.stringify(process.env.AUTH0_CLIENT_ID.toString()),
       __METRICS_ENDPOINT__: process.env.METRICS_ENDPOINT ? JSON.stringify(process.env.METRICS_ENDPOINT.toString()) : false,
       __GA_CODE__: process.env.GA_CODE ? JSON.stringify(process.env.GA_CODE.toString()) : false,
-      __SMOOCH_TOKEN__: '"505tvtkv5udrd4kc5dbpppa6x"',
+      __INTERCOM_ID__: '"mamayuvj"',
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        'NODE_ENV': JSON.stringify('production'),
       },
     }),
     new HtmlWebpackPlugin({
@@ -79,7 +79,6 @@ module.exports = {
       template: 'src/index.html',
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         unused: true,
