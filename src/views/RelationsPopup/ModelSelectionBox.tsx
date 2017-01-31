@@ -25,7 +25,7 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
           <style jsx={true}>{`
 
             .fieldType {
-              @inherit: .f14, .ml6, .pv4, .ph6, .black50, .bgBlack04;
+              @inherit: .f14, .ml6, .pv4, .ph6, .black50, .bgBlack04, .br2;
               font-family: 'Source Code Pro';
             }
 
@@ -56,7 +56,6 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
           .titleText {
             @inherit: .f25, .fw6;
           }
-
 
         `}</style>
         <div className={`flex itemsCenter justifyBetween pv8 ph16 ${this.props.selectedModel ? 'bgBlue' : 'bgBlue20'}`}>

@@ -1,9 +1,12 @@
 import * as React from 'react'
 import {$v, Icon} from 'graphcool-styles'
-import {Relation} from '../../types/types'
+import {Relation, Model, Cardinality} from '../../types/types'
+import {lowercaseFirstLetter} from '../../utils/utils'
 
 interface Props {
-  relation?: Relation
+  leftModel?: Model
+  rightModel?: Model
+  cardinality?: Cardinality
 }
 
 interface State {
@@ -21,7 +24,7 @@ export default class RelationInfo extends React.Component<Props, State> {
         (
           <div className='flex justifyEnd pr16 pb16 mt10 h100'>
             <div
-              className='pointer'
+              className={`pointer ${(!this.props.leftModel || !this.props.rightModel) && 'o0'}`}
               onClick={() => this.setState({expanded: true})}
             >
               <Icon
@@ -39,10 +42,6 @@ export default class RelationInfo extends React.Component<Props, State> {
               .container {
                 @inherit: .bgWhite, .mt25, .pr25, .pt25, .pl38, .pb38, .bt, .bBlack10;
               }
-
-              .infoLine {
-                @inherit: .pv4, .f16, .black50;
-              }
             `}</style>
             <div className='flex justifyEnd'>
               <div
@@ -58,10 +57,91 @@ export default class RelationInfo extends React.Component<Props, State> {
                 />
               </div>
             </div>
-            <div className='infoLine'>One Movie is related to many Theatres</div>
-            <div className='infoLine'>One Movie is related to many Theatres</div>
-            <div className='infoLine'>One Movie is related to many Theatres</div>
+            {this.generateFirstInfoSentence()}
+            {this.generateSecondInfoSentence()}
+            {this.generateThirdInfoSentence()}
           </div>
         )
   }
+
+  private generateFirstInfoSentence = (): JSX.Element => {
+    const {cardinality, leftModel, rightModel} = this.props
+    const firstCardinality = cardinality.startsWith('ONE') ? 'One' : 'Many'
+    const isOrAre = firstCardinality === 'Many' ? 'are' : 'is'
+    const secondCardinality = cardinality.endsWith('ONE') ? 'one' : 'many'
+    const firstModel = cardinality.startsWith('ONE') ? leftModel.name : leftModel.namePlural
+    const secondModel = cardinality.endsWith('ONE') ? rightModel.name : rightModel.namePlural
+    return (
+      <div className='infoLine'>
+        <style jsx={true}>{`
+          .infoLine {
+            @inherit: .pv4, .f16, .black50, .nowrap;
+          }
+        `}</style>
+        <span className='green fw6'>{firstCardinality + ' '}</span>
+        <span className='blue fw6'>{firstModel + ' '}</span>
+        <span>{isOrAre} related to </span>
+        <span className='green fw6'>{secondCardinality + ' '}</span>
+        <span className='blue fw6'>{secondModel }</span>
+      </div>
+    )
+  }
+
+  private generateSecondInfoSentence = (): JSX.Element => {
+    const {cardinality, leftModel, rightModel} = this.props
+    const firstModelName = leftModel.name + '\'s'
+    let fieldName = cardinality.endsWith('MANY') ? rightModel.namePlural : rightModel.name
+    fieldName = lowercaseFirstLetter(fieldName)
+    const oneOrMany = cardinality.endsWith('MANY') ? 'many' : 'one'
+    const secondModelName = cardinality.endsWith('MANY') ? rightModel.namePlural : rightModel.name
+    return (
+      <div className='infoLine'>
+        <style jsx={true}>{`
+          .infoLine {
+            @inherit: .pv4, .f16, .black50, .nowrap;
+          }
+          .purpleColor {
+            color: rgba(164,3,111,1);
+          }
+
+        `}</style>
+        <span className='blue fw6'>{firstModelName + ' '}</span>
+        <span>field</span>
+        <span className='purpleColor fw6'>{' ' + fieldName + ' '}</span>
+        <span>represents</span>
+        <span className='green fw6'>{' ' + oneOrMany + ' '}</span>
+        <span className='blue fw6'>{secondModelName}</span>
+      </div>
+    )
+  }
+
+  private generateThirdInfoSentence = (): JSX.Element => {
+    const {cardinality, leftModel, rightModel} = this.props
+    const firstModelName = rightModel.name + '\'s'
+    let fieldName = cardinality.startsWith('MANY') ? leftModel.namePlural : leftModel.name
+    fieldName = lowercaseFirstLetter(fieldName)
+    const oneOrMany = cardinality.startsWith('MANY') ? 'many' : 'one'
+    const secondModelName = cardinality.startsWith('MANY') ? leftModel.namePlural : leftModel.name
+    return (
+      <div className='infoLine'>
+        <style jsx={true}>{`
+          .infoLine {
+            @inherit: .pv4, .f16, .black50, .nowrap;
+          }
+          .purpleColor {
+            color: rgba(164,3,111,1);
+          }
+
+        `}</style>
+        <span className='blue fw6'>{firstModelName + ' '}</span>
+        <span>field</span>
+        <span className='purpleColor fw6'>{' ' + fieldName + ' '}</span>
+        <span>represents</span>
+        <span className='green fw6'>{' ' + oneOrMany + ' '}</span>
+        <span className='blue fw6'>{secondModelName}</span>
+      </div>
+    )
+  }
+
+
 }

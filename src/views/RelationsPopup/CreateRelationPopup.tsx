@@ -55,6 +55,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
               </div>
               <CreateRelationFooter
                 displayState={this.state.displayState}
+                switchDisplayState={this.switchToDisplayState}
               />
             </div>
           </div>

@@ -4,24 +4,17 @@ import CardinalitySelection from './CardinalitySelection'
 import {Cardinality, Model} from '../../types/types'
 import {lowercaseFirstLetter} from '../../utils/utils'
 
-interface State {
+interface Props {
+  models: Model[]
   leftSelectedModel: Model | null
   rightSelectedModel: Model | null
   selectedCardinality: Cardinality
+  didSelectLeftModel: Function
+  didSelectRightModel: Function
+  didSelectCardinality: Function
 }
 
-interface Props {
-  models: Model[]
-
-}
-
-export default class ModelSelection extends React.Component<Props, State> {
-
-  state = {
-    leftSelectedModel: null,
-    rightSelectedModel: null,
-    selectedCardinality: 'ONE_TO_ONE' as Cardinality,
-  }
+export default class ModelSelection extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -42,26 +35,26 @@ export default class ModelSelection extends React.Component<Props, State> {
           <ModelSelectionBox
             many={false}
             models={this.props.models}
-            didSelectedModel={this.didSelectLeftModel}
-            selectedModel={this.state.leftSelectedModel}
-            relatedFieldName={this.state.rightSelectedModel && this.leftFieldName()}
-            relatedFieldType={this.state.rightSelectedModel && this.leftFieldType()}
+            didSelectedModel={this.props.didSelectLeftModel}
+            selectedModel={this.props.leftSelectedModel}
+            relatedFieldName={this.props.rightSelectedModel && this.leftFieldName()}
+            relatedFieldType={this.props.rightSelectedModel && this.leftFieldType()}
           />
           <div className='greenLine' />
         </div>
         <CardinalitySelection
-          selectedCartinality={this.state.selectedCardinality}
-          didSelectCardinality={this.didSelectCardinality}
+          selectedCartinality={this.props.selectedCardinality}
+          didSelectCardinality={this.props.didSelectCardinality}
         />
         <div className='flex itemsCenter'>
           <div className='greenLine' />
           <ModelSelectionBox
             many={false}
             models={this.props.models}
-            didSelectedModel={this.didSelectRightModel}
-            selectedModel={this.state.rightSelectedModel}
-            relatedFieldName={this.state.leftSelectedModel && this.rightFieldName()}
-            relatedFieldType={this.state.leftSelectedModel && this.rightFieldType()}
+            didSelectedModel={this.props.didSelectRightModel}
+            selectedModel={this.props.rightSelectedModel}
+            relatedFieldName={this.props.leftSelectedModel && this.rightFieldName()}
+            relatedFieldType={this.props.leftSelectedModel && this.rightFieldType()}
           />
         </div>
       </div>
@@ -69,55 +62,43 @@ export default class ModelSelection extends React.Component<Props, State> {
   }
 
   private rightFieldName = () => {
-    if (!this.state.leftSelectedModel) {
+    if (!this.props.leftSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.endsWith('MANY')) {
-      return lowercaseFirstLetter(this.state.leftSelectedModel.namePlural)
+    if (this.props.selectedCardinality.startsWith('MANY')) {
+      return lowercaseFirstLetter(this.props.leftSelectedModel.namePlural)
     }
-    return lowercaseFirstLetter(this.state.leftSelectedModel.name)
+    return lowercaseFirstLetter(this.props.leftSelectedModel.name)
   }
 
   private rightFieldType = () => {
-    if (!this.state.leftSelectedModel) {
+    if (!this.props.leftSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.endsWith('MANY')) {
-      return '[' + this.state.leftSelectedModel.name + ']'
+    if (this.props.selectedCardinality.startsWith('MANY')) {
+      return '[' + this.props.leftSelectedModel.name + ']'
     }
-    return this.state.leftSelectedModel.name
+    return this.props.leftSelectedModel.name
   }
 
   private leftFieldName = () => {
-    if (!this.state.rightSelectedModel) {
+    if (!this.props.rightSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.startsWith('MANY')) {
-      return lowercaseFirstLetter(this.state.rightSelectedModel.namePlural)
+    if (this.props.selectedCardinality.endsWith('MANY')) {
+      return lowercaseFirstLetter(this.props.rightSelectedModel.namePlural)
     }
-    return lowercaseFirstLetter(this.state.rightSelectedModel.name)
+    return lowercaseFirstLetter(this.props.rightSelectedModel.name)
   }
 
   private leftFieldType = () => {
-    if (!this.state.rightSelectedModel) {
+    if (!this.props.rightSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.startsWith('MANY')) {
-      return '[' + this.state.rightSelectedModel.name + ']'
+    if (this.props.selectedCardinality.endsWith('MANY')) {
+      return '[' + this.props.rightSelectedModel.name + ']'
     }
-    return this.state.rightSelectedModel.name
-  }
-
-  private didSelectLeftModel = (model: Model) => {
-    this.setState({leftSelectedModel: model} as State)
-  }
-
-  private didSelectRightModel = (model: Model) => {
-    this.setState({rightSelectedModel: model} as State)
-  }
-
-  private didSelectCardinality = (cardinality: Cardinality) => {
-    this.setState({selectedCardinality: cardinality} as State)
+    return this.props.rightSelectedModel.name
   }
 
 }

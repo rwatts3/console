@@ -4,6 +4,7 @@ import {Icon} from 'graphcool-styles'
 
 interface Props {
   displayState: RelationPopupDisplayState
+  switchDisplayState: Function
 }
 
 export default class CreateRelationFooter extends React.Component<Props, {}> {
@@ -30,7 +31,12 @@ export default class CreateRelationFooter extends React.Component<Props, {}> {
         {this.props.displayState === 'DEFINE_RELATION' ?
           (
             <div className='flex itemsCenter'>
-              <div className='toggleDisplayStateButton'>Set Mutations</div>
+              <div
+                className='toggleDisplayStateButton'
+                onClick={() => this.props.switchDisplayState('SET_MUTATION')}
+              >
+                Set Mutations
+              </div>
               <Icon
                 className='ml6'
                 src={require('../../assets/icons/blue_arrow_left.svg')}
@@ -49,7 +55,12 @@ export default class CreateRelationFooter extends React.Component<Props, {}> {
                 width={17}
                 height={12}
               />
-              <div className='toggleDisplayStateButton'>Define Relations</div>
+              <div
+                className='toggleDisplayStateButton'
+                onClick={() => this.props.switchDisplayState('DEFINE_RELATION')}
+              >
+                Define Relations
+              </div>
               <div className='saveButton ml25'>Create Relation</div>
             </div>
           )
