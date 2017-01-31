@@ -5,6 +5,10 @@ import {Icon} from 'graphcool-styles'
 interface Props {
   displayState: RelationPopupDisplayState
   switchDisplayState: Function
+  onClickCreateRelation: Function
+  onClickEditRelation: Function
+  canSubmit: boolean
+  isEditingExistingRelation: boolean // if false, we're creating a new one
 }
 
 export default class CreateRelationFooter extends React.Component<Props, {}> {
@@ -61,7 +65,19 @@ export default class CreateRelationFooter extends React.Component<Props, {}> {
               >
                 Define Relations
               </div>
-              <div className='saveButton ml25'>Create Relation</div>
+              <div
+                className={`saveButton ml25 ${!this.props.canSubmit && 'o50'}`}
+                onClick={
+                  this.props.canSubmit &&
+                  (this.props.isEditingExistingRelation ?
+                    () => this.props.onClickEditRelation()
+                    :
+                    () => this.props.onClickCreateRelation()
+                  )
+                }
+              >
+                {this.props.isEditingExistingRelation ? 'Save Changes' : 'Create Relation'}
+              </div>
             </div>
           )
         }

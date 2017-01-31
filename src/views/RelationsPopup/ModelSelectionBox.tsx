@@ -2,6 +2,12 @@ import * as React from 'react'
 import {Model} from '../../types/types'
 import {Combobox} from 'react-input-enhancements'
 import {$v} from 'graphcool-styles'
+import HorizontalSelect from './HorizontalSelect'
+import FieldNameInput from './FieldNameInput'
+
+interface State {
+  selectedIndex: number
+}
 
 interface Props {
   relatedFieldName: string | null
@@ -12,45 +18,22 @@ interface Props {
   didSelectedModel: Function
 }
 
-export default class ModelSelectionBox extends React.Component<Props, {}> {
+export default class ModelSelectionBox extends React.Component<Props, State> {
+
+  state = {
+    selectedIndex: 0,
+  }
 
   render() {
 
     const modelNames = this.props.models.map(model => model.name)
 
-    let relatedFieldElement: JSX.Element
-    if (this.props.relatedFieldName && this.props.relatedFieldType) {
-      relatedFieldElement = (
-        <div className='flex itemsCenter'>
-          <style jsx={true}>{`
-
-            .fieldType {
-              @inherit: .f14, .ml6, .pv4, .ph6, .black50, .bgBlack04, .br2;
-              font-family: 'Source Code Pro';
-            }
-
-            .purpleColor {
-              color: rgba(164,3,111,1);
-            }
-
-          `}</style>
-          <div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
-          <div className='fieldType'>{this.props.relatedFieldType}</div>
-        </div>
-      )
-    } else {
-      relatedFieldElement = (
-        <div className=' pv8 black20 f20 i'>will be generated</div>
-      )
-    }
-
     return (
-      <div className='container buttonShadow'>
+      <div className='container'>
         <style jsx={true}>{`
 
           .container {
-            width: 200px;
-            height: 131px;
+            @inherit: .buttonShadow;
           }
 
           .titleText {
@@ -74,18 +57,23 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
               />}}
           </Combobox>
         </div>
-        <div className='ph16 pv8 bgWhite'>
-          <div className='black40 f14'>related field:</div>
-          {relatedFieldElement}
-        </div>
+        <FieldNameInput
+          relatedFieldName={this.props.relatedFieldName}
+          relatedFieldType={this.props.relatedFieldType}
+        />
       </div>
     )
   }
 
+  private didChangeTab = (index: number, choice: string) => {
+    console.log(index, choice)
+    this.setState({selectedIndex: index} as State)
+  }
+
   private didSelectModelWithName = (modelName: string) => {
     const model = this.props.models.find((model) => model.name === modelName)
-    this.setState({model: model})
-    console.log('did select: ', model)
+    // this.setState({model: model})
+    // console.log('did select: ', model)
     this.props.didSelectedModel(model)
   }
 

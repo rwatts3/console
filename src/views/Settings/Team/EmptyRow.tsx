@@ -101,7 +101,7 @@ class EmptyRow extends React.Component<Props, State> {
               src={require('../../../assets/icons/confirm.svg')}
               width={35}
               height={35}
-              onClick={() => console.log('confirm')}
+              onClick={() => this.addCollaborator(this.state.email)}
             />
           </div>
         </div>
@@ -148,7 +148,6 @@ class EmptyRow extends React.Component<Props, State> {
       )
     }
     return rowContent
-
   }
 
   private handleKeyDown = (e) => {
@@ -162,7 +161,6 @@ class EmptyRow extends React.Component<Props, State> {
   }
 
   private addCollaborator(email: string): void {
-    console.log('add with email', email)
     Relay.Store.commitUpdate(
       new InviteCollaboratorMutation({
         projectId: this.props.projectId,

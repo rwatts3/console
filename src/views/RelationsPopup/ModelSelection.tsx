@@ -12,6 +12,10 @@ interface Props {
   didSelectLeftModel: Function
   didSelectRightModel: Function
   didSelectCardinality: Function
+  rightFieldName: string
+  rightFieldType: string
+  leftFieldName: string
+  leftFieldType: string
 }
 
 export default class ModelSelection extends React.Component<Props, {}> {
@@ -37,8 +41,8 @@ export default class ModelSelection extends React.Component<Props, {}> {
             models={this.props.models}
             didSelectedModel={this.props.didSelectLeftModel}
             selectedModel={this.props.leftSelectedModel}
-            relatedFieldName={this.props.rightSelectedModel && this.leftFieldName()}
-            relatedFieldType={this.props.rightSelectedModel && this.leftFieldType()}
+            relatedFieldName={this.props.rightSelectedModel && this.props.leftFieldName}
+            relatedFieldType={this.props.rightSelectedModel && this.props.leftFieldType}
           />
           <div className='greenLine' />
         </div>
@@ -53,52 +57,12 @@ export default class ModelSelection extends React.Component<Props, {}> {
             models={this.props.models}
             didSelectedModel={this.props.didSelectRightModel}
             selectedModel={this.props.rightSelectedModel}
-            relatedFieldName={this.props.leftSelectedModel && this.rightFieldName()}
-            relatedFieldType={this.props.leftSelectedModel && this.rightFieldType()}
+            relatedFieldName={this.props.leftSelectedModel && this.props.rightFieldName}
+            relatedFieldType={this.props.leftSelectedModel && this.props.rightFieldType}
           />
         </div>
       </div>
     )
-  }
-
-  private rightFieldName = () => {
-    if (!this.props.leftSelectedModel) {
-      return null
-    }
-    if (this.props.selectedCardinality.startsWith('MANY')) {
-      return lowercaseFirstLetter(this.props.leftSelectedModel.namePlural)
-    }
-    return lowercaseFirstLetter(this.props.leftSelectedModel.name)
-  }
-
-  private rightFieldType = () => {
-    if (!this.props.leftSelectedModel) {
-      return null
-    }
-    if (this.props.selectedCardinality.startsWith('MANY')) {
-      return '[' + this.props.leftSelectedModel.name + ']'
-    }
-    return this.props.leftSelectedModel.name
-  }
-
-  private leftFieldName = () => {
-    if (!this.props.rightSelectedModel) {
-      return null
-    }
-    if (this.props.selectedCardinality.endsWith('MANY')) {
-      return lowercaseFirstLetter(this.props.rightSelectedModel.namePlural)
-    }
-    return lowercaseFirstLetter(this.props.rightSelectedModel.name)
-  }
-
-  private leftFieldType = () => {
-    if (!this.props.rightSelectedModel) {
-      return null
-    }
-    if (this.props.selectedCardinality.endsWith('MANY')) {
-      return '[' + this.props.rightSelectedModel.name + ']'
-    }
-    return this.props.rightSelectedModel.name
   }
 
 }

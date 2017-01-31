@@ -145,7 +145,7 @@ export default (
       </Route>
       <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
         <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
-        <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>
+        <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
