@@ -99,7 +99,10 @@ class ProjectInfo extends React.Component<Props, State> {
                 {(this.state.newProjectName !== this.props.project.name) &&
                 <div
                   className='resetButton'
-                  onClick={() => this.setState({isEnteringProjectName: false} as State)}
+                  onClick={() => this.setState({
+                    isEnteringProjectName: false,
+                    newProjectName: this.props.project.name,
+                  } as State)}
                 >
                   Reset
                 </div>
@@ -110,7 +113,6 @@ class ProjectInfo extends React.Component<Props, State> {
                   autoFocus={true}
                   className='inputField'
                   value={this.state.newProjectName}
-                  onBlur={() => this.setState({isEnteringProjectName: false} as State)}
                   onKeyDown={this.handleKeyDown}
                   onChange={(e: any) => this.setState({newProjectName: e.target.value} as State)}
                 />
@@ -198,6 +200,7 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   private saveSettings = (): void => {
+    console.log('SAVE')
     Relay.Store.commitUpdate(
       new UpdateProjectMutation(
         {
