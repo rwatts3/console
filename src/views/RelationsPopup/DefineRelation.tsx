@@ -15,6 +15,10 @@ interface Props {
   rightFieldType: string
   leftFieldName: string
   leftFieldType: string
+  didChangeFieldNameOnLeftModel: (newFieldName: string) => void
+  didChangeFieldNameOnRightModel: (newFieldName: string) => void
+  fieldOnLeftModelName: string | null
+  fieldOnRightModelName: string | null
 }
 
 export default class DefineRelation extends React.Component<Props, {}> {
@@ -34,11 +38,17 @@ export default class DefineRelation extends React.Component<Props, {}> {
           rightFieldType={this.props.rightFieldType}
           leftFieldName={this.props.leftFieldName}
           leftFieldType={this.props.leftFieldType}
+          didChangeFieldNameOnLeftModel={this.props.didChangeFieldNameOnLeftModel}
+          didChangeFieldNameOnRightModel={this.props.didChangeFieldNameOnRightModel}
+          fieldOnLeftModelName={this.props.fieldOnLeftModelName}
+          fieldOnRightModelName={this.props.fieldOnRightModelName}
         />
         <RelationInfo
           leftModel={this.props.leftSelectedModel}
           rightModel={this.props.rightSelectedModel}
           cardinality={this.props.selectedCardinality}
+          fieldOnLeftModelName={this.props.fieldOnLeftModelName}
+          fieldOnRightModelName={this.props.fieldOnRightModelName}
         />
       </div>
     )

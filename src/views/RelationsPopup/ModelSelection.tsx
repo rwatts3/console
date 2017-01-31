@@ -16,6 +16,10 @@ interface Props {
   rightFieldType: string
   leftFieldName: string
   leftFieldType: string
+  didChangeFieldNameOnLeftModel: (newFieldName: string) => void
+  didChangeFieldNameOnRightModel: (newFieldName: string) => void
+  fieldOnLeftModelName: string | null
+  fieldOnRightModelName: string | null
 }
 
 export default class ModelSelection extends React.Component<Props, {}> {
@@ -41,8 +45,9 @@ export default class ModelSelection extends React.Component<Props, {}> {
             models={this.props.models}
             didSelectedModel={this.props.didSelectLeftModel}
             selectedModel={this.props.leftSelectedModel}
-            relatedFieldName={this.props.rightSelectedModel && this.props.leftFieldName}
+            relatedFieldName={this.props.fieldOnLeftModelName}
             relatedFieldType={this.props.rightSelectedModel && this.props.leftFieldType}
+            didChangeFieldName={this.props.didChangeFieldNameOnLeftModel}
           />
           <div className='greenLine' />
         </div>
@@ -57,8 +62,9 @@ export default class ModelSelection extends React.Component<Props, {}> {
             models={this.props.models}
             didSelectedModel={this.props.didSelectRightModel}
             selectedModel={this.props.rightSelectedModel}
-            relatedFieldName={this.props.leftSelectedModel && this.props.rightFieldName}
+            relatedFieldName={this.props.fieldOnRightModelName}
             relatedFieldType={this.props.leftSelectedModel && this.props.rightFieldType}
+            didChangeFieldName={this.props.didChangeFieldNameOnRightModel}
           />
         </div>
       </div>

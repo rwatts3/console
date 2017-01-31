@@ -7,6 +7,8 @@ interface Props {
   leftModel?: Model
   rightModel?: Model
   cardinality?: Cardinality
+  fieldOnLeftModelName: string
+  fieldOnRightModelName: string
 }
 
 interface State {
@@ -90,8 +92,6 @@ export default class RelationInfo extends React.Component<Props, State> {
   private generateSecondInfoSentence = (): JSX.Element => {
     const {cardinality, leftModel, rightModel} = this.props
     const firstModelName = leftModel.name + '\'s'
-    let fieldName = cardinality.endsWith('MANY') ? rightModel.namePlural : rightModel.name
-    fieldName = lowercaseFirstLetter(fieldName)
     const oneOrMany = cardinality.endsWith('MANY') ? 'many' : 'one'
     const secondModelName = cardinality.endsWith('MANY') ? rightModel.namePlural : rightModel.name
     return (
@@ -107,7 +107,7 @@ export default class RelationInfo extends React.Component<Props, State> {
         `}</style>
         <span className='blue fw6'>{firstModelName + ' '}</span>
         <span>field</span>
-        <span className='purpleColor fw6'>{' ' + fieldName + ' '}</span>
+        <span className='purpleColor fw6'>{' ' + this.props.fieldOnLeftModelName + ' '}</span>
         <span>represents</span>
         <span className='green fw6'>{' ' + oneOrMany + ' '}</span>
         <span className='blue fw6'>{secondModelName}</span>
@@ -118,8 +118,6 @@ export default class RelationInfo extends React.Component<Props, State> {
   private generateThirdInfoSentence = (): JSX.Element => {
     const {cardinality, leftModel, rightModel} = this.props
     const firstModelName = rightModel.name + '\'s'
-    let fieldName = cardinality.startsWith('MANY') ? leftModel.namePlural : leftModel.name
-    fieldName = lowercaseFirstLetter(fieldName)
     const oneOrMany = cardinality.startsWith('MANY') ? 'many' : 'one'
     const secondModelName = cardinality.startsWith('MANY') ? leftModel.namePlural : leftModel.name
     return (
@@ -135,7 +133,7 @@ export default class RelationInfo extends React.Component<Props, State> {
         `}</style>
         <span className='blue fw6'>{firstModelName + ' '}</span>
         <span>field</span>
-        <span className='purpleColor fw6'>{' ' + fieldName + ' '}</span>
+        <span className='purpleColor fw6'>{' ' + this.props.fieldOnRightModelName + ' '}</span>
         <span>represents</span>
         <span className='green fw6'>{' ' + oneOrMany + ' '}</span>
         <span className='blue fw6'>{secondModelName}</span>

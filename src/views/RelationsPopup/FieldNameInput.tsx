@@ -9,6 +9,7 @@ interface State {
 interface Props {
   relatedFieldName: string | null
   relatedFieldType: string | null
+  didChangeFieldName: (newFieldName: string) => void
 }
 
 export default class FieldNameInput extends React.Component<Props, State> {
@@ -40,19 +41,36 @@ export default class FieldNameInput extends React.Component<Props, State> {
             }
 
           `}</style>
-          <div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
-          {this.state.isHovered && (<Icon
-            className='mh4 move'
-            src={require('../../assets/icons/edit_project_name.svg')}
-            width={16}
-            height={16}
-          />)}
+          {!this.state.isEnteringFieldName && !this.state.isHovered &&
+          (<div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
+          )}
+          {!this.state.isEnteringFieldName && this.state.isHovered &&
+          (<div className='flex itemsCenter '>
+              <div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
+              <Icon
+                className='mh4 move'
+                src={require('../../assets/icons/edit_project_name.svg')}
+                width={16}
+                height={16}
+              />
+            </div>
+          )}
+          {this.state.isEnteringFieldName &&
+          (<input
+              type='text'
+              autoFocus={true}
+              className='f20 purpleColor bgTransparent wS96'
+              onKeyDown={this.handleKeyDown}
+              value={this.props.relatedFieldName}
+              onChange={(e) => this.props.didChangeFieldName(e.target.value)}
+            />
+          )}
           <div className='fieldType'>{this.props.relatedFieldType}</div>
         </div>
       )
     } else {
       relatedFieldElement = (
-        <div className=' pv8 black20 f20 i'>will be generated</div>
+        <div className='ph16 pv8 black20 f20 i'>will be generated</div>
       )
     }
 

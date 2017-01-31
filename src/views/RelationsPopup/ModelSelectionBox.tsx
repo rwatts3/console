@@ -5,10 +5,6 @@ import {$v} from 'graphcool-styles'
 import HorizontalSelect from './HorizontalSelect'
 import FieldNameInput from './FieldNameInput'
 
-interface State {
-  selectedIndex: number
-}
-
 interface Props {
   relatedFieldName: string | null
   relatedFieldType: string | null
@@ -16,13 +12,10 @@ interface Props {
   models: Model[]
   selectedModel?: Model
   didSelectedModel: Function
+  didChangeFieldName: (newFieldName: string) => void
 }
 
-export default class ModelSelectionBox extends React.Component<Props, State> {
-
-  state = {
-    selectedIndex: 0,
-  }
+export default class ModelSelectionBox extends React.Component<Props, {}> {
 
   render() {
 
@@ -60,14 +53,10 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
         <FieldNameInput
           relatedFieldName={this.props.relatedFieldName}
           relatedFieldType={this.props.relatedFieldType}
+          didChangeFieldName={this.props.didChangeFieldName}
         />
       </div>
     )
-  }
-
-  private didChangeTab = (index: number, choice: string) => {
-    console.log(index, choice)
-    this.setState({selectedIndex: index} as State)
   }
 
   private didSelectModelWithName = (modelName: string) => {

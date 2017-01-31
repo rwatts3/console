@@ -19,8 +19,8 @@ interface State {
   selectedCardinality: Cardinality
   relationName: string
   relationDescription: string
-  // fieldOnLeftModelName: string
-  // fieldOnRightModelName: string
+  fieldOnLeftModelName: string | null
+  fieldOnRightModelName: string | null
 }
 
 interface Props {
@@ -46,12 +46,12 @@ class CreateRelationPopup extends React.Component<Props, State> {
         this.cardinalityFromRelation(relation) : 'ONE_TO_ONE' as Cardinality,
       relationName: relation ? relation.name : '',
       relationDescription: relation ? relation.description : '',
+      fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : null,
+      fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : null,
     }
 
     console.log('STATE: ', this.state)
   }
-
-
 
   render() {
 
@@ -85,10 +85,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       didSelectLeftModel={this.didSelectLeftModel}
                       didSelectRightModel={this.didSelectRightModel}
                       didSelectCardinality={this.didSelectCardinality}
-                      rightFieldName={this.rightFieldName()}
+                      rightFieldName={this.state.fieldOnRightModelName}
                       rightFieldType={this.rightFieldType()}
-                      leftFieldName={this.leftFieldName()}
+                      leftFieldName={this.state.fieldOnLeftModelName}
                       leftFieldType={this.leftFieldType()}
+                      didChangeFieldNameOnLeftModel={this.didChangeFieldNameOnLeftModel}
+                      didChangeFieldNameOnRightModel={this.didChangeFieldNameOnRightModel}
+                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                      fieldOnRightModelName={this.state.fieldOnRightModelName}
                     />
                     :
                     <SetMutation
@@ -118,6 +122,16 @@ class CreateRelationPopup extends React.Component<Props, State> {
     this.props.router.goBack()
   }
 
+  private didChangeFieldNameOnLeftModel = (newFieldName: string) => {
+    this.setState({fieldOnLeftModelName: newFieldName} as State)
+    console.log('LEFT: ', newFieldName)
+  }
+
+  private didChangeFieldNameOnRightModel = (newFieldName: string) => {
+    this.setState({fieldOnRightModelName: newFieldName} as State)
+    console.log('RIGHT: ', newFieldName)
+  }
+
   private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
     if (displayState !== this.state.displayState) {
       this.setState({displayState: displayState} as State)
@@ -125,11 +139,29 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private didSelectLeftModel = (model: Model) => {
-    this.setState({leftSelectedModel: model} as State)
+    const {fieldOnRightModelName} = this.state
+    if (fieldOnRightModelName && fieldOnRightModelName.length > 0) {
+      this.setState({leftSelectedModel: model} as State)
+    } else {
+      this.setState({
+        leftSelectedModel: model,
+      } as State, () => {
+        this.setState({fieldOnRightModelName: this.rightFieldName()} as State)
+      })
+    }
   }
 
   private didSelectRightModel = (model: Model) => {
-    this.setState({rightSelectedModel: model} as State)
+    const {fieldOnLeftModelName} = this.state
+    if (fieldOnLeftModelName && fieldOnLeftModelName.length > 0) {
+      this.setState({rightSelectedModel: model} as State)
+    } else {
+      this.setState({
+        rightSelectedModel: model,
+      } as State, () => {
+        this.setState({fieldOnLeftModelName: this.leftFieldName()} as State)
+      })
+    }
   }
 
   private didSelectCardinality = (cardinality: Cardinality) => {
