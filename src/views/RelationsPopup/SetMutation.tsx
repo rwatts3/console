@@ -1,7 +1,8 @@
 import * as React from 'react'
-import {Relation, Cardinality, Model} from '../../types/types'
+import {Cardinality, Model} from '../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import MutationsInfoBox from './MutationsInfoBox'
+import {validateRelationName} from '../../utils/nameValidator'
 
 interface State {
   isEnteringRelationName: boolean
@@ -46,7 +47,6 @@ export default class SetMutation extends React.Component<Props, State> {
 
           .relationNameInputField {
             @inherit: .f38, .fw3, .w100, .ph25;
-            color: rgba(42,127,211,1);
           }
 
           .descriptionInputField {
@@ -57,27 +57,36 @@ export default class SetMutation extends React.Component<Props, State> {
         `}</style>
         {isEnteringRelationName || relationName.length === 0 ?
           (
-            <div className='flex itemsCenter pr38'>
-              <input
-                className='relationNameInputField'
-                autoFocus={true}
-                placeholder='Set a name for the relation...'
-                value={relationName}
-                onKeyDown={this.handleKeyDownOnRelationName}
-                onChange={(e: any) => {
-                  this.props.onChangeRelationNameInput(e.target.value)
-                  this.setState(
-                    {
-                    isEnteringRelationName: true,
-                  } as State,
-                  )
-                }}
-                onFocus={() =>
-                  this.setState({
-                    isEnteringRelationDescription: false,
-                  } as State)
-                }
-              />
+            <div className='flex itemsCenter justifyBetween pr38'>
+              <div className='w100'>
+                <input
+                  className={`relationNameInputField
+                    ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}
+                  autoFocus={true}
+                  placeholder='Set a name for the relation...'
+                  value={relationName}
+                  onKeyDown={this.handleKeyDownOnRelationName}
+                  onChange={(e: any) => {
+                    this.props.onChangeRelationNameInput(e.target.value)
+                    this.setState(
+                      {
+                      isEnteringRelationName: true,
+                    } as State,
+                    )
+                  }}
+                  onFocus={() =>
+                    this.setState({
+                      isEnteringRelationDescription: false,
+                    } as State)
+                  }
+                />
+                {relationName.length > 0 && !validateRelationName(relationName) &&
+                  <div
+                    className='pl25 red f12'
+                  >
+                    Relation name has to be capitalized and must only contain alphanumeric characters.
+                  </div>}
+              </div>
               <div className='flex itemsCenter'>
                 <Icon
                   className='mh10 pointer'

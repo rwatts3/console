@@ -129,7 +129,6 @@ export default class RelationInfo extends React.Component<Props, State> {
           .purpleColor {
             color: rgba(164,3,111,1);
           }
-
         `}</style>
         <span className='blue fw6'>{firstModelName + ' '}</span>
         <span>field</span>

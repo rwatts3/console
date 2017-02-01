@@ -52,7 +52,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     const models = this.props.viewer.project.models.edges.map(edge => edge.node)
     const {displayState, leftSelectedModel, rightSelectedModel,
-      selectedCardinality, relationName, relationDescription} = this.state
+      selectedCardinality, relationName, relationDescription,
+      fieldOnRightModelName, fieldOnLeftModelName} = this.state
 
     return (
       <PopupWrapper onClickOutside={this.close}>
@@ -81,14 +82,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       didSelectLeftModel={this.didSelectLeftModel}
                       didSelectRightModel={this.didSelectRightModel}
                       didSelectCardinality={this.didSelectCardinality}
-                      rightFieldName={this.state.fieldOnRightModelName}
+                      rightFieldName={fieldOnRightModelName}
                       rightFieldType={this.rightFieldType()}
-                      leftFieldName={this.state.fieldOnLeftModelName}
+                      leftFieldName={fieldOnLeftModelName}
                       leftFieldType={this.leftFieldType()}
                       didChangeFieldNameOnLeftModel={this.didChangeFieldNameOnLeftModel}
                       didChangeFieldNameOnRightModel={this.didChangeFieldNameOnRightModel}
-                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
-                      fieldOnRightModelName={this.state.fieldOnRightModelName}
+                      fieldOnLeftModelName={fieldOnLeftModelName}
+                      fieldOnRightModelName={fieldOnRightModelName}
                     />
                     :
                     <SetMutation
@@ -96,11 +97,11 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       relationDescription={relationDescription}
                       onChangeRelationNameInput={this.onChangeRelationNameInput}
                       onChangeRelationDescriptionInput={this.onChangeRelationDescriptionInput}
-                      leftSelectedModel={this.state.leftSelectedModel}
-                      rightSelectedModel={this.state.rightSelectedModel}
-                      selectedCardinality={this.state.selectedCardinality}
-                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
-                      fieldOnRightModelName={this.state.fieldOnRightModelName}
+                      leftSelectedModel={leftSelectedModel}
+                      rightSelectedModel={rightSelectedModel}
+                      selectedCardinality={selectedCardinality}
+                      fieldOnLeftModelName={fieldOnLeftModelName}
+                      fieldOnRightModelName={fieldOnRightModelName}
                     />
                 }
               </div>
