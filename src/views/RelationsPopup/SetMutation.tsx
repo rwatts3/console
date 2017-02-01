@@ -8,15 +8,18 @@ interface State {
   isHoveringRelationName: boolean
   isEnteringRelationDescription: boolean
   isHoveringRelationDescription: boolean
-
 }
 
 interface Props {
   relationName: string
   relationDescription?: string
-  relation?: Relation
   onChangeRelationNameInput: Function
   onChangeRelationDescriptionInput: Function
+  leftSelectedModel: Model | null
+  rightSelectedModel: Model | null
+  selectedCardinality: Cardinality | null
+  fieldOnLeftModelName: string | null
+  fieldOnRightModelName: string | null
 }
 
 export default class SetMutation extends React.Component<Props, State> {
@@ -63,10 +66,12 @@ export default class SetMutation extends React.Component<Props, State> {
                 onKeyDown={this.handleKeyDownOnRelationName}
                 onChange={(e: any) => {
                   this.props.onChangeRelationNameInput(e.target.value)
-                  this.setState({
+                  this.setState(
+                    {
                     isEnteringRelationName: true,
-                  } as State)}
-                }
+                  } as State,
+                  )
+                }}
                 onFocus={() =>
                   this.setState({
                     isEnteringRelationDescription: false,
@@ -181,7 +186,16 @@ export default class SetMutation extends React.Component<Props, State> {
             </div>
           )
         }
-        <MutationsInfoBox />
+        {this.props.leftSelectedModel && this.props.rightSelectedModel &&
+        <MutationsInfoBox
+          selectedCardinality={this.props.selectedCardinality}
+          relationName={this.props.relationName}
+          leftSelectedModel={this.props.leftSelectedModel}
+          rightSelectedModel={this.props.rightSelectedModel}
+          fieldOnLeftModelName={this.props.fieldOnLeftModelName}
+          fieldOnRightModelName={this.props.fieldOnRightModelName}
+        />
+        }
       </div>
     )
   }

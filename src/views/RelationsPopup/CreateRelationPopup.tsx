@@ -35,9 +35,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
     super(props)
 
     const {relation} = props.viewer
-
-    console.log('RELATION: ', relation)
-
     this.state = {
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: relation ? relation.leftModel : null,
@@ -49,8 +46,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
       fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : null,
       fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : null,
     }
-
-    console.log('STATE: ', this.state)
   }
 
   render() {
@@ -74,6 +69,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 <CreateRelationHeader
                   displayState={displayState}
                   switchDisplayState={this.switchToDisplayState}
+                  close={this.close}
                 />
                 {
                   displayState === 'DEFINE_RELATION' ?
@@ -100,6 +96,11 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       relationDescription={relationDescription}
                       onChangeRelationNameInput={this.onChangeRelationNameInput}
                       onChangeRelationDescriptionInput={this.onChangeRelationDescriptionInput}
+                      leftSelectedModel={this.state.leftSelectedModel}
+                      rightSelectedModel={this.state.rightSelectedModel}
+                      selectedCardinality={this.state.selectedCardinality}
+                      fieldOnLeftModelName={this.state.fieldOnLeftModelName}
+                      fieldOnRightModelName={this.state.fieldOnRightModelName}
                     />
                 }
               </div>
@@ -110,6 +111,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 onClickEditRelation={this.editRelation}
                 canSubmit={leftSelectedModel && rightSelectedModel && relationName.length > 0}
                 isEditingExistingRelation={this.props.viewer.relation !== null}
+                close={this.close}
               />
             </div>
           </div>
@@ -123,13 +125,15 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private didChangeFieldNameOnLeftModel = (newFieldName: string) => {
-    this.setState({fieldOnLeftModelName: newFieldName} as State)
-    console.log('LEFT: ', newFieldName)
+    this.setState({
+      fieldOnLeftModelName: newFieldName,
+    } as State)
   }
 
   private didChangeFieldNameOnRightModel = (newFieldName: string) => {
-    this.setState({fieldOnRightModelName: newFieldName} as State)
-    console.log('RIGHT: ', newFieldName)
+    this.setState({
+      fieldOnRightModelName: newFieldName,
+    } as State)
   }
 
   private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
@@ -139,33 +143,42 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private didSelectLeftModel = (model: Model) => {
-    const {fieldOnRightModelName} = this.state
-    if (fieldOnRightModelName && fieldOnRightModelName.length > 0) {
-      this.setState({leftSelectedModel: model} as State)
-    } else {
-      this.setState({
+    this.setState(
+      {
         leftSelectedModel: model,
-      } as State, () => {
-        this.setState({fieldOnRightModelName: this.rightFieldName()} as State)
+      } as State,
+      () => {
+        this.setState({
+          fieldOnRightModelName: this.rightFieldName(),
+          fieldOnLeftModelName: this.leftFieldName(),
+        } as State)
       })
-    }
   }
 
   private didSelectRightModel = (model: Model) => {
-    const {fieldOnLeftModelName} = this.state
-    if (fieldOnLeftModelName && fieldOnLeftModelName.length > 0) {
-      this.setState({rightSelectedModel: model} as State)
-    } else {
-      this.setState({
+    this.setState(
+      {
         rightSelectedModel: model,
-      } as State, () => {
-        this.setState({fieldOnLeftModelName: this.leftFieldName()} as State)
+      } as State,
+      () => {
+        this.setState({
+          fieldOnLeftModelName: this.leftFieldName(),
+          fieldOnRightModelName: this.rightFieldName(),
+        } as State)
       })
-    }
   }
 
   private didSelectCardinality = (cardinality: Cardinality) => {
-    this.setState({selectedCardinality: cardinality} as State)
+    this.setState(
+      {
+        selectedCardinality: cardinality,
+      } as State,
+      () => {
+        this.setState({
+          fieldOnLeftModelName: this.leftFieldName(),
+          fieldOnRightModelName: this.rightFieldName(),
+        } as State)
+      })
   }
 
   private onChangeRelationNameInput = (relationName: string) => {
@@ -198,7 +211,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
           console.log('SUCCESS')
           this.close()
         },
-        onFailure: (transaction: Transaction) => console.error('Could not create mutation: ', transaction.getError().message),
+        onFailure: (transaction: Transaction) =>
+          console.error('Could not create mutation: ', transaction.getError().message),
       },
     )
   }
@@ -211,8 +225,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
         leftModelId: this.state.leftSelectedModel.id,
         rightModelId: this.state.rightSelectedModel.id,
-        fieldOnLeftModelName: this.leftFieldName(),
-        fieldOnRightModelName: this.rightFieldName(),
+        fieldOnLeftModelName: this.state.fieldOnLeftModelName,
+        fieldOnRightModelName: this.state.fieldOnRightModelName,
         fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
       }),
@@ -222,53 +236,87 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.props.relay.forceFetch()
           this.close()
         },
-        onFailure: (transaction: Transaction) => console.error('Could not edit mutation: ', transaction.getError().message),
+        onFailure: (transaction: Transaction) =>
+          console.error('Could not edit mutation: ', transaction.getError().message),
       },
     )
   }
 
   private rightFieldName = () => {
-    // return 'rightFieldName'
-    if (!this.state.leftSelectedModel) {
+    const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
+
+    if (!leftSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.startsWith('MANY')) {
-      return lowercaseFirstLetter(this.state.leftSelectedModel.namePlural)
+
+    // edge case: self relations
+    if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
+      if (selectedCardinality === 'ONE_TO_ONE') {
+        return 'from' + rightSelectedModel.name
+      } else if (selectedCardinality === 'ONE_TO_MANY') {
+        return 'from' + rightSelectedModel.name
+      } else if (selectedCardinality === 'MANY_TO_ONE') {
+        return 'from' + rightSelectedModel.namePlural
+      } else if (selectedCardinality === 'MANY_TO_MANY') {
+        return 'from' + rightSelectedModel.namePlural
+      }
     }
-    return lowercaseFirstLetter(this.state.leftSelectedModel.name)
+
+    //
+    if (selectedCardinality.startsWith('MANY')) {
+      return lowercaseFirstLetter(leftSelectedModel.namePlural)
+    }
+    return lowercaseFirstLetter(leftSelectedModel.name)
   }
 
   private rightFieldType = () => {
-    // return 'rightFieldType'
-    if (!this.state.leftSelectedModel) {
+    const {leftSelectedModel, selectedCardinality} = this.state
+
+    if (!leftSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.startsWith('MANY')) {
-      return '[' + this.state.leftSelectedModel.name + ']'
+
+    if (selectedCardinality.startsWith('MANY')) {
+      return '[' + leftSelectedModel.name + ']'
     }
-    return this.state.leftSelectedModel.name
+    return leftSelectedModel.name
   }
 
   private leftFieldName = () => {
-    // return 'leftFieldName'
-    if (!this.state.rightSelectedModel) {
+    const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
+
+    // edge case: self relations
+    if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
+      if (selectedCardinality === 'ONE_TO_ONE') {
+        return 'to' + rightSelectedModel.name
+      } else if (selectedCardinality === 'ONE_TO_MANY') {
+        return 'to' + rightSelectedModel.namePlural
+      } else if (selectedCardinality === 'MANY_TO_ONE') {
+        return 'to' + rightSelectedModel.name
+      } else if (selectedCardinality === 'MANY_TO_MANY') {
+        return 'to' + rightSelectedModel.namePlural
+      }
+    }
+
+    if (!rightSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.endsWith('MANY')) {
-      return lowercaseFirstLetter(this.state.rightSelectedModel.namePlural)
+    if (selectedCardinality.endsWith('MANY')) {
+      return lowercaseFirstLetter(rightSelectedModel.namePlural)
     }
-    return lowercaseFirstLetter(this.state.rightSelectedModel.name)
+    return lowercaseFirstLetter(rightSelectedModel.name)
   }
 
   private leftFieldType = () => {
-    // return 'leftFieldType'
-    if (!this.state.rightSelectedModel) {
+    const {rightSelectedModel, selectedCardinality} = this.state
+
+    if (!rightSelectedModel) {
       return null
     }
-    if (this.state.selectedCardinality.endsWith('MANY')) {
-      return '[' + this.state.rightSelectedModel.name + ']'
+    if (selectedCardinality.endsWith('MANY')) {
+      return '[' + rightSelectedModel.name + ']'
     }
-    return this.state.rightSelectedModel.name
+    return rightSelectedModel.name
   }
 
   private cardinalityFromRelation (relation: Relation): Cardinality {

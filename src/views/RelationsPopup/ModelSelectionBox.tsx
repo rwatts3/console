@@ -47,7 +47,8 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
                 value={this.props.selectedModel ? this.props.selectedModel.name : 'Select Model'}
                 className={`titleText bgTransparent ${this.props.selectedModel ? 'white' : 'blue'}`}
                 style={{width: '180px'}}
-              />}}
+              />
+            }}
           </Combobox>
         </div>
         <FieldNameInput
@@ -61,8 +62,6 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
 
   private didSelectModelWithName = (modelName: string) => {
     const model = this.props.models.find((model) => model.name === modelName)
-    // this.setState({model: model})
-    // console.log('did select: ', model)
     this.props.didSelectedModel(model)
   }
 

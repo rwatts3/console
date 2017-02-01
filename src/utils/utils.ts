@@ -87,5 +87,9 @@ export function retryUntilDone(fn: (done: () => void) => void, options: RetryUnt
 }
 
 export function lowercaseFirstLetter(str: string): string {
-  return str.charAt(0).toLowerCase() + str.slice(1);
+  return str.charAt(0).toLowerCase() + str.slice(1)
+}
+
+export function uppercaseFirstLetter(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }

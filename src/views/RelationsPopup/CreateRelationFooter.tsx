@@ -9,6 +9,7 @@ interface Props {
   onClickEditRelation: Function
   canSubmit: boolean
   isEditingExistingRelation: boolean // if false, we're creating a new one
+  close: Function
 }
 
 export default class CreateRelationFooter extends React.Component<Props, {}> {
@@ -31,7 +32,12 @@ export default class CreateRelationFooter extends React.Component<Props, {}> {
           }
 
         `}</style>
-        <div className='f16 black50 pointer'>Cancel</div>
+        <div
+          className='f16 black50 pointer'
+          onClick={() => this.props.close()}
+        >
+          Cancel
+        </div>
         {this.props.displayState === 'DEFINE_RELATION' ?
           (
             <div className='flex itemsCenter'>

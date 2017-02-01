@@ -62,7 +62,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
               className='f20 purpleColor bgTransparent wS96'
               onKeyDown={this.handleKeyDown}
               value={this.props.relatedFieldName}
-              onChange={(e) => this.props.didChangeFieldName(e.target.value)}
+              onChange={(e: any) => this.props.didChangeFieldName(e.target.value)}
             />
           )}
           <div className='fieldType'>{this.props.relatedFieldType}</div>
@@ -79,7 +79,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
         className='bgWhite pointer'
         onMouseEnter={() => this.setState({isHovered: true} as State)}
         onMouseLeave={() => this.setState({isHovered: false} as State)}
-        onClick={() => this.setState({isEnteringFieldName: true} as State)}q
+        onClick={() => this.setState({isEnteringFieldName: true} as State)}
       >
         <div className='black40 f14 ph16 pv8'>related field:</div>
         {relatedFieldElement}
@@ -98,18 +98,4 @@ export default class FieldNameInput extends React.Component<Props, State> {
       } as State)
     }
   }
-
-=======
-  constructor(props) {
-    super(props)
-
-    this.state = {}
-  }
-
-  render() {
-    return (
-      <div></div>
-    )
-  }
->>>>>>> d7fcd252a9132eeac2cfd1b99f1305797c66019e
 }

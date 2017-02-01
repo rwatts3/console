@@ -141,5 +141,4 @@ export default class RelationInfo extends React.Component<Props, State> {
     )
   }
 
-
 }

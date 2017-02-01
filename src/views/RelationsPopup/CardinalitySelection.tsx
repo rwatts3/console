@@ -11,10 +11,10 @@ export default class CardinalitySelection extends React.Component<Props, {}> {
 
   render() {
     const y = (this.yForCardinality(this.props.selectedCartinality) + 51) + 'px'
-    const one_to_one = require('../../assets/icons/one_to_one.svg')
-    const one_to_one_green = require('../../assets/icons/one_to_one_green.svg')
-    const one_to_many = require('../../assets/icons/one_to_many.svg')
-    const one_to_many_green = require('../../assets/icons/one_to_many_green.svg')
+    const oneToOne = require('../../assets/icons/one_to_one.svg')
+    const oneToOneGreen = require('../../assets/icons/one_to_one_green.svg')
+    const oneToMany = require('../../assets/icons/one_to_many.svg')
+    const oneToManyGreen = require('../../assets/icons/one_to_many_green.svg')
     return (
       <div className='container move' style={{transform: 'translateY(' + y + ')'}}>
         <style jsx={true}>{`
@@ -33,7 +33,7 @@ export default class CardinalitySelection extends React.Component<Props, {}> {
           onClick={() => this.props.didSelectCardinality('ONE_TO_ONE')}
         >
           <Icon
-            src={this.props.selectedCartinality === 'ONE_TO_ONE' ? one_to_one_green : one_to_one}
+            src={this.props.selectedCartinality === 'ONE_TO_ONE' ? oneToOneGreen : oneToOne}
             width={31}
             height={30}
           />
@@ -44,7 +44,7 @@ export default class CardinalitySelection extends React.Component<Props, {}> {
         >
           <Icon
             className='pv6'
-            src={this.props.selectedCartinality === 'ONE_TO_MANY' ? one_to_many_green : one_to_many}
+            src={this.props.selectedCartinality === 'ONE_TO_MANY' ? oneToManyGreen : oneToMany}
             width={31}
             height={30}
           />
@@ -55,7 +55,7 @@ export default class CardinalitySelection extends React.Component<Props, {}> {
         >
           <Icon
             className='pv6'
-            src={this.props.selectedCartinality === 'MANY_TO_ONE' ? one_to_many_green : one_to_many}
+            src={this.props.selectedCartinality === 'MANY_TO_ONE' ? oneToManyGreen : oneToMany}
             width={31}
             height={30}
             rotate={180}

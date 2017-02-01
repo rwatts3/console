@@ -5,6 +5,7 @@ import {RelationPopupDisplayState} from '../../types/types'
 interface Props {
   displayState: RelationPopupDisplayState
   switchDisplayState: Function
+  close: Function
 }
 
 export default class CreateRelationHeader extends React.Component<Props, {}> {
@@ -55,12 +56,17 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
             Set Mutations
           </div>
         </div>
-        <Icon
-          className='mh25 closeIcon'
-          src={require('../../assets/icons/close_modal.svg')}
-          width={25}
-          height={25}
-        />
+        <div
+          className='pointer'
+          onClick={() => this.props.close()}
+        >
+          <Icon
+            className='mh25 closeIcon'
+            src={require('../../assets/icons/close_modal.svg')}
+            width={25}
+            height={25}
+          />
+        </div>
       </div>
     )
   }
