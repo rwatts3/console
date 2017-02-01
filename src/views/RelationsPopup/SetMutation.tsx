@@ -21,6 +21,7 @@ interface Props {
   selectedCardinality: Cardinality | null
   fieldOnLeftModelName: string | null
   fieldOnRightModelName: string | null
+  relationNameIsBreakingChange: boolean
 }
 
 export default class SetMutation extends React.Component<Props, State> {
@@ -58,7 +59,9 @@ export default class SetMutation extends React.Component<Props, State> {
         {isEnteringRelationName || relationName.length === 0 ?
           (
             <div className='flex itemsCenter justifyBetween pr38'>
-              <div className='w100'>
+              <div
+                className='w100'
+              >
                 <input
                   className={`relationNameInputField
                     ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}

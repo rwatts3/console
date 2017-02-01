@@ -20,6 +20,12 @@ interface Props {
   didChangeFieldNameOnRightModel: (newFieldName: string) => void
   fieldOnLeftModelName: string | null
   fieldOnRightModelName: string | null
+  leftInputIsBreakingChange: boolean
+  rightInputIsBreakingChange: boolean
+  leftModelIsBreakingChange: boolean
+  rightModelIsBreakingChange: boolean
+  // leftSideMessagesForBreakingChange: string[]
+  // rightSideMessagesForBreakingChange: string[]
 }
 
 export default class ModelSelection extends React.Component<Props, {}> {
@@ -48,6 +54,8 @@ export default class ModelSelection extends React.Component<Props, {}> {
             relatedFieldName={this.props.fieldOnLeftModelName}
             relatedFieldType={this.props.rightSelectedModel && this.props.leftFieldType}
             didChangeFieldName={this.props.didChangeFieldNameOnLeftModel}
+            inputIsBreakingChange={this.props.leftInputIsBreakingChange}
+            modelIsBreakingChange={this.props.leftModelIsBreakingChange}
           />
           <div className='greenLine' />
         </div>
@@ -65,6 +73,8 @@ export default class ModelSelection extends React.Component<Props, {}> {
             relatedFieldName={this.props.fieldOnRightModelName}
             relatedFieldType={this.props.leftSelectedModel && this.props.rightFieldType}
             didChangeFieldName={this.props.didChangeFieldNameOnRightModel}
+            inputIsBreakingChange={this.props.rightInputIsBreakingChange}
+            modelIsBreakingChange={this.props.rightModelIsBreakingChange}
           />
         </div>
       </div>

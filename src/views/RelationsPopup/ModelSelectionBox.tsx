@@ -4,6 +4,7 @@ import {Combobox} from 'react-input-enhancements'
 import {$v} from 'graphcool-styles'
 import HorizontalSelect from './HorizontalSelect'
 import FieldNameInput from './FieldNameInput'
+import BreakingChangeIndicator from './BreakingChangeIndicator'
 
 interface Props {
   relatedFieldName: string | null
@@ -13,6 +14,9 @@ interface Props {
   selectedModel?: Model
   didSelectedModel: Function
   didChangeFieldName: (newFieldName: string) => void
+  inputIsBreakingChange: boolean
+  modelIsBreakingChange: boolean
+  // messagesForBreakingChange: string[]
 }
 
 export default class ModelSelectionBox extends React.Component<Props, {}> {
@@ -21,13 +25,30 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
 
     const modelNames = this.props.models.map(model => model.name)
 
-    return (
-      <div className='container'>
-        <style jsx={true}>{`
+    let tops: number[] = []
+    let plain: boolean[] = []
+    if (this.props.inputIsBreakingChange) {
+      tops.push(80)
+      plain.push(true)
+    }
+    if (this.props.modelIsBreakingChange) {
+      tops.push(16)
+      plain.push(true)
+    }
 
-          .container {
-            @inherit: .buttonShadow;
-          }
+    // const messageElementsForBreakingChange: JSX.Element[] = this.props.messagesForBreakingChange.map(message =>
+    //   <span>{message}</span>
+    // )
+
+    return (
+      <BreakingChangeIndicator
+        className='buttonShadow'
+        width={16}
+        height={12}
+        tops={tops}
+        plain={plain}
+      >
+        <style jsx={true}>{`
 
           .titleText {
             @inherit: .f25, .fw6;
@@ -56,7 +77,7 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
           relatedFieldType={this.props.relatedFieldType}
           didChangeFieldName={this.props.didChangeFieldName}
         />
-      </div>
+      </BreakingChangeIndicator>
     )
   }
 

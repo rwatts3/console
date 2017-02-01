@@ -19,6 +19,12 @@ interface Props {
   didChangeFieldNameOnRightModel: (newFieldName: string) => void
   fieldOnLeftModelName: string | null
   fieldOnRightModelName: string | null
+  leftInputIsBreakingChange: boolean
+  rightInputIsBreakingChange: boolean
+  leftModelIsBreakingChange: boolean
+  rightModelIsBreakingChange: boolean
+  // leftSideMessagesForBreakingChange: string[]
+  // rightSideMessagesForBreakingChange: string[]
 }
 
 export default class DefineRelation extends React.Component<Props, {}> {
@@ -42,6 +48,10 @@ export default class DefineRelation extends React.Component<Props, {}> {
           didChangeFieldNameOnRightModel={this.props.didChangeFieldNameOnRightModel}
           fieldOnLeftModelName={this.props.fieldOnLeftModelName}
           fieldOnRightModelName={this.props.fieldOnRightModelName}
+          leftInputIsBreakingChange={this.props.leftInputIsBreakingChange}
+          rightInputIsBreakingChange={this.props.rightInputIsBreakingChange}
+          leftModelIsBreakingChange={this.props.leftModelIsBreakingChange}
+          rightModelIsBreakingChange={this.props.rightModelIsBreakingChange}
         />
         <RelationInfo
           leftModel={this.props.leftSelectedModel}
