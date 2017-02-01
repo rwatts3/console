@@ -99,4 +99,17 @@ export default class FieldNameInput extends React.Component<Props, State> {
     }
   }
 
+=======
+  constructor(props) {
+    super(props)
+
+    this.state = {}
+  }
+
+  render() {
+    return (
+      <div></div>
+    )
+  }
+>>>>>>> d7fcd252a9132eeac2cfd1b99f1305797c66019e
 }
