@@ -202,7 +202,7 @@ class PlaygroundView extends React.Component<Props, State> {
       <div className={classes.root}>
         <Helmet title='Playground' />
         <Playground
-          authToken={this.state.adminToken}
+          adminAuthToken={this.state.adminToken}
           projectId={this.props.viewer.project.id}
           onSuccess={this.handleResponse}
         />
