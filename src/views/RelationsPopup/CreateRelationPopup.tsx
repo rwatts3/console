@@ -46,8 +46,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     const {relation} = props.viewer
 
-    console.log('relation', relation)
-
     this.state = {
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: relation ? relation.leftModel : null,
@@ -73,24 +71,28 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     const {relation} = this.props.viewer
     const models = this.props.viewer.project.models.edges.map(edge => edge.node)
+
     let forbiddenFieldNames = removeDuplicatesFromStringArray(
       this.props.viewer.project.fields.edges.map(edge => edge.node.name)
     )
-    console.log('relation.fieldOnLeftModel.name', relation.fieldOnLeftModel.name)
-    console.log('relation.fieldOnRightModel.name', relation.fieldOnRightModel.name)
-
-    forbiddenFieldNames = forbiddenFieldNames.filter(fieldName =>
+    if (relation) {
+      forbiddenFieldNames = forbiddenFieldNames.filter(fieldName =>
       fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    }
 
-    console.log(forbiddenFieldNames)
     const {displayState, leftSelectedModel, rightSelectedModel,
       selectedCardinality, relationName, relationDescription,
       fieldOnRightModelName, fieldOnLeftModelName, leftModelIsBreakingChange, rightModelIsBreakingChange,
-      leftInputIsBreakingChange, rightInputIsBreakingChange, relationNameIsBreakingChange} = this.state
+      leftInputIsBreakingChange, rightInputIsBreakingChange, relationNameIsBreakingChange
+    } = this.state
 
     const displayBreakingIndicator = (Boolean(this.props.viewer.relation)) &&
       (leftInputIsBreakingChange || rightInputIsBreakingChange ||
       relationNameIsBreakingChange || leftModelIsBreakingChange || rightModelIsBreakingChange)
+
+    const rightTabHasBreakingChange = relationNameIsBreakingChange
+    const leftTabHasBreakingChange = leftInputIsBreakingChange || rightInputIsBreakingChange ||
+      leftModelIsBreakingChange || rightModelIsBreakingChange
 
     const breakingChangeMessageElements: JSX.Element[] =
       displayBreakingIndicator && this.breakingChangeMessages().map((message, i) => <div key={i}>{message}</div>)
@@ -100,24 +102,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
         {breakingChangeMessageElements}
       </div>
     )]
-
-    let leftModelNameForFooter
-    if (relation) {
-      leftModelNameForFooter = relation.leftModel.name
-    } else {
-      leftModelNameForFooter = null
-    }
-
-    let rightModelNameForFooter
-    if (relation) {
-      rightModelNameForFooter = relation.rightModel.name
-    } else {
-      rightModelNameForFooter = null
-    }
-
-    let relationNameForFooter = relation && relation.name
-
-    console.log(leftModelNameForFooter, rightModelNameForFooter, relationNameForFooter)
 
     return (
       <PopupWrapper onClickOutside={this.close}>
@@ -130,9 +114,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
         <div className='flex itemsCenter justifyCenter w100 h100'>
           <BreakingChangeIndicator
             className='relationPopupContent'
+            style='RIGHT'
             width={35}
             height={21}
-            tops={displayBreakingIndicator ? [40] : []}
+            offsets={displayBreakingIndicator ? [40] : []}
             plain={displayBreakingIndicator ? [false] : []}
             messages={infoMessageElement}
           >
@@ -142,6 +127,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                   displayState={displayState}
                   switchDisplayState={this.switchToDisplayState}
                   close={this.close}
+                  breakingChanges={[leftTabHasBreakingChange, rightTabHasBreakingChange]}
                 />
                 {
                   displayState === 'DEFINE_RELATION' ?
@@ -192,9 +178,9 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 canSubmit={leftSelectedModel && rightSelectedModel && relationName.length > 0}
                 isEditingExistingRelation={Boolean(relation)}
                 close={this.close}
-                leftModelName={leftModelNameForFooter}
-                rightModelName={rightModelNameForFooter}
-                relationName={relationNameForFooter}
+                leftModelName={relation && relation.leftModel.name}
+                rightModelName={relation && relation.rightModel.name}
+                relationName={relation && relation.name}
                 displayConfirmBreakingChangesPopup={displayBreakingIndicator}
               />
             </div>
@@ -214,7 +200,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
     this.setState({
       fieldOnLeftModelName: newFieldName,
     } as State)
-    if (this.props.viewer.relation) {
+    if (relation) {
       this.setState({
         leftInputIsBreakingChange: relation ? newFieldName !== relation.fieldOnLeftModel.name : false,
       } as State)
@@ -224,10 +210,12 @@ class CreateRelationPopup extends React.Component<Props, State> {
   private didChangeFieldNameOnRightModel = (newFieldName: string) => {
     const {relation} = this.props.viewer
 
+    console.log('CreateRelationPopup - new field name: ', newFieldName)
+
     this.setState({
       fieldOnRightModelName: newFieldName,
     } as State)
-    if (this.props.viewer.relation) {
+    if (relation) {
       this.setState({
         rightInputIsBreakingChange: relation ? newFieldName !== relation.fieldOnRightModel.name : false,
       } as State)
@@ -289,6 +277,100 @@ class CreateRelationPopup extends React.Component<Props, State> {
           cardinalityIsBreakingChange: relation ? this.cardinalityFromRelation(relation) !== cardinality : false,
         } as State)
       })
+  }
+
+  private rightFieldName = () => {
+    const {relation} = this.props.viewer
+    const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
+
+    // edge case: self relations
+    if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
+      if (selectedCardinality === 'ONE_TO_ONE') {
+        return 'from' + rightSelectedModel.name
+      } else if (selectedCardinality === 'ONE_TO_MANY') {
+        return 'from' + rightSelectedModel.name
+      } else if (selectedCardinality === 'MANY_TO_ONE') {
+        return 'from' + rightSelectedModel.namePlural
+      } else if (selectedCardinality === 'MANY_TO_MANY') {
+        return 'from' + rightSelectedModel.namePlural
+      }
+    }
+
+    // make sure we don't overwrite the existing name for the original cardinality
+    if (relation) {
+      const originalCardinality = this.cardinalityFromRelation(relation)
+      if (originalCardinality === selectedCardinality) {
+        return relation.fieldOnRightModel.name
+      }
+    }
+
+    if (!leftSelectedModel) {
+      return null
+    }
+
+    if (selectedCardinality.startsWith('MANY')) {
+      return lowercaseFirstLetter(leftSelectedModel.namePlural)
+    }
+    return lowercaseFirstLetter(leftSelectedModel.name)
+  }
+
+  private leftFieldName = () => {
+    const {relation} = this.props.viewer
+    const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
+
+    // edge case: self relations
+    if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
+      if (selectedCardinality === 'ONE_TO_ONE') {
+        return 'to' + rightSelectedModel.name
+      } else if (selectedCardinality === 'ONE_TO_MANY') {
+        return 'to' + rightSelectedModel.namePlural
+      } else if (selectedCardinality === 'MANY_TO_ONE') {
+        return 'to' + rightSelectedModel.name
+      } else if (selectedCardinality === 'MANY_TO_MANY') {
+        return 'to' + rightSelectedModel.namePlural
+      }
+    }
+
+    // make sure we don't overwrite the existing name for the original cardinality
+    if (relation) {
+      const originalCardinality = this.cardinalityFromRelation(relation)
+      if (originalCardinality === selectedCardinality) {
+        return relation.fieldOnLeftModel.name
+      }
+    }
+
+    if (!rightSelectedModel) {
+      return null
+    }
+    if (selectedCardinality.endsWith('MANY')) {
+      return lowercaseFirstLetter(rightSelectedModel.namePlural)
+    }
+    return lowercaseFirstLetter(rightSelectedModel.name)
+  }
+
+  private rightFieldType = () => {
+    const {leftSelectedModel, selectedCardinality} = this.state
+
+    if (!leftSelectedModel) {
+      return null
+    }
+
+    if (selectedCardinality.startsWith('MANY')) {
+      return '[' + leftSelectedModel.name + ']'
+    }
+    return leftSelectedModel.name
+  }
+
+  private leftFieldType = () => {
+    const {rightSelectedModel, selectedCardinality} = this.state
+
+    if (!rightSelectedModel) {
+      return null
+    }
+    if (selectedCardinality.endsWith('MANY')) {
+      return '[' + rightSelectedModel.name + ']'
+    }
+    return rightSelectedModel.name
   }
 
   private onChangeRelationNameInput = (relationName: string) => {
@@ -375,91 +457,17 @@ class CreateRelationPopup extends React.Component<Props, State> {
     )
   }
 
-  private rightFieldName = () => {
-    const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
-
-    if (!leftSelectedModel) {
-      return null
-    }
-
-    // edge case: self relations
-    if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
-      if (selectedCardinality === 'ONE_TO_ONE') {
-        return 'from' + rightSelectedModel.name
-      } else if (selectedCardinality === 'ONE_TO_MANY') {
-        return 'from' + rightSelectedModel.name
-      } else if (selectedCardinality === 'MANY_TO_ONE') {
-        return 'from' + rightSelectedModel.namePlural
-      } else if (selectedCardinality === 'MANY_TO_MANY') {
-        return 'from' + rightSelectedModel.namePlural
-      }
-    }
-
-    //
-    if (selectedCardinality.startsWith('MANY')) {
-      return lowercaseFirstLetter(leftSelectedModel.namePlural)
-    }
-    return lowercaseFirstLetter(leftSelectedModel.name)
-  }
-
-  private rightFieldType = () => {
-    const {leftSelectedModel, selectedCardinality} = this.state
-
-    if (!leftSelectedModel) {
-      return null
-    }
-
-    if (selectedCardinality.startsWith('MANY')) {
-      return '[' + leftSelectedModel.name + ']'
-    }
-    return leftSelectedModel.name
-  }
-
-  private leftFieldName = () => {
-    const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
-
-    // edge case: self relations
-    if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
-      if (selectedCardinality === 'ONE_TO_ONE') {
-        return 'to' + rightSelectedModel.name
-      } else if (selectedCardinality === 'ONE_TO_MANY') {
-        return 'to' + rightSelectedModel.namePlural
-      } else if (selectedCardinality === 'MANY_TO_ONE') {
-        return 'to' + rightSelectedModel.name
-      } else if (selectedCardinality === 'MANY_TO_MANY') {
-        return 'to' + rightSelectedModel.namePlural
-      }
-    }
-
-    if (!rightSelectedModel) {
-      return null
-    }
-    if (selectedCardinality.endsWith('MANY')) {
-      return lowercaseFirstLetter(rightSelectedModel.namePlural)
-    }
-    return lowercaseFirstLetter(rightSelectedModel.name)
-  }
-
-  private leftFieldType = () => {
-    const {rightSelectedModel, selectedCardinality} = this.state
-
-    if (!rightSelectedModel) {
-      return null
-    }
-    if (selectedCardinality.endsWith('MANY')) {
-      return '[' + rightSelectedModel.name + ']'
-    }
-    return rightSelectedModel.name
-  }
-
   private cardinalityFromRelation (relation: Relation): Cardinality {
+    // sanity check
+    if (!relation) {
+      console.error('ERROR: NO RELATION')
+      return null
+    }
+
     const leftCardinalityValue = relation.fieldOnRightModel.isList ? 'MANY' : 'ONE'
     const rightCardinalityValue = relation.fieldOnLeftModel.isList ? 'MANY' : 'ONE'
     return (leftCardinalityValue + '_TO_' + rightCardinalityValue) as Cardinality
   }
-
-  // leftSideMessagesForBreakingChange: string[]
-  // rightSideMessagesForBreakingChange: string[]
 
   private breakingChangeMessages = (): string[] => {
     // sanity check since this will only ever be needed when there is already an existing relation

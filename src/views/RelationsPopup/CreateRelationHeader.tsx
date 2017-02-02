@@ -1,18 +1,29 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {RelationPopupDisplayState} from '../../types/types'
+import BreakingChangeIndicator from './BreakingChangeIndicator'
 
 interface Props {
   displayState: RelationPopupDisplayState
   switchDisplayState: Function
   close: Function
+  breakingChanges: boolean[] // contains two values (one per tab), true if tab has breaking changes
 }
 
 export default class CreateRelationHeader extends React.Component<Props, {}> {
 
+  private breakingChangeIndicatorOffsets = [27, 49]
+
   render() {
 
     const {displayState} = this.props
+    let offsets: number[] = []
+    this.props.breakingChanges.forEach((breakingChange, i) => {
+      if (breakingChange) {
+        offsets.push(this.breakingChangeIndicatorOffsets[i])
+      }
+    })
+    let plain: boolean[] = offsets.map(_ => true)
 
     return (
       <div className={`flex itemsEnd justifyBetween
@@ -39,7 +50,14 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
           }
 
         `}</style>
-        <div className='flex itemsCenter bb bBlack10 w100'>
+        <BreakingChangeIndicator
+          className='flex itemsCenter bb bBlack10 w100'
+          style='TOP'
+          width={16}
+          height={20}
+          offsets={offsets}
+          plain={plain}
+          >
           <div className='pr6  mr6'>
             <div className='newRelationBanner'>New Relation</div>
           </div>
@@ -55,7 +73,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
           >
             Set Mutations
           </div>
-        </div>
+        </BreakingChangeIndicator>
         <div
           className='pointer'
           onClick={() => this.props.close()}

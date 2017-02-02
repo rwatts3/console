@@ -143,7 +143,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
               Set Mutations
             </div>
             <Icon
-              className='mr6'
+              className='ml6'
               src={require('../../assets/icons/blue_arrow_left.svg')}
               width={17}
               height={12}

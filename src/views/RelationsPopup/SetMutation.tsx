@@ -69,6 +69,9 @@ export default class SetMutation extends React.Component<Props, State> {
                   placeholder='Set a name for the relation...'
                   value={relationName}
                   onKeyDown={this.handleKeyDownOnRelationName}
+                  onBlur={() => this.setState({
+                      isEnteringRelationName: false,
+                    } as State)}
                   onChange={(e: any) => {
                     this.props.onChangeRelationNameInput(e.target.value)
                     this.setState(
@@ -84,11 +87,11 @@ export default class SetMutation extends React.Component<Props, State> {
                   }
                 />
                 {relationName.length > 0 && !validateRelationName(relationName) &&
-                  <div
-                    className='pl25 red f12'
-                  >
-                    Relation name has to be capitalized and must only contain alphanumeric characters.
-                  </div>}
+                <div
+                  className='pl25 red f12'
+                >
+                  Relation name has to be capitalized and must only contain alphanumeric characters.
+                </div>}
               </div>
               <div className='flex itemsCenter'>
                 <Icon
@@ -148,6 +151,9 @@ export default class SetMutation extends React.Component<Props, State> {
                 placeholder='Write a short description for the relation...'
                 value={relationDescription}
                 onKeyDown={this.handleKeyDownOnRelationDescription}
+                onBlur={() => this.setState({
+                    isEnteringRelationDescription: false,
+                  } as State)}
                 onChange={(e: any) =>
                   this.props.onChangeRelationDescriptionInput(e.target.value)
                 }

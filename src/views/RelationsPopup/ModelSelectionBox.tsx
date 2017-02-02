@@ -26,27 +26,24 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
 
     const modelNames = this.props.models.map(model => model.name)
 
-    let tops: number[] = []
+    let offsets: number[] = []
     let plain: boolean[] = []
     if (this.props.inputIsBreakingChange) {
-      tops.push(80)
+      offsets.push(80)
       plain.push(true)
     }
     if (this.props.modelIsBreakingChange) {
-      tops.push(16)
+      offsets.push(16)
       plain.push(true)
     }
-
-    // const messageElementsForBreakingChange: JSX.Element[] = this.props.messagesForBreakingChange.map(message =>
-    //   <span>{message}</span>
-    // )
 
     return (
       <BreakingChangeIndicator
         className='buttonShadow'
+        style='RIGHT'
         width={16}
         height={12}
-        tops={tops}
+        offsets={offsets}
         plain={plain}
       >
         <style jsx={true}>{`

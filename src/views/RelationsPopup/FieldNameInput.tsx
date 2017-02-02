@@ -23,10 +23,9 @@ export default class FieldNameInput extends React.Component<Props, State> {
     this.state = {
       isHovered: false,
       isEnteringFieldName: false,
-      originalFieldName: props.relatedFieldName
+      originalFieldName: props.relatedFieldName,
     }
   }
-
 
   render() {
 
@@ -76,11 +75,15 @@ export default class FieldNameInput extends React.Component<Props, State> {
               <input
                 type='text'
                 autoFocus={true}
+                onBlur={() => this.doneEditingInputField(false)}
                 className={`f20 bgTransparent wS96
                 ${Boolean(invalidInputMessage) ? ' red' : ' purpleColor'}`}
                 onKeyDown={this.handleKeyDown}
                 value={this.props.relatedFieldName}
-                onChange={(e: any) => this.props.didChangeFieldName(e.target.value)}
+                onChange={(e: any) => {
+                  console.log('FieldNameInput - new field name: ', e.target.value)
+                  this.props.didChangeFieldName(e.target.value)
+                }}
               />
               {Boolean(invalidInputMessage) &&
               <div
@@ -113,24 +116,23 @@ export default class FieldNameInput extends React.Component<Props, State> {
   }
 
   private handleKeyDown = (e) => {
-    const {relatedFieldName} = this.props
-    const {originalFieldName} = this.state
-    const actualRelatedFieldName = relatedFieldName.length === 0 ? originalFieldName : relatedFieldName
-    this.props.didChangeFieldName(actualRelatedFieldName)
-
-    if (e.keyCode === 13) {
-      this.setState({
-        isEnteringFieldName: false,
-      } as State)
-    } else if (e.keyCode === 27) {
-      this.setState({
-        isEnteringFieldName: false,
-      } as State)
+    if (e.keyCode === 13 || e.keyCode === 27) {
+      this.doneEditingInputField(e.keyCode === 27)
     }
   }
 
+  private doneEditingInputField = (reset: boolean) => {
+    const {relatedFieldName} = this.props
+    const {originalFieldName} = this.state
+    const actualRelatedFieldName = relatedFieldName.length === 0 || reset ? originalFieldName : relatedFieldName
+    this.props.didChangeFieldName(actualRelatedFieldName)
+    this.setState({
+      isEnteringFieldName: false,
+    } as State)
+  }
+
   private generateInvalidInputMessage = (input: string): string | null => {
-    if (input.length === 0) {
+    if (!input || input.length === 0) {
       return null
     }
 
@@ -141,7 +143,6 @@ export default class FieldNameInput extends React.Component<Props, State> {
     if (this.props.forbiddenFieldNames.includes(input)) {
       return 'Field with name \'' + input + '\' already exists in this project.'
     }
-
     return null
   }
 }

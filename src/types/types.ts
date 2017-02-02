@@ -269,3 +269,5 @@ export interface TetherStep {
 
 export type RelationPopupDisplayState = 'DEFINE_RELATION' | 'SET_MUTATIONS'
 export type Cardinality = 'ONE_TO_ONE' | 'ONE_TO_MANY' | 'MANY_TO_ONE' | 'MANY_TO_MANY'
+
+export type BreakingChangeIndicatorStyle = 'TOP' | 'RIGHT'
