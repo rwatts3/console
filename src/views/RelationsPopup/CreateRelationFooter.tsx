@@ -4,7 +4,7 @@ import {Icon} from 'graphcool-styles'
 import ConfirmPopup from './ConfirmPopup'
 
 interface State {
-  displayConfirmDeletionPopup: boolean,
+  displayConfirmDeletionPopup: boolean
 }
 
 interface Props {
@@ -78,7 +78,8 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
       >
         {this.props.isEditingExistingRelation ? 'Delete' : 'Cancel'}
       </div>
-    )}
+    )
+  }
 
   private generateRightSideForFooterForCreatingNewRelation = (): JSX.Element => {
     return (
@@ -90,7 +91,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
           `}</style>
         <div
           className='toggleDisplayStateButton'
-          onClick={() => this.props.switchDisplayState('SET_MUTATION')}
+          onClick={() => this.props.switchDisplayState('SET_MUTATIONS')}
         >
           Set Mutations
         </div>
@@ -116,7 +117,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
               @inherit: .white, .bgGreen, .pv10, .ph16, .f16, .pointer, .br2;
             }          `
         }</style>
-        {this.props.displayState === 'SET_MUTATION' as RelationPopupDisplayState ?
+        {this.props.displayState === 'SET_MUTATIONS' as RelationPopupDisplayState ?
 
           <div className={`flex itemsCenter ${this.props.displayConfirmBreakingChangesPopup && 'mr96'}`}>
             <Icon
@@ -138,7 +139,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
           <div className={`flex itemsCenter ${this.props.displayConfirmBreakingChangesPopup && 'mr96'}`}>
             <div
               className='toggleDisplayStateButton'
-              onClick={() => this.props.switchDisplayState('SET_MUTATION')}
+              onClick={() => this.props.switchDisplayState('SET_MUTATIONS')}
             >
               Set Mutations
             </div>

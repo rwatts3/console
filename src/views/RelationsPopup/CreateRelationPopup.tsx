@@ -73,7 +73,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const models = this.props.viewer.project.models.edges.map(edge => edge.node)
 
     let forbiddenFieldNames = removeDuplicatesFromStringArray(
-      this.props.viewer.project.fields.edges.map(edge => edge.node.name)
+      this.props.viewer.project.fields.edges.map(edge => edge.node.name),
     )
     if (relation) {
       forbiddenFieldNames = forbiddenFieldNames.filter(fieldName =>
@@ -83,8 +83,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {displayState, leftSelectedModel, rightSelectedModel,
       selectedCardinality, relationName, relationDescription,
       fieldOnRightModelName, fieldOnLeftModelName, leftModelIsBreakingChange, rightModelIsBreakingChange,
-      leftInputIsBreakingChange, rightInputIsBreakingChange, relationNameIsBreakingChange
+      leftInputIsBreakingChange, rightInputIsBreakingChange, relationNameIsBreakingChange,
     } = this.state
+
+    console.log('CreateRelationPopup - render - displayState: ', displayState)
 
     const displayBreakingIndicator = (Boolean(this.props.viewer.relation)) &&
       (leftInputIsBreakingChange || rightInputIsBreakingChange ||
@@ -223,7 +225,9 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
+    console.log('CreateRelationPopup - switchToDisplayState', displayState)
     if (displayState !== this.state.displayState) {
+      console.log('CreateRelationPopup - actually switch to state', displayState)
       this.setState({displayState: displayState} as State)
     }
   }

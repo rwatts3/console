@@ -25,6 +25,13 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
     })
     let plain: boolean[] = offsets.map(_ => true)
 
+    console.log('CreateRelationHeader - render - displayState: ', displayState)
+
+    const leftTabColor = displayState === 'DEFINE_RELATION' ? 'green' : 'black30'
+    const rightTabColor = displayState === 'SET_MUTATIONS' ? 'green' : 'black30'
+
+    console.log(leftTabColor, rightTabColor)
+
     return (
       <div className={`flex itemsEnd justifyBetween
         ${displayState === 'DEFINE_RELATION' ? 'bgBlack02' : 'bgWhite'}`}>
@@ -62,13 +69,13 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
             <div className='newRelationBanner'>New Relation</div>
           </div>
           <div
-            className={`titleTab ${displayState === 'DEFINE_RELATION' ? 'green' : 'black30'}`}
+            className={`titleTab ${leftTabColor}`}
             onClick={() => this.props.switchDisplayState('DEFINE_RELATION' as RelationPopupDisplayState)}
           >
             Define Relations
           </div>
           <div
-            className={`titleTab ${displayState === 'SET_MUTATIONS' ? 'green' : 'black30'}`}
+            className={`titleTab ${rightTabColor}`}
             onClick={() => this.props.switchDisplayState('SET_MUTATIONS' as RelationPopupDisplayState)}
           >
             Set Mutations
