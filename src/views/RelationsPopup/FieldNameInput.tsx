@@ -31,11 +31,13 @@ export default class FieldNameInput extends React.Component<Props, State> {
   render() {
 
     const invalidInputMessage: string | null = this.generateInvalidInputMessage(this.props.relatedFieldName)
+    const shouldBreak = this.props.relatedFieldName ? this.props.relatedFieldName.length > 12 : false
 
     let relatedFieldElement: JSX.Element
     if (this.props.relatedFieldName !== null && this.props.relatedFieldType) {
       relatedFieldElement = (
-        <div className={`flex itemsCenter ph16 pv8
+        <div className={`ph16 pv8 flex ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
+
           ${this.state.isHovered && ' bgBlack02'}
           ${this.state.isEnteringFieldName && ' justifyBetween'}`
         }
@@ -43,7 +45,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
           <style jsx={true}>{`
 
             .fieldType {
-              @inherit: .f14, .ml6, .pv4, .ph6, .black50, .bgBlack04, .br2;
+              @inherit: .f14, .pv4, .ph6, .black50, .bgBlack04, .br2;
               font-family: 'Source Code Pro';
             }
 
@@ -99,7 +101,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
               />
             </div>
           )}
-          <div className='fieldType'>{this.props.relatedFieldType}</div>
+          <div className={`fieldType ${!shouldBreak ? 'ml6' : ''}`}>{this.props.relatedFieldType}</div>
         </div>
       )
     } else {

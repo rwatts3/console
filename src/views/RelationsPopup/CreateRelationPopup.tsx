@@ -116,7 +116,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
     )]
 
     return (
-      <PopupWrapper onClickOutside={this.close}>
+      <PopupWrapper
+        onClickOutside={this.close}>
         <style global jsx={true}>{`
           .relationPopupContent {
             @inherit: .buttonShadow;
@@ -128,7 +129,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           }
 
         `}</style>
-        <div className='flex itemsCenter justifyCenter w100 h100 background255'>
+        <div className='flex itemsCenter justifyCenter w100 h100 bgWhite90'>
           <BreakingChangeIndicator
             className='relationPopupContent'
             indicatorStyle='RIGHT'
@@ -138,7 +139,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
             plain={displayBreakingIndicatorOnCurrentView ? [false] : []}
             messages={infoMessageElement}
           >
-            <div className='flex flexColumn justifyBetween h100'>
+            <div className='flex flexColumn justifyBetween h100 bgWhite'>
               <div>
                 <CreateRelationHeader
                   displayState={displayState}
