@@ -119,10 +119,6 @@ class ProjectRootView extends React.Component<Props, {}> {
       this.updateForceFetching()
 
       tracker.track(ConsoleEvents.Onboarding.gettingStarted({step: gettingStarted, skipped: gettingStartedSkipped}))
-      // TODO migrate to tracker
-      // analytics.identify(this.props.user.id, {
-      //   'Getting Started Status': gettingStarted,
-      // })
     } else if (this.props.pollGettingStartedOnboarding !== prevProps.pollGettingStartedOnboarding) {
       this.updateForceFetching()
     }
