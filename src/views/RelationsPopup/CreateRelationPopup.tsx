@@ -571,7 +571,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) =>
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          this.props.showNotification({message: transaction.getError().message, level: 'error'}),
       },
     )
   }
@@ -596,7 +596,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) =>
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          this.props.showNotification({message: transaction.getError().message, level: 'error'}),
       },
     )
   }
@@ -614,7 +614,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) =>
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          this.props.showNotification({message: transaction.getError().message, level: 'error'}),
       },
     )
   }

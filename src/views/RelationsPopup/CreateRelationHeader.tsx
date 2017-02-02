@@ -25,8 +25,6 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
     })
     let plain: boolean[] = offsets.map(_ => true)
 
-    console.log('CreateRelationHeader - render - displayState: ', displayState)
-
     const leftTabColor = displayState === 'DEFINE_RELATION' ? 'green' : 'black30'
     const rightTabColor = displayState === 'SET_MUTATIONS' ? 'green' : 'black30'
 

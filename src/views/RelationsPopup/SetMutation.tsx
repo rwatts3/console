@@ -71,11 +71,11 @@ export default class SetMutation extends React.Component<Props, State> {
               >
                 {this.generateGelationNameInputComponent()}
                 {/*relationName.length > 0 && !validateRelationName(relationName) &&
-                <div
-                  className='pl25 red f12'
-                >
-                  Relation name has to be capitalized and must only contain alphanumeric characters.
-                </div>*/}
+                 <div
+                 className='pl25 red f12'
+                 >
+                 Relation name has to be capitalized and must only contain alphanumeric characters.
+                 </div>*/}
               </div>
             </div>
           )
@@ -179,13 +179,15 @@ export default class SetMutation extends React.Component<Props, State> {
   private handleKeyDownOnRelationName = (e) => {
     if (e.keyCode === ENTER_KEY) {
       const newRelationName = validateRelationName(this.props.relationName) ?
-        this.props.relationName :this.state.savedRelationName
-      this.setState({
-        isEnteringRelationName: false,
-        savedRelationName: newRelationName,
-      } as State, () => {
-        this.props.onChangeRelationNameInput(newRelationName)
-      })
+        this.props.relationName : this.state.savedRelationName
+      this.setState(
+        {
+          isEnteringRelationName: false,
+          savedRelationName: newRelationName,
+        } as State,
+        () => {
+          this.props.onChangeRelationNameInput(newRelationName)
+        })
     } else if (e.keyCode === ESCAPE_KEY) {
       this.setState({
         isEnteringRelationName: false,
@@ -250,7 +252,7 @@ export default class SetMutation extends React.Component<Props, State> {
             />
           </Tooltip>
         </div>
-    ) : (
+      ) : (
         <input
           className={`f38 fw3 w100 ph25
                     ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}

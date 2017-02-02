@@ -17,7 +17,6 @@ export default class HorizontalSelect extends React.Component<Props, {}> {
     const {activeBackgroundColor, selectedIndex, onChange, choices} = this.props
     const inactiveTextColor = this.props.inactiveTextColor || $v.gray30
     const inactiveBackgroundColor = this.props.inactiveBackgroundColor || $v.gray04
-    console.log(choices)
 
     return (
       <div className='container'>

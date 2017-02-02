@@ -154,7 +154,6 @@ class Tokens extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          console.log('SUCCESS')
           this.setState({
             newTokenName: '',
             isEnteringTokenName: false} as State)

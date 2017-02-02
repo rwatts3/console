@@ -200,7 +200,6 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   private saveSettings = (): void => {
-    console.log('SAVE')
     Relay.Store.commitUpdate(
       new UpdateProjectMutation(
         {

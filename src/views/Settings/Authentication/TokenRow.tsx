@@ -123,7 +123,6 @@ export default class TokenRow extends React.Component<Props, State> {
   }
 
   private onCopy: () => any = () => {
-    console.log('copy')
     this.setState({copied: true} as State)
     this.copyTimer = window.setTimeout(
       () => this.setState({copied: false, isHovered: false} as State),
