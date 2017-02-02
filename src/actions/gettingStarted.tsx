@@ -49,6 +49,12 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
       {
         onSuccess: () => {
           dispatch(update(gettingStarted, gettingStartedSkipped, onboardingStatusId, gettingStartedExample))
+
+          // refresh intercom messages once onboarding done/skipped
+          if (window.Intercom && (gettingStarted === 'STEP6_CLOSED' || gettingStartedSkipped)) {
+            setTimeout(() => Intercom('update'), 2000)
+          }
+
           resolve()
         },
         onFailure: (err) => {
