@@ -16,6 +16,7 @@ interface Props {
   didChangeFieldName: (newFieldName: string) => void
   inputIsBreakingChange: boolean
   modelIsBreakingChange: boolean
+  forbiddenFieldNames: string[]
   // messagesForBreakingChange: string[]
 }
 
@@ -76,6 +77,7 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
           relatedFieldName={this.props.relatedFieldName}
           relatedFieldType={this.props.relatedFieldType}
           didChangeFieldName={this.props.didChangeFieldName}
+          forbiddenFieldNames={this.props.forbiddenFieldNames}
         />
       </BreakingChangeIndicator>
     )

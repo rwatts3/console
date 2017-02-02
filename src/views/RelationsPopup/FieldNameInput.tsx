@@ -5,25 +5,35 @@ import {validateFieldName} from '../../utils/nameValidator'
 interface State {
   isHovered: boolean
   isEnteringFieldName: boolean
+  originalFieldName: string
 }
 
 interface Props {
   relatedFieldName: string | null
   relatedFieldType: string | null
   didChangeFieldName: (newFieldName: string) => void
+  forbiddenFieldNames: string[]
 }
 
 export default class FieldNameInput extends React.Component<Props, State> {
 
-  state = {
-    isHovered: false,
-    isEnteringFieldName: false,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isHovered: false,
+      isEnteringFieldName: false,
+      originalFieldName: props.relatedFieldName
+    }
   }
+
 
   render() {
 
+    const invalidInputMessage: string | null = this.generateInvalidInputMessage(this.props.relatedFieldName)
+
     let relatedFieldElement: JSX.Element
-    if (this.props.relatedFieldName && this.props.relatedFieldType) {
+    if (this.props.relatedFieldName !== null && this.props.relatedFieldType) {
       relatedFieldElement = (
         <div className={`flex itemsCenter ph16 pv8
           ${this.state.isHovered && ' bgBlack02'}
@@ -67,16 +77,16 @@ export default class FieldNameInput extends React.Component<Props, State> {
                 type='text'
                 autoFocus={true}
                 className={`f20 bgTransparent wS96
-                ${this.inputValid(this.props.relatedFieldName) ? ' purpleColor' : ' red'}`}
+                ${Boolean(invalidInputMessage) ? ' red' : ' purpleColor'}`}
                 onKeyDown={this.handleKeyDown}
                 value={this.props.relatedFieldName}
                 onChange={(e: any) => this.props.didChangeFieldName(e.target.value)}
               />
-              {!this.inputValid(this.props.relatedFieldName) &&
+              {Boolean(invalidInputMessage) &&
               <div
                 className='red f12'
               >
-                Field names have to start with a lowercase letter and must only contain alphanumeric characters.
+                {invalidInputMessage}
               </div>}
             </div>
           )}
@@ -103,6 +113,11 @@ export default class FieldNameInput extends React.Component<Props, State> {
   }
 
   private handleKeyDown = (e) => {
+    const {relatedFieldName} = this.props
+    const {originalFieldName} = this.state
+    const actualRelatedFieldName = relatedFieldName.length === 0 ? originalFieldName : relatedFieldName
+    this.props.didChangeFieldName(actualRelatedFieldName)
+
     if (e.keyCode === 13) {
       this.setState({
         isEnteringFieldName: false,
@@ -114,7 +129,19 @@ export default class FieldNameInput extends React.Component<Props, State> {
     }
   }
 
-  private inputValid = (input: string) => {
-    return input.length > 0 && validateFieldName(input)
+  private generateInvalidInputMessage = (input: string): string | null => {
+    if (input.length === 0) {
+      return null
+    }
+
+    if (!validateFieldName(input)) {
+      return 'Field names have to start with a lowercase letter and must only contain alphanumeric characters.'
+    }
+
+    if (this.props.forbiddenFieldNames.includes(input)) {
+      return 'Field with name \'' + input + '\' already exists in this project.'
+    }
+
+    return null
   }
 }

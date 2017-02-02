@@ -3,6 +3,7 @@ import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 
 interface State {
   enteredRelationName: string
+  userConfirmedBreakingChanges: boolean
 }
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
   onCancel: Function
   onConfirmBreakingChanges?: Function
   onConfirmDeletion?: Function
+  onResetBreakingChanges?: Function
   leftModelName: string
   rightModelName: string
   className?: string
@@ -20,6 +22,7 @@ export default class ConfirmPopup extends React.Component<Props, State> {
 
   state = {
     enteredRelationName: '',
+    userConfirmedBreakingChanges: false,
   }
 
   render() {
@@ -137,18 +140,40 @@ export default class ConfirmPopup extends React.Component<Props, State> {
   private generateFooterForBreakingChanges = (): JSX.Element => {
     return (
       <div className='flex justifyBetween bgBlack04'>
+        <style jsx={true}>{`
+
+          .confirmButtonOrange {
+            @p: .white, .ma16, .ph25, .pv10, .f16, .br2, .pointer;
+            background-color: rgba(241,143,1,1);
+          }
+
+          .confirmButtonGreen {
+            @p: .bgGreen, .white, .ma16, .ph25, .pv10, .f16, .br2, .pointer;
+          }
+
+          .animateChange {
+            transition: .35s linear all;
+          }
+
+        `}</style>
         <div
           className='pa25 f16 pointer black50'
-          onClick={() => this.props.onCancel()}
+          onClick={() => this.props.onResetBreakingChanges()}
         >
-          Cancel
+          Reset
         </div>
-        <div
+        {!this.state.userConfirmedBreakingChanges ? (<div
           className='confirmButtonOrange'
-          onClick={() => this.props.onConfirmBreakingChanges()}
+          onClick={() => this.setState({userConfirmedBreakingChanges: true} as State)}
         >
           Got it
-        </div>
+        </div>)
+        : (<div
+            className='confirmButtonGreen animateChange'
+            onClick={() => this.props.onConfirmBreakingChanges()}
+          >
+            Save Changes
+          </div>)}
       </div>
     )
   }

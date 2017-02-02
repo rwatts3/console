@@ -24,6 +24,7 @@ interface Props {
   rightInputIsBreakingChange: boolean
   leftModelIsBreakingChange: boolean
   rightModelIsBreakingChange: boolean
+  forbiddenFieldNames: string[]
   // leftSideMessagesForBreakingChange: string[]
   // rightSideMessagesForBreakingChange: string[]
 }
@@ -56,6 +57,7 @@ export default class ModelSelection extends React.Component<Props, {}> {
             didChangeFieldName={this.props.didChangeFieldNameOnLeftModel}
             inputIsBreakingChange={this.props.leftInputIsBreakingChange}
             modelIsBreakingChange={this.props.leftModelIsBreakingChange}
+            forbiddenFieldNames={this.props.forbiddenFieldNames}
           />
           <div className='greenLine' />
         </div>
@@ -75,6 +77,7 @@ export default class ModelSelection extends React.Component<Props, {}> {
             didChangeFieldName={this.props.didChangeFieldNameOnRightModel}
             inputIsBreakingChange={this.props.rightInputIsBreakingChange}
             modelIsBreakingChange={this.props.rightModelIsBreakingChange}
+            forbiddenFieldNames={this.props.forbiddenFieldNames}
           />
         </div>
       </div>

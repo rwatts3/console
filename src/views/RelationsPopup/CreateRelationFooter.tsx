@@ -4,7 +4,6 @@ import {Icon} from 'graphcool-styles'
 import ConfirmPopup from './ConfirmPopup'
 
 interface State {
-  displayConfirmBreakingChangesPopup: boolean
   displayConfirmDeletionPopup: boolean,
 }
 
@@ -14,25 +13,20 @@ interface Props {
   onClickCreateRelation: Function
   onClickEditRelation: Function
   onClickDeleteRelation: Function
+  resetToInitialState: Function
   canSubmit: boolean
   close: Function
   isEditingExistingRelation: boolean
   leftModelName?: string
   rightModelName?: string
   relationName?: string
-  displayConfirmDeletionPopup: boolean,
+  displayConfirmBreakingChangesPopup: boolean
 }
 
 export default class CreateRelationFooter extends React.Component<Props, State> {
 
   state = {
-    displayConfirmBreakingChangesPopup: false,
     displayConfirmDeletionPopup: false,
-  }
-
-  constructor(props) {
-    super(props)
-    console.log(props.isEditingExistingRelation)
   }
 
   render() {
@@ -43,84 +37,20 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
             @inherit: .flex, .relative, .ph25, .pv16, .justifyBetween, .itemsCenter, .bt, .bBlack10, .bgBlack02;
             height: 77px;
           }
-
-          .toggleDisplayStateButton {
-            @inherit: .blue, .f14, .fw6, .ttu, .pointer;
-          }
-
-          .saveButton {
-            @inherit: .white, .bgGreen, .pv10, .ph16, .f16, .pointer, .br2;
-          }
-
         `}</style>
-        <div
-          className={`f16 pointer ${this.props.isEditingExistingRelation ? 'red' : 'black50'}`}
-          onClick={!this.props.isEditingExistingRelation ?
-            (() => this.props.close())
-            :
-            (() => {
-               console.log('on click delete')
-              this.setState({displayConfirmDeletionPopup: true} as State)
-            })
-          }
-        >
-          {this.props.isEditingExistingRelation ? 'Delete' : 'Cancel'}
-        </div>
-        {this.props.displayState === 'DEFINE_RELATION' ?
-          (
-            <div className='flex itemsCenter'>
-              <div
-                className='toggleDisplayStateButton'
-                onClick={() => this.props.switchDisplayState('SET_MUTATION')}
-              >
-                Set Mutations
-              </div>
-              <Icon
-                className='ml6'
-                src={require('../../assets/icons/blue_arrow_left.svg')}
-                width={17}
-                height={12}
-                rotate={180}
-              />
-            </div>
-          )
+        {this.generateLeftSideForFooter()}
+        {this.props.displayState === 'DEFINE_RELATION' && !this.props.isEditingExistingRelation ?
+          this.generateRightSideForFooterForCreatingNewRelation()
           :
-          (
-            <div className='flex itemsCenter'>
-              <Icon
-                className='mr6'
-                src={require('../../assets/icons/blue_arrow_left.svg')}
-                width={17}
-                height={12}
-              />
-              <div
-                className='toggleDisplayStateButton'
-                onClick={() => this.props.switchDisplayState('DEFINE_RELATION')}
-              >
-                Define Relations
-              </div>
-              <div
-                className={`saveButton ml25 ${!this.props.canSubmit && 'o50'}`}
-                onClick={
-                  this.props.canSubmit &&
-                  (this.props.isEditingExistingRelation ?
-                    () => this.props.onClickEditRelation()
-                    :
-                    () => this.props.onClickCreateRelation()
-                  )
-                }
-              >
-                {this.props.isEditingExistingRelation ? 'Save Changes' : 'Create Relation'}
-              </div>
-            </div>
-          )
+          this.generateRightSideForFooterForEditingExistingRelation()
         }
-        {this.state.displayConfirmBreakingChangesPopup && <ConfirmPopup
+        {this.props.displayConfirmBreakingChangesPopup && <ConfirmPopup
           red={false}
-          onCancel={() => this.setState({displayConfirmBreakingChangesPopup: false} as State)}
+          onCancel={() => console.log('displayConfirmBreakingChangesPopup')}
           leftModelName={this.props.leftModelName}
           rightModelName={this.props.rightModelName}
           onConfirmBreakingChanges={this.props.onClickEditRelation}
+          onResetBreakingChanges={this.props.resetToInitialState}
         />}
         {this.state.displayConfirmDeletionPopup && <ConfirmPopup
           red={true}
@@ -130,6 +60,111 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
           relationName={this.props.relationName}
           onConfirmDeletion={this.props.onClickDeleteRelation}
         />}
+      </div>
+    )
+  }
+
+  private generateLeftSideForFooter = (): JSX.Element => {
+    return (
+      <div
+        className={`f16 pointer ${this.props.isEditingExistingRelation ? 'red' : 'black50'}`}
+        onClick={!this.props.isEditingExistingRelation ?
+            (() => this.props.close())
+            :
+            (() => {
+              this.setState({displayConfirmDeletionPopup: true} as State)
+            })
+          }
+      >
+        {this.props.isEditingExistingRelation ? 'Delete' : 'Cancel'}
+      </div>
+    )}
+
+  private generateRightSideForFooterForCreatingNewRelation = (): JSX.Element => {
+    return (
+      <div className='flex itemsCenter'>
+        <style jsx={true}>{`
+            .toggleDisplayStateButton {
+              @inherit: .blue, .f14, .fw6, .ttu, .pointer;
+            }
+          `}</style>
+        <div
+          className='toggleDisplayStateButton'
+          onClick={() => this.props.switchDisplayState('SET_MUTATION')}
+        >
+          Set Mutations
+        </div>
+        <Icon
+          className='ml6'
+          src={require('../../assets/icons/blue_arrow_left.svg')}
+          width={17}
+          height={12}
+          rotate={180}
+        />
+      </div>
+    )
+  }
+
+  private generateRightSideForFooterForEditingExistingRelation = (): JSX.Element => {
+    return (
+      <div className='flex itemsCenter'>
+        <style jsx={true}>{`
+            .toggleDisplayStateButton {
+              @inherit: .blue, .f14, .fw6, .ttu, .pointer;
+            }
+            .saveButton {
+              @inherit: .white, .bgGreen, .pv10, .ph16, .f16, .pointer, .br2;
+            }          `
+        }</style>
+        {this.props.displayState === 'SET_MUTATION' as RelationPopupDisplayState ?
+
+          <div className={`flex itemsCenter ${this.props.displayConfirmBreakingChangesPopup && 'mr96'}`}>
+            <Icon
+              className='mr6'
+              src={require('../../assets/icons/blue_arrow_left.svg')}
+              width={17}
+              height={12}
+            />
+            <div
+              className='toggleDisplayStateButton'
+              onClick={() => this.props.switchDisplayState('DEFINE_RELATION')}
+            >
+              Define Relations
+            </div>
+          </div>
+
+          :
+
+          <div className={`flex itemsCenter ${this.props.displayConfirmBreakingChangesPopup && 'mr96'}`}>
+            <div
+              className='toggleDisplayStateButton'
+              onClick={() => this.props.switchDisplayState('SET_MUTATION')}
+            >
+              Set Mutations
+            </div>
+            <Icon
+              className='mr6'
+              src={require('../../assets/icons/blue_arrow_left.svg')}
+              width={17}
+              height={12}
+              rotate={180}
+            />
+          </div>
+
+        }
+        <div
+          className={`saveButton ml25 ${!this.props.canSubmit && 'o50'}`}
+          onClick={
+                  this.props.canSubmit &&
+                  (this.props.isEditingExistingRelation ?
+                    () => this.props.onClickEditRelation()
+                    :
+                    () => this.props.onClickCreateRelation()
+                  )
+                }
+        >
+          Save Changes
+        </div>
       </div>
     )
   }

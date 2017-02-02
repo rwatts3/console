@@ -93,3 +93,9 @@ export function lowercaseFirstLetter(str: string): string {
 export function uppercaseFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
+
+export function removeDuplicatesFromStringArray(arr: string[]): string[] {
+  let s = new Set(arr)
+  let it = s.values()
+  return Array.from(it)
+}

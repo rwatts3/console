@@ -10,7 +10,7 @@ import DefineRelation from './DefineRelation'
 import SetMutation from './SetMutation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
-import {lowercaseFirstLetter} from '../../utils/utils'
+import {lowercaseFirstLetter, removeDuplicatesFromStringArray} from '../../utils/utils'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 import DeleteRelationMutation from '../../mutations/DeleteRelationMutation'
 
@@ -28,6 +28,7 @@ interface State {
   relationNameIsBreakingChange: boolean
   leftModelIsBreakingChange: boolean
   rightModelIsBreakingChange: boolean
+  cardinalityIsBreakingChange: boolean
   // leftSideMessagesForBreakingChange: string[]
   // rightSideMessagesForBreakingChange: string[]
 }
@@ -62,6 +63,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
       relationNameIsBreakingChange: false,
       leftModelIsBreakingChange: false,
       rightModelIsBreakingChange: false,
+      cardinalityIsBreakingChange: false,
       // leftSideMessagesForBreakingChange: [],
       // rightSideMessagesForBreakingChange: [],
     }
@@ -71,6 +73,16 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     const {relation} = this.props.viewer
     const models = this.props.viewer.project.models.edges.map(edge => edge.node)
+    let forbiddenFieldNames = removeDuplicatesFromStringArray(
+      this.props.viewer.project.fields.edges.map(edge => edge.node.name)
+    )
+    console.log('relation.fieldOnLeftModel.name', relation.fieldOnLeftModel.name)
+    console.log('relation.fieldOnRightModel.name', relation.fieldOnRightModel.name)
+
+    forbiddenFieldNames = forbiddenFieldNames.filter(fieldName =>
+      fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+
+    console.log(forbiddenFieldNames)
     const {displayState, leftSelectedModel, rightSelectedModel,
       selectedCardinality, relationName, relationDescription,
       fieldOnRightModelName, fieldOnLeftModelName, leftModelIsBreakingChange, rightModelIsBreakingChange,
@@ -91,16 +103,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     let leftModelNameForFooter
     if (relation) {
-      console.log(relation)
-      leftModelNameForFooter = Boolean(leftSelectedModel) ? leftSelectedModel.name : relation.leftModel.name
+      leftModelNameForFooter = relation.leftModel.name
     } else {
       leftModelNameForFooter = null
     }
 
     let rightModelNameForFooter
     if (relation) {
-      console.log(relation)
-      rightModelNameForFooter = Boolean(rightSelectedModel) ? rightSelectedModel.name : relation.rightModel.name
+      rightModelNameForFooter = relation.rightModel.name
     } else {
       rightModelNameForFooter = null
     }
@@ -155,6 +165,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       rightInputIsBreakingChange={rightInputIsBreakingChange}
                       leftModelIsBreakingChange={leftModelIsBreakingChange}
                       rightModelIsBreakingChange={rightModelIsBreakingChange}
+                      forbiddenFieldNames={forbiddenFieldNames}
                     />
                     :
                     <SetMutation
@@ -177,12 +188,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 onClickCreateRelation={this.addRelation}
                 onClickEditRelation={this.editRelation}
                 onClickDeleteRelation={this.deleteRelation}
+                resetToInitialState={this.resetToInitialState}
                 canSubmit={leftSelectedModel && rightSelectedModel && relationName.length > 0}
                 isEditingExistingRelation={Boolean(relation)}
                 close={this.close}
                 leftModelName={leftModelNameForFooter}
                 rightModelName={rightModelNameForFooter}
                 relationName={relationNameForFooter}
+                displayConfirmBreakingChangesPopup={displayBreakingIndicator}
               />
             </div>
           </BreakingChangeIndicator>
@@ -273,6 +286,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           leftInputIsBreakingChange: relation ? newLeftFieldName !== relation.fieldOnLeftModel.name : false,
           fieldOnRightModelName: newRightFieldName,
           rightInputIsBreakingChange: relation ? newRightFieldName !== relation.fieldOnRightModel.name : false,
+          cardinalityIsBreakingChange: relation ? this.cardinalityFromRelation(relation) !== cardinality : false,
         } as State)
       })
   }
@@ -357,8 +371,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction: Transaction) =>
           console.error('Could not edit mutation: ', transaction.getError().message),
-      }
-
+      },
     )
   }
 
@@ -456,6 +469,19 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     let messages: string[] = []
 
+    const relationNameIsBreakingChangeMessage = 'The relation was renamed to \'' + this.state.relationName +
+      '\' (was \'' + this.props.viewer.relation.name + '\' before).'
+    if (this.state.relationNameIsBreakingChange) {
+      messages.push(relationNameIsBreakingChangeMessage)
+    }
+
+    const cardinalityIsBreakingChangeMessage = 'The cardinality of the relation was changed to ' +
+      this.readableCardinalityString(this.state.selectedCardinality) + '\' (was \'' +
+      this.readableCardinalityString(this.cardinalityFromRelation(this.props.viewer.relation)) + '\' before).'
+    if (this.state.cardinalityIsBreakingChange) {
+      messages.push(cardinalityIsBreakingChangeMessage)
+    }
+
     // left field name
     const leftInputIsBreakingChangeMessage = 'The field on the left model (' + this.state.leftSelectedModel.name +
       ') was renamed to \'' + this.state.fieldOnLeftModelName + '\' (was \'' +
@@ -514,13 +540,37 @@ class CreateRelationPopup extends React.Component<Props, State> {
     //   } as State)
     // }
 
-    const relationNameIsBreakingChangeMessage = 'The relation was renamed to \'' + this.state.relationName +
-      '\' (was \'' + this.props.viewer.relation.name + '\' before).'
-    if (this.state.relationNameIsBreakingChange) {
-      messages.push(relationNameIsBreakingChangeMessage)
-    }
-
     return messages
+  }
+
+  private readableCardinalityString = (cardinality: Cardinality): string => {
+    switch (cardinality) {
+      case 'ONE_TO_ONE': return 'One-To-One'
+      case 'ONE_TO_MANY': return 'One-To-Many'
+      case 'MANY_TO_ONE': return 'Many-To-One'
+      case 'MANY_TO_MANY': return 'Many-To-Many'
+    }
+  }
+
+  private resetToInitialState = () => {
+    const {relation} = this.props.viewer
+    this.setState({
+      displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
+      leftSelectedModel: relation ? relation.leftModel : null,
+      rightSelectedModel: relation ? relation.rightModel : null,
+      selectedCardinality: relation ?
+        this.cardinalityFromRelation(relation) : 'ONE_TO_ONE' as Cardinality,
+      relationName: relation ? relation.name : '',
+      relationDescription: relation ? relation.description : '',
+      fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : null,
+      fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : null,
+      leftInputIsBreakingChange: false,
+      rightInputIsBreakingChange: false,
+      relationNameIsBreakingChange: false,
+      leftModelIsBreakingChange: false,
+      rightModelIsBreakingChange: false,
+      cardinalityIsBreakingChange: false,
+    })
   }
 
 }
@@ -573,6 +623,14 @@ export default Relay.createContainer(withRouter(CreateRelationPopup), {
                 id
                 name
                 namePlural
+              }
+            }
+          }
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+                name
               }
             }
           }
