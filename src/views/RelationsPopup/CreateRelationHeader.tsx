@@ -59,7 +59,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
         `}</style>
         <BreakingChangeIndicator
           className='flex itemsCenter bb bBlack10 w100'
-          style='TOP'
+          indicatorStyle='TOP'
           width={16}
           height={20}
           offsets={offsets}

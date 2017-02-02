@@ -3,12 +3,15 @@ import {Cardinality, Model} from '../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import MutationsInfoBox from './MutationsInfoBox'
 import {validateRelationName} from '../../utils/nameValidator'
+import {ENTER_KEY, ESCAPE_KEY} from '../../utils/constants'
 
 interface State {
   isEnteringRelationName: boolean
   isHoveringRelationName: boolean
   isEnteringRelationDescription: boolean
   isHoveringRelationDescription: boolean
+  savedRelationName: string
+  savedRelationDescription: string
 }
 
 interface Props {
@@ -22,15 +25,22 @@ interface Props {
   fieldOnLeftModelName: string | null
   fieldOnRightModelName: string | null
   relationNameIsBreakingChange: boolean
+  isEditingExistingRelation: boolean
 }
 
 export default class SetMutation extends React.Component<Props, State> {
 
-  state = {
-    isEnteringRelationName: true,
-    isHoveringRelationName: false,
-    isEnteringRelationDescription: false,
-    isHoveringRelationDescription: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      isEnteringRelationName: true,
+      isHoveringRelationName: false,
+      isEnteringRelationDescription: false,
+      isHoveringRelationDescription: false,
+      savedRelationName: props.relationName,
+      savedRelationDescription: props.relationDescription,
+    }
+
   }
 
   render() {
@@ -65,7 +75,7 @@ export default class SetMutation extends React.Component<Props, State> {
                 <input
                   className={`relationNameInputField
                     ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}
-                  autoFocus={true}
+                  autoFocus={!this.props.isEditingExistingRelation}
                   placeholder='Set a name for the relation...'
                   value={relationName}
                   onKeyDown={this.handleKeyDownOnRelationName}
@@ -92,32 +102,6 @@ export default class SetMutation extends React.Component<Props, State> {
                 >
                   Relation name has to be capitalized and must only contain alphanumeric characters.
                 </div>}
-              </div>
-              <div className='flex itemsCenter'>
-                <Icon
-                  className='mh10 pointer'
-                  src={require('../../assets/icons/cross_red.svg')}
-                  width={15}
-                  height={15}
-                  onClick={() => {
-                    this.props.onChangeRelationNameInput('')
-                    this.setState({
-                      isEnteringRelationName: false,
-                    } as State)
-                    }
-                  }
-                />
-                <Icon
-                  className='mh10 pointer'
-                  src={require('../../assets/icons/confirm.svg')}
-                  width={35}
-                  height={35}
-                  onClick={() =>
-                    this.setState({
-                      isEnteringRelationName: false,
-                    } as State)
-                  }
-                />
               </div>
             </div>
           )
@@ -219,26 +203,30 @@ export default class SetMutation extends React.Component<Props, State> {
   }
 
   private handleKeyDownOnRelationName = (e) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === ENTER_KEY) {
+      this.setState({
+        isEnteringRelationName: false,
+        savedRelationName: this.props.relationName,
+      } as State)
+    } else if (e.keyCode === ESCAPE_KEY) {
       this.setState({
         isEnteringRelationName: false,
       } as State)
-    } else if (e.keyCode === 27) {
-      this.setState({
-        isEnteringRelationName: false,
-      } as State)
+      this.props.onChangeRelationNameInput(this.state.savedRelationName)
     }
   }
 
   private handleKeyDownOnRelationDescription = (e) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === ENTER_KEY) {
+      this.setState({
+        isEnteringRelationDescription: false,
+        savedRelationDescription: this.props.relationDescription,
+      } as State)
+    } else if (e.keyCode === ESCAPE_KEY) {
       this.setState({
         isEnteringRelationDescription: false,
       } as State)
-    } else if (e.keyCode === 27) {
-      this.setState({
-        isEnteringRelationDescription: false,
-      } as State)
+      this.props.onChangeRelationDescriptionInput(this.state.savedRelationDescription)
     }
   }
 

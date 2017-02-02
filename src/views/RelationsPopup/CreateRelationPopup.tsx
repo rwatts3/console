@@ -96,6 +96,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const leftTabHasBreakingChange = leftInputIsBreakingChange || rightInputIsBreakingChange ||
       leftModelIsBreakingChange || rightModelIsBreakingChange
 
+    const displayBreakingIndicatorOnCurrentTab =
+      (displayState === 'DEFINE_RELATION' as RelationPopupDisplayState && leftTabHasBreakingChange) ||
+      (displayState === 'SET_MUTATIONS' as RelationPopupDisplayState && rightTabHasBreakingChange)
+
     const breakingChangeMessageElements: JSX.Element[] =
       displayBreakingIndicator && this.breakingChangeMessages().map((message, i) => <div key={i}>{message}</div>)
     const infoMessageElement: JSX.Element[] = [(
@@ -116,11 +120,11 @@ class CreateRelationPopup extends React.Component<Props, State> {
         <div className='flex itemsCenter justifyCenter w100 h100'>
           <BreakingChangeIndicator
             className='relationPopupContent'
-            style='RIGHT'
+            indicatorStyle='RIGHT'
             width={35}
             height={21}
-            offsets={displayBreakingIndicator ? [40] : []}
-            plain={displayBreakingIndicator ? [false] : []}
+            offsets={displayBreakingIndicatorOnCurrentTab ? [40] : []}
+            plain={displayBreakingIndicatorOnCurrentTab ? [false] : []}
             messages={infoMessageElement}
           >
             <div className='flex flexColumn justifyBetween h100'>
@@ -167,6 +171,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       fieldOnLeftModelName={fieldOnLeftModelName}
                       fieldOnRightModelName={fieldOnRightModelName}
                       relationNameIsBreakingChange={relationNameIsBreakingChange}
+                      isEditingExistingRelation={Boolean(relation)}
                     />
                 }
               </div>
@@ -567,7 +572,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
   private resetToInitialState = () => {
     const {relation} = this.props.viewer
     this.setState({
-      displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,
       selectedCardinality: relation ?
@@ -582,7 +586,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
       leftModelIsBreakingChange: false,
       rightModelIsBreakingChange: false,
       cardinalityIsBreakingChange: false,
-    })
+    } as State)
   }
 
 }

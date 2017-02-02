@@ -5,10 +5,10 @@ import {BreakingChangeIndicatorStyle} from '../../types/types'
 
 interface Props {
   className?: string
-  style: BreakingChangeIndicatorStyle
+  indicatorStyle: BreakingChangeIndicatorStyle
   width: number
   height: number
-  offsets: number[] // distances for the indicators from the top/right (depending on style) in %
+  offsets: number[] // distances for the indicators from the top/right (depending on indicatorStyle) in %
   plain: boolean[] // false if indicator should have the exclamation point
   messages?: JSX.Element[] // will be displayed in a tooltip on hovering the indicator
 }
@@ -19,7 +19,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
     const breaking = require('../../assets/icons/breaking.svg')
     const breakingPlain = require('../../assets/icons/breaking_plain.svg')
 
-    const {style, offsets, messages, plain, width, height} = this.props
+    const {indicatorStyle, offsets, messages, plain, width, height} = this.props
 
     return (
       <div
@@ -41,8 +41,8 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
         {offsets.map((offset, i) =>
           (<div
             key={i}
-            className={`${style === 'RIGHT' ? 'breakingChangeIndicatorRight' : 'breakingChangeIndicatorTop'}`}
-            style={style === 'RIGHT' ? {top: offset + '%'} : {left: offset + '%'}}
+            className={`${indicatorStyle === 'RIGHT' ? 'breakingChangeIndicatorRight' : 'breakingChangeIndicatorTop'}`}
+            style={indicatorStyle === 'RIGHT' ? {top: offset + '%'} : {left: offset + '%'}}
           >
             {messages && messages.length === offsets.length ?
               (<Tooltip
@@ -53,7 +53,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
                   src={plain[i] ? breakingPlain : breaking}
                   width={width}
                   height={height}
-                  rotate={style === 'TOP' && -90}
+                  rotate={indicatorStyle === 'TOP' && -90}
                 />
               </Tooltip>)
               :
@@ -62,7 +62,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
                   src={plain[i] ? breakingPlain : breaking}
                   width={width}
                   height={height}
-                  rotate={style === 'TOP' && -90}
+                  rotate={indicatorStyle === 'TOP' && -90}
                 />
               )
             }

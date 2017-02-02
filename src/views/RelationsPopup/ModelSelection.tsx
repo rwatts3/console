@@ -45,10 +45,14 @@ export default class ModelSelection extends React.Component<Props, {}> {
             height: 2px;
             width: 70px;
           }
+
+          .topMargin20 {
+            margin-top: 20px;
+          }
         `}</style>
-        <div className='flex itemsCenter'>
+        <div className={`flex itemsCenter ${this.props.selectedCardinality.startsWith('MANY') && 'topMargin20'}`}>
           <ModelSelectionBox
-            many={false}
+            many={this.props.selectedCardinality.startsWith('MANY')}
             models={this.props.models}
             didSelectedModel={this.props.didSelectLeftModel}
             selectedModel={this.props.leftSelectedModel}
@@ -65,10 +69,10 @@ export default class ModelSelection extends React.Component<Props, {}> {
           selectedCartinality={this.props.selectedCardinality}
           didSelectCardinality={this.props.didSelectCardinality}
         />
-        <div className='flex itemsCenter'>
+        <div className={`flex itemsCenter ${this.props.selectedCardinality.endsWith('MANY') && 'topMargin20'}`}>
           <div className='greenLine' />
           <ModelSelectionBox
-            many={false}
+            many={this.props.selectedCardinality.endsWith('MANY')}
             models={this.props.models}
             didSelectedModel={this.props.didSelectRightModel}
             selectedModel={this.props.rightSelectedModel}

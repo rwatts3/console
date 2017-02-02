@@ -81,7 +81,6 @@ export default class FieldNameInput extends React.Component<Props, State> {
                 onKeyDown={this.handleKeyDown}
                 value={this.props.relatedFieldName}
                 onChange={(e: any) => {
-                  console.log('FieldNameInput - new field name: ', e.target.value)
                   this.props.didChangeFieldName(e.target.value)
                 }}
               />
@@ -104,7 +103,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
 
     return (
       <div
-        className='bgWhite pointer'
+        className='bgWhite pointer br2'
         onMouseEnter={() => this.setState({isHovered: true} as State)}
         onMouseLeave={() => this.setState({isHovered: false} as State)}
         onClick={() => this.setState({isEnteringFieldName: true} as State)}
