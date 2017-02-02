@@ -47,7 +47,7 @@ export default class ModelSelection extends React.Component<Props, {}> {
           }
 
           .topMargin20 {
-            margin-top: 20px;
+            margin-top: 0px;
           }
         `}</style>
         <div className={`flex itemsCenter ${this.props.selectedCardinality.startsWith('MANY') && 'topMargin20'}`}>

@@ -13,6 +13,10 @@ import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
 import {lowercaseFirstLetter, removeDuplicatesFromStringArray} from '../../utils/utils'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 import DeleteRelationMutation from '../../mutations/DeleteRelationMutation'
+import {ShowNotificationCallback} from '../../types/utils'
+import {connect} from 'react-redux'
+import {showNotification} from '../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface State {
   displayState: RelationPopupDisplayState
@@ -37,6 +41,7 @@ interface Props {
   router: ReactRouter.InjectedRouter
   viewer: any
   relay: Relay.RelayProp
+  showNotification: ShowNotificationCallback
 }
 
 class CreateRelationPopup extends React.Component<Props, State> {
@@ -85,8 +90,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
       fieldOnRightModelName, fieldOnLeftModelName, leftModelIsBreakingChange, rightModelIsBreakingChange,
       leftInputIsBreakingChange, rightInputIsBreakingChange, relationNameIsBreakingChange,
     } = this.state
-
-    console.log('CreateRelationPopup - render - displayState: ', displayState)
 
     const displayBreakingIndicator = (Boolean(this.props.viewer.relation)) &&
       (leftInputIsBreakingChange || rightInputIsBreakingChange ||
@@ -217,8 +220,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
   private didChangeFieldNameOnRightModel = (newFieldName: string) => {
     const {relation} = this.props.viewer
 
-    console.log('CreateRelationPopup - new field name: ', newFieldName)
-
     this.setState({
       fieldOnRightModelName: newFieldName,
     } as State)
@@ -230,9 +231,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
-    console.log('CreateRelationPopup - switchToDisplayState', displayState)
     if (displayState !== this.state.displayState) {
-      console.log('CreateRelationPopup - actually switch to state', displayState)
       this.setState({displayState: displayState} as State)
     }
   }
@@ -292,16 +291,28 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
     const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
 
+    // // edge case: self relations
+    // if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
+    //   if (selectedCardinality === 'ONE_TO_ONE') {
+    //     return 'from' + rightSelectedModel.name
+    //   } else if (selectedCardinality === 'ONE_TO_MANY') {
+    //     return 'from' + rightSelectedModel.name
+    //   } else if (selectedCardinality === 'MANY_TO_ONE') {
+    //     return 'from' + rightSelectedModel.namePlural
+    //   } else if (selectedCardinality === 'MANY_TO_MANY') {
+    //     return 'from' + rightSelectedModel.namePlural
+    //   }
+    // }
     // edge case: self relations
     if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
       if (selectedCardinality === 'ONE_TO_ONE') {
-        return 'from' + rightSelectedModel.name
+        return lowercaseFirstLetter(rightSelectedModel.name) + '2'
       } else if (selectedCardinality === 'ONE_TO_MANY') {
-        return 'from' + rightSelectedModel.name
+        return lowercaseFirstLetter(rightSelectedModel.namePlural) + '2'
       } else if (selectedCardinality === 'MANY_TO_ONE') {
-        return 'from' + rightSelectedModel.namePlural
+        return lowercaseFirstLetter(rightSelectedModel.name) + '2'
       } else if (selectedCardinality === 'MANY_TO_MANY') {
-        return 'from' + rightSelectedModel.namePlural
+        return lowercaseFirstLetter(rightSelectedModel.namePlural) + '2'
       }
     }
 
@@ -327,16 +338,27 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
     const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
 
-    // edge case: self relations
+    // // edge case: self relations
+    // if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
+    //   if (selectedCardinality === 'ONE_TO_ONE') {
+    //     return 'to' + rightSelectedModel.name
+    //   } else if (selectedCardinality === 'ONE_TO_MANY') {
+    //     return 'to' + rightSelectedModel.namePlural
+    //   } else if (selectedCardinality === 'MANY_TO_ONE') {
+    //     return 'to' + rightSelectedModel.name
+    //   } else if (selectedCardinality === 'MANY_TO_MANY') {
+    //     return 'to' + rightSelectedModel.namePlural
+    //   }
+    // }
     if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
       if (selectedCardinality === 'ONE_TO_ONE') {
-        return 'to' + rightSelectedModel.name
+        return lowercaseFirstLetter(rightSelectedModel.name) + '1'
       } else if (selectedCardinality === 'ONE_TO_MANY') {
-        return 'to' + rightSelectedModel.namePlural
+        return lowercaseFirstLetter(rightSelectedModel.namePlural) + '1'
       } else if (selectedCardinality === 'MANY_TO_ONE') {
-        return 'to' + rightSelectedModel.name
+        return lowercaseFirstLetter(rightSelectedModel.name) + '1'
       } else if (selectedCardinality === 'MANY_TO_MANY') {
-        return 'to' + rightSelectedModel.namePlural
+        return lowercaseFirstLetter(rightSelectedModel.namePlural) + '1'
       }
     }
 
@@ -397,73 +419,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
     this.setState({
       relationDescription: relationDescription,
     } as State)
-  }
-
-  private addRelation = () => {
-    Relay.Store.commitUpdate(
-      new AddRelationMutation({
-        projectId: this.props.viewer.project.id,
-        name: this.state.relationName,
-        description: this.state.relationDescription === '' ? null : this.state.relationDescription,
-        leftModelId: this.state.leftSelectedModel.id,
-        rightModelId: this.state.rightSelectedModel.id,
-        fieldOnLeftModelName: this.leftFieldName(),
-        fieldOnRightModelName: this.rightFieldName(),
-        fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
-        fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
-      }),
-      {
-        onSuccess: () => {
-          console.log('SUCCESS')
-          this.close()
-        },
-        onFailure: (transaction: Transaction) =>
-          console.error('Could not create mutation: ', transaction.getError().message),
-      },
-    )
-  }
-
-  private editRelation = () => {
-    Relay.Store.commitUpdate(
-      new UpdateRelationMutation({
-        relationId: this.props.viewer.relation.id,
-        name: this.state.relationName,
-        description: this.state.relationDescription === '' ? null : this.state.relationDescription,
-        leftModelId: this.state.leftSelectedModel.id,
-        rightModelId: this.state.rightSelectedModel.id,
-        fieldOnLeftModelName: this.state.fieldOnLeftModelName,
-        fieldOnRightModelName: this.state.fieldOnRightModelName,
-        fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
-        fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
-      }),
-      {
-        onSuccess: () => {
-          // The force fetching because relations are too complicated to selective choose the config
-          this.props.relay.forceFetch()
-          this.close()
-        },
-        onFailure: (transaction: Transaction) =>
-          console.error('Could not edit mutation: ', transaction.getError().message),
-      },
-    )
-  }
-
-  private deleteRelation = () => {
-    Relay.Store.commitUpdate(
-      new DeleteRelationMutation({
-        relationId: this.props.viewer.relation.id,
-        projectId: this.props.viewer.project.id,
-        leftModelId: this.props.viewer.relation.leftModel.id,
-        rightModelId: this.props.viewer.relation.leftModel.id,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction: Transaction) =>
-          console.error('Could not edit mutation: ', transaction.getError().message),
-      },
-    )
   }
 
   private cardinalityFromRelation (relation: Relation): Cardinality {
@@ -589,9 +544,80 @@ class CreateRelationPopup extends React.Component<Props, State> {
     } as State)
   }
 
+  private addRelation = () => {
+    Relay.Store.commitUpdate(
+      new AddRelationMutation({
+        projectId: this.props.viewer.project.id,
+        name: this.state.relationName,
+        description: this.state.relationDescription === '' ? null : this.state.relationDescription,
+        leftModelId: this.state.leftSelectedModel.id,
+        rightModelId: this.state.rightSelectedModel.id,
+        fieldOnLeftModelName: this.leftFieldName(),
+        fieldOnRightModelName: this.rightFieldName(),
+        fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
+        fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+        },
+        onFailure: (transaction: Transaction) =>
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+      },
+    )
+  }
+
+  private editRelation = () => {
+    Relay.Store.commitUpdate(
+      new UpdateRelationMutation({
+        relationId: this.props.viewer.relation.id,
+        name: this.state.relationName,
+        description: this.state.relationDescription === '' ? null : this.state.relationDescription,
+        leftModelId: this.state.leftSelectedModel.id,
+        rightModelId: this.state.rightSelectedModel.id,
+        fieldOnLeftModelName: this.state.fieldOnLeftModelName,
+        fieldOnRightModelName: this.state.fieldOnRightModelName,
+        fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
+        fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
+      }),
+      {
+        onSuccess: () => {
+          // The force fetching because relations are too complicated to selective choose the config
+          this.props.relay.forceFetch()
+          this.close()
+        },
+        onFailure: (transaction: Transaction) =>
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+      },
+    )
+  }
+
+  private deleteRelation = () => {
+    Relay.Store.commitUpdate(
+      new DeleteRelationMutation({
+        relationId: this.props.viewer.relation.id,
+        projectId: this.props.viewer.project.id,
+        leftModelId: this.props.viewer.relation.leftModel.id,
+        rightModelId: this.props.viewer.relation.leftModel.id,
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+        },
+        onFailure: (transaction: Transaction) =>
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+      },
+    )
+  }
 }
 
-export default Relay.createContainer(withRouter(CreateRelationPopup), {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedCreateRelationPopup = connect(null, mapDispatchToProps)(CreateRelationPopup)
+
+export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
   initialVariables: {
     projectName: null, // injected from router
     relationName: null, // injected from router

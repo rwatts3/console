@@ -15,6 +15,9 @@ export default class CardinalitySelection extends React.Component<Props, {}> {
     const oneToOneGreen = require('../../assets/icons/one_to_one_green.svg')
     const oneToMany = require('../../assets/icons/one_to_many.svg')
     const oneToManyGreen = require('../../assets/icons/one_to_many_green.svg')
+    const manyToMany = require('../../assets/icons/many_to_many.svg')
+    const manyToManyGreen = require('../../assets/icons/many_to_many_green.svg')
+
     return (
       <div className='container move' style={{transform: 'translateY(' + y + ')'}}>
         <style jsx={true}>{`
@@ -67,7 +70,7 @@ export default class CardinalitySelection extends React.Component<Props, {}> {
         >
           <Icon
             className='pv6'
-            src={require('../../assets/icons/many_to_many.svg')}
+            src={this.props.selectedCartinality === 'MANY_TO_MANY' ? manyToManyGreen : manyToMany}
             width={31}
             height={30}
           />
