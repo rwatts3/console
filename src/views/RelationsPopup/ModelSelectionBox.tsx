@@ -38,7 +38,7 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
     }
 
     return (
-      <div>
+      <div className={`${this.props.many && 'topMargin20'}`}>
         <div className='buttonShadow br2'>
           <BreakingChangeIndicator
             className='br2'
@@ -95,7 +95,7 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
               height: '10px',
               borderBottomRightRadius: '2px',
               borderBottomLeftRadius: '2px',
-              zIndex: -1,
+              zIndex: 2,
             }}
           />
           <div
@@ -106,7 +106,7 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
               height: '8px',
               borderBottomRightRadius: '2px',
               borderBottomLeftRadius: '2px',
-              zIndex: -2,
+              zIndex: 1,
             }}
           />
         </div>

@@ -99,7 +99,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const leftTabHasBreakingChange = leftInputIsBreakingChange || rightInputIsBreakingChange ||
       leftModelIsBreakingChange || rightModelIsBreakingChange
 
-    const displayBreakingIndicatorOnCurrentTab =
+    const displayBreakingIndicatorOnLeftTab = leftTabHasBreakingChange && displayState !== 'DEFINE_RELATION'
+    const displayBreakingIndicatorOnRightTab = rightTabHasBreakingChange && displayState !== 'SET_MUTATIONS'
+
+    const displayBreakingIndicatorOnCurrentView =
       (displayState === 'DEFINE_RELATION' as RelationPopupDisplayState && leftTabHasBreakingChange) ||
       (displayState === 'SET_MUTATIONS' as RelationPopupDisplayState && rightTabHasBreakingChange)
 
@@ -119,15 +122,20 @@ class CreateRelationPopup extends React.Component<Props, State> {
             @inherit: .buttonShadow;
             width: 700px;
           }
+
+          .background255 {
+            background-color: rgb(255,255,255);
+          }
+
         `}</style>
-        <div className='flex itemsCenter justifyCenter w100 h100'>
+        <div className='flex itemsCenter justifyCenter w100 h100 background255'>
           <BreakingChangeIndicator
             className='relationPopupContent'
             indicatorStyle='RIGHT'
             width={35}
             height={21}
-            offsets={displayBreakingIndicatorOnCurrentTab ? [40] : []}
-            plain={displayBreakingIndicatorOnCurrentTab ? [false] : []}
+            offsets={displayBreakingIndicatorOnCurrentView ? [40] : []}
+            plain={displayBreakingIndicatorOnCurrentView ? [false] : []}
             messages={infoMessageElement}
           >
             <div className='flex flexColumn justifyBetween h100'>
@@ -136,7 +144,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                   displayState={displayState}
                   switchDisplayState={this.switchToDisplayState}
                   close={this.close}
-                  breakingChanges={[leftTabHasBreakingChange, rightTabHasBreakingChange]}
+                  breakingChanges={[displayBreakingIndicatorOnLeftTab, displayBreakingIndicatorOnRightTab]}
                 />
                 {
                   displayState === 'DEFINE_RELATION' ?

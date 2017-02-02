@@ -10,6 +10,7 @@ interface Props {
 export default class CardinalitySelection extends React.Component<Props, {}> {
 
   render() {
+
     const y = (this.yForCardinality(this.props.selectedCartinality) + 51) + 'px'
     const oneToOne = require('../../assets/icons/one_to_one.svg')
     const oneToOneGreen = require('../../assets/icons/one_to_one_green.svg')

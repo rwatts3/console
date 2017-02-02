@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Icon} from 'graphcool-styles'
 import {validateFieldName} from '../../utils/nameValidator'
+import Tooltip from '../../views/Tooltip/Tooltip'
 
 interface State {
   isHovered: boolean
@@ -71,7 +72,19 @@ export default class FieldNameInput extends React.Component<Props, State> {
           )}
           {this.state.isEnteringFieldName &&
           (
-            <div>
+            <div className='flex itemsCenter'>
+              {Boolean(invalidInputMessage) &&
+              <Tooltip
+                className='red'
+                text={invalidInputMessage}
+              >
+                <Icon
+                  className='mr6'
+                  src={require('../../assets/icons/warning_red.svg')}
+                  width={22}
+                  height={22}
+                />
+              </Tooltip>}
               <input
                 type='text'
                 autoFocus={true}
@@ -84,12 +97,6 @@ export default class FieldNameInput extends React.Component<Props, State> {
                   this.props.didChangeFieldName(e.target.value)
                 }}
               />
-              {Boolean(invalidInputMessage) &&
-              <div
-                className='red f12'
-              >
-                {invalidInputMessage}
-              </div>}
             </div>
           )}
           <div className='fieldType'>{this.props.relatedFieldType}</div>
@@ -123,7 +130,9 @@ export default class FieldNameInput extends React.Component<Props, State> {
   private doneEditingInputField = (reset: boolean) => {
     const {relatedFieldName} = this.props
     const {originalFieldName} = this.state
-    const actualRelatedFieldName = relatedFieldName.length === 0 || reset ? originalFieldName : relatedFieldName
+    const actualRelatedFieldName =
+      relatedFieldName.length === 0 || reset || this.generateInvalidInputMessage(relatedFieldName) ?
+        originalFieldName : relatedFieldName
     this.props.didChangeFieldName(actualRelatedFieldName)
     this.setState({
       isEnteringFieldName: false,
