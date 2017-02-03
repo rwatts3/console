@@ -6,6 +6,7 @@ interface Props {
   onboardingStatusId: string
   gettingStarted: Step
   gettingStartedSkipped: boolean
+  gettingStartedCompleted: boolean
   gettingStartedExample: Example
 }
 
@@ -25,6 +26,7 @@ export default class UpdateCustomerOnboardingStatusMutation extends Relay.Mutati
           gettingStartedExample
           systemBridge
           gettingStartedSkipped
+          gettingStartedCompleted
         }
       }
     `
@@ -43,6 +45,7 @@ export default class UpdateCustomerOnboardingStatusMutation extends Relay.Mutati
     return {
       gettingStarted: this.props.gettingStarted,
       gettingStartedSkipped: this.props.gettingStartedSkipped,
+      gettingStartedCompleted: this.props.gettingStartedCompleted,
       gettingStartedExample: this.props.gettingStartedExample,
     }
   }
@@ -53,6 +56,7 @@ export default class UpdateCustomerOnboardingStatusMutation extends Relay.Mutati
         id: this.props.onboardingStatusId,
         gettingStarted: this.props.gettingStarted,
         gettingStartedSkipped: this.props.gettingStartedSkipped,
+        gettingStartedCompleted: this.props.gettingStartedCompleted,
       },
     }
   }
