@@ -2,6 +2,7 @@ import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {RelationPopupDisplayState} from '../../types/types'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
+import CreateRelationHeaderTab from '../ProjectSettingsView/CreateRelationHeaderTab'
 
 interface Props {
   displayState: RelationPopupDisplayState
@@ -61,21 +62,19 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
           offsets={offsets}
           plain={plain}
           >
-          <div className='pr6  mr6'>
+          <div className='pr6 mr6'>
             <div className='newRelationBanner'>New Relation</div>
           </div>
-          <div
-            className={`titleTab ${leftTabColor}`}
-            onClick={() => this.props.switchDisplayState('DEFINE_RELATION' as RelationPopupDisplayState)}
-          >
-            Define Relations
-          </div>
-          <div
-            className={`titleTab ${rightTabColor}`}
-            onClick={() => this.props.switchDisplayState('SET_MUTATIONS' as RelationPopupDisplayState)}
-          >
-            Set Mutations
-          </div>
+          <CreateRelationHeaderTab
+            title='Define Relations'
+            selected={displayState === 'DEFINE_RELATION'}
+            onClick={this.props.switchDisplayState}
+          />
+          <CreateRelationHeaderTab
+            title='Set Mutations'
+            selected={displayState === 'SET_MUTATIONS'}
+            onClick={this.props.switchDisplayState}
+          />
         </BreakingChangeIndicator>
         <div
           className='pointer'
@@ -92,3 +91,4 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
     )
   }
 }
+

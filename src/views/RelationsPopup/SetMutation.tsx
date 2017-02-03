@@ -66,16 +66,8 @@ export default class SetMutation extends React.Component<Props, State> {
         {isEnteringRelationName || relationName.length === 0 ?
           (
             <div className='flex itemsCenter justifyBetween pr38'>
-              <div
-                className='w100'
-              >
+              <div className='w100'>
                 {this.generateGelationNameInputComponent()}
-                {/*relationName.length > 0 && !validateRelationName(relationName) &&
-                 <div
-                 className='pl25 red f12'
-                 >
-                 Relation name has to be capitalized and must only contain alphanumeric characters.
-                 </div>*/}
               </div>
             </div>
           )
@@ -215,7 +207,7 @@ export default class SetMutation extends React.Component<Props, State> {
 
     return relationName.length > 0 && !validateRelationName(relationName) ? (
 
-        <div className='flex justifyBetween itemsCenter w100'>
+        <div className='flex justifyBetween itemsCenter w100 mt25'>
           <input
             className={`f38 fw3 w100 ph25
                         ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}
@@ -262,7 +254,8 @@ export default class SetMutation extends React.Component<Props, State> {
           onKeyDown={this.handleKeyDownOnRelationName}
           onBlur={() => this.setState({
             isEnteringRelationName: false,
-          } as State)}
+            } as State)
+          }
           onChange={(e: any) => {
           this.props.onChangeRelationNameInput(e.target.value)
           this.setState(
@@ -281,3 +274,7 @@ export default class SetMutation extends React.Component<Props, State> {
   }
 
 }
+
+/*
+
+ */
