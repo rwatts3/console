@@ -215,7 +215,7 @@ export default class SetMutation extends React.Component<Props, State> {
 
     return relationName.length > 0 && !validateRelationName(relationName) ? (
 
-        <div className='flex justifyBetween itemsCenter w100 mt25'>
+        <div className='flex justifyBetween itemsCenter w100'>
           <input
             className={`f38 fw3 w100 ph25
                         ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}

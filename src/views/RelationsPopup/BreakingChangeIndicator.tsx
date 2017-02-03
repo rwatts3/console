@@ -23,7 +23,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
 
     return (
       <div
-        className={`relative ${this.props.className}`}
+        className={`relative z999 ${this.props.className}`}
       >
         <style jsx={true}>{`
 
