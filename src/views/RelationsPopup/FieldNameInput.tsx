@@ -36,14 +36,12 @@ export default class FieldNameInput extends React.Component<Props, State> {
     let relatedFieldElement: JSX.Element
     if (this.props.relatedFieldName !== null && this.props.relatedFieldType) {
       relatedFieldElement = (
-        <div
-          className={`ph16 pv8 flex pointer ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
-            ${this.state.isHovered && ' bgBlack02'}
-            ${this.state.isEnteringFieldName && ' justifyBetween'}`
-          }
-          onMouseEnter={() => this.setState({isHovered: true} as State)}
-          onMouseLeave={() => this.setState({isHovered: false} as State)}
-          onClick={() => this.setState({isEnteringFieldName: true} as State)}
+        <div className={`ph16 pv8 flex
+          ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
+          ${!this.state.isHovered && !this.state.isEnteringFieldName && ' marginRight'}
+          ${this.state.isHovered && ' bgBlack02'}
+          ${this.state.isEnteringFieldName && ' justifyBetween'}`
+        }
         >
           <style jsx={true}>{`
 
@@ -57,12 +55,16 @@ export default class FieldNameInput extends React.Component<Props, State> {
             }
 
             .move {
-              transition: .25s linear all;
+              transition: .5s linear all;
+            }
+
+            .marginRight {
+              margin-right: 24px;
             }
 
           `}</style>
           {!this.state.isEnteringFieldName && !this.state.isHovered &&
-          (<div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
+          (<div className={`f20 purpleColor`}>{this.props.relatedFieldName}</div>
           )}
           {!this.state.isEnteringFieldName && this.state.isHovered &&
           (<div className='flex itemsCenter '>
@@ -107,7 +109,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
               />
             </div>
           )}
-          <div className={`fieldType ${!shouldBreak ? 'ml6' : ''}`}>{this.props.relatedFieldType}</div>
+          <div className={`move fieldType ${!shouldBreak ? 'ml6' : ''}`}>{this.props.relatedFieldType}</div>
         </div>
       )
     } else {

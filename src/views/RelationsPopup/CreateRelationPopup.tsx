@@ -127,7 +127,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
           .relationPopupContent {
             @inherit: .buttonShadow;
-            width: 700px;
+            width: 745px;
           }
 
           .overlay {
