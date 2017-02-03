@@ -44,6 +44,7 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
           onboardingStatusId,
           gettingStarted,
           gettingStartedSkipped,
+          gettingStartedCompleted: gettingStarted === 'STEP6_DONE',
           gettingStartedExample,
         }),
       {
