@@ -36,12 +36,15 @@ export default class FieldNameInput extends React.Component<Props, State> {
     let relatedFieldElement: JSX.Element
     if (this.props.relatedFieldName !== null && this.props.relatedFieldType) {
       relatedFieldElement = (
-        <div className={`ph16 pv8 flex
-          ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
-          ${!this.state.isHovered && !this.state.isEnteringFieldName && ' marginRight'}
-          ${this.state.isHovered && ' bgBlack02'}
-          ${this.state.isEnteringFieldName && ' justifyBetween'}`
-        }
+        <div
+          className={`ph16 pv8 flex pointer
+            ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
+            ${!this.state.isHovered && !this.state.isEnteringFieldName && ' marginRight'}
+            ${this.state.isHovered && ' bgBlack02'}
+            ${this.state.isEnteringFieldName && ' justifyBetween'}`}
+          onMouseEnter={() => this.setState({isHovered: true} as State)}
+          onMouseLeave={() => this.setState({isHovered: false} as State)}
+          onClick={() => this.setState({isEnteringFieldName: true} as State)}
         >
           <style jsx={true}>{`
 
@@ -79,6 +82,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
           )}
           {this.state.isEnteringFieldName &&
           (
+
             <div className='flex itemsCenter'>
               {Boolean(invalidInputMessage) &&
               <Tooltip
