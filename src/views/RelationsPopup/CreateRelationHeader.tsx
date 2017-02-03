@@ -28,8 +28,6 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
     const leftTabColor = displayState === 'DEFINE_RELATION' ? 'green' : 'black30'
     const rightTabColor = displayState === 'SET_MUTATIONS' ? 'green' : 'black30'
 
-    console.log(leftTabColor, rightTabColor)
-
     return (
       <div className={`flex itemsEnd justifyBetween
         ${displayState === 'DEFINE_RELATION' ? 'bgBlack02' : 'bgWhite'}`}>

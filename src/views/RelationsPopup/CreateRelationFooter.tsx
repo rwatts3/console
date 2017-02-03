@@ -46,7 +46,6 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
         }
         {this.props.displayConfirmBreakingChangesPopup && <ConfirmPopup
           red={false}
-          onCancel={() => console.log('displayConfirmBreakingChangesPopup')}
           leftModelName={this.props.leftModelName}
           rightModelName={this.props.rightModelName}
           onConfirmBreakingChanges={this.props.onClickEditRelation}

@@ -8,7 +8,7 @@ interface State {
 
 interface Props {
   red: boolean
-  onCancel: Function
+  onCancel?: Function
   onConfirmBreakingChanges?: Function
   onConfirmDeletion?: Function
   onResetBreakingChanges?: Function
