@@ -91,4 +91,3 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
     )
   }
 }
-

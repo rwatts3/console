@@ -28,6 +28,7 @@ export default class MutationsInfoBox extends React.Component<Props, {}> {
             @inherit: .ml10, .blue, .f16;
             margin-top: -4px;
           }
+
         `}</style>
         <div className='flex pl16 pv16'>
           <Icon

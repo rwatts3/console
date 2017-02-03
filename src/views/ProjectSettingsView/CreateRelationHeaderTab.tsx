@@ -5,7 +5,7 @@ import {RelationPopupDisplayState} from '../../types/types'
 interface Props {
   title: string
   selected: boolean
-  onClick: Function //(displayState: RelationPopupDisplayState) => void
+  onClick: Function // (displayState: RelationPopupDisplayState) => void
 }
 
 export default class CreateRelationHeaderTab extends React.Component<Props, {}> {
