@@ -62,19 +62,27 @@ export default class SetMutation extends React.Component<Props, State> {
             color: rgba(42,127,211,1);
           }
 
+          .relationNameHeight {
+            height: 58px;
+          }
+
+          .relationDescriptionHeight {
+            height: 58px;
+          }
+
         `}</style>
         {isEnteringRelationName || relationName.length === 0 ?
           (
-            <div className='flex itemsCenter justifyBetween pr38'>
+            <div className='flex itemsCenter justifyBetween pr38 relationNameHeight'>
               <div className='w100'>
-                {this.generateGelationNameInputComponent()}
+                {this.generateRelationNameInputComponent()}
               </div>
             </div>
           )
           :
           (
             <div
-              className='flex itemsCenter pointer'
+              className='flex itemsCenter pointer relationNameHeight'
               onMouseEnter={() => this.setState({isHoveringRelationName: true} as State)}
               onMouseLeave={() => this.setState({isHoveringRelationName: false} as State)}
               onClick={() => this.setState({
@@ -94,7 +102,7 @@ export default class SetMutation extends React.Component<Props, State> {
         }
         {isEnteringRelationDescription ?
           (
-            <div className='flex itemsCenter mv25'>
+            <div className='flex itemsCenter mv25 relationDescriptionHeight'>
               <input
                 className='descriptionInputField ph25'
                 autoFocus={true}
@@ -118,7 +126,7 @@ export default class SetMutation extends React.Component<Props, State> {
           :
           (relationDescription === null || relationDescription.length === 0) && (
             <div
-              className='flex itemsCenter mv25 ph25 pointer'
+              className='flex itemsCenter mv25 ph25 pointer relationDescriptionHeight'
               onClick={() => this.setState({
                 isEnteringRelationDescription: true,
               } as State)}
@@ -202,7 +210,7 @@ export default class SetMutation extends React.Component<Props, State> {
     }
   }
 
-  private generateGelationNameInputComponent = (): JSX.Element => {
+  private generateRelationNameInputComponent = (): JSX.Element => {
     const {relationName} = this.props
 
     return relationName.length > 0 && !validateRelationName(relationName) ? (
