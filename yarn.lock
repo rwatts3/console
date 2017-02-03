@@ -36,9 +36,9 @@
   version "2.0.28"
   resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-2.0.28.tgz#d6a9136d699257970fc74d899cd7b12a608d14da"
 
-"@types/lodash@^4.14.43":
-  version "4.14.52"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.52.tgz#de5c7ab14da1289733233c9b0ec6f9e377db90f5"
+"@types/lodash@4.14.43":
+  version "4.14.43"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.43.tgz#0373de422e70f5bce12c15340103a3c126c81086"
 
 "@types/node@^6.0.31":
   version "6.0.62"
@@ -142,8 +142,8 @@ acorn@^2.1.0, acorn@^2.4.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-2.7.0.tgz#ab6e7d9d886aaca8b085bc3312b79a198433f0e7"
 
 acorn@^4.0.3, acorn@^4.0.4:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.7.tgz#084596cd4636f796d2273990c699e13fe4092ac8"
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.8.tgz#f41e52020ce78118a3c68ed0e9215eb8fc68b5b1"
 
 add-dom-event-listener@1.x:
   version "1.0.2"
@@ -1016,8 +1016,8 @@ babel-plugin-transform-react-jsx@^6.22.0:
     babel-runtime "^6.22.0"
 
 babel-plugin-transform-react-remove-prop-types@^0.2.7:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-react-remove-prop-types/-/babel-plugin-transform-react-remove-prop-types-0.2.11.tgz#05eb7cc4670d6506d801680576589c7abcd51b00"
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-react-remove-prop-types/-/babel-plugin-transform-react-remove-prop-types-0.2.12.tgz#3406696df0b8b456089f9d726d27e7e123d2f929"
 
 babel-plugin-transform-regenerator@^6.22.0:
   version "6.22.0"
@@ -4489,9 +4489,13 @@ mumath@^3.0.0:
   dependencies:
     almost-equal "^1.1.0"
 
-mute-stream@0.0.5, mute-stream@~0.0.4:
+mute-stream@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
+
+mute-stream@~0.0.4:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
 nan@^2.0.7, nan@^2.3.0, nan@^2.3.2, nan@^2.3.3:
   version "2.5.1"
