@@ -23,47 +23,57 @@ export default class RelationInfo extends React.Component<Props, State> {
 
   render() {
     return !this.state.expanded ?
-        (
-          <div className='flex justifyEnd pr16 pb16 mt10 h100'>
-            <div
-              className={`pointer ${(!this.props.leftModel || !this.props.rightModel) && 'o0'}`}
-              onClick={() => this.setState({expanded: true})}
-            >
-              <Icon
-                src={require('../../assets/icons/info_blue.svg')}
-                width={29}
-                height={29}
-              />
-            </div>
+      (
+        <div className='flex justifyEnd pr16 pb16 mt10 h100'>
+          <div
+            className={`pointer ${(!this.props.leftModel || !this.props.rightModel) && 'o0'}`}
+            onClick={() => this.setState({expanded: true})}
+          >
+            <Icon
+              src={require('../../assets/icons/info_blue.svg')}
+              width={29}
+              height={29}
+            />
           </div>
-        )
+        </div>
+      )
       :
-        (
+      (
+        <div className='pb38 mh16'>
+
           <div className='container'>
             <style jsx={true}>{`
+
               .container {
-                @inherit: .bgWhite, .mt25, .pr25, .pt25, .pl38, .pb38, .bt, .bBlack10;
+                @inherit: .ba, .br2, .w100, .h100;
+                /* background-color: rgba(42,126,211,.04); */
+                background-color: rgba(246,250,254,1);
+                border-color: rgba(42,126,211,.1);
               }
+
+              .titleText {
+                @inherit: .ml16, .blue, .f16;
+                margin-top: -6px;
+              }
+
             `}</style>
-            <div className='flex justifyEnd'>
-              <div
+            <div className='flex pl16 pv16'>
+              <Icon
                 className='pointer'
-                onClick={() => this.setState({expanded: false})}
-              >
-                <Icon
-                  src={require('graphcool-styles/icons/fill/triangle.svg')}
-                  color={$v.gray30}
-                  width={18}
-                  height={12}
-                  rotate={-90}
-                />
+                src={require('../../assets/icons/info_blue.svg')}
+                width={19}
+                height={19}
+                onClick={() => this.setState({expanded: false} as State)}
+              />
+              <div className='titleText'>
+                {this.generateFirstInfoSentence()}
+                {this.generateSecondInfoSentence()}
+                {this.generateThirdInfoSentence()}
               </div>
             </div>
-            {this.generateFirstInfoSentence()}
-            {this.generateSecondInfoSentence()}
-            {this.generateThirdInfoSentence()}
           </div>
-        )
+        </div>
+      )
   }
 
   private generateFirstInfoSentence = (): JSX.Element => {
@@ -80,11 +90,11 @@ export default class RelationInfo extends React.Component<Props, State> {
             @inherit: .pv4, .f16, .black50, .nowrap;
           }
         `}</style>
-        <span className='green fw6'>{firstCardinality + ' '}</span>
-        <span className='blue fw6'>{firstModel + ' '}</span>
+        <span className='green'>{firstCardinality + ' '}</span>
+        <span className='blue'>{firstModel + ' '}</span>
         <span>{isOrAre} related to </span>
-        <span className='green fw6'>{secondCardinality + ' '}</span>
-        <span className='blue fw6'>{secondModel }</span>
+        <span className='green'>{secondCardinality + ' '}</span>
+        <span className='blue'>{secondModel }</span>
       </div>
     )
   }
@@ -105,12 +115,12 @@ export default class RelationInfo extends React.Component<Props, State> {
           }
 
         `}</style>
-        <span className='blue fw6'>{firstModelName + ' '}</span>
+        <span className='blue'>{firstModelName + ' '}</span>
         <span>field</span>
-        <span className='purpleColor fw6'>{' ' + this.props.fieldOnLeftModelName + ' '}</span>
+        <span className='purpleColor'>{' ' + this.props.fieldOnLeftModelName + ' '}</span>
         <span>represents</span>
-        <span className='green fw6'>{' ' + oneOrMany + ' '}</span>
-        <span className='blue fw6'>{secondModelName}</span>
+        <span className='green'>{' ' + oneOrMany + ' '}</span>
+        <span className='blue'>{secondModelName}</span>
       </div>
     )
   }
@@ -130,12 +140,12 @@ export default class RelationInfo extends React.Component<Props, State> {
             color: rgba(164,3,111,1);
           }
         `}</style>
-        <span className='blue fw6'>{firstModelName + ' '}</span>
+        <span className='blue'>{firstModelName + ' '}</span>
         <span>field</span>
-        <span className='purpleColor fw6'>{' ' + this.props.fieldOnRightModelName + ' '}</span>
+        <span className='purpleColor'>{' ' + this.props.fieldOnRightModelName + ' '}</span>
         <span>represents</span>
-        <span className='green fw6'>{' ' + oneOrMany + ' '}</span>
-        <span className='blue fw6'>{secondModelName}</span>
+        <span className='green'>{' ' + oneOrMany + ' '}</span>
+        <span className='blue'>{secondModelName}</span>
       </div>
     )
   }

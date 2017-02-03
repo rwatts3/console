@@ -36,8 +36,9 @@ export default class FieldNameInput extends React.Component<Props, State> {
     let relatedFieldElement: JSX.Element
     if (this.props.relatedFieldName !== null && this.props.relatedFieldType) {
       relatedFieldElement = (
-        <div className={`ph16 pv8 flex ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
-
+        <div className={`ph16 pv8 flex
+          ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
+          ${!this.state.isHovered && !this.state.isEnteringFieldName && ' marginRight'}
           ${this.state.isHovered && ' bgBlack02'}
           ${this.state.isEnteringFieldName && ' justifyBetween'}`
         }
@@ -54,12 +55,16 @@ export default class FieldNameInput extends React.Component<Props, State> {
             }
 
             .move {
-              transition: .25s linear all;
+              transition: .5s linear all;
+            }
+
+            .marginRight {
+              margin-right: 24px;
             }
 
           `}</style>
           {!this.state.isEnteringFieldName && !this.state.isHovered &&
-          (<div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
+          (<div className={`f20 purpleColor`}>{this.props.relatedFieldName}</div>
           )}
           {!this.state.isEnteringFieldName && this.state.isHovered &&
           (<div className='flex itemsCenter '>
@@ -90,7 +95,10 @@ export default class FieldNameInput extends React.Component<Props, State> {
               <input
                 type='text'
                 autoFocus={true}
-                onBlur={() => this.doneEditingInputField(false)}
+                onBlur={() => {
+                  console.log('done editing input field')
+                  this.doneEditingInputField(false)
+                }}
                 className={`f20 bgTransparent wS96
                 ${Boolean(invalidInputMessage) ? ' red' : ' purpleColor'}`}
                 onKeyDown={this.handleKeyDown}
@@ -101,23 +109,31 @@ export default class FieldNameInput extends React.Component<Props, State> {
               />
             </div>
           )}
-          <div className={`fieldType ${!shouldBreak ? 'ml6' : ''}`}>{this.props.relatedFieldType}</div>
+          <div className={`move fieldType ${!shouldBreak ? 'ml6' : ''}`}>{this.props.relatedFieldType}</div>
         </div>
       )
     } else {
       relatedFieldElement = (
-        <div className='ph16 pv8 black20 f20 i'>will be generated</div>
+        <div
+          className='ph16 pv8 black20 f20 i pointer'
+          onMouseEnter={() => this.setState({isHovered: true} as State)}
+          onMouseLeave={() => this.setState({isHovered: false} as State)}
+          onClick={() => this.setState({isEnteringFieldName: true} as State)}
+        >
+          will be generated
+        </div>
       )
     }
 
     return (
       <div
-        className='bgWhite pointer br2'
-        onMouseEnter={() => this.setState({isHovered: true} as State)}
-        onMouseLeave={() => this.setState({isHovered: false} as State)}
-        onClick={() => this.setState({isEnteringFieldName: true} as State)}
+        className='bgWhite br2'
       >
-        <div className='black40 f14 pl16 pv8'>related field:</div>
+        <div
+          className='black40 f14 pl16 pv8'
+        >
+          related field:
+        </div>
         {relatedFieldElement}
       </div>
     )

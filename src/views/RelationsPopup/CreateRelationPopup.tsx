@@ -17,8 +17,12 @@ import {ShowNotificationCallback} from '../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
+import Loading from '../../components/Loading/Loading'
 
 interface State {
+
+  loading: boolean
+
   displayState: RelationPopupDisplayState
   leftSelectedModel: Model | null
   rightSelectedModel: Model | null
@@ -52,6 +56,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = props.viewer
 
     this.state = {
+      loading: false,
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,
@@ -119,13 +124,19 @@ class CreateRelationPopup extends React.Component<Props, State> {
       <PopupWrapper
         onClickOutside={this.close}>
         <style global jsx={true}>{`
+
           .relationPopupContent {
             @inherit: .buttonShadow;
-            width: 700px;
+            width: 745px;
           }
 
-          .background255 {
-            background-color: rgb(255,255,255);
+          .overlay {
+            @p: .absolute, .flex, .itemsCenter, .justifyCenter, .z999;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            background-color: rgb(250,250,250);
           }
 
         `}</style>
@@ -139,7 +150,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
             plain={displayBreakingIndicatorOnCurrentView ? [false] : []}
             messages={infoMessageElement}
           >
-            <div className='flex flexColumn justifyBetween h100 bgWhite'>
+            <div className='flex flexColumn justifyBetween h100 bgWhite relative'>
               <div>
                 <CreateRelationHeader
                   displayState={displayState}
@@ -202,6 +213,11 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 relationName={relation && relation.name}
                 displayConfirmBreakingChangesPopup={displayBreakingIndicator}
               />
+              {this.state.loading &&
+              <div className='overlay'>
+                <Loading/>
+              </div>
+              }
             </div>
           </BreakingChangeIndicator>
         </div>
@@ -554,6 +570,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private addRelation = () => {
+    this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new AddRelationMutation({
         projectId: this.props.viewer.project.id,
@@ -570,13 +587,16 @@ class CreateRelationPopup extends React.Component<Props, State> {
         onSuccess: () => {
           this.close()
         },
-        onFailure: (transaction: Transaction) =>
-          this.props.showNotification({message: transaction.getError().message, level: 'error'}),
+        onFailure: (transaction: Transaction) => {
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            this.setState({loading: false} as State)
+        },
       },
     )
   }
 
   private editRelation = () => {
+    this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new UpdateRelationMutation({
         relationId: this.props.viewer.relation.id,
@@ -595,13 +615,16 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.props.relay.forceFetch()
           this.close()
         },
-        onFailure: (transaction: Transaction) =>
-          this.props.showNotification({message: transaction.getError().message, level: 'error'}),
+        onFailure: (transaction: Transaction) => {
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          this.setState({loading: false} as State)
+        },
       },
     )
   }
 
   private deleteRelation = () => {
+    this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new DeleteRelationMutation({
         relationId: this.props.viewer.relation.id,
@@ -613,8 +636,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
         onSuccess: () => {
           this.close()
         },
-        onFailure: (transaction: Transaction) =>
-          this.props.showNotification({message: transaction.getError().message, level: 'error'}),
+        onFailure: (transaction: Transaction) => {
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          this.setState({loading: false} as State)
+        },
       },
     )
   }

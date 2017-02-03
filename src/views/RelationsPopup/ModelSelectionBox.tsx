@@ -1,8 +1,6 @@
 import * as React from 'react'
 import {Model} from '../../types/types'
 import {Combobox} from 'react-input-enhancements'
-import {$v} from 'graphcool-styles'
-import HorizontalSelect from './HorizontalSelect'
 import FieldNameInput from './FieldNameInput'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 
@@ -39,6 +37,20 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
 
     return (
       <div className={`${this.props.many && 'topMargin20'}`}>
+        <style jsx={true}>{`
+
+          .bottomBorder {
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-color: rgba(255,255,255,.2);
+          }
+
+          .negativeMargin {
+            margin: -5px -5px -5px -5px;
+            border-radius: 3px;
+          }
+
+        `}</style>
         <div className='buttonShadow br2'>
           <BreakingChangeIndicator
             className='br2'
@@ -48,31 +60,19 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
             offsets={offsets}
             plain={plain}
           >
-            <style jsx={true}>{`
-
-          .titleText {
-            @inherit: .f25, .fw6;
-          }
-
-        `}</style>
             <div className={`flex itemsCenter justifyBetween pv8 ph16
               ${this.props.selectedModel ? ' bgBlue' : ' bgBlue20'}`}
-              style={{borderTopLeftRadius: '2px', borderTopRightRadius: '2px'}}
+                 style={{borderTopLeftRadius: '2px', borderTopRightRadius: '2px'}}
             >
               <Combobox
-                value=''
                 options={modelNames}
+                value={this.props.selectedModel ? this.props.selectedModel.name : 'Select Model'}
                 onSelect={(value) => this.didSelectModelWithName(value)}
-              >
-                {inputProps => {
-                  {/*console.log('input props', inputProps)*/}
-                  return <input
-                    type='text'
-                    value={this.props.selectedModel ? this.props.selectedModel.name : 'Select Model'}
-                    className={`titleText bgTransparent ${this.props.selectedModel ? 'white' : 'blue'}`}
-                    style={{width: '180px'}}
-                  />
+                dropdownProps={{
+                  className: `${this.props.selectedModel ? 'white' : 'blue' } f20`,
                 }}
+              >
+                {this.renderInput}
               </Combobox>
             </div>
             <FieldNameInput
@@ -120,4 +120,37 @@ export default class ModelSelectionBox extends React.Component<Props, {}> {
     this.props.didSelectedModel(model)
   }
 
+  private renderInput = inputProps => {
+    return <input
+      {...inputProps}
+      value={this.props.selectedModel ? this.props.selectedModel.name : 'Select Model'}
+      onChange={() => this.props.didSelectedModel}
+      type='text'
+      className={`f25 fw6 bgTransparent ${this.props.selectedModel ? 'white' : 'blue'}`}
+      style={{width: '180px'}}
+    />
+
+  }
+
 }
+
+/*
+
+ dropdownProps={{
+ className: `${this.props.selectedModel ? 'white' : 'blue' } fw6 f25`,
+ }}
+ onRenderOption={(className, option, isActive) => {
+ console.log(option, isActive)
+ const colors = isActive ? 'white bgBlue' : 'bgWhite black60'
+ const margin = isActive ? 'negativeMargin' : ''
+ return (
+ <div
+ className={`bb bBlack10 tl pv10 pl16 ${colors} ${margin}`}
+ style={{height: '52px'}}
+ >
+ {option}
+ </div>
+ )
+ }}
+
+ */

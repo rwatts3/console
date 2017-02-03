@@ -23,7 +23,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
 
     return (
       <div
-        className={`relative ${this.props.className}`}
+        className={`relative z999 ${this.props.className}`}
       >
         <style jsx={true}>{`
 
@@ -49,7 +49,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
                 overlay={messages[i]}
               >
                 <Icon
-                  className='pointer'
+                  className='pointer z999'
                   src={plain[i] ? breakingPlain : breaking}
                   width={width}
                   height={height}
@@ -59,6 +59,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
               :
               (
                 <Icon
+                  className='z999'
                   src={plain[i] ? breakingPlain : breaking}
                   width={width}
                   height={height}
