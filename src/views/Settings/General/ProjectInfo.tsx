@@ -6,7 +6,6 @@ import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$p} from 'graphcool-styles'
 import UpdateProjectMutation from '../../../mutations/UpdateProjectMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
-import {onFailureShowNotification} from '../../../utils/relay'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
@@ -201,7 +200,6 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   private saveSettings = (): void => {
-    console.log('SAVE')
     Relay.Store.commitUpdate(
       new UpdateProjectMutation(
         {

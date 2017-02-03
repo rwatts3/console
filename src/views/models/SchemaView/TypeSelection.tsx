@@ -125,7 +125,7 @@ export default class TypeSelection extends React.Component<Props, State> {
         selectedIndex++
         break
       case 38:
-      case 75: // k 
+      case 75: // k
         selectedIndex--
         break
     }
