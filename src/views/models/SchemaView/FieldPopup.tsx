@@ -81,7 +81,7 @@ class FieldPopup extends React.Component<Props, State> {
       isList,
       enumValues,
       useDefaultValue: field ? field.defaultValue !== null : null,
-      defaultValue: field ? stringToValue(field.defaultValue, tmpField) : emptyDefault(tmpField),
+      defaultValue: field ? stringToValue(String(field.defaultValue), tmpField) : emptyDefault(tmpField),
       reverseRelationField: field ? field.reverseRelationField : null,
       useMigrationValue: false,
       migrationValue: emptyDefault({typeIdentifier, isList, enumValues: []} as Field),
@@ -500,7 +500,7 @@ class FieldPopup extends React.Component<Props, State> {
 
     Relay.Store.commitUpdate(
       new UpdateFieldMutation({
-        fieldId: this.props.field.id,
+        id: this.props.field.id,
         name,
         typeIdentifier,
         enumValues,
@@ -509,7 +509,7 @@ class FieldPopup extends React.Component<Props, State> {
         defaultValue: useDefaultValue ? valueToString(defaultValue, field, false) : null,
         relationId: ((reverseRelationField || {} as any).relation || {} as any).id,
         migrationValue,
-      }),
+      } as any),
       {
         onSuccess: () => {
           tracker.track(ConsoleEvents.Schema.Field.Popup.submitted({type: 'Update'}))
@@ -567,7 +567,7 @@ class FieldPopup extends React.Component<Props, State> {
       isRequired: field ? field.isRequired : true,
       isList,
       reverseRelationField: field ? field.reverseRelationField : null,
-      defaultValue: field ? stringToValue(field.defaultValue, tmpField) : emptyDefault(tmpField),
+      defaultValue: field ? stringToValue(String(field.defaultValue), tmpField) : emptyDefault(tmpField),
       migrationValue: emptyDefault({typeIdentifier, isList, enumValues} as Field),
       useMigrationValue,
     } as State)
