@@ -18,7 +18,7 @@ export interface CellRequirements {
   value: any
   field: Field
   projectId: string
-  nodeId: string
+  nodeId?: string
   inList?: boolean
   methods: {
     save: (val: any, keepEditing?: any) => void

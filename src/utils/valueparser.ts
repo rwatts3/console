@@ -8,6 +8,7 @@ export function valueToString(
   field: Field,
   returnNullAsString: boolean,
   ignoreJson: boolean = false,
+  ignoreDate: boolean = false,
 ): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''
@@ -32,6 +33,10 @@ export function valueToString(
     }
 
   } else {
+
+    if (field.typeIdentifier === 'DateTime' && ignoreDate) {
+      return value as string
+    }
     if (field.typeIdentifier === 'Json' && ignoreJson) {
       return value as string
     }
