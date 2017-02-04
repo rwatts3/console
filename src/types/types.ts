@@ -1,4 +1,5 @@
 import {Step} from './gettingStarted'
+import {TypedValue} from './utils'
 
 export interface RelayConnection<T> {
   edges: RelayEdge<T>[]
@@ -119,15 +120,17 @@ export interface Field {
   isRequired: boolean
   isList: boolean
   isUnique: boolean
-  isSystem: boolean
-  isReadonly: boolean
-  typeIdentifier: FieldType
-  defaultValue?: string
+  isSystem?: boolean
+  isReadonly?: boolean
+  typeIdentifier?: FieldType
+  defaultValue?: TypedValue
   enumValues: string[]
   reverseRelationField?: Field
   relatedModel?: Model
   relation?: Relation
-  model: Model
+  model?: Model
+  migrationValue?: TypedValue
+  constraints?: Constraint[]
 }
 
 export interface Relation {
@@ -271,3 +274,12 @@ export type RelationPopupDisplayState = 'DEFINE_RELATION' | 'SET_MUTATIONS'
 export type Cardinality = 'ONE_TO_ONE' | 'ONE_TO_MANY' | 'MANY_TO_ONE' | 'MANY_TO_MANY'
 
 export type BreakingChangeIndicatorStyle = 'TOP' | 'RIGHT'
+
+export type ConstraintType = 'REGEX' | 'CONTAINS' | 'STARTS_WITH' | 'ENDS_WITH' | 'EQUALS' | 'LENGTH'
+export type Operator = 'EQ' | 'GT' | 'LT' | 'GTE' | 'LTE'
+
+export interface Constraint {
+  type: ConstraintType
+  value: string
+  lengthOperator?: Operator
+}
