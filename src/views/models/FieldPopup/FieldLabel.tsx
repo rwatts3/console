@@ -2,6 +2,7 @@ import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {FieldPopupErrors} from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
+import Tether from '../../../components/Tether/Tether'
 
 interface State {
   isEnteringName: boolean
@@ -71,24 +72,35 @@ export default class FieldLabel extends React.Component<Props, State> {
         {isEnteringName || name.length === 0 ?
           (
             <div className='flex itemsCenter pr38 edit-name'>
-              <input
-                className={'fieldNameInputField' + ((errors.invalidName && showErrors) ? ' error' : '')}
-                autoFocus={true}
-                placeholder='Select a name ...'
-                value={name}
-                onKeyDown={this.handleKeyDownOnFieldName}
-                onChange={(e: any) => {
-                  this.props.onChangeName(e.target.value)
-                  this.setState({
-                    isEnteringName: true,
-                  } as State)
-                }}
-                onFocus={() =>
-                  this.setState({
-                    isEnteringDescription: false,
-                  } as State)
-                }
-              />
+              <Tether
+                steps={[{
+                  step: 'STEP2_ENTER_FIELD_NAME_IMAGEURL',
+                  title: 'Call the field "imageUrl"',
+                  description: 'Field names always start lower case.',
+                }]}
+                offsetX={5}
+                offsetY={5}
+                width={240}
+              >
+                <input
+                  className={'fieldNameInputField' + ((errors.invalidName && showErrors) ? ' error' : '')}
+                  autoFocus={true}
+                  placeholder='Select a name ...'
+                  value={name}
+                  onKeyDown={this.handleKeyDownOnFieldName}
+                  onChange={(e: any) => {
+                    this.props.onChangeName(e.target.value)
+                    this.setState({
+                      isEnteringName: true,
+                    } as State)
+                  }}
+                  onFocus={() =>
+                    this.setState({
+                      isEnteringDescription: false,
+                    } as State)
+                  }
+                />
+              </Tether>
               <div className='flex itemsCenter'>
                 {errors.invalidName && showErrors && (
                   <ErrorInfo>

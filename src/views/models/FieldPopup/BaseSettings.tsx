@@ -8,6 +8,7 @@ import {FieldType} from '../../../types/types'
 import * as TagsInput from 'react-tagsinput'
 import {FieldPopupErrors} from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
+import Tether from '../../../components/Tether/Tether'
 
 require('./react-tagsinput.css')
 
@@ -109,14 +110,25 @@ export default class BaseSettings extends React.Component<Props,State> {
           errors={errors}
           showErrors={showErrors}
         />
-        <FieldHorizontalSelect
-          activeBackgroundColor={$v.blue}
-          inactiveBackgroundColor='#F5F5F5'
-          choices={fieldTypes}
-          selectedIndex={fieldTypes.indexOf(typeIdentifier || '')}
-          inactiveTextColor={$v.gray30}
-          onChange={(index) => onChangeTypeIdentifier(fieldTypes[index] as FieldType)}
-        />
+        <Tether
+          steps={[{
+            step: 'STEP2_SELECT_TYPE_IMAGEURL',
+            title: 'Select the type "String"',
+          }]}
+          offsetX={5}
+          offsetY={5}
+          width={240}
+          side={'top'}
+        >
+          <FieldHorizontalSelect
+            activeBackgroundColor={$v.blue}
+            inactiveBackgroundColor='#F5F5F5'
+            choices={fieldTypes}
+            selectedIndex={fieldTypes.indexOf(typeIdentifier || '')}
+            inactiveTextColor={$v.gray30}
+            onChange={(index) => onChangeTypeIdentifier(fieldTypes[index] as FieldType)}
+          />
+        </Tether>
         {showErrors && errors.typeMissing && (
           <div className='type-error'>
             <ErrorInfo>

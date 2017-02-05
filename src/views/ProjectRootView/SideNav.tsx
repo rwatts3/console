@@ -560,6 +560,9 @@ export class SideNav extends React.Component<Props, State> {
             offsetY={-5}
             offsetX={-13}
             width={350}
+            style={{
+              pointerEvents: 'none',
+            }}
           >
             <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
           </Tether>

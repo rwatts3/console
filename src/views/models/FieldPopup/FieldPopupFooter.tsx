@@ -2,6 +2,8 @@ import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import ConfirmPopup from './ConfirmFieldPopup'
 import ConfirmFieldPopup from './ConfirmFieldPopup'
+import {Field} from '../../../types/types'
+import Tether from '../../../components/Tether/Tether'
 
 interface Props {
   onSelectIndex: (index: number) => void
@@ -17,6 +19,10 @@ interface Props {
   onConfirmBreakingChanges: Function
   onReset: Function
   onDelete: Function
+  onCancel: (e: any) => void
+  onDeletePopupVisibilityChange: (visible: boolean) => void
+  initialField?: Field
+  mutatedField: Field
 }
 
 interface State {
@@ -47,6 +53,9 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
       onConfirmBreakingChanges,
       onReset,
       onDelete,
+      onCancel,
+      mutatedField,
+      initialField,
     } = this.props
     const {showDeletePopup} = this.state
 
@@ -108,7 +117,7 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
           }
         `}</style>
         {create ? (
-            <div className='cancel'>
+            <div className='cancel' onClick={onCancel}>
               Cancel
             </div>
           ) : (
@@ -196,11 +205,24 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
                   fieldName={name}
                   onConfirmBreakingChanges={onConfirmBreakingChanges}
                   onResetBreakingChanges={onReset}
+                  initialField={initialField}
+                  mutatedField={mutatedField}
                 />
               ) : (
-                <div className={'button' + (valid ? ' active' : '')} onClick={onSubmit}>
-                  {create ? 'Create' : 'Update'} Field
-                </div>
+                <Tether
+                  steps={[{
+                    step: 'STEP2_CLICK_CONFIRM_IMAGEURL',
+                    title: `That's it, click create!`,
+                  }]}
+                  offsetX={5}
+                  offsetY={5}
+                  width={240}
+                  zIndex={2000}
+                >
+                  <div className={'button' + (valid ? ' active' : '')} onClick={onSubmit}>
+                    {create ? 'Create' : 'Update'} Field
+                  </div>
+                </Tether>
               )
           )}
         </div>
@@ -209,10 +231,12 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
   }
 
   private handleCloseDeletePopup = () => {
+    this.props.onDeletePopupVisibilityChange(false)
     this.setState({showDeletePopup: false})
   }
 
   private handleShowDeletePopup = () => {
+    this.props.onDeletePopupVisibilityChange(true)
     this.setState({showDeletePopup: true})
   }
 }

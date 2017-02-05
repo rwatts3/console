@@ -40,6 +40,8 @@ import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
+import Loading from '../../../components/Loading/Loading'
+import {GettingStartedState} from '../../../types/gettingStarted'
 
 interface Props {
   field?: Field
@@ -50,6 +52,8 @@ interface Props {
   projectId: string
   showNotification: ShowNotificationCallback
   showDonePopup: () => void
+  gettingStartedState: GettingStartedState
+  nextStep: any
 }
 
 export interface State {
@@ -60,6 +64,9 @@ export interface State {
   activeTabIndex: number
   create: boolean
   showErrors: boolean
+  deletePopupVisible: boolean
+  deleting: boolean // needed for breaking changes to not show up, when relay already got the optimistic response
+  loading: boolean
 }
 
 export interface MigrationUIState {
@@ -84,6 +91,9 @@ class FieldPopup extends React.Component<Props, State> {
         activeTabIndex: 0,
         create: false,
         showErrors: false,
+        deletePopupVisible: false,
+        deleting: false,
+        loading: false,
       }
     } else {
       this.state = {
@@ -92,9 +102,32 @@ class FieldPopup extends React.Component<Props, State> {
         activeTabIndex: 0,
         create: true,
         showErrors: false,
+        deletePopupVisible: false,
+        deleting: false,
+        loading: false,
       }
     }
     global['f'] = this
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown)
+  }
+
+  componentDidUpdate() {
+    if (this.state.field.name === 'imageUrl' &&
+      this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
+      this.props.nextStep()
+    }
+
+    if (this.state.field.typeIdentifier === 'String' &&
+      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_IMAGEURL')) {
+      this.props.nextStep()
+    }
   }
 
   render() {
@@ -115,6 +148,9 @@ class FieldPopup extends React.Component<Props, State> {
       showErrors,
       create,
       activeTabIndex,
+      deletePopupVisible,
+      deleting,
+      loading,
     } = this.state
 
     const {nodeCount, projectId} = this.props
@@ -124,10 +160,10 @@ class FieldPopup extends React.Component<Props, State> {
     // if there is an error, it's not valid
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
     const changed = didChange(this.state.field, this.props.field)
-    const breaking = isBreaking(this.state.field, this.props.field)
+    const breaking = isBreaking(this.state.field, this.props.field) && !deleting
 
     let modalStyling = fieldModalStyle
-    if (breaking) {
+    if (breaking || deletePopupVisible) {
       modalStyling = {
         ...fieldModalStyle,
         content: {
@@ -152,6 +188,9 @@ class FieldPopup extends React.Component<Props, State> {
             @p: .overflowXHidden;
             transition: .1s linear height;
             max-height: calc(100vh - 200px);
+          }
+          .loading {
+            @p: .fixed, .top0, .left0, .right0, .bottom0, .bgWhite50, .flex, .justifyCenter, .itemsCenter;
           }
         `}</style>
         <div
@@ -223,42 +262,75 @@ class FieldPopup extends React.Component<Props, State> {
             onReset={this.handleReset}
             onConfirmBreakingChanges={this.handleSubmit}
             onDelete={this.handleDelete}
+            onDeletePopupVisibilityChange={this.handleDeletePopupVisibilityChange}
+            onCancel={this.close}
+            initialField={this.props.field}
+            mutatedField={this.state.field}
           />
         </div>
+        {loading && (
+          <div className='loading'>
+            <Loading />
+          </div>
+        )}
       </Modal>
     )
   }
 
+  private onKeyDown = (e: any) => {
+    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+      this.close()
+    }
+    if (e.keyCode === 13) {
+      this.handleSubmit()
+    }
+  }
+
+  private handleDeletePopupVisibilityChange = (deletePopupVisible: boolean) => {
+    this.setState({
+      deletePopupVisible,
+    } as State)
+  }
+
   private handleDelete = () => {
-    Relay.Store.commitUpdate(
-      new DeleteFieldMutation({
-        fieldId: this.state.field.id,
-        modelId: this.props.modelId,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
+    this.setState({deleting: true, loading: true} as State, () => {
+      Relay.Store.commitUpdate(
+        new DeleteFieldMutation({
+          fieldId: this.state.field.id,
+          modelId: this.props.modelId,
+        }),
+        {
+          onSuccess: () => {
+            this.close()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            // this.setState({loading: false} as State)
+          },
         },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          // this.setState({loading: false} as State)
-        },
-      },
-    )
+      )
+    })
   }
 
   private handleReset = () => {
     this.setState({field: this.props.field || emptyField} as State)
   }
 
-  private updateField = (fn: Function) => {
+  private updateField = (fn: Function, done?: Function) => {
     return (...params) => {
-      this.setState(({field, ...state}) => {
-        return {
-          ...state,
-          field: fn(field, ...params),
-        }
-      })
+      this.setState(
+        ({field, ...state}) => {
+          return {
+            ...state,
+            field: fn(field, ...params),
+          }
+        },
+        () => {
+          if (typeof done === 'function') {
+            done()
+          }
+        },
+      )
     }
   }
 
@@ -318,37 +390,75 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private create() {
+    const _create = () => {
+      this.setState({loading: true} as State)
 
-    const {modelId} = this.props
-    const {field} = this.state
+      const {modelId} = this.props
+      const {field} = this.state
 
-    let input: any = this.patchDefaultAndMigrationValue(field)
-    // let input = field
+      let input: any = this.patchDefaultAndMigrationValue(field)
+      // let input = field
 
-    input = {
-      ...input,
-      modelId,
+      input = {
+        ...input,
+        modelId,
+      }
+
+      Relay.Store.commitUpdate(
+        new AddFieldMutation(input),
+        {
+          onSuccess: () => {
+            this.close()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            // this.setState({loading: false} as State)
+          },
+        },
+      )
     }
-    console.log('modelId', modelId, input)
 
-    Relay.Store.commitUpdate(
-      new AddFieldMutation(input),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          // this.setState({loading: false} as State)
-        },
-      },
-    )
+    if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CONFIRM_IMAGEURL')) {
+      if (this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase()
+        && this.state.field.typeIdentifier === 'String') {
+        // correct the field name to imageUrl, because many people type in imageurl or imageURL and get stuck here
+        // seconds argument of updateField is a callback which gets executed AFTER the state has been mutated
+        // by setState
+        this.updateField(updateName, () => {
+          this.props.showDonePopup()
+          this.props.nextStep()
+          _create()
+        })('imageUrl')
+      } else {
+        this.props.showNotification({
+          level: 'warning',
+          message: 'Make sure that the name is "imageUrl" and the type is "String".',
+        })
+        return
+      }
+    } else {
+      if (this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_FIELD_DESCRIPTION')) {
+        if (this.state.field.name === 'description' && this.state.field.typeIdentifier === 'String') {
+          this.props.showDonePopup()
+          this.props.nextStep()
+        } else {
+          this.props.showNotification({
+            level: 'warning',
+            message: 'Make sure that the name is "description" and the type is "String".',
+          })
+          return
+        }
+      }
+      _create()
+    }
+
   }
 
   private update() {
     const {field} = this.state
     let updatedField: any = this.patchDefaultAndMigrationValue(field)
     // TODO: proper typing
+    this.setState({loading: true} as State)
 
     Relay.Store.commitUpdate(
       new UpdateFieldMutation(updatedField),

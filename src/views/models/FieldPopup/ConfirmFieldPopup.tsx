@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
+import {Field} from '../../../types/types'
 
 interface State {
   enteredFieldName: string
@@ -14,6 +15,8 @@ interface Props {
   onResetBreakingChanges?: Function
   fieldName?: string
   className?: string
+  initialField?: Field
+  mutatedField?: Field
 }
 
 export default class ConfirmFieldPopup extends React.Component<Props, State> {
@@ -25,8 +28,28 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
 
   render() {
 
+    const {initialField, mutatedField} = this.props
+
     const redIcon = require('../../../assets/icons/warning_red.svg')
     const orangeIcon = require('../../../assets/icons/warning_orange.svg')
+
+    let onlyNullWilBeReplaced = false
+    let allWillBeReplaced = false
+    let fieldAndMutationNameWillChange = false
+
+    if (initialField && mutatedField) {
+      if (initialField.typeIdentifier !== mutatedField.typeIdentifier) {
+        allWillBeReplaced = true
+      }
+
+      if (!allWillBeReplaced && !initialField.isRequired && mutatedField.isRequired) {
+        onlyNullWilBeReplaced = true
+      }
+
+      if (initialField.name !== mutatedField.name) {
+        fieldAndMutationNameWillChange = true
+      }
+    }
 
     return (
       <div className={`container ${this.props.red ? 'deletePositioning' : 'breakingChangesPositioning'}`}>
@@ -38,7 +61,7 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
 
           .breakingChangesPositioning {
             max-width: 400px;
-            top: -20px;
+            top: -40px;
             right: -100px;
           }
 
@@ -80,7 +103,13 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
           </div>
         </div>
         <div className='pa25 f16 black50 bb bBlack10'>
-          Your changes will break the schema containing your field <b>{this.props.fieldName}</b>
+          {onlyNullWilBeReplaced && 'Note that null values will be replaced by a migration value.'}
+          {allWillBeReplaced && 'Note that all values will be replaced by the migration value.'}
+          {fieldAndMutationNameWillChange && (
+            <div>
+              Your changes will break the schema containing your field <b>{this.props.fieldName}</b>.
+            </div>
+          )}
         </div>
         {this.props.red ? this.generateFooterForDeletion() : this.generateFooterForBreakingChanges()}
       </div>
