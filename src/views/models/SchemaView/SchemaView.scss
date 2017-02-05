@@ -93,7 +93,7 @@
 }
 
 .table {
-  height: calc(100% - #{$headerHeight});
+  height: calc(100% - 125px);
 
   .fieldName, .type, .description, .constraints, .permissions {
     display: flex;
