@@ -46,6 +46,7 @@ interface Props {
   viewer: any
   relay: Relay.RelayProp
   showNotification: ShowNotificationCallback
+  location: any
 }
 
 class CreateRelationPopup extends React.Component<Props, State> {
@@ -55,17 +56,24 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     const {relation} = props.viewer
 
+    const {leftModelName} = this.props.location.query
+    let preselectedModel
+    if (leftModelName) {
+      preselectedModel = this.props.viewer.project.models.edges.map((edge) => edge.node)
+        .find((node) => node.name === leftModelName)
+    }
+
     this.state = {
       loading: false,
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
-      leftSelectedModel: relation ? relation.leftModel : null,
+      leftSelectedModel: preselectedModel ? preselectedModel : relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,
       selectedCardinality: relation ?
         this.cardinalityFromRelation(relation) : 'ONE_TO_ONE' as Cardinality,
       relationName: relation ? relation.name : '',
       relationDescription: relation ? relation.description : '',
       fieldOnLeftModelName: relation ? relation.fieldOnLeftModel.name : null,
-      fieldOnRightModelName: relation ? relation.fieldOnRightModel.name : null,
+      fieldOnRightModelName: leftModelName ? leftModelName : relation ? relation.fieldOnRightModel.name : null,
       leftInputIsBreakingChange: false,
       rightInputIsBreakingChange: false,
       relationNameIsBreakingChange: false,
