@@ -34,6 +34,10 @@ if (__GA_CODE__) {
   })
 }
 
+if (typeof Raven !== 'undefined' && process.env.NODE_ENV === 'production') {
+  Raven.config('https://f4b2d5e7865742e290a3bf77849d5e4a@sentry.io/135786').install()
+}
+
 const reducers = combineReducers({
   gettingStarted: reduceGettingStartedState,
   popup: reducePopup,

@@ -35,6 +35,7 @@ declare module 'enzyme-to-json'
 declare module 'graphcool-graphiql'
 declare module 'downloadjs'
 
+declare var Raven: any
 declare var Intercom: any
 declare var analytics: any
 declare var __BACKEND_ADDR__: string
