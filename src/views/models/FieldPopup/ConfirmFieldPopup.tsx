@@ -39,6 +39,8 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
     let fieldAndMutationNameWillChange = false
     let enumValueRemoved = false
     let uniqueRemoved = false
+    let willBeList = false
+    let willBeScalar = false
 
     if (initialField && mutatedField) {
       if (initialField.typeIdentifier !== mutatedField.typeIdentifier) {
@@ -56,6 +58,10 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
       enumValueRemoved = valuesMissing(initialField.enumValues, mutatedField.enumValues)
 
       uniqueRemoved = initialField.isUnique && !mutatedField.isUnique
+
+      willBeList = !initialField.isList && mutatedField.isList
+
+      willBeScalar = initialField.isList && !mutatedField.isList
     }
 
     return (
@@ -134,6 +140,20 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
             <div>
               Note that you removed the unique constraint, so upsert mutations won't be
               possible with this field anymore.
+            </div>
+          )}
+          {willBeList && (
+            <div>
+              You're changing the field from a normal scalar field to a list.
+              This will break the schema.
+              Make sure you provide a <b>migration value.</b>
+            </div>
+          )}
+          {willBeScalar && (
+            <div>
+              You're changing the field from a list to a single scalar value.
+              This will break the schema.
+              Make sure you provide a <b>migration value.</b>
             </div>
           )}
         </div>
