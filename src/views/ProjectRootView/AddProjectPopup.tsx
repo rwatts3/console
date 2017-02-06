@@ -92,7 +92,8 @@ class AddProjectPopup extends React.Component<Props, State> {
                 particles.orange,
                 particles.f14,
               )}>
-                A project name has to start with a capital letter and may only contain alphanumeric characters and spaces.
+                A project name has to start with a capital letter and may only contain alphanumeric characters
+                and spaces.
               </Warning>
               <NameInput
                 className={cx(
