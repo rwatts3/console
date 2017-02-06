@@ -51,10 +51,11 @@ export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
     return false
   }
 
+  // isRequired is not interesting here, because either we get the error from the server (not req => req)
+  // or it is just not breaking
   if (
-    initialField.isRequired !== mutatedField.isRequired ||
     initialField.isList !== mutatedField.isList ||
-    initialField.isUnique !== mutatedField.isUnique ||
+    (initialField.isUnique && !mutatedField.isUnique) ||
     valuesMissing(initialField.enumValues, mutatedField.enumValues) || // only breaking, when values are missing
     initialField.name !== mutatedField.name ||
     initialField.typeIdentifier !== mutatedField.typeIdentifier

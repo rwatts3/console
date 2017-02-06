@@ -38,6 +38,7 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
     let allWillBeReplaced = false
     let fieldAndMutationNameWillChange = false
     let enumValueRemoved = false
+    let uniqueRemoved = false
 
     if (initialField && mutatedField) {
       if (initialField.typeIdentifier !== mutatedField.typeIdentifier) {
@@ -53,6 +54,8 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
       }
 
       enumValueRemoved = valuesMissing(initialField.enumValues, mutatedField.enumValues)
+
+      uniqueRemoved = initialField.isUnique && !mutatedField.isUnique
     }
 
     return (
@@ -107,14 +110,32 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
           </div>
         </div>
         <div className='pa25 f16 black50 bb bBlack10'>
-          {onlyNullWilBeReplaced && 'Note that null values will be replaced by a migration value.'}
-          {allWillBeReplaced && 'Note that all values will be replaced by the migration value.'}
+          {onlyNullWilBeReplaced && (
+            <div>
+              Note that null values will be replaced by a migration value.
+            </div>
+          )}
+          {allWillBeReplaced && (
+            <div>
+              Note that all values will be replaced by the migration value.
+            </div>
+          )}
           {fieldAndMutationNameWillChange && (
             <div>
               Your changes will break the schema containing your field <b>{this.props.fieldName}</b>.
             </div>
           )}
-          {enumValueRemoved && 'Note that you removed enum values, which could be used in Nodes currently.'}
+          {enumValueRemoved && (
+            <div>
+              Note that you removed enum values, which could be used in Nodes currently.
+            </div>
+          )}
+          {uniqueRemoved && (
+            <div>
+              Note that you removed the unique constraint, so upsert mutations won't be
+              possible with this field anymore.
+            </div>
+          )}
         </div>
         {this.props.red ? this.generateFooterForDeletion() : this.generateFooterForBreakingChanges()}
       </div>
