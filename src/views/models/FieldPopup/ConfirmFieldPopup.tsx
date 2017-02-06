@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {Field} from '../../../types/types'
+import {valuesMissing} from './FieldPopupState'
 
 interface State {
   enteredFieldName: string
@@ -36,6 +37,7 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
     let onlyNullWilBeReplaced = false
     let allWillBeReplaced = false
     let fieldAndMutationNameWillChange = false
+    let enumValueRemoved = false
 
     if (initialField && mutatedField) {
       if (initialField.typeIdentifier !== mutatedField.typeIdentifier) {
@@ -49,6 +51,8 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
       if (initialField.name !== mutatedField.name) {
         fieldAndMutationNameWillChange = true
       }
+
+      enumValueRemoved = valuesMissing(initialField.enumValues, mutatedField.enumValues)
     }
 
     return (
@@ -110,6 +114,7 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
               Your changes will break the schema containing your field <b>{this.props.fieldName}</b>.
             </div>
           )}
+          {enumValueRemoved && 'Note that you removed enum values, which could be used in Nodes currently.'}
         </div>
         {this.props.red ? this.generateFooterForDeletion() : this.generateFooterForBreakingChanges()}
       </div>
@@ -205,7 +210,8 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
             }}
           >
             Save Changes
-          </div>)}
+          </div>
+        )}
       </div>
     )
   }

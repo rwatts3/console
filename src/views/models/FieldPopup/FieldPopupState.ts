@@ -55,7 +55,7 @@ export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
     initialField.isRequired !== mutatedField.isRequired ||
     initialField.isList !== mutatedField.isList ||
     initialField.isUnique !== mutatedField.isUnique ||
-    initialField.enumValues !== mutatedField.enumValues ||
+    valuesMissing(initialField.enumValues, mutatedField.enumValues) || // only breaking, when values are missing
     initialField.name !== mutatedField.name ||
     initialField.typeIdentifier !== mutatedField.typeIdentifier
   ) {
@@ -63,6 +63,17 @@ export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
   }
 
   return false
+}
+
+// are values of a missing in b?
+export function valuesMissing(a, b) {
+  let missing = false
+  a.forEach(item => {
+    if (!b.includes(item)) {
+      missing = true
+    }
+  })
+  return missing
 }
 
 export function didChange(mutatedField: Field, initialField?: Field): boolean {
