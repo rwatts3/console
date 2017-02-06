@@ -119,7 +119,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   componentDidUpdate() {
-    if (this.state.field.name === 'imageUrl' &&
+    if (this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase() &&
       this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
       this.props.nextStep()
     }
