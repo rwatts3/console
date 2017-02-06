@@ -24,12 +24,14 @@ const guides: Tutorial[] = [
     description: 'A comprehensive, interactive introduction to Relay',
     link: 'https://learnrelay.org/',
     image: require('../../../assets/graphics/relay.png'),
-  }, {
+  },
+  {
     title: 'GraphQL and the amazing Apollo Client',
     description: 'Explore an Application built using React and Angular 2',
     link: 'https://medium.com/google-developer-experts/graphql-and-the-amazing-apollo-client-fe57e162a70c',
     image: require('../../../assets/graphics/apollo.png'),
-  }, {
+  },
+  {
     title: 'Introducing Lokka',
     description: 'A Simple JavaScript Client for GraphQL',
     link: 'https://voice.kadira.io/introducing-lokka-a-simple-javascript-client-for-graphql-e0802695648c',
@@ -45,6 +47,10 @@ const examples = {
   ReactApollo: {
     path: 'react-apollo-instagram-example',
     description: 'React + Apollo',
+  },
+  ReactNativeApollo: {
+    path: 'react-native-apollo-instagram-example',
+    description: 'React Native + Apollo',
   },
   AngularApollo: {
     path: 'angular-apollo-instagram-example',
@@ -174,6 +180,15 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                   onClick={() => this.props.selectExample('ReactApollo')}
                 >
                   React + Apollo
+                </div>
+                <div
+                  className={classnames(
+                    classes.exampleButton,
+                    selectedExample === 'ReactNativeApollo' ? classes.active : '',
+                  )}
+                  onClick={() => this.props.selectExample('ReactNativeApollo')}
+                >
+                  React Native + Apollo
                 </div>
                 <div
                   className={classnames(
@@ -348,6 +363,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     switch (example) {
       case 'ReactRelay': return '_dj9Os2ev4M'
       case 'ReactApollo': return '9nlwyPUPXjQ'
+      case 'ReactNativeApollo': return '9nlwyPUPXjQ'
       case 'AngularApollo': return 'EzD5fJ-uniI'
     }
   }

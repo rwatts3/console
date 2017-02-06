@@ -120,7 +120,8 @@ class CloneProjectPopup extends React.Component<Props, State> {
                 <Warning
                   className={cx($p.absolute, $p.left0, $p.orange, $p.f14)}
                 >
-                  A project name has to start with a capital letter and may only contain alphanumeric characters and spaces.
+                  A project name has to start with a capital letter and
+                  may only contain alphanumeric characters and spaces.
                 </Warning>
               )}
               <NameInput
