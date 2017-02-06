@@ -30,6 +30,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
             .breakingChangeIndicatorRight {
               @inherit: .absolute;
               left: 99%;
+
             }
 
             .breakingChangeIndicatorTop {
@@ -41,7 +42,8 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
         {offsets.map((offset, i) =>
           (<div
             key={i}
-            className={`${indicatorStyle === 'RIGHT' ? 'breakingChangeIndicatorRight' : 'breakingChangeIndicatorTop'}`}
+            className={`z1 ${indicatorStyle === 'RIGHT' ?
+             'breakingChangeIndicatorRight' : 'breakingChangeIndicatorTop'}`}
             style={indicatorStyle === 'RIGHT' ? {top: offset + '%'} : {left: offset + '%'}}
           >
             {messages && messages.length === offsets.length ?
