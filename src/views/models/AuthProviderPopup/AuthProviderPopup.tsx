@@ -55,7 +55,7 @@ class AuthProviderPopup extends React.Component<Props, null> {
           >
             <div className={cx($p.bgGreen, $p.flex, $p.justifyBetween, $p.itemsCenter, $p.white, $p.pa25)}>
               <div className={cx($p.f38, $p.fw3)}>
-                Authentication Methods
+                Auth Providers
               </div>
               <div className={$p.pointer} onClick={this.close}>
                 <Icon
