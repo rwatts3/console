@@ -54,7 +54,7 @@ export default class EditValueInput extends React.Component<Props, State> {
             </div>
           )
           :
-          (!value) && (
+          (typeof value === 'undefined' ? (
             <div
               className='flex itemsCenter pointer bbox edit-value'
               onClick={() => this.setState({
@@ -71,8 +71,7 @@ export default class EditValueInput extends React.Component<Props, State> {
                 <span className='black30'> (optional)</span>
               </div>
             </div>
-          ) ||
-          (value) && (
+          ) : (
             <div
               className='flex itemsCenter pointer bbox edit-value '
               onMouseEnter={() => this.setState({isHoveringValue: true} as State)}
@@ -93,7 +92,7 @@ export default class EditValueInput extends React.Component<Props, State> {
               )}
             </div>
           )
-        }
+        )}
       </div>
     )
   }

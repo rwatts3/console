@@ -368,7 +368,7 @@ class FieldPopup extends React.Component<Props, State> {
     let patchedField = field
 
     // do not patch boolean or datetime
-    if (['Boolean', 'DateTime'].includes(field.typeIdentifier)) {
+    if (['DateTime'].includes(field.typeIdentifier)) {
       return field
     }
 
