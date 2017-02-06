@@ -475,7 +475,14 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    const changed = didChange(this.state.field, this.props.field)
+    if (changed) {
+      if (confirm('You have unsaves changes. Do you really want to stop editing the field?')) {
+        this.props.router.goBack()
+      }
+    } else {
+      this.props.router.goBack()
+    }
   }
 }
 
