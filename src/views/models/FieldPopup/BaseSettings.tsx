@@ -189,8 +189,11 @@ export default class BaseSettings extends React.Component<Props,State> {
     const newFirstChar = newEnum[0]
     const firstCharNumber = parseInt(newFirstChar, 10)
     if (newFirstChar === newFirstChar.toLowerCase() || !isNaN(firstCharNumber)) {
+      const proposal1 = newEnum[0].toUpperCase() + newEnum.slice(1, newEnum.length)
+      const proposal2 = newEnum.toUpperCase()
       this.props.showNotification({
-        message: `${newEnum} is no valid enum value, the first character must be an uppercase letter.`,
+        message: `${newEnum} is no valid enum value, the first character must be an uppercase letter.`
+        + ` Try '${proposal1}' or '${proposal2}'.`,
         level: 'error',
       })
       return
@@ -203,11 +206,14 @@ export default class BaseSettings extends React.Component<Props,State> {
     const {showTagInput} = this.state
 
     return (
-      <div className='tag-input'>
+      <div className={'tag-input' + (showTagInput ? '' : ' input-disabled')}>
         <style jsx>{`
           .tag-input {
-            @p: .inlineFlex, .itemsCenter;
+            @p: .inlineFlex, .itemsCenter, .relative;
             height: 42px;
+          }
+          .input-disabled {
+            top: 7px;
           }
           .input {
             @p: .f16, .blue, .mr10;
