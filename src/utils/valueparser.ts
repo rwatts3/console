@@ -7,8 +7,7 @@ export function valueToString(
   value: TypedValue,
   field: Field,
   returnNullAsString: boolean,
-  ignoreJson: boolean = false,
-  ignoreDate: boolean = false,
+  serialize: boolean = false,
 ): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''
@@ -26,35 +25,39 @@ export function valueToString(
       return '[]'
     }
 
-    if (!isStringlyType(field)) {
+    if (!isStringlyType(field, serialize)) {
       return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
     } else {
       return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
     }
 
   } else {
-
-    if (field.typeIdentifier === 'DateTime' && ignoreDate) {
-      return value as string
-    }
-    if (field.typeIdentifier === 'Json' && ignoreJson) {
-      return value as string
-    }
-    return atomicValueToString(value as AtomicValue, field, returnNullAsString)
+    return atomicValueToString(value as AtomicValue, field, returnNullAsString, serialize)
   }
 }
 
-function isStringlyType(field: Field): boolean {
+function isStringlyType(field: Field, serialize: boolean = false): boolean {
   const type = field.typeIdentifier
 
-  switch (type) {
-    case 'Enum':
-    case 'Boolean':
-    case 'Int':
-    case 'Float':
-      return false
-    default:
-      return true
+  if (serialize) {
+    switch (type) {
+      case 'Boolean':
+      case 'Int':
+      case 'Float':
+        return false
+      default:
+        return true
+    }
+  } else {
+    switch (type) {
+      case 'Enum':
+      case 'Boolean':
+      case 'Int':
+      case 'Float':
+        return false
+      default:
+        return true
+    }
   }
 }
 
@@ -67,7 +70,12 @@ function listIsEmpty(value: (Array<AtomicValue>)): boolean {
   return value.length === 0
 }
 
-export function atomicValueToString(value: AtomicValue, field: Field, returnNullAsString: boolean = true): string {
+export function atomicValueToString(
+  value: AtomicValue,
+  field: Field,
+  returnNullAsString: boolean = true,
+  serialize: boolean = false,
+): string {
   if (value === null) {
     return returnNullAsString ? 'null' : ''
   }
@@ -83,6 +91,9 @@ export function atomicValueToString(value: AtomicValue, field: Field, returnNull
 
   switch (type) {
     case 'DateTime':
+      if (serialize) {
+        return new Date(value).toISOString()
+      }
       return new Date(value).toLocaleString()
     case 'Password':
       return '***************'

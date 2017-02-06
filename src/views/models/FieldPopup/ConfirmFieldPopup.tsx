@@ -41,6 +41,7 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
     let uniqueRemoved = false
     let willBeList = false
     let willBeScalar = false
+    let defaultValue = false
 
     if (initialField && mutatedField) {
       if (initialField.typeIdentifier !== mutatedField.typeIdentifier) {
@@ -63,6 +64,15 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
 
       willBeScalar = initialField.isList && !mutatedField.isList
     }
+
+    defaultValue = !(
+      allWillBeReplaced ||
+      fieldAndMutationNameWillChange ||
+      enumValueRemoved ||
+      uniqueRemoved ||
+      willBeList ||
+      willBeScalar
+    )
 
     return (
       <div className={`container ${this.props.red ? 'deletePositioning' : 'breakingChangesPositioning'}`}>
@@ -154,6 +164,11 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
               You're changing the field from a list to a single scalar value.
               This will break the schema.
               Make sure you provide a <b>migration value.</b>
+            </div>
+          )}
+          {defaultValue && (
+            <div>
+              Your changes will break the schema containing your field <b>{this.props.fieldName}</b>.
             </div>
           )}
         </div>

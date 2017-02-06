@@ -357,6 +357,7 @@ class FieldPopup extends React.Component<Props, State> {
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
 
     if (!valid) {
+      console.error('shit is not valid', errors)
       this.setState({
         showErrors: true,
       } as State)
@@ -375,14 +376,14 @@ class FieldPopup extends React.Component<Props, State> {
     if (typeof field.defaultValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        defaultValue: valueToString(field.defaultValue, field, true, true),
+        defaultValue: field.defaultValue === null ? null : valueToString(field.defaultValue, field, true, true),
       }
     }
 
     if (typeof field.migrationValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        migrationValue: valueToString(field.migrationValue, field, true, true),
+        migrationValue: field.migrationValue === null ? null : valueToString(field.migrationValue, field, true, true),
       }
     }
 

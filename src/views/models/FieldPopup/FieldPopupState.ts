@@ -99,6 +99,8 @@ export function updateTypeIdentifier(state: Field, typeIdentifier: FieldType): F
 export function toggleIsList(state: Field): Field {
   return {
     ...state,
+    defaultValue: undefined,
+    migrationValue: undefined,
     isList: !state.isList,
   }
 }
