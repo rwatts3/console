@@ -90,6 +90,8 @@ export function didChange(mutatedField: Field, initialField?: Field): boolean {
 export function updateTypeIdentifier(state: Field, typeIdentifier: FieldType): Field {
   return {
     ...state,
+    defaultValue: undefined,
+    migrationValue: undefined,
     typeIdentifier,
   }
 }

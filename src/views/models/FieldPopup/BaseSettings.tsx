@@ -206,14 +206,12 @@ export default class BaseSettings extends React.Component<Props,State> {
     const {showTagInput} = this.state
 
     return (
-      <div className={'tag-input' + (showTagInput ? '' : ' input-disabled')}>
+      <div className='tag-input'>
         <style jsx>{`
           .tag-input {
             @p: .inlineFlex, .itemsCenter, .relative;
             height: 42px;
-          }
-          .input-disabled {
-            top: 7px;
+            padding-bottom: 4px;
           }
           .input {
             @p: .f16, .blue, .mr10;

@@ -35,7 +35,7 @@ import {
   nextStep,
 } from '../../../actions/gettingStarted'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
-import {valueToString} from '../../../utils/valueparser'
+import {valueToString, stringToValue} from '../../../utils/valueparser'
 import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
@@ -85,7 +85,8 @@ class FieldPopup extends React.Component<Props, State> {
       this.state = {
         field: {
           ...field,
-          defaultValue: field.defaultValue === null ? undefined : field.defaultValue, // if null, put it to undefined
+          // if null, put it to undefined
+          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue, field),
         },
 
         activeTabIndex: 0,
@@ -279,10 +280,13 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
-    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+    if (e.keyCode === 27 && (e.target instanceof HTMLInputElement)) {
       this.close()
     }
-    if (e.keyCode === 13 && ![].includes.call(e.target.classList, 'enum-input')) {
+    // if it is an input, only if it has the enter-event class
+    if (e.keyCode === 13 && (
+      e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
+    ) {
       this.handleSubmit()
     }
   }
@@ -367,11 +371,6 @@ class FieldPopup extends React.Component<Props, State> {
 
   private patchDefaultAndMigrationValue(field: Field) {
     let patchedField = field
-
-    // do not patch boolean or datetime
-    if (['DateTime'].includes(field.typeIdentifier)) {
-      return field
-    }
 
     if (typeof field.defaultValue !== 'undefined') {
       patchedField = {
