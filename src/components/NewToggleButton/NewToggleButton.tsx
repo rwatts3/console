@@ -29,7 +29,7 @@ const Slider = styled.div`
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 50%;
-    box-shadow: 0 1px 3px ${variables.gray20};
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
   }
 `
 
