@@ -221,6 +221,7 @@ class FieldPopup extends React.Component<Props, State> {
                   onChangeEnumValues={this.updateField(updateEnumValues)}
                   errors={errors}
                   showErrors={showErrors}
+                  showNotification={this.props.showNotification}
                 />
               ) : activeTabIndex === 1 ? (
                   <AdvancedSettings
@@ -281,7 +282,7 @@ class FieldPopup extends React.Component<Props, State> {
     if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
       this.close()
     }
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && ![].includes.call(e.target.classList, 'enum-input')) {
       this.handleSubmit()
     }
   }

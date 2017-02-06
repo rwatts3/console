@@ -9,6 +9,7 @@ import * as TagsInput from 'react-tagsinput'
 import {FieldPopupErrors} from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
 import Tether from '../../../components/Tether/Tether'
+import {ShowNotificationCallback} from '../../../types/utils'
 
 require('./react-tagsinput.css')
 
@@ -26,6 +27,7 @@ interface Props {
   enumValues: string[]
   errors: FieldPopupErrors
   showErrors: boolean
+  showNotification: ShowNotificationCallback
 }
 
 interface State {
@@ -183,6 +185,16 @@ export default class BaseSettings extends React.Component<Props,State> {
   }
 
   private handleChange = (enumValues: string[]) => {
+    const newEnum = enumValues[enumValues.length - 1]
+    const newFirstChar = newEnum[0]
+    const firstCharNumber = parseInt(newFirstChar, 10)
+    if (newFirstChar === newFirstChar.toLowerCase() || !isNaN(firstCharNumber)) {
+      this.props.showNotification({
+        message: `${newEnum} is no valid enum value, the first character must be an uppercase letter.`,
+        level: 'error',
+      })
+      return
+    }
     this.props.onChangeEnumValues(enumValues)
   }
 
@@ -210,7 +222,7 @@ export default class BaseSettings extends React.Component<Props,State> {
             onBlur={onBlur}
             placeholder='Add an enum value'
             {...other}
-            className='input'
+            className='input enum-input'
           />
         )}
         <div className='field-popup-plus' onClick={() => this.handlePlusClick(onBlur, value)}>
