@@ -8,6 +8,8 @@ import {Transport} from 'lokka-transport-http'
 import * as CodeMirror from 'react-codemirror'
 import EditorConfiguration = CodeMirror.EditorConfiguration
 
+// const fileDownload = require('react-file-download')
+
 interface Props {
   viewer: Viewer
 }
@@ -63,9 +65,9 @@ class Export extends React.Component<Props, {}> {
         `}</style>
         <div className='exportDataContainer'>
           <div>
-            <div className='exportDataTitle'>Data data</div>
+            <div className='exportDataTitle'>Export Data</div>
             <div className='exportDataDescription'>
-              This is the data of your project that is stored to in the nodes.
+              This is the data of your project that is stored in the nodes.
               Here you can download everything.
             </div>
           </div>
@@ -130,8 +132,7 @@ class Export extends React.Component<Props, {}> {
         }
       }
     `).then((response) => {
-        console.log('url:', response.exportData.url)
-        download(response.exportData.url)
+      download(response.exportData.url)
     })
   }
 
