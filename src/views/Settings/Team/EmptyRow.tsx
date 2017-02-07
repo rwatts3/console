@@ -169,7 +169,7 @@ class EmptyRow extends React.Component<Props, State> {
       {
         onSuccess: () => {
           this.setState({isEnteringEmail: false} as State)
-          this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
+          this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
         },
         onFailure: (transaction) => {
           this.props.showNotification({message: transaction.getError().message, level: 'error'})
