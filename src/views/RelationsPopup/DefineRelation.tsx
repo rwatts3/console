@@ -23,9 +23,8 @@ interface Props {
   rightInputIsBreakingChange: boolean
   leftModelIsBreakingChange: boolean
   rightModelIsBreakingChange: boolean
-  forbiddenFieldNames: string[]
-  // leftSideMessagesForBreakingChange: string[]
-  // rightSideMessagesForBreakingChange: string[]
+  forbiddenFieldNamesForLeftModel: string[]
+  forbiddenFieldNamesForRightModel: string[]
 }
 
 export default class DefineRelation extends React.Component<Props, {}> {
@@ -53,7 +52,8 @@ export default class DefineRelation extends React.Component<Props, {}> {
           rightInputIsBreakingChange={this.props.rightInputIsBreakingChange}
           leftModelIsBreakingChange={this.props.leftModelIsBreakingChange}
           rightModelIsBreakingChange={this.props.rightModelIsBreakingChange}
-          forbiddenFieldNames={this.props.forbiddenFieldNames}
+          forbiddenFieldNamesForLeftModel={this.props.forbiddenFieldNamesForLeftModel}
+          forbiddenFieldNamesForRightModel={this.props.forbiddenFieldNamesForRightModel}
         />
         <RelationInfo
           leftModel={this.props.leftSelectedModel}

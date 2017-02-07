@@ -22,7 +22,16 @@ export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}
   }
 
   getConfigs () {
-    return []
+    return [{
+      type: 'RANGE_ADD',
+      parentName: 'project',
+      parentID: this.props.projectId,
+      connectionName: 'seats',
+      edgeName: 'seatEdge',
+      rangeBehaviors: {
+        '': 'append',
+      },
+    }]
   }
 
   getVariables () {
