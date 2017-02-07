@@ -23,7 +23,7 @@ import Settings from './views/Settings/Settings'
 import General from './views/Settings/General/General'
 import Authentication from './views/Settings/Authentication/Authentication'
 import Export from './views/Settings/Export/Export'
-// import Team from './views/Settings/Team/Team'
+import Team from './views/Settings/Team/Team'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/FieldPopup/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
@@ -121,7 +121,7 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
-        {/*<Route path='team' component={Team} queries={ViewerQuery} render={render} />*/}
+        {<Route path='team' component={Team} queries={ViewerQuery} render={render} />}
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
