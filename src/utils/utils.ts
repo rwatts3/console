@@ -99,3 +99,21 @@ export function removeDuplicatesFromStringArray(arr: string[]): string[] {
   let it = s.values()
   return Array.from(it)
 }
+
+// http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+export function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export function chunk(str: string, n: number, includeRemainder: boolean): string[] {
+  let result: string[] = []
+  while (n < str.length) {
+    let chunk = str.substring(0, n)
+    result.push(chunk)
+    str = str.substring(n, str.length)
+  }
+  if (includeRemainder) {
+    result.push(str)
+  }
+  return result
+}

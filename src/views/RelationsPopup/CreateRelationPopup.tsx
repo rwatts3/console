@@ -128,9 +128,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
       </div>
     )]
 
-    console.log('leftFieldName(), rightFieldName()', this.leftFieldName(), this.rightFieldName())
-    console.log('state.nameOfLeftField, state.nameOfRightField', fieldOnLeftModelName, fieldOnRightModelName)
-
     return (
       <PopupWrapper
         onClickOutside={this.close}>

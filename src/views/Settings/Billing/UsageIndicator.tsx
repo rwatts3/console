@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {$v, Icon} from 'graphcool-styles'
+import {numberWithCommas} from '../../../utils/utils'
 
 interface Props {
   metric: string // should be 'Nodes' or 'Operations'
@@ -19,6 +20,10 @@ export default class UsageIndicator extends React.Component<Props, {}> {
 
     const icon = this.iconForMetric()
 
+    const currentUsageString = numberWithCommas(this.props.currentUsage)
+    const maxString = this.props.metric === 'Nodes' ?
+      numberWithCommas(maxNodes) : numberWithCommas(maxOperations)
+
     return (
       <div className='container'>
         <style jsx={true}>{`
@@ -35,8 +40,8 @@ export default class UsageIndicator extends React.Component<Props, {}> {
             width={20}
             height={20}
           />
-          <div className='ml6 green f14 fw6'>{this.props.currentUsage}</div>
-          <div className='ml6 black50 f14'> / {this.props.metric === 'Nodes' ? maxNodes : maxOperations}</div>
+          <div className='ml6 green f14 fw6'>{currentUsageString}</div>
+          <div className='ml6 black50 f14'> / {maxString}</div>
         </div>
       </div>
     )

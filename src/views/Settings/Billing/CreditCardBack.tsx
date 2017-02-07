@@ -1,10 +1,12 @@
 import * as React from 'react'
+import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 
 interface Props {
   className?: string
   style?: any
   cpc: string
   didChangeCPC: Function
+  setEditingState: Function
 }
 
 export default class CreditCardBack extends React.Component<Props, {}> {
@@ -39,12 +41,23 @@ export default class CreditCardBack extends React.Component<Props, {}> {
           <div className='f12 fw6 white30 ttu'>CPC</div>
           <input
             className='inputField'
-            type="text"
+            type='text'
             value={this.props.cpc}
-            onChange={(e) => this.props.didChangeCPC(e.target.value)}
+            onChange={(e: any) => this.props.didChangeCPC(e.target.value)}
+            tabIndex={3}
+            onKeyDown={this.handleKeyDown}
+
           />
         </div>
       </div>
     )
+  }
+
+  private handleKeyDown = (e) => {
+    if (e.keyCode === ENTER_KEY) {
+      this.props.setEditingState(false, true)
+    } else if (e.keyCode === ESCAPE_KEY) {
+      this.props.setEditingState(false, false)
+    }
   }
 }

@@ -283,3 +283,14 @@ export interface Constraint {
   value: string
   lengthOperator?: Operator
 }
+
+export type PricingPlan = 'Developer' | 'Startup' | 'Growth' | 'Pro' | 'Enterprise'
+
+export interface PricingPlanInfo {
+  price: number
+  maxNodes: number
+  maxRequests: number
+  maxSeats: number
+  pricePerThousandAdditionalNodes: number
+  pricePerThousandAdditionalRequests: number
+}

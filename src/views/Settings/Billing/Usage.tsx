@@ -14,7 +14,7 @@ export default class Usage extends React.Component<Props, {}> {
         <style jsx={true}>{`
 
           .container {
-            @p: .flex, .flexColumn, .mt38, .ph25;
+            @p: .flex, .flexColumn, .ph60;
           }
 
           .title {

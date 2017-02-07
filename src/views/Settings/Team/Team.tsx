@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
-// import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
+import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
 
 interface Props {
   viewer: Viewer

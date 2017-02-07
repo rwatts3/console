@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {Icon} from 'graphcool-styles'
+import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 
 interface State {
 
@@ -7,10 +8,14 @@ interface State {
 
 interface Props {
   className?: string
-  ownerName: string
-  cardNumber: string
-  validThrough: string
+  creditCardNumber: string
+  cardHolderName: string
+  expirationDate: string
   isEditing: boolean
+  setEditingState: Function
+  onCreditCardNumberChange?: Function
+  onCardHolderNameChange?: Function
+  onExpirationDateChange?: Function
 }
 
 export default class CreditCardFront extends React.Component<Props, State> {
@@ -47,12 +52,16 @@ export default class CreditCardFront extends React.Component<Props, State> {
             height: 110px;
           }
         `}</style>
-          <Icon
-            className='pointer'
-            src={require('../../../assets/icons/edit_credit_card.svg')}
-            width={26}
-            height={26}
-          />
+          <div
+            onClick={() => this.props.setEditingState(true)}
+          >
+            <Icon
+              className='pointer'
+              src={require('../../../assets/icons/edit_credit_card.svg')}
+              width={26}
+              height={26}
+            />
+          </div>
           <Icon
             src={require('../../../assets/icons/visa.svg')}
             width={62}
@@ -64,8 +73,9 @@ export default class CreditCardFront extends React.Component<Props, State> {
 
         <div className='topEditing'>
           <style jsx={true}>{`
+
             .topEditing {
-              @p: .pt25, .pr10, .flex, .justifyEnd;
+              @p: .pt16, .pr10, .flex, .justifyEnd;
               height: 110px;
             }
 
@@ -76,18 +86,26 @@ export default class CreditCardFront extends React.Component<Props, State> {
 
           `}</style>
           <div className='buttons'>
-            <Icon
-              className='pointer'
-              src={require('../../../assets/icons/cross_white.svg')}
-              width={16}
-              height={16}
-            />
-            <Icon
-              className='pointer ml16'
-              src={require('../../../assets/icons/confirm_white.svg')}
-              width={35}
-              height={35}
-            />
+            <div
+              onClick={() => this.props.setEditingState(false, false)}
+            >
+              <Icon
+                className='pointer'
+                src={require('../../../assets/icons/cross_white.svg')}
+                width={16}
+                height={16}
+              />
+            </div>
+            <div
+              onClick={() => this.props.setEditingState(false, true)}
+            >
+              <Icon
+                className='pointer ml16'
+                src={require('../../../assets/icons/confirm_white.svg')}
+                width={35}
+                height={35}
+              />
+            </div>
           </div>
         </div>
     )
@@ -99,8 +117,17 @@ export default class CreditCardFront extends React.Component<Props, State> {
 
       !this.props.isEditing ?
 
-        <div className='bottomNonEditing'>
+        <div
+          className='bottomNonEditing'
+          style={{marginTop: '-20px'}}
+        >
           <style jsx={true}>{`
+
+            .creditCardNumber {
+              @p: .f20, .white;
+              font-family: 'OCR A Std';
+            }
+
             .bottomNonEditing {
               @p: .flex, .flexColumn, .ph10;
             }
@@ -108,23 +135,27 @@ export default class CreditCardFront extends React.Component<Props, State> {
             .creditCardFont {
               font-family: 'OCR A Std';
             }
+
           `}</style>
-          <div className='f20 creditCardFont white'>{this.props.cardNumber}</div>
+          <div className='creditCardNumber'>{this.props.creditCardNumber}</div>
           <div className='flex justifyBetween mt16'>
             <div>
               <div className='f12 fw6 white30 ttu'>Card Holder</div>
-              <div className='f16 white creditCardFont mt6'>{this.props.ownerName}</div>
+              <div className='f16 white creditCardFont mt6'>{this.props.cardHolderName}</div>
             </div>
             <div>
               <div className='f12 fw6 white30 ttu'>Expires</div>
-              <div className='f16 white creditCardFont mt6'>{this.props.validThrough}</div>
+              <div className='f16 white creditCardFont mt6'>{this.props.expirationDate}</div>
             </div>
           </div>
         </div>
 
         :
 
-        <div className='bottomEditing'>
+        <div
+          className='bottomEditing'
+          style={{marginTop: '-20px'}}
+        >
           <style jsx={true}>{`
             .bottomNonEditing {
               @p: .flex, .flexColumn, .ph10;
@@ -135,27 +166,60 @@ export default class CreditCardFront extends React.Component<Props, State> {
             }
 
             .inputField {
-              @p: .ba, .bDashed, .bWhite30;
+              @p: .br2, .ba, .bDashed, .bWhite30, .bgTransparent, .pt10, .pb6, .ph10;
+            }
+
+            .expirationDateInputField {
+              @p: .tc;
+              max-width: 85px;
+            }
+
+            .cardHolderInputField {
+              max-width: 200px;
             }
 
           `}</style>
           <input
-            className='f20 creditCardFont white'
-            value={this.props.cardNumber}
-
+            className='inputField f20 creditCardFont white'
+            onChange={(e: any) => this.props.onCreditCardNumberChange(e.target.value) }
+            value={this.props.creditCardNumber}
+            autoFocus={true}
+            tabIndex={1}
+            onKeyDown={this.handleKeyDown}
           />
-          <div className='flex justifyBetween mt16'>
+          <div className='flex justifyBetween mt10 mr16 mb10'>
             <div>
-              <div className='f12 fw6 white30 ttu'>Card Holder</div>
-              <div className='f16 white creditCardFont mt6'>{this.props.ownerName}</div>
+              <div className='f12 fw6 white30 ttu nowrap'>Card Holder</div>
+              <input
+                className='cardHolderInputField inputField f16 creditCardFont white'
+                onChange={(e: any) => this.props.onCardHolderNameChange(e.target.value) }
+                value={this.props.cardHolderName}
+                tabIndex={2}
+                onKeyDown={this.handleKeyDown}
+              />
             </div>
-            <div>
-              <div className='f12 fw6 white30 ttu'>Expires</div>
-              <div className='f16 white creditCardFont mt6'>{this.props.validThrough}</div>
+            <div className=''>
+              <div className='f12 fw6 white30 ttu nowrap'>Expires</div>
+              <input
+                className='expirationDateInputField inputField f16 creditCardFont white'
+                placeholder='XX/XX'
+                onChange={(e: any) => this.props.onExpirationDateChange(e.target.value) }
+                value={this.props.expirationDate}
+                tabIndex={3}
+                onKeyDown={this.handleKeyDown}
+              />
             </div>
           </div>
         </div>
     )
-
   }
+
+  private handleKeyDown = (e) => {
+    if (e.keyCode === ENTER_KEY) {
+      this.props.setEditingState(false, true)
+    } else if (e.keyCode === ESCAPE_KEY) {
+      this.props.setEditingState(false, false)
+    }
+  }
+
 }
