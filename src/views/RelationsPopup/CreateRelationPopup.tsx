@@ -100,16 +100,11 @@ class CreateRelationPopup extends React.Component<Props, State> {
       forbiddenFieldNamesForRightModel = modelWithFields.fields.edges.map(edge => edge.node.name)
     }
 
-    // let forbiddenFieldNamesForLeftModelTEST = this.props.viewer.project.models.edges.map(edge => edge.node.fields.edges.map(edge => edge.node.name))
-    // forbiddenFieldNamesForLeftModelTEST = [].concat.apply([], forbiddenFieldNamesForLeftModelTEST)
-    // forbiddenFieldNamesForLeftModelTEST = removeDuplicatesFromStringArray(forbiddenFieldNamesForLeftModelTEST)
-    // console.log('forbiddenFieldNamesForLeftModelTEST', forbiddenFieldNamesForLeftModelTEST)
     // if (relation) {
     //   forbiddenFieldNamesForLeftModel = forbiddenFieldNamesForLeftModel.filter(fieldName =>
     //   fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
     // }
 
-    // compute forbidden field name for right model
     // let forbiddenFieldNamesForRightModel = removeDuplicatesFromStringArray(
     //   this.props.viewer.project.fields.edges.map(edge => edge.node.name),
     // )
