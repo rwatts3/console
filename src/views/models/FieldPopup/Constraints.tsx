@@ -206,6 +206,7 @@ export default class Constraints extends React.Component<Props,State> {
             <div className='constraint-badge'>Unique</div>
           )}
         </div>
+        {/*
         <div className='type-constraints-title-wrapper'>
           <div className='type-constraints-title'>
             <div className='type-constraints-text'>Type Constraints for</div>
@@ -295,6 +296,7 @@ export default class Constraints extends React.Component<Props,State> {
             })}
           </div>
         )}
+        */}
       </div>
     )
   }

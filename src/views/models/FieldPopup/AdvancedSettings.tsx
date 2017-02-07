@@ -5,7 +5,7 @@ import EditValueInput from './EditValueInput'
 import ErrorInfo from './ErrorInfo'
 import {FieldPopupErrors} from './FieldPopupState'
 import {TypedValue} from '../../../types/utils'
-import {CellRequirements, getScalarEditCell} from '../DatabrowserView/Cell/cellgenerator'
+import {CellRequirements, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
 import {Field} from '../../../types/types'
 
 interface Props {
@@ -125,6 +125,9 @@ export default class AdvancedSettings extends React.Component<Props, State> {
           .advanced-settings .rdt .form-control {
             @p: .w100;
           }
+          .field-popup .migration-input input {
+            background: none;
+          }
         `}</style>
         <div className='is-required'>
           <div className='is-required-text'>This Field is</div>
@@ -208,21 +211,35 @@ export default class AdvancedSettings extends React.Component<Props, State> {
   }
 
   private getMigrationInput() {
+    let value: any = this.props.migrationValue
+    if (this.props.field.isList) {
+      if (typeof this.props.migrationValue === 'undefined') {
+        value = []
+      } else if (!Array.isArray(this.props.migrationValue)) {
+        value = [this.props.migrationValue]
+      }
+    }
+
     const requirements: CellRequirements = {
-      value: this.props.migrationValue,
+      value,
       field: this.props.field,
       inList: true,
       projectId: this.props.projectId,
       methods: {
-        save: this.props.onChangeMigrationValue,
-        cancel: () => null,
+        save: (value) => {
+          this.setState({editingMigration: false} as State)
+          this.props.onChangeMigrationValue(value)
+        },
+        cancel: () => {
+          this.setState({editingMigration: false} as State)
+        },
         onKeyDown: () => {
           // on key down...
         },
       },
     }
 
-    return getScalarEditCell(requirements)
+    return getEditCell(requirements)
   }
 
   private editMigration = () => {

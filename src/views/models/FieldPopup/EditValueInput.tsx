@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {CellRequirements, getScalarEditCell} from '../DatabrowserView/Cell/cellgenerator'
+import {CellRequirements, getScalarEditCell, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
 import {TypedValue} from '../../../types/utils'
 import {Field} from '../../../types/types'
 import {valueToString} from '../../../utils/valueparser'
@@ -47,6 +47,11 @@ export default class EditValueInput extends React.Component<Props, State> {
           }
 
         `}</style>
+        <style jsx global>{`
+          .field-popup .edit-value input {
+            background: none;
+          }
+        `}</style>
         {isEnteringValue ?
           (
             <div className='flex itemsCenter bbox edit-value'>
@@ -54,7 +59,7 @@ export default class EditValueInput extends React.Component<Props, State> {
             </div>
           )
           :
-          (!value) && (
+          (typeof value === 'undefined' ? (
             <div
               className='flex itemsCenter pointer bbox edit-value'
               onClick={() => this.setState({
@@ -71,8 +76,7 @@ export default class EditValueInput extends React.Component<Props, State> {
                 <span className='black30'> (optional)</span>
               </div>
             </div>
-          ) ||
-          (value) && (
+          ) : (
             <div
               className='flex itemsCenter pointer bbox edit-value '
               onMouseEnter={() => this.setState({isHoveringValue: true} as State)}
@@ -93,27 +97,41 @@ export default class EditValueInput extends React.Component<Props, State> {
               )}
             </div>
           )
-        }
+        )}
       </div>
     )
   }
 
   private getInput() {
+    let value: any = this.props.value
+    if (this.props.field.isList) {
+      if (typeof this.props.value === 'undefined') {
+        value = []
+      } else if (!Array.isArray(this.props.value)) {
+        value = [this.props.value]
+      }
+    }
+
     const requirements: CellRequirements = {
-      value: this.props.value,
+      value,
       field: this.props.field,
       inList: true,
       projectId: this.props.projectId,
       methods: {
-        save: this.props.onChangeValue,
-        cancel: () => null,
+        save: (value) => {
+          this.setState({isEnteringValue: false} as State)
+          this.props.onChangeValue(value)
+        },
+        cancel: () => {
+          this.setState({isEnteringValue: false} as State)
+        },
         onKeyDown: () => {
           // on key down...
         },
       },
     }
 
-    return getScalarEditCell(requirements)
+    return getEditCell(requirements)
   }
 
   private handleKeyDownOnFieldValue = (e) => {

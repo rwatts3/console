@@ -35,7 +35,7 @@ import {
   nextStep,
 } from '../../../actions/gettingStarted'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
-import {valueToString} from '../../../utils/valueparser'
+import {valueToString, stringToValue} from '../../../utils/valueparser'
 import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
@@ -85,7 +85,8 @@ class FieldPopup extends React.Component<Props, State> {
       this.state = {
         field: {
           ...field,
-          defaultValue: field.defaultValue === null ? undefined : field.defaultValue, // if null, put it to undefined
+          // if null, put it to undefined
+          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue, field),
         },
 
         activeTabIndex: 0,
@@ -119,7 +120,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   componentDidUpdate() {
-    if (this.state.field.name === 'imageUrl' &&
+    if (this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase() &&
       this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
       this.props.nextStep()
     }
@@ -221,6 +222,7 @@ class FieldPopup extends React.Component<Props, State> {
                   onChangeEnumValues={this.updateField(updateEnumValues)}
                   errors={errors}
                   showErrors={showErrors}
+                  showNotification={this.props.showNotification}
                 />
               ) : activeTabIndex === 1 ? (
                   <AdvancedSettings
@@ -278,10 +280,13 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
-    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+    if (e.keyCode === 27 && (e.target instanceof HTMLInputElement)) {
       this.close()
     }
-    if (e.keyCode === 13) {
+    // if it is an input, only if it has the enter-event class
+    if (e.keyCode === 13 && (
+      e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
+    ) {
       this.handleSubmit()
     }
   }
@@ -352,6 +357,7 @@ class FieldPopup extends React.Component<Props, State> {
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
 
     if (!valid) {
+      console.error('shit is not valid', errors)
       this.setState({
         showErrors: true,
       } as State)
@@ -367,22 +373,17 @@ class FieldPopup extends React.Component<Props, State> {
   private patchDefaultAndMigrationValue(field: Field) {
     let patchedField = field
 
-    // do not patch boolean or datetime
-    if (['Boolean', 'DateTime'].includes(field.typeIdentifier)) {
-      return field
-    }
-
     if (typeof field.defaultValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        defaultValue: valueToString(field.defaultValue, field, true, true),
+        defaultValue: field.defaultValue === null ? null : valueToString(field.defaultValue, field, true, true),
       }
     }
 
     if (typeof field.migrationValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        migrationValue: valueToString(field.migrationValue, field, true, true),
+        migrationValue: field.migrationValue === null ? null : valueToString(field.migrationValue, field, true, true),
       }
     }
 
@@ -412,7 +413,7 @@ class FieldPopup extends React.Component<Props, State> {
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
-            // this.setState({loading: false} as State)
+            this.setState({loading: false} as State)
           },
         },
       )
@@ -468,7 +469,7 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          // this.setState({loading: false} as State)
+          this.setState({loading: false} as State)
         },
       },
     )
@@ -482,7 +483,7 @@ class FieldPopup extends React.Component<Props, State> {
 const tabs = [
   'Base Settings',
   'Advanced Options',
-  // 'Constraints',
+  'Constraints',
 ]
 
 const ReduxContainer = connect(
@@ -530,6 +531,7 @@ export default Relay.createContainer(MappedFieldPopup, {
           typeIdentifier
           isRequired
           isList
+          isUnique
           isSystem
           enumValues
           defaultValue
