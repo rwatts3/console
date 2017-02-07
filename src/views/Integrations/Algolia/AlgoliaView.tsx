@@ -196,6 +196,7 @@ class AlgoliaView extends React.Component<Props, State> {
     this.setState({
       showNewIndex: false,
     } as State)
+    this.props.relay.forceFetch()
   }
 
   private handleShowNewIndex = () => {

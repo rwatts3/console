@@ -10,11 +10,16 @@ import AlgoliaQuery from './AlgoliaQuery'
 import mapProps from '../../../components/MapProps/MapProps'
 import {$v, Icon} from 'graphcool-styles'
 import AddAlgoliaSyncQueryMutation from '../../../mutations/AddAlgoliaSyncQueryMutation'
+import {showNotification} from '../../../actions/notification'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {connect} from 'react-redux'
 
 interface Props {
   algolia: SearchProviderAlgolia
   models: Model[]
   onRequestClose: Function
+  showNotification: ShowNotificationCallback
 }
 
 interface State {
@@ -204,14 +209,22 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
     const {algolia} = this.props
 
     if (this.valid()) {
-      this.close()
       Relay.Store.commitUpdate(
         new AddAlgoliaSyncQueryMutation({
           modelId: selectedModel.id,
           indexName: title,
           fragment,
           searchProviderAlgoliaId: algolia.id,
-        }))
+        }),
+        {
+          onSuccess: (res) => {
+            this.close()
+          },
+          onFailure: (res) => {
+            onFailureShowNotification(res, this.props.showNotification)
+          },
+        },
+      )
     }
 
   }
@@ -225,12 +238,14 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
   }
 }
 
+const ReduxContainer = connect(null, { showNotification })(CreateAlgoliaIndex)
+
 const Container = mapProps({
   algolia: props => props.algolia,
   models: props => {
     return props.project.models.edges.map(edge => edge.node)
   },
-})(CreateAlgoliaIndex)
+})(ReduxContainer)
 
 export default Relay.createContainer(Container, {
   initialVariables: {
