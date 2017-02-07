@@ -24,6 +24,7 @@ import General from './views/Settings/General/General'
 import Authentication from './views/Settings/Authentication/Authentication'
 import Export from './views/Settings/Export/Export'
 // import Team from './views/Settings/Team/Team'
+import Billing from './views/Settings/Billing/Billing'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/FieldPopup/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
@@ -103,8 +104,6 @@ const render = ({error, props, routerProps, element}) => {
     </div>
   )
 }
-// <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
-// <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
 
 export default (
   <Route path='/' component={RootView}>
@@ -121,6 +120,7 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
+        <Route path='billing' component={Billing} render={render} />
         {/*<Route path='team' component={Team} queries={ViewerQuery} render={render} />*/}
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>

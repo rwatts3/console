@@ -128,6 +128,9 @@ class CreateRelationPopup extends React.Component<Props, State> {
       </div>
     )]
 
+    console.log('leftFieldName(), rightFieldName()', this.leftFieldName(), this.rightFieldName())
+    console.log('state.nameOfLeftField, state.nameOfRightField', fieldOnLeftModelName, fieldOnRightModelName)
+
     return (
       <PopupWrapper
         onClickOutside={this.close}>
@@ -237,6 +240,12 @@ class CreateRelationPopup extends React.Component<Props, State> {
     this.props.router.goBack()
   }
 
+  private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
+    if (displayState !== this.state.displayState) {
+      this.setState({displayState: displayState} as State)
+    }
+  }
+
   private didChangeFieldNameOnLeftModel = (newFieldName: string) => {
     const {relation} = this.props.viewer
 
@@ -260,12 +269,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
       this.setState({
         rightInputIsBreakingChange: relation ? newFieldName !== relation.fieldOnRightModel.name : false,
       } as State)
-    }
-  }
-
-  private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
-    if (displayState !== this.state.displayState) {
-      this.setState({displayState: displayState} as State)
     }
   }
 
@@ -324,18 +327,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
     const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
 
-    // // edge case: self relations
-    // if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
-    //   if (selectedCardinality === 'ONE_TO_ONE') {
-    //     return 'from' + rightSelectedModel.name
-    //   } else if (selectedCardinality === 'ONE_TO_MANY') {
-    //     return 'from' + rightSelectedModel.name
-    //   } else if (selectedCardinality === 'MANY_TO_ONE') {
-    //     return 'from' + rightSelectedModel.namePlural
-    //   } else if (selectedCardinality === 'MANY_TO_MANY') {
-    //     return 'from' + rightSelectedModel.namePlural
-    //   }
-    // }
+    // make sure we don't overwrite the existing name for the original cardinality
+    if (relation) {
+      const originalCardinality = this.cardinalityFromRelation(relation)
+      if (originalCardinality === selectedCardinality) {
+        return relation.fieldOnRightModel.name
+      }
+    }
+
     // edge case: self relations
     if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
       if (selectedCardinality === 'ONE_TO_ONE') {
@@ -346,14 +345,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
         return lowercaseFirstLetter(rightSelectedModel.name) + '2'
       } else if (selectedCardinality === 'MANY_TO_MANY') {
         return lowercaseFirstLetter(rightSelectedModel.namePlural) + '2'
-      }
-    }
-
-    // make sure we don't overwrite the existing name for the original cardinality
-    if (relation) {
-      const originalCardinality = this.cardinalityFromRelation(relation)
-      if (originalCardinality === selectedCardinality) {
-        return relation.fieldOnRightModel.name
       }
     }
 
@@ -371,18 +362,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
     const {leftSelectedModel, rightSelectedModel, selectedCardinality} = this.state
 
-    // // edge case: self relations
-    // if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
-    //   if (selectedCardinality === 'ONE_TO_ONE') {
-    //     return 'to' + rightSelectedModel.name
-    //   } else if (selectedCardinality === 'ONE_TO_MANY') {
-    //     return 'to' + rightSelectedModel.namePlural
-    //   } else if (selectedCardinality === 'MANY_TO_ONE') {
-    //     return 'to' + rightSelectedModel.name
-    //   } else if (selectedCardinality === 'MANY_TO_MANY') {
-    //     return 'to' + rightSelectedModel.namePlural
-    //   }
-    // }
+    // make sure we don't overwrite the existing name for the original cardinality
+    if (relation) {
+      const originalCardinality = this.cardinalityFromRelation(relation)
+      if (originalCardinality === selectedCardinality) {
+        return relation.fieldOnLeftModel.name
+      }
+    }
+
     if ((leftSelectedModel && rightSelectedModel) && (leftSelectedModel.name === rightSelectedModel.name)) {
       if (selectedCardinality === 'ONE_TO_ONE') {
         return lowercaseFirstLetter(rightSelectedModel.name) + '1'
@@ -392,14 +379,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
         return lowercaseFirstLetter(rightSelectedModel.name) + '1'
       } else if (selectedCardinality === 'MANY_TO_MANY') {
         return lowercaseFirstLetter(rightSelectedModel.namePlural) + '1'
-      }
-    }
-
-    // make sure we don't overwrite the existing name for the original cardinality
-    if (relation) {
-      const originalCardinality = this.cardinalityFromRelation(relation)
-      if (originalCardinality === selectedCardinality) {
-        return relation.fieldOnLeftModel.name
       }
     }
 
@@ -578,6 +557,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private addRelation = () => {
+
+    const leftField = this.state.fieldOnLeftModelName
+    const rightField = this.state.fieldOnRightModelName
+
     this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new AddRelationMutation({
@@ -586,8 +569,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
         leftModelId: this.state.leftSelectedModel.id,
         rightModelId: this.state.rightSelectedModel.id,
-        fieldOnLeftModelName: this.leftFieldName(),
-        fieldOnRightModelName: this.rightFieldName(),
+        fieldOnLeftModelName: leftField,
+        fieldOnRightModelName: rightField,
         fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
       }),
@@ -604,6 +587,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
   }
 
   private editRelation = () => {
+
+    const leftField = this.state.fieldOnLeftModelName
+    const rightField = this.state.fieldOnRightModelName
+
     this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new UpdateRelationMutation({
@@ -612,8 +599,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
         leftModelId: this.state.leftSelectedModel.id,
         rightModelId: this.state.rightSelectedModel.id,
-        fieldOnLeftModelName: this.state.fieldOnLeftModelName,
-        fieldOnRightModelName: this.state.fieldOnRightModelName,
+        fieldOnLeftModelName: leftField,
+        fieldOnRightModelName: rightField,
         fieldOnLeftModelIsList: this.state.selectedCardinality.endsWith('MANY'),
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
       }),
