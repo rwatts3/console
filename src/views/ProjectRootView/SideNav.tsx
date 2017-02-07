@@ -215,7 +215,7 @@ export class SideNav extends React.Component<Props, State> {
             {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
-            {isBetaCustomer && this.renderIntegrations()}
+            {this.renderIntegrations()}
           </ScrollBox>
         </div>
         <div
