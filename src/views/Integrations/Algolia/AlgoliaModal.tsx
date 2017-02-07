@@ -74,6 +74,21 @@ export default class AlgoliaModal extends React.Component<Props, null> {
           .cancel {
             @p: .white50, .f16;
           }
+          .intro {
+            @p: .flex, .justifyCenter, .w100, .h100, .pa38, .itemsStart;
+            h1, h2 {
+              @p: .tc;
+            }
+            h1 {
+              @p: .f25, .fw3;
+            }
+            h2 {
+              @p: .black40, .f14, .mt25, .fw4;
+            }
+          }
+          .inner-intro {
+            @p: .flex, .justifyCenter, .itemsCenter, .flexColumn, .mt16;
+          }
         `}</style>
         <div className='algolia-modal'>
           <div className='header'>
@@ -92,6 +107,21 @@ export default class AlgoliaModal extends React.Component<Props, null> {
               />
             </div>
           </div>
+          {(applicationId.length === 0 || apiKey.length === 0) && (
+            <div className='intro'>
+              <div className='inner-intro'>
+                <h1>Welcome to the Algolia Integration</h1>
+                <h2>Before Algolia can index your graphcool data, you must create an API Key in Algolia.</h2>
+                <a
+                  className='button green'
+                  href='https://graph.cool/docs/tutorials/algolia-auto-syncing-for-graphql-backends-aroozee9zu'
+                  target='_blank'
+                >
+                  How to create an API Key
+                </a>
+              </div>
+            </div>
+          )}
           <div className='inputs'>
             <FloatingInput
               labelClassName={cx($p.f16, $p.pa16, $p.black50, $p.fw3)}

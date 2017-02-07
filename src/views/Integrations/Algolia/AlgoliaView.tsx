@@ -56,8 +56,8 @@ class AlgoliaView extends React.Component<Props, State> {
 
     this.state = {
       valid: false,
-      apiKey,
-      applicationId,
+      apiKey: '',
+      applicationId: '',
       isEnabled,
       selectedIndexIndex: 0,
       currentFragment: indexes[0].fragment,
@@ -124,7 +124,13 @@ class AlgoliaView extends React.Component<Props, State> {
               <div className='inner-intro'>
                 <h1>Welcome to the Algolia Integration</h1>
                 <h2>Before Algolia can index your graphcool data, you must create an API Key in Algolia.</h2>
-                <a className='button green' href='https://docs' target='_blank'>How to create an API Key</a>
+                <a
+                  className='button green'
+                  href='https://graph.cool/docs/tutorials/algolia-auto-syncing-for-graphql-backends-aroozee9zu'
+                  target='_blank'
+                >
+                  How to create an API Key
+                </a>
               </div>
             </div>
           )}
