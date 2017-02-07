@@ -51,6 +51,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
           }
           .footer {
             @p: .pa25, .flex, .itemsCenter, .justifyBetween;
+            margin-bottom: 80px;
           }
           .button {
             @p: .pointer;

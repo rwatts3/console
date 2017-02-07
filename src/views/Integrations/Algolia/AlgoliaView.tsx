@@ -56,15 +56,15 @@ class AlgoliaView extends React.Component<Props, State> {
 
     this.state = {
       valid: false,
-      apiKey: '',
-      applicationId: '',
+      apiKey,
+      applicationId,
       isEnabled,
       selectedIndexIndex: 0,
-      currentFragment: indexes[0].fragment,
+      currentFragment: indexes[0] && indexes[0].fragment || '',
       editing: indexes.length > 0,
       showNewIndex: false,
       fragmentValid: true,
-      showModal: false,
+      showModal: applicationId.length === 0 && apiKey.length === 0,
     }
     global['a'] = this
   }
@@ -182,7 +182,6 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private handleChangeApiKey = (e: any) => {
-    console.log(e)
     this.setState({
       apiKey: e.target.value,
     } as State)
