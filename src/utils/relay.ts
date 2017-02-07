@@ -174,6 +174,10 @@ export function queryNodes(
       .filter(field => {
         const identifier = field.typeIdentifier
 
+        if (field.isList) {
+          return false
+        }
+
         if (isNumber) {
           return numberTypes.concat(stringTypes).includes(identifier)
         }

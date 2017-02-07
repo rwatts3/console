@@ -1,18 +1,20 @@
 import * as Relay from 'react-relay'
 
-interface Props {
-  fieldId: string
+export interface UpdateFieldProps {
+  id: string
   name: string
-  typeIdentifier: string
+  typeIdentifier?: string
   enumValues: string[]
   isRequired: boolean
   isList: boolean
+  isUnique: boolean
   defaultValue?: string
   relationId?: string
   migrationValue?: string
+  description?: string
 }
 
-export default class UpdateFieldMutation extends Relay.Mutation<Props, {}> {
+export default class UpdateFieldMutation extends Relay.Mutation<UpdateFieldProps, {}> {
 
   getMutation () {
     return Relay.QL`mutation{updateField}`
@@ -30,35 +32,39 @@ export default class UpdateFieldMutation extends Relay.Mutation<Props, {}> {
     return [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        field: this.props.fieldId,
+        field: this.props.id,
       },
     }]
   }
 
   getVariables () {
     return {
-      id: this.props.fieldId,
+      id: this.props.id,
       name: this.props.name,
       typeIdentifier: this.props.typeIdentifier,
       enumValues: this.props.enumValues,
       isRequired: this.props.isRequired,
       isList: this.props.isList,
+      isUnique: this.props.isUnique,
       defaultValue: this.props.defaultValue,
       relationId: this.props.relationId,
       migrationValue: this.props.migrationValue,
+      description: this.props.description,
     }
   }
 
   getOptimisticResponse () {
     return {
       field: {
-        id: this.props.fieldId,
+        id: this.props.id,
         name: this.props.name,
         typeIdentifier: this.props.typeIdentifier,
         enumValues: this.props.enumValues,
         isRequired: this.props.isRequired,
         isList: this.props.isList,
+        isUnique: this.props.isUnique,
         defaultValue: this.props.defaultValue,
+        description: this.props.description || null,
       },
     }
   }

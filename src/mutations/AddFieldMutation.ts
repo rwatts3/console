@@ -10,6 +10,7 @@ interface Props {
   defaultValue?: string
   relationId?: string
   migrationValue?: string
+  description: string
 }
 
 export default class AddFieldMutation extends Relay.Mutation<Props, {}> {
@@ -52,6 +53,7 @@ export default class AddFieldMutation extends Relay.Mutation<Props, {}> {
       defaultValue: this.props.defaultValue,
       relationId: this.props.relationId,
       migrationValue: this.props.migrationValue,
+      description: this.props.description || null,
     }
   }
 }
