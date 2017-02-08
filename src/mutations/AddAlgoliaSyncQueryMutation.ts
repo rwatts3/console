@@ -11,19 +11,23 @@ interface Props {
 export default class AddAlgoliaSyncQueryMutation extends Relay.Mutation<Props, Response> {
 
   getMutation() {
+    console.log('calling addalgoliasyncquerymutation1', this.props)
     return Relay.QL`mutation{addAlgoliaSyncQuery}`
   }
 
   getFatQuery() {
+    console.log('calling addalgoliasyncquerymutation2', this.props)
     return Relay.QL`
       fragment on AddAlgoliaSyncQueryPayload {
         searchProviderAlgolia
         algoliaSyncQueryEdge     
+        algoliaSyncQueryConnection
       }
     `
   }
 
   getConfigs() {
+    console.log('calling addalgoliasyncquerymutation3', this.props)
     return [{
       type: 'RANGE_ADD',
       parentName: 'searchProviderAlgolia',
@@ -37,6 +41,7 @@ export default class AddAlgoliaSyncQueryMutation extends Relay.Mutation<Props, R
   }
 
   getVariables() {
+    console.log('calling addalgoliasyncquerymutation4', this.props)
     return pick(this.props, ['modelId', 'indexName', 'fragment'])
   }
 }
