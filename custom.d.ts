@@ -37,6 +37,7 @@ declare module 'downloadjs'
 
 declare var Raven: any
 declare var Intercom: any
+declare var Stripe: any
 declare var analytics: any
 declare var __BACKEND_ADDR__: string
 declare var __HEARTBEAT_ADDR__: string | boolean

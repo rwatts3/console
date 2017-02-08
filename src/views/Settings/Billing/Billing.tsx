@@ -3,6 +3,8 @@ import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import {chunk} from '../../../utils/utils'
+import * as Relay from 'react-relay'
+import {Viewer} from '../../../types/types'
 
 interface State {
   newCreditCardNumber: string
@@ -17,9 +19,10 @@ interface Props {
   expirationDate: string
   cpc: string
   children: JSX.Element
+  viewer: Viewer
 }
 
-export default class Billing extends React.Component<Props, State> {
+class Billing extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -36,6 +39,9 @@ export default class Billing extends React.Component<Props, State> {
   }
 
   render() {
+
+    console.log(this.props.viewer)
+
     return (
 
       <div className='container'>
@@ -121,3 +127,24 @@ export default class Billing extends React.Component<Props, State> {
   }
 
 }
+
+export default Relay.createContainer(Billing, {
+  initialVariables: {
+    projectName: null, // injected from router
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          id
+          seats(first: 100) {
+            edges {
+              node {
+                name
+              }
+            }
+          }
+        }
+      }
+    `},
+})

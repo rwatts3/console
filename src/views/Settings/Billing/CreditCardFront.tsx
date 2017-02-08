@@ -12,7 +12,8 @@ interface Props {
   cardHolderName: string
   expirationDate: string
   isEditing: boolean
-  setEditingState: Function
+  shouldDisplayVisaLogo?: boolean
+  setEditingState?: Function
   onCreditCardNumberChange?: Function
   onCardHolderNameChange?: Function
   onExpirationDateChange?: Function
@@ -41,10 +42,9 @@ export default class CreditCardFront extends React.Component<Props, State> {
   }
 
   private topPart = () => {
-    return (
 
-      !this.props.isEditing ?
-
+    if (!this.props.isEditing) {
+      return (
         <div className='topNonEditing'>
           <style jsx={true}>{`
           .topNonEditing {
@@ -68,9 +68,9 @@ export default class CreditCardFront extends React.Component<Props, State> {
             height={20}
           />
         </div>
-
-        :
-
+      )
+    } else if (this.props.isEditing && !this.props.shouldDisplayVisaLogo) {
+      return (
         <div className='topEditing'>
           <style jsx={true}>{`
 
@@ -108,7 +108,25 @@ export default class CreditCardFront extends React.Component<Props, State> {
             </div>
           </div>
         </div>
+      )
+    }
+
+    return (
+      <div className='topEditing'>
+        <style jsx={true}>{`
+          .topEditing {
+            @p: .pt16, .pr10, .flex, .justifyEnd;
+            height: 110px;
+          }
+        `}</style>
+        <Icon
+          src={require('../../../assets/icons/visa.svg')}
+          width={62}
+          height={20}
+        />
+      </div>
     )
+
   }
 
   private bottomPart = () => {
@@ -157,6 +175,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
           style={{marginTop: '-20px'}}
         >
           <style jsx={true}>{`
+
             .bottomNonEditing {
               @p: .flex, .flexColumn, .ph10;
             }
@@ -182,6 +201,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
           <input
             className='inputField f20 creditCardFont white'
             onChange={(e: any) => this.props.onCreditCardNumberChange(e.target.value) }
+            placeholder='XXXX XXXX XXXX XXXX'
             value={this.props.creditCardNumber}
             autoFocus={true}
             tabIndex={1}
@@ -192,6 +212,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
               <div className='f12 fw6 white30 ttu nowrap'>Card Holder</div>
               <input
                 className='cardHolderInputField inputField f16 creditCardFont white'
+                placeholder='John Appleseed'
                 onChange={(e: any) => this.props.onCardHolderNameChange(e.target.value) }
                 value={this.props.cardHolderName}
                 tabIndex={2}

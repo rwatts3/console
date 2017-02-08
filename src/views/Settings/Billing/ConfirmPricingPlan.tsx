@@ -39,7 +39,7 @@ class ConfirmPricingPlan extends React.Component<Props, {}> {
               />
             </div>
             <div className='f38 fw3'>Confirm plan</div>
-            <div className='f16 black50 mt10'>Please enter your credit card information to proceed.</div>
+            <div className='f16 black50 mt10 mb38'>Please enter your credit card information to proceed.</div>
             <CreditCardInputSection
               plan={this.props.currentPlan}
             />

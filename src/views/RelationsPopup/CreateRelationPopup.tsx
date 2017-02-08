@@ -37,8 +37,6 @@ interface State {
   leftModelIsBreakingChange: boolean
   rightModelIsBreakingChange: boolean
   cardinalityIsBreakingChange: boolean
-  // leftSideMessagesForBreakingChange: string[]
-  // rightSideMessagesForBreakingChange: string[]
 }
 
 interface Props {
@@ -80,8 +78,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
       leftModelIsBreakingChange: false,
       rightModelIsBreakingChange: false,
       cardinalityIsBreakingChange: false,
-      // leftSideMessagesForBreakingChange: [],
-      // rightSideMessagesForBreakingChange: [],
     }
   }
 

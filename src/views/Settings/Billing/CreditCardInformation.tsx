@@ -15,7 +15,6 @@ interface Props {
   onCardHolderNameChange: Function
   onExpirationDateChange: Function
   onCPCChange: Function
-
 }
 
 export default class CreditCardInformation extends React.Component<Props, State> {

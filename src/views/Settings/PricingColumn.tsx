@@ -7,6 +7,7 @@ import {numberWithCommas} from '../../utils/utils'
 interface Props {
   plan: PricingPlan
   isCurrentPlan: boolean
+  isSelected?: boolean
   className?: string
   onSelectPlan?: Function
 }
@@ -137,6 +138,11 @@ export default class PricingColumn extends React.Component<Props, {}> {
   }
 
   private backgroundColor = (): string => {
+
+    if (this.props.isSelected) {
+      return 'white'
+    }
+
     if (this.props.isCurrentPlan) {
       return 'rgba(0,0,0,.04)'
     }

@@ -121,7 +121,7 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
-        <Route path='billing' component={Billing} render={render} >
+        <Route path='billing' component={Billing} queries={ViewerQuery} render={render} >
           <Route path='change-plan' component={ChangePricingPlan} render={render} />
           <Route path='confirm-plan' component={ConfirmPricingPlan} render={render} />
         </Route>

@@ -6,7 +6,7 @@ interface Props {
   style?: any
   cpc: string
   didChangeCPC: Function
-  setEditingState: Function
+  setEditingState?: Function
 }
 
 export default class CreditCardBack extends React.Component<Props, {}> {
@@ -41,6 +41,7 @@ export default class CreditCardBack extends React.Component<Props, {}> {
           <div className='f12 fw6 white30 ttu'>CPC</div>
           <input
             className='inputField'
+            placeholder='XXX'
             type='text'
             value={this.props.cpc}
             onChange={(e: any) => this.props.didChangeCPC(e.target.value)}
