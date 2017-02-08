@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import {$p} from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import * as cx from 'classnames'
-import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
+import InviteCollaboratorMutation from '../../../mutations/AddCollaboratorMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
@@ -169,7 +169,7 @@ class EmptyRow extends React.Component<Props, State> {
       {
         onSuccess: () => {
           this.setState({isEnteringEmail: false} as State)
-          this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
+          this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
         },
         onFailure: (transaction) => {
           this.props.showNotification({message: transaction.getError().message, level: 'error'})
