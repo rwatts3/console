@@ -253,7 +253,7 @@ class AlgoliaView extends React.Component<Props, State> {
         new UpdateAlgoliaSyncQueryMutation({
           algoliaSyncQueryId: node.id,
           fragment: currentFragment,
-          isEnabled: node.isEnabled,
+          isEnabled: true,
           indexName: node.indexName,
         }),
       )
