@@ -8,6 +8,8 @@ import {Icon} from 'graphcool-styles'
 interface Props {
   currentPlan: PricingPlan
   router: ReactRouter.InjectedRouter
+  params: any
+  location: any
 }
 
 class ChangePricingPlan extends React.Component<Props, {}> {
@@ -15,6 +17,7 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   plans: [PricingPlan] = ['Developer', 'Startup', 'Growth', 'Pro']
 
   render() {
+
     return (
       <PopupWrapper
         onClickOutside={this.close}
@@ -68,8 +71,7 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   }
 
   private selectPlan = (plan: PricingPlan) => {
-    console.log('select plan: ', plan)
-    this.props.router.push('/Example/settings/billing/confirm-plan')
+    this.props.router.push(`/${this.props.params.projectName}/settings/billing/confirm-plan`)
   }
 
 }

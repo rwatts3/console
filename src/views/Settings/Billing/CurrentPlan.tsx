@@ -11,6 +11,7 @@ interface Props {
   exceedsAllowedOperations?: boolean
   plan: string
   viewer?: Viewer
+  projectName: string
 }
 
 export default class CurrentPlan extends React.Component<Props, State> {
@@ -55,9 +56,9 @@ export default class CurrentPlan extends React.Component<Props, State> {
         <div className={`container ${planInfoBoxColors}`}>
           <div className={`title`}>{plan}</div>
           <Link
-            to={`/Example/settings/billing/change-plan`}
+            to={`/${this.props.projectName}/settings/billing/change-plan`}
             onClick={() => {
-                console.log('navigate to /Example/settings/billing/change-plan')
+                console.log('navigate to /' + this.props.projectName + '/settings/billing/change-plan')
               }}
           >
             <div className={`actionButton ${actionButtonColor}`}>Upgrade Plan</div>

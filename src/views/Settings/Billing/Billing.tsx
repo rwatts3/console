@@ -20,6 +20,8 @@ interface Props {
   cpc: string
   children: JSX.Element
   viewer: Viewer
+  location: any
+  params: any
 }
 
 class Billing extends React.Component<Props, State> {
@@ -54,7 +56,10 @@ class Billing extends React.Component<Props, State> {
           }
 
         `}</style>
-        <CurrentPlan plan='Developer' />
+        <CurrentPlan
+          plan='Developer'
+          projectName={this.props.params.projectName}
+        />
         <Usage />
         <CreditCardInformation
           creditCardNumber={this.state.newCreditCardNumber}
@@ -137,10 +142,21 @@ export default Relay.createContainer(Billing, {
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
           id
-          seats(first: 100) {
-            edges {
-              node {
-                name
+        },
+        crm: user {
+          name
+          crm {
+            customer {
+              id
+              projects(first: 100) {
+                edges {
+                  node {
+                    name
+#                    projectBillingInformation {
+#                      plan
+#                    }
+                  }
+                }
               }
             }
           }
@@ -148,3 +164,15 @@ export default Relay.createContainer(Billing, {
       }
     `},
 })
+
+/*
+ crm: user {
+ name
+ crm {
+ customer {
+ id
+
+ }
+ }
+ }
+ */
