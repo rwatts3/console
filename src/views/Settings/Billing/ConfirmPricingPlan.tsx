@@ -19,7 +19,7 @@ class ConfirmPricingPlan extends React.Component<Props, {}> {
       >
         <style jsx={true}>{`
           .container {
-            @p: .bgWhite, .flex, .flexColumn, .itemsCenter, .pb60, .ph16, .buttonShadow;
+            @p: .bgWhite, .flex, .flexColumn, .itemsCenter, .buttonShadow;
             width: 800px;
           }
         `}</style>

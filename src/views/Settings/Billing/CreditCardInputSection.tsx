@@ -12,7 +12,7 @@ export default class CreditCardInputSection extends React.Component<Props, {}> {
       <div className='container'>
         <style jsx={true}>{`
           .container {
-            @p: .bgBlack02, .bt;
+            @p: .bgBlack02, .w100, .bt;
             border-color: rgb(229,229,229);
             height: 400px;
           }
