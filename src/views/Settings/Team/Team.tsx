@@ -16,7 +16,7 @@ interface Props {
 
 class Team extends React.Component<Props, {}> {
 
-  availableSeats: number = 4
+  availableSeats: number = 2
 
   render() {
 
