@@ -114,7 +114,10 @@ export default class AlgoliaModal extends React.Component<Props, null> {
                 <h2>Before Algolia can index your graphcool data, you must create an API Key in Algolia.</h2>
                 <a
                   className='button green'
-                  href='https://graph.cool/docs/tutorials/algolia-auto-syncing-for-graphql-backends-aroozee9zu'
+                  href={
+                    'https://www.graph.cool/docs/tutorials/algolia-auto-syncing-for-graphql-backends-aroozee9zu' +
+                    '#creating-algolia-search-indices'
+                  }
                   target='_blank'
                 >
                   How to create an API Key
