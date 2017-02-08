@@ -7,10 +7,12 @@ import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
 import AlgoliaQuery from './AlgoliaQuery'
+import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 
 interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
+  fragmentChanged: boolean
   onFragmentChange: (fragment: String, valid: boolean) => void
   fragmentValid: boolean
   selectedModel: Model
@@ -30,6 +32,7 @@ class AlgoliaQueryEditor extends React.Component<Props, null> {
       onDelete,
       onUpdate,
       fragmentValid,
+      fragmentChanged,
     } = this.props
     return (
       <div className='algolia-query-editor'>
@@ -53,7 +56,7 @@ class AlgoliaQueryEditor extends React.Component<Props, null> {
             @p: .red;
           }
           .right {
-            @p: .flex, .itemsCenter;
+            @p: .flex, .itemsCenter, .relative;
           }
           .cancel {
             @p: .white50, .f16;
@@ -89,6 +92,16 @@ class AlgoliaQueryEditor extends React.Component<Props, null> {
           <div className='right'>
             <div className='button cancel' onClick={onCancel}>Cancel</div>
             <div className={'button save' + (fragmentValid ? ' active' : '')} onClick={onUpdate}>Save</div>
+            {fragmentValid && selectedModel.itemCount > 0 && fragmentChanged && (
+              <ConfirmOperationsPopup
+                numOperations={selectedModel.itemCount}
+                onCancel={onCancel}
+                onConfirmBreakingChanges={onUpdate}
+                showReset={true}
+                saveLabel='Save'
+                resync
+              />
+            )}
           </div>
         </div>
       </div>

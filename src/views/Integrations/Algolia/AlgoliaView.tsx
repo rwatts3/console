@@ -129,6 +129,7 @@ class AlgoliaView extends React.Component<Props, State> {
             <AlgoliaQueryEditor
               algolia={algolia}
               onFragmentChange={this.handleFragmentChange}
+              fragmentChanged={this.state.currentFragment !== indexes[selectedIndexIndex].fragment}
               fragment={this.state.currentFragment}
               selectedModel={indexes[selectedIndexIndex] && indexes[selectedIndexIndex].model}
               onCancel={this.handleUpdateCancel}
@@ -165,6 +166,9 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private handleCloseModal = () => {
+    if (this.state.applicationId === '' && this.state.apiKey === '') {
+      return this.close()
+    }
     this.setState({
       showModal: false,
     } as State)
@@ -363,6 +367,7 @@ export default Relay.createContainer(withRouter(MappedAlgoliaPopup), {
                         indexName
                         isEnabled
                         model {
+                          itemCount
                           id
                           name
                         }
