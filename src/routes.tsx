@@ -43,6 +43,7 @@ import tracker from './utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import CreateRelationPopup from './views/RelationsPopup/CreateRelationPopup'
 import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
+import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -122,6 +123,7 @@ export default (
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
         <Route path='billing' component={Billing} render={render} >
           <Route path='change-plan' component={ChangePricingPlan} render={render} />
+          <Route path='confirm-plan' component={ConfirmPricingPlan} render={render} />
         </Route>
         <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>

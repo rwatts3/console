@@ -16,6 +16,7 @@ interface Props {
   cardHolderName: string
   expirationDate: string
   cpc: string
+  children: JSX.Element
 }
 
 export default class Billing extends React.Component<Props, State> {
@@ -67,6 +68,7 @@ export default class Billing extends React.Component<Props, State> {
             this.setState({newCPC: newCPC} as State)
           }}
         />
+        {this.props.children}
       </div>
     )
   }

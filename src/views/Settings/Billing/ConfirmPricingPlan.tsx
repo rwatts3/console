@@ -1,18 +1,16 @@
 import * as React from 'react'
 import {PricingPlan} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import PricingColumn from '../PricingColumn'
 import {withRouter} from 'react-router'
 import {Icon} from 'graphcool-styles'
+import CreditCardInputSection from './CreditCardInputSection'
 
 interface Props {
   currentPlan: PricingPlan
   router: ReactRouter.InjectedRouter
 }
 
-class ChangePricingPlan extends React.Component<Props, {}> {
-
-  plans: [PricingPlan] = ['Developer', 'Startup', 'Growth', 'Pro']
+class ConfirmPricingPlan extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -24,7 +22,6 @@ class ChangePricingPlan extends React.Component<Props, {}> {
             @p: .bgWhite, .flex, .flexColumn, .itemsCenter, .pb60, .ph16, .buttonShadow;
             width: 800px;
           }
-
         `}</style>
 
         <div className='flex itemsCenter justifyCenter w100 h100 bgWhite90'>
@@ -41,21 +38,11 @@ class ChangePricingPlan extends React.Component<Props, {}> {
                 height={25}
               />
             </div>
-            <div className='f38 fw3 mb60'>Change your plan</div>
-            <div className='flex'>
-              {this.plans.map((plan, i) => {
-                return (
-                  <PricingColumn
-                    key={i}
-                    className='mh10'
-                    plan={plan}
-                    isCurrentPlan={i === 1}
-                    onSelectPlan={this.selectPlan}
-                  />
-                )
-              })}
-            </div>
-
+            <div className='f38 fw3'>Confirm plan</div>
+            <div className='f16 black50 mt10'>Please enter your credit card information to proceed.</div>
+            <CreditCardInputSection
+              plan={this.props.currentPlan}
+            />
           </div>
         </div>
 
@@ -67,11 +54,6 @@ class ChangePricingPlan extends React.Component<Props, {}> {
     this.props.router.goBack()
   }
 
-  private selectPlan = (plan: PricingPlan) => {
-    console.log('select plan: ', plan)
-    this.props.router.push('/Example/settings/billing/confirm-plan')
-  }
-
 }
 
-export default withRouter(ChangePricingPlan)
+export default withRouter(ConfirmPricingPlan)

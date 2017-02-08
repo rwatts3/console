@@ -7,6 +7,8 @@ import {numberWithCommas} from '../../utils/utils'
 interface Props {
   plan: PricingPlan
   isCurrentPlan: boolean
+  className?: string
+  onSelectPlan?: Function
 }
 
 export default class PricingColumn extends React.Component<Props, {}> {
@@ -15,12 +17,14 @@ export default class PricingColumn extends React.Component<Props, {}> {
 
     return (
       <div
-        className='container'
+        className={`container ${this.props.className || ''}`}
         style={{backgroundColor: this.backgroundColor()}}
       >
         <style jsx={true}>{`
           .container {
-            @p: .flex, .flexColumn, .itemsCenter, .pv25, .ph16;
+            @p: .flex, .flexColumn, .itemsCenter, .pv25, .ph16, .br2;
+            width: 170px;
+            height: 344px;
           }
 
           .header {
@@ -125,8 +129,9 @@ export default class PricingColumn extends React.Component<Props, {}> {
 
     return (
       <div
-        className='f14 fw6 ttu buttonShadow bgWhite'
+        className='f14 fw6 ttu buttonShadow bgWhite pointer br2'
         style={{color: this.primaryTextColor()}}
+        onClick={() => this.props.onSelectPlan(this.props.plan)}
       >Choose Plan</div>
     )
   }
@@ -209,7 +214,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
       return (
         <div className='flex itemsEnd'>
           <div
-            className='f38 fw6'
+            className='f38 fw3'
             style={{color: this.primaryTextColor()}}
           >
             {price}
