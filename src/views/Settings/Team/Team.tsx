@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import {Viewer, Seat} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
-// import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
+import DeleteCollaboratorMutation from '../../../mutations/DeleteCollaboratorMutation'
 
 interface Props {
   viewer: Viewer
@@ -56,22 +56,22 @@ class Team extends React.Component<Props, {}> {
 
   private deleteSeat = (seat: Seat) => {
     Relay.Store.commitUpdate(
-      new InviteCollaboratorMutation({
-        projectId: this.props.projectId,
-        email: email,
+      new DeleteCollaboratorMutation({
+        projectId: this.props.viewer.project.id,
+        email: seat.email,
       }),
       {
         onSuccess: () => {
-          this.setState({isEnteringEmail: false} as State)
-          this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
+          console.log('successfully deleted: ', seat)
+          // this.setState({isEnteringEmail: false} as State)
+          // this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          console.error('could not delete: ', seat)
+          // this.props.showNotification({message: transaction.getError().message, level: 'error'})
         },
       },
-  }
-
-
+    )
   }
 
 }

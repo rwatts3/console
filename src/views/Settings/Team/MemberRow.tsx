@@ -25,9 +25,13 @@ export default class MemberRow extends React.Component<Props, State> {
   render() {
     return (
       <div
-        className='container'
-        onMouseEnter={() => this.setState({isHovering: true})}
-        onMouseLeave={() => this.setState({isHovering: false})}
+        className={`container ${this.state.isHovering && 'bgBlack07 br2'}`}
+        onMouseEnter={() => {
+          this.setState({isHovering: true})
+        }}
+        onMouseLeave={() => {
+          this.setState({isHovering: false})
+        }}
       >
         <style jsx={true}>{`
 
@@ -61,11 +65,20 @@ export default class MemberRow extends React.Component<Props, State> {
                   background-color: rgba(42,189,60,.2);
                 }
 
+                .seatIndicator {
+                  @p: .flex, .justifyCenter, .itemsCenter, .br100, .wS38, .hS38, .fw6, .f20;
+                }
+
+                .move {
+                  transition: .15s linear all;
+                }
+
               `}</style>
-        <div className='flex justifyBetween itemsCenter w100 ph10'>
+        <div className={`flex justifyBetween itemsCenter w100 ph10`}>
           <div className='flex'>
-            <div className={`flex justifyCenter itemsCenter br100 wS38 hS38 fw6 f20 ${this.randomColor()}`}>
-              {this.props.seat.name.charAt(0)}</div>
+            <div className={`seatIndicator ${this.randomColor()}`}>
+              {this.props.seat.name.charAt(0)}
+            </div>
             <div className='pl16 black80 f25 fw3'>{this.props.seat.name}</div>
             {this.isCurrentUser() && <div className='pl2 black50 f25 fw3'>(you)</div>}
           </div>
@@ -76,9 +89,6 @@ export default class MemberRow extends React.Component<Props, State> {
   }
 
   private getRightPart = (): JSX.Element => {
-    // return (
-    //   <div className='f14 fw6 ttu itemsStart green bgLightgreen20 br2 pv2 ph6'>Owner</div>
-    // )
     if (this.props.seat.isOwner) {
       return (
         <div className='f14 fw6 ttu itemsStart green bgLightgreen20 br2 pv2 ph6'>Owner</div>

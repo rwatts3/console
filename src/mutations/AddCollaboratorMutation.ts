@@ -5,7 +5,7 @@ interface Props {
   email: string
 }
 
-export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}> {
+export default class AddCollaboratorMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{inviteCollaborator}`
@@ -14,6 +14,7 @@ export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}
   getFatQuery () {
     return Relay.QL`
       fragment on InviteCollaboratorPayload {
+        project
         seat {
           email
         }
@@ -22,7 +23,16 @@ export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}
   }
 
   getConfigs () {
-    return []
+    return [{
+      type: 'RANGE_ADD',
+      parentName: 'project',
+      parentID: this.props.projectId,
+      connectionName: 'seats',
+      edgeName: 'seatEdge',
+      rangeBehaviors: {
+        '': 'append',
+      },
+    }]
   }
 
   getVariables () {
