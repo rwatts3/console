@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {PricingPlan} from '../../../types/types'
+import PricingColumn from '../PricingColumn'
 
 interface Props {
   plan: PricingPlan
@@ -16,7 +17,19 @@ export default class CreditCardInputSection extends React.Component<Props, {}> {
             border-color: rgb(229,229,229);
             height: 400px;
           }
+
+          .pricingColumn {
+            margin-top: -15px;
+          }
+
         `}</style>
+
+        <PricingColumn
+          className='ml38'
+          plan='Developer'
+          isCurrentPlan={false}
+        />
+
       </div>
     )
   }
