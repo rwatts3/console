@@ -25,7 +25,7 @@ export default class MemberRow extends React.Component<Props, State> {
   render() {
     return (
       <div
-        className={`container ${this.state.isHovering && 'bgBlack07 br2'}`}
+        className={`container ${this.state.isHovering && 'bgBlack02 br2'}`}
         onMouseEnter={() => {
           this.setState({isHovering: true})
         }}

@@ -55,23 +55,25 @@ class Team extends React.Component<Props, {}> {
   }
 
   private deleteSeat = (seat: Seat) => {
-    Relay.Store.commitUpdate(
-      new DeleteCollaboratorMutation({
-        projectId: this.props.viewer.project.id,
-        email: seat.email,
-      }),
-      {
-        onSuccess: () => {
-          console.log('successfully deleted: ', seat)
-          // this.setState({isEnteringEmail: false} as State)
-          // this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
-        },
-        onFailure: (transaction) => {
-          console.error('could not delete: ', seat)
-          // this.props.showNotification({message: transaction.getError().message, level: 'error'})
-        },
-      },
-    )
+    if (window.confirm('Do you really want to remove the user with email ' + seat.email + ' as a collaborator from this project?')) {
+      Relay.Store.commitUpdate(
+        new DeleteCollaboratorMutation({
+          projectId: this.props.viewer.project.id,
+          email: seat.email,
+        }),
+        {
+          onSuccess: () => {
+            console.log('successfully deleted: ', seat)
+            // this.setState({isEnteringEmail: false} as State)
+            // this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
+          },
+          onFailure: (transaction) => {
+            console.error('could not delete: ', seat)
+            // this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          },
+        }
+      )
+    }
   }
 
 }
