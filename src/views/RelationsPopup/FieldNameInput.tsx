@@ -100,7 +100,6 @@ export default class FieldNameInput extends React.Component<Props, State> {
                 type='text'
                 autoFocus={true}
                 onBlur={() => {
-                  console.log('done editing input field')
                   this.doneEditingInputField(false)
                 }}
                 className={`f20 bgTransparent wS96

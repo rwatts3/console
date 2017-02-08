@@ -107,6 +107,7 @@ class EmptyRow extends React.Component<Props, State> {
         </div>
       )
     } else if (this.props.hasAddFunctionality) {
+      const {numberOfLeftSeats} = this.props
       rowContent = (
         <div
           className='addCollaborator'
@@ -138,7 +139,7 @@ class EmptyRow extends React.Component<Props, State> {
             />
           </div>
           <div className='f16 black40'>
-            add collaborator ({this.props.numberOfLeftSeats} seats left)
+            add collaborator ({numberOfLeftSeats} {numberOfLeftSeats === 1 ? 'seat' : 'seats'} left)
           </div>
         </div>
       )

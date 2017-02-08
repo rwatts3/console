@@ -357,7 +357,6 @@ class FieldPopup extends React.Component<Props, State> {
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
 
     if (!valid) {
-      console.error('shit is not valid', errors)
       this.setState({
         showErrors: true,
       } as State)
@@ -522,9 +521,9 @@ export default Relay.createContainer(MappedFieldPopup, {
           itemCount
         }
         field: fieldByName(
-        projectName: $projectName
-        modelName: $modelName
-        fieldName: $fieldName
+          projectName: $projectName
+          modelName: $modelName
+          fieldName: $fieldName
         ) @include(if: $fieldExists) {
           id
           name

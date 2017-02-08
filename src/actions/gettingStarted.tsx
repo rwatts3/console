@@ -194,7 +194,6 @@ export function showCurrentStep(router: ReactRouter.InjectedRouter, params: any)
   return (dispatch, getState) => {
     const {step} = getState().gettingStarted.gettingStartedState
 
-    console.log('showing current step', step)
     switch (step) {
       case 'STEP0_OVERVIEW':
         break
