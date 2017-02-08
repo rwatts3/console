@@ -86,13 +86,32 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
     const models = this.props.viewer.project.models.edges.map(edge => edge.node)
 
-    let forbiddenFieldNames = removeDuplicatesFromStringArray(
-      this.props.viewer.project.fields.edges.map(edge => edge.node.name),
-    )
-    if (relation) {
-      forbiddenFieldNames = forbiddenFieldNames.filter(fieldName =>
-      fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    // compute forbidden field name for left model
+    let forbiddenFieldNamesForLeftModel = []
+    if (this.state.leftSelectedModel) {
+      const modelWithFields = models.find(model => this.state.leftSelectedModel.id === model.id)
+      forbiddenFieldNamesForLeftModel = modelWithFields.fields.edges.map(edge => edge.node.name)
     }
+
+    // compute forbidden field name for right model
+    let forbiddenFieldNamesForRightModel = []
+    if (this.state.rightSelectedModel) {
+      const modelWithFields = models.find(model => this.state.rightSelectedModel.id === model.id)
+      forbiddenFieldNamesForRightModel = modelWithFields.fields.edges.map(edge => edge.node.name)
+    }
+
+    // if (relation) {
+    //   forbiddenFieldNamesForLeftModel = forbiddenFieldNamesForLeftModel.filter(fieldName =>
+    //   fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    // }
+
+    // let forbiddenFieldNamesForRightModel = removeDuplicatesFromStringArray(
+    //   this.props.viewer.project.fields.edges.map(edge => edge.node.name),
+    // )
+    // if (relation) {
+    //   forbiddenFieldNamesForRightModel = forbiddenFieldNamesForRightModel.filter(fieldName =>
+    //   fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    // }
 
     const {displayState, leftSelectedModel, rightSelectedModel,
       selectedCardinality, relationName, relationDescription,
@@ -185,7 +204,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       rightInputIsBreakingChange={rightInputIsBreakingChange}
                       leftModelIsBreakingChange={leftModelIsBreakingChange}
                       rightModelIsBreakingChange={rightModelIsBreakingChange}
-                      forbiddenFieldNames={forbiddenFieldNames}
+                      forbiddenFieldNamesForLeftModel={forbiddenFieldNamesForLeftModel}
+                      forbiddenFieldNamesForRightModel={forbiddenFieldNamesForRightModel}
                     />
                     :
                     <SetMutation
@@ -660,14 +680,14 @@ export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
                 id
                 name
                 namePlural
-              }
-            }
-          }
-          fields(first: 1000) {
-            edges {
-              node {
-                id
-                name
+                fields(first: 1000) {
+                  edges {
+                    node {
+                      id
+                      name
+                    }
+                  }
+                }
               }
             }
           }

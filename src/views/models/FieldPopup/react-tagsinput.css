@@ -42,4 +42,5 @@
 
 .react-tagsinput > span {
     display: flex;
+    flex-wrap: wrap;
 }

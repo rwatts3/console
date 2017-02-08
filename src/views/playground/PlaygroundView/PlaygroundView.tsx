@@ -205,6 +205,7 @@ class PlaygroundView extends React.Component<Props, State> {
           adminAuthToken={this.state.adminToken}
           projectId={this.props.viewer.project.id}
           onSuccess={this.handleResponse}
+          httpApiPrefix={__BACKEND_ADDR__}
         />
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
           <PopupWrapper blur={true}>

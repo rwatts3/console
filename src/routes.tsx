@@ -23,7 +23,7 @@ import Settings from './views/Settings/Settings'
 import General from './views/Settings/General/General'
 import Authentication from './views/Settings/Authentication/Authentication'
 import Export from './views/Settings/Export/Export'
-// import Team from './views/Settings/Team/Team'
+import Team from './views/Settings/Team/Team'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/FieldPopup/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
@@ -33,6 +33,8 @@ import PermissionsView from './views/PermissionsView/PermissionsView'
 import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import AlgoliaPopup from './views/Integrations/AlgoliaPopup/AlgoliaPopup'
+import AlgoliaView from './views/Integrations/Algolia/AlgoliaView'
+
 import {
   AlgoliaEditIndexPopup,
   AlgoliaCreateIndexPopup,
@@ -121,7 +123,7 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
-        {/*<Route path='team' component={Team} queries={ViewerQuery} render={render} />*/}
+        <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
@@ -152,22 +154,23 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
+      <Route path='algolia' component={AlgoliaView} queries={ViewerQuery} render={render}/>
       <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
-        <Route path='algolia' component={AlgoliaPopup} queries={ViewerQuery} render={render}>
-          <Route
-            path='edit/:id'
-            component={AlgoliaEditIndexPopup}
-            queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-            render={render}/>
-          <Route
-            path='create'
-            component={AlgoliaCreateIndexPopup}
-            queries={ViewerQuery}
-            render={render}/>
-        </Route>
         <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
       </Route>
       <IndexRedirect to='models'/>
     </Route>
   </Route>
 )
+// <Route path='algolia' component={AlgoliaPopup} queries={ViewerQuery} render={render}>
+//   <Route
+//     path='edit/:id'
+//     component={AlgoliaEditIndexPopup}
+//     queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+//     render={render}/>
+//   <Route
+// path='create'
+// component={AlgoliaCreateIndexPopup}
+// queries={ViewerQuery}
+// render={render}/>
+//   </Route>
