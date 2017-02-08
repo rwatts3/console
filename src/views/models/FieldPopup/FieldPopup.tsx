@@ -521,9 +521,9 @@ export default Relay.createContainer(MappedFieldPopup, {
           itemCount
         }
         field: fieldByName(
-        projectName: $projectName
-        modelName: $modelName
-        fieldName: $fieldName
+          projectName: $projectName
+          modelName: $modelName
+          fieldName: $fieldName
         ) @include(if: $fieldExists) {
           id
           name

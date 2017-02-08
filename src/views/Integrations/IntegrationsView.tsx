@@ -17,7 +17,6 @@ class IntegrationsView extends React.Component<Props, {}> {
   render() {
     const {viewer: {project}, params, location} = this.props
 
-
     return (
       <div className={cx($p.overflowScroll, $p.h100, $p.bgBlack04)}>
         <Helmet title='Integrations' />
