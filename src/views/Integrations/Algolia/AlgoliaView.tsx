@@ -165,6 +165,9 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private handleCloseModal = () => {
+    if (this.state.applicationId === '' && this.state.apiKey === '') {
+      return this.close()
+    }
     this.setState({
       showModal: false,
     } as State)
