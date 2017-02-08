@@ -42,7 +42,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     }
 
     return (
-      <div className={cx($p.flex, $p.flexColumn)}>
+      <div className={cx($p.flex, $p.flexColumn, $p.mr25)}>
         <div className={cx($p.flex, $p.flexRow)}>
           <IntegrationsCard integration={algoliaIntegration} />
           <IntegrationsCard integration={auth0Integration} />
