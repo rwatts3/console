@@ -14,6 +14,8 @@ import {showNotification} from '../../../actions/notification'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
+import ConfirmOperartionsPopup from './ConfirmOperationsPopup'
+import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 
 interface Props {
   algolia: SearchProviderAlgolia
@@ -66,7 +68,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             @p: .red;
           }
           .right {
-            @p: .flex, .itemsCenter;
+            @p: .flex, .itemsCenter, .relative;
           }
           .cancel {
             @p: .white50, .f16;
@@ -176,6 +178,15 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             <div className='button cancel'>Cancel</div>
             <div className='right'>
               <div className={'button save' + (valid ? ' active' : '')} onClick={this.create}>Create Index</div>
+              {valid && selectedModel.itemCount > 0 && (
+                <ConfirmOperationsPopup
+                  numOperations={selectedModel.itemCount}
+                  onCancel={this.close}
+                  onConfirmBreakingChanges={this.create}
+                  showReset={false}
+                  saveLabel='Create Index'
+                />
+              )}
             </div>
           </div>
         </div>
@@ -262,6 +273,7 @@ export default Relay.createContainer(Container, {
             node {
               id
               name
+              itemCount
             }
           }
         }
