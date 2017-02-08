@@ -4,9 +4,14 @@ import {Viewer, Seat} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
 import DeleteCollaboratorMutation from '../../../mutations/DeleteCollaboratorMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface Props {
   viewer: Viewer
+  showNotification: ShowNotificationCallback
 }
 
 class Team extends React.Component<Props, {}> {
@@ -63,13 +68,10 @@ class Team extends React.Component<Props, {}> {
         }),
         {
           onSuccess: () => {
-            console.log('successfully deleted: ', seat)
-            // this.setState({isEnteringEmail: false} as State)
-            // this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
+            this.props.showNotification({message: 'Removed collaborator with email: ' + seat.email, level: 'success'})
           },
           onFailure: (transaction) => {
-            console.error('could not delete: ', seat)
-            // this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            this.props.showNotification({message: transaction.getError().message, level: 'error'})
           },
         }
       )
@@ -78,7 +80,13 @@ class Team extends React.Component<Props, {}> {
 
 }
 
-export default Relay.createContainer(Team, {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedTeam = connect(null, mapDispatchToProps)(Team)
+
+export default Relay.createContainer(mappedTeam, {
   initialVariables: {
     projectName: null, // injected from router
   },

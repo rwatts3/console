@@ -15,6 +15,9 @@ export default class DeleteCollaboratorMutation extends Relay.Mutation<Props, {}
     return Relay.QL`
       fragment on RemoveCollaboratorPayload {
         deletedId
+        project {
+          name
+        }
       }
     `
   }
@@ -35,4 +38,10 @@ export default class DeleteCollaboratorMutation extends Relay.Mutation<Props, {}
       email: this.props.email,
     }
   }
+
+  // getOptimisticResponse () {
+  //   return {
+  //     deletedId: this.props.projectId,
+  //   }
+  // }
 }
