@@ -69,7 +69,7 @@ export default class ConfirmOperationsPopup extends React.Component<Props, State
         </div>
         <div className='pa25 f16 black50 bb bBlack10'>
           {resync && (
-            'We will resync all nodes with the new query. '
+            'Note that all nodes will be resynced with the new query. '
           )}
           Your changes will use up to {numOperations} Operations in Algolia.
         </div>
@@ -101,9 +101,9 @@ export default class ConfirmOperationsPopup extends React.Component<Props, State
           {this.props.showReset && (
             <div
               className='pa25 f16 pointer black50'
-              onClick={() => this.props.onResetBreakingChanges()}
+              onClick={() => this.props.onCancel()}
             >
-              Reset
+              Cancel
             </div>
           )}
         </div>

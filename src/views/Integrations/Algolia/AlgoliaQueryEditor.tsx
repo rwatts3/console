@@ -97,7 +97,7 @@ class AlgoliaQueryEditor extends React.Component<Props, null> {
                 numOperations={selectedModel.itemCount}
                 onCancel={onCancel}
                 onConfirmBreakingChanges={onUpdate}
-                showReset={false}
+                showReset={true}
                 saveLabel='Save'
                 resync
               />
