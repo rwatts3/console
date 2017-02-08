@@ -4,9 +4,14 @@ import {Viewer, Seat} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
 import DeleteCollaboratorMutation from '../../../mutations/DeleteCollaboratorMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface Props {
   viewer: Viewer
+  showNotification: ShowNotificationCallback
 }
 
 class Team extends React.Component<Props, {}> {
@@ -55,28 +60,33 @@ class Team extends React.Component<Props, {}> {
   }
 
   private deleteSeat = (seat: Seat) => {
-    Relay.Store.commitUpdate(
-      new DeleteCollaboratorMutation({
-        projectId: this.props.viewer.project.id,
-        email: seat.email,
-      }),
-      {
-        onSuccess: () => {
-          console.log('successfully deleted: ', seat)
-          // this.setState({isEnteringEmail: false} as State)
-          // this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
-        },
-        onFailure: (transaction) => {
-          console.error('could not delete: ', seat)
-          // this.props.showNotification({message: transaction.getError().message, level: 'error'})
-        },
-      },
-    )
+    if (window.confirm('Do you really want to remove the user with email ' + seat.email + ' as a collaborator from this project?')) {
+      Relay.Store.commitUpdate(
+        new DeleteCollaboratorMutation({
+          projectId: this.props.viewer.project.id,
+          email: seat.email,
+        }),
+        {
+          onSuccess: () => {
+            this.props.showNotification({message: 'Removed collaborator with email: ' + seat.email, level: 'success'})
+          },
+          onFailure: (transaction) => {
+            this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          },
+        }
+      )
+    }
   }
 
 }
 
-export default Relay.createContainer(Team, {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedTeam = connect(null, mapDispatchToProps)(Team)
+
+export default Relay.createContainer(mappedTeam, {
   initialVariables: {
     projectName: null, // injected from router
   },
