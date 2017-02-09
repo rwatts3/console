@@ -8,6 +8,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
   email: string
@@ -173,7 +174,7 @@ class EmptyRow extends React.Component<Props, State> {
           this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
         },
       },
     )
