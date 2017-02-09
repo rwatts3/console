@@ -165,14 +165,3 @@ export default Relay.createContainer(Billing, {
     `},
 })
 
-/*
- crm: user {
- name
- crm {
- customer {
- id
-
- }
- }
- }
- */

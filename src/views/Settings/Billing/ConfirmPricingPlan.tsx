@@ -1,14 +1,15 @@
 import * as React from 'react'
-import {PricingPlan} from '../../../types/types'
+import {PricingPlan, Viewer} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import {withRouter} from 'react-router'
 import {Icon} from 'graphcool-styles'
 import CreditCardInputSection from './CreditCardInputSection'
-
+import * as Relay from 'react-relay'
 
 interface Props {
   currentPlan: PricingPlan
   router: ReactRouter.InjectedRouter
+  viewer: Viewer
 }
 
 class ConfirmPricingPlan extends React.Component<Props, {}> {
@@ -43,10 +44,10 @@ class ConfirmPricingPlan extends React.Component<Props, {}> {
             <div className='f16 black50 mt10 mb38'>Please enter your credit card information to proceed.</div>
             <CreditCardInputSection
               plan={this.props.currentPlan}
+              projectId={this.props.viewer.project.id}
             />
           </div>
         </div>
-
       </PopupWrapper>
     )
   }
@@ -57,4 +58,17 @@ class ConfirmPricingPlan extends React.Component<Props, {}> {
 
 }
 
-export default withRouter(ConfirmPricingPlan)
+export default Relay.createContainer(withRouter(ConfirmPricingPlan), {
+  initialVariables: {
+    projectName: null, // injected from router
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        project: projectByName(projectName: $projectName) {
+          id
+        },
+      }
+    `},
+})
+

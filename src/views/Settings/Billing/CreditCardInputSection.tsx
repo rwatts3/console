@@ -6,7 +6,9 @@ import CreditCardBack from './CreditCardBack'
 import {chunk} from '../../../utils/utils'
 import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
 import {Icon} from 'graphcool-styles'
-import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
+// import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
+import * as Relay from 'react-relay'
+import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 
 interface State {
   creditCardNumber: string
@@ -29,6 +31,7 @@ interface State {
 
 interface Props {
   plan: PricingPlan
+  projectId: string
 }
 
 export default class CreditCardInputSection extends React.Component<Props, State> {
@@ -327,7 +330,13 @@ export default class CreditCardInputSection extends React.Component<Props, State
           cvc: this.state.cpc,
           exp_month: expirationMonth,
           exp_year: expirationYear,
-          address_zip: '22305',
+          name: this.state.cardHolderName,
+          address_line1: this.state.addressLine1,
+          address_line2: this.state.addressLine2,
+          address_city: this.state.city,
+          address_state: this.state.state,
+          address_zip: this.state.zipCode,
+          address_country: this.state.country,
         },
         this.stripeResponseHandler,
       )
@@ -344,6 +353,24 @@ export default class CreditCardInputSection extends React.Component<Props, State
 
     const token = response.id
     console.log('did receive token: ', token)
+
+    Relay.Store.commitUpdate(
+      new SetCreditCardMutation({
+        projectId: this.props.projectId,
+        token: token,
+      }),
+      {
+        onSuccess: () => {
+          // this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
+          console.log('successfully set credit card details')
+        },
+        onFailure: (transaction) => {
+          // this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          console.error(transaction.getError().message)
+        },
+      },
+    )
+
   }
 
   private validateAddressDetails = () => {

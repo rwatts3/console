@@ -123,7 +123,7 @@ export default (
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
         <Route path='billing' component={Billing} queries={ViewerQuery} render={render} >
           <Route path='change-plan' component={ChangePricingPlan} render={render} />
-          <Route path='confirm-plan' component={ConfirmPricingPlan} render={render} />
+          <Route path='confirm-plan' component={ConfirmPricingPlan} queries={ViewerQuery}  render={render} />
         </Route>
         <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>
