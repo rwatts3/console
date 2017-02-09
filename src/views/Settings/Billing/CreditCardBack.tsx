@@ -7,11 +7,16 @@ interface Props {
   cpc: string
   didChangeCPC: Function
   setEditingState?: Function
+  onKeyDown?: Function
+  close?: Function
 }
 
 export default class CreditCardBack extends React.Component<Props, {}> {
 
   render() {
+
+    const handleKeyDown = this.props.onKeyDown || this.handleKeyDown
+
     return (
       <div className={`container ${this.props.className || ''}`} style={this.props.style}>
         <style jsx={true}>{`
@@ -46,8 +51,7 @@ export default class CreditCardBack extends React.Component<Props, {}> {
             value={this.props.cpc}
             onChange={(e: any) => this.props.didChangeCPC(e.target.value)}
             tabIndex={3}
-            onKeyDown={this.handleKeyDown}
-
+            onKeyDown={(e) => handleKeyDown(e)}
           />
         </div>
       </div>

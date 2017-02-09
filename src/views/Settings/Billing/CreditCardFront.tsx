@@ -17,6 +17,7 @@ interface Props {
   onCreditCardNumberChange?: Function
   onCardHolderNameChange?: Function
   onExpirationDateChange?: Function
+  onKeyDown?: Function
 }
 
 export default class CreditCardFront extends React.Component<Props, State> {
@@ -131,6 +132,8 @@ export default class CreditCardFront extends React.Component<Props, State> {
 
   private bottomPart = () => {
 
+    const handleKeyDown = this.props.onKeyDown || this.handleKeyDown
+
     return (
 
       !this.props.isEditing ?
@@ -205,7 +208,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
             value={this.props.creditCardNumber}
             autoFocus={true}
             tabIndex={1}
-            onKeyDown={this.handleKeyDown}
+            onKeyDown={(e) => handleKeyDown(e)}
           />
           <div className='flex justifyBetween mt10 mr16 mb10'>
             <div>
@@ -216,7 +219,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
                 onChange={(e: any) => this.props.onCardHolderNameChange(e.target.value) }
                 value={this.props.cardHolderName}
                 tabIndex={2}
-                onKeyDown={this.handleKeyDown}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
             </div>
             <div className=''>
@@ -227,7 +230,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
                 onChange={(e: any) => this.props.onExpirationDateChange(e.target.value) }
                 value={this.props.expirationDate}
                 tabIndex={3}
-                onKeyDown={this.handleKeyDown}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
             </div>
           </div>

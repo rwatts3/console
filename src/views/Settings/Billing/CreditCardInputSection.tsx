@@ -9,6 +9,7 @@ import {Icon} from 'graphcool-styles'
 // import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 import * as Relay from 'react-relay'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
+import {ENTER_KEY, ESCAPE_KEY} from '../../../utils/constants'
 
 interface State {
   creditCardNumber: string
@@ -32,6 +33,9 @@ interface State {
 interface Props {
   plan: PricingPlan
   projectId: string
+  goBack?: Function
+  setLoading?: Function
+  close?: Function
 }
 
 export default class CreditCardInputSection extends React.Component<Props, State> {
@@ -56,6 +60,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
   render() {
     Stripe.setPublishableKey('pk_test_BpvAdppmXbqmkv8NQUqHRplE')
     return (
+
       <div className='creditCardInputSectionContainer'>
         <style global jsx={true}>{`
 
@@ -81,6 +86,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
           plan='Growth'
           isCurrentPlan={false}
           isSelected={true}
+          onSelectPlan={this.props.goBack}
         />
 
         {!this.state.displayAddressDataInput &&
@@ -118,12 +124,14 @@ export default class CreditCardInputSection extends React.Component<Props, State
           onCardHolderNameChange={this.onCardHolderNameChange}
           onExpirationDateChange={this.updateExpirationDate}
           shouldDisplayVisaLogo={true}
+          onKeyDown={this.handleKeyDown}
         />
         <CreditCardBack
           className='absolute'
           cpc={this.state.cpc}
           didChangeCPC={this.onCPCChange}
           style={{left: '140px', top: '20px'}}
+          onKeyDown={this.handleKeyDown}
         />
       </div>
     )
@@ -158,7 +166,9 @@ export default class CreditCardInputSection extends React.Component<Props, State
           placeholder='Enter address line 1'
           onChange={(e: any) => this.setState({addressLine1: e.target.value} as State, () =>
             this.validateAddressDetails())}
-          type='text'/>
+          type='text'
+          onKeyDown={this.handleKeyDown}
+          autoFocus={true}/>
         <div className='title'>Address Line 2</div>
         <input
           className='wideInput inputField'
@@ -166,6 +176,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
           value={this.state.addressLine2}
           onChange={(e: any) => this.setState({addressLine2: e.target.value} as State, () =>
             this.validateAddressDetails())}
+          onKeyDown={this.handleKeyDown}
           type='text'/>
         <div className='flex'>
           <div>
@@ -186,6 +197,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
               value={this.state.state}
               onChange={(e: any) => this.setState({state: e.target.value} as State, () =>
                 this.validateAddressDetails())}
+              onKeyDown={this.handleKeyDown}
               type='text'/>
           </div>
         </div>
@@ -198,6 +210,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
               value={this.state.city}
               onChange={(e: any) => this.setState({city: e.target.value} as State, () =>
                 this.validateAddressDetails())}
+              onKeyDown={this.handleKeyDown}
               type='text'/>
           </div>
           <div>
@@ -208,6 +221,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
               value={this.state.country}
               onChange={(e: any) => this.setState({country: e.target.value} as State, () =>
                 this.validateAddressDetails())}
+              onKeyDown={this.handleKeyDown}
               type='text'/>
           </div>
         </div>
@@ -222,7 +236,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
         <div
           className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer ${!this.state.creditCardDetailsValid && 'o50'}`}
           onClick={() => {
-            if (this.state.creditCardDetailsValid){
+            if (this.state.creditCardDetailsValid) {
               this.setState({displayAddressDataInput: true} as State)
             }
           }}
@@ -314,14 +328,20 @@ export default class CreditCardInputSection extends React.Component<Props, State
   }
 
   private onCPCChange = (newValue) => {
-    this.setState({cpc: newValue} as State, () => this.validateCreditCardDetails())
+    if (newValue.length <= 3) {
+      this.setState({cpc: newValue} as State, () => this.validateCreditCardDetails())
+    }
   }
 
   private onConfirm = () => {
 
+    console.log('PURCHASE')
+
     const expirationDateComponents = this.state.expirationDate.split('/')
     const expirationMonth = expirationDateComponents[0]
     const expirationYear = expirationDateComponents[1]
+
+    this.props.setLoading(true)
 
     if (this.state.creditCardDetailsValid && this.state.addressDataValid) {
       Stripe.card.createToken(
@@ -348,6 +368,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
 
     if (response.error) {
       console.error(response.error)
+      this.props.setLoading(false)
       return
     }
 
@@ -362,11 +383,12 @@ export default class CreditCardInputSection extends React.Component<Props, State
       {
         onSuccess: () => {
           // this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
-          console.log('successfully set credit card details')
+          this.props.close()
         },
         onFailure: (transaction) => {
           // this.props.showNotification({message: transaction.getError().message, level: 'error'})
           console.error(transaction.getError().message)
+          this.props.setLoading(false)
         },
       },
     )
@@ -395,10 +417,23 @@ export default class CreditCardInputSection extends React.Component<Props, State
     }
   }
 
-  // private handleKeyDown = (e) => {
-  //   if (e.keyCode === ENTER_KEY) {
-  //   } else if (e.keyCode === ESCAPE_KEY) {
-  //   }
-  // }
+  private handleKeyDown = (e) => {
+
+    if (e.keyCode === ENTER_KEY) {
+      if (!this.state.displayAddressDataInput) {
+        if (this.state.creditCardDetailsValid) {
+          this.setState({displayAddressDataInput: true} as State)
+        }
+      } else {
+        if (this.state.addressDataValid) {
+          this.onConfirm()
+        }
+      }
+    } else if (e.keyCode === ESCAPE_KEY) {
+      if (this.state.displayAddressDataInput) {
+        this.setState({displayAddressDataInput: false} as State)
+      }
+    }
+  }
 
 }

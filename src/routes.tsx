@@ -35,7 +35,7 @@ import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import AlgoliaPopup from './views/Integrations/AlgoliaPopup/AlgoliaPopup'
 import {
   AlgoliaEditIndexPopup,
-  AlgoliaCreateIndexPopup
+  AlgoliaCreateIndexPopup,
 } from './views/Integrations/AlgoliaPopup/AlgoliaIndexPopup/AlgoliaIndexPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
