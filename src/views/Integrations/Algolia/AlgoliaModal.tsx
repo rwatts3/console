@@ -89,6 +89,9 @@ export default class AlgoliaModal extends React.Component<Props, null> {
           .inner-intro {
             @p: .flex, .justifyCenter, .itemsCenter, .flexColumn, .mt16;
           }
+          h2 + h2 {
+            @p: .mt38;
+          }
         `}</style>
         <div className='algolia-modal'>
           <div className='header'>
@@ -110,8 +113,15 @@ export default class AlgoliaModal extends React.Component<Props, null> {
           {(applicationId.length === 0 || apiKey.length === 0) && (
             <div className='intro'>
               <div className='inner-intro'>
-                <h1>Welcome to the Algolia Integration</h1>
-                <h2>Before Algolia can index your graphcool data, you must create an API Key in Algolia.</h2>
+                <h1>Getting Started with the Algolia Integration</h1>
+                <h2>
+                  In this integration, Graphcool automatically syncs your data to Algolia,
+                  so you have a lightning fast search on your app's data.
+                </h2>
+                <h2>
+                  In order to use this integration,
+                  you have to create an API key in your Algolia Dashboard.
+                </h2>
                 <a
                   className='button green'
                   href={
@@ -120,7 +130,7 @@ export default class AlgoliaModal extends React.Component<Props, null> {
                   }
                   target='_blank'
                 >
-                  How to create an API Key
+                  How to create an API key
                 </a>
               </div>
             </div>

@@ -18,7 +18,6 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
       && this.props.project.integrations.edges[0].node.isEnabled
     const {params: {projectName}} = this.props
 
-    console.log()
     const providers = this.props.project.authProviders.edges.map(edge => edge.node)
 
     const algoliaIntegration = {
@@ -43,7 +42,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     }
 
     return (
-      <div className={cx($p.flex, $p.flexColumn)}>
+      <div className={cx($p.flex, $p.flexColumn, $p.mr25)}>
         <div className={cx($p.flex, $p.flexRow)}>
           <IntegrationsCard integration={algoliaIntegration} />
           <IntegrationsCard integration={auth0Integration} />

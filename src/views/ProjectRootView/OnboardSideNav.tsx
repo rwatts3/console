@@ -27,8 +27,6 @@ class OnboardSideNav extends React.Component<Props, {}> {
   render() {
     const progress = 100 * this.props.gettingStartedState.progress.index / 5
 
-    console.log('STEP nigga', this.props.gettingStartedState.step)
-
     return (
       <div className='flex flex-column'>
         <div style={{ flex: '0 0 auto' }} className='relative'>
