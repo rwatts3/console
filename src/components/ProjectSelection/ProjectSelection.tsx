@@ -382,18 +382,22 @@ class ProjectSelection extends React.Component<Props, State> {
     if (this.props.selectedProject.seats.edges.length <= 1) {
       return (
         <Link
-          to={`${this.props.selectedProject.name}/settings/team`}
+          to={`/${this.props.selectedProject.name}/settings/team`}
           onClick={(e) => {
             e.stopPropagation() // don't toggle
           }}
         >
           <div className='flex itemsCenter'>
             <Icon
-              src={require('../../assets/icons/add_member.svg')}
+              src={this.state.expanded ?
+                require('' +
+                 'chrome../../assets/icons/add_member_white.svg') : require('../../assets/icons/add_member.svg')}
               width={13}
               height={13}
             />
-            <div className='f12 pointer blue ml4'>add collaborators</div>
+            <div className={`f12 pointer ml4 ${this.state.expanded ? 'white' : 'blue'}`}>
+              add collaborators
+            </div>
           </div>
         </Link>
       )

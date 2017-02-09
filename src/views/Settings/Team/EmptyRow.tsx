@@ -68,7 +68,7 @@ class EmptyRow extends React.Component<Props, State> {
         <div className='flex justifyBetween w100'>
           <style jsx={true}>{`
           .inputField {
-            @inherit: .pl6, .f25, .fw3, .w100;
+            @inherit: .pl6, .f25, .fw3, .w100, .h100;
             color: rgba(42,127,211,1);
           }
 
@@ -77,7 +77,7 @@ class EmptyRow extends React.Component<Props, State> {
           }
           `}</style>
           <input
-            className='inputField'
+            className='inputField border-box'
             autoFocus={true}
             placeholder='Invite by email address...'
             value={this.state.email}
