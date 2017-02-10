@@ -284,7 +284,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
             flex: 0 0 220px;
             padding: 20px;
             :global(.tag) {
-              @p: .mb6;
+              @p: .mb6, .mr6;
             }
           }
           .variables.fullscreen {

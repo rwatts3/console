@@ -23,7 +23,7 @@ const VariableTag = ({onClick, variable, active, className}: Props) => {
           padding: 6px 6px 6px 9px;
         }
         .variable-tag.active {
-          @p: .bgWhite04, .white60;
+          @p: .bgWhite10, .white60;
         }
         .name {
           @p: .f14, .fw4, .code, .lhSolid;
