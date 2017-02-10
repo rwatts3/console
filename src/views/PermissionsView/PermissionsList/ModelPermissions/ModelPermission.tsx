@@ -65,7 +65,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
             $p.justifyBetween,
             $p.relative,
           )}>
-            <h3 className={cx($p.black50, $p.f16)}>
+            <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
               {permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'}
             </h3>
             <Arrow className={cx(

@@ -283,3 +283,11 @@ export interface Constraint {
   value: string
   lengthOperator?: Operator
 }
+
+export interface PermissionVariable {
+  name: string
+  typeIdentifier: FieldType
+  category?: string
+  isRequired: boolean
+  isList: boolean
+}

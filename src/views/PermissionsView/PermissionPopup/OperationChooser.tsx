@@ -33,9 +33,6 @@ const operations = [
 ]
 
 const Placeholder = styled.div`
-  top: 50%;
-  transform: translateY(-50%);
-  left: -10px;
 `
 
 const OperationButton = styled.div`
@@ -60,7 +57,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
     return (
       <div className={$p.pb38}>
         <div
-          className={cx($p.pa38)}
+          className={cx($p.ph38, $p.pb38)}
         >
           <h2 className={cx($p.fw3, $p.mb10)}>Operation</h2>
           <div className={$p.black50}>The Operation that needs to be restricted by the permission</div>
@@ -78,9 +75,26 @@ export default class OperationChooser extends React.Component<Props, {}> {
            )}
         >
           {selectedOperation === null && (
-            <Placeholder className={cx($p.absolute, $p.br2, $p.pv8, $p.ph10, $p.bgBlue)}>
-              &nbsp;
-            </Placeholder>
+            <div className='placeholder'>
+              <style jsx>{`
+                .placeholder {
+                  @p: .absolute, .overflowHidden;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  left: 0px;
+                  width: 10px;
+                  height: 37px;
+                }
+                .bar {
+                  @p: .br2, .ph10, .bgBlue, .relative;
+                  left: -10px;
+                  height: 100%;
+                }
+              `}</style>
+              <div className='bar'>
+
+              </div>
+            </div>
           )}
           {operations.map(operation => (
             <div
@@ -102,7 +116,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
                   height={23}
                 />
                 <div
-                  className={cx($p.ml6, $p.black30, $p.ttu, $p.fw6, $p.f14, {
+                  className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
                       [$p.black30]: operation.operation !== selectedOperation,
                       [$p.white]: operation.operation === selectedOperation,
                     },

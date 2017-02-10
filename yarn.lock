@@ -2957,9 +2957,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@1.3.29:
-  version "1.3.29"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.3.29.tgz#dcb463778bf7908a66f520ae2b3e6dee4e9753de"
+graphcool-graphiql@1.3.30:
+  version "1.3.30"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.3.30.tgz#43e1cc57e79ebf09c5fe9ac78d7c30039ad0b905"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"
