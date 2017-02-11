@@ -87,6 +87,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
           isCurrentPlan={false}
           isSelected={true}
           onSelectPlan={this.props.goBack}
+          isDisplayedInConfirmPlan={true}
         />
 
         {!this.state.displayAddressDataInput &&

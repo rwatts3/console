@@ -11,6 +11,7 @@ interface State {
   newCardHolderName: string
   newExpirationDate: string
   newCPC: string
+  isEditingCreditCardInfo: boolean
 }
 
 interface Props {
@@ -37,16 +38,19 @@ class Billing extends React.Component<Props, State> {
       newCardHolderName: 'Nikolas Burk',
       newExpirationDate: '07/21',
       newCPC: '123',
+
+      isEditingCreditCardInfo: false,
     }
   }
 
   render() {
 
-    console.log(this.props.viewer)
+    console.log('RENDER', this.props.viewer.project)
+    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node.name)
 
     return (
 
-      <div className='container'>
+      <div className={`container ${this.state.isEditingCreditCardInfo && 'bottomPadding'}`}>
         <style jsx={true}>{`
 
           .container {
@@ -55,12 +59,18 @@ class Billing extends React.Component<Props, State> {
             border-color: rgba( 229, 229, 229, 1);
           }
 
+          .bottomPadding {
+            padding-bottom: 110px;
+          }
+
         `}</style>
         <CurrentPlan
           plan='Developer'
           projectName={this.props.params.projectName}
         />
-        <Usage />
+        <Usage
+          usedSeats={seats}
+        />
         <CreditCardInformation
           creditCardNumber={this.state.newCreditCardNumber}
           cardHolderName={this.state.newCardHolderName}
@@ -78,6 +88,8 @@ class Billing extends React.Component<Props, State> {
             }
             this.setState({newCPC: newCPC} as State)
           }}
+          setEditingState={this.setEditingState}
+          isEditing={this.state.isEditingCreditCardInfo}
         />
         {this.props.children}
       </div>
@@ -131,6 +143,10 @@ class Billing extends React.Component<Props, State> {
     this.setState({newCreditCardNumber: newCreditCardNumber} as State)
   }
 
+  private setEditingState = (isEditing: boolean, saveChanges: boolean) => {
+    this.setState({isEditingCreditCardInfo: isEditing} as State)
+  }
+
 }
 
 export default Relay.createContainer(Billing, {
@@ -142,6 +158,14 @@ export default Relay.createContainer(Billing, {
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
           id
+          name
+          seats(first: 1000) {
+            edges {
+              node {
+                name
+              }
+            }
+          }
         },
         crm: user {
           name
@@ -154,6 +178,17 @@ export default Relay.createContainer(Billing, {
                     name
 #                    projectBillingInformation {
 #                      plan
+#                    }
+#                    invoices{
+#                      edges{
+#                        node{
+#                          usageRequests
+#                          usageStorage
+#                          usedSeats
+#                          timestamp
+#                          total
+#                        }
+#                      }
 #                    }
                   }
                 }

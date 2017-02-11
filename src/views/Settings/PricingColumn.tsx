@@ -10,6 +10,7 @@ interface Props {
   isSelected?: boolean
   className?: string
   onSelectPlan?: Function
+  isDisplayedInConfirmPlan?: boolean
 }
 
 export default class PricingColumn extends React.Component<Props, {}> {
@@ -18,25 +19,35 @@ export default class PricingColumn extends React.Component<Props, {}> {
 
     return (
       <div
-        className={`container ${this.props.className || ''}`}
+        className={`pricingColumnContainer
+          ${this.props.className || ''}
+          ${this.props.isDisplayedInConfirmPlan && 'width264 mb16'}`}
         style={{backgroundColor: this.backgroundColor()}}
       >
-        <style jsx={true}>{`
-          .container {
-            @p: .flex, .flexColumn, .itemsCenter, .pv25, .ph16, .br2;
+        <style global jsx={true}>{`
+
+          .pricingColumnContainer {
+            @p: .flex, .flexColumn, .itemsCenter, .pb25, .br2;
             width: 170px;
-            height: 344px;
+            padding-top: 20px;
           }
 
-          .header {
-            @p: .flex, .flexColumn, .itemsCenter,  .bb;
-            height: 120px;
+          .pricingColumnHeader {
+            @p: .flex, .flexColumn, .itemsCenter, .pb25, .bb;
+          }
+
+          .paddingTop5 {
+            padding-top: 5px;
+          }
+
+          .width264 {
+            width: 264px;
           }
 
         `}</style>
 
         <div
-          className='header'
+          className='pricingColumnHeader'
           style={{borderColor: this.secondaryTextColor()}}
         >
           <div
@@ -48,68 +59,75 @@ export default class PricingColumn extends React.Component<Props, {}> {
           {this.priceTag()}
         </div>
 
-        <div className='flex'>
-          <Icon
-            src={this.nodesIcon()}
-            width={20}
-            height={20}
-          />
-          <div className='ml6'>
-            <div
-              className='f16 fw6'
-              style={{color: this.primaryTextColor()}}
-            >
-              {this.numberOfNodes()}
-            </div>
-            <div
-              className='f12'
-              style={{color: this.primaryTextColor()}}
-            >
-              Nodes
-            </div>
-          </div>
-        </div>
+        <div className='pv25'>
 
-        <div className='flex'>
-          <Icon
-            src={this.requestsIcon()}
-            width={20}
-            height={20}
-          />
-          <div className='ml6'>
-            <div
-              className='f16 fw6'
-              style={{color: this.primaryTextColor()}}
-            >
-              {this.numberOfRequests()}
-            </div>
-            <div
-              className='f12'
-              style={{color: this.primaryTextColor()}}
-            >
-              Operations
+          <div className='flex'>
+            <Icon
+              className='paddingTop5'
+              src={this.nodesIcon()}
+              width={20}
+              height={20}
+            />
+            <div className='ml10'>
+              <div
+                className='f16 fw6'
+                style={{color: this.primaryTextColor()}}
+              >
+                {this.numberOfNodes()}
+              </div>
+              <div
+                className='f12'
+                style={{color: this.primaryTextColor()}}
+              >
+                Nodes
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className='flex'>
-          <Icon
-            src={this.seatsIcon()}
-            width={20}
-            height={20}
-          />
-          <div
-            className='ml6 f16 fw6'
-            style={{color: this.primaryTextColor()}}
-          >
-            {this.numberOfSeats()}
+          <div className='flex pt10'>
+            <Icon
+              className='paddingTop5'
+              src={this.requestsIcon()}
+              width={20}
+              height={20}
+            />
+            <div className='ml10'>
+              <div
+                className='f16 fw6'
+                style={{color: this.primaryTextColor()}}
+              >
+                {this.numberOfRequests()}
+              </div>
+              <div
+                className='f12'
+                style={{color: this.primaryTextColor()}}
+              >
+                Operations
+              </div>
+            </div>
           </div>
-          <div
-            className='f12'
-            style={{color: this.primaryTextColor()}}
-          >
-            Seats
+
+          <div className='flex itemsCenter pt10'>
+            <Icon
+              className='paddingTop5'
+              src={this.seatsIcon()}
+              width={20}
+              height={20}
+            />
+            <div
+              className='ml10 mt6 f16 fw6'
+              style={{color: this.primaryTextColor()}}
+            >
+              {this.numberOfSeats()}
+            </div>
+            <div
+              className='ml6 mt6 f12'
+              style={{color: this.primaryTextColor()}}
+            >
+              Seats
+            </div>
           </div>
+
         </div>
 
         {this.actionButton()}
@@ -122,7 +140,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
     if (this.props.isCurrentPlan) {
       return (
         <div
-          className='f14 fw6 ttu'
+          className='ph16 pv6 f14 fw6 ttu'
           style={{color: this.primaryTextColor()}}
         >Current Plan</div>
       )
@@ -130,10 +148,10 @@ export default class PricingColumn extends React.Component<Props, {}> {
 
     return (
       <div
-        className='f14 fw6 ttu buttonShadow bgWhite pointer br2'
+        className='ph16 pv6 f14 fw6 ttu buttonShadow bgWhite pointer br2'
         style={{color: this.primaryTextColor()}}
         onClick={() => this.props.onSelectPlan(this.props.plan)}
-      >Choose Plan</div>
+      >{this.props.isDisplayedInConfirmPlan ? 'Change Plan' : 'Choose Plan'}</div>
     )
   }
 
@@ -209,7 +227,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
     if (this.props.plan === 'Developer') {
       return (
         <div
-          className='mt10 f38 fw3'
+          className='f38 fw3'
           style={{color: this.primaryTextColor()}}
         >
           Free

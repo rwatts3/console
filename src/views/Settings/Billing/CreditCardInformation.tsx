@@ -3,7 +3,6 @@ import CreditCardFront from './CreditCardFront'
 import CreditCardBack from './CreditCardBack'
 
 interface State {
-  isEditing: boolean
 }
 
 interface Props {
@@ -15,32 +14,21 @@ interface Props {
   onCardHolderNameChange: Function
   onExpirationDateChange: Function
   onCPCChange: Function
+  isEditing: boolean
+  setEditingState: Function
 }
 
 export default class CreditCardInformation extends React.Component<Props, State> {
 
   payments = [
     {date: '2017/01/28', price: '$ 49.00'},
-    {date: '2017/01/28', price: '$ 49.00'},
-    {date: '2017/01/28', price: '$ 49.00'},
-    {date: '2017/01/28', price: '$ 49.00'},
-    {date: '2017/01/28', price: '$ 49.00'},
-    {date: '2017/01/28', price: '$ 49.00'},
-    {date: '2017/01/28', price: '$ 49.00'},
   ]
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      isEditing: false,
-    }
-  }
 
   render() {
     return (
-      <div className={`container ${this.state.isEditing ? 'bgWhite' : 'bgBlack04'}`}>
+      <div className={`container ${this.props.isEditing ? 'bgWhite' : 'bgBlack04'}`}>
         <style jsx={true}>{`
+
           .container {
             @p: .ph60, .pt38, .pb96, .w100, .bt;
             border-color: rgba( 229, 229, 229, 1);
@@ -50,11 +38,15 @@ export default class CreditCardInformation extends React.Component<Props, State>
             @p: .mb38, .black30, .fw6, .f14, .ttu;
           }
 
+          .editingContainer {
+            padding-bottom: 110px;
+          }
+
         `}</style>
 
-        {this.state.isEditing ?
+        {this.props.isEditing ?
           (
-            <div>
+            <div className='editingContainer'>
               <div className='title'>Credit Card Information</div>
               {this.creditCardInEditingState()}
             </div>
@@ -115,8 +107,8 @@ export default class CreditCardInformation extends React.Component<Props, State>
         cardHolderName={this.props.cardHolderName}
         creditCardNumber={this.props.creditCardNumber}
         expirationDate={this.props.expirationDate}
-        isEditing={this.state.isEditing}
-        setEditingState={this.setEditingState}
+        isEditing={this.props.isEditing}
+        setEditingState={this.props.setEditingState}
       />
     )
 
@@ -130,8 +122,8 @@ export default class CreditCardInformation extends React.Component<Props, State>
           cardHolderName={this.props.cardHolderName}
           creditCardNumber={this.props.creditCardNumber}
           expirationDate={this.props.expirationDate}
-          isEditing={this.state.isEditing}
-          setEditingState={this.setEditingState}
+          isEditing={this.props.isEditing}
+          setEditingState={this.props.setEditingState}
           onCreditCardNumberChange={this.props.onCreditCardNumberChange}
           onCardHolderNameChange={this.props.onCardHolderNameChange}
           onExpirationDateChange={this.props.onExpirationDateChange}
@@ -141,14 +133,10 @@ export default class CreditCardInformation extends React.Component<Props, State>
           cpc={this.props.cpc}
           didChangeCPC={this.props.onCPCChange}
           style={{right: '75px', top: '20px'}}
-          setEditingState={this.setEditingState}
+          setEditingState={this.props.setEditingState}
         />
       </div>
     )
-  }
-
-  private setEditingState = (isEditing: boolean, saveChanges: boolean) => {
-    this.setState({isEditing: isEditing} as State)
   }
 
 }

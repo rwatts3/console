@@ -3,12 +3,15 @@ import UsageIndicator from './UsageIndicator'
 import UsedSeats from './Seats'
 
 interface Props {
-
+  usedSeats: string[]
 }
 
 export default class Usage extends React.Component<Props, {}> {
 
   render() {
+
+    const maxSeats = 2
+
     return (
       <div className='container'>
         <style jsx={true}>{`
@@ -32,8 +35,8 @@ export default class Usage extends React.Component<Props, {}> {
           currentUsage={101980}
         />
         <UsedSeats
-          seats={['Johnny', 'Well']}
-          maxSeats={5}
+          seats={this.props.usedSeats}
+          maxSeats={maxSeats}
         />
       </div>
     )
