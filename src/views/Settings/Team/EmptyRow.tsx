@@ -20,6 +20,7 @@ interface Props {
   numberOfLeftSeats?: number
   projectId?: string
   showNotification: ShowNotificationCallback
+  seatsLeft: number
 }
 
 class EmptyRow extends React.Component<Props, State> {
@@ -140,7 +141,9 @@ class EmptyRow extends React.Component<Props, State> {
             />
           </div>
           <div className='f16 black40'>
-            add collaborator ({numberOfLeftSeats} {numberOfLeftSeats === 1 ? 'seat' : 'seats'} left)
+            add collaborator (
+            {numberOfLeftSeats > 999 ? 'unlimited' : numberOfLeftSeats} {numberOfLeftSeats === 1 ? 'seat ' : 'seats '}
+            left)
           </div>
         </div>
       )
