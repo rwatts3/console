@@ -4,7 +4,6 @@ import * as React                   from 'react'
 import { Link }                     from 'react-router'
 import { connect }                  from 'react-redux'
 import ClickOutside                 from 'react-click-outside'
-import * as PureRenderMixin         from 'react-addons-pure-render-mixin'
 import * as cx                      from 'classnames'
 import styled                       from 'styled-components'
 import {ConsoleEvents}              from 'graphcool-metrics'
@@ -159,7 +158,7 @@ const ProjectName = styled.div`
   max-width: 180px;
 `
 
-class ProjectSelection extends React.Component<Props, State> {
+class ProjectSelection extends React.PureComponent<Props, State> {
 
   state = {
     expanded: false,
@@ -170,8 +169,6 @@ class ProjectSelection extends React.Component<Props, State> {
 
   constructor (props) {
     super(props)
-
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
   render () {

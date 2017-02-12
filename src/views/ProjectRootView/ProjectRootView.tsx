@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
 import * as Relay from 'react-relay'
-import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import * as cookiestore from 'cookiestore'
 import {bindActionCreators} from 'redux'
 import {classnames} from '../../utils/classnames'
@@ -43,7 +42,7 @@ interface Props {
   update: (step: string, skipped: boolean, customerId: string) => void
 }
 
-class ProjectRootView extends React.Component<Props, {}> {
+class ProjectRootView extends React.PureComponent<Props, {}> {
 
   shouldComponentUpdate: any
 
@@ -51,8 +50,6 @@ class ProjectRootView extends React.Component<Props, {}> {
 
   constructor(props: Props) {
     super(props)
-
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
 
     this.updateForceFetching()
 
