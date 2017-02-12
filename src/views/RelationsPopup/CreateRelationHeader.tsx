@@ -9,6 +9,7 @@ interface Props {
   switchDisplayState: Function
   close: Function
   breakingChanges: boolean[] // contains two values (one per tab), true if tab has breaking changes
+  creating: boolean
 }
 
 export default class CreateRelationHeader extends React.Component<Props, {}> {
@@ -17,7 +18,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
 
   render() {
 
-    const {displayState} = this.props
+    const {displayState, creating} = this.props
     let offsets: number[] = []
     this.props.breakingChanges.forEach((breakingChange, i) => {
       if (breakingChange) {
@@ -35,12 +36,16 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
         <style jsx={true}>{`
 
           .newRelationBanner {
-            @inherit: .pv4, .ph6, .white, .bgGreen, .br2, .f12, .fw6, .ttu;
+            @p: .pv4, .ph6, .white, .bgGreen, .br2, .f12, .fw6, .ttu;
             margin-left: -3px;
           }
 
+          .newRelationBanner.update {
+            @p: .bgBlue;
+          }
+
           .titleTab {
-            @inherit: .pv16, .mh6, .ph10, .f12, .fw6, .ttu, .pointer;
+            @p: .pv16, .mh6, .ph10, .f12, .fw6, .ttu, .pointer;
           }
 
           .selectedTitle {
@@ -63,7 +68,9 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
           plain={plain}
           >
           <div className='pr6 mr6'>
-            <div className='newRelationBanner'>New Relation</div>
+            <div className={'newRelationBanner' + (!creating ? ' update' : '')}>
+              {creating ? 'New Relation' : 'Update Relation'}
+            </div>
           </div>
           <CreateRelationHeaderTab
             title='Define Relations'
@@ -71,7 +78,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
             onClick={this.props.switchDisplayState}
           />
           <CreateRelationHeaderTab
-            title='Set Mutations'
+            title='Set Relation Name'
             selected={displayState === 'SET_MUTATIONS'}
             onClick={this.props.switchDisplayState}
           />

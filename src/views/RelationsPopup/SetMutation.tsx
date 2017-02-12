@@ -70,6 +70,10 @@ export default class SetMutation extends React.Component<Props, State> {
             height: 58px;
           }
 
+          input {
+            line-height: 1.5;
+          }
+
         `}</style>
         {isEnteringRelationName || relationName.length === 0 ?
           (
@@ -216,6 +220,11 @@ export default class SetMutation extends React.Component<Props, State> {
     return relationName.length > 0 && !validateRelationName(relationName) ? (
 
         <div className='flex justifyBetween itemsCenter w100'>
+          <style jsx={true}>{`
+            input {
+              line-height: 1.5;
+            }
+          `}</style>
           <input
             className={`f38 fw3 w100 ph25
                         ${relationName.length === 0 || validateRelationName(relationName) ? 'blue' : 'red'}`}

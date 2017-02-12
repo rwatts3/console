@@ -75,6 +75,8 @@ export function reloadDataAsync(lokka: any,
   }
 }
 
+let lastModelNamePlural = null
+
 export function loadDataAsync(lokka: any,
                               modelNamePlural: string,
                               fields: Field[],
@@ -88,6 +90,7 @@ export function loadDataAsync(lokka: any,
     if (data.mutationActive) {
       return Promise.reject({})
     }
+    lastModelNamePlural = modelNamePlural
     return queryNodes(lokka, modelNamePlural, fields, skip, first, searchQuery, data.orderBy)
       .then(results => {
         const newNodes = results.viewer[`all${modelNamePlural}`]
@@ -106,6 +109,9 @@ export function loadDataAsync(lokka: any,
           loaded = loaded.set(skip + index, true)
         }
 
+        if (lastModelNamePlural !== modelNamePlural) {
+          return
+        }
         dispatch(setLoading(false))
         dispatch(resetCountChange())
         dispatch(setItemCount(results.viewer[`all${modelNamePlural}`].count))

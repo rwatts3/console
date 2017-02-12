@@ -6,6 +6,7 @@ export const fieldTypes = [
   'Float',
   'DateTime',
   'Enum',
+  'Json',
 ]
 
 export const mockConstraints: Constraint[] = [

@@ -37,6 +37,7 @@ export interface CrmSystemBridge {
   id: string
   information: CrmCustomerInformation
   onboardingStatus: CrmOnboardingStatus
+  customer: Customer
 }
 
 export interface CrmCustomerInformation {
@@ -69,6 +70,11 @@ export interface Project {
   actionSchema: string
   schema: string
   seats: RelayConnection<Seat>
+  projectBillingInformation: ProjectBillingInformation
+}
+
+export interface ProjectBillingInformation {
+  plan: string
 }
 
 export interface Integration {

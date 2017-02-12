@@ -2664,6 +2664,10 @@ file-loader@^0.9.0:
   dependencies:
     loader-utils "~0.2.5"
 
+file-saver@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-1.3.3.tgz#cdd4c44d3aa264eac2f68ec165bc791c34af1232"
+
 filename-regex@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.0.tgz#996e3e80479b98b9897f15a8a58b3d084e926775"
@@ -2957,9 +2961,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@1.3.30:
-  version "1.3.30"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.3.30.tgz#43e1cc57e79ebf09c5fe9ac78d7c30039ad0b905"
+graphcool-graphiql@1.3.35:
+  version "1.3.35"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.3.35.tgz#facbeac7cf3215c5df37f90f2259eeb02c685ea7"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"

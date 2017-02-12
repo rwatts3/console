@@ -270,7 +270,7 @@ class AlgoliaView extends React.Component<Props, State> {
     Relay.Store.commitUpdate(
       new UpdateSearchProviderAlgolia({
         searchProviderAlgoliaId: algolia.id,
-        isEnabled,
+        isEnabled: true,
         apiKey,
         applicationId,
         projectId,
