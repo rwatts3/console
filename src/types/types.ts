@@ -164,6 +164,13 @@ export interface Model {
   isSystem: boolean
   permissions: ModelPermission[]
   permissionSchema: string
+  permissionQueryArguments: PermissionQueryArgument[]
+}
+
+export interface PermissionQueryArgument {
+  name: string
+  typeName: string
+  group: string
 }
 
 export interface ModelPermission {

@@ -4,15 +4,20 @@ import styled from 'styled-components'
 import * as cx from 'classnames'
 import {buildClientSchema} from 'graphql'
 import {CustomGraphiQL} from 'graphcool-graphiql'
-import {UserType, PermissionRuleType, Operation, Field, FieldType, PermissionVariable} from '../../../types/types'
+import {
+  UserType, PermissionRuleType, Operation, Field, FieldType, PermissionVariable,
+  PermissionQueryArgument,
+} from '../../../types/types'
 import {texts} from '../../../utils/permission'
 import PermissionField from '../PermissionsList/ModelPermissions/PermissionField'
 import VariableTag from './VariableTag'
-import {flatMap} from 'lodash'
+import {flatMap, groupBy} from 'lodash'
 import {putVariablesToQuery, getVariableNamesFromQuery} from './ast'
 import {debounce} from '../../../utils/utils'
 import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
+import {PermissionPopupErrors} from './PermissionPopupState'
+import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 
 const ConditionButton = styled.div`
   &:not(.${$p.bgBlue}):hover {
@@ -43,6 +48,9 @@ interface Props {
   setRuleGraphQuery: (query: string) => void
   operation: Operation
   fields: Field[]
+  permissionQueryArguments: PermissionQueryArgument[]
+  errors: PermissionPopupErrors
+  showErrors: boolean
 }
 
 interface State {
@@ -82,8 +90,11 @@ export default class PermissionConditions extends React.Component<Props, State> 
       setRuleType,
       setUserType,
       userType,
+      permissionQueryArguments,
     } = this.props
     const {selectedVariableNames, fullscreen} = this.state
+
+    const variables = this.getVariables()
 
     return (
       <div className='permission-conditions'>
@@ -93,6 +104,11 @@ export default class PermissionConditions extends React.Component<Props, State> 
           }
           .custom-rule {
             @p: .ml4;
+          }
+          .query-error {
+            @p: .absolute;
+            top: 185px;
+            right: -40px;
           }
         `}</style>
         <div
@@ -227,8 +243,20 @@ export default class PermissionConditions extends React.Component<Props, State> 
           )}
 
         </div>
+        {this.props.errors.invalidQuery && this.props.showErrors && (
+          <div className='query-error'>
+            <ErrorInfo>
+              The Query is invalid
+            </ErrorInfo>
+          </div>
+        )}
       </div>
     )
+  }
+
+  private getVariables() {
+    const {permissionQueryArguments} = this.props
+    return groupBy(permissionQueryArguments, arg => arg.group)
   }
 
   private toggleFullscreen = () => {
@@ -243,6 +271,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
   private renderQuery() {
     const {fullscreen, selectedVariableNames} = this.state
     const {ruleGraphQuery, permissionSchema} = this.props
+    const variables = this.getVariables()
     return (
       <div className={'permission-query-wrapper' + (fullscreen ? ' fullscreen' : '')}>
         <style jsx={true}>{`
@@ -350,7 +379,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
     this.reflectQueryVariablesToUI(query)
   }
 
-  private toggleVariableSelection = (variable: PermissionVariable) => {
+  private toggleVariableSelection = (variable: PermissionQueryArgument) => {
     this.setState(
       state => {
         const {selectedVariableNames} = state
@@ -382,45 +411,46 @@ export default class PermissionConditions extends React.Component<Props, State> 
 
   private getSelectedVariables() {
     const {selectedVariableNames} = this.state
+    const variables = this.getVariables()
 
     return flatMap(Object.keys(variables), group => variables[group])
       .filter(variable => selectedVariableNames.includes(variable.name))
   }
 }
 
-const variables = {
-  'Mutation Variables': [
-    {
-      name: 'nodeId',
-      typeIdentifier: 'ID',
-    },
-  ],
-  'Node Fields': [
-    {
-      name: 'id',
-      typeIdentifier: 'ID',
-    },
-    {
-      name: 'description',
-      typeIdentifier: 'String',
-    },
-    {
-      name: 'published',
-      typeIdentifier: 'Boolean',
-    },
-  ],
-  'Old Node Fields': [
-    {
-      name: 'oldId',
-      typeIdentifier: 'ID',
-    },
-    {
-      name: 'oldDescription',
-      typeIdentifier: 'String',
-    },
-    {
-      name: 'oldPublished',
-      typeIdentifier: 'Boolean',
-    },
-  ],
-}
+// const variables = {
+//   'Mutation Variables': [
+//     {
+//       name: 'nodeId',
+//       typeIdentifier: 'ID',
+//     },
+//   ],
+//   'Node Fields': [
+//     {
+//       name: 'id',
+//       typeIdentifier: 'ID',
+//     },
+//     {
+//       name: 'description',
+//       typeIdentifier: 'String',
+//     },
+//     {
+//       name: 'published',
+//       typeIdentifier: 'Boolean',
+//     },
+//   ],
+//   'Old Node Fields': [
+//     {
+//       name: 'oldId',
+//       typeIdentifier: 'ID',
+//     },
+//     {
+//       name: 'oldDescription',
+//       typeIdentifier: 'String',
+//     },
+//     {
+//       name: 'oldPublished',
+//       typeIdentifier: 'Boolean',
+//     },
+//   ],
+// }

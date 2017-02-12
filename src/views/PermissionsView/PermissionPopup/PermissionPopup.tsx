@@ -89,7 +89,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       ruleGraphQuery: getEmptyPermissionQuery(props.model.namePlural),
       queryValid: true,
       tabs: ['Set Permission Type', 'Select affected Fields', 'Set Audience'],
-      selectedTabIndex: 2,
+      selectedTabIndex: 0,
       showErrors: false,
       editing: false,
     }
@@ -163,6 +163,8 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                 <OperationChooser
                   selectedOperation={selectedOperation}
                   setOperation={this.setOperation}
+                  errors={errors}
+                  showErrors={showErrors}
                 />
               )}
               {(editing ? selectedTabIndex === 0 : selectedTabIndex === 1) && (
@@ -176,6 +178,8 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                     applyToWholeModel={applyToWholeModel}
                     onSelectAll={this.handleSelectAll}
                     onReset={this.handleReset}
+                    errors={errors}
+                    showErrors={showErrors}
                   />
                 ) : (
                   <div className='no-delete'>
@@ -190,11 +194,14 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                   rule={rule}
                   fields={fields}
                   permissionSchema={model.permissionSchema}
+                  permissionQueryArguments={model.permissionQueryArguments}
                   ruleGraphQuery={ruleGraphQuery}
                   setUserType={this.setUserType}
                   setRuleType={this.setRule}
                   setRuleGraphQuery={this.setRuleGraphQuery}
                   operation={selectedOperation}
+                  errors={errors}
+                  showErrors={showErrors}
                 />
               )}
             </div>
@@ -374,6 +381,11 @@ export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermis
           model {
             namePlural
             permissionSchema(operation: READ)
+            permissionQueryArguments(operation: READ) {
+              group
+              name
+              typeName
+            }
             fields(first: 100) {
               edges {
                 node {
@@ -423,6 +435,11 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
           name
           namePlural
           permissionSchema(operation: READ)
+          permissionQueryArguments(operation: READ) {
+            group
+            name
+            typeName
+          }
           fields(first: 100) {
             edges {
               node {

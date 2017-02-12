@@ -1,10 +1,10 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
-import {PermissionVariable, Field} from '../../../types/types'
+import {PermissionVariable, Field, PermissionQueryArgument} from '../../../types/types'
 import {renderType} from './ast'
 
 interface Props {
-  variable: PermissionVariable
+  variable: PermissionQueryArgument
   active: boolean
   onClick?: () => void
   className?: string
@@ -33,7 +33,7 @@ const VariableTag = ({onClick, variable, active, className}: Props) => {
           padding: 4px 5px 3px 5px;
         }
       `}</style>
-      <div className='name'>${name}</div>
+      <div className='name'>{name}</div>
       <div className='type'>{renderType(variable)}</div>
     </div>
   )

@@ -1,7 +1,7 @@
 import {parse, visit} from 'graphql'
 
-import {PermissionVariable} from '../../../types/types'
-export function putVariablesToQuery(query: string, variables: PermissionVariable[]) {
+import {PermissionVariable, PermissionQueryArgument} from '../../../types/types'
+export function putVariablesToQuery(query: string, variables: PermissionQueryArgument[]) {
   let newQuery = query
 
   try {
@@ -38,7 +38,7 @@ export function getVariableNamesFromQuery(query: string): string[] {
 
     visit(ast, {
       VariableDefinition(node) {
-        variables.push(node.variable.name.value)
+        variables.push('$' + node.variable.name.value)
       },
     })
   } catch (e) {
@@ -48,18 +48,17 @@ export function getVariableNamesFromQuery(query: string): string[] {
   return variables
 }
 
-function renderVariables(variables: PermissionVariable[]) {
+function renderVariables(variables: PermissionQueryArgument[]) {
   if (variables.length === 0) {
     return ' '
   }
   return '(' +
     variables.map(variable => (
-      `$${variable.name}: ${renderType(variable)}`
+      `${variable.name}: ${renderType(variable)}`
     )).join(', ') +
     ') '
 }
 
-export function renderType(variable: PermissionVariable) {
-  const type = variable.typeIdentifier + (variable.isRequired ? '!' : '')
-  return (variable.isList ? `[${type}]` : type)
+export function renderType(variable: PermissionQueryArgument) {
+  return variable.typeName + '!'
 }

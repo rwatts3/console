@@ -6,6 +6,8 @@ import {Operation, Field} from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PermissionField from '../PermissionsList/ModelPermissions/PermissionField'
 import {validPermissionField} from '../../../utils/valueparser'
+import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
+import {PermissionPopupErrors} from './PermissionPopupState'
 
 interface Props {
   fields: Field[]
@@ -16,6 +18,8 @@ interface Props {
   toggleApplyToWholeModel: () => void
   onSelectAll: () => void
   onReset: () => void
+  errors: PermissionPopupErrors
+  showErrors: boolean
 }
 
 class AffectedFields extends React.Component<Props, {}> {
@@ -49,6 +53,11 @@ class AffectedFields extends React.Component<Props, {}> {
           }
           .button + .button {
             @p: .ml10;
+          }
+          .fields-error {
+            @p: .absolute;
+            margin-top: -120px;
+            right: -40px;
           }
         `}</style>
         <div className={cx($p.pl38, $p.pr25)}>
@@ -102,6 +111,14 @@ class AffectedFields extends React.Component<Props, {}> {
           <div className='button' onClick={onSelectAll}>Select All</div>
           <div className='button' onClick={onReset}>Reset</div>
         </div>
+
+        {this.props.errors.noFieldsSelected && this.props.showErrors && (
+          <div className='fields-error'>
+            <ErrorInfo>
+              Please specify which fields should be affected by the permission
+            </ErrorInfo>
+          </div>
+        )}
       </div>
     )
   }

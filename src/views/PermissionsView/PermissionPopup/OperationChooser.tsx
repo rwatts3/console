@@ -3,10 +3,14 @@ import {Operation} from '../../../types/types'
 import * as cx from 'classnames'
 import {$p, Icon, variables} from 'graphcool-styles'
 import styled from 'styled-components'
+import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
+import {PermissionPopupErrors} from './PermissionPopupState'
 
 interface Props {
   setOperation: (operation: Operation) => void
   selectedOperation: Operation
+  errors: PermissionPopupErrors
+  showErrors: boolean
 }
 
 const operations = [
@@ -56,6 +60,26 @@ export default class OperationChooser extends React.Component<Props, {}> {
 
     return (
       <div className={$p.pb38}>
+        <style jsx>{`
+          .placeholder {
+            @p: .absolute, .overflowHidden;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0px;
+            width: 10px;
+            height: 37px;
+          }
+          .bar {
+            @p: .br2, .ph10, .bgBlue, .relative;
+            left: -10px;
+            height: 100%;
+          }
+          .operation-error {
+            @p: .absolute;
+            margin-top: -30px;
+            right: -30px;
+          }
+        `}</style>
         <div
           className={cx($p.ph38, $p.pb38)}
         >
@@ -76,21 +100,6 @@ export default class OperationChooser extends React.Component<Props, {}> {
         >
           {selectedOperation === null && (
             <div className='placeholder'>
-              <style jsx>{`
-                .placeholder {
-                  @p: .absolute, .overflowHidden;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  left: 0px;
-                  width: 10px;
-                  height: 37px;
-                }
-                .bar {
-                  @p: .br2, .ph10, .bgBlue, .relative;
-                  left: -10px;
-                  height: 100%;
-                }
-              `}</style>
               <div className='bar'>
 
               </div>
@@ -128,6 +137,13 @@ export default class OperationChooser extends React.Component<Props, {}> {
             </div>
           ))}
         </Operations>
+        {this.props.errors.permissionTypeMissing && this.props.showErrors && (
+          <div className='operation-error'>
+            <ErrorInfo>
+              Please specify the operation that the permission should affect.
+            </ErrorInfo>
+          </div>
+        )}
       </div>
     )
   }
