@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as download from 'downloadjs'
+import * as FileSaver from 'file-saver'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
 import * as cookiestore from 'cookiestore'
@@ -10,6 +10,7 @@ import EditorConfiguration = CodeMirror.EditorConfiguration
 import {showNotification} from '../../../actions/notification'
 import {connect} from 'react-redux'
 import {ShowNotificationCallback} from '../../../types/utils'
+import * as fetch from 'isomorphic-fetch'
 
 // const fileDownload = require('react-file-download')
 
@@ -114,7 +115,16 @@ class Export extends React.Component<Props, {}> {
   }
 
   private exportSchema = (): void => {
-    download(this.props.viewer.project.schema, 'schema', '')
+    const blob = new Blob([this.props.viewer.project.schema], {type: 'text/plain;charset=utf-8'})
+    FileSaver.saveAs(blob, 'schema.txt')
+  }
+
+  private downloadUrl(url: string, fileName: string) {
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        FileSaver.saveAs(blob, fileName)
+      })
   }
 
   private getLokka(projectId: string): any {
@@ -136,7 +146,7 @@ class Export extends React.Component<Props, {}> {
         }
       }
     `).then((response) => {
-      download(response.exportData.url)
+      this.downloadUrl(response.exportData.url, 'data.json')
     })
     .catch(error => {
       this.props.showNotification({message: error.message, level: 'error'})
