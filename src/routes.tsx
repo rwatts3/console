@@ -162,15 +162,3 @@ export default (
     </Route>
   </Route>
 )
-// <Route path='algolia' component={AlgoliaPopup} queries={ViewerQuery} render={render}>
-//   <Route
-//     path='edit/:id'
-//     component={AlgoliaEditIndexPopup}
-//     queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-//     render={render}/>
-//   <Route
-// path='create'
-// component={AlgoliaCreateIndexPopup}
-// queries={ViewerQuery}
-// render={render}/>
-//   </Route>
