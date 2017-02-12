@@ -18,6 +18,7 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
 import Loading from '../../components/Loading/Loading'
+import {onFailureShowNotification} from '../../utils/relay'
 
 interface State {
 
@@ -565,7 +566,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },
@@ -597,7 +598,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },
@@ -618,7 +619,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },

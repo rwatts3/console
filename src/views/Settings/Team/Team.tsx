@@ -8,6 +8,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface Props {
   viewer: Viewer
@@ -72,20 +73,15 @@ class Team extends React.Component<Props, {}> {
             this.props.showNotification({message: 'Removed collaborator with email: ' + seat.email, level: 'success'})
           },
           onFailure: (transaction) => {
-            this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            onFailureShowNotification(transaction, this.props.showNotification)
           },
         },
       )
     }
   }
-
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
-}
-
-const mappedTeam = connect(null, mapDispatchToProps)(Team)
+const mappedTeam = connect(null, {showNotification})(Team)
 
 export default Relay.createContainer(mappedTeam, {
   initialVariables: {

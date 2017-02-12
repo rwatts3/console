@@ -382,7 +382,7 @@ class ProjectSelection extends React.Component<Props, State> {
     if (this.props.selectedProject.seats.edges.length <= 1) {
       return (
         <Link
-          to={`${this.props.selectedProject.name}/settings/team`}
+          to={`/${this.props.selectedProject.name}/settings/team`}
           onClick={(e) => {
             e.stopPropagation() // don't toggle
           }}
