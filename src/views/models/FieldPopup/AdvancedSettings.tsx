@@ -7,6 +7,7 @@ import {FieldPopupErrors} from './FieldPopupState'
 import {TypedValue} from '../../../types/utils'
 import {CellRequirements, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
 import {Field} from '../../../types/types'
+import {valueToString} from '../../../utils/valueparser'
 
 interface Props {
   style?: any
@@ -184,17 +185,23 @@ export default class AdvancedSettings extends React.Component<Props, State> {
                 className='edit-label-wrapper'
                 onClick={this.editMigration}
               >
-                <Icon
-                  src={migrationOptional ?
+                {typeof this.props.migrationValue === 'undefined' && (
+                  <Icon
+                    src={migrationOptional ?
                     require('../../../assets/icons/edit_circle_gray.svg') :
                     require('../../../assets/icons/edit_circle_light_orange.svg')
                   }
-                  width={26}
-                  height={26}
-                />
-                <div className={`edit-label ${mandatoryClass}`}>
-                  add a migration value
-                </div>
+                    width={26}
+                    height={26}
+                  />
+                )}
+                {typeof this.props.migrationValue !== 'undefined' ? (
+                  <div className='f16 black50 pr6'>{valueToString(this.props.migrationValue, field, true)}</div>
+                ) : (
+                  <div className={`edit-label ${mandatoryClass}`}>
+                    add a migration value
+                  </div>
+                )}
               </div>
             )}
             {showErrors && errors.migrationValueMissing && (

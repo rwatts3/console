@@ -204,6 +204,7 @@ class FieldPopup extends React.Component<Props, State> {
             onRequestClose={this.close}
             errors={errors}
             showErrors={showErrors}
+            create={create}
           />
           <div
             className='popup-body'
