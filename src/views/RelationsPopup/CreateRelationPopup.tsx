@@ -23,6 +23,7 @@ import {onFailureShowNotification} from '../../utils/relay'
 interface State {
 
   loading: boolean
+  creating: boolean
 
   displayState: RelationPopupDisplayState
   leftSelectedModel: Model | null
@@ -64,6 +65,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     this.state = {
       loading: false,
+      creating: !Boolean(relation),
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: preselectedModel ? preselectedModel : relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,
@@ -182,6 +184,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                   switchDisplayState={this.switchToDisplayState}
                   close={this.close}
                   breakingChanges={[displayBreakingIndicatorOnLeftTab, displayBreakingIndicatorOnRightTab]}
+                  creating={this.state.creating}
                 />
                 {
                   displayState === 'DEFINE_RELATION' ?
