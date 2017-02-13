@@ -164,16 +164,17 @@ class Tokens extends React.Component<Props, State> {
   }
 
   private deleteSystemToken = (token): void => {
-    if (window.confirm(`Do you really want to delete token \'${token.name}\'?`)) {
-    Relay.Store.commitUpdate(
-      new DeletePermanentAuthTokenMutation({
-        projectId: this.props.project.id,
-        tokenId: token.id,
-      }),
-      {
-        onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-      })
-    }
+    graphcoolConfirm(`This will delete token \'${token.name}\'`)
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new DeletePermanentAuthTokenMutation({
+            projectId: this.props.project.id,
+            tokenId: token.id,
+          }),
+          {
+            onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
+          })
+    })
   }
 }
 

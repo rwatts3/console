@@ -332,9 +332,10 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     }
 
     // only ask, if there was change
-    if (confirm('Are you sure you want to discard unsaved changes?')) {
-      this.props.methods.cancel()
-    }
+    graphcoolConfirm('This action could lead to data loss.', 'Unsaved Changes')
+      .then(() => {
+        this.props.methods.cancel()
+      })
   }
 
   private handleClose = () => {

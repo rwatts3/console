@@ -60,13 +60,14 @@ class OnboardingPopup extends React.Component<Props, {}> {
   }
 
   private skipGettingStarted = (): void => {
-    if (window.confirm('Do you really want skip the getting started tour?')) {
-      // TODO: fix this hack
-      Promise.resolve(this.props.skip())
-        .then(() => {
-          this.props.router.replace(`/${this.props.params.projectName}/models`)
-        })
-    }
+    graphcoolConfirm('You are skipping the getting started tour.')
+      .then(() => {
+        // TODO: fix this hack
+        Promise.resolve(this.props.skip())
+          .then(() => {
+            this.props.router.replace(`/${this.props.params.projectName}/models`)
+          })
+      })
   }
 
   private getStarted = (): void => {

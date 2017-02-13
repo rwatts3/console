@@ -285,26 +285,27 @@ class ModelHeader extends React.Component<Props, State> {
 
   private deleteModel = () => {
 
-    if (window.confirm('Do you really want to delete this model?')) {
-      this.props.router.replace(`/${this.props.params.projectName}/models`)
+    graphcoolConfirm('You are deleting this model.')
+      .then(() => {
+        this.props.router.replace(`/${this.props.params.projectName}/models`)
 
-      Relay.Store.commitUpdate(
-        new DeleteModelMutation({
-          projectId: this.props.project.id,
-          modelId: this.props.model.id,
-          fields: this.props.model.fields,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
-            this.props.forceFetchRoot()
+        Relay.Store.commitUpdate(
+          new DeleteModelMutation({
+            projectId: this.props.project.id,
+            modelId: this.props.model.id,
+            fields: this.props.model.fields,
+          }),
+          {
+            onSuccess: () => {
+              tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
+              this.props.forceFetchRoot()
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    }
+        )
+      })
   }
 
   private dataViewOnClick = () => {
