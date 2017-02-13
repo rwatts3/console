@@ -3,13 +3,14 @@ import * as React from 'react'
 interface Props {
   seats: string[]
   maxSeats: number
+  className?: string
 }
 
 export default class Seats extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div className='flex mv38 itemsCenter'>
+      <div className={`flex itemsCenter ${this.props.className || ''}`}>
         {this.usedSeats()}
         {this.freeSeats()}
         <div className='ml6 f14 green fw6'>{this.props.seats.length}</div>

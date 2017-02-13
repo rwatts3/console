@@ -120,6 +120,14 @@ class Billing extends React.Component<Props, State> {
         />
         <Usage
           usedSeats={seats}
+          plan='Growth'
+          currentNumberOfRequests={131092}
+          lastInvoiceDate='01/02/2017'
+          nextInvoiceDate='02/02/2017'
+          usedNodesPerDay={[250000, 126733, 156793, 199993, 102930, 186733, 208673, 286733, 186733,
+          250000, 126733, 156793, 199993, 102930, 186733, 208673, 286733, 186733,
+          250000, 126733, 156793, 199993, 102930, 186733, 208673, 286733, 186733,
+          ]}
         />
         {!this.state.isLoading ?
           (

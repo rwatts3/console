@@ -117,3 +117,8 @@ export function chunk(str: string, n: number, includeRemainder: boolean): string
   }
   return result
 }
+
+// month is 1 based
+export function daysInMonth(month,year) {
+  return new Date(year, month, 0).getDate();
+}
