@@ -97,8 +97,8 @@ export class StringCell extends React.Component<CellProps<string>, State> {
         this.setState({value: e.target.value + '\n'})
         this.enterPressed = true
         this.stopEvent(e)
+        return
       }
-      return
     }
     if ([37,38,39,40].includes(e.keyCode)) {
       return

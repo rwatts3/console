@@ -164,6 +164,13 @@ export interface Model {
   isSystem: boolean
   permissions: ModelPermission[]
   permissionSchema: string
+  permissionQueryArguments: PermissionQueryArgument[]
+}
+
+export interface PermissionQueryArgument {
+  name: string
+  typeName: string
+  group: string
 }
 
 export interface ModelPermission {
@@ -288,4 +295,12 @@ export interface Constraint {
   type: ConstraintType
   value: string
   lengthOperator?: Operator
+}
+
+export interface PermissionVariable {
+  name: string
+  typeIdentifier: FieldType
+  category?: string
+  isRequired: boolean
+  isList: boolean
 }
