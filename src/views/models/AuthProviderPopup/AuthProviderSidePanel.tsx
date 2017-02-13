@@ -346,16 +346,16 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private disable = () => {
-    console.log('disabling')
-    if (confirm('Do you really want to disable the Auth Provider? It will delete all auth provider related data.')) {
-      tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
-      this.setState(
-        {
-          authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
-        } as State,
-        this.update,
-      )
-    }
+    graphcoolConfirm('You\'re disabling an Auth Provider. It will delete all auth provider related data.')
+      .then(() => {
+        tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
+        this.setState(
+          {
+            authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
+          } as State,
+          this.update,
+        )
+      })
   }
 
   private update = () => {

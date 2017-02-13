@@ -165,39 +165,41 @@ class DangerZone extends React.Component<Props, State> {
 }
 
   private onClickResetProjectData = (): void => {
-    if (window.confirm('Do you really want to reset the project data?')) {
-      Relay.Store.commitUpdate(
-        new ResetProjectDataMutation({
-          projectId: this.props.project.id,
-        }),
-        {
-          onSuccess: () => {
-            this.props.showNotification({message: 'All nodes were deleted', level: 'success'})
-            this.props.router.replace(`/${this.props.project.name}/settings/general`)
-          },
-          onFailure: (transaction) => {
-            this.props.showNotification({message: transaction.getError().message, level: 'error'})
-          },
-        })
-    }
+    graphcoolConfirm('You are reseting the project data.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new ResetProjectDataMutation({
+            projectId: this.props.project.id,
+          }),
+          {
+            onSuccess: () => {
+              this.props.showNotification({message: 'All nodes were deleted', level: 'success'})
+              this.props.router.replace(`/${this.props.project.name}/settings/general`)
+            },
+            onFailure: (transaction) => {
+              this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            },
+          })
+      })
   }
 
   private onClickResetCompleteProject = (): void => {
-    if (window.confirm('Do you really want to reset the project data and models? ')) {
-      Relay.Store.commitUpdate(
-        new ResetProjectSchemaMutation({
-          projectId: this.props.project.id,
-        }),
-        {
-          onSuccess: () => {
-            this.props.showNotification({message: 'All nodes and models were deleted', level: 'success'})
-            this.props.router.replace(`/${this.props.project.name}/settings/general`)
-          },
-          onFailure: (transaction) => {
-            this.props.showNotification({message: transaction.getError().message, level: 'error'})
-          },
-        })
-    }
+    graphcoolConfirm('Your are resetting the projects schema and data.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new ResetProjectSchemaMutation({
+            projectId: this.props.project.id,
+          }),
+          {
+            onSuccess: () => {
+              this.props.showNotification({message: 'All nodes and models were deleted', level: 'success'})
+              this.props.router.replace(`/${this.props.project.name}/settings/general`)
+            },
+            onFailure: (transaction) => {
+              this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            },
+          })
+      })
   }
 
   private onClickDeleteProject = (): void => {
@@ -206,20 +208,22 @@ class DangerZone extends React.Component<Props, State> {
         message: `Sorry. You can't delete your last project. This one is a keeper.`,
         level: 'error',
       })
-    } else if (window.confirm('Do you really want to delete this project?')) {
-      Relay.Store.commitUpdate(
-        new DeleteProjectMutation({
-          projectId: this.props.project.id,
-          customerId: this.props.viewer.user.id,
-        }),
-        {
-          onSuccess: () => {
-            this.props.router.replace(`/`)
-            this.props.showNotification({message: 'Your project was deleted', level: 'success'})
-          },
-
-        })
     }
+    graphcoolConfirm('You are deleting this project. All data and the schema will be lost.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new DeleteProjectMutation({
+            projectId: this.props.project.id,
+            customerId: this.props.viewer.user.id,
+          }),
+          {
+            onSuccess: () => {
+              this.props.router.replace(`/`)
+              this.props.showNotification({message: 'Your project was deleted', level: 'success'})
+            },
+
+          })
+      })
   }
 
 }

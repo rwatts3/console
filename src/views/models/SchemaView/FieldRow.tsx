@@ -199,44 +199,46 @@ class FieldRow extends React.Component<Props, State> {
   }
 
   private deleteField() {
-    if (window.confirm(`Do you really want to delete "${this.props.field.name}"?`)) {
-      Relay.Store.commitUpdate(
-        new DeleteFieldMutation({
-          fieldId: this.props.field.id,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Field.Delete.completed({id: this.props.field.id}))
+    graphcoolConfirm(`This will delete "${this.props.field.name}".`)
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new DeleteFieldMutation({
+            fieldId: this.props.field.id,
+            modelId: this.props.model.id,
+          }),
+          {
+            onSuccess: () => {
+              tracker.track(ConsoleEvents.Schema.Field.Delete.completed({id: this.props.field.id}))
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    }
+        )
+      })
   }
 
   private deleteRelation() {
-    if (window.confirm(`Do you really want to delete the relation "${this.props.field.relation.name}"?`)) {
-      const {projectId} = this.props
-      Relay.Store.commitUpdate(
-        new DeleteRelationMutation({
-          relationId: this.props.field.relation.id,
-          projectId,
-          leftModelId: this.props.field.model.id,
-          rightModelId: this.props.field.relatedModel.id,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Relations.deleted())
+    graphcoolConfirm(`This will delete the relation "${this.props.field.relation.name}".`)
+      .then(() => {
+        const {projectId} = this.props
+        Relay.Store.commitUpdate(
+          new DeleteRelationMutation({
+            relationId: this.props.field.relation.id,
+            projectId,
+            leftModelId: this.props.field.model.id,
+            rightModelId: this.props.field.relatedModel.id,
+          }),
+          {
+            onSuccess: () => {
+              tracker.track(ConsoleEvents.Relations.deleted())
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    }
+        )
+      })
   }
 
   private saveDescription(e) {

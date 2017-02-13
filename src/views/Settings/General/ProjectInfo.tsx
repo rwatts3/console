@@ -238,13 +238,18 @@ class ProjectInfo extends React.Component<Props, State> {
                       Save
                     </div>
                   )}
+                  <Info>
+                    You will get a custom endpoint url based on the alias you choose
+                  </Info>
                 </div>
               </div>
             )
             :
             (
               <div className='flex flexColumn pt16 pb25'>
-                <div className='black o40 f14'>Alias</div>
+                <div className='black o40 f14'>
+                  Project Alias
+                </div>
                 <div
                   className='flex itemsCenter pointer'
                   onMouseEnter={() => this.setState({isHoveringAlias: true} as State)}
@@ -255,17 +260,17 @@ class ProjectInfo extends React.Component<Props, State> {
                   } as State)}
                 >
                   <div
-                    className='fw3 f25 pt6'
+                    className='fw3 f25 pt6 flex itemsCenter'
                   >
                     {(!this.props.project.alias || this.props.project.alias.length === 0) ?
-                      (<div className='flex itemsCenter'>
+                      (<div>
                         Choose an Alias
-                        <Info>
-                          You will get a custom endpoint url based on the alias you choose
-                        </Info>
                       </div>) :
                       this.props.project.alias
                     }
+                    <Info>
+                      You will get a custom endpoint url based on the alias you choose
+                    </Info>
                   </div>
                   {this.state.isHoveringAlias && (<Icon
                     className={$p.ml6}

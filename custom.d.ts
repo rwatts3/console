@@ -45,6 +45,8 @@ declare var __METRICS_ENDPOINT__: string
 declare var __GA_CODE__: string
 declare var __AUTH0_DOMAIN__: string
 declare var __AUTH0_CLIENT_ID__: string
+declare var graphcoolAlert: any
+declare var graphcoolConfirm: any
 
 declare interface Window {
   devToolsExtension?: () => any
