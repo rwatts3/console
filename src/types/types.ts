@@ -294,3 +294,5 @@ export interface PricingPlanInfo {
   pricePerThousandAdditionalNodes: number
   pricePerThousandAdditionalRequests: number
 }
+
+export type CreditCardInputDisplayState = 'CREDIT_CARD_DATA' | 'ADDRESS_DATA'

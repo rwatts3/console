@@ -6,10 +6,9 @@ import CreditCardBack from './CreditCardBack'
 import {chunk} from '../../../utils/utils'
 import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
 import {Icon} from 'graphcool-styles'
-// import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
+import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 import * as Relay from 'react-relay'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
-import {ENTER_KEY, ESCAPE_KEY} from '../../../utils/constants'
 
 interface State {
   creditCardNumber: string
@@ -335,8 +334,6 @@ export default class CreditCardInputSection extends React.Component<Props, State
   }
 
   private onConfirm = () => {
-
-    console.log('PURCHASE')
 
     const expirationDateComponents = this.state.expirationDate.split('/')
     const expirationMonth = expirationDateComponents[0]

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import CreditCardFront from './CreditCardFront'
 import CreditCardBack from './CreditCardBack'
+import EditCreditCard from './EditCreditCard'
 
 interface State {
 }
@@ -16,6 +17,19 @@ interface Props {
   onCPCChange: Function
   isEditing: boolean
   setEditingState: Function
+
+  addressLine1: string
+  addressLine2: string
+  zipCode: string
+  state: string
+  city: string
+  country: string
+
+  creditCardDetailsValid: boolean
+  addressDataValid: boolean
+
+  onAddressDataChange: Function
+  onSaveChanges: Function
 }
 
 export default class CreditCardInformation extends React.Component<Props, State> {
@@ -100,7 +114,7 @@ export default class CreditCardInformation extends React.Component<Props, State>
     )
   }
 
-  private creditCardInNonEditingState = () => {
+  private creditCardInNonEditingState = (): JSX.Element => {
 
     return (
       <CreditCardFront
@@ -111,31 +125,31 @@ export default class CreditCardInformation extends React.Component<Props, State>
         setEditingState={this.props.setEditingState}
       />
     )
-
   }
 
-  private creditCardInEditingState = () => {
+  private creditCardInEditingState = (): JSX.Element => {
     return (
-      <div className='relative'>
-        <CreditCardFront
-          className='z1 absolute'
-          cardHolderName={this.props.cardHolderName}
+        <EditCreditCard
           creditCardNumber={this.props.creditCardNumber}
+          cardHolderName={this.props.cardHolderName}
           expirationDate={this.props.expirationDate}
-          isEditing={this.props.isEditing}
-          setEditingState={this.props.setEditingState}
+          cpc={this.props.cpc}
           onCreditCardNumberChange={this.props.onCreditCardNumberChange}
           onCardHolderNameChange={this.props.onCardHolderNameChange}
           onExpirationDateChange={this.props.onExpirationDateChange}
-        />
-        <CreditCardBack
-          className='absolute'
-          cpc={this.props.cpc}
-          didChangeCPC={this.props.onCPCChange}
-          style={{right: '75px', top: '20px'}}
+          onCPCChange={this.props.onCPCChange}
           setEditingState={this.props.setEditingState}
+          addressLine1={this.props.addressLine1}
+          addressLine2={this.props.addressLine2}
+          zipCode={this.props.zipCode}
+          state={this.props.state}
+          city={this.props.city}
+          country={this.props.country}
+          creditCardDetailsValid={this.props.creditCardDetailsValid}
+          addressDataValid={this.props.addressDataValid}
+          onAddressDataChange={this.props.onAddressDataChange}
+          onSaveChanges={this.props.onSaveChanges}
         />
-      </div>
     )
   }
 

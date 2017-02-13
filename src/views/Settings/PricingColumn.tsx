@@ -17,6 +17,44 @@ export default class PricingColumn extends React.Component<Props, {}> {
 
   render() {
 
+    if (this.props.plan === 'Enterprise') {
+      return (
+        <div className={`container ${this.props.className || ''}`}>
+            <style jsx={true}>{`
+            .container {
+              @p: .flex, .flexColumn, .itemsCenter, .bgGreen;
+              padding-top: 30px;
+              width: 170px;
+            }
+
+            .marginTop62 {
+              margin-top: 62px;
+            }
+          `}</style>
+          <div className='flex flexColumn itemsCenter'>
+            <Icon
+              src={require('../../assets/icons/enterprise.svg')}
+              color='white'
+              width={56}
+              height={47}
+            />
+            <div
+              className='fw6 f16 ttu mt25'
+              style={{color: this.secondaryTextColor()}}
+            >
+              Enterprise
+            </div>
+            <div className='white pt60 ph25 fw6 f14 tc'>
+              Unlimited Nodes, Operations and Seats
+            </div>
+          </div>
+          <div className='marginTop62'>
+            {this.actionButton('Talk To Sales')}
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div
         className={`pricingColumnContainer
@@ -136,7 +174,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
     )
   }
 
-  private actionButton = (): JSX.Element => {
+  private actionButton = (title?: string): JSX.Element => {
     if (this.props.isCurrentPlan) {
       return (
         <div
@@ -146,12 +184,13 @@ export default class PricingColumn extends React.Component<Props, {}> {
       )
     }
 
+    const actionButtonTitle = title || (this.props.isDisplayedInConfirmPlan ? 'Change Plan' : 'Choose Plan')
     return (
       <div
         className='ph16 pv6 f14 fw6 ttu buttonShadow bgWhite pointer br2'
         style={{color: this.primaryTextColor()}}
         onClick={() => this.props.onSelectPlan(this.props.plan)}
-      >{this.props.isDisplayedInConfirmPlan ? 'Change Plan' : 'Choose Plan'}</div>
+      >{actionButtonTitle}</div>
     )
   }
 
@@ -203,7 +242,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
       case 'Startup': return 'rgba(39,174,96,1)'
       case 'Growth': return 'rgba(39,174,96,1)'
       case 'Pro': return 'rgba(39,174,96,1)'
-      case 'Enterprise': return 'white'
+      case 'Enterprise': return 'rgba(0,0,0,.5)'
       default: return ''
     }
   }

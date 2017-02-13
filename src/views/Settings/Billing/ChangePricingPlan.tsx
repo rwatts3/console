@@ -14,7 +14,7 @@ interface Props {
 
 class ChangePricingPlan extends React.Component<Props, {}> {
 
-  plans: [PricingPlan] = ['Developer', 'Startup', 'Growth', 'Pro']
+  plans: [PricingPlan] = ['Developer', 'Startup', 'Growth', 'Pro', 'Enterprise']
 
   render() {
 
@@ -25,9 +25,8 @@ class ChangePricingPlan extends React.Component<Props, {}> {
         <style jsx={true}>{`
           .container {
             @p: .bgWhite, .flex, .flexColumn, .itemsCenter, .pb60, .ph16, .buttonShadow;
-            width: 800px;
+            width: 990px;
           }
-
         `}</style>
 
         <div className='flex itemsCenter justifyCenter w100 h100 bgWhite90'>
