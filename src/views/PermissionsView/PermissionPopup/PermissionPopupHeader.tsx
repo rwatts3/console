@@ -85,7 +85,7 @@ const FieldPopupHeader = ({
             <Tab
               key={tab}
               active={index === activeTabIndex}
-              hasError={showErrors && errorInTab(errors, index)}
+              hasError={showErrors && errorInTab(errors, editing, index)}
               onClick={() => onSelectTab(index)}
             >{tab}</Tab>
           ))}

@@ -30,22 +30,99 @@ export function putVariablesToQuery(query: string, variables: PermissionQueryArg
   return newQuery
 }
 
-export function getVariableNamesFromQuery(query: string): string[] {
-  let variables = []
+export function extractSelection(query: string) {
+  let newQuery = query
 
   try {
     let ast = parse(query)
+    let selectionStart = -1
+    let selectionEnd = -1
 
     visit(ast, {
-      VariableDefinition(node) {
-        variables.push('$' + node.variable.name.value)
+      SelectionSet(node) {
+        // take first selection
+        if (selectionStart === -1 && selectionEnd === -1) {
+          selectionStart = node.loc.start
+          selectionEnd = node.loc.end
+        }
       },
     })
+
+    newQuery = query.slice(selectionStart, selectionEnd)
   } catch (e) {
     //
   }
 
-  return variables
+  return newQuery
+}
+
+export function addVarsAndName(modelNamePlural: string, query: string, vars: PermissionQueryArgument[]) {
+  let newQuery = query
+
+  try {
+    let ast = parse(query)
+    let selectionStart = -1
+    let selectionEnd = -1
+
+    visit(ast, {
+      SelectionSet(node) {
+        // take first selection
+        if (selectionStart === -1 && selectionEnd === -1) {
+          selectionStart = node.loc.start
+          selectionEnd = node.loc.end
+        }
+      },
+    })
+
+    const {variables} = getVariableNamesFromQuery(query)
+    const mappedVariables = variables.map(variable => vars.find(arg => arg.name === variable))
+
+    const printedVariables = renderVariables(mappedVariables)
+
+    newQuery = `query permit${modelNamePlural}` + printedVariables + query.slice(selectionStart, query.length)
+  } catch (e) {
+    //
+  }
+
+  return newQuery
+}
+
+export function getVariableNamesFromQuery(
+  query: string,
+  definitionOnly: boolean = false,
+): {variables: string[], valid: boolean} {
+  let variables = new Set()
+  let valid = true
+
+  try {
+    let ast = parse(query)
+
+    let config = {}
+
+    if (definitionOnly) {
+      config = {
+        VariableDefinition(node) {
+          variables.add('$' + node.variable.name.value)
+        },
+      }
+    } else {
+      config = {
+        Variable(node) {
+          variables.add('$' + node.name.value)
+        },
+      }
+    }
+
+    visit(ast, config)
+  } catch (e) {
+    valid = false
+  }
+
+  const result = Array.from(variables)
+
+  return {
+    variables: result, valid,
+  }
 }
 
 function renderVariables(variables: PermissionQueryArgument[]) {

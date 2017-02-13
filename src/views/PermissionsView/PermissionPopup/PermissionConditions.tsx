@@ -51,6 +51,7 @@ interface Props {
   permissionQueryArguments: PermissionQueryArgument[]
   errors: PermissionPopupErrors
   showErrors: boolean
+  onQueryValidityChange: (valid: boolean) => void
 }
 
 interface State {
@@ -62,10 +63,11 @@ export default class PermissionConditions extends React.Component<Props, State> 
 
   private reflectQueryVariablesToUI = debounce(
     (query: string) => {
-      const selectedVariableNames = getVariableNamesFromQuery(query)
+      const {variables, valid} = getVariableNamesFromQuery(query, true)
       this.setState({
-        selectedVariableNames,
+        selectedVariableNames: variables,
       } as State)
+      this.props.onQueryValidityChange(valid)
     },
     150,
   )
@@ -77,6 +79,10 @@ export default class PermissionConditions extends React.Component<Props, State> 
       selectedVariableNames: ['nodeId'],
       fullscreen: false,
     }
+  }
+
+  componentDidMount() {
+    this.reflectQueryVariablesToUI(this.props.ruleGraphQuery)
   }
 
   render() {
@@ -218,7 +224,6 @@ export default class PermissionConditions extends React.Component<Props, State> 
                       width={14}
                       height={14}
                       color={rule === 'NONE' ? $v.gray30 : $v.white}
-                      onClick={this.toggleFullscreen}
                     />
                     <span className='custom-rule'>Custom Rule</span>
                   </div>
@@ -351,12 +356,13 @@ export default class PermissionConditions extends React.Component<Props, State> 
             fetcher={() => { return null }}
             disableQueryHeader
             queryOnly
+            showDocs
             onEditQuery={this.handleEditQuery}
           />
         </div>
         <div className={'variables' + (fullscreen ? ' fullscreen' : '')}>
           {Object.keys(variables).map(group => (
-            <div className='variable-category'>
+            <div className='variable-category' key={group}>
               <div className='variable-title'>{group}</div>
               {variables[group].map(variable => (
                 <VariableTag
