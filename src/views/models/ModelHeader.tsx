@@ -136,10 +136,12 @@ class ModelHeader extends React.Component<Props, State> {
                     <span className={classes.system}>System</span>
                     :
                     <Icon
-                      width={32}
-                      height={32}
-                      src={require('graphcool-styles/icons/fill/settings.svg')}
-                      color={variables.gray10}
+                      width={38}
+                      height={38}
+                      src={require('graphcool-styles/icons/stroke/editSpaced.svg')}
+                      stroke
+                      strokeWidth={2}
+                      color={variables.gray20}
                       onClick={this.openEditModelModal}
                       className={cx(
                         particles.ml6,

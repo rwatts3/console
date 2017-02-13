@@ -14,7 +14,6 @@ import {
 } from '../../../actions/databrowser/data'
 import {Popup} from '../../../types/popup'
 import * as Immutable from 'immutable'
-import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import {Icon} from 'graphcool-styles'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
@@ -126,7 +125,7 @@ interface Props {
   searchQuery: string
 }
 
-class DatabrowserView extends React.Component<Props, {}> {
+class DatabrowserView extends React.PureComponent<Props, {}> {
 
   shouldComponentUpdate: any
 
@@ -154,7 +153,6 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   constructor(props: Props) {
     super(props)
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     this.lokka = getLokka(this.props.project.id)
     this.fieldColumnWidths = calculateFieldColumnWidths(window.innerWidth - 300, this.props.fields, this.props.nodes)
   }

@@ -14,6 +14,7 @@ interface Props {
   id: string
   projectId: string
   closePopup: (id: string) => ReduxAction
+  alias: string
 }
 
 interface State {
@@ -152,9 +153,9 @@ class EndpointPopup extends React.Component<Props, State> {
     `
 
     const {endpoint, copied} = this.state
-    const {projectId} = this.props
+    const {projectId, alias} = this.props
 
-    const url = `https://api.graph.cool/${endpoint}/${projectId}`
+    const url = `https://api.graph.cool/${endpoint}/${(alias && alias.length > 0) ? alias : projectId}`
 
     return (
       <div

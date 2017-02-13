@@ -1,15 +1,27 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
+import {debounce} from 'lodash'
 
 interface Props {
   to: string
   router: ReactRouter.InjectedRouter
 }
 
+// using lastMount to prevent infinite instant reloading
+const replace = debounce(
+  (router: ReactRouter.InjectedRouter, to: string) => {
+    router.replace(to)
+  },
+  2000,
+  {
+    leading: true,
+  },
+)
+
 class RedirectOnMount extends React.Component<Props, {}> {
 
   componentWillMount () {
-    this.props.router.replace(this.props.to)
+    replace(this.props.router, this.props.to)
   }
 
   render () {

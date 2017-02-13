@@ -65,7 +65,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     this.state = {
       loading: false,
-      creating: !Boolean(relation),
+      creating: Boolean(relation),
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: preselectedModel ? preselectedModel : relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,

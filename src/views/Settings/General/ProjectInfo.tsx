@@ -10,6 +10,7 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import Info from '../../../components/Info'
 
 // Note: the checks for this.props.project are there to make the UI
 // look better when a project gets deleted - otherwise there is a flicker
@@ -24,8 +25,12 @@ interface Props {
 interface State {
   isEnteringProjectName: boolean
   newProjectName: string
+  newAlias: string
   isHoveringProjectName: boolean
+  isEnteringAlias: boolean
+  isHoveringAlias: boolean
   projectIdCopied: boolean
+  aliasCopied: boolean
 }
 
 class ProjectInfo extends React.Component<Props, State> {
@@ -40,6 +45,10 @@ class ProjectInfo extends React.Component<Props, State> {
       newProjectName: props.project.name,
       isHoveringProjectName: false,
       projectIdCopied: false,
+      aliasCopied: false,
+      newAlias: props.project.alias,
+      isEnteringAlias: false,
+      isHoveringAlias: false,
     }
 
   }
@@ -194,6 +203,81 @@ class ProjectInfo extends React.Component<Props, State> {
               </div>
             </CopyToClipboard>
           </div>
+          {this.state.isEnteringAlias ?
+            (
+              <div className='flex flexColumn pt16 pb25'>
+                <div className='flex itemsCenter'>
+                  <div className='black o40 f14'>Project Alias</div>
+                  {(this.state.newAlias !== this.props.project.alias) &&
+                  <div
+                    className='resetButton'
+                    onClick={() => {
+                      this.setState({
+                        isEnteringAlias: false,
+                        newAlias: this.props.project.alias,
+                      } as State)
+                    }}
+                  >
+                    Reset
+                  </div>
+                  }
+                </div>
+                <div className='flex itemsCenter'>
+                  <input
+                    autoFocus={true}
+                    className='inputField'
+                    value={this.state.newAlias}
+                    onKeyDown={this.handleKeyDown}
+                    onChange={(e: any) => this.setState({newAlias: e.target.value} as State)}
+                  />
+                  {(this.state.newAlias !== this.props.project.alias) &&
+                  (<div
+                      className='saveButton'
+                      onClick={this.saveSettings}
+                    >
+                      Save
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+            :
+            (
+              <div className='flex flexColumn pt16 pb25'>
+                <div className='black o40 f14'>Alias</div>
+                <div
+                  className='flex itemsCenter pointer'
+                  onMouseEnter={() => this.setState({isHoveringAlias: true} as State)}
+                  onMouseLeave={() => this.setState({isHoveringAlias: false} as State)}
+                  onClick={() => this.setState({
+                    isEnteringAlias: true,
+                    isHoveringAlias: false,
+                  } as State)}
+                >
+                  <div
+                    className='fw3 f25 pt6'
+                  >
+                    {(!this.props.project.alias || this.props.project.alias.length === 0) ?
+                      (<div className='flex itemsCenter'>
+                        Choose an Alias
+                        <Info>
+                          You will get a custom endpoint url based on the alias you choose
+                        </Info>
+                      </div>) :
+                      this.props.project.alias
+                    }
+                  </div>
+                  {this.state.isHoveringAlias && (<Icon
+                    className={$p.ml6}
+                    src={require('../../../assets/icons/edit_project_name.svg')}
+                    width={20}
+                    height={20}
+                  />)}
+                </div>
+              </div>
+
+            )
+          }
         </div>
       </div>
     )
@@ -205,10 +289,11 @@ class ProjectInfo extends React.Component<Props, State> {
         {
           project: this.props.project,
           name: this.state.newProjectName,
+          alias: this.state.newAlias,
         }),
       {
         onSuccess: () => {
-          const message = 'Successfully renamed project to: ' + this.state.newProjectName
+          const message = 'Successfully updated project.'
           this.props.showNotification({message: message, level: 'success'})
           this.props.router.replace(`/${this.state.newProjectName}/settings/general`)
         },
@@ -236,6 +321,14 @@ class ProjectInfo extends React.Component<Props, State> {
     )
   }
 
+  private onCopyAlias: () => any = () => {
+    this.setState({aliasCopied: true} as State)
+    this.copyTimer = window.setTimeout(
+      () => this.setState({aliasCopied: false} as State),
+      1000,
+    )
+  }
+
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -250,6 +343,7 @@ export default Relay.createContainer(withRouter(mappedProjectInfo), {
       fragment on Project {
         id
         name
+        alias
       }
     `,
   },

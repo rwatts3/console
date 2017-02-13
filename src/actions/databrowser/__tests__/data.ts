@@ -122,6 +122,7 @@ describe('async data actions', () => {
         isSystem: false,
         permissions: [],
         permissionSchema: '',
+        permissionQueryArguments: [],
       },
       enumValues: [],
       model: null,
@@ -143,6 +144,7 @@ describe('async data actions', () => {
     isSystem: false,
     permissions: [],
     permissionSchema: '',
+    permissionQueryArguments: [],
   }
 
   const fieldValues = {

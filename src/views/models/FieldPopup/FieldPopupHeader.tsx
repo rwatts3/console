@@ -6,7 +6,7 @@ import * as cn from 'classnames'
 interface Props {
   activeTabIndex: number
   tabs: string[]
-  onSelectTab: (index: number) => void
+  onSelectTab?: (index: number) => void
   onRequestClose: () => void
   errors: FieldPopupErrors
   showErrors: boolean

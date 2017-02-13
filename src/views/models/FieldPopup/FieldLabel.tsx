@@ -68,6 +68,10 @@ export default class FieldLabel extends React.Component<Props, State> {
             top: 1px;
           }
 
+          input {
+            line-height: 1.5;
+          }
+
         `}</style>
         {isEnteringName || name.length === 0 ?
           (

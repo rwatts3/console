@@ -78,7 +78,7 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
             onClick={this.props.switchDisplayState}
           />
           <CreateRelationHeaderTab
-            title='Set Mutations'
+            title='Set Relation Name'
             selected={displayState === 'SET_MUTATIONS'}
             onClick={this.props.switchDisplayState}
           />
