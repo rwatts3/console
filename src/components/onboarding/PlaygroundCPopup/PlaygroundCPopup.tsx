@@ -20,16 +20,18 @@ interface Tutorial {
 
 const guides: Tutorial[] = [
   {
-    title: 'Learnrelay.org',
+    title: 'Learn Relay',
     description: 'A comprehensive, interactive introduction to Relay',
     link: 'https://learnrelay.org/',
     image: require('../../../assets/graphics/relay.png'),
-  }, {
-    title: 'GraphQL and the amazing Apollo Client',
-    description: 'Explore an Application built using React and Angular 2',
-    link: 'https://medium.com/google-developer-experts/graphql-and-the-amazing-apollo-client-fe57e162a70c',
+  },
+  {
+    title: 'Learn Apollo',
+    description: 'A hands-on tutorial for Apollo GraphQL Client',
+    link: 'https://learnapollo.org',
     image: require('../../../assets/graphics/apollo.png'),
-  }, {
+  },
+  {
     title: 'Introducing Lokka',
     description: 'A Simple JavaScript Client for GraphQL',
     link: 'https://voice.kadira.io/introducing-lokka-a-simple-javascript-client-for-graphql-e0802695648c',
@@ -46,9 +48,17 @@ const examples = {
     path: 'react-apollo-instagram-example',
     description: 'React + Apollo',
   },
+  ReactNativeApollo: {
+    path: 'react-native-apollo-instagram-example',
+    description: 'React Native + Apollo',
+  },
   AngularApollo: {
     path: 'angular-apollo-instagram-example',
     description: 'Angular + Apollo',
+  },
+  VueApollo: {
+    path: 'vue-apollo-instagram-example',
+    description: 'Vue.js + Apollo',
   },
 }
 
@@ -97,6 +107,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     const {selectedExample} = this.props.gettingStartedState
     const hovering = !this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')
     const downloadUrl = (example) => `${__BACKEND_ADDR__}/resources/getting-started-example?repository=${examples[example].path}&project_id=${this.props.projectId}&user=graphcool-examples` // tslint:disable-line
+    const videoUrl = this.getExampleVideoUrl(selectedExample)
     return (
       <div
         className='flex justify-center items-start w-100 h-100'
@@ -178,6 +189,24 @@ class PlaygroundCPopup extends React.Component<Props, State> {
                 <div
                   className={classnames(
                     classes.exampleButton,
+                    selectedExample === 'ReactNativeApollo' ? classes.active : '',
+                  )}
+                  onClick={() => this.props.selectExample('ReactNativeApollo')}
+                >
+                  React Native + Apollo
+                </div>
+                <div
+                  className={classnames(
+                    classes.exampleButton,
+                    selectedExample === 'VueApollo' ? classes.active : '',
+                  )}
+                  onClick={() => this.props.selectExample('VueApollo')}
+                >
+                  Vue.js + Apollo
+                </div>
+                <div
+                  className={classnames(
+                    classes.exampleButton,
                     selectedExample === 'AngularApollo' ? classes.active : '',
                   )}
                   onClick={() => this.props.selectExample('AngularApollo')}
@@ -188,15 +217,17 @@ class PlaygroundCPopup extends React.Component<Props, State> {
             </div>
           {selectedExample &&
           <div>
-            <div className='w-100'>
-              <iframe
-                className='w-100'
-                height='480'
-                allowFullScreen
-                frameBorder='0'
-                src={`https://www.youtube.com/embed/${this.getExampleVideoUrl(selectedExample)}`}
-              />
-            </div>
+            {videoUrl && (
+              <div className='w-100'>
+                <iframe
+                  className='w-100'
+                  height='480'
+                  allowFullScreen
+                  frameBorder='0'
+                  src={`https://www.youtube.com/embed/${videoUrl}`}
+                />
+              </div>
+            )}
             <div
               className='w-100 pa-25'
               style={{
@@ -348,7 +379,9 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     switch (example) {
       case 'ReactRelay': return '_dj9Os2ev4M'
       case 'ReactApollo': return '9nlwyPUPXjQ'
+      case 'ReactNativeApollo': return '9nlwyPUPXjQ'
       case 'AngularApollo': return 'EzD5fJ-uniI'
+      case 'VueApollo': return null
     }
   }
 }

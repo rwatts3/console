@@ -1,6 +1,7 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {Field} from '../../../types/types'
+import {valuesMissing} from './FieldPopupState'
 
 interface State {
   enteredFieldName: string
@@ -36,6 +37,11 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
     let onlyNullWilBeReplaced = false
     let allWillBeReplaced = false
     let fieldAndMutationNameWillChange = false
+    let enumValueRemoved = false
+    let uniqueRemoved = false
+    let willBeList = false
+    let willBeScalar = false
+    let defaultValue = false
 
     if (initialField && mutatedField) {
       if (initialField.typeIdentifier !== mutatedField.typeIdentifier) {
@@ -49,7 +55,24 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
       if (initialField.name !== mutatedField.name) {
         fieldAndMutationNameWillChange = true
       }
+
+      enumValueRemoved = valuesMissing(initialField.enumValues, mutatedField.enumValues)
+
+      uniqueRemoved = initialField.isUnique && !mutatedField.isUnique
+
+      willBeList = !initialField.isList && mutatedField.isList
+
+      willBeScalar = initialField.isList && !mutatedField.isList
     }
+
+    defaultValue = !(
+      allWillBeReplaced ||
+      fieldAndMutationNameWillChange ||
+      enumValueRemoved ||
+      uniqueRemoved ||
+      willBeList ||
+      willBeScalar
+    )
 
     return (
       <div className={`container ${this.props.red ? 'deletePositioning' : 'breakingChangesPositioning'}`}>
@@ -103,9 +126,47 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
           </div>
         </div>
         <div className='pa25 f16 black50 bb bBlack10'>
-          {onlyNullWilBeReplaced && 'Note that null values will be replaced by a migration value.'}
-          {allWillBeReplaced && 'Note that all values will be replaced by the migration value.'}
+          {onlyNullWilBeReplaced && (
+            <div>
+              Note that null values will be replaced by a migration value.
+            </div>
+          )}
+          {allWillBeReplaced && (
+            <div>
+              Note that all values will be replaced by the migration value.
+            </div>
+          )}
           {fieldAndMutationNameWillChange && (
+            <div>
+              Your changes will break the schema containing your field <b>{this.props.fieldName}</b>.
+            </div>
+          )}
+          {enumValueRemoved && (
+            <div>
+              Note that you removed enum values, which could be used in Nodes currently.
+            </div>
+          )}
+          {uniqueRemoved && (
+            <div>
+              Note that you removed the unique constraint, so upsert mutations won't be
+              possible with this field anymore.
+            </div>
+          )}
+          {willBeList && (
+            <div>
+              You're changing the field from a normal scalar field to a list.
+              This will break the schema.
+              Make sure you provide a <b>migration value.</b>
+            </div>
+          )}
+          {willBeScalar && (
+            <div>
+              You're changing the field from a list to a single scalar value.
+              This will break the schema.
+              Make sure you provide a <b>migration value.</b>
+            </div>
+          )}
+          {defaultValue && (
             <div>
               Your changes will break the schema containing your field <b>{this.props.fieldName}</b>.
             </div>
@@ -205,7 +266,8 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
             }}
           >
             Save Changes
-          </div>)}
+          </div>
+        )}
       </div>
     )
   }

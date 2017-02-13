@@ -51,11 +51,12 @@ export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
     return false
   }
 
+  // isRequired is not interesting here, because either we get the error from the server (not req => req)
+  // or it is just not breaking
   if (
-    initialField.isRequired !== mutatedField.isRequired ||
     initialField.isList !== mutatedField.isList ||
-    initialField.isUnique !== mutatedField.isUnique ||
-    initialField.enumValues !== mutatedField.enumValues ||
+    (initialField.isUnique && !mutatedField.isUnique) ||
+    valuesMissing(initialField.enumValues, mutatedField.enumValues) || // only breaking, when values are missing
     initialField.name !== mutatedField.name ||
     initialField.typeIdentifier !== mutatedField.typeIdentifier
   ) {
@@ -63,6 +64,17 @@ export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
   }
 
   return false
+}
+
+// are values of a missing in b?
+export function valuesMissing(a, b) {
+  let missing = false
+  a.forEach(item => {
+    if (!b.includes(item)) {
+      missing = true
+    }
+  })
+  return missing
 }
 
 export function didChange(mutatedField: Field, initialField?: Field): boolean {
@@ -78,6 +90,8 @@ export function didChange(mutatedField: Field, initialField?: Field): boolean {
 export function updateTypeIdentifier(state: Field, typeIdentifier: FieldType): Field {
   return {
     ...state,
+    defaultValue: undefined,
+    migrationValue: undefined,
     typeIdentifier,
   }
 }
@@ -85,6 +99,8 @@ export function updateTypeIdentifier(state: Field, typeIdentifier: FieldType): F
 export function toggleIsList(state: Field): Field {
   return {
     ...state,
+    defaultValue: undefined,
+    migrationValue: undefined,
     isList: !state.isList,
   }
 }

@@ -39,3 +39,8 @@
     padding: 5px;
     width: 80px;
 }
+
+.react-tagsinput > span {
+    display: flex;
+    flex-wrap: wrap;
+}

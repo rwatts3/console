@@ -5,17 +5,18 @@ interface Props {
   email: string
 }
 
-export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}> {
+export default class DeleteCollaboratorMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{inviteCollaborator}`
+    return Relay.QL`mutation{removeCollaborator}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on InviteCollaboratorPayload {
-        seat {
-          email
+      fragment on RemoveCollaboratorPayload {
+        deletedId
+        project {
+          name
         }
       }
     `
@@ -23,14 +24,11 @@ export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}
 
   getConfigs () {
     return [{
-      type: 'RANGE_ADD',
+      type: 'NODE_DELETE',
       parentName: 'project',
       parentID: this.props.projectId,
       connectionName: 'seats',
-      edgeName: 'seatEdge',
-      rangeBehaviors: {
-        '': 'append',
-      },
+      deletedIDFieldName: 'deletedId',
     }]
   }
 
@@ -40,4 +38,10 @@ export default class InviteCollaboratorMutation extends Relay.Mutation<Props, {}
       email: this.props.email,
     }
   }
+
+  // getOptimisticResponse () {
+  //   return {
+  //     deletedId: this.props.projectId,
+  //   }
+  // }
 }

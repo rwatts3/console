@@ -6,30 +6,36 @@ import * as cn from 'classnames'
 interface Props {
   activeTabIndex: number
   tabs: string[]
-  onSelectTab: (index: number) => void
+  onSelectTab?: (index: number) => void
   onRequestClose: () => void
   errors: FieldPopupErrors
   showErrors: boolean
+  create: boolean
 }
 
-const FieldPopupHeader = ({activeTabIndex, onSelectTab, tabs, onRequestClose, errors, showErrors}: Props) => (
+const FieldPopupHeader = ({activeTabIndex, onSelectTab, tabs, onRequestClose, errors, showErrors, create}: Props) => (
   <div className='field-popup-header'>
     <style jsx>{`
       .field-popup-header {
         @p: .flex, .relative;
-        height: 70px;
+        height: 43px;
+        margin-bottom: 34px;
       }
-
+      .border {
+        @p: .bb, .black10, .flex, .itemsStart;
+        width: calc(100% - 75px);
+      }
       .badge {
-        @p: .bgGreen, .white, .absolute, .mt10, .f12, .fw6, .ttu, .top0, .br2;
+        @p: .bgGreen, .white, .relative, .mt10, .f12, .fw6, .ttu, .top0, .br2;
         padding: 2px 4px;
         left: -4px;
       }
+      .badge.update {
+        @p: .bgBlue;
+      }
       .tabs {
-        @p: .bb, .bBlack10, .flex1, .bbox, .overflowVisible, .flex, .itemsCenter, .pointer;
+        @p: .flex1, .bbox, .overflowVisible, .flex, .itemsCenter, .pointer, .pl16;
         height: 43px;
-        padding-left: 88px;
-        margin-right: 72px;
       }
       .close {
         @p: .absolute, .pointer;
@@ -37,17 +43,21 @@ const FieldPopupHeader = ({activeTabIndex, onSelectTab, tabs, onRequestClose, er
         right: 24px;
       }
     `}</style>
-    <div className='badge'>New Field</div>
-    <div className='tabs'>
-      {tabs.map((tab, index) => (
-        <Tab
-          key={tab}
-          active={index === activeTabIndex}
-          hasError={showErrors && errorInTab(errors, index)}
-          onClick={() => onSelectTab(index)}
-          needsMigration={errors.migrationValueMissing && index === 1}
-        >{tab}</Tab>
-      ))}
+    <div className='border'>
+      <div className={'badge' + (!create ? ' update' : '')}>
+        {create ? 'New Field' : 'Update Field'}
+      </div>
+      <div className='tabs'>
+        {tabs.map((tab, index) => (
+          <Tab
+            key={tab}
+            active={index === activeTabIndex}
+            hasError={showErrors && errorInTab(errors, index)}
+            onClick={() => onSelectTab(index)}
+            needsMigration={errors.migrationValueMissing && index === 1}
+          >{tab}</Tab>
+        ))}
+      </div>
     </div>
     <div
       className='close'
@@ -104,7 +114,7 @@ const Tab = ({active, children, onClick, hasError, needsMigration}: TabProps) =>
 
         .after-active {
           @p: .absolute, .bbox, .bgWhite;
-          top: 39px;
+          top: 38px;
           border-left: 6px solid white;
           border-right: 6px solid white;
           left: -12px;

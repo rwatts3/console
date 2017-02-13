@@ -33,6 +33,8 @@ import PermissionsView from './views/PermissionsView/PermissionsView'
 import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import AlgoliaPopup from './views/Integrations/AlgoliaPopup/AlgoliaPopup'
+import AlgoliaView from './views/Integrations/Algolia/AlgoliaView'
+
 import {
   AlgoliaEditIndexPopup,
   AlgoliaCreateIndexPopup,
@@ -121,10 +123,13 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
+<<<<<<< HEAD
         <Route path='billing' component={Billing} queries={ViewerQuery} render={render} >
           <Route path='change-plan' component={ChangePricingPlan} render={render} />
           <Route path='confirm-plan' component={ConfirmPricingPlan} queries={ViewerQuery}  render={render} />
         </Route>
+=======
+>>>>>>> e07c1aaae12009c211dab0dcd839ca6648d9c5f7
         <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
@@ -156,19 +161,8 @@ export default (
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
+      <Route path='algolia' component={AlgoliaView} queries={ViewerQuery} render={render}/>
       <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
-        <Route path='algolia' component={AlgoliaPopup} queries={ViewerQuery} render={render}>
-          <Route
-            path='edit/:id'
-            component={AlgoliaEditIndexPopup}
-            queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-            render={render}/>
-          <Route
-            path='create'
-            component={AlgoliaCreateIndexPopup}
-            queries={ViewerQuery}
-            render={render}/>
-        </Route>
         <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
       </Route>
       <IndexRedirect to='models'/>

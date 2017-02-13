@@ -5,7 +5,6 @@ import * as Relay from 'react-relay'
 import {withRouter, Link} from 'react-router'
 import {connect} from 'react-redux'
 import cuid from 'cuid'
-import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import mapProps from '../../components/MapProps/MapProps'
 // import {validateModelName} from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
@@ -153,7 +152,7 @@ const footerSectionStyle = `
 const FooterSection = styled.div`${footerSectionStyle}`
 const FooterLink = styled.a`${footerSectionStyle}`
 
-export class SideNav extends React.Component<Props, State> {
+export class SideNav extends React.PureComponent<Props, State> {
 
   refs: {
     [key: string]: any;
@@ -172,7 +171,6 @@ export class SideNav extends React.Component<Props, State> {
       modelsExpanded: false,
       modelsFit: true,
     }
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
   componentDidMount() {
@@ -215,7 +213,7 @@ export class SideNav extends React.Component<Props, State> {
             {this.renderPermissions()}
             {this.renderActions()}
             {this.renderPlayground()}
-            {isBetaCustomer && this.renderIntegrations()}
+            {this.renderIntegrations()}
           </ScrollBox>
         </div>
         <div
@@ -679,7 +677,7 @@ export class SideNav extends React.Component<Props, State> {
   private showEndpointPopup = () => {
     const id = cuid()
     this.props.showPopup({
-      element: <EndpointPopup id={id} projectId={this.props.project.id} />,
+      element: <EndpointPopup id={id} projectId={this.props.project.id} alias={this.props.project.alias} />,
       id,
     })
   }
@@ -744,6 +742,7 @@ export default Relay.createContainer(MappedSideNav, {
       fragment on Project {
         id
         name
+        alias
         webhookUrl
         models(first: 100) {
           edges {

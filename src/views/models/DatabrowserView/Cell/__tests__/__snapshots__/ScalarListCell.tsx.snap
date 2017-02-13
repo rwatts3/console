@@ -2,7 +2,7 @@ exports[`test ScalarListCell renders 1`] = `
 <Connect(PopupWrapper)
   onClickOutside={[Function]}>
   <div
-    className="flex bgBlack50 w100 h100 justifyCenter itemsCenter">
+    className="flex bgBlack50 w100 h100 justifyCenter itemsCenter scalar-list-cell">
     <styled.div
       className="bgWhite flex flexColumn relative">
       <div
@@ -36,12 +36,32 @@ exports[`test ScalarListCell renders 1`] = `
             className="addNewText">
             Add new item ...
           </span>
+          <style
+            global={true}
+            jsx={true}>
+            
+                              .scalar-list-cell {
+                                .add-icon {
+                                  @p: .bgBlue, .br100, .pointer;
+                                }
+                              }
+            
+                              .scalar-list-cell .remove-icon {
+                                @p: .bgrRed, .br100, .flex, .itemsCenter, .justifyCenter, .pointer;
+                                padding: 8px;
+                                height: 30px;
+                                width: 30px;
+                              }
+                            
+          </style>
           <Icon
-            className="disabled"
-            color="rgba(42,126,210,1)"
+            className="add-icon disabled"
+            color="#fff"
             height={30}
             onClick={[Function]}
             src="test-file-stub"
+            stroke={true}
+            strokeWidth={2.5}
             width={30} />
         </div>
         <div
@@ -58,10 +78,13 @@ exports[`test ScalarListCell renders 1`] = `
               1
             </div>
             <Icon
-              color="rgba(242,92,84,1)"
+              className="remove-icon"
+              color="#fff"
               height={30}
               onClick={[Function]}
               src="test-file-stub"
+              stroke={true}
+              strokeWidth={4}
               width={30} />
           </styled.div>
           <styled.div
@@ -71,10 +94,13 @@ exports[`test ScalarListCell renders 1`] = `
               2
             </div>
             <Icon
-              color="rgba(242,92,84,1)"
+              className="remove-icon"
+              color="#fff"
               height={30}
               onClick={[Function]}
               src="test-file-stub"
+              stroke={true}
+              strokeWidth={4}
               width={30} />
           </styled.div>
           <styled.div
@@ -84,10 +110,13 @@ exports[`test ScalarListCell renders 1`] = `
               3
             </div>
             <Icon
-              color="rgba(242,92,84,1)"
+              className="remove-icon"
+              color="#fff"
               height={30}
               onClick={[Function]}
               src="test-file-stub"
+              stroke={true}
+              strokeWidth={4}
               width={30} />
           </styled.div>
         </div>

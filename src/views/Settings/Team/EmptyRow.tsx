@@ -3,11 +3,12 @@ import * as Relay from 'react-relay'
 import {$p} from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import * as cx from 'classnames'
-import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
+import InviteCollaboratorMutation from '../../../mutations/AddCollaboratorMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
   email: string
@@ -19,6 +20,7 @@ interface Props {
   numberOfLeftSeats?: number
   projectId?: string
   showNotification: ShowNotificationCallback
+  seatsLeft: number
 }
 
 class EmptyRow extends React.Component<Props, State> {
@@ -107,6 +109,7 @@ class EmptyRow extends React.Component<Props, State> {
         </div>
       )
     } else if (this.props.hasAddFunctionality) {
+      const {numberOfLeftSeats} = this.props
       rowContent = (
         <div
           className='addCollaborator'
@@ -138,7 +141,9 @@ class EmptyRow extends React.Component<Props, State> {
             />
           </div>
           <div className='f16 black40'>
-            add collaborator ({this.props.numberOfLeftSeats} seats left)
+            add collaborator (
+            {numberOfLeftSeats > 999 ? 'unlimited' : numberOfLeftSeats} {numberOfLeftSeats === 1 ? 'seat ' : 'seats '}
+            left)
           </div>
         </div>
       )
@@ -169,10 +174,10 @@ class EmptyRow extends React.Component<Props, State> {
       {
         onSuccess: () => {
           this.setState({isEnteringEmail: false} as State)
-          this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
+          this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
         },
       },
     )

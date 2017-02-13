@@ -68,6 +68,10 @@ export default class FieldLabel extends React.Component<Props, State> {
             top: 1px;
           }
 
+          input {
+            line-height: 1.5;
+          }
+
         `}</style>
         {isEnteringName || name.length === 0 ?
           (
@@ -83,7 +87,7 @@ export default class FieldLabel extends React.Component<Props, State> {
                 width={240}
               >
                 <input
-                  className={'fieldNameInputField' + ((errors.invalidName && showErrors) ? ' error' : '')}
+                  className={'enter-event fieldNameInputField' + ((errors.invalidName && showErrors) ? ' error' : '')}
                   autoFocus={true}
                   placeholder='Select a name ...'
                   value={name}

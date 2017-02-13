@@ -16,6 +16,7 @@ export default class IconNotification extends React.Component<Props, {}> {
           style={{
             width: 88,
             height: 88,
+            pointerEvents: 'none',
           }}
         >
           <Icon width={30} height={30} color='#00B861' src={require('../../assets/icons/check.svg')} />

@@ -7,6 +7,7 @@ interface Project {
 interface Props {
   name: string,
   project: Project
+  alias?: string
 }
 
 export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
@@ -21,6 +22,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
         project {
           id
           name
+          alias
         }
       }
     `
@@ -39,6 +41,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
     return {
       id: this.props.project.id,
       name: this.props.name,
+      alias: this.props.alias,
     }
   }
 
@@ -47,6 +50,7 @@ export default class UpdateProjectMutation extends Relay.Mutation<Props, {}> {
       project: {
         id: this.props.project.id,
         name: this.props.name,
+        alias: this.props.alias,
       },
     }
   }

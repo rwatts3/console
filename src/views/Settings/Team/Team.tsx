@@ -1,23 +1,29 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Viewer} from '../../../types/types'
+import {Viewer, Seat} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
-import InviteCollaboratorMutation from '../../../mutations/InviteCollaboratorMutation'
+import DeleteCollaboratorMutation from '../../../mutations/DeleteCollaboratorMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface Props {
   viewer: Viewer
+  showNotification: ShowNotificationCallback
+  params: any
 }
 
 class Team extends React.Component<Props, {}> {
 
-  availableSeats: number = 4
-
   render() {
 
     const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
+    const availableSeats = this.getSeatsForPlan(this.getPlan())
 
-    const numberOfEmptyRows = this.availableSeats - seats.length
+    const numberOfEmptyRows = Math.min(availableSeats - seats.length, 10)
+    const seatsLeft = availableSeats - seats.length
 
     let numbers = []
     for (let i = 0; i < numberOfEmptyRows; i++) {
@@ -34,14 +40,18 @@ class Team extends React.Component<Props, {}> {
           }
         `}</style>
         {seats.map(seat =>
-          (<MemberRow key={seat.email} seat={seat} />),
+          (<MemberRow
+            key={seat.email}
+            seat={seat}
+            onDelete={this.deleteSeat}
+          />),
         )}
         <div className='mt38'>
           {numbers.map((i) => (
             <EmptyRow
               key={i}
               hasAddFunctionality={i === 0}
-              numberOfLeftSeats={i === 0 && numberOfEmptyRows}
+              numberOfLeftSeats={i === 0 && seatsLeft}
               projectId={i === 0 && this.props.viewer.project.id}
             />
           ))}
@@ -50,9 +60,60 @@ class Team extends React.Component<Props, {}> {
     )
   }
 
+  private getSeatsForPlan(plan: string) {
+    const seatsMap = {
+      '2016-12-free': 2,
+      '2016-12-startup': 5,
+      '2016-12-growth': 10,
+      '2016-12-pro': 999999,
+    }
+
+    return seatsMap[plan] || 2
+  }
+
+  private getPlan() {
+    const freeId = '2016-12-free'
+    const projects = this.props.viewer.user.crm.customer.projects.edges.map(edge => edge.node)
+    const project = projects.find(project => project.name === this.props.params.projectName)
+    if (!project) {
+      return freeId
+    }
+    const billing = project.projectBillingInformation
+    if (!billing) {
+      return freeId
+    }
+    const {plan} = billing
+    if (!plan) {
+      return freeId
+    }
+
+    return plan
+  }
+
+  private deleteSeat = (seat: Seat) => {
+    if (window.confirm('Do you really want to remove the user with email ' +
+        seat.email + ' as a collaborator from this project?')) {
+      Relay.Store.commitUpdate(
+        new DeleteCollaboratorMutation({
+          projectId: this.props.viewer.project.id,
+          email: seat.email,
+        }),
+        {
+          onSuccess: () => {
+            this.props.showNotification({message: 'Removed collaborator with email: ' + seat.email, level: 'success'})
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        },
+      )
+    }
+  }
 }
 
-export default Relay.createContainer(Team, {
+const mappedTeam = connect(null, {showNotification})(Team)
+
+export default Relay.createContainer(mappedTeam, {
   initialVariables: {
     projectName: null, // injected from router
   },
@@ -69,6 +130,22 @@ export default Relay.createContainer(Team, {
                 email
                 isOwner
                 status
+              }
+            }
+          }
+        }
+        user {
+          crm {
+            customer {
+              projects(first: 100) {
+                edges {
+                  node {
+                    id
+                    projectBillingInformation {
+                      plan
+                    }
+                  }
+                }
               }
             }
           }

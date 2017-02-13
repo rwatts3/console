@@ -4,6 +4,7 @@ import {fieldModalStyle} from '../../../utils/modalStyle'
 import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
 import {Field, FieldType, Constraint, ConstraintType} from '../../../types/types'
+import {ConsoleEvents, MutationType, FieldPopupSource} from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
 import Constraints from './Constraints'
@@ -35,13 +36,14 @@ import {
   nextStep,
 } from '../../../actions/gettingStarted'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
-import {valueToString} from '../../../utils/valueparser'
+import {valueToString, stringToValue} from '../../../utils/valueparser'
 import AddFieldMutation from '../../../mutations/AddFieldMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import Loading from '../../../components/Loading/Loading'
 import {GettingStartedState} from '../../../types/gettingStarted'
+import tracker from '../../../utils/metrics'
 
 interface Props {
   field?: Field
@@ -85,7 +87,8 @@ class FieldPopup extends React.Component<Props, State> {
       this.state = {
         field: {
           ...field,
-          defaultValue: field.defaultValue === null ? undefined : field.defaultValue, // if null, put it to undefined
+          // if null, put it to undefined
+          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue, field),
         },
 
         activeTabIndex: 0,
@@ -112,14 +115,21 @@ class FieldPopup extends React.Component<Props, State> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
+    tracker.track(ConsoleEvents.Schema.Field.Popup.opened({
+      type: this.state.create ? 'Create' : 'Update',
+      source: 'databrowser',
+    }))
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown)
+    tracker.track(ConsoleEvents.Schema.Field.Popup.canceled({
+      type: this.state.create ? 'Create' : 'Update',
+    }))
   }
 
   componentDidUpdate() {
-    if (this.state.field.name === 'imageUrl' &&
+    if (this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase() &&
       this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
       this.props.nextStep()
     }
@@ -203,6 +213,7 @@ class FieldPopup extends React.Component<Props, State> {
             onRequestClose={this.close}
             errors={errors}
             showErrors={showErrors}
+            create={create}
           />
           <div
             className='popup-body'
@@ -221,6 +232,7 @@ class FieldPopup extends React.Component<Props, State> {
                   onChangeEnumValues={this.updateField(updateEnumValues)}
                   errors={errors}
                   showErrors={showErrors}
+                  showNotification={this.props.showNotification}
                 />
               ) : activeTabIndex === 1 ? (
                   <AdvancedSettings
@@ -278,10 +290,13 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
-    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement)) {
+    if (e.keyCode === 27 && (e.target instanceof HTMLInputElement)) {
       this.close()
     }
-    if (e.keyCode === 13) {
+    // if it is an input, only if it has the enter-event class
+    if (e.keyCode === 13 && (
+      e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
+    ) {
       this.handleSubmit()
     }
   }
@@ -350,6 +365,7 @@ class FieldPopup extends React.Component<Props, State> {
     const errors = isValid(this.props.nodeCount, this.state.field, this.props.field)
     // if there is an error, it's not valid
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
+    tracker.track(ConsoleEvents.Schema.Field.Popup.submitted({type: this.state.create ? 'Create' : 'Update'}))
 
     if (!valid) {
       this.setState({
@@ -367,22 +383,17 @@ class FieldPopup extends React.Component<Props, State> {
   private patchDefaultAndMigrationValue(field: Field) {
     let patchedField = field
 
-    // do not patch boolean or datetime
-    if (['Boolean', 'DateTime'].includes(field.typeIdentifier)) {
-      return field
-    }
-
     if (typeof field.defaultValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        defaultValue: valueToString(field.defaultValue, field, true, true),
+        defaultValue: field.defaultValue === null ? null : valueToString(field.defaultValue, field, true, true),
       }
     }
 
     if (typeof field.migrationValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        migrationValue: valueToString(field.migrationValue, field, true, true),
+        migrationValue: field.migrationValue === null ? null : valueToString(field.migrationValue, field, true, true),
       }
     }
 
@@ -412,7 +423,7 @@ class FieldPopup extends React.Component<Props, State> {
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
-            // this.setState({loading: false} as State)
+            this.setState({loading: false} as State)
           },
         },
       )
@@ -468,7 +479,7 @@ class FieldPopup extends React.Component<Props, State> {
         },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          // this.setState({loading: false} as State)
+          this.setState({loading: false} as State)
         },
       },
     )
@@ -482,7 +493,7 @@ class FieldPopup extends React.Component<Props, State> {
 const tabs = [
   'Base Settings',
   'Advanced Options',
-  // 'Constraints',
+  'Constraints',
 ]
 
 const ReduxContainer = connect(
@@ -521,15 +532,16 @@ export default Relay.createContainer(MappedFieldPopup, {
           itemCount
         }
         field: fieldByName(
-        projectName: $projectName
-        modelName: $modelName
-        fieldName: $fieldName
+          projectName: $projectName
+          modelName: $modelName
+          fieldName: $fieldName
         ) @include(if: $fieldExists) {
           id
           name
           typeIdentifier
           isRequired
           isList
+          isUnique
           isSystem
           enumValues
           defaultValue

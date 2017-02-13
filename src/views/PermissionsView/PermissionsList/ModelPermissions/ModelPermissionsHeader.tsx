@@ -39,9 +39,9 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
     const enhancedPermissions = this.enhancePermissions(permissions)
     return (
       <div className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}>
-        <h2 className={cx($p.black50, $p.fw4, $p.ph6, $p.bgWhite)}>{model.name}</h2>
         <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
-          <div className={cx($p.flex, $p.flexRow, $p.ph6, $p.bgWhite)}>
+          <h2 className={cx($p.black50, $p.fw4, $p.ph6, $p.bgWhite)}>{model.name}</h2>
+          <div className={cx($p.flex, $p.flexRow, $p.ph6, $p.bgWhite, $p.ml16)}>
             {enhancedPermissions.map((permission, index) =>
               (
                 <PermissionIcon
@@ -57,6 +57,8 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
               ),
             )}
           </div>
+        </div>
+        <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
           <Link className={cx($p.ml25)} to={`/${params.projectName}/permissions/${model.name}/create`}>
             <div
               className={cx(

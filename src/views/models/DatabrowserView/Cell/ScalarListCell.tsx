@@ -143,6 +143,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
             $p.h100,
             $p.justifyCenter,
             $p.itemsCenter,
+            'scalar-list-cell',
           )}
         >
           <Container
@@ -218,13 +219,29 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                     )}
                   </span>
                 )}
+                <style jsx global>{`
+                  .scalar-list-cell {
+                    .add-icon {
+                      @p: .bgBlue, .br100, .pointer;
+                    }
+                  }
+
+                  .scalar-list-cell .remove-icon {
+                    @p: .bgrRed, .br100, .flex, .itemsCenter, .justifyCenter, .pointer;
+                    padding: 8px;
+                    height: 30px;
+                    width: 30px;
+                  }
+                `}</style>
                 <Icon
-                  className={this.state.newValue ? '' : classes.disabled}
+                  className={'add-icon ' + (this.state.newValue ? '' : classes.disabled)}
                   onClick={() => this.addNewValue()}
-                  src={require('assets/new_icons/add_new.svg')}
+                  src={require('graphcool-styles/icons/stroke/add.svg')}
+                  stroke
+                  strokeWidth={2.5}
                   width={30}
                   height={30}
-                  color={variables.blue}
+                  color={variables.white}
                 />
               </div>
               <div
@@ -261,11 +278,14 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                       <div>{atomicValueToString(value, this.props.field, true)}</div>
                     )}
                     <Icon
-                      src={require('assets/new_icons/remove.svg')}
+                      className='remove-icon'
+                      src={require('graphcool-styles/icons/stroke/cross.svg')}
+                      stroke
+                      strokeWidth={4}
                       width={30}
                       height={30}
                       onClick={() => this.handleDeleteValue(index)}
-                      color={variables.red}
+                      color={variables.white}
                     />
                   </Item>
                 ))}
@@ -293,7 +313,6 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private setEditingIndex = (editingIndex: number) => {
-    console.log('editing index', editingIndex)
     this.setState({editingIndex} as State)
   }
 
@@ -319,7 +338,11 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private handleClose = () => {
-    this.props.methods.save(this.state.values, false)
+    let values = this.state.values
+    if (this.state.values.length === 0 && typeof this.state.newValue !== 'undefined') {
+      values = [this.state.newValue]
+    }
+    this.props.methods.save(values, false)
   }
 
   private handleDeleteValue = (index: number) => {

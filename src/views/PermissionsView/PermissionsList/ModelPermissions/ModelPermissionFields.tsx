@@ -45,7 +45,7 @@ class ModelPermissionFields extends React.Component<Props, {}> {
           <InnerContainer
             className={cx($p.relative, $p.flex, $p.flex1, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowXScroll)}
           >
-            <div className={cx($p.black50)}>
+            <div className={cx($p.black50, $p.fw6)}>
               {applyToWholeModel ? (
                 'in all Fields'
               ) : (
@@ -56,7 +56,7 @@ class ModelPermissionFields extends React.Component<Props, {}> {
               <PermissionField
                 key={field.id}
                 disabled={!fieldIds.includes(field.id) || !isActive}
-                name={field.name}
+                field={field}
                 className={$p.ml10}
               />,
             )}

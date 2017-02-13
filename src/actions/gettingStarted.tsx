@@ -43,8 +43,9 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
         {
           onboardingStatusId,
           gettingStarted,
-          gettingStartedSkipped,
-          gettingStartedCompleted: gettingStarted === 'STEP6_CLOSED' as Step,
+          gettingStartedSkipped: ['STEP5_DONE', 'STEP6_CLOSED'].includes(gettingStarted) ?
+            false : gettingStartedSkipped,
+          gettingStartedCompleted: ['STEP5_DONE', 'STEP6_CLOSED'].includes(gettingStarted),
           gettingStartedExample,
         }),
       {
@@ -193,7 +194,6 @@ export function showCurrentStep(router: ReactRouter.InjectedRouter, params: any)
   return (dispatch, getState) => {
     const {step} = getState().gettingStarted.gettingStartedState
 
-    console.log('showing current step', step)
     switch (step) {
       case 'STEP0_OVERVIEW':
         break

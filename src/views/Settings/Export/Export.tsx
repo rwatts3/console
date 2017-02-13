@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as download from 'downloadjs'
+import * as FileSaver from 'file-saver'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../../types/types'
 import * as cookiestore from 'cookiestore'
@@ -7,11 +7,16 @@ import {Lokka} from 'lokka'
 import {Transport} from 'lokka-transport-http'
 import * as CodeMirror from 'react-codemirror'
 import EditorConfiguration = CodeMirror.EditorConfiguration
+import {showNotification} from '../../../actions/notification'
+import {connect} from 'react-redux'
+import {ShowNotificationCallback} from '../../../types/utils'
+import * as fetch from 'isomorphic-fetch'
 
 // const fileDownload = require('react-file-download')
 
 interface Props {
   viewer: Viewer
+  showNotification: ShowNotificationCallback
 }
 
 class Export extends React.Component<Props, {}> {
@@ -27,39 +32,39 @@ class Export extends React.Component<Props, {}> {
         <style jsx={true}>{`
 
           .container {
-            @inherit: .br, .pv38;
+            @p: .br, .pv38;
             max-width: 700px;
             border-color: rgba( 229, 229, 229, 1);
           }
 
           .exportDataContainer {
-            @inherit: .flex, .itemsCenter, .justifyBetween, .mt16, .pl60, .pb38, .bb;
+            @p: .flex, .itemsCenter, .justifyBetween, .mt16, .pl60, .pb38, .bb;
             border-color: rgba( 229, 229, 229, 1);
           }
 
           .exportDataTitle {
-            @inherit: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
+            @p: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
           }
 
           .exportDataDescription {
-            @inherit: .pt6, .mt4, .black50, .f16;
+            @p: .pt6, .mt4, .black50, .f16;
           }
 
           .button {
-            @inherit: .green, .f16, .pv10, .ph16, .mh60, .pointer, .br2, .nowrap;
+            @p: .green, .f16, .pv10, .ph16, .mh60, .pointer, .br2, .nowrap;
             background-color: rgba(28,191,50,.2);
           }
 
           .exportSchemaContainer {
-            @inherit: .flex, .itemsCenter, .justifyBetween, .mt38, .pl60;
+            @p: .flex, .itemsCenter, .justifyBetween, .mt38, .pl60;
           }
 
           .exportSchemaTitle {
-            @inherit: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
+            @p: .pb6, .mb4, .black30, .f14, .fw6, .ttu;
           }
 
           .exportSchemaDescription {
-            @inherit: .pt6, .mt4, .black50, .f16;
+            @p: .pt6, .mt4, .black50, .f16;
           }
 
         `}</style>
@@ -110,7 +115,16 @@ class Export extends React.Component<Props, {}> {
   }
 
   private exportSchema = (): void => {
-    download(this.props.viewer.project.schema, 'schema', '')
+    const blob = new Blob([this.props.viewer.project.schema], {type: 'text/plain;charset=utf-8'})
+    FileSaver.saveAs(blob, 'schema.txt')
+  }
+
+  private downloadUrl(url: string, fileName: string) {
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        FileSaver.saveAs(blob, fileName)
+      })
   }
 
   private getLokka(projectId: string): any {
@@ -132,13 +146,18 @@ class Export extends React.Component<Props, {}> {
         }
       }
     `).then((response) => {
-      download(response.exportData.url)
+      this.downloadUrl(response.exportData.url, 'data.json')
+    })
+    .catch(error => {
+      this.props.showNotification({message: error.message, level: 'error'})
     })
   }
 
 }
 
-export default Relay.createContainer(Export, {
+const ReduxContainer = connect(null, {showNotification})(Export)
+
+export default Relay.createContainer(ReduxContainer, {
   initialVariables: {
     projectName: null, // injected from router
   },

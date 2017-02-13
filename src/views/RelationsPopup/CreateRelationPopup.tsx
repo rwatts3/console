@@ -18,10 +18,12 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
 import Loading from '../../components/Loading/Loading'
+import {onFailureShowNotification} from '../../utils/relay'
 
 interface State {
 
   loading: boolean
+  creating: boolean
 
   displayState: RelationPopupDisplayState
   leftSelectedModel: Model | null
@@ -63,6 +65,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     this.state = {
       loading: false,
+      creating: Boolean(relation),
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: preselectedModel ? preselectedModel : relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,
@@ -86,13 +89,32 @@ class CreateRelationPopup extends React.Component<Props, State> {
     const {relation} = this.props.viewer
     const models = this.props.viewer.project.models.edges.map(edge => edge.node)
 
-    let forbiddenFieldNames = removeDuplicatesFromStringArray(
-      this.props.viewer.project.fields.edges.map(edge => edge.node.name),
-    )
-    if (relation) {
-      forbiddenFieldNames = forbiddenFieldNames.filter(fieldName =>
-      fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    // compute forbidden field name for left model
+    let forbiddenFieldNamesForLeftModel = []
+    if (this.state.leftSelectedModel) {
+      const modelWithFields = models.find(model => this.state.leftSelectedModel.id === model.id)
+      forbiddenFieldNamesForLeftModel = modelWithFields.fields.edges.map(edge => edge.node.name)
     }
+
+    // compute forbidden field name for right model
+    let forbiddenFieldNamesForRightModel = []
+    if (this.state.rightSelectedModel) {
+      const modelWithFields = models.find(model => this.state.rightSelectedModel.id === model.id)
+      forbiddenFieldNamesForRightModel = modelWithFields.fields.edges.map(edge => edge.node.name)
+    }
+
+    // if (relation) {
+    //   forbiddenFieldNamesForLeftModel = forbiddenFieldNamesForLeftModel.filter(fieldName =>
+    //   fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    // }
+
+    // let forbiddenFieldNamesForRightModel = removeDuplicatesFromStringArray(
+    //   this.props.viewer.project.fields.edges.map(edge => edge.node.name),
+    // )
+    // if (relation) {
+    //   forbiddenFieldNamesForRightModel = forbiddenFieldNamesForRightModel.filter(fieldName =>
+    //   fieldName !== relation.fieldOnLeftModel.name && fieldName !== relation.fieldOnRightModel.name)
+    // }
 
     const {displayState, leftSelectedModel, rightSelectedModel,
       selectedCardinality, relationName, relationDescription,
@@ -116,7 +138,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
       (displayState === 'SET_MUTATIONS' as RelationPopupDisplayState && rightTabHasBreakingChange)
 
     const breakingChangeMessageElements: JSX.Element[] =
-      displayBreakingIndicator && this.breakingChangeMessages().map((message, i) => <div key={i}>{message}</div>)
+      displayBreakingIndicator && this.breakingChangeMessages().map((message, i) =>
+        <div key={i}>{message}</div>)
     const infoMessageElement: JSX.Element[] = [(
       <div>
         <div><b>Breaking Changes:</b></div>
@@ -135,7 +158,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           }
 
           .overlay {
-            @p: .absolute, .flex, .itemsCenter, .justifyCenter, .z999;
+            @p: .absolute, .flex, .itemsCenter, .justifyCenter;
             top: 0px;
             bottom: 0px;
             left: 0px;
@@ -161,6 +184,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                   switchDisplayState={this.switchToDisplayState}
                   close={this.close}
                   breakingChanges={[displayBreakingIndicatorOnLeftTab, displayBreakingIndicatorOnRightTab]}
+                  creating={this.state.creating}
                 />
                 {
                   displayState === 'DEFINE_RELATION' ?
@@ -184,7 +208,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
                       rightInputIsBreakingChange={rightInputIsBreakingChange}
                       leftModelIsBreakingChange={leftModelIsBreakingChange}
                       rightModelIsBreakingChange={rightModelIsBreakingChange}
-                      forbiddenFieldNames={forbiddenFieldNames}
+                      forbiddenFieldNamesForLeftModel={forbiddenFieldNamesForLeftModel}
+                      forbiddenFieldNamesForRightModel={forbiddenFieldNamesForRightModel}
                     />
                     :
                     <SetMutation
@@ -466,13 +491,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
     if (this.state.leftInputIsBreakingChange) {
       messages.push(leftInputIsBreakingChangeMessage)
     }
-    // else {
-    //   const newLeftSideMessagesForBreakingChange =
-    //     this.state.leftSideMessagesForBreakingChange.filter(msg => msg !== leftInputIsBreakingChangeMessage)
-    //   this.setState({
-    //     leftSideMessagesForBreakingChange: newLeftSideMessagesForBreakingChange,
-    //   } as State)
-    // }
 
     // right field name
     const rightInputIsBreakingChangeMessage = 'The field on the right model (' + this.state.rightSelectedModel.name +
@@ -481,13 +499,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
     if (this.state.rightInputIsBreakingChange) {
       messages.push(rightInputIsBreakingChangeMessage)
     }
-    // else {
-    //   const newRightSideMessagesForBreakingChange =
-    //     this.state.rightSideMessagesForBreakingChange.filter(msg => msg !== rightInputIsBreakingChangeMessage)
-    //   this.setState({
-    //     rightSideMessagesForBreakingChange: newRightSideMessagesForBreakingChange,
-    //   } as State)
-    // }
 
     // left model
     const leftModelIsBreakingChangeMessage = 'The left model was changed to \'' + this.state.leftSelectedModel.name +
@@ -495,13 +506,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
     if (this.state.leftModelIsBreakingChange) {
       messages.push(leftModelIsBreakingChangeMessage)
     }
-    // else {
-    //   const newLeftSideMessagesForBreakingChange =
-    //     this.state.leftSideMessagesForBreakingChange.filter(msg => msg !== leftInputIsBreakingChangeMessage)
-    //   this.setState({
-    //     leftSideMessagesForBreakingChange: newLeftSideMessagesForBreakingChange,
-    //   } as State)
-    // }
 
     // right model
     const rightModelIsBreakingChangeMessage = 'The right model was changed to \'' + this.state.rightSelectedModel.name +
@@ -509,13 +513,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
     if (this.state.rightModelIsBreakingChange) {
       messages.push(rightModelIsBreakingChangeMessage)
     }
-    // else {
-    //   const newRightSideMessagesForBreakingChange =
-    //     this.state.rightSideMessagesForBreakingChange.filter(msg => msg !== rightInputIsBreakingChangeMessage)
-    //   this.setState({
-    //     rightSideMessagesForBreakingChange: newRightSideMessagesForBreakingChange,
-    //   } as State)
-    // }
 
     return messages
   }
@@ -572,8 +569,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
-            this.setState({loading: false} as State)
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
         },
       },
     )
@@ -604,7 +601,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },
@@ -625,7 +622,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },
@@ -687,14 +684,14 @@ export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
                 id
                 name
                 namePlural
-              }
-            }
-          }
-          fields(first: 1000) {
-            edges {
-              node {
-                id
-                name
+                fields(first: 1000) {
+                  edges {
+                    node {
+                      id
+                      name
+                    }
+                  }
+                }
               }
             }
           }

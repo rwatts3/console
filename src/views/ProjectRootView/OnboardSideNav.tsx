@@ -4,7 +4,7 @@ import {withRouter} from 'react-router'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {nextStep, previousStep, skip, showCurrentStep} from '../../actions/gettingStarted'
-import {GettingStartedState} from '../../types/gettingStarted'
+import {GettingStartedState, Step} from '../../types/gettingStarted'
 import {Icon} from 'graphcool-styles'
 
 interface Props {
@@ -74,17 +74,19 @@ class OnboardSideNav extends React.Component<Props, {}> {
               text: 'Run example app',
             })}
             {(this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1') ||
-            this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) &&
-            <div className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer' onClick={this.props.previousStep}>
-              Show task again
-            </div>
+              this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) &&
+              <div className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer' onClick={this.props.previousStep}>
+                Show task again
+              </div>
             }
-            <div
-              className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer'
-              onClick={() => this.props.showCurrentStep(this.props.router, this.props.params)}
-            >
-              Continue in current Step
-            </div>
+            {!this.props.gettingStartedState.step.includes('STEP5') && (
+              <div
+                className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer'
+                onClick={() => this.props.showCurrentStep(this.props.router, this.props.params)}
+              >
+                Continue in current Step
+              </div>
+            )}
           </div>
           <div>
             <div className='f-16 black-50 mh-25 mb-25 lh-1-4'>
@@ -155,11 +157,16 @@ class OnboardSideNav extends React.Component<Props, {}> {
   }
 
   private skipGettingStarted = () => {
-    if (window.confirm('Do you really want skip the getting started tour?')) {
+    const skip = () => {
       this.props.skip()
         .then(() => {
           this.props.router.replace(`/${this.props.params.projectName}/models`)
         })
+    }
+    if (this.props.gettingStartedState.step === 'STEP5_DONE' as Step) {
+      skip()
+    } else if (window.confirm('Do you really want skip the getting started tour?')) {
+      skip()
     }
   }
 }

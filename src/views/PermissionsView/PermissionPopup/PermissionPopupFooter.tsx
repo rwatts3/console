@@ -1,70 +1,157 @@
-import * as React from 'react' // tslint:disable-line
-import {$p, variables} from 'graphcool-styles'
-import * as cx from 'classnames'
-import styled from 'styled-components'
-
-const Container = styled.div`
-  height: 103px;
-`
-
-const Button = styled.button`
-  transition: color ${variables.duration} linear;
-
-  &:hover {
-    opacity: 0.7;
-  }
-`
+import * as React from 'react'
+import {Icon, $v} from 'graphcool-styles'
+import {Field} from '../../../types/types'
+import Tether from '../../../components/Tether/Tether'
 
 interface Props {
-  isEditing: boolean
-  isValid: boolean
-  onDelete: (e: any) => void
+  onSelectIndex: (index: number) => void
+  activeTabIndex: number
+  tabs: string[]
+  valid: boolean
+  create: boolean
+  changed: boolean
+  onDelete: () => void
   onCancel: (e: any) => void
-  onUpdate: (e: any) => void
-  onCreate: (e: any) => void
+  onSubmit: any
 }
 
-const PermissionPopupFooter = ({isEditing, onDelete, onCancel, isValid, onUpdate, onCreate}: Props) => (
-  <Container className={cx($p.flex, $p.justifyBetween, $p.white, $p.itemsCenter, $p.bt, $p.ph25)}>
-    {isEditing ? (
-        <div onClick={onDelete} className={cx($p.red, $p.pointer)}>Delete</div>
-      ) : (
-        <div></div>
-      )}
-    <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
-      <div onClick={onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
-      <Button
-        className={cx(
-          $p.ml25,
-          $p.pa16,
-          $p.f16,
-          $p.white,
-          $p.br2,
-          {
-            [cx($p.bgBlack10, $p.noEvents)]: !isValid,
-            [cx($p.bgGreen, $p.pointer)]: isValid,
-          },
-        )}
-        onClick={(e: any) => {
-          if (!isValid) {
-            return
-          }
+export default class PermissionPopupFooter extends React.Component<Props, null> {
+  render() {
+    const {
+      activeTabIndex,
+      tabs,
+      onSelectIndex,
+      valid,
+      create,
+      onSubmit,
+      changed,
+      onDelete,
+      onCancel,
+    } = this.props
 
-          if (isEditing) {
-            onUpdate(e)
-          } else {
-            onCreate(e)
+    return (
+      <div className='permission-popup-footer'>
+        <style jsx>{`
+          .permission-popup-footer {
+            @p: .bbox, .bgBlack02, .bt, .bBlack10, .pr16, .flex, .justifyBetween, .itemsCenter, .relative;
+            height: 80px;
+            padding-left: 30px;
           }
-        }}
-      >
-        {isEditing ? (
-            'Update'
+          .cancel, .delete {
+            @p: .f16, .black50, .pointer;
+          }
+          .cancel {
+            @p: .black50;
+          }
+          .delete {
+            @p: .red;
+          }
+          .next-name, .prev-name {
+            @p: .ttu, .fw6, .f14, .blue, .blue;
+            letter-spacing: 0.53px;
+          }
+          .prev-name {
+            @p: .ml10;
+          }
+          .next-name {
+            @p: .mr10;
+          }
+          .prev {
+            @p: .o60;
+          }
+          .divider {
+            @p: .mh16;
+            border: 1px solid rgba(42,126,211,0.3);
+            height: 30px;
+          }
+          .prev, .next, .buttons {
+            @p: .flex, .itemsCenter;
+          }
+          .next, .prev {
+            @p: .pointer;
+          }
+          .next {
+            @p: .ml25;
+          }
+          .button {
+            @p: .bgBlack07, .black30, .f16, .ph16, .br2, .ml25;
+            cursor: no-drop;
+            padding-top: 9px;
+            padding-bottom: 10px;
+          }
+          .button.active {
+            @p: .bgGreen, .white, .pointer;
+          }
+          .next-name.needs-migration, .prev-name.needs-migration {
+            @p: .lightOrange;
+          }
+        `}</style>
+        {create ? (
+            <div className='cancel' onClick={onCancel}>
+              Cancel
+            </div>
           ) : (
-            'Create'
+            <div>
+              <div className='delete' onClick={onDelete}>
+                Delete
+              </div>
+            </div>
           )}
-      </Button>
-    </div>
-  </Container>
-)
+        <div className='buttons'>
+          <div
+            className='prev'
+            onClick={() => onSelectIndex(activeTabIndex - 1)}
+          >
+            {activeTabIndex > 0 && (
+              <Icon
+                src={require('../../../assets/icons/blue_arrow_left.svg')}
+                stroke
+                strokeWidth={2}
+                width={13}
+                height={13}
+              />
+            )}
+            {activeTabIndex > 0 && (
+              <div
+                className='prev-name'
+              >
+                {tabs[activeTabIndex - 1]}
+              </div>
+            )}
+          </div>
+          <div
+            className='next'
+            onClick={() => onSelectIndex(activeTabIndex + 1)}
+          >
+            {activeTabIndex < (tabs.length - 1) && (
+              <div className='next-name'>
+                {tabs[activeTabIndex + 1]}
+              </div>
+            )}
+            {activeTabIndex < (tabs.length - 1) && (
+              <Icon
+                src={require('../../../assets/icons/blue_arrow_left.svg')}
+                stroke
+                strokeWidth={2}
+                width={13}
+                height={13}
+                rotate={180}
+              />
+            )}
+          </div>
+          {((!create && changed) || (create)) && (
+            <div className={'button' + (valid ? ' active' : '')} onClick={onSubmit}>
+              {create ? 'Create' : 'Update'} Permission
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+}
 
-export default PermissionPopupFooter
+// divider as in design for less space, maybe needed later
+// {activeTabIndex > 0 && activeTabIndex < 0 && (
+//   <div className="divider">
+//   </div>
+// )}

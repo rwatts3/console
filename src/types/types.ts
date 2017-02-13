@@ -37,6 +37,7 @@ export interface CrmSystemBridge {
   id: string
   information: CrmCustomerInformation
   onboardingStatus: CrmOnboardingStatus
+  customer: Customer
 }
 
 export interface CrmCustomerInformation {
@@ -48,7 +49,7 @@ export interface CrmCustomerInformation {
 export type Environment = 'Node' | 'Browser'
 export type GraphQLClient = 'fetch' | 'lokka' | 'relay' | 'apollo'
 
-export type Example = 'ReactRelay' | 'ReactApollo' | 'AngularApollo'
+export type Example = 'ReactRelay' | 'ReactNativeApollo' | 'ReactApollo' | 'AngularApollo' | 'VueApollo'
 
 export interface CrmOnboardingStatus {
   id: string
@@ -60,6 +61,7 @@ export interface CrmOnboardingStatus {
 export interface Project {
   id: string
   name: string
+  alias: string
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>
@@ -69,6 +71,11 @@ export interface Project {
   actionSchema: string
   schema: string
   seats: RelayConnection<Seat>
+  projectBillingInformation: ProjectBillingInformation
+}
+
+export interface ProjectBillingInformation {
+  plan: string
 }
 
 export interface Integration {
@@ -158,6 +165,13 @@ export interface Model {
   isSystem: boolean
   permissions: ModelPermission[]
   permissionSchema: string
+  permissionQueryArguments: PermissionQueryArgument[]
+}
+
+export interface PermissionQueryArgument {
+  name: string
+  typeName: string
+  group: string
 }
 
 export interface ModelPermission {
@@ -296,3 +310,11 @@ export interface PricingPlanInfo {
 }
 
 export type CreditCardInputDisplayState = 'CREDIT_CARD_DATA' | 'ADDRESS_DATA'
+
+export interface PermissionVariable {
+  name: string
+  typeIdentifier: FieldType
+  category?: string
+  isRequired: boolean
+  isList: boolean
+}

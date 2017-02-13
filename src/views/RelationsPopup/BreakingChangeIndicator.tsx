@@ -20,17 +20,15 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
     const breakingPlain = require('../../assets/icons/breaking_plain.svg')
 
     const {indicatorStyle, offsets, messages, plain, width, height} = this.props
-
     return (
       <div
-        className={`relative z999 ${this.props.className}`}
+        className={`relative ${this.props.className || ''}`}
       >
         <style jsx={true}>{`
 
             .breakingChangeIndicatorRight {
               @inherit: .absolute;
               left: 99%;
-
             }
 
             .breakingChangeIndicatorTop {
@@ -51,7 +49,7 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
                 overlay={messages[i]}
               >
                 <Icon
-                  className='pointer z999'
+                  className='pointer'
                   src={plain[i] ? breakingPlain : breaking}
                   width={width}
                   height={height}
@@ -61,7 +59,6 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
               :
               (
                 <Icon
-                  className='z999'
                   src={plain[i] ? breakingPlain : breaking}
                   width={width}
                   height={height}
