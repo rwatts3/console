@@ -49,7 +49,7 @@ export interface CrmCustomerInformation {
 export type Environment = 'Node' | 'Browser'
 export type GraphQLClient = 'fetch' | 'lokka' | 'relay' | 'apollo'
 
-export type Example = 'ReactRelay' | 'ReactNativeApollo' | 'ReactApollo' | 'AngularApollo'
+export type Example = 'ReactRelay' | 'ReactNativeApollo' | 'ReactApollo' | 'AngularApollo' | 'VueApollo'
 
 export interface CrmOnboardingStatus {
   id: string

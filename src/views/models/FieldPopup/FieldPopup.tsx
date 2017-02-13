@@ -125,7 +125,6 @@ class FieldPopup extends React.Component<Props, State> {
     document.removeEventListener('keydown', this.onKeyDown)
     tracker.track(ConsoleEvents.Schema.Field.Popup.canceled({
       type: this.state.create ? 'Create' : 'Update',
-      source: 'databrowser',
     }))
   }
 
