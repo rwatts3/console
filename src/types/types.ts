@@ -61,6 +61,7 @@ export interface CrmOnboardingStatus {
 export interface Project {
   id: string
   name: string
+  alias: string
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>

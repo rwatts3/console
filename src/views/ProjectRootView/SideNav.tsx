@@ -677,7 +677,7 @@ export class SideNav extends React.PureComponent<Props, State> {
   private showEndpointPopup = () => {
     const id = cuid()
     this.props.showPopup({
-      element: <EndpointPopup id={id} projectId={this.props.project.id} />,
+      element: <EndpointPopup id={id} projectId={this.props.project.id} alias={this.props.project.alias} />,
       id,
     })
   }
@@ -742,6 +742,7 @@ export default Relay.createContainer(MappedSideNav, {
       fragment on Project {
         id
         name
+        alias
         webhookUrl
         models(first: 100) {
           edges {
