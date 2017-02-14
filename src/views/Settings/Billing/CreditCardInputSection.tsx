@@ -389,6 +389,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
+          console.log('did set credit card')
           Relay.Store.commitUpdate(
             new SetPlanMutation({
               projectId: this.props.projectId,
@@ -396,6 +397,8 @@ class CreditCardInputSection extends React.Component<Props, State> {
             }),
             {
               onSuccess: () => {
+                console.log('did set credit card')
+
                 this.props.close()
               },
               onFailure: (transaction) => {

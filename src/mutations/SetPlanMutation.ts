@@ -19,7 +19,7 @@ export default class SetPlanMutation extends Relay.Mutation<Props, {}> {
           user {
             crm {
               customer {
-                projects {
+                projects(first: 1000) {
                   edges {
                     node {
                       projectBillingInformation {
@@ -37,12 +37,13 @@ export default class SetPlanMutation extends Relay.Mutation<Props, {}> {
   }
 
   getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        project: this.props.projectId,
-      },
-    }]
+    return []
+    // return [{
+    //   type: 'FIELDS_CHANGE',
+    //   fieldIDs: {
+    //     project: this.props.projectId,
+    //   },
+    // }]
   }
 
   getVariables () {
