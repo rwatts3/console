@@ -6,7 +6,6 @@ import {withRouter} from 'react-router'
 import {Icon} from 'graphcool-styles'
 
 interface Props {
-  currentPlan: PricingPlan
   router: ReactRouter.InjectedRouter
   params: any
   location: any
@@ -17,6 +16,9 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   plans: [PricingPlan] = ['2017-02-free', '2017-02-project', '2017-02-startup', '2017-02-growth', 'enterprise']
 
   render() {
+
+    const currentPlanIndex = this.plans.findIndex(plan => plan === this.props.params.plan)
+    console.log('ChangePricingPlan - render', this.props.params.plan)
 
     return (
       <PopupWrapper
@@ -51,7 +53,7 @@ class ChangePricingPlan extends React.Component<Props, {}> {
                     key={i}
                     className='mh10'
                     plan={plan}
-                    isCurrentPlan={i === 1}
+                    isCurrentPlan={i === currentPlanIndex}
                     onSelectPlan={this.selectPlan}
                   />
                 )
@@ -70,7 +72,7 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   }
 
   private selectPlan = (plan: PricingPlan) => {
-    this.props.router.push(`/${this.props.params.projectName}/settings/billing/confirm-plan`)
+    this.props.router.push(`/${this.props.params.projectName}/settings/billing/confirm-plan/${plan}`)
   }
 
 }

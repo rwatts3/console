@@ -7,32 +7,19 @@ import {billingInfo} from './billing_info'
 interface Props {
   plan: PricingPlan
   currentNumberOfRequests: number
-  additionalCosts: string
+  additionalCosts: number
 }
 
 export default class RequestUsageIndicator extends React.Component<Props, {}> {
 
   render() {
 
-    console.log('PROPS:', this.props)
-
     const maxRequests = billingInfo[this.props.plan].maxRequests
-
     const maxString = numberWithCommas(maxRequests)
     const currentNumberOfRequestsString = numberWithCommas(this.props.currentNumberOfRequests)
-
     const icon = require('../../../assets/icons/operations_blue.svg')
-
-    console.log('this.props.currentNumberOfRequests', this.props.currentNumberOfRequests)
-    console.log('billingInfo[this.props.plan].maxRequests', billingInfo[this.props.plan].maxRequests)
-
-    console.log('this.calculateEstimatedRequests()', this.calculateEstimatedRequests())
-
     const usedPercent = (this.props.currentNumberOfRequests / billingInfo[this.props.plan].maxRequests) * 100
     const estimatedPercent = (this.calculateEstimatedRequests() / billingInfo[this.props.plan].maxRequests) * 100
-    console.log('used percent', usedPercent)
-    console.log('estimated percent', estimatedPercent)
-
     return (
       <div className='container'>
         <style jsx={true}>{`
@@ -62,7 +49,8 @@ export default class RequestUsageIndicator extends React.Component<Props, {}> {
             <div className='ml6 blue f14 fw6'>{currentNumberOfRequestsString}</div>
             <div className='ml6 black50 f14'> / {maxString}</div>
           </div>
-          <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts}</div>
+          {this.props.additionalCosts > 0 &&
+            <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>}
         </div>
         <div
           className='f14 fw6'
@@ -70,7 +58,7 @@ export default class RequestUsageIndicator extends React.Component<Props, {}> {
             color: $v.blue50,
             paddingLeft: '27px',
           }}
-        >~{numberWithCommasRounded(this.calculateEstimatedRequests(), 2)} estimated</div>
+        >~{numberWithCommasRounded(this.calculateEstimatedRequests(), 0)} estimated</div>
       </div>
     )
   }

@@ -4,7 +4,7 @@ import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
 import * as Relay from 'react-relay'
-import {Viewer, Invoice} from '../../../types/types'
+import {Viewer, Invoice, CreditCardInfo} from '../../../types/types'
 import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
@@ -37,48 +37,48 @@ interface Props {
   params: any
   projectName: string
 
-  creditCardNumber: string
-  cardHolderName: string
-  expirationDate: string
   cpc: string
   children: JSX.Element
 
-  addressLine1: string
-  addressLine2: string
-  zipCode: string
-  state: string
-  city: string
-  country: string
 }
 
 class Billing extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
+
+    const project = props.viewer.crm.crm.customer.projects.edges.find(edge => {
+      return edge.node.name === this.props.projectName
+    }).node
+
+    const creditCard = project.projectBillingInformation.creditCard
+    const expirationDate = creditCard ?  creditCard.expirationMonth + '/' + creditCard.expirationYear : ''
+
     this.state = {
-      // newCreditCardNumber: props.creditCardNumber,
-      // newCardHolderName: props.cardHolderName,
-      // newExpirationDate: props.expirationDate,
-      // newCPC: props.cpc,
-      newCreditCardNumber: 'XXXX XXXX XXXX 8345',
-      newCardHolderName: 'Nikolas Burk',
-      newExpirationDate: '07/21',
-      newCPC: '123',
+
+      newCreditCardNumber: creditCard ? 'XXXX XXXX XXXX ' + creditCard.last4 : '',
+      newCardHolderName: creditCard ? creditCard.name : '',
+      newExpirationDate: expirationDate,
+      newCPC: '',
+      newAddressLine1: creditCard ? creditCard.addressLine1 : '',
+      newAddressLine2: creditCard ? creditCard.addressLine2 : '',
+      newZipCode: creditCard ? creditCard.addressZip : '',
+      newState: creditCard ? creditCard.addressState : '',
+      newCity: creditCard ? creditCard.addressCity : '',
+      newCountry: creditCard ? creditCard.addressCountry : '',
+
+      // newCreditCardNumber: 'XXXX XXXX XXXX 8345',
+      // newCardHolderName: 'Nikolas Burk',
+      // newExpirationDate: '07/21',
+      // newCPC: '123',
+      // newAddressLine1: 'Hufnertwiete 2',
+      // newAddressLine2: '',
+      // newZipCode: '22305',
+      // newState: 'HH',
+      // newCity: 'Hamburg',
+      // newCountry: 'Germany',
 
       isEditingCreditCardInfo: false,
-
-      // newAddressLine1: props.addressLine1,
-      // newAddressLine2: props.addressLine2,
-      // newZipCode: props.zipCode,
-      // newState: props.newState,
-      // newCity: props.newCity,
-      // newCountry: props.newCountry,
-      newAddressLine1: 'Hufnertwiete 2',
-      newAddressLine2: '',
-      newZipCode: '22305',
-      newState: 'HH',
-      newCity: 'Hamburg',
-      newCountry: 'Germany',
 
       creditCardDetailsValid: true,
       addressDataValid: true,
@@ -92,20 +92,13 @@ class Billing extends React.Component<Props, State> {
   render() {
 
     const seats = this.props.viewer.project.seats.edges.map(edge => edge.node.name)
-
-    console.log('BILLING', this.props)
-
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName
     }).node
-
     const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
-
-    const currentInvoice = invoices[invoices.length-1]
-    console.log('currentInvoice', currentInvoice)
+    const currentInvoice = invoices[invoices.length - 1]
 
     return (
-
       <div className={`container ${this.state.isEditingCreditCardInfo && 'bottomPadding'}`}>
         <style jsx={true}>{`
 
@@ -136,14 +129,14 @@ class Billing extends React.Component<Props, State> {
         <Usage
           usedSeats={seats}
           plan={project.projectBillingInformation.plan}
-          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a+b)}
+          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a + b)}
           lastInvoiceDate={mmDDyyyyFromTimestamp(currentInvoice.timestamp)}
           usedStoragePerDay={currentInvoice.usageStorage}
           overageRequests={currentInvoice.overageRequests}
           overageStorage={currentInvoice.overageStorage}
         />
         {!this.state.isLoading ?
-          (
+          project.projectBillingInformation.creditCard && (
             <CreditCardInformation
               creditCardNumber={this.state.newCreditCardNumber}
               cardHolderName={this.state.newCardHolderName}
@@ -152,15 +145,7 @@ class Billing extends React.Component<Props, State> {
               onCreditCardNumberChange={this.updateCreditCardNumber}
               onCardHolderNameChange={(newValue) => this.setState({newCardHolderName: newValue} as State)}
               onExpirationDateChange={this.updateExpirationDate}
-              onCPCChange={(newValue) => {
-            let newCPC
-            if (newValue.length > 3) {
-              newCPC = newValue.substr(0, 3)
-            } else {
-              newCPC = newValue
-            }
-            this.setState({newCPC: newCPC} as State)
-          }}
+              onCPCChange={this.updateCPC}
               setEditingState={this.setEditingState}
               isEditing={this.state.isEditingCreditCardInfo}
               addressLine1={this.state.newAddressLine1}
@@ -173,6 +158,7 @@ class Billing extends React.Component<Props, State> {
               addressDataValid={this.state.addressDataValid}
               onAddressDataChange={this.onAddressDataChange}
               onSaveChanges={this.initiateUpdateCreditCard}
+              invoices={invoices}
             />
           )
           :
@@ -186,6 +172,16 @@ class Billing extends React.Component<Props, State> {
         {this.props.children}
       </div>
     )
+  }
+
+  private updateCPC = (newValue) => {
+    let newCPC
+    if (newValue.length > 3) {
+      newCPC = newValue.substr(0, 3)
+    } else {
+      newCPC = newValue
+    }
+    this.setState({newCPC: newCPC} as State)
   }
 
   private updateExpirationDate = (newValue) => {
@@ -411,6 +407,18 @@ export default Relay.createContainer(Billing, {
                             total
                           }
                         }
+                      }
+                      creditCard {
+                        addressCity
+                        addressCountry
+                        addressLine1
+                        addressLine2
+                        addressState
+                        addressZip
+                        expMonth
+                        expYear
+                        last4
+                        name
                       }
                     }
                   }

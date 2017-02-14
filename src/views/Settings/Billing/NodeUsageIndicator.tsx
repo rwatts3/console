@@ -2,16 +2,12 @@ import * as React from 'react'
 import {Icon} from 'graphcool-styles'
 import {PricingPlan} from '../../../types/types'
 import {todayString} from '../../../utils/utils'
+import {billingInfo} from './billing_info'
 
 interface Props {
-  maxNodes: number
-  usedStoragePerDay?: number[]
-
-  maxMB: number
-  currentMB: number
-
   plan: PricingPlan
-  additionalCosts: string
+  usedStoragePerDay?: number[]
+  additionalCosts: number
 }
 
 export default class NodeUsageIndicator extends React.Component<Props, {}> {
@@ -23,7 +19,9 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
 
     const today = todayString()
 
-    const maxString = '/ ' + this.props.maxMB + ' MB Database (Date: ' + today + ')'
+    const maxMB = billingInfo[this.props.plan].maxStorage
+
+    const maxString = '/ ' + maxMB + ' MB Database (Date: ' + today + ')'
     return (
       <div className='flex flexColumn'>
         <div className='columns'>
@@ -35,8 +33,9 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
           }
 
           .column {
-            @p: .bgBlue, .br2, .mr4;
+            @p: .bgBlue, .br2, .mr4, .bb;
             width: 20px;
+            border-color: rgba(42,126,210,1);
           }
 
           .circularTodayIndicator {
@@ -78,19 +77,20 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
               width={20}
               height={20}
             />
-            <div className='ml6 blue f14 fw6'>{this.props.currentMB} MB</div>
+            <div className='ml6 blue f14 fw6'>{this.props.usedStoragePerDay.reduce((a, b) => a + b)} MB</div>
             <div className='ml6 black50 f14'>{maxString}</div>
           </div>
-          <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts}</div>
+          {this.props.additionalCosts > 0 &&
+            <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>}
         </div>
       </div>
     )
   }
 
   private calculateColumnHeights = (): number[] => {
-    const {maxNodes} = this.props
+    const maxMB = billingInfo[this.props.plan].maxStorage
     const heights = this.props.usedStoragePerDay.map(usage => {
-      const currentValue = usage / maxNodes
+      const currentValue = usage / maxMB
       return currentValue * this.maxNodeLineY
     })
     return heights

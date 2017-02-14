@@ -12,9 +12,9 @@ interface State {
 }
 
 interface Props {
-  currentPlan: PricingPlan
   router: ReactRouter.InjectedRouter
   viewer: Viewer
+  params: any
 }
 
 class ConfirmPricingPlan extends React.Component<Props, State> {
@@ -73,7 +73,7 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
                 <div className='f38 fw3'>Confirm plan</div>
                 <div className='f16 black50 mt10 mb38'>Please enter your credit card information to proceed.</div>
                 <CreditCardInputSection
-                  plan={this.props.currentPlan}
+                  plan={this.props.params.plan}
                   projectId={this.props.viewer.project.id}
                   goBack={this.goBack}
                   setLoading={this.setLoading}

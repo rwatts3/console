@@ -330,7 +330,7 @@ export interface Invoice {
   usageStorage: number[]
 }
 
-export interface CreditCard {
+export interface CreditCardInfo {
   last4: string
   expirationMonth: number
   expirationYear: number

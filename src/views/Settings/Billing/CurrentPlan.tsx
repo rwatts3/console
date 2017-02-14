@@ -57,10 +57,7 @@ export default class CurrentPlan extends React.Component<Props, State> {
         <div className={`container ${planInfoBoxColors}`}>
           <div className={`title`}>{billingInfo[plan].name}</div>
           <Link
-            to={`/${this.props.projectName}/settings/billing/change-plan`}
-            onClick={() => {
-                console.log('navigate to /' + this.props.projectName + '/settings/billing/change-plan')
-              }}
+            to={`/${this.props.projectName}/settings/billing/change-plan/${this.props.plan}`}
           >
             <div className={`actionButton ${actionButtonColor}`}>Upgrade Plan</div>
           </Link>

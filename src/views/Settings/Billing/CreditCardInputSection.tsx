@@ -9,6 +9,10 @@ import {Icon} from 'graphcool-styles'
 import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 import * as Relay from 'react-relay'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface State {
   creditCardNumber: string
@@ -35,9 +39,10 @@ interface Props {
   goBack?: Function
   setLoading?: Function
   close?: Function
+  showNotification: ShowNotificationCallback
 }
 
-export default class CreditCardInputSection extends React.Component<Props, State> {
+class CreditCardInputSection extends React.Component<Props, State> {
 
   state = {
     creditCardNumber: '',
@@ -82,7 +87,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
 
         <PricingColumn
           className='pricingColumnMargin ml38 buttonShadow'
-          plan='2017-02-growth'
+          plan={this.props.plan}
           isCurrentPlan={false}
           isSelected={true}
           onSelectPlan={this.props.goBack}
@@ -371,7 +376,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
     }
 
     const token = response.id
-    console.log('did receive token: ', token)
+    console.log('did receive stripe token: ', token)
 
     Relay.Store.commitUpdate(
       new SetCreditCardMutation({
@@ -435,3 +440,9 @@ export default class CreditCardInputSection extends React.Component<Props, State
   }
 
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+export default connect(null, mapDispatchToProps)(CreditCardInputSection)

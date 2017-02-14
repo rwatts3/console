@@ -45,17 +45,15 @@ export default class Usage extends React.Component<Props, {}> {
         <div className='title'>{'Usage ' + period}</div>
         <NodeUsageIndicator
           plan={this.props.plan}
-          maxNodes={250000}
           usedStoragePerDay={this.props.usedStoragePerDay}
-          currentMB={250}
-          maxMB={120}
-          additionalCosts={this.calculateAdditionalCostsForStorage().toFixed(2)}
+          additionalCosts={this.calculateAdditionalCostsForStorage()}
         />
         <RequestUsageIndicator
           plan={this.props.plan}
           currentNumberOfRequests={this.props.currentNumberOfRequests}
-          additionalCosts={this.calculateAdditionalCostsForRequests().toFixed(2)}
+          additionalCosts={this.calculateAdditionalCostsForRequests()}
         />
+        {this.calculateTotalOverageCosts() > 0 &&
         <div
           className='w100 ttu f14 flex justifyEnd'
         >
@@ -69,9 +67,9 @@ export default class Usage extends React.Component<Props, {}> {
           >
             Overage total <span className='blue fw6 ml6'>  + ${(this.calculateTotalOverageCosts()).toFixed(2)}</span>
           </div>
-        </div>
+        </div>}
         <UsedSeats
-          className='mt25 mb38'
+          className={`mb38 ${this.calculateAdditionalCostsForRequests() > 0 ? 'mt25' : 'mt96'}`}
           seats={this.props.usedSeats}
           maxSeats={maxSeats}
         />

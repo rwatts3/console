@@ -2,6 +2,8 @@ import * as React from 'react'
 import CreditCardFront from './CreditCardFront'
 import CreditCardBack from './CreditCardBack'
 import EditCreditCard from './EditCreditCard'
+import {Invoice} from '../../../types/types'
+import {mmDDyyyyFromTimestamp} from '../../../utils/utils'
 
 interface State {
 }
@@ -30,13 +32,11 @@ interface Props {
 
   onAddressDataChange: Function
   onSaveChanges: Function
+
+  invoices: Invoice[]
 }
 
 export default class CreditCardInformation extends React.Component<Props, State> {
-
-  payments = [
-    {date: '2017/01/28', price: '$ 49.00'},
-  ]
 
   render() {
     return (
@@ -102,11 +102,11 @@ export default class CreditCardInformation extends React.Component<Props, State>
           }
 
         `}</style>
-        {this.payments.map((payment, i) => {
+        {this.props.invoices.map((invoice, i) => {
           return (
             <div key={i} className='row'>
-              <div className='date'>{payment.date}</div>
-              <div className='price'>{payment.price}</div>
+              <div className='date'>{mmDDyyyyFromTimestamp(invoice.timestamp)}</div>
+              <div className='price'>$ {invoice.total.toFixed(2)}</div>
             </div>
           )
         })}
