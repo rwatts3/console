@@ -84,19 +84,20 @@ class RelationRow extends React.Component<Props,{}> {
   private deleteRelation = (e: React.MouseEvent<any>): void => {
     e.stopPropagation()
 
-    if (window.confirm('Do you really want to delete this Relation?')) {
-      Relay.Store.commitUpdate(
-        new DeleteRelationMutation({
-          relationId: this.props.relation.id,
-          projectId: this.props.project.id,
-          leftModelId: this.props.relation.leftModel.id,
-          rightModelId: this.props.relation.rightModel.id,
-        }),
-        {
-          onSuccess: this.props.onRelationDeleted,
-          onFailure: (trans: Transaction) => onFailureShowNotification(trans, this.props.showNotification),
-        })
-    }
+    graphcoolConfirm('You\'re deleting this Relation.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new DeleteRelationMutation({
+            relationId: this.props.relation.id,
+            projectId: this.props.project.id,
+            leftModelId: this.props.relation.leftModel.id,
+            rightModelId: this.props.relation.rightModel.id,
+          }),
+          {
+            onSuccess: this.props.onRelationDeleted,
+            onFailure: (trans: Transaction) => onFailureShowNotification(trans, this.props.showNotification),
+          })
+      })
   }
 }
 

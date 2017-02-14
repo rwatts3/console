@@ -234,8 +234,13 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   private cancel = () => {
-    if (!this.state.changesMade || window.confirm('You have unsaved changes. Do you really want to cancel?')) {
+    if (!this.state.changesMade) {
       this.props.close()
+    } else {
+      graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
+        .then(() => {
+          this.props.close()
+        })
     }
     if (this.props.action) {
       tracker.track(ConsoleEvents.MutationCallbacks.canceled({type: 'Update'}))

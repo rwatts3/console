@@ -134,31 +134,33 @@ class ProjectSettingsView extends React.Component<Props, State> {
   }
 
   private onClickResetProjectData = (): void => {
-    if (window.confirm('Do you really want to reset the project data?')) {
-      Relay.Store.commitUpdate(
-        new ResetProjectDataMutation({
-          projectId: this.props.viewer.project.id,
-        }),
-        {
-          onSuccess: () => {
-            this.props.router.replace(`/${this.props.params.projectName}/playground`)
-          },
-        })
-    }
+    graphcoolConfirm('This will reset the project data.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new ResetProjectDataMutation({
+            projectId: this.props.viewer.project.id,
+          }),
+          {
+            onSuccess: () => {
+              this.props.router.replace(`/${this.props.params.projectName}/playground`)
+            },
+          })
+      })
   }
 
   private onClickResetCompleteProject = (): void => {
-    if (window.confirm('Do you really want to reset the project data and models? ')) {
-      Relay.Store.commitUpdate(
-        new ResetProjectSchemaMutation({
-          projectId: this.props.viewer.project.id,
-        }),
-        {
-          onSuccess: () => {
-            this.props.router.replace(`/${this.props.params.projectName}/playground`)
-          },
-        })
-    }
+    graphcoolConfirm('This will reset the projects data and schema.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new ResetProjectSchemaMutation({
+            projectId: this.props.viewer.project.id,
+          }),
+          {
+            onSuccess: () => {
+              this.props.router.replace(`/${this.props.params.projectName}/playground`)
+            },
+          })
+      })
   }
 
   private onClickDeleteProject = (): void => {
@@ -167,21 +169,23 @@ class ProjectSettingsView extends React.Component<Props, State> {
         message: `Sorry. You can't delete your last project. This one is a keeper 😉.`,
         level: 'error',
       })
-    } else if (window.confirm('Do you really want to delete this project?')) {
-      Relay.Store.commitUpdate(
-        new DeleteProjectMutation({
-          projectId: this.props.viewer.project.id,
-          customerId: this.props.viewer.user.id,
-        }),
-        {
-          onSuccess: () => {
-            // TODO replace hard reload
-            // was added because deleting the last project caused
-            // a relay issue
-            window.location.pathname = '/'
-          },
-        })
     }
+    graphcoolConfirm('This action will delete this project.')
+      .then(() => {
+        Relay.Store.commitUpdate(
+          new DeleteProjectMutation({
+            projectId: this.props.viewer.project.id,
+            customerId: this.props.viewer.user.id,
+          }),
+          {
+            onSuccess: () => {
+              // TODO replace hard reload
+              // was added because deleting the last project caused
+              // a relay issue
+              window.location.pathname = '/'
+            },
+          })
+      })
   }
 
   private saveSettings = (): void => {
