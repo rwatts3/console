@@ -8,8 +8,8 @@ interface State {
 }
 
 interface Props {
-  exceedsAllowedNodes?: boolean
-  exceedsAllowedOperations?: boolean
+  exceedsAllowedStorage?: boolean
+  exceedsAllowedRequests?: boolean
   plan: string
   viewer?: Viewer
   projectName: string
@@ -21,14 +21,36 @@ export default class CurrentPlan extends React.Component<Props, State> {
 
   render() {
 
-    const {exceedsAllowedNodes, exceedsAllowedOperations, plan} = this.props
+    const {exceedsAllowedStorage, exceedsAllowedRequests, plan} = this.props
 
-    const planInfoBoxColors = exceedsAllowedNodes || exceedsAllowedOperations ? 'redTitle' : 'greenTitle'
-    const actionButtonColor = exceedsAllowedNodes || exceedsAllowedOperations ? 'blue' : 'black50'
+    const planInfoBoxColors = exceedsAllowedStorage || exceedsAllowedRequests ? 'redTitle' : 'greenTitle'
+    const actionButtonColor = exceedsAllowedStorage || exceedsAllowedRequests ? 'blue' : 'black50'
+
+    console.log(exceedsAllowedStorage, exceedsAllowedRequests)
+
+    let exceedingIndicationString = ''
+    if (exceedsAllowedStorage && exceedsAllowedRequests) {
+      exceedingIndicationString = 'storage space and requests'
+    } else if (exceedsAllowedStorage && !exceedsAllowedRequests) {
+      exceedingIndicationString = 'storage space'
+    } else if (exceedsAllowedRequests && !exceedsAllowedStorage) {
+      exceedingIndicationString = 'requests'
+    }
 
     return (
-      <div className='container'>
-        <style jsx={true}>{`
+      <div className='flex flexColumn itemsCenter'>
+        {(exceedsAllowedStorage || exceedsAllowedRequests) &&
+        <div className='pt60 ph96'>
+          <div className='fw3 f25 red tc mb25'>You ran out of {exceedingIndicationString}.</div>
+          <div className='f16 red o60 tc'>
+            In order to continue using graph.cool,
+            you need to either reduce the traffic of your app,
+            or upgrade your plan.
+          </div>
+        </div>
+        }
+        <div className='container'>
+          <style jsx={true}>{`
 
           .container {
             @p: .flex, .justifyBetween, .itemsCenter, .w100, .pa38, .br2;
@@ -52,17 +74,19 @@ export default class CurrentPlan extends React.Component<Props, State> {
           }
 
         `}</style>
-        {exceedsAllowedNodes || exceedsAllowedOperations &&
-        <div>Plan exceeded</div>}
-        <div className={`container ${planInfoBoxColors}`}>
-          <div className={`title`}>{billingInfo[plan].name}</div>
-          <Link
-            to={`/${this.props.projectName}/settings/billing/change-plan/${this.props.plan}`}
-          >
-            <div className={`actionButton ${actionButtonColor}`}>Upgrade Plan</div>
-          </Link>
+
+          <div className={`container ${planInfoBoxColors}`}>
+            <div className={`title`}>{billingInfo[plan].name}</div>
+            <Link
+              to={`/${this.props.projectName}/settings/billing/change-plan/${this.props.plan}`}
+            >
+              <div className={`actionButton ${actionButtonColor}`}>Upgrade Plan</div>
+            </Link>
+          </div>
         </div>
       </div>
+
     )
   }
+
 }

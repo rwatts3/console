@@ -3,18 +3,18 @@ import * as Relay from 'react-relay'
 
 interface Props {
   projectId: string
-  token: string
+  plan: string
 }
 
-export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
+export default class SetPlanMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{setCreditCard}`
+    return Relay.QL`mutation{setPlan}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on SetCreditCardPayload {
+      fragment on SetPlanPayload {
         viewer {
           user {
             crm {
@@ -23,18 +23,7 @@ export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
                   edges {
                     node {
                       projectBillingInformation {
-                        creditCard {
-                          expMonth
-                          expYear
-                          last4
-                          name
-                          addressLine1
-                          addressLine2
-                          addressCity
-                          addressZip
-                          addressState
-                          addressCountry
-                        }
+                        plan
                       }
                     }
                   }
@@ -51,7 +40,7 @@ export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
     return [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        project: this.props.projectId,
+
       },
     }]
   }
@@ -59,7 +48,7 @@ export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
   getVariables () {
     return {
       projectId: this.props.projectId,
-      token: this.props.token,
+      plan: this.props.plan,
     }
   }
 }

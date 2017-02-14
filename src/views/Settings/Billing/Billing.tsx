@@ -125,6 +125,8 @@ class Billing extends React.Component<Props, State> {
         <CurrentPlan
           plan={project.projectBillingInformation.plan}
           projectName={this.props.params.projectName}
+          exceedsAllowedStorage={currentInvoice.overageStorage > 0}
+          exceedsAllowedRequests={currentInvoice.overageRequests > 0}
         />
         <Usage
           usedSeats={seats}

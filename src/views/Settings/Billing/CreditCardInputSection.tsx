@@ -13,6 +13,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
+import SetPlanMutation from '../../../mutations/SetPlanMutation'
 
 interface State {
   creditCardNumber: string
@@ -385,7 +386,21 @@ class CreditCardInputSection extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          this.props.close()
+          Relay.Store.commitUpdate(
+            new SetPlanMutation({
+              projectId: this.props.projectId,
+              plan: this.props.plan,
+            }),
+            {
+              onSuccess: () => {
+                this.props.close()
+              },
+              onFailure: (transaction) => {
+                this.props.showNotification({message: transaction.getError().message, level: 'error'})
+                this.props.setLoading(false)
+              },
+            },
+          )
         },
         onFailure: (transaction) => {
           this.props.showNotification({message: transaction.getError().message, level: 'error'})
