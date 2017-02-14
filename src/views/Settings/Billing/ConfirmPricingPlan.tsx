@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {PricingPlan, Viewer} from '../../../types/types'
+import {Viewer} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import {withRouter} from 'react-router'
 import {Icon} from 'graphcool-styles'

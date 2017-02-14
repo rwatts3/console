@@ -104,7 +104,7 @@ export default class Usage extends React.Component<Props, {}> {
     const sumInDollars = sum / 100
 
     console.log('calculateAdditionalCostsForStorage', this.props.overageStorage,
-      pricePerAdditionalNode, penaltyFactor, sum, sumInDollars)
+                pricePerAdditionalNode, penaltyFactor, sum, sumInDollars)
 
     return sumInDollars
   }

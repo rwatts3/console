@@ -385,12 +385,10 @@ class CreditCardInputSection extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          // this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
           this.props.close()
         },
         onFailure: (transaction) => {
-          // this.props.showNotification({message: transaction.getError().message, level: 'error'})
-          console.error(transaction.getError().message)
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
           this.props.setLoading(false)
         },
       },
