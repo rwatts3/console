@@ -39,7 +39,7 @@ export function isValid(nodeCount: number, mutatedField: Field, initialField?: F
 
   const migrationUI = getMigrationUI(nodeCount, mutatedField, initialField)
   errors.migrationValueMissing = (!migrationUI.migrationOptional && migrationUI.showMigration)
-    && !mutatedField.migrationValue
+    && (typeof mutatedField.migrationValue === 'undefined')
 
   errors.enumValueMissing = mutatedField.typeIdentifier === 'Enum' && mutatedField.enumValues.length === 0
 
