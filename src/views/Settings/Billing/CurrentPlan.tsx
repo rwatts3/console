@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Link} from 'react-router'
 import {Viewer} from '../../../types/types'
+import {billingInfo} from './billing_info'
 
 interface State {
 
@@ -54,7 +55,7 @@ export default class CurrentPlan extends React.Component<Props, State> {
         {exceedsAllowedNodes || exceedsAllowedOperations &&
         <div>Plan exceeded</div>}
         <div className={`container ${planInfoBoxColors}`}>
-          <div className={`title`}>{plan}</div>
+          <div className={`title`}>{billingInfo[plan].name}</div>
           <Link
             to={`/${this.props.projectName}/settings/billing/change-plan`}
             onClick={() => {

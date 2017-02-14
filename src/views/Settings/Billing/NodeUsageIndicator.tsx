@@ -1,17 +1,17 @@
 import * as React from 'react'
 import {Icon} from 'graphcool-styles'
 import {PricingPlan} from '../../../types/types'
+import {todayString} from '../../../utils/utils'
 
 interface Props {
   maxNodes: number
-  usedNodesPerDay?: number[]
+  usedStoragePerDay?: number[]
 
   maxMB: number
   currentMB: number
 
   plan: PricingPlan
   additionalCosts: string
-
 }
 
 export default class NodeUsageIndicator extends React.Component<Props, {}> {
@@ -21,13 +21,9 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
   render() {
     const columnHeights = this.calculateColumnHeights()
 
-    const today = new Date()
-    const dd = today.getDate()
-    const mm = today.getMonth()+1
-    const yyyy = today.getFullYear()
-    const todayString = mm + '/' + dd + '/' + yyyy
+    const today = todayString()
 
-    const maxString = '/ ' + this.props.maxMB + ' MB Database (Date: ' + todayString + ')'
+    const maxString = '/ ' + this.props.maxMB + ' MB Database (Date: ' + today + ')'
     return (
       <div className='flex flexColumn'>
         <div className='columns'>
@@ -51,7 +47,7 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
         `}</style>
           {columnHeights.map((height, i) => {
 
-            if (i == columnHeights.length - 1) {
+            if (i === columnHeights.length - 1) {
               return (
                 <div key={i} className='flex flexColumn itemsCenter'>
                   <div
@@ -82,7 +78,7 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
               width={20}
               height={20}
             />
-            <div className='ml6 blue f14 fw6'>{this.props.currentMB}</div>
+            <div className='ml6 blue f14 fw6'>{this.props.currentMB} MB</div>
             <div className='ml6 black50 f14'>{maxString}</div>
           </div>
           <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts}</div>
@@ -93,7 +89,7 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
 
   private calculateColumnHeights = (): number[] => {
     const {maxNodes} = this.props
-    const heights = this.props.usedNodesPerDay.map(usage => {
+    const heights = this.props.usedStoragePerDay.map(usage => {
       const currentValue = usage / maxNodes
       return currentValue * this.maxNodeLineY
     })

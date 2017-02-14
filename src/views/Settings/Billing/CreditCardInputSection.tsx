@@ -82,7 +82,7 @@ export default class CreditCardInputSection extends React.Component<Props, State
 
         <PricingColumn
           className='pricingColumnMargin ml38 buttonShadow'
-          plan='Growth'
+          plan='2017-02-growth'
           isCurrentPlan={false}
           isSelected={true}
           onSelectPlan={this.props.goBack}

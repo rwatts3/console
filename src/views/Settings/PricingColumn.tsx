@@ -17,7 +17,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
 
   render() {
 
-    if (this.props.plan === 'Enterprise') {
+    if (this.props.plan === 'enterprise') {
       return (
         <div className={`container ${this.props.className || ''}`}>
             <style jsx={true}>{`
@@ -42,7 +42,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
               className='fw6 f16 ttu mt25'
               style={{color: this.secondaryTextColor()}}
             >
-              Enterprise
+              enterprise
             </div>
             <div className='white pt60 ph25 fw6 f14 tc'>
               Unlimited Nodes, Operations and Seats
@@ -92,7 +92,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
             className='fw6 f16 ttu'
             style={{color: this.secondaryTextColor()}}
           >
-            {this.props.plan}
+            {billingInfo[this.props.plan].name}
           </div>
           {this.priceTag()}
         </div>
@@ -111,7 +111,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
                 className='f16 fw6'
                 style={{color: this.primaryTextColor()}}
               >
-                {this.numberOfNodes()}
+                {this.storage()}
               </div>
               <div
                 className='f12'
@@ -205,18 +205,20 @@ export default class PricingColumn extends React.Component<Props, {}> {
     }
 
     switch (this.props.plan) {
-      case 'Developer': return 'rgba(241,143,1,.1)'
-      case 'Startup': return 'rgba(28,191,50,.07)'
-      case 'Growth': return 'rgba(28,191,50,.07)'
-      case 'Pro': return 'rgba(28,191,50,.07)'
-      case 'Enterprise': return 'rgba(39,174,96,1)'
+      case '2017-02-free': return 'rgba(241,143,1,.1)'
+      case '2017-02-project': return 'rgba(28,191,50,.07)'
+      case '2017-02-startup': return 'rgba(28,191,50,.07)'
+      case '2017-02-growth': return 'rgba(28,191,50,.07)'
+      case 'enterprise': return 'rgba(39,174,96,1)'
       default: return ''
     }
   }
 
-  private numberOfNodes = (): string => {
-    const maxNodes = billingInfo[this.props.plan].maxNodes
-    return numberWithCommas(maxNodes)
+  private storage = () => {
+    const storage = billingInfo[this.props.plan].maxStorage >= 1000 ?
+      (billingInfo[this.props.plan].maxStorage / 1000) + ' GB' :
+      billingInfo[this.props.plan].maxStorage + ' MB'
+    return storage
   }
 
   private numberOfRequests = (): string => {
@@ -238,11 +240,11 @@ export default class PricingColumn extends React.Component<Props, {}> {
     }
 
     switch (this.props.plan) {
-      case 'Developer': return 'rgba(241,143,1,1)'
-      case 'Startup': return 'rgba(39,174,96,1)'
-      case 'Growth': return 'rgba(39,174,96,1)'
-      case 'Pro': return 'rgba(39,174,96,1)'
-      case 'Enterprise': return 'rgba(0,0,0,.5)'
+      case '2017-02-free': return 'rgba(241,143,1,1)'
+      case '2017-02-project': return 'rgba(39,174,96,1)'
+      case '2017-02-startup': return 'rgba(39,174,96,1)'
+      case '2017-02-growth': return 'rgba(39,174,96,1)'
+      case 'enterprise': return 'rgba(0,0,0,.5)'
       default: return ''
     }
   }
@@ -253,17 +255,17 @@ export default class PricingColumn extends React.Component<Props, {}> {
     }
 
     switch (this.props.plan) {
-      case 'Developer': return 'rgba(241,143,1,.5)'
-      case 'Startup': return 'rgba(28,191,50,.5)'
-      case 'Growth': return 'rgba(28,191,50,.5)'
-      case 'Pro': return 'rgba(28,191,50,.5)'
-      case 'Enterprise': return 'rgba(255,255,255,.5)'
+      case '2017-02-free': return 'rgba(241,143,1,.5)'
+      case '2017-02-project': return 'rgba(28,191,50,.5)'
+      case '2017-02-startup': return 'rgba(28,191,50,.5)'
+      case '2017-02-growth': return 'rgba(28,191,50,.5)'
+      case 'enterprise': return 'rgba(255,255,255,.5)'
       default: return ''
     }
   }
 
   private priceTag = (): JSX.Element => {
-    if (this.props.plan === 'Developer') {
+    if (this.props.plan === '2017-02-free') {
       return (
         <div
           className='f38 fw3'
@@ -300,10 +302,10 @@ export default class PricingColumn extends React.Component<Props, {}> {
     }
 
     switch (this.props.plan) {
-      case 'Developer': return require('../../assets/icons/nodes_orange.svg')
-      case 'Startup': return require('../../assets/icons/nodes_green.svg')
-      case 'Growth': return require('../../assets/icons/nodes_green.svg')
-      case 'Pro': return require('../../assets/icons/nodes_green.svg')
+      case '2017-02-free': return require('../../assets/icons/nodes_orange.svg')
+      case '2017-02-project': return require('../../assets/icons/nodes_green.svg')
+      case '2017-02-startup': return require('../../assets/icons/nodes_green.svg')
+      case '2017-02-growth': return require('../../assets/icons/nodes_green.svg')
       default: return ''
     }
   }
@@ -315,10 +317,10 @@ export default class PricingColumn extends React.Component<Props, {}> {
     }
 
     switch (this.props.plan) {
-      case 'Developer': return require('../../assets/icons/requests_orange.svg')
-      case 'Startup': return require('../../assets/icons/requests_green.svg')
-      case 'Growth': return require('../../assets/icons/requests_green.svg')
-      case 'Pro': return require('../../assets/icons/requests_green.svg')
+      case '2017-02-free': return require('../../assets/icons/requests_orange.svg')
+      case '2017-02-project': return require('../../assets/icons/requests_green.svg')
+      case '2017-02-startup': return require('../../assets/icons/requests_green.svg')
+      case '2017-02-growth': return require('../../assets/icons/requests_green.svg')
       default: return ''
     }
   }
@@ -330,10 +332,10 @@ export default class PricingColumn extends React.Component<Props, {}> {
     }
 
     switch (this.props.plan) {
-      case 'Developer': return require('../../assets/icons/requests_orange.svg')
-      case 'Startup': return require('../../assets/icons/requests_green.svg')
-      case 'Growth': return require('../../assets/icons/requests_green.svg')
-      case 'Pro': return require('../../assets/icons/requests_green.svg')
+      case '2017-02-free': return require('../../assets/icons/requests_orange.svg')
+      case '2017-02-project': return require('../../assets/icons/requests_green.svg')
+      case '2017-02-startup': return require('../../assets/icons/requests_green.svg')
+      case '2017-02-growth': return require('../../assets/icons/requests_green.svg')
       default: return ''
     }
   }

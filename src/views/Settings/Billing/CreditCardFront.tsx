@@ -226,7 +226,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
               <div className='f12 fw6 white30 ttu nowrap'>Expires</div>
               <input
                 className='expirationDateInputField inputField f16 creditCardFont white'
-                placeholder='XX/XX'
+                placeholder='MM/YY'
                 onChange={(e: any) => this.props.onExpirationDateChange(e.target.value) }
                 value={this.props.expirationDate}
                 tabIndex={3}

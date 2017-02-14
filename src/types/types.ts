@@ -14,6 +14,7 @@ export interface Viewer {
   user: Customer
   model: Model
   project: Project
+  crm: any
 }
 
 export interface Customer {
@@ -298,14 +299,15 @@ export interface Constraint {
   lengthOperator?: Operator
 }
 
-export type PricingPlan = 'Developer' | 'Startup' | 'Growth' | 'Pro' | 'Enterprise'
+export type PricingPlan = '2017-02-free' | '2017-02-project' | '2017-02-startup' | '2017-02-growth' | 'enterprise'
 
 export interface PricingPlanInfo {
+  name: string
   price: number
-  maxNodes: number
+  maxStorage: number
   maxRequests: number
   maxSeats: number
-  pricePerThousandAdditionalNodes: number
+  pricePerAdditionalMB: number
   pricePerThousandAdditionalRequests: number
 }
 
@@ -317,4 +319,31 @@ export interface PermissionVariable {
   category?: string
   isRequired: boolean
   isList: boolean
+}
+
+export interface Invoice {
+  overageRequests: number
+  overageStorage: number
+  timestamp: string
+  total: number
+  usageRequests: number[]
+  usageStorage: number[]
+}
+
+export interface CreditCard {
+  last4: string
+  expirationMonth: number
+  expirationYear: number
+  cardHolderName: string
+  addressLine1: string
+  addressLine2?: string
+  addressCity: string
+  addressZip: string
+  addressState: string
+  addressCountry: string
+}
+
+export interface ProjectBillingInformation {
+  plan: string
+  invoices: Invoice[]
 }

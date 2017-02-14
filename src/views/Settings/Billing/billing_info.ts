@@ -2,44 +2,49 @@ import {PricingPlan, PricingPlanInfo} from '../../../types/types'
 
 // should be: [key: PricingPlan]: PricingPlanInfo
 export const billingInfo: { [key: string]: PricingPlanInfo } = {
-  'Developer': {
+  '2017-02-free': {
+    name: 'Free',
     price: 0,
-    maxNodes: 10000,
+    maxStorage: 250,
     maxRequests: 100000,
     maxSeats: 2,
-    pricePerThousandAdditionalNodes: -1,
+    pricePerAdditionalMB: -1,
     pricePerThousandAdditionalRequests: -1,
   },
-  'Startup': {
-    price: 49,
-    maxNodes: 100000,
+  '2017-02-project': {
+    name: 'Project',
+    price: 9,
+    maxStorage: 500,
     maxRequests: 1000000,
     maxSeats: 5,
-    pricePerThousandAdditionalNodes: 90,
-    pricePerThousandAdditionalRequests: 6,
+    pricePerAdditionalMB: 7,
+    pricePerThousandAdditionalRequests: 15,
   },
-  'Growth': {
-    price: 249,
-    maxNodes: 1000000,
+  '2017-02-startup': {
+    name: 'Startup',
+    price: 49,
+    maxStorage: 2000,
     maxRequests: 10000000,
     maxSeats: 10,
-    pricePerThousandAdditionalNodes: 45,
-    pricePerThousandAdditionalRequests: 3,
+    pricePerAdditionalMB: 6,
+    pricePerThousandAdditionalRequests: 12,
   },
-  'Pro': {
-    price: 849,
-    maxNodes: 5000000,
+  '2017-02-growth': {
+    name: 'Growth',
+    price: 449,
+    maxStorage: 10000,
     maxRequests: 50000000,
     maxSeats: -1,
-    pricePerThousandAdditionalNodes: 30,
-    pricePerThousandAdditionalRequests: 2,
+    pricePerAdditionalMB: 5,
+    pricePerThousandAdditionalRequests: 10,
   },
-  'Enterprise': {
+  'enterprise': {
+    name: 'Enterprise',
     price: -1,
-    maxNodes: -1,
+    maxStorage: -1,
     maxRequests: -1,
     maxSeats: -1,
-    pricePerThousandAdditionalNodes: -1,
+    pricePerAdditionalMB: -1,
     pricePerThousandAdditionalRequests: -1,
   },
 }

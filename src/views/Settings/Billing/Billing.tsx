@@ -2,9 +2,9 @@ import * as React from 'react'
 import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
-import {chunk} from '../../../utils/utils'
+import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
 import * as Relay from 'react-relay'
-import {Viewer} from '../../../types/types'
+import {Viewer, Invoice} from '../../../types/types'
 import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
@@ -30,14 +30,18 @@ interface State {
 }
 
 interface Props {
+
+  viewer: Viewer
+  node: Node
+  location: any
+  params: any
+  projectName: string
+
   creditCardNumber: string
   cardHolderName: string
   expirationDate: string
   cpc: string
   children: JSX.Element
-  viewer: Viewer
-  location: any
-  params: any
 
   addressLine1: string
   addressLine2: string
@@ -89,6 +93,17 @@ class Billing extends React.Component<Props, State> {
 
     const seats = this.props.viewer.project.seats.edges.map(edge => edge.node.name)
 
+    console.log('BILLING', this.props)
+
+    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
+      return edge.node.name === this.props.projectName
+    }).node
+
+    const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
+
+    const currentInvoice = invoices[invoices.length-1]
+    console.log('currentInvoice', currentInvoice)
+
     return (
 
       <div className={`container ${this.state.isEditingCreditCardInfo && 'bottomPadding'}`}>
@@ -115,19 +130,17 @@ class Billing extends React.Component<Props, State> {
 
         `}</style>
         <CurrentPlan
-          plan='Developer'
+          plan={project.projectBillingInformation.plan}
           projectName={this.props.params.projectName}
         />
         <Usage
           usedSeats={seats}
-          plan='Growth'
-          currentNumberOfRequests={131092}
-          lastInvoiceDate='01/02/2017'
-          nextInvoiceDate='02/02/2017'
-          usedNodesPerDay={[250000, 126733, 156793, 199993, 102930, 186733, 208673, 286733, 186733,
-          250000, 126733, 156793, 199993, 102930, 186733, 208673, 286733, 186733,
-          250000, 126733, 156793, 199993, 102930, 186733, 208673, 286733, 186733,
-          ]}
+          plan={project.projectBillingInformation.plan}
+          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a+b)}
+          lastInvoiceDate={mmDDyyyyFromTimestamp(currentInvoice.timestamp)}
+          usedStoragePerDay={currentInvoice.usageStorage}
+          overageRequests={currentInvoice.overageRequests}
+          overageStorage={currentInvoice.overageStorage}
         />
         {!this.state.isLoading ?
           (
@@ -380,24 +393,26 @@ export default Relay.createContainer(Billing, {
           crm {
             customer {
               id
-              projects(first: 100) {
+              projects(first: 1000) {
                 edges {
                   node {
                     name
-#                    projectBillingInformation {
-#                      plan
-#                    }
-#                    invoices{
-#                      edges{
-#                        node{
-#                          usageRequests
-#                          usageStorage
-#                          usedSeats
-#                          timestamp
-#                          total
-#                        }
-#                      }
-#                    }
+                    projectBillingInformation {
+                      plan
+                      invoices(first: 1000)  {
+                        edges {
+                          node {
+                            overageOperations
+                            overageRequests
+                            usageRequests
+                            usageStorage
+                            usedSeats
+                            timestamp
+                            total
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }

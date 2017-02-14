@@ -5,6 +5,7 @@ import NodeUsageIndicator from './NodeUsageIndicator'
 import {$v} from 'graphcool-styles'
 import {billingInfo} from './billing_info'
 import {PricingPlan} from '../../../types/types'
+import {todayString} from '../../../utils/utils'
 
 interface Props {
   plan: PricingPlan
@@ -12,10 +13,12 @@ interface Props {
   usedSeats: string[]
 
   lastInvoiceDate: string
-  nextInvoiceDate: string
 
   currentNumberOfRequests: number
-  usedNodesPerDay: number[]
+  usedStoragePerDay: number[]
+
+  overageRequests: number
+  overageStorage: number
 }
 
 export default class Usage extends React.Component<Props, {}> {
@@ -24,7 +27,7 @@ export default class Usage extends React.Component<Props, {}> {
 
     const maxSeats = 2
 
-    const period = '(' + this.props.nextInvoiceDate + ' - ' + this.props.lastInvoiceDate + ')'
+    const period = '(' + this.props.lastInvoiceDate + ' - ' + todayString() + ')'
 
     return (
       <div className='container'>
@@ -41,12 +44,12 @@ export default class Usage extends React.Component<Props, {}> {
         `}</style>
         <div className='title'>{'Usage ' + period}</div>
         <NodeUsageIndicator
-          plan='Pro'
+          plan={this.props.plan}
           maxNodes={250000}
-          usedNodesPerDay={this.props.usedNodesPerDay}
+          usedStoragePerDay={this.props.usedStoragePerDay}
           currentMB={250}
           maxMB={120}
-          additionalCosts={this.calculateAdditionalCostsForNodes().toFixed(2)}
+          additionalCosts={this.calculateAdditionalCostsForStorage().toFixed(2)}
         />
         <RequestUsageIndicator
           plan={this.props.plan}
@@ -55,17 +58,16 @@ export default class Usage extends React.Component<Props, {}> {
         />
         <div
           className='w100 ttu f14 flex justifyEnd'
-
         >
           <div className='bt tr pt6'
-            style={{
+               style={{
             borderColor: $v.blue50,
             color: $v.blue50,
             width: '200px',
-            marginTop: '38px'
+            marginTop: '38px',
           }}
           >
-            Overage total <span className='blue fw6 ml6'>  + ${(this.calculateTotalOverage()).toFixed(2)}</span>
+            Overage total <span className='blue fw6 ml6'>  + ${(this.calculateTotalOverageCosts()).toFixed(2)}</span>
           </div>
         </div>
         <UsedSeats
@@ -77,34 +79,35 @@ export default class Usage extends React.Component<Props, {}> {
     )
   }
 
-  private calculateTotalOverage = (): number => {
-    return this.calculateAdditionalCostsForNodes() + this.calculateAdditionalCostsForRequests()
+  private calculateTotalOverageCosts = (): number => {
+    return this.calculateAdditionalCostsForStorage() + this.calculateAdditionalCostsForRequests()
   }
 
   private calculateAdditionalCostsForRequests = () => {
     const pricePerAdditionalRequest = billingInfo[this.props.plan].pricePerThousandAdditionalRequests
-    const maxRequests = billingInfo[this.props.plan].maxRequests
-    const additionalRequests = maxRequests - this.props.currentNumberOfRequests
 
-    const penaltyFactor = additionalRequests / 1000
+    const penaltyFactor = Math.ceil((this.props.overageRequests / 1000))
     const sum = penaltyFactor * pricePerAdditionalRequest
 
     const sumInDollars = sum / 100
+
+    // console.log('calculateAdditionalCostsForRequests', this.props.overageRequests,
+    //   pricePerAdditionalRequest, penaltyFactor, sum, sumInDollars)
+
     return sumInDollars
   }
 
-  private calculateAdditionalCostsForNodes = () => {
-    const pricePerAdditionalNode = billingInfo[this.props.plan].pricePerThousandAdditionalNodes
-    const maxNodes = billingInfo[this.props.plan].maxNodes
-    const sum = this.props.usedNodesPerDay.reduce((acc, usedNodes) => {
-      const additionalNodes = maxNodes - usedNodes
-      if (additionalNodes > 0) {
-        const penaltyFactor = additionalNodes / 1000
-        return acc + penaltyFactor * pricePerAdditionalNode
-      }
-      return acc
-    }, 0)
+  private calculateAdditionalCostsForStorage = () => {
+    const pricePerAdditionalNode = billingInfo[this.props.plan].pricePerAdditionalMB
+    // const maxStorage = billingInfo[this.props.plan].maxStorage
+    const penaltyFactor = Math.ceil((this.props.overageStorage / 1000))
+    const sum = penaltyFactor * pricePerAdditionalNode
+
     const sumInDollars = sum / 100
+
+    console.log('calculateAdditionalCostsForStorage', this.props.overageStorage,
+      pricePerAdditionalNode, penaltyFactor, sum, sumInDollars)
+
     return sumInDollars
   }
 

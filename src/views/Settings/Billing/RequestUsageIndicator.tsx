@@ -1,7 +1,8 @@
 import * as React from 'react'
 import {$v, Icon} from 'graphcool-styles'
-import {numberWithCommas, daysInMonth} from '../../../utils/utils'
+import {numberWithCommas, numberWithCommasRounded, daysInMonth} from '../../../utils/utils'
 import {PricingPlan} from '../../../types/types'
+import {billingInfo} from './billing_info'
 
 interface Props {
   plan: PricingPlan
@@ -13,12 +14,24 @@ export default class RequestUsageIndicator extends React.Component<Props, {}> {
 
   render() {
 
-    const maxOperations = 1000000
+    console.log('PROPS:', this.props)
 
-    const maxString = numberWithCommas(maxOperations)
+    const maxRequests = billingInfo[this.props.plan].maxRequests
+
+    const maxString = numberWithCommas(maxRequests)
     const currentNumberOfRequestsString = numberWithCommas(this.props.currentNumberOfRequests)
 
     const icon = require('../../../assets/icons/operations_blue.svg')
+
+    console.log('this.props.currentNumberOfRequests', this.props.currentNumberOfRequests)
+    console.log('billingInfo[this.props.plan].maxRequests', billingInfo[this.props.plan].maxRequests)
+
+    console.log('this.calculateEstimatedRequests()', this.calculateEstimatedRequests())
+
+    const usedPercent = (this.props.currentNumberOfRequests / billingInfo[this.props.plan].maxRequests) * 100
+    const estimatedPercent = (this.calculateEstimatedRequests() / billingInfo[this.props.plan].maxRequests) * 100
+    console.log('used percent', usedPercent)
+    console.log('estimated percent', estimatedPercent)
 
     return (
       <div className='container'>
@@ -27,21 +40,17 @@ export default class RequestUsageIndicator extends React.Component<Props, {}> {
             @p: .hS16, .mt38, .mb25;
           }
 
-          .indicator {
-            background: linear-gradient(to right,
-              rgba(42,126,210,1) 0%,
-              rgba(42,126,210,1) 50%,
-              rgba(42,126,210,.5) 50%,
-              rgba(42,126,210,.5) 75%,
-              rgba(42,126,210,.1) 75%,
-              rgba(42,126,210,.1) 100%);
-          }
-
         `}</style>
         <div
-          className='w100 h100 mb10 br2 indicator'
+          className='w100 h100 mb10 br2'
           style={{
-
+            background: `linear-gradient(to right,
+              rgba(42,126,210,1) 0%,
+              rgba(42,126,210,1) ${usedPercent}%,
+              rgba(42,126,210,.5) ${usedPercent}%,
+              rgba(42,126,210,.5) ${estimatedPercent}%,
+              rgba(42,126,210,.1) ${estimatedPercent}%,
+              rgba(42,126,210,.1) 100%)`,
         }}></div>
         <div className='flex itemsCenter justifyBetween mt16'>
           <div className='flex itemsCenter'>
@@ -61,21 +70,29 @@ export default class RequestUsageIndicator extends React.Component<Props, {}> {
             color: $v.blue50,
             paddingLeft: '27px',
           }}
-        >~{this.calculateEstimatedRequests()} estimated</div>
+        >~{numberWithCommasRounded(this.calculateEstimatedRequests(), 2)} estimated</div>
       </div>
     )
   }
 
   private calculateEstimatedRequests = () => {
     const today = new Date()
-    const dd = today.getDay()
-    const mm = today.getMonth()+1
+    const dd = today.getDate()
+    const mm = today.getMonth() + 1
     const yyyy = today.getFullYear()
     const daysInCurrentMonth = daysInMonth(mm, yyyy)
+
     const avgRequestsPerDay = this.props.currentNumberOfRequests / dd
     const daysLeftInCurrentMonth = daysInCurrentMonth - dd
     const estimateForRestOfMonth = daysLeftInCurrentMonth * avgRequestsPerDay
-    return numberWithCommas(this.props.currentNumberOfRequests + estimateForRestOfMonth)
+    return this.props.currentNumberOfRequests + estimateForRestOfMonth
+  }
+
+  private estimatedPercentageOfTotal = () => {
+    const total = billingInfo[this.props.plan].maxRequests
+    const estimated = this.calculateEstimatedRequests()
+    const ratio = total / estimated
+    return ratio
   }
 
 }

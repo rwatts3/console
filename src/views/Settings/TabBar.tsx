@@ -5,7 +5,7 @@ interface Props {
   params: any
 }
 
-export default ({params}: Props) => {
+const TabBar = ({params}: Props) => {
 
   return (
     <div className='flex'>
@@ -54,3 +54,5 @@ export default ({params}: Props) => {
   )
 
 }
+
+export default TabBar

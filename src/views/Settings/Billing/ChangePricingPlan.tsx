@@ -14,7 +14,7 @@ interface Props {
 
 class ChangePricingPlan extends React.Component<Props, {}> {
 
-  plans: [PricingPlan] = ['Developer', 'Startup', 'Growth', 'Pro', 'Enterprise']
+  plans: [PricingPlan] = ['2017-02-free', '2017-02-project', '2017-02-startup', '2017-02-growth', 'enterprise']
 
   render() {
 
