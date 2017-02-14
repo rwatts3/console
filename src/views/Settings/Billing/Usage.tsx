@@ -83,29 +83,17 @@ export default class Usage extends React.Component<Props, {}> {
 
   private calculateAdditionalCostsForRequests = () => {
     const pricePerAdditionalRequest = billingInfo[this.props.plan].pricePerThousandAdditionalRequests
-
     const penaltyFactor = Math.ceil((this.props.overageRequests / 1000))
     const sum = penaltyFactor * pricePerAdditionalRequest
-
     const sumInDollars = sum / 100
-
-    // console.log('calculateAdditionalCostsForRequests', this.props.overageRequests,
-    //   pricePerAdditionalRequest, penaltyFactor, sum, sumInDollars)
-
     return sumInDollars
   }
 
   private calculateAdditionalCostsForStorage = () => {
     const pricePerAdditionalNode = billingInfo[this.props.plan].pricePerAdditionalMB
-    // const maxStorage = billingInfo[this.props.plan].maxStorage
     const penaltyFactor = Math.ceil((this.props.overageStorage / 1000))
     const sum = penaltyFactor * pricePerAdditionalNode
-
     const sumInDollars = sum / 100
-
-    console.log('calculateAdditionalCostsForStorage', this.props.overageStorage,
-                pricePerAdditionalNode, penaltyFactor, sum, sumInDollars)
-
     return sumInDollars
   }
 

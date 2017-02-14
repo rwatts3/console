@@ -26,8 +26,6 @@ export default class CurrentPlan extends React.Component<Props, State> {
     const planInfoBoxColors = exceedsAllowedStorage || exceedsAllowedRequests ? 'redTitle' : 'greenTitle'
     const actionButtonColor = exceedsAllowedStorage || exceedsAllowedRequests ? 'blue' : 'black50'
 
-    console.log(exceedsAllowedStorage, exceedsAllowedRequests)
-
     let exceedingIndicationString = ''
     if (exceedsAllowedStorage && exceedsAllowedRequests) {
       exceedingIndicationString = 'storage space and requests'

@@ -40,7 +40,7 @@ export default class SetPlanMutation extends Relay.Mutation<Props, {}> {
     return [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-
+        project: this.props.projectId,
       },
     }]
   }
