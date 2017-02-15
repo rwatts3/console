@@ -75,7 +75,7 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
             <div
               className={`ml6 f14 fw6`}
               style={{color: color}}
-            >{this.props.usedStoragePerDay[this.props.usedStoragePerDay.length-1]} MB</div>
+            >{this.props.usedStoragePerDay[this.props.usedStoragePerDay.length - 1]} MB</div>
             <div className='ml6 black50 f14'>{maxString}</div>
           </div>
           {this.props.additionalCosts > 0 &&
@@ -91,7 +91,6 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
       const currentValue = usage / maxMB
       return Math.ceil(currentValue * this.maxNodeLineY)
     })
-    console.log(heights)
     return heights
   }
 
@@ -130,8 +129,8 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
   private generateColumn = (height: number, index: number) => {
 
     if (height > 100) {
-
-      height = height > 150 ? 150 : height
+      const maxHeight = 150
+      height = height > maxHeight ? maxHeight : height
 
       const x = height / 100
       const offset = 100 / x
@@ -157,7 +156,6 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
         </div>
       )
     }
-
 
     return (
       <div className='column'
