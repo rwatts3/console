@@ -14,6 +14,7 @@ export interface Viewer {
   user: Customer
   model: Model
   project: Project
+  crm: any
 }
 
 export interface Customer {
@@ -298,10 +299,51 @@ export interface Constraint {
   lengthOperator?: Operator
 }
 
+export type PricingPlan = '2017-02-free' | '2017-02-project' | '2017-02-startup' | '2017-02-growth' | 'enterprise'
+
+export interface PricingPlanInfo {
+  name: string
+  price: number
+  maxStorage: number
+  maxRequests: number
+  maxSeats: number
+  pricePerAdditionalMB: number
+  pricePerThousandAdditionalRequests: number
+}
+
+export type CreditCardInputDisplayState = 'CREDIT_CARD_DATA' | 'ADDRESS_DATA'
+
 export interface PermissionVariable {
   name: string
   typeIdentifier: FieldType
   category?: string
   isRequired: boolean
   isList: boolean
+}
+
+export interface Invoice {
+  overageRequests: number
+  overageStorage: number
+  timestamp: string
+  total: number
+  usageRequests: number[]
+  usageStorage: number[]
+}
+
+export interface CreditCardInfo {
+  last4: string
+  expMonth: number
+  expYear: number
+  cardHolderName: string
+  addressLine1: string
+  addressLine2?: string
+  addressCity: string
+  addressZip: string
+  addressState: string
+  addressCountry: string
+}
+
+export interface ProjectBillingInformation {
+  plan: string
+  invoices: Invoice[]
 }

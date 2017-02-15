@@ -386,11 +386,15 @@ class ProjectSelection extends React.PureComponent<Props, State> {
         >
           <div className='flex itemsCenter'>
             <Icon
-              src={require('../../assets/icons/add_member.svg')}
+              src={this.state.expanded ?
+                require('' +
+                 'chrome../../assets/icons/add_member_white.svg') : require('../../assets/icons/add_member.svg')}
               width={13}
               height={13}
             />
-            <div className='f12 pointer blue ml4'>add collaborators</div>
+            <div className={`f12 pointer ml4 ${this.state.expanded ? 'white' : 'blue'}`}>
+              add collaborators
+            </div>
           </div>
         </Link>
       )
