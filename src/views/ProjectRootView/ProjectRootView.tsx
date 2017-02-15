@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
 import * as Relay from 'react-relay'
-import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import * as cookiestore from 'cookiestore'
 import {bindActionCreators} from 'redux'
 import {classnames} from '../../utils/classnames'
@@ -25,7 +24,19 @@ import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 const classes: any = require('./ProjectRootView.scss')
 import drumstick from 'drumstick'
+import Alert from '../../components/Window/Alert'
 require('../../styles/core.scss')
+import AddProjectPopup from './AddProjectPopup'
+import {showNotification} from '../../actions/notification'
+import {onFailureShowNotification} from '../../utils/relay'
+import {ShowNotificationCallback} from '../../types/utils'
+
+interface State {
+  showCreateProjectModal: boolean
+  projectName: string
+  showError: boolean
+  createProjectModalLoading: boolean
+}
 
 interface Props {
   router: ReactRouter.InjectedRouter
@@ -41,9 +52,10 @@ interface Props {
   popup: PopupState
   pollGettingStartedOnboarding: boolean
   update: (step: string, skipped: boolean, customerId: string) => void
+  showNotification: ShowNotificationCallback
 }
 
-class ProjectRootView extends React.Component<Props, {}> {
+class ProjectRootView extends React.PureComponent<Props, State> {
 
   shouldComponentUpdate: any
 
@@ -52,9 +64,9 @@ class ProjectRootView extends React.Component<Props, {}> {
   constructor(props: Props) {
     super(props)
 
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-
     this.updateForceFetching()
+
+    Stripe.setPublishableKey(__STRIPE_PUBLISHABLE_KEY__)
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
@@ -69,10 +81,18 @@ class ProjectRootView extends React.Component<Props, {}> {
         frequency: 60 * 1000,
       })
     }
+
+    this.state = {
+      showCreateProjectModal: false,
+      createProjectModalLoading: false,
+      showError: false,
+      projectName: '',
+    }
   }
 
   componentWillMount() {
     if (this.props.isLoggedin) {
+
       tracker.identify(this.props.user.id, this.props.project.id)
 
       retryUntilDone((done) => {
@@ -132,6 +152,8 @@ class ProjectRootView extends React.Component<Props, {}> {
     }
 
     const blurBackground = this.props.popup.popups.reduce((acc, p) => p.blurBackground || acc, false)
+    const error = !validateProjectName(this.state.projectName)
+
     return (
       <div className={classes.root}>
         <div className={`${blurBackground ? classes.blur : ''} flex w-100`}>
@@ -141,7 +163,7 @@ class ProjectRootView extends React.Component<Props, {}> {
                 params={this.props.params}
                 projects={this.props.allProjects}
                 selectedProject={this.props.project}
-                add={this.addProject}
+                add={this.handleShowProjectModal}
               />
             </div>
             <div className={classes.sidenav}>
@@ -186,6 +208,19 @@ class ProjectRootView extends React.Component<Props, {}> {
             <PlaygroundCPopup projectId={this.props.project.id} />
           </PopupWrapper>
         }
+        <Alert />
+        {this.state.showCreateProjectModal && (
+          <AddProjectPopup
+            projectName={this.state.projectName}
+            isOpen={this.state.showCreateProjectModal}
+            onRequestClose={this.handleCloseProjectModal}
+            onSubmit={this.addProject}
+            onChangeProjectName={this.handleChangeProjectName}
+            error={error}
+            showError={this.state.showError}
+            loading={this.state.createProjectModalLoading}
+          />
+        )}
       </div>
     )
   }
@@ -212,26 +247,47 @@ class ProjectRootView extends React.Component<Props, {}> {
     }
   }
 
+  private handleShowProjectModal = () => {
+    this.setState({showCreateProjectModal: true} as State)
+  }
+
+  private handleCloseProjectModal = () => {
+    this.setState({showCreateProjectModal: false} as State)
+  }
+
+  private handleChangeProjectName = (e: any) => {
+    this.setState({projectName: e.target.value} as State)
+  }
+
   private addProject = () => {
-    let projectName = window.prompt('Project name:')
-    while (projectName != null && !validateProjectName(projectName)) {
-      projectName = window.prompt('The inserted project name was invalid.' +
-        ' Enter a valid project name, like "Project 2" or "My Project" (First letter capitalized):')
+    const {projectName} = this.state
+    if (!validateProjectName(projectName)) {
+      return this.setState({showError: true} as State)
     }
-    if (projectName) {
-      Relay.Store.commitUpdate(
-        new AddProjectMutation({
-          projectName,
-          customerId: this.props.viewer.user.id,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Project.created({name: projectName}))
-            this.props.router.replace(`${projectName}`)
-          },
-        },
-      )
-    }
+    this.setState(
+      {createProjectModalLoading: true} as State,
+      () => {
+        if (projectName) {
+          Relay.Store.commitUpdate(
+            new AddProjectMutation({
+              projectName,
+              customerId: this.props.viewer.user.id,
+            }),
+            {
+              onSuccess: () => {
+                tracker.track(ConsoleEvents.Project.created({name: projectName}))
+                this.setState({showCreateProjectModal: false, createProjectModalLoading: false} as State)
+                this.props.router.replace(`${projectName}`)
+              },
+              onFailure: (transaction) => {
+                this.setState({createProjectModalLoading: false} as State)
+                onFailureShowNotification(transaction, this.props.showNotification)
+              },
+            },
+          )
+        }
+      },
+    )
   }
 }
 
@@ -244,7 +300,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({update}, dispatch)
+  return bindActionCreators({update, showNotification}, dispatch)
 }
 
 const ReduxContainer = connect(

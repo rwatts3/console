@@ -165,9 +165,11 @@ class OnboardSideNav extends React.Component<Props, {}> {
     }
     if (this.props.gettingStartedState.step === 'STEP5_DONE' as Step) {
       skip()
-    } else if (window.confirm('Do you really want skip the getting started tour?')) {
-      skip()
     }
+    graphcoolConfirm('This will skip the getting started tour')
+      .then(() => {
+        skip()
+      })
   }
 }
 

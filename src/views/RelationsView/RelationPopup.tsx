@@ -110,8 +110,8 @@ class RelationPopup extends React.Component<Props, State> {
                             fieldOnLeftModelName: val,
                             fieldsEdited: true,
                           } as State)
-                          tracker.track(ConsoleEvents.Relations.Popup.fieldnameChanged())
-                          }
+                          /*tracker.track(ConsoleEvents.Relations.Popup.fieldnameChanged())*/
+                        }
                       }
                       onFieldOnRightModelNameChange={
                         (val) => {
@@ -119,8 +119,8 @@ class RelationPopup extends React.Component<Props, State> {
                             fieldOnRightModelName: val,
                             fieldsEdited: true,
                           } as State)
-                        tracker.track(ConsoleEvents.Relations.Popup.fieldnameChanged())
-                          }
+                          /*tracker.track(ConsoleEvents.Relations.Popup.fieldnameChanged())*/
+                        }
                       }
                       onFieldOnLeftModelIsListChange={
                         (val) => {

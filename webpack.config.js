@@ -121,6 +121,7 @@ module.exports = {
       __METRICS_ENDPOINT__: false,
       __GA_CODE__: false,
       __INTERCOM_ID__: '"rqszgt2h"',
+      __STRIPE_PUBLISHABLE_KEY__: '"pk_test_BpvAdppmXbqmkv8NQUqHRplE"',
       'process.env': {
         'NODE_ENV': JSON.stringify('dev'),
       },

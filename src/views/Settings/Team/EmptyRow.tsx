@@ -8,6 +8,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
   email: string
@@ -19,6 +20,7 @@ interface Props {
   numberOfLeftSeats?: number
   projectId?: string
   showNotification: ShowNotificationCallback
+  seatsLeft: number
 }
 
 class EmptyRow extends React.Component<Props, State> {
@@ -139,7 +141,9 @@ class EmptyRow extends React.Component<Props, State> {
             />
           </div>
           <div className='f16 black40'>
-            add collaborator ({numberOfLeftSeats} {numberOfLeftSeats === 1 ? 'seat' : 'seats'} left)
+            add collaborator (
+            {numberOfLeftSeats > 999 ? 'unlimited' : numberOfLeftSeats} {numberOfLeftSeats === 1 ? 'seat ' : 'seats '}
+            left)
           </div>
         </div>
       )
@@ -173,7 +177,7 @@ class EmptyRow extends React.Component<Props, State> {
           this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
         },
       },
     )

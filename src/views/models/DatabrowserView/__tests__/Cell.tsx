@@ -67,6 +67,7 @@ const fields = [{
       isSystem: false,
       permissions: [],
       permissionSchema: '',
+      permissionQueryArguments: [],
     },
     isUnique: true,
     isRequired: false,

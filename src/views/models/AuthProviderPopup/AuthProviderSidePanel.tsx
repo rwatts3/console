@@ -13,43 +13,6 @@ import * as cx from 'classnames'
 import {$p} from 'graphcool-styles'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-
-interface AuthText {
-  title: string
-  description: string
-  link: {
-    href: string
-    content: string,
-  }
-}
-
-const texts: {[key: string]: AuthText} = {
-  AUTH_PROVIDER_EMAIL: {
-    title: 'Graphcool Email + Password',
-    description: 'Use our built-in auth system that authenticates users with email and password',
-    link: {
-      href: 'https://graph.cool/docs/reference/platform/authentication-wejileech9',
-      content: 'graph.cool/docs',
-    },
-  },
-  AUTH_PROVIDER_DIGITS: {
-    title: 'Digits - Two-Step Phone Authentication',
-    description: 'Digits offers two-step authentification via a phone number and a code that is send to respective number.', // tslint:disable-line
-    link: {
-      href: 'https://www.digits.com',
-      content: 'www.digits.com',
-    },
-  },
-  AUTH_PROVIDER_AUTH0: {
-    title: 'Auth0 – Broad Authentication Solution',
-    description: 'Auth0 combines a variety of authentification methods and a dashboard to organize them.',
-    link: {
-      href: 'https://www.auth0.com',
-      content: 'www.auth0.com',
-    },
-  },
-}
-
 interface Props {
   selectedType: AuthProviderType
   project: Project
@@ -280,25 +243,25 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         </div>
         <div className='flex justify-between pa-25 bt b--light-gray'>
           {authProvider.isEnabled &&
-          <div
-            className='ph-25 pv-16 f-25 white pointer'
-            style={{
-              backgroundColor: '#F5A623',
-            }}
-            onClick={this.disable}
-          >
-            Disable
-          </div>
+            <div
+              className='ph-25 pv-16 f-25 white pointer'
+              style={{
+                backgroundColor: '#F5A623',
+              }}
+              onClick={this.disable}
+            >
+              Disable
+            </div>
           }
           {!authProvider.isEnabled &&
-          <div className='ph-25 pv-16 f-25 white bg-accent pointer' onClick={this.enable}>
-            Enable
-          </div>
+            <div className='ph-25 pv-16 f-25 white bg-accent pointer' onClick={this.enable}>
+              Enable
+            </div>
           }
           {authProvider.isEnabled && this.state.hasChanged &&
-          <div className='ph-25 pv-16 f-25 white bg-accent pointer' onClick={this.enable}>
-            Update
-          </div>
+            <div className='ph-25 pv-16 f-25 white bg-accent pointer' onClick={this.enable}>
+              Update
+            </div>
           }
         </div>
       </div>
@@ -383,15 +346,16 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private disable = () => {
-    if (confirm('Do you really want to disable the Auth Provider? It will delete all auth provider related data.')) {
-      tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
-      this.setState(
-        {
-          authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
-        } as State,
-        this.update,
-      )
-    }
+    graphcoolConfirm('You\'re disabling an Auth Provider. It will delete all auth provider related data.')
+      .then(() => {
+        tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
+        this.setState(
+          {
+            authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
+          } as State,
+          this.update,
+        )
+      })
   }
 
   private update = () => {
@@ -405,7 +369,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          console.log(this.props)
           // The force fetching because authproviders are too complicated to selective choose the config
           // forceFetchRoot gets passed down from StuctureView/DatabrowserView
           // which is needed to reflect all affected data
@@ -450,3 +413,39 @@ export default Relay.createContainer(connect(null, mapDispatchToProps)(AuthProvi
         `,
     },
 })
+
+interface AuthText {
+  title: string
+  description: string
+  link: {
+    href: string
+    content: string,
+  }
+}
+
+const texts: {[key: string]: AuthText} = {
+  AUTH_PROVIDER_EMAIL: {
+    title: 'Graphcool Email + Password',
+    description: 'Use our built-in auth system that authenticates users with email and password',
+    link: {
+      href: 'https://graph.cool/docs/reference/platform/authentication-wejileech9',
+      content: 'graph.cool/docs',
+    },
+  },
+  AUTH_PROVIDER_DIGITS: {
+    title: 'Digits - Two-Step Phone Authentication',
+    description: 'Digits offers two-step authentification via a phone number and a code that is send to respective number.', // tslint:disable-line
+    link: {
+      href: 'https://www.digits.com',
+      content: 'www.digits.com',
+    },
+  },
+  AUTH_PROVIDER_AUTH0: {
+    title: 'Auth0 – Broad Authentication Solution',
+    description: 'Auth0 combines a variety of authentification methods and a dashboard to organize them.',
+    link: {
+      href: 'https://www.auth0.com',
+      content: 'www.auth0.com',
+    },
+  },
+}

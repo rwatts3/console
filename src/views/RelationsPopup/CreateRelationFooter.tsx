@@ -92,7 +92,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
           className='toggleDisplayStateButton'
           onClick={() => this.props.switchDisplayState('SET_MUTATIONS')}
         >
-          Set Mutations
+          Set Relation Name
         </div>
         <Icon
           className='ml6'
@@ -140,7 +140,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
               className='toggleDisplayStateButton'
               onClick={() => this.props.switchDisplayState('SET_MUTATIONS')}
             >
-              Set Mutations
+              Set Relation Name
             </div>
             <Icon
               className='ml6'
@@ -163,7 +163,9 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
                   )
                 }
         >
-          Save Changes
+          {this.props.isEditingExistingRelation ?
+            'Update Relation' : 'Create Relation'
+          }
         </div>
       </div>
     )

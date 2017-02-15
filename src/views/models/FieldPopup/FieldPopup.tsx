@@ -4,6 +4,7 @@ import {fieldModalStyle} from '../../../utils/modalStyle'
 import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
 import {Field, FieldType, Constraint, ConstraintType} from '../../../types/types'
+import {ConsoleEvents, MutationType, FieldPopupSource} from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
 import Constraints from './Constraints'
@@ -42,6 +43,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import Loading from '../../../components/Loading/Loading'
 import {GettingStartedState} from '../../../types/gettingStarted'
+import tracker from '../../../utils/metrics'
 
 interface Props {
   field?: Field
@@ -113,10 +115,17 @@ class FieldPopup extends React.Component<Props, State> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
+    tracker.track(ConsoleEvents.Schema.Field.Popup.opened({
+      type: this.state.create ? 'Create' : 'Update',
+      source: 'databrowser',
+    }))
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown)
+    tracker.track(ConsoleEvents.Schema.Field.Popup.canceled({
+      type: this.state.create ? 'Create' : 'Update',
+    }))
   }
 
   componentDidUpdate() {
@@ -204,6 +213,7 @@ class FieldPopup extends React.Component<Props, State> {
             onRequestClose={this.close}
             errors={errors}
             showErrors={showErrors}
+            create={create}
           />
           <div
             className='popup-body'
@@ -355,6 +365,7 @@ class FieldPopup extends React.Component<Props, State> {
     const errors = isValid(this.props.nodeCount, this.state.field, this.props.field)
     // if there is an error, it's not valid
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
+    tracker.track(ConsoleEvents.Schema.Field.Popup.submitted({type: this.state.create ? 'Create' : 'Update'}))
 
     if (!valid) {
       this.setState({

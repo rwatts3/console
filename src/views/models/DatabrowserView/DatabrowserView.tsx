@@ -14,7 +14,6 @@ import {
 } from '../../../actions/databrowser/data'
 import {Popup} from '../../../types/popup'
 import * as Immutable from 'immutable'
-import * as PureRenderMixin from 'react-addons-pure-render-mixin'
 import {Icon} from 'graphcool-styles'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
@@ -126,7 +125,11 @@ interface Props {
   searchQuery: string
 }
 
-class DatabrowserView extends React.Component<Props, {}> {
+interface State {
+  shouldLeaveRoute: boolean
+}
+
+class DatabrowserView extends React.PureComponent<Props, State> {
 
   shouldComponentUpdate: any
 
@@ -154,9 +157,11 @@ class DatabrowserView extends React.Component<Props, {}> {
 
   constructor(props: Props) {
     super(props)
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     this.lokka = getLokka(this.props.project.id)
     this.fieldColumnWidths = calculateFieldColumnWidths(window.innerWidth - 300, this.props.fields, this.props.nodes)
+    this.state = {
+      shouldLeaveRoute: false,
+    }
   }
 
   componentWillMount = () => {
@@ -167,15 +172,25 @@ class DatabrowserView extends React.Component<Props, {}> {
     tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.mounted = true
-    this.props.router.setRouteLeaveHook(this.props.route, () => {
+    this.props.router.setRouteLeaveHook(this.props.route, (nextLocation) => {
       if (this.props.newRowActive) {
         // TODO with custom dialogs use "return false" and display custom dialog
-        if (confirm('Are you sure you want to discard unsaved changes?')) {
-          this.props.resetDataAndUI()
+        if (this.state.shouldLeaveRoute) {
           return true
-        } else {
-          return false
         }
+        graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
+          .then(() => {
+            this.props.resetDataAndUI()
+            this.setState(
+              {
+                shouldLeaveRoute: true,
+              } as State,
+              () => {
+                this.props.router.push(nextLocation)
+              },
+            )
+          })
+        return false
       } else {
         this.props.resetDataAndUI()
       }
@@ -668,14 +683,15 @@ class DatabrowserView extends React.Component<Props, {}> {
   }
 
   private deleteSelectedNodes = () => {
-    if (confirm(`Do you really want to delete ${this.props.selectedNodeIds.size} node(s)?`)) {
-      this.props.deleteSelectedNodes(
-        this.lokka,
-        this.props.params.projectName,
-        this.props.params.modelName,
-        this.props.model,
-      )
-    }
+    graphcoolConfirm(`This will delete ${this.props.selectedNodeIds.size} node(s).`)
+      .then(() => {
+        this.props.deleteSelectedNodes(
+          this.lokka,
+          this.props.params.projectName,
+          this.props.params.modelName,
+          this.props.model,
+        )
+      })
   }
 }
 

@@ -131,15 +131,16 @@ class ActionRow extends React.Component<Props, State> {
   private deleteAction = (e: React.MouseEvent<any>) => {
     e.stopPropagation()
 
-    if (window.confirm('Do you really want to delete this Action?')) {
-      tracker.track(ConsoleEvents.MutationCallbacks.deleted())
-      Relay.Store.commitUpdate(
-        new DeleteActionMutation({
-          actionId: this.props.action.id,
-          projectId: this.props.projectId,
-        }),
-      )
-    }
+    graphcoolConfirm('You\'re deleting this Mutation Callback')
+      .then(() => {
+        tracker.track(ConsoleEvents.MutationCallbacks.deleted())
+        Relay.Store.commitUpdate(
+          new DeleteActionMutation({
+            actionId: this.props.action.id,
+            projectId: this.props.projectId,
+          }),
+        )
+      })
   }
 
 }

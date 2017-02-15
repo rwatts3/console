@@ -18,10 +18,12 @@ import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
 import Loading from '../../components/Loading/Loading'
+import {onFailureShowNotification} from '../../utils/relay'
 
 interface State {
 
   loading: boolean
+  creating: boolean
 
   displayState: RelationPopupDisplayState
   leftSelectedModel: Model | null
@@ -63,6 +65,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
     this.state = {
       loading: false,
+      creating: Boolean(relation),
       displayState: 'DEFINE_RELATION' as RelationPopupDisplayState,
       leftSelectedModel: preselectedModel ? preselectedModel : relation ? relation.leftModel : null,
       rightSelectedModel: relation ? relation.rightModel : null,
@@ -181,6 +184,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                   switchDisplayState={this.switchToDisplayState}
                   close={this.close}
                   breakingChanges={[displayBreakingIndicatorOnLeftTab, displayBreakingIndicatorOnRightTab]}
+                  creating={this.state.creating}
                 />
                 {
                   displayState === 'DEFINE_RELATION' ?
@@ -565,7 +569,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },
@@ -597,7 +601,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },
@@ -618,7 +622,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           this.close()
         },
         onFailure: (transaction: Transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
         },
       },

@@ -136,10 +136,12 @@ class ModelHeader extends React.Component<Props, State> {
                     <span className={classes.system}>System</span>
                     :
                     <Icon
-                      width={32}
-                      height={32}
-                      src={require('graphcool-styles/icons/fill/settings.svg')}
-                      color={variables.gray10}
+                      width={38}
+                      height={38}
+                      src={require('graphcool-styles/icons/stroke/editSpaced.svg')}
+                      stroke
+                      strokeWidth={2}
+                      color={variables.gray20}
                       onClick={this.openEditModelModal}
                       className={cx(
                         particles.ml6,
@@ -283,26 +285,27 @@ class ModelHeader extends React.Component<Props, State> {
 
   private deleteModel = () => {
 
-    if (window.confirm('Do you really want to delete this model?')) {
-      this.props.router.replace(`/${this.props.params.projectName}/models`)
+    graphcoolConfirm('You are deleting this model.')
+      .then(() => {
+        this.props.router.replace(`/${this.props.params.projectName}/models`)
 
-      Relay.Store.commitUpdate(
-        new DeleteModelMutation({
-          projectId: this.props.project.id,
-          modelId: this.props.model.id,
-          fields: this.props.model.fields,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
-            this.props.forceFetchRoot()
+        Relay.Store.commitUpdate(
+          new DeleteModelMutation({
+            projectId: this.props.project.id,
+            modelId: this.props.model.id,
+            fields: this.props.model.fields,
+          }),
+          {
+            onSuccess: () => {
+              tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
+              this.props.forceFetchRoot()
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    }
+        )
+      })
   }
 
   private dataViewOnClick = () => {

@@ -1,7 +1,7 @@
 import * as cookiestore from 'cookiestore'
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import { Route, IndexRoute, IndexRedirect, Redirect } from 'react-router'
+import {Route, IndexRoute, IndexRedirect, Redirect} from 'react-router'
 import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
@@ -10,7 +10,6 @@ import ProjectRootView from './views/ProjectRootView/ProjectRootView'
 import RootRedirectView from './views/ProjectRootView/RootRedirectView'
 import TokenRedirectView from './views/ProjectRootView/TokenRedirectView'
 import ProjectSettingsView from './views/ProjectSettingsView/ProjectSettingsView'
-import RelationPopup from './views/RelationsView/RelationPopup'
 import RelationsView from './views/RelationsView/RelationsView'
 import RootView from './views/RootView/RootView'
 import SignUpView from './views/SignUpView/SignUpView'
@@ -24,26 +23,23 @@ import General from './views/Settings/General/General'
 import Authentication from './views/Settings/Authentication/Authentication'
 import Export from './views/Settings/Export/Export'
 import Team from './views/Settings/Team/Team'
+import Billing from './views/Settings/Billing/Billing'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/FieldPopup/FieldPopup'
 import SchemaView from './views/models/SchemaView/SchemaView'
 import AuthProviderPopup from './views/models/AuthProviderPopup/AuthProviderPopup'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
-import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
+import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
-import AlgoliaPopup from './views/Integrations/AlgoliaPopup/AlgoliaPopup'
 import AlgoliaView from './views/Integrations/Algolia/AlgoliaView'
-
-import {
-  AlgoliaEditIndexPopup,
-  AlgoliaCreateIndexPopup,
-} from './views/Integrations/AlgoliaPopup/AlgoliaIndexPopup/AlgoliaIndexPopup'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
-import { ConsoleEvents } from 'graphcool-metrics'
+import {ConsoleEvents} from 'graphcool-metrics'
 import CreateRelationPopup from './views/RelationsPopup/CreateRelationPopup'
+import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
+import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -105,8 +101,6 @@ const render = ({error, props, routerProps, element}) => {
     </div>
   )
 }
-// <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
-// <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
 
 export default (
   <Route path='/' component={RootView}>
@@ -123,6 +117,10 @@ export default (
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
         <Route path='export' component={Export} queries={ViewerQuery} render={render} />
+        <Route path='billing' component={Billing} queries={ViewerQuery} render={render} >
+          <Route path='change-plan/:plan' component={ChangePricingPlan} render={render} />
+          <Route path='confirm-plan/:plan' component={ConfirmPricingPlan} queries={ViewerQuery} render={render} />
+        </Route>
         <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
@@ -162,15 +160,3 @@ export default (
     </Route>
   </Route>
 )
-// <Route path='algolia' component={AlgoliaPopup} queries={ViewerQuery} render={render}>
-//   <Route
-//     path='edit/:id'
-//     component={AlgoliaEditIndexPopup}
-//     queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-//     render={render}/>
-//   <Route
-// path='create'
-// component={AlgoliaCreateIndexPopup}
-// queries={ViewerQuery}
-// render={render}/>
-//   </Route>

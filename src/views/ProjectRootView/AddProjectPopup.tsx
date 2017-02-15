@@ -1,144 +1,111 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {ReduxAction} from '../../types/reducers'
-import {closePopup} from '../../actions/popup'
-import styled from 'styled-components'
-import {particles, variables} from 'graphcool-styles'
-import * as cx from 'classnames'
+import * as Modal from 'react-modal'
+import {fieldModalStyle} from '../../utils/modalStyle'
+import FloatingInput from '../../components/FloatingInput/FloatingInput'
+import Loading from '../../components/Loading/Loading'
 
 interface Props {
-  id: string
-  closePopup: (id: string) => ReduxAction
+  projectName: string
+  onChangeProjectName: (projectName: string) => void
+  onRequestClose: () => void
+  onSubmit: () => void
+  isOpen: boolean
+  error: boolean
+  showError: boolean
+  loading: boolean
 }
 
-interface State {
+const modalStyling = {
+  ...fieldModalStyle,
+  content: {
+    ...fieldModalStyle.content,
+    width: 450,
+  },
 }
 
-class AddProjectPopup extends React.Component<Props, State> {
-
+export default class AddProjectPopup extends React.Component<Props, null> {
   render() {
-
-    const Popup = styled.div`
-      width: 600px;
-      max-width: 90%;
-    `
-
-    const NameInput = styled.input`
-      &::-webkit-input-placeholder {
-      color: ${variables.gray20};
-      opacity: 1;
-    }
-      &::-moz-placeholder { 
-        color: ${variables.gray20};
-        opacity: 1;
-      }
-      &:-ms-input-placeholder { 
-        color: ${variables.gray20};
-        opacity: 1;
-      }
-      &:-moz-placeholder {
-        color: ${variables.gray20};
-        opacity: 1;
-      }
-    `
-
-    const Warning = styled.div`
-      bottom: -24px
-    `
-
-    const Button = styled.button`
-      padding: ${variables.size16};
-      font-size: ${variables.size16};
-      border: none;
-      background: none;
-      color: ${variables.gray50};
-      border-radius: 2px;
-      cursor: pointer;
-      transition: color ${variables.duration} linear;
-      
-      &:hover {
-        color: ${variables.gray70};
-      }
-    `
-
-    const SaveButton = styled(Button)`
-      background: ${variables.green};
-      color: ${variables.white};
-      
-      &:hover {
-        color: ${variables.white};
-      }
-    `
-
+    const {projectName, isOpen, onChangeProjectName, onRequestClose, onSubmit, error, loading, showError} = this.props
     return (
-      <div
-        className={cx(
-          particles.flex,
-          particles.bgBlack50,
-          particles.w100,
-          particles.h100,
-          particles.justifyCenter,
-          particles.itemsCenter,
-        )}
+      <Modal
+        isOpen={isOpen}
+        contentLabel='Alert'
+        style={modalStyling}
+        onRequestClose={onRequestClose}
       >
-        <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
-          <div className={cx(particles.relative, particles.pa60)}>
-
-            <div className={cx(particles.relative)}>
-              <Warning className={cx(
-                particles.absolute,
-                particles.left0,
-                particles.orange,
-                particles.f14,
-              )}>
-                A project name has to start with a capital letter and may only contain alphanumeric characters
-                and spaces.
-              </Warning>
-              <NameInput
-                className={cx(
-                  particles.fw3,
-                  particles.f38,
-                  particles.bNone,
-                  particles.lhSolid,
-                  particles.tl,
-                )}
-                type='text'
-                autoFocus
-                placeholder='New Project...'
-              />
-            </div>
-
-          </div>
-          <div
-            className={cx(
-              particles.bt,
-              particles.bBlack10,
-              particles.pa25,
-              particles.flex,
-              particles.justifyBetween,
+        <style jsx>{`
+          .add-project {
+            @p: .buttonShadow, .relative;
+          }
+          .body {
+            @p: .bgWhite, .pa38;
+          }
+          .footer {
+            @p: .pa25, .flex, .justifyBetween, .itemsCenter, .bt, .bBlack10;
+            background: rgb(250,250,250);
+          }
+          .button {
+            @p: .br2, .pointer;
+            padding: 9px 16px 10px 16px;
+          }
+          .warning {
+            @p: .white, .bgLightOrange;
+          }
+          .cancel {
+            @p: .black50;
+          }
+          .green {
+            @p: .white, .bgGreen;
+          }
+          .button.disabled {
+            @p: .bgBlack20;
+          }
+          .title {
+            @p: .f38, .fw3, .tc, .pb25;
+          }
+          .add-project :global(.label) {
+            @p: .f16, .pa16, .black50, .fw3;
+          }
+          .add-project :global(.input) {
+            @p: .pa16, .br2, .bn, .mb10, .f25, .fw3;
+            line-height: 1.5;
+          }
+          .error {
+            @p: .f14, .red;
+          }
+          .loading {
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .z2, .bgWhite80, .flex, .justifyCenter, .itemsCenter;
+          }
+        `}</style>
+        <div className='add-project'>
+          <div className='body'>
+            <div className='title'>New Project</div>
+            <FloatingInput
+              labelClassName='label'
+              className='input'
+              label='Project Name'
+              placeholder='Choose a project name'
+              value={projectName}
+              onChange={onChangeProjectName}
+              autoFocus
+            />
+            {showError && error && (
+              <div className='error'>
+                The project name must begin with an uppercase letter
+              </div>
             )}
-          >
-            <Button onClick={() => this.props.closePopup(this.props.id)}>
-              Cancel
-            </Button>
-            <SaveButton>
-              Create
-            </SaveButton>
           </div>
-        </Popup>
-      </div>
+          <div className='footer'>
+            <div className='button cancel' onClick={onRequestClose}>Cancel</div>
+            <div className={'button green' + (error ? ' disabled' : '')} onClick={onSubmit}>Ok</div>
+          </div>
+          {loading && (
+            <div className='loading'>
+              <Loading />
+            </div>
+          )}
+        </div>
+      </Modal>
     )
   }
 }
-
-const mapStateToProps = (state) => ({})
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({closePopup}, dispatch)
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddProjectPopup)

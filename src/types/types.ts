@@ -14,6 +14,7 @@ export interface Viewer {
   user: Customer
   model: Model
   project: Project
+  crm: any
 }
 
 export interface Customer {
@@ -37,6 +38,7 @@ export interface CrmSystemBridge {
   id: string
   information: CrmCustomerInformation
   onboardingStatus: CrmOnboardingStatus
+  customer: Customer
 }
 
 export interface CrmCustomerInformation {
@@ -48,7 +50,7 @@ export interface CrmCustomerInformation {
 export type Environment = 'Node' | 'Browser'
 export type GraphQLClient = 'fetch' | 'lokka' | 'relay' | 'apollo'
 
-export type Example = 'ReactRelay' | 'ReactNativeApollo' | 'ReactApollo' | 'AngularApollo'
+export type Example = 'ReactRelay' | 'ReactNativeApollo' | 'ReactApollo' | 'AngularApollo' | 'VueApollo'
 
 export interface CrmOnboardingStatus {
   id: string
@@ -60,6 +62,7 @@ export interface CrmOnboardingStatus {
 export interface Project {
   id: string
   name: string
+  alias: string
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>
@@ -69,6 +72,11 @@ export interface Project {
   actionSchema: string
   schema: string
   seats: RelayConnection<Seat>
+  projectBillingInformation: ProjectBillingInformation
+}
+
+export interface ProjectBillingInformation {
+  plan: string
 }
 
 export interface Integration {
@@ -158,6 +166,13 @@ export interface Model {
   isSystem: boolean
   permissions: ModelPermission[]
   permissionSchema: string
+  permissionQueryArguments: PermissionQueryArgument[]
+}
+
+export interface PermissionQueryArgument {
+  name: string
+  typeName: string
+  group: string
 }
 
 export interface ModelPermission {
@@ -282,4 +297,53 @@ export interface Constraint {
   type: ConstraintType
   value: string
   lengthOperator?: Operator
+}
+
+export type PricingPlan = '2017-02-free' | '2017-02-project' | '2017-02-startup' | '2017-02-growth' | 'enterprise'
+
+export interface PricingPlanInfo {
+  name: string
+  price: number
+  maxStorage: number
+  maxRequests: number
+  maxSeats: number
+  pricePerAdditionalMB: number
+  pricePerThousandAdditionalRequests: number
+}
+
+export type CreditCardInputDisplayState = 'CREDIT_CARD_DATA' | 'ADDRESS_DATA'
+
+export interface PermissionVariable {
+  name: string
+  typeIdentifier: FieldType
+  category?: string
+  isRequired: boolean
+  isList: boolean
+}
+
+export interface Invoice {
+  overageRequests: number
+  overageStorage: number
+  timestamp: string
+  total: number
+  usageRequests: number[]
+  usageStorage: number[]
+}
+
+export interface CreditCardInfo {
+  last4: string
+  expMonth: number
+  expYear: number
+  cardHolderName: string
+  addressLine1: string
+  addressLine2?: string
+  addressCity: string
+  addressZip: string
+  addressState: string
+  addressCountry: string
+}
+
+export interface ProjectBillingInformation {
+  plan: string
+  invoices: Invoice[]
 }

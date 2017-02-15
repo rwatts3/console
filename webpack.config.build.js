@@ -70,6 +70,7 @@ module.exports = {
       __METRICS_ENDPOINT__: process.env.METRICS_ENDPOINT ? JSON.stringify(process.env.METRICS_ENDPOINT.toString()) : false,
       __GA_CODE__: process.env.GA_CODE ? JSON.stringify(process.env.GA_CODE.toString()) : false,
       __INTERCOM_ID__: '"mamayuvj"',
+      __STRIPE_PUBLISHABLE_KEY__: '"pk_live_WeGxtEVBQ8j4R2PLzePTcn1l"',
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
       },
