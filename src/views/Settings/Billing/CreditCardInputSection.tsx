@@ -72,8 +72,8 @@ class CreditCardInputSection extends React.Component<Props, State> {
     }).node
 
     const creditCard = project.projectBillingInformation.creditCard
-    const expirationYear = creditCard.expYear.toString().substr(2,2)
-    const expirationDate = creditCard ?  creditCard.expMonth + '/' + expirationYear : ''
+    const expirationYear = creditCard ? creditCard.expYear.toString().substr(2,2) : ''
+    const expirationDate = creditCard ? creditCard.expMonth + '/' + expirationYear : ''
 
     return (
       <div className='creditCardInputSectionContainer'>
@@ -474,18 +474,15 @@ class CreditCardInputSection extends React.Component<Props, State> {
     const countryValid = this.state.country.length > 0
     const addressValid = addressLine1Valid && zipcodeValid && stateValid && cityValid && countryValid
 
-    if (addressValid) {
-      this.setState({addressDataValid: true} as State)
-    }
+    this.setState({addressDataValid: addressValid} as State)
   }
 
   private validateCreditCardDetails = () => {
     const isCreditCardNumberValid = creditCardNumberValid(this.state.creditCardNumber)
     const isExpirationDateValid = expirationDateValid(this.state.expirationDate)
     const isCPCValid = cpcValid(this.state.cpc)
-    if (isCreditCardNumberValid && isExpirationDateValid && isCPCValid) {
-      this.setState({creditCardDetailsValid: true} as State)
-    }
+    this.setState({creditCardDetailsValid: isCreditCardNumberValid && isExpirationDateValid && isCPCValid} as State)
+
   }
 
   private handleKeyDown = (e) => {

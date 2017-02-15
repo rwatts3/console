@@ -40,6 +40,7 @@ interface Props {
   cpc: string
   children: JSX.Element
 
+  relay: any
 }
 
 class Billing extends React.Component<Props, State> {
@@ -53,65 +54,26 @@ class Billing extends React.Component<Props, State> {
       return edge.node.name === this.props.projectName
     }).node
 
-    const creditCard = project.projectBillingInformation.creditCard
-    const expirationYear = creditCard.expYear.toString().substr(2,2)
-    const expirationDate = creditCard ?  creditCard.expMonth + '/' + expirationYear : ''
-
     this.state = {
 
-      newCreditCardNumber: creditCard ? 'XXXX XXXX XXXX ' + creditCard.last4 : '',
-      newCardHolderName: creditCard ? creditCard.name : '',
-      newExpirationDate: expirationDate,
+      newCreditCardNumber: '',
+      newCardHolderName: '',
+      newExpirationDate: '',
       newCPC: '',
-      newAddressLine1: creditCard ? creditCard.addressLine1 : '',
-      newAddressLine2: creditCard ? creditCard.addressLine2 : '',
-      newZipCode: creditCard ? creditCard.addressZip : '',
-      newState: creditCard ? creditCard.addressState : '',
-      newCity: creditCard ? creditCard.addressCity : '',
-      newCountry: creditCard ? creditCard.addressCountry : '',
-
-      // newCreditCardNumber: 'XXXX XXXX XXXX 8345',
-      // newCardHolderName: 'Nikolas Burk',
-      // newExpirationDate: '07/21',
-      // newCPC: '123',
-      // newAddressLine1: 'Hufnertwiete 2',
-      // newAddressLine2: '',
-      // newZipCode: '22305',
-      // newState: 'HH',
-      // newCity: 'Hamburg',
-      // newCountry: 'Germany',
+      newAddressLine1: '',
+      newAddressLine2: '',
+      newZipCode: '',
+      newState: '',
+      newCity: '',
+      newCountry: '',
 
       isEditingCreditCardInfo: false,
 
-      creditCardDetailsValid: true,
-      addressDataValid: true,
+      creditCardDetailsValid: false,
+      addressDataValid: false,
 
       isLoading: false,
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-
-    const project = nextProps.viewer.crm.crm.customer.projects.edges.find(edge => {
-      return edge.node.name === this.props.projectName
-    }).node
-
-    const creditCard = project.projectBillingInformation.creditCard
-    const expirationYear = creditCard.expYear.toString().substr(2,2)
-    const expirationDate = creditCard ?  creditCard.expMonth + '/' + expirationYear : ''
-
-    this.setState({
-      newCreditCardNumber: creditCard ? 'XXXX XXXX XXXX ' + creditCard.last4 : '',
-      newCardHolderName: creditCard ? creditCard.name : '',
-      newExpirationDate: expirationDate,
-      newCPC: '',
-      newAddressLine1: creditCard ? creditCard.addressLine1 : '',
-      newAddressLine2: creditCard ? creditCard.addressLine2 : '',
-      newZipCode: creditCard ? creditCard.addressZip : '',
-      newState: creditCard ? creditCard.addressState : '',
-      newCity: creditCard ? creditCard.addressCity : '',
-      newCountry: creditCard ? creditCard.addressCountry : '',
-    } as State)
   }
 
   render() {
@@ -122,6 +84,10 @@ class Billing extends React.Component<Props, State> {
     }).node
     const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
     const currentInvoice = invoices[invoices.length - 1]
+    const creditCard = project.projectBillingInformation.creditCard
+    const expirationYear = creditCard ? creditCard.expYear.toString().substr(2,2) : ''
+    const creditCardNumber = creditCard ? 'XXXX XXXX XXXX ' + creditCard.last4 : ''
+    const expirationDate = creditCard ? creditCard.expMonth + '/' + expirationYear : ''
 
     return (
       <div className={`container ${this.state.isEditingCreditCardInfo && 'bottomPadding'}`}>
@@ -165,16 +131,16 @@ class Billing extends React.Component<Props, State> {
         {!this.state.isLoading ?
           (project.projectBillingInformation.creditCard &&
             <CreditCardInformation
-              creditCardNumber={this.state.newCreditCardNumber}
-              cardHolderName={this.state.newCardHolderName}
-              expirationDate={this.state.newExpirationDate}
-              cpc={this.state.newCPC}
               onCreditCardNumberChange={this.updateCreditCardNumber}
               onCardHolderNameChange={(newValue) => this.setState({newCardHolderName: newValue} as State)}
               onExpirationDateChange={this.updateExpirationDate}
               onCPCChange={this.updateCPC}
               setEditingState={this.setEditingState}
               isEditing={this.state.isEditingCreditCardInfo}
+              creditCardNumber={this.state.isEditingCreditCardInfo ? this.state.newCreditCardNumber : creditCardNumber}
+              cardHolderName={this.state.isEditingCreditCardInfo ? this.state.newCardHolderName : creditCard.name}
+              expirationDate={this.state.isEditingCreditCardInfo ? this.state.newExpirationDate : expirationDate}
+              cpc={this.state.newCPC}
               addressLine1={this.state.newAddressLine1}
               addressLine2={this.state.newAddressLine2}
               zipCode={this.state.newZipCode}
@@ -208,14 +174,20 @@ class Billing extends React.Component<Props, State> {
     } else {
       newCPC = newValue
     }
-    this.setState({newCPC: newCPC} as State)
+    this.setState(
+      {newCPC: newCPC} as State,
+      () => this.validateCreditCardDetails(),
+    )
   }
 
   private updateExpirationDate = (newValue) => {
     if (newValue.length > 5) {
       return
     }
-    this.setState({newExpirationDate: newValue} as State)
+    this.setState(
+      {newExpirationDate: newValue} as State,
+      () => this.validateCreditCardDetails(),
+    )
 
     // let newExpirationDate
     // let expirationDateWithoutSlash = newValue.replace('/', '')
@@ -234,7 +206,10 @@ class Billing extends React.Component<Props, State> {
     if (newValue.length > 4 && !newValue.includes(' ')) {
       const chunks = chunk(newValue, 4, true)
       const newCreditCardNumber = chunks.join(' ')
-      this.setState({newCreditCardNumber: newCreditCardNumber} as State)
+      this.setState(
+        {newCreditCardNumber: newCreditCardNumber} as State,
+        () => this.validateCreditCardDetails(),
+      )
       return
     }
 
@@ -272,19 +247,15 @@ class Billing extends React.Component<Props, State> {
     const cityValid = this.state.newCity.length > 0
     const countryValid = this.state.newCountry.length > 0
     const addressValid = addressLine1Valid && zipcodeValid && stateValid && cityValid && countryValid
+    this.setState({addressDataValid: addressValid} as State)
 
-    if (addressValid) {
-      this.setState({addressDataValid: true} as State)
-    }
   }
 
   private validateCreditCardDetails = () => {
     const isCreditCardNumberValid = creditCardNumberValid(this.state.newCreditCardNumber)
     const isExpirationDateValid = expirationDateValid(this.state.newExpirationDate)
     const isCPCValid = cpcValid(this.state.newCPC)
-    if (isCreditCardNumberValid && isExpirationDateValid && isCPCValid) {
-      this.setState({creditCardDetailsValid: true} as State)
-    }
+    this.setState({creditCardDetailsValid: isCreditCardNumberValid && isExpirationDateValid && isCPCValid} as State)
   }
 
   private onAddressDataChange = (fieldName: string, newValue: string) => {
@@ -381,6 +352,7 @@ class Billing extends React.Component<Props, State> {
             isEditingCreditCardInfo: false,
             isLoading: false,
           } as State)
+          this.props.relay.forceFetch()
         },
         onFailure: (transaction) => {
           // this.props.showNotification({message: transaction.getError().message, level: 'error'})

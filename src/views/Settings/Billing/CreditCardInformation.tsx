@@ -4,9 +4,6 @@ import EditCreditCard from './EditCreditCard'
 import {Invoice} from '../../../types/types'
 import {mmDDyyyyFromTimestamp} from '../../../utils/utils'
 
-interface State {
-}
-
 interface Props {
   creditCardNumber: string
   cardHolderName: string
@@ -16,6 +13,7 @@ interface Props {
   onCardHolderNameChange: Function
   onExpirationDateChange: Function
   onCPCChange: Function
+
   isEditing: boolean
   setEditingState: Function
 
@@ -35,11 +33,11 @@ interface Props {
   invoices: Invoice[]
 }
 
-export default class CreditCardInformation extends React.Component<Props, State> {
+export default class CreditCardInformation extends React.Component<Props, {}> {
 
   render() {
     return (
-      <div className={`container ${this.props.isEditing ? 'bgWhite' : 'bgBlack04'}`}>
+      <div className={`container ${this.props.isEditing ? 'bgWhite height350' : 'bgBlack04'}`}>
         <style jsx={true}>{`
 
           .container {
@@ -51,15 +49,19 @@ export default class CreditCardInformation extends React.Component<Props, State>
             @p: .mb38, .black30, .fw6, .f14, .ttu;
           }
 
-          .editingContainer {
+          .paddingBottom110 {
             padding-bottom: 110px;
+          }
+
+          .height350 {
+            height: 350px;
           }
 
         `}</style>
 
         {this.props.isEditing ?
           (
-            <div className='editingContainer'>
+            <div className={''}>
               <div className='title'>Credit Card Information</div>
               {this.creditCardInEditingState()}
             </div>

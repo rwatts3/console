@@ -60,9 +60,9 @@ export default class CreditCardBack extends React.Component<Props, {}> {
 
   private handleKeyDown = (e) => {
     if (e.keyCode === ENTER_KEY) {
-      this.props.setEditingState(false, true)
+      // this.props.setEditingState(false, true)
     } else if (e.keyCode === ESCAPE_KEY) {
-      this.props.setEditingState(false, false)
+      // this.props.setEditingState(false, false)
     }
   }
 }

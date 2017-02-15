@@ -49,12 +49,6 @@ export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
 
   getConfigs () {
     return []
-  //   return [{
-  //     type: 'FIELDS_CHANGE',
-  //     fieldIDs: {
-  //       project: this.props.projectId,
-  //     },
-  //   }]
   }
 
   getVariables () {

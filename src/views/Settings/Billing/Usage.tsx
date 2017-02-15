@@ -25,7 +25,7 @@ export default class Usage extends React.Component<Props, {}> {
 
   render() {
 
-    const maxSeats = 2
+    const maxSeats = billingInfo[this.props.plan].maxSeats
 
     const period = '(' + this.props.lastInvoiceDate + ' - ' + todayString() + ')'
 

@@ -14,6 +14,7 @@ interface State {
 interface Props {
   router: ReactRouter.InjectedRouter
   viewer: Viewer
+  projectName: string
   params: any
 }
 
@@ -24,6 +25,8 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
   }
 
   render() {
+
+    console.log('ConfirmPricingPlan', this.props)
 
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName

@@ -31,7 +31,7 @@ interface Props {
   addressDataValid: boolean
 
   onAddressDataChange: Function
-onSaveChanges: Function
+  onSaveChanges: Function
 }
 
 export default class EditCreditCard extends React.Component<Props, State> {
@@ -47,7 +47,6 @@ export default class EditCreditCard extends React.Component<Props, State> {
   private inputForCurrentDisplayState = () => {
 
     if (this.state.displayState === 'CREDIT_CARD_DATA') {
-      console.log('render - CREDIT_CARD_DATA')
       return (
         <div>
           <style jsx={true}>{`
@@ -69,6 +68,7 @@ export default class EditCreditCard extends React.Component<Props, State> {
               onCreditCardNumberChange={this.props.onCreditCardNumberChange}
               onCardHolderNameChange={this.props.onCardHolderNameChange}
               onExpirationDateChange={this.props.onExpirationDateChange}
+              onKeyDown={this.handleKeyDown}
             />
             <CreditCardBack
               className='absolute'
@@ -76,15 +76,12 @@ export default class EditCreditCard extends React.Component<Props, State> {
               didChangeCPC={this.props.onCPCChange}
               style={{right: '75px', top: '20px'}}
               setEditingState={this.props.setEditingState}
+              onKeyDown={this.handleKeyDown}
             />
-            <div className={`toggleDisplayStateButton ${!this.props.creditCardDetailsValid && '50'}`}>
+            <div className={`toggleDisplayStateButton ${!this.props.creditCardDetailsValid && 'o50'}`}>
               <div
                 className='blue'
-                onClick={() => {
-                  const newDisplayState = this.state.displayState === 'CREDIT_CARD_DATA' ?
-                    'ADDRESS_DATA' : 'CREDIT_CARD_DATA'
-                  this.setState({displayState: newDisplayState} as State)
-                }}
+                onClick={() => this.setState({displayState: 'ADDRESS_DATA'} as State)}
               >Edit Address</div>
               <Icon
                 className='ml6'
@@ -96,6 +93,7 @@ export default class EditCreditCard extends React.Component<Props, State> {
         </div>
       )
     } else if (this.state.displayState === 'ADDRESS_DATA') {
+      console.log('SHOW ADDRESS DATA')
       return (
         <div>
           {this.addressDataInput()}
@@ -251,20 +249,21 @@ export default class EditCreditCard extends React.Component<Props, State> {
   }
 
   private handleKeyDown = (e) => {
+    console.log('KEY_DOWN', e.keyCode)
     if (e.keyCode === ENTER_KEY) {
-      // if (!this.state.displayAddressDataInput) {
-      //   if (this.state.creditCardDetailsValid) {
-      //     this.setState({displayAddressDataInput: true} as State)
-      //   }
-      // } else {
-      //   if (this.state.addressDataValid) {
-      //     this.onConfirm()
-      //   }
-      // }
+      if (this.state.displayState === 'CREDIT_CARD_DATA') {
+        if (this.props.creditCardDetailsValid) {
+          console.log('switch display state to ADDRESS_DATA')
+          this.setState({displayState: 'ADDRESS_DATA'} as State)
+        }
+      } else {
+        if (this.props.addressDataValid) {
+          this.props.onSaveChanges()
+        }
+      }
+
     } else if (e.keyCode === ESCAPE_KEY) {
-      // if (this.state.displayAddressDataInput) {
-      //   this.setState({displayAddressDataInput: false} as State)
-      // }
+      this.props.setEditingState(false, false)
     }
   }
 

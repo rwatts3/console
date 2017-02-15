@@ -19,7 +19,8 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
     const columnHeights = this.calculateColumnHeights()
     const today = todayString()
     const maxMB = billingInfo[this.props.plan].maxStorage
-    const maxString = '/ ' + maxMB + ' MB Database (Date: ' + today + ')'
+    const maxStorageString = maxMB >= 1000 ? (maxMB / 1000) + ' GB' : maxMB + ' MB'
+    const maxString = '/ ' + maxStorageString + ' Database (Date: ' + today + ')'
     const color = this.barColor(1)
     return (
       <div className='flex flexColumn'>
