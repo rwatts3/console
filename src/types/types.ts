@@ -332,8 +332,8 @@ export interface Invoice {
 
 export interface CreditCardInfo {
   last4: string
-  expirationMonth: number
-  expirationYear: number
+  expMonth: number
+  expYear: number
   cardHolderName: string
   addressLine1: string
   addressLine2?: string

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {PricingPlan} from '../../../types/types'
+import {PricingPlan, Viewer} from '../../../types/types'
 import PricingColumn from '../PricingColumn'
 import CreditCardFront from './CreditCardFront'
 import CreditCardBack from './CreditCardBack'
@@ -8,11 +8,11 @@ import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../uti
 import {Icon} from 'graphcool-styles'
 import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 import * as Relay from 'react-relay'
-import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
+import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import SetPlanMutation from '../../../mutations/SetPlanMutation'
 
 interface State {
@@ -37,10 +37,12 @@ interface State {
 interface Props {
   plan: PricingPlan
   projectId: string
+  projectName: string
   goBack?: Function
   setLoading?: Function
   close?: Function
   showNotification: ShowNotificationCallback
+  viewer: Viewer
 }
 
 class CreditCardInputSection extends React.Component<Props, State> {
@@ -63,9 +65,17 @@ class CreditCardInputSection extends React.Component<Props, State> {
   }
 
   render() {
-    Stripe.setPublishableKey('pk_test_BpvAdppmXbqmkv8NQUqHRplE')
-    return (
 
+    console.log('CreditCardInputSection - render', this.props)
+    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
+      return edge.node.name === this.props.projectName
+    }).node
+
+    const creditCard = project.projectBillingInformation.creditCard
+    const expirationYear = creditCard.expYear.toString().substr(2,2)
+    const expirationDate = creditCard ?  creditCard.expMonth + '/' + expirationYear : ''
+
+    return (
       <div className='creditCardInputSectionContainer'>
         <style global jsx={true}>{`
 
@@ -84,6 +94,10 @@ class CreditCardInputSection extends React.Component<Props, State> {
             top: 45px;
           }
 
+          .purchaseButton {
+            @p: .white, .bgGreen, .br2, .buttonShadow, .mb25, .ph16, .pv10, .pointer;
+          }
+
         `}</style>
 
         <PricingColumn
@@ -95,15 +109,31 @@ class CreditCardInputSection extends React.Component<Props, State> {
           isDisplayedInConfirmPlan={true}
         />
 
-        {!this.state.displayAddressDataInput &&
+        {creditCard &&
+        <div className='flex flexColumn itemsEnd pt60 pl96'>
+          <CreditCardFront
+            creditCardNumber={`XXXX XXXX XXXX ${creditCard.last4}`}
+            cardHolderName={creditCard.name}
+            expirationDate={expirationDate}
+            isEditing={false}
+            shouldDisplayVisaLogo={true}
+          />
+          <div
+            className={`mt38 purchaseButton`}
+            onClick={() => this.onConfirm(false)}
+          >
+            Purchase
+          </div>
+        </div>}
+
+        {!this.state.displayAddressDataInput && !creditCard &&
         this.creditCardInput()}
 
-        {!this.state.displayAddressDataInput &&
+        {!this.state.displayAddressDataInput && !creditCard &&
         this.moveToAddressInputButtons()}
 
-        {this.state.displayAddressDataInput &&
+        {this.state.displayAddressDataInput && !creditCard &&
         this.fullAddressDataInput()}
-
       </div>
     )
   }
@@ -285,8 +315,8 @@ class CreditCardInputSection extends React.Component<Props, State> {
         </div>
 
         <div
-          className={`purchaseButton ${!this.state.addressDataValid && 'o50'}`}
-          onClick={() => this.onConfirm()}
+          className={`purchaseButton mr25 ${!this.state.addressDataValid && 'o50'}`}
+          onClick={() => this.onConfirm(true)}
         >
           Purchase
         </div>
@@ -342,32 +372,51 @@ class CreditCardInputSection extends React.Component<Props, State> {
     }
   }
 
-  private onConfirm = () => {
-
-    const expirationDateComponents = this.state.expirationDate.split('/')
-    const expirationMonth = expirationDateComponents[0]
-    const expirationYear = expirationDateComponents[1]
+  private onConfirm = (shouldUpdateCreditCard: boolean) => {
 
     this.props.setLoading(true)
 
-    if (this.state.creditCardDetailsValid && this.state.addressDataValid) {
-      Stripe.card.createToken(
+    if (shouldUpdateCreditCard) {
+      const expirationDateComponents = this.state.expirationDate.split('/')
+      const expirationMonth = expirationDateComponents[0]
+      const expirationYear = expirationDateComponents[1]
+
+      if (this.state.creditCardDetailsValid && this.state.addressDataValid) {
+        Stripe.card.createToken(
+          {
+            number: this.state.creditCardNumber,
+            cvc: this.state.cpc,
+            exp_month: expirationMonth,
+            exp_year: expirationYear,
+            name: this.state.cardHolderName,
+            address_line1: this.state.addressLine1,
+            address_line2: this.state.addressLine2,
+            address_city: this.state.city,
+            address_state: this.state.state,
+            address_zip: this.state.zipCode,
+            address_country: this.state.country,
+          },
+          this.stripeResponseHandler,
+        )
+      }
+    } else {
+      Relay.Store.commitUpdate(
+        new SetPlanMutation({
+          projectId: this.props.projectId,
+          plan: this.props.plan,
+        }),
         {
-          number: this.state.creditCardNumber,
-          cvc: this.state.cpc,
-          exp_month: expirationMonth,
-          exp_year: expirationYear,
-          name: this.state.cardHolderName,
-          address_line1: this.state.addressLine1,
-          address_line2: this.state.addressLine2,
-          address_city: this.state.city,
-          address_state: this.state.state,
-          address_zip: this.state.zipCode,
-          address_country: this.state.country,
+          onSuccess: () => {
+            this.props.close()
+          },
+          onFailure: (transaction) => {
+            this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            this.props.setLoading(false)
+          },
         },
-        this.stripeResponseHandler,
       )
     }
+
 
   }
 
@@ -397,7 +446,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
             }),
             {
               onSuccess: () => {
-                console.log('did set credit card')
+                console.log('did set plan')
 
                 this.props.close()
               },
@@ -448,7 +497,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
         }
       } else {
         if (this.state.addressDataValid) {
-          this.onConfirm()
+          this.onConfirm(true)
         }
       }
     } else if (e.keyCode === ESCAPE_KEY) {
@@ -464,4 +513,41 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({showNotification}, dispatch)
 }
 
-export default connect(null, mapDispatchToProps)(CreditCardInputSection)
+const mappedCreditCardInputSection = connect(null, mapDispatchToProps)(CreditCardInputSection)
+
+export default Relay.createContainer(mappedCreditCardInputSection, {
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        crm: user {
+          name
+          crm {
+            customer {
+              id
+              projects(first: 1000) {
+                edges {
+                  node {
+                    name
+                    projectBillingInformation {
+                      creditCard {
+                        addressCity
+                        addressCountry
+                        addressLine1
+                        addressLine2
+                        addressState
+                        addressZip
+                        expMonth
+                        expYear
+                        last4
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`,
+  },
+})

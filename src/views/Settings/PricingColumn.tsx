@@ -59,7 +59,7 @@ export default class PricingColumn extends React.Component<Props, {}> {
       <div
         className={`pricingColumnContainer
           ${this.props.className || ''}
-          ${this.props.isDisplayedInConfirmPlan && 'width264 mb16'}`}
+          ${this.props.isDisplayedInConfirmPlan && 'width220 mb16'}`}
         style={{backgroundColor: this.backgroundColor()}}
       >
         <style global jsx={true}>{`
@@ -78,8 +78,8 @@ export default class PricingColumn extends React.Component<Props, {}> {
             padding-top: 5px;
           }
 
-          .width264 {
-            width: 264px;
+          .width220 {
+            width: 220px;
           }
 
         `}</style>

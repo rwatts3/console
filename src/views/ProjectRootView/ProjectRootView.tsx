@@ -66,6 +66,9 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
     this.updateForceFetching()
 
+    console.log('init stripe with key', __STRIPE_PUBLISHABLE_KEY__)
+    Stripe.setPublishableKey(__STRIPE_PUBLISHABLE_KEY__)
+
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
     if (__HEARTBEAT_ADDR__) {
@@ -90,6 +93,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
   componentWillMount() {
     if (this.props.isLoggedin) {
+
       tracker.identify(this.props.user.id, this.props.project.id)
 
       retryUntilDone((done) => {

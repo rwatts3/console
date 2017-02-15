@@ -78,7 +78,9 @@ export default class CurrentPlan extends React.Component<Props, State> {
             <Link
               to={`/${this.props.projectName}/settings/billing/change-plan/${this.props.plan}`}
             >
-              <div className={`actionButton ${actionButtonColor}`}>Upgrade Plan</div>
+              <div className={`actionButton ${actionButtonColor}`}>
+                {plan.includes('free') ? 'Upgrade' : 'Change'} Plan
+              </div>
             </Link>
           </div>
         </div>

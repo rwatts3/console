@@ -47,12 +47,15 @@ class Billing extends React.Component<Props, State> {
   constructor(props) {
     super(props)
 
+    console.log('Billing - constructor', props)
+
     const project = props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName
     }).node
 
     const creditCard = project.projectBillingInformation.creditCard
-    const expirationDate = creditCard ?  creditCard.expirationMonth + '/' + creditCard.expirationYear : ''
+    const expirationYear = creditCard.expYear.toString().substr(2,2)
+    const expirationDate = creditCard ?  creditCard.expMonth + '/' + expirationYear : ''
 
     this.state = {
 
@@ -85,8 +88,30 @@ class Billing extends React.Component<Props, State> {
 
       isLoading: false,
     }
+  }
 
-    Stripe.setPublishableKey('pk_test_BpvAdppmXbqmkv8NQUqHRplE')
+  componentWillReceiveProps(nextProps) {
+
+    const project = nextProps.viewer.crm.crm.customer.projects.edges.find(edge => {
+      return edge.node.name === this.props.projectName
+    }).node
+
+    const creditCard = project.projectBillingInformation.creditCard
+    const expirationYear = creditCard.expYear.toString().substr(2,2)
+    const expirationDate = creditCard ?  creditCard.expMonth + '/' + expirationYear : ''
+
+    this.setState({
+      newCreditCardNumber: creditCard ? 'XXXX XXXX XXXX ' + creditCard.last4 : '',
+      newCardHolderName: creditCard ? creditCard.name : '',
+      newExpirationDate: expirationDate,
+      newCPC: '',
+      newAddressLine1: creditCard ? creditCard.addressLine1 : '',
+      newAddressLine2: creditCard ? creditCard.addressLine2 : '',
+      newZipCode: creditCard ? creditCard.addressZip : '',
+      newState: creditCard ? creditCard.addressState : '',
+      newCity: creditCard ? creditCard.addressCity : '',
+      newCountry: creditCard ? creditCard.addressCountry : '',
+    } as State)
   }
 
   render() {
@@ -138,7 +163,7 @@ class Billing extends React.Component<Props, State> {
           overageStorage={currentInvoice.overageStorage}
         />
         {!this.state.isLoading ?
-          project.projectBillingInformation.creditCard && (
+          (project.projectBillingInformation.creditCard &&
             <CreditCardInformation
               creditCardNumber={this.state.newCreditCardNumber}
               cardHolderName={this.state.newCardHolderName}

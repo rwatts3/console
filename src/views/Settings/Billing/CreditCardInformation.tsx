@@ -1,6 +1,5 @@
 import * as React from 'react'
 import CreditCardFront from './CreditCardFront'
-import CreditCardBack from './CreditCardBack'
 import EditCreditCard from './EditCreditCard'
 import {Invoice} from '../../../types/types'
 import {mmDDyyyyFromTimestamp} from '../../../utils/utils'

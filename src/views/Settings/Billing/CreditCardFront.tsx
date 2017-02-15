@@ -56,12 +56,12 @@ export default class CreditCardFront extends React.Component<Props, State> {
           <div
             onClick={() => this.props.setEditingState(true)}
           >
-            <Icon
+            {this.props.setEditingState && <Icon
               className='pointer'
               src={require('../../../assets/icons/edit_credit_card.svg')}
               width={26}
               height={26}
-            />
+            />}
           </div>
           <Icon
             src={require('../../../assets/icons/visa.svg')}
@@ -161,7 +161,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
           <div className='creditCardNumber'>{this.props.creditCardNumber}</div>
           <div className='flex justifyBetween mt16'>
             <div>
-              <div className='f12 fw6 white30 ttu'>Card Holder</div>
+              <div className='f12 fw6 white30 ttu nowrap'>Card Holder</div>
               <div className='f16 white creditCardFont mt6'>{this.props.cardHolderName}</div>
             </div>
             <div>

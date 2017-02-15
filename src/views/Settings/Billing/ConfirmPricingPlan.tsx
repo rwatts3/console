@@ -24,6 +24,14 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
   }
 
   render() {
+
+    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
+      return edge.node.name === this.props.projectName
+    }).node
+    const creditCard = project.projectBillingInformation.creditCard
+    const subtitle = creditCard ? 'Please click the button to purchase your new plan.' :
+      'Please enter your credit card information to proceed.'
+
     return (
       <PopupWrapper
         onClickOutside={this.close}
@@ -71,13 +79,15 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
                   />
                 </div>
                 <div className='f38 fw3'>Confirm plan</div>
-                <div className='f16 black50 mt10 mb38'>Please enter your credit card information to proceed.</div>
+                <div className='f16 black50 mt10 mb38'>{subtitle}</div>
                 <CreditCardInputSection
                   plan={this.props.params.plan}
                   projectId={this.props.viewer.project.id}
+                  projectName={this.props.params.projectName}
                   goBack={this.goBack}
                   setLoading={this.setLoading}
                   close={this.close}
+                  viewer={this.props.viewer}
                 />
               </div>
             }
@@ -114,6 +124,28 @@ export default Relay.createContainer(withRouter(ConfirmPricingPlan), {
         project: projectByName(projectName: $projectName) {
           id
         },
+        crm: user {
+          name
+          crm {
+            customer {
+              id
+              projects(first: 1000) {
+                edges {
+                  node {
+                    name
+                    projectBillingInformation {
+                      creditCard {
+                        last4
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        ${CreditCardInputSection.getFragment('viewer')}
       }
     `},
 })
