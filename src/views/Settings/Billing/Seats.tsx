@@ -9,12 +9,14 @@ interface Props {
 export default class Seats extends React.Component<Props, {}> {
 
   render() {
+    const usedSeatsString =  this.props.maxSeats > 0 ? this.props.seats.length + '' : this.props.seats.length + ' seats'
+    const seatsString =  this.props.maxSeats > 0 ? '/ ' + this.props.maxSeats + ' seats' : ' (unlimited)'
     return (
       <div className={`flex itemsCenter ${this.props.className || ''}`}>
         {this.usedSeats()}
         {this.freeSeats()}
-        <div className='ml6 f14 green fw6'>{this.props.seats.length}</div>
-        <div className='ml6 f14 black50'> / {this.props.maxSeats} seats</div>
+        <div className='ml6 f14 green fw6'>{usedSeatsString}</div>
+        <div className='ml6 f14 black50'>{seatsString}</div>
       </div>
     )
   }

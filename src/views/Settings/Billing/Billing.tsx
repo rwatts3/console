@@ -54,12 +54,6 @@ class Billing extends React.Component<Props, State> {
   constructor(props) {
     super(props)
 
-    console.log('Billing - constructor', props)
-
-    const project = props.viewer.crm.crm.customer.projects.edges.find(edge => {
-      return edge.node.name === this.props.projectName
-    }).node
-
     this.state = {
 
       newCreditCardNumber: '',
@@ -128,9 +122,9 @@ class Billing extends React.Component<Props, State> {
         <Usage
           usedSeats={seats}
           plan={project.projectBillingInformation.plan}
-          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a + b)}
           lastInvoiceDate={mmDDyyyyFromTimestamp(currentInvoice.timestamp)}
-          usedStoragePerDay={currentInvoice.usageStorage}
+          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a + b)}
+          usedStoragePerDay={[1834, 1943, 1333, 493, 345, 433, 1345, 230]}
           overageRequests={currentInvoice.overageRequests}
           overageStorage={currentInvoice.overageStorage}
         />

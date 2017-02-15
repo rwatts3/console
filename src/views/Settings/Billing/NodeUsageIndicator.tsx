@@ -42,19 +42,13 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
             margin-bottom: -10px;
           }
 
+
         `}</style>
           {columnHeights.map((height, i) => {
             if (i === columnHeights.length - 1) {
               return (
                 <div key={i} className='flex flexColumn itemsCenter'>
-                  <div
-                    className='column'
-                    style={{
-                      height: height + 'px',
-                      backgroundColor: color,
-                      borderColor: color,
-                    }}
-                  />
+                  {this.generateColumn(height, i)}
                   <div
                     className='circularTodayIndicator'
                     style={{backgroundColor: color}}
@@ -62,11 +56,7 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
                 </div>
               )
             }
-            return <div
-              className='column'
-              style={{height: height + 'px'}}
-              key={i}
-            />
+            return this.generateColumn(height, i)
           })}
           <div
             className='absolute bt bBlack05 w100'
@@ -85,11 +75,11 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
             <div
               className={`ml6 f14 fw6`}
               style={{color: color}}
-            >{this.props.usedStoragePerDay.reduce((a, b) => a + b)} MB</div>
+            >{this.props.usedStoragePerDay[this.props.usedStoragePerDay.length-1]} MB</div>
             <div className='ml6 black50 f14'>{maxString}</div>
           </div>
           {this.props.additionalCosts > 0 &&
-            <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>}
+          <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>}
         </div>
       </div>
     )
@@ -99,8 +89,9 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
     const maxMB = billingInfo[this.props.plan].maxStorage
     const heights = this.props.usedStoragePerDay.map(usage => {
       const currentValue = usage / maxMB
-      return currentValue * this.maxNodeLineY
+      return Math.ceil(currentValue * this.maxNodeLineY)
     })
+    console.log(heights)
     return heights
   }
 
@@ -134,6 +125,57 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
       }
     }
     return require('../../../assets/icons/nodes_blue.svg')
+  }
+
+  private generateColumn = (height: number, index: number) => {
+
+    if (height > 100) {
+
+      height = height > 150 ? 150 : height
+
+      const x = height / 100
+      const offset = 100 / x
+
+      return (
+        <div className='column'
+             style={{
+             height: height + 'px',
+             borderColor: this.barColor(1),
+             background: `linear-gradient(to top,
+              ${this.barColor(1)} 0%,
+              ${this.barColor(1)} ${offset}%,
+              ${this.barColor(.1)} 100%)`,
+           }}
+             key={index}
+        >
+          <style jsx={true}>{`
+          .column {
+            @p: .br2, .mr4, .bb;
+            width: 20px;
+          }
+        `}</style>
+        </div>
+      )
+    }
+
+
+    return (
+      <div className='column'
+           style={{
+             height: height + 'px',
+             backgroundColor: this.barColor(1),
+             borderColor: this.barColor(1),
+           }}
+           key={index}
+      >
+        <style jsx={true}>{`
+          .column {
+            @p: .br2, .mr4, .bb;
+            width: 20px;
+          }
+        `}</style>
+      </div>
+    )
   }
 
 }
