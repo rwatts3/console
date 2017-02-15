@@ -87,6 +87,11 @@ export default class AddProjectPopup extends React.Component<Props, null> {
               placeholder='Choose a project name'
               value={projectName}
               onChange={onChangeProjectName}
+              onKeyDown={(e: any) => {
+                if (e.keyCode === 13) {
+                  onSubmit()
+                }
+              }}
               autoFocus
             />
             {showError && error && (
