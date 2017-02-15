@@ -10,7 +10,10 @@ interface State {
 }
 
 const modalStyling = {
-  ...fieldModalStyle,
+  overlay: {
+    ...fieldModalStyle.overlay,
+    zIndex: 999,
+  },
   content: {
     ...fieldModalStyle.content,
     width: 450,
