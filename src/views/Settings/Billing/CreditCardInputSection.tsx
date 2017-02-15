@@ -66,7 +66,6 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   render() {
 
-    console.log('CreditCardInputSection - render', this.props)
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName
     }).node
@@ -417,7 +416,6 @@ class CreditCardInputSection extends React.Component<Props, State> {
       )
     }
 
-
   }
 
   private stripeResponseHandler = (status, response) => {
@@ -429,7 +427,6 @@ class CreditCardInputSection extends React.Component<Props, State> {
     }
 
     const token = response.id
-    console.log('did receive stripe token: ', token)
 
     Relay.Store.commitUpdate(
       new SetCreditCardMutation({
@@ -438,7 +435,6 @@ class CreditCardInputSection extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          console.log('did set credit card')
           Relay.Store.commitUpdate(
             new SetPlanMutation({
               projectId: this.props.projectId,
@@ -446,8 +442,6 @@ class CreditCardInputSection extends React.Component<Props, State> {
             }),
             {
               onSuccess: () => {
-                console.log('did set plan')
-
                 this.props.close()
               },
               onFailure: (transaction) => {

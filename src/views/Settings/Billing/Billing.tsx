@@ -8,6 +8,10 @@ import {Viewer, Invoice} from '../../../types/types'
 import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {connect} from 'react-redux'
+import {showNotification} from '../../../actions/notification'
+import {bindActionCreators} from 'redux'
 
 interface State {
   newCreditCardNumber: string
@@ -41,6 +45,8 @@ interface Props {
   children: JSX.Element
 
   relay: any
+
+  showNotification: ShowNotificationCallback
 }
 
 class Billing extends React.Component<Props, State> {
@@ -189,15 +195,6 @@ class Billing extends React.Component<Props, State> {
       () => this.validateCreditCardDetails(),
     )
 
-    // let newExpirationDate
-    // let expirationDateWithoutSlash = newValue.replace('/', '')
-    // console.log('expirationDateWithoutSlash', expirationDateWithoutSlash)
-    // if (expirationDateWithoutSlash.length <= 2) {
-    //   newExpirationDate = newValue + '/'
-    //   this.setState({newExpirationDate: newExpirationDate} as State)
-    // } else {
-    //   this.setState({newExpirationDate: newValue} as State)
-    // }
   }
 
   private updateCreditCardNumber = (newValue) => {
@@ -334,6 +331,7 @@ class Billing extends React.Component<Props, State> {
 
     if (response.error) {
       console.error(response.error)
+      this.props.showNotification({message: response.error.message, level: 'error'})
       this.setState({isLoading: false} as State)
       return
     }
@@ -347,7 +345,6 @@ class Billing extends React.Component<Props, State> {
       }),
       {
         onSuccess: () => {
-          // this.props.showNotification({message: 'Invite sent to: ' + email, level: 'success'})
           this.setState({
             isEditingCreditCardInfo: false,
             isLoading: false,
@@ -355,7 +352,7 @@ class Billing extends React.Component<Props, State> {
           this.props.relay.forceFetch()
         },
         onFailure: (transaction) => {
-          // this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          this.props.showNotification({message: transaction.getError().message, level: 'error'})
           this.setState({isLoading: false} as State)
           console.error('error in setting new credit card', transaction.getError().message)
         },
@@ -365,7 +362,13 @@ class Billing extends React.Component<Props, State> {
 
 }
 
-export default Relay.createContainer(Billing, {
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({showNotification}, dispatch)
+}
+
+const mappedBilling = connect(null, mapDispatchToProps)(Billing)
+
+export default Relay.createContainer(mappedBilling, {
   initialVariables: {
     projectName: null, // injected from router
   },

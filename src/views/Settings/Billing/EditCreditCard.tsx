@@ -93,7 +93,6 @@ export default class EditCreditCard extends React.Component<Props, State> {
         </div>
       )
     } else if (this.state.displayState === 'ADDRESS_DATA') {
-      console.log('SHOW ADDRESS DATA')
       return (
         <div>
           {this.addressDataInput()}
@@ -224,36 +223,10 @@ export default class EditCreditCard extends React.Component<Props, State> {
     )
   }
 
-  private moveToAddressInputButtons = () => {
-    return (
-      <div className='flex justifyEnd itemsEnd w100'>
-        <div className='black50 mb25 mr38 pv10 pointer'>Cancel</div>
-        <div
-          className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer ${!this.props.creditCardDetailsValid && 'o50'}`}
-          onClick={() => {
-            if (this.props.creditCardDetailsValid) {
-              this.setState({displayState: 'ADDRESS_DATA'} as State)
-            }
-          }}
-        >
-          <div className='mr6'>Continue</div>
-          <Icon
-            src={require('../../../assets/icons/blue_arrow_left.svg')}
-            rotate={180}
-            width={17}
-            height={12}
-          />
-        </div>
-      </div>
-    )
-  }
-
   private handleKeyDown = (e) => {
-    console.log('KEY_DOWN', e.keyCode)
     if (e.keyCode === ENTER_KEY) {
       if (this.state.displayState === 'CREDIT_CARD_DATA') {
         if (this.props.creditCardDetailsValid) {
-          console.log('switch display state to ADDRESS_DATA')
           this.setState({displayState: 'ADDRESS_DATA'} as State)
         }
       } else {

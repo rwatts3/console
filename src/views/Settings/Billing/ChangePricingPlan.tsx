@@ -18,7 +18,6 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   render() {
 
     const currentPlanIndex = this.plans.findIndex(plan => plan === this.props.params.plan)
-    console.log('ChangePricingPlan - render', this.props.params.plan)
 
     return (
       <PopupWrapper

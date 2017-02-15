@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {Icon} from 'graphcool-styles'
-import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 
 interface State {
 
@@ -132,8 +131,6 @@ export default class CreditCardFront extends React.Component<Props, State> {
 
   private bottomPart = () => {
 
-    const handleKeyDown = this.props.onKeyDown || this.handleKeyDown
-
     return (
 
       !this.props.isEditing ?
@@ -208,7 +205,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
             value={this.props.creditCardNumber}
             autoFocus={true}
             tabIndex={1}
-            onKeyDown={(e) => handleKeyDown(e)}
+            onKeyDown={(e) => this.props.onKeyDown(e)}
           />
           <div className='flex justifyBetween mt10 mr16 mb10'>
             <div>
@@ -219,7 +216,7 @@ export default class CreditCardFront extends React.Component<Props, State> {
                 onChange={(e: any) => this.props.onCardHolderNameChange(e.target.value) }
                 value={this.props.cardHolderName}
                 tabIndex={2}
-                onKeyDown={(e) => handleKeyDown(e)}
+                onKeyDown={(e) => this.props.onKeyDown(e)}
               />
             </div>
             <div className=''>
@@ -230,20 +227,12 @@ export default class CreditCardFront extends React.Component<Props, State> {
                 onChange={(e: any) => this.props.onExpirationDateChange(e.target.value) }
                 value={this.props.expirationDate}
                 tabIndex={3}
-                onKeyDown={(e) => handleKeyDown(e)}
+                onKeyDown={(e) => this.props.onKeyDown(e)}
               />
             </div>
           </div>
         </div>
     )
-  }
-
-  private handleKeyDown = (e) => {
-    if (e.keyCode === ENTER_KEY) {
-      // this.props.setEditingState(false, true)
-    } else if (e.keyCode === ESCAPE_KEY) {
-      // this.props.setEditingState(false, false)
-    }
   }
 
 }
