@@ -65,7 +65,7 @@ const ONBOARDING_QUERY_PART2 = `{
 type Endpoint = 'SIMPLE' | 'RELAY'
 
 interface Props {
-  viewer: Viewer & { project: Project }
+  viewer: Viewer & { project: Project, userModel: any }
   params: any
   gettingStartedState: GettingStartedState
   nextStep: () => any
@@ -139,24 +139,26 @@ class PlaygroundView extends React.Component<Props, State> {
   }
 
   componentWillMount () {
-    const query = `
-      {
-        viewer {
-          allUsers {
-            edges {
-              node {
-                id
+    if (this.props.viewer.userModel) {
+      const query = `
+        {
+          viewer {
+            allUsers {
+              edges {
+                node {
+                  id
+                }
               }
             }
           }
         }
-      }
-    `
-    this.lokka.query(query)
-      .then((results) => {
-        const users = results.viewer.allUsers.edges.map((edge) => edge.node)
-        this.setState({ users: [DASHBOARD_ADMIN, GUEST, ...users] } as State)
-      })
+      `
+      this.lokka.query(query)
+        .then((results) => {
+          const users = results.viewer.allUsers.edges.map((edge) => edge.node)
+          this.setState({ users: [DASHBOARD_ADMIN, GUEST, ...users] } as State)
+        })
+    }
   }
 
   componentDidMount () {
@@ -298,6 +300,9 @@ export default Relay.createContainer(MappedPlaygroudView, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
+          id
+        }
+        userModel: modelByName(projectName: $projectName, modelName: "User"){
           id
         }
       }

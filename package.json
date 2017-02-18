@@ -71,7 +71,7 @@
     "downloadjs": "^1.4.7",
     "drumstick": "^1.0.8",
     "file-saver": "^1.3.3",
-    "graphcool-graphiql": "1.3.37",
+    "graphcool-graphiql": "1.3.40",
     "graphcool-metrics": "0.2.3",
     "graphcool-styles": "0.0.98",
     "graphiql": "^0.8.0",
