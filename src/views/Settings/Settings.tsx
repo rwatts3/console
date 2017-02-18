@@ -1,5 +1,7 @@
 import * as React from 'react'
+import * as Relay from 'react-relay'
 import TabBar from './TabBar'
+import {Viewer} from '../../types/types'
 
 interface Props {
   children?: JSX.Element
@@ -7,10 +9,6 @@ interface Props {
 }
 
 export default class Settings extends React.Component<Props, {}> {
-
-  constructor(props) {
-    super(props)
-  }
 
   render() {
     return (
@@ -27,7 +25,9 @@ export default class Settings extends React.Component<Props, {}> {
         `}</style>
         <div className='topHeader'>
           <div className='top-header-content'>Settings</div>
-          <TabBar params={this.props.params} />
+          <TabBar
+            params={this.props.params}
+          />
         </div>
         {this.props.children}
       </div>

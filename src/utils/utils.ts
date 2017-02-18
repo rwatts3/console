@@ -99,3 +99,49 @@ export function removeDuplicatesFromStringArray(arr: string[]): string[] {
   let it = s.values()
   return Array.from(it)
 }
+
+// http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+export function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export function numberWithCommasRounded(x, digits) {
+  return x.toFixed(digits).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export function chunk(str: string, n: number, includeRemainder: boolean): string[] {
+  let result: string[] = []
+  while (n < str.length) {
+    let chunk = str.substring(0, n)
+    result.push(chunk)
+    str = str.substring(n, str.length)
+  }
+  if (includeRemainder) {
+    result.push(str)
+  }
+  return result
+}
+
+// month is 1 based
+export function daysInMonth(month,year) {
+  return new Date(year, month, 0).getDate()
+}
+
+// input: timestamp with format: "2017-01-31T23:00:00.000Z"
+export function mmDDyyyyFromTimestamp(timestamp: string): string {
+  const components = timestamp.split('T')
+  const dateString = components[0]
+  let dateComponents = dateString.split('-')
+  const yyyy = dateComponents.shift()
+  dateComponents.push(yyyy)
+  return dateComponents.join('/')
+}
+
+export function todayString(): string {
+  const today = new Date()
+  const dd = today.getDate()
+  const mm = today.getMonth() + 1
+  const yyyy = today.getFullYear()
+  const todayString = mm + '/' + dd + '/' + yyyy
+  return todayString
+}

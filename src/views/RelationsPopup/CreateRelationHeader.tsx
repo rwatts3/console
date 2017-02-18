@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Icon from 'graphcool-styles/dist/components/Icon/Icon'
+import {Icon} from 'graphcool-styles'
 import {RelationPopupDisplayState} from '../../types/types'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 import CreateRelationHeaderTab from '../ProjectSettingsView/CreateRelationHeaderTab'

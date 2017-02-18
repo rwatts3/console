@@ -60,7 +60,7 @@ class ProjectInfo extends React.Component<Props, State> {
         <style jsx={true}>{`
 
           .inputField {
-            @inherit: .f25, .fw3, .w100, .pt6;
+            @inherit: .f25, .fw3, .w100, .pt6, .h100;
             max-width: 300px;
             color: rgba(42,127,211,1);
           }

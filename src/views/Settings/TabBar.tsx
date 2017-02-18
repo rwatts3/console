@@ -5,7 +5,7 @@ interface Props {
   params: any
 }
 
-export default ({params}: Props) => {
+const TabBar = ({params}: Props) => {
 
   return (
     <div className='flex'>
@@ -46,12 +46,13 @@ export default ({params}: Props) => {
       <Link
         className='linkStyle'
         activeClassName='activeLinkStyle'
-        to={`/${params.projectName}/settings/team`}
+        to={`/${params.projectName}/settings/billing`}
       >
-        Team
+        Billing
       </Link>
-      {/*<Link className='linkStyle' activeClassName='activeLinkStyle'>Billing</Link>*/}
     </div>
   )
 
 }
+
+export default TabBar

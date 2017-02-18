@@ -7,7 +7,6 @@ import DeleteCollaboratorMutation from '../../../mutations/DeleteCollaboratorMut
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
-import {bindActionCreators} from 'redux'
 import {onFailureShowNotification} from '../../../utils/relay'
 
 interface Props {
