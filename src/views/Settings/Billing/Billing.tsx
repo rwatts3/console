@@ -394,7 +394,6 @@ export default Relay.createContainer(mappedBilling, {
                       invoices(first: 1000)  {
                         edges {
                           node {
-                            overageOperations
                             overageRequests
                             usageRequests
                             usageStorage
