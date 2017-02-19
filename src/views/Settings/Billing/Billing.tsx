@@ -123,7 +123,7 @@ class Billing extends React.Component<Props, State> {
           usedSeats={seats}
           plan={project.projectBillingInformation.plan}
           lastInvoiceDate={mmDDyyyyFromTimestamp(currentInvoice.timestamp)}
-          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a + b)}
+          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a,b) => a + b, 0)}
           usedStoragePerDay={currentInvoice.usageStorage}
           overageRequests={currentInvoice.overageRequests}
           overageStorage={currentInvoice.overageStorage}
