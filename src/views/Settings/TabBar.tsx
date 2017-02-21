@@ -50,6 +50,13 @@ const TabBar = ({params}: Props) => {
       >
         Billing
       </Link>
+      <Link
+        className='linkStyle'
+        activeClassName='activeLinkStyle'
+        to={`/${params.projectName}/settings/team`}
+      >
+        Team
+      </Link>
     </div>
   )
 
