@@ -83,15 +83,20 @@ class Billing extends React.Component<Props, State> {
 
     if (!crmProjectsAvailable) {
       return (
-        <div className='flex itemsCenter justifyCenter ph96 tc size black50'>
+        <div className='flex flexColumn itemsCenter justifyCenter ph96 tc size black50'>
           <style jsx={true}>{`
             .size {
               height: 350px;
               width: 700px;
             }
           `}</style>
-          We're currently synchronizing your project data.
-          Please wait a little bit until Billing is available here.
+          <div>
+            We're currently synchronizing your project data.
+            Please wait a little bit until Billing is available here.
+          </div>
+          <div className='mt16'>
+            If you have a question, please contact our support team! 👋
+          </div>
         </div>
       )
     }
@@ -107,15 +112,20 @@ class Billing extends React.Component<Props, State> {
 
     if (!Boolean(project)) {
       return (
-        <div className='flex itemsCenter justifyCenter ph96 tc size black50'>
+        <div className='flex flexColumn itemsCenter justifyCenter ph96 tc size black50'>
           <style jsx={true}>{`
             .size {
               height: 350px;
               width: 700px;
             }
           `}</style>
-          We're synchronizing your project with our CRM system.
-          Please wait a little bit until Billing is available here.
+          <div>
+            We're currently synchronizing your project data.
+            Please wait a little bit until Billing is available here.
+          </div>
+          <div className='mt16'>
+            If you have a question, please contact our support team! 👋
+          </div>
         </div>
       )
     }
