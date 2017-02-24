@@ -22,8 +22,13 @@ class Team extends React.Component<Props, {}> {
 
     const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
     const availableSeats = this.getSeatsForPlan(this.getPlan())
-    const numberOfEmptyRows = Math.min(availableSeats - seats.length, 10)
-    const seatsLeft = availableSeats - seats.length
+    let seatsForDisplayEmptyRows = availableSeats
+    if (availableSeats < 0) {
+      seatsForDisplayEmptyRows = seats.length + 3
+    }
+
+    const numberOfEmptyRows = Math.min(seatsForDisplayEmptyRows - seats.length, 3)
+    const seatsLeftForDisplayInfo = availableSeats < 0 ? availableSeats : availableSeats - seats.length
 
     let numbers = []
     for (let i = 0; i < numberOfEmptyRows; i++) {
@@ -51,7 +56,7 @@ class Team extends React.Component<Props, {}> {
             <EmptyRow
               key={i}
               hasAddFunctionality={i === 0}
-              numberOfLeftSeats={i === 0 && seatsLeft}
+              numberOfLeftSeats={i === 0 && seatsLeftForDisplayInfo}
               projectId={i === 0 && this.props.viewer.project.id}
             />
           ))}
@@ -66,7 +71,7 @@ class Team extends React.Component<Props, {}> {
   }
 
   private getPlan() {
-    const freeId = '2016-12-free'
+    const freeId = '2017-02-free'
     const projects = this.props.viewer.user.crm.customer.projects.edges.map(edge => edge.node)
     const project = projects.find(project => project.name === this.props.params.projectName)
     if (!project) {
