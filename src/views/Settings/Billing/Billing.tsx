@@ -78,10 +78,49 @@ class Billing extends React.Component<Props, State> {
 
   render() {
 
-    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node.name)
-    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
+    const crmProjectsAvailable = Boolean(this.props.viewer.crm) && Boolean(this.props.viewer.crm.crm) &&
+      Boolean(this.props.viewer.crm.crm.customer) && Boolean(this.props.viewer.crm.crm.customer.projects)
+
+    if (!crmProjectsAvailable) {
+      return (
+        <div className='flex itemsCenter justifyCenter ph96 tc size black50'>
+          <style jsx={true}>{`
+            .size {
+              height: 350px;
+              width: 700px;
+            }
+          `}</style>
+          We're currently synchronizing your project data.
+          Please wait a little bit until Billing is available here.
+        </div>
+      )
+    }
+
+    const projectNode = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName
-    }).node
+    })
+
+    let project = null
+    if (projectNode && projectNode.node) {
+      project = projectNode.node
+    }
+
+    if (!Boolean(project)) {
+      return (
+        <div className='flex itemsCenter justifyCenter ph96 tc size black50'>
+          <style jsx={true}>{`
+            .size {
+              height: 350px;
+              width: 700px;
+            }
+          `}</style>
+          We're synchronizing your project with our CRM system.
+          Please wait a little bit until Billing is available here.
+        </div>
+      )
+    }
+
+    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node.name)
 
     const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
     const currentInvoice = invoices[invoices.length - 1]
