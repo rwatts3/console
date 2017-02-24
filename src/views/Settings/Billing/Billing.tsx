@@ -82,6 +82,7 @@ class Billing extends React.Component<Props, State> {
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName
     }).node
+
     const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
     const currentInvoice = invoices[invoices.length - 1]
     const creditCard = project.projectBillingInformation.creditCard
