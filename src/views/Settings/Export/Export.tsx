@@ -146,7 +146,7 @@ class Export extends React.Component<Props, {}> {
         }
       }
     `).then((response) => {
-      this.downloadUrl(response.exportData.url, 'data.json')
+      this.downloadUrl(response.exportData.url, 'data.zip')
     })
     .catch(error => {
       this.props.showNotification({message: error.message, level: 'error'})
