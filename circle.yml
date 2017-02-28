@@ -18,6 +18,7 @@ deployment:
       - npm run deploy:
           environment:
             BACKEND_ADDR: https://api.graph.cool
+            BACKEND_WS_ADDR: wss://subscriptions.graph.cool
             AUTH0_DOMAIN: graphcool-customers.auth0.com
             AUTH0_CLIENT_ID: Is37aESHkLDR5PQa48ZiKZtm8gVNiUWw
             NETLIFY_ID: console-graph-cool
@@ -29,6 +30,7 @@ deployment:
       - npm run deploy:
           environment:
             BACKEND_ADDR: https://dev.api.graph.cool
+            BACKEND_WS_ADDR: wss://dev.subscriptions.graph.cool
             AUTH0_DOMAIN: graphcool-customers-dev.auth0.com
             AUTH0_CLIENT_ID: 2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm
             NETLIFY_ID: dev-console-graph-cool
@@ -38,5 +40,6 @@ deployment:
       - npm run build:
           environment:
             BACKEND_ADDR: https://dev.api.graph.cool
+            BACKEND_WS_ADDR: wss://dev.subscriptions.graph.cool
             AUTH0_DOMAIN: graphcool-customers-dev.auth0.com
             AUTH0_CLIENT_ID: 2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm

@@ -208,6 +208,7 @@ class PlaygroundView extends React.Component<Props, State> {
           projectId={this.props.viewer.project.id}
           onSuccess={this.handleResponse}
           httpApiPrefix={__BACKEND_ADDR__}
+          wsApiPrefix={__BACKEND_WS_ADDR__ + '/v1'}
         />
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
           <PopupWrapper blur={true}>
@@ -290,9 +291,9 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ nextStep, previousStep, showPopup }, dispatch)
 }
 
-const MappedPlaygroudView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
+const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
 
-export default Relay.createContainer(MappedPlaygroudView, {
+export default Relay.createContainer(MappedPlaygroundView, {
   initialVariables: {
     projectName: null, // injected from router
   },

@@ -115,6 +115,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
+      __BACKEND_WS_ADDR__: JSON.stringify(process.env.BACKEND_WS_ADDR || "wss://dev.subscriptions.graph.cool"),
       __HEARTBEAT_ADDR__: false,
       __AUTH0_DOMAIN__: '"graphcool-customers-dev.auth0.com"',
       __AUTH0_CLIENT_ID__: '"2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm"',
