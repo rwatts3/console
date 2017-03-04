@@ -27,6 +27,11 @@ import {reduceCodeGeneration} from './reducers/codeGeneration'
 
 updateNetworkLayer()
 
+// save last referral
+if (!cookiestore.has('graphcool_last_referral')) {
+  cookiestore.set('graphcool_last_referral', document.referrer)
+}
+
 if (__GA_CODE__) {
   ReactGA.initialize(__GA_CODE__)
 
@@ -80,7 +85,3 @@ ReactDOM.render(
   document.getElementById('root'),
 )
 
-// save last referral
-if (!cookiestore.has('graphcool_last_referral')) {
-  cookiestore.set('graphcool_last_referral', document.referrer)
-}
