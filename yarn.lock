@@ -1851,9 +1851,9 @@ cookiejar@^2.0.6:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.0.tgz#86549689539b6d0e269b6637a304be508194d898"
 
-cookiestore@1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/cookiestore/-/cookiestore-1.0.4.tgz#21c0308d5a8e3693686c203248470ef01c2329c5"
+cookiestore@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/cookiestore/-/cookiestore-1.1.0.tgz#7c180351c5565faf1f990c862a3593a178f6ca76"
   dependencies:
     "@types/js-cookie" "^2.0.27"
     js-cookie "^2.1.3"

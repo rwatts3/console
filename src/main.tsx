@@ -20,11 +20,17 @@ import  popupSources from './reducers/popupSources'
 import { StateTree } from './types/reducers'
 import logger from 'redux-logger'
 import * as ReactGA from 'react-ga'
+import * as cookiestore from 'cookiestore'
 
 import './utils/polyfils'
 import {reduceCodeGeneration} from './reducers/codeGeneration'
 
 updateNetworkLayer()
+
+// save last referral
+if (!cookiestore.has('graphcool_last_referral')) {
+  cookiestore.set('graphcool_last_referral', document.referrer)
+}
 
 if (__GA_CODE__) {
   ReactGA.initialize(__GA_CODE__)
