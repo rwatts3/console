@@ -4,6 +4,7 @@ import {} from '../types/gettingStarted'
 interface Props {
   customerInformationId: string
   source: string
+  referral: string
 }
 
 export default class UpdateCustomerSourceMutation extends Relay.Mutation<Props, {}> {
@@ -32,6 +33,7 @@ export default class UpdateCustomerSourceMutation extends Relay.Mutation<Props, 
   getVariables () {
     return {
       source: this.props.source,
+      referral: this.props.referral,
     }
   }
 
@@ -40,6 +42,7 @@ export default class UpdateCustomerSourceMutation extends Relay.Mutation<Props, 
       customerInformation: {
         id: this.props.customerInformationId,
         source: this.props.source,
+        referral: this.props.referral,
       },
     }
   }
