@@ -13,7 +13,6 @@ export function updateNetworkLayer (): void {
   const headers = isLoggedin
     ? {
       'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
-      'X-GraphCool-Source': 'dashboard:relay',
     }
     : null
   const api = `${__BACKEND_ADDR__}/system`
@@ -40,7 +39,10 @@ export function onFailureShowNotification (
 export function getLokka(projectId: string): any {
   const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${projectId}`
   const token = cookiestore.get('graphcool_auth_token')
-  const headers = { Authorization: `Bearer ${token}` }
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'x-graphcool-source': 'console:databrowser',
+  }
   const transport = new Transport(clientEndpoint, { headers })
   return new Lokka({transport})
 }

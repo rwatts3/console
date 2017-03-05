@@ -97,7 +97,10 @@ class PlaygroundView extends React.Component<Props, State> {
 
     const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.viewer.project.id}`
     const token = cookiestore.get('graphcool_auth_token')
-    const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:playground' }
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'x-graphcool-source': 'console:playground:user-list',
+    }
     const transport = new Transport(clientEndpoint, { headers })
     const guestTransport = new Transport(clientEndpoint)
 

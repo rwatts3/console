@@ -2971,9 +2971,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@1.3.42:
-  version "1.3.42"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.3.42.tgz#f0b55577343487c034c270279b6e5c5a3cc7b503"
+graphcool-graphiql@1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.4.3.tgz#9d9f75b6feef23be6552019e9fc3181f29e02bc0"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"
@@ -3036,8 +3036,8 @@ graphql-subscriptions@^0.3.0:
     es6-promise "^3.2.1"
 
 graphql-tag@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-1.2.4.tgz#90c59bea41378513fd7213dc92537fcd20e4570f"
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-1.3.1.tgz#16cdf13635f10bbc968c6f2c6265ffe883a906da"
 
 "graphql@0.7.1 - 1.0.0", graphql@^0.8.2:
   version "0.8.2"
