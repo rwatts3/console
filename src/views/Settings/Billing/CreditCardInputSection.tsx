@@ -4,7 +4,8 @@ import PricingColumn from '../PricingColumn'
 import CreditCardFront from './CreditCardFront'
 import CreditCardBack from './CreditCardBack'
 import {chunk} from '../../../utils/utils'
-import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
+import {creditCardNumberValid, expirationDateValid, cpcValid,
+  minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits} from '../../../utils/creditCardValidator'
 import {Icon} from 'graphcool-styles'
 import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
 import * as Relay from 'react-relay'
@@ -332,9 +333,12 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   private updateCreditCardNumber = (newValue) => {
 
+    // max chunks is 5 since a credit card can have up to 19 digits
+    const maxChunks = 5
+
     // pasting
     if (newValue.length > 4 && !newValue.includes(' ')) {
-      const chunks = chunk(newValue, 4, true)
+      const chunks = chunk(newValue, maxChunks, true)
       const newCreditCardNumber = chunks.join(' ')
       this.setState({creditCardNumber: newCreditCardNumber} as State)
       return
@@ -344,12 +348,13 @@ class CreditCardInputSection extends React.Component<Props, State> {
     let creditCardComponents = newValue.split(' ')
     const lastComponent = creditCardComponents[creditCardComponents.length - 1]
 
-    if (newValue.length >= 20) {
+    const newValueWithoutSpaces = creditCardComponents.join('')
+    if (newValueWithoutSpaces.length > maxCreditCardDigits) {
       return
     }
 
     let newLastComponent
-    if (creditCardComponents.length < 4 && lastComponent.length === 4) {
+    if (creditCardComponents.length < maxChunks && lastComponent.length === 4) {
       newLastComponent = lastComponent + ' '
     } else {
       newLastComponent = lastComponent
@@ -366,7 +371,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
   }
 
   private onCPCChange = (newValue) => {
-    if (newValue.length <= 3) {
+    if (newValue.length <= maxCPCDigits) {
       this.setState({cpc: newValue} as State, () => this.validateCreditCardDetails())
     }
   }
