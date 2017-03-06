@@ -84,7 +84,7 @@
     "moment": "^2.14.1",
     "normalize.css": "^4.2.0",
     "postcss-cssnext": "^2.9.0",
-    "postcss-inherit": "git+https://github.com/timsuchanek/postcss-inherit#build",
+    "postcss-inherit": "git+https://github.com/timsuchanek/postcss-inherit#build3",
     "postcss-inject": "^1.0.1",
     "postcss-simple-vars": "^3.0.0",
     "rc-tooltip": "^3.4.2",
