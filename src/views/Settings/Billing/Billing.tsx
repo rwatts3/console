@@ -5,7 +5,8 @@ import CreditCardInformation from './CreditCardInformation'
 import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
 import * as Relay from 'react-relay'
 import {Viewer, Invoice} from '../../../types/types'
-import {creditCardNumberValid, expirationDateValid, cpcValid} from '../../../utils/creditCardValidator'
+import {creditCardNumberValid, expirationDateValid, cpcValid,
+  minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits} from '../../../utils/creditCardValidator'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback} from '../../../types/utils'
@@ -219,8 +220,8 @@ class Billing extends React.Component<Props, State> {
 
   private updateCPC = (newValue) => {
     let newCPC
-    if (newValue.length > 3) {
-      newCPC = newValue.substr(0, 3)
+    if (newValue.length > maxCPCDigits) {
+      newCPC = newValue.substr(0, maxCPCDigits)
     } else {
       newCPC = newValue
     }
@@ -243,9 +244,12 @@ class Billing extends React.Component<Props, State> {
 
   private updateCreditCardNumber = (newValue) => {
 
+    // max chunks is 5 since a credit card can have up to 19 digits
+    const maxChunks = 5
+
     // pasting
     if (newValue.length > 4 && !newValue.includes(' ')) {
-      const chunks = chunk(newValue, 4, true)
+      const chunks = chunk(newValue, maxChunks, true)
       const newCreditCardNumber = chunks.join(' ')
       this.setState(
         {newCreditCardNumber: newCreditCardNumber} as State,
@@ -258,12 +262,13 @@ class Billing extends React.Component<Props, State> {
     let creditCardComponents = newValue.split(' ')
     const lastComponent = creditCardComponents[creditCardComponents.length - 1]
 
-    if (newValue.length >= 20) {
+    const newValueWithoutSpaces = creditCardComponents.join('')
+    if (newValueWithoutSpaces.length > maxCreditCardDigits) {
       return
     }
 
     let newLastComponent
-    if (creditCardComponents.length < 4 && lastComponent.length === 4) {
+    if (creditCardComponents.length <= maxChunks && lastComponent.length === 4) {
       newLastComponent = lastComponent + ' '
     } else {
       newLastComponent = lastComponent
