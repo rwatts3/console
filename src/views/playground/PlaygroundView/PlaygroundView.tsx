@@ -97,7 +97,10 @@ class PlaygroundView extends React.Component<Props, State> {
 
     const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.viewer.project.id}`
     const token = cookiestore.get('graphcool_auth_token')
-    const headers = { Authorization: `Bearer ${token}`, 'X-GraphCool-Source': 'dashboard:playground' }
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'x-graphcool-source': 'console:playground:user-list',
+    }
     const transport = new Transport(clientEndpoint, { headers })
     const guestTransport = new Transport(clientEndpoint)
 
@@ -208,6 +211,7 @@ class PlaygroundView extends React.Component<Props, State> {
           projectId={this.props.viewer.project.id}
           onSuccess={this.handleResponse}
           httpApiPrefix={__BACKEND_ADDR__}
+          wsApiPrefix={__BACKEND_WS_ADDR__ + '/v1'}
         />
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
           <PopupWrapper blur={true}>
@@ -290,9 +294,9 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ nextStep, previousStep, showPopup }, dispatch)
 }
 
-const MappedPlaygroudView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
+const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
 
-export default Relay.createContainer(MappedPlaygroudView, {
+export default Relay.createContainer(MappedPlaygroundView, {
   initialVariables: {
     projectName: null, // injected from router
   },

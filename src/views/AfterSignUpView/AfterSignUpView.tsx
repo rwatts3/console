@@ -5,6 +5,7 @@ import {$p, $v, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import UpdateCustomerSourceMutation from '../../mutations/UpdateCustomerSourceMutation'
+import * as cookiestore from 'cookiestore'
 import {retryUntilDone} from '../../utils/utils'
 
 const Container = styled.div`
@@ -223,6 +224,7 @@ class AfterSignUpView extends React.Component<Props, State> {
       new UpdateCustomerSourceMutation({
         customerInformationId: this.props.viewer.user.crm.information.id,
         source: source,
+        referral: cookiestore.get('graphcool_last_referral'),
       }),
       {
         onSuccess: () => {
