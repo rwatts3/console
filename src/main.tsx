@@ -24,8 +24,7 @@ import * as cookiestore from 'cookiestore'
 
 import './utils/polyfils'
 import {reduceCodeGeneration} from './reducers/codeGeneration'
-require('offline-plugin/runtime').install();
-
+require('offline-plugin/runtime').install()
 
 updateNetworkLayer()
 
