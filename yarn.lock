@@ -1670,6 +1670,10 @@ codemirror-graphql@^0.5.9:
   version "0.5.9"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.5.9.tgz#b5ca2a84bd0deae7660c726f7feba15149bac8fd"
 
+codemirror-graphql@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.3.tgz#01f8841dab54c69e9f182caed39bd376c5ba3cb4"
+
 codemirror@5.22.2, codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
   version "5.22.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.22.2.tgz#38274c20e3628b4f7a982bffc2cddb61ceed6a09"
