@@ -44,3 +44,4 @@ deployment:
             BACKEND_WS_ADDR: wss://dev.subscriptions.graph.cool
             AUTH0_DOMAIN: graphcool-customers-dev.auth0.com
             AUTH0_CLIENT_ID: 2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm
+            NETLIFY_ID: dev-console-graph-cool
