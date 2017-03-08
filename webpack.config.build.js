@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
 const config = require('./webpack.config')
+const OfflinePlugin = require('offline-plugin')
 
 module.exports = {
   entry: {
@@ -112,6 +113,7 @@ module.exports = {
         },
       }
     }),
+    new OfflinePlugin(),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],
