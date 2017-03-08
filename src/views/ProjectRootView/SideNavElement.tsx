@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import {Link} from 'react-router'
+import * as cn from 'classnames'
 
 interface Props {
   link: string
@@ -8,26 +9,37 @@ interface Props {
   iconSrc: string
   text: string
   size?: number
+  minimalHighlight?: boolean
 }
 
 export default class SideNavElement extends React.Component<Props, null> {
   render() {
-    const {link, active, iconSrc, text, size} = this.props
+    const {link, active, iconSrc, text, size, minimalHighlight} = this.props
     return (
-      <Link to={link} className={'link' + (active ? ' active' : '')}>
-        <div className={'side-nav-element' + (active ? ' active' : '')}>
+      <Link to={link}>
+        <div
+          className={cn(
+            'side-nav-element', {
+              active,
+              minimalHighlight,
+            },
+          )}
+        >
           <style jsx>{`
            .side-nav-element {
               @p: .relative, .flex, .itemsCenter, .w100, .fw6, .f14, .ttu, .white, .mt12, .o60;
               letter-spacing: 0.8px;
-              padding-left: 25px;
+              padding-left: 21px;
               height: 36px;
               transition: color background-color .3s linear;
            }
            .side-nav-element.active, .side-nav-element:hover {
-             @p: .bgWhite07, .o100;
+             @p: .o100;
            }
-           .side-nav-element.active:before {
+           .side-nav-element.active:not(.minimalHighlight), .side-nav-element:not(.minimalHighlight):hover {
+             @p: .bgWhite07;
+           }
+           .side-nav-element.active:not(.minimalHighlight):before {
              @p: .absolute, .bgGreen, .br2, .z2;
              left: -2px;
              content: "";
@@ -36,6 +48,7 @@ export default class SideNavElement extends React.Component<Props, null> {
              width: 8px
            }
            .icon {
+             @p: .flex, .justifyCenter;
              width: 24px;
            }
            .text {

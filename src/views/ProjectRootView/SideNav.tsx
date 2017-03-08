@@ -193,7 +193,8 @@ export class SideNav extends React.PureComponent<Props, State> {
       >
         <style jsx>{`
           .links {
-            @p: .flex, .flexColumn, .justifyBetween, .h100;
+            @p: .flex, .flexColumn, .justifyBetween, .mt16;
+            height: calc(100% - 16px);
           }
         `}</style>
         <div className={cx($p.h100)} style={{ paddingBottom: '70px' }}>
@@ -213,6 +214,7 @@ export class SideNav extends React.PureComponent<Props, State> {
                   iconSrc={require('assets/icons/databrowser.svg')}
                   text='Data'
                   size={16}
+                  minimalHighlight
                 />
                 {location.pathname.endsWith('databrowser') && (
                   this.renderModels()
@@ -378,14 +380,26 @@ export class SideNav extends React.PureComponent<Props, State> {
 
     const activeListElement = `
       color: ${$v.white} !important;
+      background: ${$v.white07};
       cursor: default;
-
+      &:before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        left: 0;
+        width: ${$v.size06};
+        background: ${$v.green};
+        border-radius: 0 2px 2px 0;
+      }
       &:hover {
         color: inherit;
       }
     `
+
     const ListElement = styled(ExcludeProps(Link, ['active']))`
       transition: color ${$v.duration} linear;
+      height: 32px;
 
       &:hover {
          color: ${$v.white60};
@@ -407,7 +421,7 @@ export class SideNav extends React.PureComponent<Props, State> {
           }}
         >
           <div
-            className={cx($p.flex, $p.flexColumn, $p.pb25)}
+            className={cx($p.flex, $p.flexColumn, $p.mt10, $p.mb16)}
           >
             {this.props.models && this.props.models.map((model) => (
               <ListElement
@@ -415,9 +429,9 @@ export class SideNav extends React.PureComponent<Props, State> {
                 to={`/${this.props.params.projectName}/models/${model.name}`}
                 active={modelActive(model)}
                 className={cx(
-                  $p.relative, $p.pv10, $p.fw6, $p.white30, $p.ph25, $p.flex, $p.justifyBetween,
+                  $p.relative, $p.fw6, $p.white30, $p.ph25, $p.flex, $p.justifyBetween, $p.itemsCenter, $p.mb6,
                   {
-                    [$p.bgDarkerBlue]: modelActive(model),
+                    [$p.bgWhite07]: modelActive(model),
                   },
                 )}
               >
