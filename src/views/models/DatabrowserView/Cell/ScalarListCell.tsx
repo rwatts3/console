@@ -340,7 +340,9 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
 
   private handleClose = () => {
     let values = this.state.values
-    if (this.state.values.length === 0 && typeof this.state.newValue !== 'undefined') {
+    if (this.state.values.length === 0 && (
+      typeof this.state.newValue !== 'undefined' && this.state.newValue !== null)
+    ) {
       values = [this.state.newValue]
     }
     this.props.methods.save(values, false)

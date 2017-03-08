@@ -40,6 +40,7 @@ import {ConsoleEvents} from 'graphcool-metrics'
 import CreateRelationPopup from './views/RelationsPopup/CreateRelationPopup'
 import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
 import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
+import ImportSchemaView from './views/ImportSchemaView/ImportSchemaView'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`

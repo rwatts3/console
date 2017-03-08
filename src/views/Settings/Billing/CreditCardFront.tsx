@@ -201,7 +201,6 @@ export default class CreditCardFront extends React.Component<Props, State> {
           <input
             className='inputField f20 creditCardFont white'
             onChange={(e: any) => {
-              console.log('on change: ', e.target.value)
               this.props.onCreditCardNumberChange(e.target.value)
             }}
             placeholder='XXXX XXXX XXXX XXXX'
