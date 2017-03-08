@@ -70,13 +70,24 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
+    let lastUsedProjectId = null
+    let authToken = null
+
+    if (cookiestore.has('graphcool_auth_token')) {
+      authToken = cookiestore.get('graphcool_auth_token')
+    }
+
+    if (cookiestore.has('graphcool_last_used_project_id')) {
+      lastUsedProjectId = cookiestore.get('graphcool_last_used_project_id')
+    }
+
     if (__HEARTBEAT_ADDR__) {
       drumstick.start({
         endpoint: __HEARTBEAT_ADDR__,
         payload: () => ({
           resource: 'console',
-          token: cookiestore.get('graphcool_auth_token'),
-          projectId: cookiestore.get('graphcool_last_used_project_id'),
+          token: authToken,
+          projectId: lastUsedProjectId,
         }),
         frequency: 60 * 1000,
       })
