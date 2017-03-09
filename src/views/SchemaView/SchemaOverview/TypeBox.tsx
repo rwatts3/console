@@ -3,6 +3,7 @@ import {Model} from '../../../types/types'
 import * as Relay from 'react-relay'
 import FieldItem from './FieldItem'
 import {Link} from 'react-router'
+import {Icon, $v} from 'graphcool-styles'
 
 interface Props {
   projectName: string
@@ -21,10 +22,11 @@ class TypeBox extends React.Component<Props,null> {
             @p: .br2, .bgWhite, .mb16, .relative, .w100;
           }
           .type-box-head {
-            @p: .pb12, .flex, .itemsCenter, .bb, .bBlack10;
+            @p: .pb25, .flex, .itemsCenter, .bb, .bBlack10, .relative;
             padding-top: 15px;
           }
           .type-box-body {
+            @p: .mt16;
           }
           .title {
             @p: .f20, .fw6, .black80, .ml12;
@@ -42,10 +44,35 @@ class TypeBox extends React.Component<Props,null> {
           .big-field-list {
             @p: .w100;
           }
+          .add-button {
+            @p: .bgWhite, .relative, .br2, .buttonShadow, .black60, .ttu, .fw6, .f12, .pa6, .flex, .ml10, .pointer;
+            :global(i) {
+              @p: .o60;
+            }
+          }
+          .add-buttons {
+            @p: .absolute, .flex;
+            left: -14px;
+            bottom: -15px;
+          }
         `}</style>
         <div className='type-box-head'>
           <div className='extend-button'></div>
           <div className='title'>{model.name}</div>
+          <div className='add-buttons'>
+            <Link to={`/${projectName}/schema/${model.name}/create`}>
+              <div className='add-button'>
+                <Icon src={require('assets/icons/addField.svg')} />
+                <span>Add Field</span>
+              </div>
+            </Link>
+            <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
+              <div className='add-button'>
+                <Icon src={require('assets/icons/addRelation.svg')} />
+                <span>Add Relation</span>
+              </div>
+            </Link>
+          </div>
         </div>
         <div className='type-box-body'>
           {!extended && (

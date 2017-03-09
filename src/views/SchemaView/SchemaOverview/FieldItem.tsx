@@ -19,6 +19,9 @@ export default class FieldItem extends React.Component<Props, null> {
             .field-item {
               @p: .pa16, .flex, .justifyBetween, .nowrap, .bt, .bBlack10;
             }
+            .field-item:first-child {
+              border: none;
+            }
             .name {
               @p: .fw6, .black60;
             }
