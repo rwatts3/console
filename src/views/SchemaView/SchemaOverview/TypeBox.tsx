@@ -54,9 +54,9 @@ class TypeBox extends React.Component<Props,null> {
                 const text = field.name + (index < (fields.length - 1) ? ', ' : '')
                 return (
                   field.isSystem ? (
-                    <span>{text}</span>
+                    <span key={field.id}>{text}</span>
                   ) : (
-                    <Link to={`/${projectName}/schema/${model.name}/edit/${field.name}`}>
+                    <Link key={field.id} to={`/${projectName}/schema/${model.name}/edit/${field.name}`}>
                       {text}
                     </Link>
                   )
@@ -71,6 +71,7 @@ class TypeBox extends React.Component<Props,null> {
                   key={field.id}
                   field={field}
                   projectName={this.props.projectName}
+                  modelName={model.name}
                 />
               ))}
             </div>

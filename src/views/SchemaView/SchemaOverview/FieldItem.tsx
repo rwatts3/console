@@ -6,16 +6,16 @@ import PermissionsTag from './PermissionsTag'
 
 interface Props {
   projectName: string
+  modelName: string
   field: Field
 }
 
 export default class FieldItem extends React.Component<Props, null> {
   render() {
-    const {field} = this.props
-    return (
-      <Link to={`/`}>
-        <div className='field-item'>
-          <style jsx>{`
+    const {field, modelName, projectName} = this.props
+    const item = (
+      <div className='field-item'>
+        <style jsx>{`
             .field-item {
               @p: .pa16, .flex, .justifyBetween, .nowrap, .bt, .bBlack10;
             }
@@ -30,27 +30,35 @@ export default class FieldItem extends React.Component<Props, null> {
               padding: 3px 4px 4px 6px;
             }
           `}</style>
-          <div className='flexy'>
+        <div className='flexy'>
             <span className='name'>
               {field.name}
             </span>
-            <TypeTag field={field} />
-          </div>
-          <div className='flexy'>
-            <div>
-              {field.isUnique && (
-                <div className='unique'>Unique</div>
-              )}
-            </div>
-            <PermissionsTag
-              view={true}
-              add={true}
-              edit={true}
-              remove={true}
-            />
-          </div>
+          <TypeTag field={field} />
         </div>
-      </Link>
+        <div className='flexy'>
+          <div>
+            {field.isUnique && (
+              <div className='unique'>Unique</div>
+            )}
+          </div>
+          <PermissionsTag
+            view={true}
+            add={true}
+            edit={true}
+            remove={true}
+          />
+        </div>
+      </div>
+    )
+    return (
+      field.isSystem ? (
+        item
+      ) : (
+        <Link to={`/${projectName}/schema/${modelName}/edit/${field.name}`}>
+          {item}
+        </Link>
+      )
     )
   }
 }
