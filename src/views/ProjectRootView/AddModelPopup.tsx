@@ -1,24 +1,42 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {ReduxAction} from '../../types/reducers'
-import {closePopup} from '../../actions/popup'
 import styled from 'styled-components'
-import {particles, variables} from 'graphcool-styles'
+import {$p, $v} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {validateModelName} from '../../utils/nameValidator'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import AddModelMutation from '../../mutations/AddModelMutation'
+import * as Relay from 'react-relay'
+import * as Modal from 'react-modal'
+import {onFailureShowNotification} from '../../utils/relay'
+import {showNotification} from '../../actions/notification'
+import {ShowNotificationCallback} from '../../types/utils'
+import {showDonePopup, nextStep} from '../../actions/gettingStarted'
+import {GettingStartedState} from '../../types/gettingStarted'
+import modalStyle from '../../utils/modalStyle'
 
 interface Props {
-  id: string
-  closePopup: (id: string) => ReduxAction
-  saveModel: (modelName: string) => ReduxAction
+  onRequestClose: () => void
+  projectId: string
+  // injected by redux
+  showNotification: ShowNotificationCallback
+  showDonePopup: () => void
+  nextStep: () => Promise<any>
+  gettingStartedState: GettingStartedState
 }
 
 interface State {
   showError: boolean
+}
+
+const customModalStyle = {
+  overlay: modalStyle.overlay,
+  content: {
+    ...modalStyle.content,
+    width: 500,
+  },
 }
 
 class AddModelPopup extends React.Component<Props, State> {
@@ -44,19 +62,19 @@ class AddModelPopup extends React.Component<Props, State> {
 
     const NameInput = styled.input`
       &::-webkit-input-placeholder {
-      color: ${variables.gray20};
+      color: ${$v.gray20};
       opacity: 1;
     }
       &::-moz-placeholder {
-        color: ${variables.gray20};
+        color: ${$v.gray20};
         opacity: 1;
       }
       &:-ms-input-placeholder {
-        color: ${variables.gray20};
+        color: ${$v.gray20};
         opacity: 1;
       }
       &:-moz-placeholder {
-        color: ${variables.gray20};
+        color: ${$v.gray20};
         opacity: 1;
       }
     `
@@ -66,64 +84,53 @@ class AddModelPopup extends React.Component<Props, State> {
     `
 
     const Button = styled.button`
-      padding: ${variables.size16};
-      font-size: ${variables.size16};
+      padding: ${$v.size16};
+      font-size: ${$v.size16};
       border: none;
       background: none;
-      color: ${variables.gray50};
+      color: ${$v.gray50};
       border-radius: 2px;
       cursor: pointer;
-      transition: color ${variables.duration} linear;
+      transition: color ${$v.duration} linear;
 
       &:hover {
-        color: ${variables.gray70};
+        color: ${$v.gray70};
       }
     `
 
     const SaveButton = styled(Button)`
-      background: ${variables.green};
-      color: ${variables.white};
+      background: ${$v.green};
+      color: ${$v.white};
 
       &:hover {
-        color: ${variables.white};
+        color: ${$v.white};
       }
     `
 
     return (
-      <div
-        className={cx(
-          particles.flex,
-          particles.bgBlack50,
-          particles.w100,
-          particles.h100,
-          particles.justifyCenter,
-          particles.itemsCenter,
-        )}
+      <Modal
+        isOpen
+        contentLabel='Add Model'
+        onRequestClose={this.props.onRequestClose}
+        style={customModalStyle}
       >
-        <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
-          <div className={cx(particles.relative, particles.pa60)}>
-
-            <div className={cx(particles.relative)}>
+        <div className={$p.bgWhite}>
+          <div className={cx($p.relative, $p.pa60)}>
+            <div className={cx($p.relative)}>
               {this.state.showError && (
                 <Warning
                   className={cx(
-                  particles.absolute,
-                  particles.left0,
-                  particles.orange,
-                  particles.f14,
+                  $p.absolute,
+                  $p.left0,
+                  $p.orange,
+                  $p.f14,
                 )}
                 >
                   Models must begin with an uppercase letter and only contain letters and numbers
                 </Warning>
               )}
               <NameInput
-                className={cx(
-                  particles.fw3,
-                  particles.f38,
-                  particles.bNone,
-                  particles.lhSolid,
-                  particles.tl,
-                )}
+                className={cx($p.fw3, $p.f38, $p.bNone, $p.lhSolid, $p.tl)}
                 type='text'
                 autoFocus
                 placeholder='New Model...'
@@ -135,16 +142,10 @@ class AddModelPopup extends React.Component<Props, State> {
 
           </div>
           <div
-            className={cx(
-              particles.bt,
-              particles.bBlack10,
-              particles.pa25,
-              particles.flex,
-              particles.justifyBetween,
-            )}
+            className={cx($p.bt, $p.bBlack10, $p.pa25, $p.flex, $p.justifyBetween)}
           >
             <Button onClick={() => {
-              this.props.closePopup(this.props.id)
+              this.props.onRequestClose()
               tracker.track(ConsoleEvents.Schema.Model.Popup.canceled({type: 'Create'}))
             }}>
               Cancel
@@ -153,8 +154,8 @@ class AddModelPopup extends React.Component<Props, State> {
               Create
             </SaveButton>
           </div>
-        </Popup>
-      </div>
+        </div>
+      </Modal>
     )
   }
 
@@ -165,20 +166,49 @@ class AddModelPopup extends React.Component<Props, State> {
       return
     }
 
-    this.props.saveModel(modelName)
-    this.props.closePopup(this.props.id)
+    this.addModel(modelName)
+    this.props.onRequestClose()
     tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
   }
 
-}
-
-const mapStateToProps = (state) => ({})
-
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({closePopup}, dispatch)
+  private addModel = (modelName: string) => {
+    const redirect = () => {
+      // this.setState({
+      //   addingNewModel: false,
+      //   newModelIsValid: true,
+      // } as State)
+    }
+    if (modelName) {
+      Relay.Store.commitUpdate(
+        new AddModelMutation({
+          modelName,
+          projectId: this.props.projectId,
+        }),
+        {
+          onSuccess: () => {
+            tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
+            if (
+              modelName === 'Post' &&
+              this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
+            ) {
+              this.props.showDonePopup()
+              this.props.nextStep().then(redirect)
+            } else {
+              redirect()
+            }
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        },
+      )
+    }
+  }
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+  state => ({gettingStartedState: state.gettingStarted.gettingStartedState}),
+  {
+    showNotification, nextStep, showDonePopup,
+  },
 )(AddModelPopup)

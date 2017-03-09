@@ -1,15 +1,31 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import {SchemaOverviewFilter} from './SchemaOverview'
+import AddModelPopup from '../../ProjectRootView/AddModelPopup'
 
 interface Props {
   activeFilter: SchemaOverviewFilter
   onChangeFilter: (filter: SchemaOverviewFilter) => void
+  projectId: string
 }
 
-export default class SchemaOverviewHeader extends React.Component<Props,null> {
+interface State {
+  addModelPopupOpen: boolean
+}
+
+export default class SchemaOverviewHeader extends React.Component<Props, State> {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      addModelPopupOpen: false,
+    }
+  }
+
   render() {
     const {activeFilter, onChangeFilter} = this.props
+    const {addModelPopupOpen} = this.state
 
     return (
       /*
@@ -47,7 +63,7 @@ export default class SchemaOverviewHeader extends React.Component<Props,null> {
             @p: .o100;
           }
         `}</style>
-        <div className='add-type'>
+        <div className='add-type' onClick={this.openAddModelPopup}>
           <Icon
             src={require('assets/icons/roundAdd.svg')}
             stroke
@@ -76,7 +92,21 @@ export default class SchemaOverviewHeader extends React.Component<Props,null> {
             onClick={() => onChangeFilter('detail')}
           />
         </div>
+        {addModelPopupOpen && (
+          <AddModelPopup
+            onRequestClose={this.closeAddModelPopup}
+            projectId={this.props.projectId}
+          />
+        )}
       </div>
     )
+  }
+
+  private openAddModelPopup = () => {
+    this.setState({addModelPopupOpen: true} as State)
+  }
+
+  private closeAddModelPopup = () => {
+    this.setState({addModelPopupOpen: false} as State)
   }
 }

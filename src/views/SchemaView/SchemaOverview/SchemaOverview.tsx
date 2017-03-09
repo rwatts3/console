@@ -2,7 +2,7 @@ import * as React from 'react'
 import SchemaOverviewHeader from './SchemaOverviewHeader'
 
 interface Props {
-
+  projectId: string
 }
 export type SchemaOverviewFilter = 'detail' | 'overview'
 
@@ -31,6 +31,7 @@ export default class SchemaOverview extends React.Component<Props,State> {
         <SchemaOverviewHeader
           activeFilter={activeFilter}
           onChangeFilter={this.handleFilterChange}
+          projectId={this.props.projectId}
         />
       </div>
     )

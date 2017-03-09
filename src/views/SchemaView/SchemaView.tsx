@@ -24,7 +24,7 @@ class NewSchemaView extends React.Component<Props,null> {
         <SchemaHeader />
         <div className='schema-wrapper'>
           <SchemaEditor project={viewer.project} />
-          <SchemaOverview />
+          <SchemaOverview projectId={viewer.project.id} />
         </div>
       </div>
     )
@@ -40,6 +40,7 @@ export default Relay.createContainer(NewSchemaView, {
       fragment on Viewer {
         id
         project: projectByName(projectName: $projectName) {
+          id
           ${SchemaEditor.getFragment('project')}
         }
       }
