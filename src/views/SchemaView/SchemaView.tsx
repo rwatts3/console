@@ -15,8 +15,6 @@ class NewSchemaView extends React.Component<Props,null> {
     return (
       <div className='schema-view'>
         <style jsx>{`
-          .schema-view {
-          }
           .schema-wrapper {
             @p: .flex;
           }
@@ -24,8 +22,9 @@ class NewSchemaView extends React.Component<Props,null> {
         <SchemaHeader />
         <div className='schema-wrapper'>
           <SchemaEditor project={viewer.project} />
-          <SchemaOverview projectId={viewer.project.id} />
+          <SchemaOverview project={viewer.project} />
         </div>
+        {this.props.children}
       </div>
     )
   }
@@ -42,6 +41,7 @@ export default Relay.createContainer(NewSchemaView, {
         project: projectByName(projectName: $projectName) {
           id
           ${SchemaEditor.getFragment('project')}
+          ${SchemaOverview.getFragment('project')}
         }
       }
     `,

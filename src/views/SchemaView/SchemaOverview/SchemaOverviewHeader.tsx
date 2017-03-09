@@ -77,19 +77,19 @@ export default class SchemaOverviewHeader extends React.Component<Props, State> 
         <div className='switches'>
           <Icon
             src={require('assets/icons/schema/overview.svg')}
-            className={activeFilter === 'overview' ? 'active' : ''}
-            color={$v.white}
-            width={23}
-            height={20}
-            onClick={() => onChangeFilter('overview')}
-          />
-          <Icon
-            className={'s' + (activeFilter === 'detail' ? ' active' : '')}
-            src={require('assets/icons/schema/detail.svg')}
+            className={activeFilter === 'detail' ? 'active' : ''}
             color={$v.white}
             width={23}
             height={20}
             onClick={() => onChangeFilter('detail')}
+        />
+          <Icon
+            className={'s' + (activeFilter === 'overview' ? ' active' : '')}
+            src={require('assets/icons/schema/detail.svg')}
+            color={$v.white}
+            width={23}
+            height={20}
+            onClick={() => onChangeFilter('overview')}
           />
         </div>
         {addModelPopupOpen && (

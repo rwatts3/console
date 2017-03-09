@@ -139,6 +139,12 @@ export interface Field {
   model?: Model
   migrationValue?: TypedValue
   constraints?: Constraint[]
+  interface?: Interface
+}
+
+interface Interface {
+  isSystem: boolean
+  name: string
 }
 
 export interface Relation {

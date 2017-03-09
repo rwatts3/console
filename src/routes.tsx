@@ -130,7 +130,12 @@ export default (
           <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>
           <IndexRedirect to='settings'/>
         </Route>
-        <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} />
+        <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render}>
+          <Route path=':modelName'>
+            <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
+            <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
+          </Route>
+        </Route>
         <Route path='models'>
           <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
           <Route path=':modelName/schema' component={SchemaView} queries={ViewerQuery} render={render}>
