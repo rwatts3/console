@@ -3,7 +3,7 @@ import SchemaOverview from './SchemaOverview/SchemaOverview'
 import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
 import * as Relay from 'react-relay'
-import {Project, Viewer} from '../../types/types'
+import {Viewer} from '../../types/types'
 
 interface Props {
   viewer: Viewer

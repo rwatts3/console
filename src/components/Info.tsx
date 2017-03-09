@@ -1,24 +1,36 @@
 import * as React from 'react'
 
-const Info = (props) => (
+interface Props {
+  children?: JSX.Element
+  slim?: boolean
+  bright?: boolean
+}
+
+const Info = (props: Props) => (
   <div className='info'>
     <style jsx>{`
       .question-mark {
-        @inherit: .bgBlack10, .flex, .itemsCenter, .justifyCenter, .black40, .f12, .fw6, .br100, .pointer;
+        @p: .bgBlack10, .flex, .itemsCenter, .justifyCenter, .black40, .f12, .fw6, .br100, .pointer;
         width: 18px;
         height: 18px;
       }
+      .question-mark.bright {
+        @p: .bgBlue, .white;
+      }
       .tooltip {
-        @inherit: .dn, .absolute;
+        @p: .dn, .absolute;
         z-index: 20;
         width: 250px;
         padding-top: 5px;
         left: -50px;
       }
+      .tooltip.slim {
+        width: 200px;
+      }
       .tooltip-content {
-        @inherit: .br2, .bgWhite, .pa16, .black50, .f14, .fw4, .relative, .buttonShadow;
+        @p: .br2, .bgWhite, .pa16, .black50, .f14, .fw4, .relative, .buttonShadow;
         &:before {
-          @inherit: .absolute, .bgWhite;
+          @p: .absolute, .bgWhite;
           content: "";
           top: -4px;
           left: 55px;
@@ -28,18 +40,24 @@ const Info = (props) => (
         }
       }
       .info {
-        @inherit: .ml10, .relative;
+        @p: .ml10, .relative;
         &:hover .tooltip {
-          @inherit: .db;
+          @p: .db;
         }
         &:hover .question-mark {
-          @inherit: .bgBlue, .white;
+          @p: .bgBlue, .white;
         }
+      }
+      span {
+        @p: .relative;
+        left: 1px;
       }
 
     `}</style>
-    <div className='question-mark'>?</div>
-    <div className='tooltip'>
+    <div className={'question-mark' + (Boolean(props.bright) ? ' bright' : '')}>
+      <span>?</span>
+    </div>
+    <div className={'tooltip' + (Boolean(props.slim) ? ' slim' : '')}>
       <div className='tooltip-content'>
         {props.children}
       </div>

@@ -4,9 +4,22 @@ import SchemaOverviewHeader from './SchemaOverviewHeader'
 interface Props {
 
 }
+export type SchemaOverviewFilter = 'detail' | 'overview'
 
-export default class SchemaOverview extends React.Component<Props,null> {
+interface State {
+  activeFilter: SchemaOverviewFilter
+}
+
+export default class SchemaOverview extends React.Component<Props,State> {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      activeFilter: 'detail',
+    }
+  }
   render() {
+    const {activeFilter} = this.state
     return (
       <div className='schema-overview'>
         <style jsx={true}>{`
@@ -15,8 +28,14 @@ export default class SchemaOverview extends React.Component<Props,null> {
             height: calc(100vh - 57px);
           }
         `}</style>
-        <SchemaOverviewHeader />
+        <SchemaOverviewHeader
+          activeFilter={activeFilter}
+          onChangeFilter={this.handleFilterChange}
+        />
       </div>
     )
+  }
+  handleFilterChange = (filter: SchemaOverviewFilter) => {
+    this.setState({activeFilter: filter})
   }
 }
