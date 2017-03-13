@@ -65,7 +65,7 @@ const fields = [{
       itemCount: 5,
       description: '',
       isSystem: false,
-      permissions: [],
+      permissions: {edges: []},
       permissionSchema: '',
       permissionQueryArguments: [],
     },

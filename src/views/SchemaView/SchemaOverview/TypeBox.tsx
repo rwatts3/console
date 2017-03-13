@@ -4,6 +4,7 @@ import * as Relay from 'react-relay'
 import FieldItem from './FieldItem'
 import {Link} from 'react-router'
 import {Icon, $v} from 'graphcool-styles'
+import {isScalar} from '../../../utils/graphql'
 
 interface Props {
   projectName: string
@@ -11,10 +12,30 @@ interface Props {
   extended: boolean
 }
 
-class TypeBox extends React.Component<Props,null> {
+interface State {
+  extended: boolean
+}
+
+class TypeBox extends React.Component<Props,State> {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      extended: false,
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.state.extended && !this.props.extended && nextProps.extended) {
+      this.setState({extended: false})
+    }
+  }
   render() {
-    const {model, extended, projectName} = this.props
+    const {model, projectName} = this.props
+    const propsExtended = this.props.extended
+    const stateExtended = this.state.extended
+    const extended = propsExtended || stateExtended
     const fields = model.fields.edges.map(edge => edge.node)
+    const permissions = model.permissions.edges.map(edge => edge.node)
     return (
       <div className='type-box'>
         <style jsx>{`
@@ -22,10 +43,13 @@ class TypeBox extends React.Component<Props,null> {
             @p: .br2, .bgWhite, .mb16, .relative, .w100;
           }
           .type-box-head {
-            @p: .pb25, .flex, .itemsCenter, .bb, .bBlack10, .relative;
+            @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative;
             padding-top: 15px;
           }
-          .type-box-body {
+          .type-box-head.extended {
+            @p: .pb25;
+          }
+          .type-box-body.extended {
             @p: .mt16;
           }
           .title {
@@ -33,10 +57,16 @@ class TypeBox extends React.Component<Props,null> {
             letter-spacing: 0.53px;
           }
           .extend-button {
-            @p: .bgGreen, .br2, .relative, .flex, .itemsCenter, .justifyCenter;
+            @p: .bgGreen, .br2, .relative, .flex, .itemsCenter, .justifyCenter, .pointer;
             left: -4px;
             width: 16px;
             height: 16px;
+          }
+          .extend-button :global(i) {
+            @p: .o0;
+          }
+          .extend-button:hover :global(i) {
+            @p: .o100;
           }
           .flat-field-list {
             @p: .black60, .fw6, .f14, .pa16;
@@ -47,8 +77,14 @@ class TypeBox extends React.Component<Props,null> {
           .add-button {
             @p: .bgWhite, .relative, .br2, .buttonShadow, .black60, .ttu, .fw6, .f12, .pa6, .flex, .ml10, .pointer;
             :global(i) {
-              @p: .o60;
+              @p: .o30;
             }
+          }
+          .add-button:hover {
+            @p: .blue;
+          }
+          .add-button:hover :global(svg) {
+            stroke: $blue !important;
           }
           .add-buttons {
             @p: .absolute, .flex;
@@ -56,34 +92,50 @@ class TypeBox extends React.Component<Props,null> {
             bottom: -15px;
           }
         `}</style>
-        <div className='type-box-head'>
-          <div className='extend-button'></div>
-          <div className='title'>{model.name}</div>
-          <div className='add-buttons'>
-            <Link to={`/${projectName}/schema/${model.name}/create`}>
-              <div className='add-button'>
-                <Icon src={require('assets/icons/addField.svg')} />
-                <span>Add Field</span>
-              </div>
-            </Link>
-            <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
-              <div className='add-button'>
-                <Icon src={require('assets/icons/addRelation.svg')} />
-                <span>Add Relation</span>
-              </div>
-            </Link>
+        <div className={'type-box-head' + (extended ? ' extended' : '')}>
+          <div className='extend-button' onClick={this.toggleExtended}>
+            <Icon
+              src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
+              stroke
+              color={$v.white}
+              strokeWidth={4}
+              rotate={extended ? 180 : 0}
+              height={16}
+              width={16}
+            />
           </div>
+          <div className='title'>{model.name}</div>
+          {extended && (
+            <div className='add-buttons'>
+              <Link to={`/${projectName}/schema/${model.name}/create`}>
+                <div className='add-button'>
+                  <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                  <span>Add Field</span>
+                </div>
+              </Link>
+              <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
+                <div className='add-button'>
+                  <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                  <span>Add Relation</span>
+                </div>
+              </Link>
+            </div>
+          )}
         </div>
-        <div className='type-box-body'>
+        <div className={'type-box-body' + (extended ? ' extended' : '')}>
           {!extended && (
             <div className='flat-field-list'>
               {fields.map((field, index) => {
                 const text = field.name + (index < (fields.length - 1) ? ', ' : '')
+                let link = `/${projectName}/schema/${model.name}/edit/${field.name}`
+                if (!isScalar(field.typeIdentifier)) {
+                  link = `/${projectName}/schema/relations/edit/${field.relation.name}`
+                }
                 return (
                   field.isSystem ? (
                     <span key={field.id}>{text}</span>
                   ) : (
-                    <Link key={field.id} to={`/${projectName}/schema/${model.name}/edit/${field.name}`}>
+                    <Link key={field.id} to={link}>
                       {text}
                     </Link>
                   )
@@ -93,10 +145,12 @@ class TypeBox extends React.Component<Props,null> {
           )}
           {extended && (
             <div className='big-field-list'>
-              {fields.map(field => (
+              {fields.map((field, index) => (
                 <FieldItem
                   key={field.id}
                   field={field}
+                  permissions={permissions}
+                  hideBorder={index === 0}
                   projectName={this.props.projectName}
                   modelName={model.name}
                 />
@@ -107,6 +161,14 @@ class TypeBox extends React.Component<Props,null> {
       </div>
     )
   }
+
+  private toggleExtended = () => {
+    this.setState(({extended}) => {
+      return {
+        extended: !extended,
+      }
+    })
+  }
 }
 
 export default Relay.createContainer(TypeBox, {
@@ -115,6 +177,16 @@ export default Relay.createContainer(TypeBox, {
       fragment on Model {
         id
         name
+        permissions(first: 100) {
+          edges {
+            node {
+              isActive
+              operation
+              applyToWholeModel
+              fieldIds
+            }
+          }
+        }
         fields(first: 100) {
           edges {
             node {
@@ -126,6 +198,13 @@ export default Relay.createContainer(TypeBox, {
               isSystem
               isUnique
               isReadonly
+              relation {
+                name
+              }
+              relatedModel {
+                id
+                name
+              }
             }
           }
         }

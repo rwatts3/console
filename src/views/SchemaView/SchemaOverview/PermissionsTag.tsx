@@ -1,17 +1,15 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import {icons} from '../../../utils/permission'
+import {PermissionMap} from './FieldItem'
 
 interface Props {
-  view: boolean
-  add: boolean
-  edit: boolean
-  remove: boolean
+  permissions: PermissionMap
 }
 
 export default class PermissionsTag extends React.Component<Props,null> {
   render() {
-    const {view, add, edit, remove} = this.props
+    const {permissions: {CREATE, READ, UPDATE, DELETE}} = this.props
     return (
       <div className='permissions-tag'>
         <style jsx>{`
@@ -21,10 +19,10 @@ export default class PermissionsTag extends React.Component<Props,null> {
             border-radius: 11px;
           }
         `}</style>
-        {view && (
+        {READ && (
           <Icon src={icons['READ']} stroke strokeWidth={3} width={20} height={20} color={$v.gray40} />
         )}
-        {add && (
+        {CREATE && (
           <Icon
             src={require('graphcool-styles/icons/stroke/addFull.svg')}
             stroke
@@ -34,10 +32,10 @@ export default class PermissionsTag extends React.Component<Props,null> {
             color={$v.gray40}
           />
         )}
-        {edit && (
+        {UPDATE && (
           <Icon src={icons['UPDATE']} stroke strokeWidth={3} width={20} height={20} color={$v.gray40} />
         )}
-        {remove && (
+        {DELETE && (
           <Icon src={icons['DELETE']} stroke strokeWidth={3} width={20} height={20} color={$v.gray40} />
         )}
       </div>

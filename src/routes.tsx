@@ -42,6 +42,7 @@ import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
 import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
 import ImportSchemaView from './views/ImportSchemaView/ImportSchemaView'
 import NewSchemaView from './views/SchemaView/SchemaView'
+import SchemaViewer from './views/SchemaView/SchemaViewer'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -131,11 +132,16 @@ export default (
           <IndexRedirect to='settings'/>
         </Route>
         <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render}>
+          <Route path='relations'>
+            <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
+            <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
+          </Route>
           <Route path=':modelName'>
             <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
             <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
           </Route>
         </Route>
+        <Route path='voyager' component={SchemaViewer} queries={ViewerQuery} render={render} />
         <Route path='models'>
           <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
           <Route path=':modelName/schema' component={SchemaView} queries={ViewerQuery} render={render}>

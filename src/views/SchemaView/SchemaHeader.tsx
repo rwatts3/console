@@ -1,8 +1,13 @@
 import * as React from 'react'
 import {$v,Icon} from 'graphcool-styles'
 import Info from '../../components/Info'
+import {Link} from 'react-router'
 
-export default class SchemaHeader extends React.Component<null,null> {
+interface Props {
+  projectName: string
+}
+
+export default class SchemaHeader extends React.Component<Props,null> {
   render() {
     return (
       <div className='schema-header'>
@@ -49,15 +54,17 @@ export default class SchemaHeader extends React.Component<null,null> {
               </a>
             </Info>
           </div>
-          <div className='button'>
-            <Icon
-              width={15}
-              height={15}
-              src={require('assets/icons/graphView.svg')}
-              color={$v.darkBlue}
-            />
-            <div className='text'>Graph View</div>
-          </div>
+          <Link to={`/${this.props.projectName}/voyager`}>
+            <div className='button'>
+              <Icon
+                width={15}
+                height={15}
+                src={require('assets/icons/graphView.svg')}
+                color={$v.darkBlue}
+              />
+              <div className='text'>Graph View</div>
+            </div>
+          </Link>
         </div>
       </div>
     )

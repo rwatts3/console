@@ -170,7 +170,7 @@ export interface Model {
   itemCount: number
   description: string
   isSystem: boolean
-  permissions: ModelPermission[]
+  permissions: RelayConnection<ModelPermission>
   permissionSchema: string
   permissionQueryArguments: PermissionQueryArgument[]
 }
