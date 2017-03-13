@@ -19,50 +19,42 @@ export default class TypeTag extends React.Component<Props, null> {
       type = `${type}!`
     }
     return (
-      <div className='wrapper'>
+      <div className='type-tag'>
         <style jsx>{`
-          .wrapper {
-            @p: .flex, .itemsCenter;
-          }
-          .type-tag {
-            @p: .bgBlack04, .br2, .black50, .dib, .ml16, .f12, .flex, .itemsCenter;
-            font-family:
-                    'Source Code Pro',
-                    'Consolas',
-                    'Inconsolata',
-                    'Droid Sans Mono',
-                    'Monaco',
-                    monospace;
-            padding: 3px 6px 4px 6px;
-            :global(i) {
-              @p: .mr4;
-            }
-          }
-          .type-tag + .type-tag {
-            @p: .ml10;
-          }
-        `}</style>
-        {field.isSystem && (
-          <div className='type-tag'>SYSTEM</div>
+        .type-tag {
+          @p: .bgBlack04, .br2, .black50, .dib, .ml16, .f12, .flex, .itemsCenter;
+          font-family:
+                  'Source Code Pro',
+                  'Consolas',
+                  'Inconsolata',
+                  'Droid Sans Mono',
+                  'Monaco',
+                  monospace;
+          padding: 3px 6px 4px 6px;
+        }
+        .type-tag :global(i) {
+          @p: .mr4;
+        }
+        .type-tag + .type-tag {
+          @p: .ml10;
+        }
+      `}</style>
+        {!isScalar(field.typeIdentifier) && (
+          <Icon
+            width={14}
+            height={14}
+            src={require('assets/icons/link.svg')}
+            stroke
+            color={$v.gray60}
+          />
         )}
-        <div className='type-tag'>
-          {!isScalar(field.typeIdentifier) && (
-            <Icon
-              width={14}
-              height={14}
-              src={require('assets/icons/link.svg')}
-              stroke
-              color={$v.gray60}
-            />
+        <span>
+          {isScalar(field.typeIdentifier) ? (
+            type
+          ) : (
+            field.relatedModel.name
           )}
-          <span>
-            {isScalar(field.typeIdentifier) ? (
-              type
-            ) : (
-              field.relatedModel.name
-            )}
-          </span>
-        </div>
+        </span>
       </div>
     )
   }

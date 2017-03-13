@@ -66,11 +66,13 @@ export default class TypeBoxSettings extends React.Component<Props, State> {
     )
   }
 
-  private open = () => {
+  private open = (e) => {
+    e.stopPropagation()
     this.setState({open: true})
   }
 
   private close = (e) => {
+    e.stopPropagation()
     this.setState({open: false})
   }
 }

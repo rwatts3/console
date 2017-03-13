@@ -15,7 +15,7 @@ interface Props {
 }
 
 interface State {
-  extended: boolean
+  extended?: boolean
 }
 
 class TypeBox extends React.Component<Props,State> {
@@ -23,19 +23,19 @@ class TypeBox extends React.Component<Props,State> {
     super(props)
 
     this.state = {
-      extended: false,
+      extended: undefined,
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (this.state.extended && !this.props.extended && nextProps.extended) {
-      this.setState({extended: false})
+    if (this.props.extended !== nextProps.extended) {
+      this.setState({extended: undefined})
     }
   }
   render() {
     const {model, projectName} = this.props
     const propsExtended = this.props.extended
     const stateExtended = this.state.extended
-    const extended = propsExtended || stateExtended
+    const extended = typeof stateExtended === 'boolean' ? stateExtended : propsExtended
     const fields = model.fields.edges.map(edge => edge.node)
     const permissions = model.permissions.edges.map(edge => edge.node)
     return (
@@ -46,7 +46,7 @@ class TypeBox extends React.Component<Props,State> {
             box-shadow: 0 1px 10px $gray30;
           }
           .type-box-head {
-            @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween;
+            @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .pointer;
             padding-top: 15px;
           }
           .flexy {
@@ -71,7 +71,7 @@ class TypeBox extends React.Component<Props,State> {
           .extend-button :global(i) {
             @p: .o0;
           }
-          .extend-button:hover :global(i) {
+          .type-box-head:hover .extend-button :global(i) {
             @p: .o100;
           }
           .flat-field-list {
@@ -106,15 +106,15 @@ class TypeBox extends React.Component<Props,State> {
             }
           }
         `}</style>
-        <div className={'type-box-head' + (extended ? ' extended' : '')}>
+        <div className={'type-box-head' + (extended ? ' extended' : '')} onClick={this.toggleExtended}>
           <div className='flexy'>
-            <div className='extend-button' onClick={this.toggleExtended}>
+            <div className='extend-button'>
               <Icon
                 src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
                 stroke
                 color={$v.white}
                 strokeWidth={4}
-                rotate={extended ? 180 : 0}
+                rotate={extended ? 0 : -90}
                 height={16}
                 width={16}
               />
@@ -191,8 +191,9 @@ class TypeBox extends React.Component<Props,State> {
 
   private toggleExtended = () => {
     this.setState(({extended}) => {
+      const newExtended = typeof extended === 'boolean' ? !extended : !this.props.extended
       return {
-        extended: !extended,
+        extended: newExtended,
       }
     })
   }
