@@ -41,6 +41,7 @@ class TypeBox extends React.Component<Props,State> {
         <style jsx>{`
           .type-box {
             @p: .br2, .bgWhite, .mb16, .relative, .w100;
+            box-shadow: 0 1px 10px $gray30;
           }
           .type-box-head {
             @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative;
@@ -76,9 +77,11 @@ class TypeBox extends React.Component<Props,State> {
           }
           .add-button {
             @p: .bgWhite, .relative, .br2, .buttonShadow, .black60, .ttu, .fw6, .f12, .pa6, .flex, .ml10, .pointer;
+            :global(i) {
+            }
           }
           .add-button :global(i) {
-            @p: .o30;
+              @p: .o30;
           }
           .add-button:hover {
             @p: .blue;

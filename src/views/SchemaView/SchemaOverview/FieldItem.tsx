@@ -6,11 +6,12 @@ import PermissionsTag from './PermissionsTag'
 import {isScalar} from '../../../utils/graphql'
 
 interface Props {
-  projectName: string
-  modelName: string
+  projectName?: string
+  modelName?: string
   field: Field
   hideBorder?: boolean
   permissions: ModelPermission[]
+  create?: boolean
 }
 
 export interface PermissionMap {
@@ -22,7 +23,7 @@ export interface PermissionMap {
 
 export default class FieldItem extends React.Component<Props, null> {
   render() {
-    const {field, modelName, projectName, hideBorder} = this.props
+    const {field, modelName, projectName, hideBorder, create} = this.props
     const permissions = this.getPermissions()
     const item = (
       <div className={'field-item' + (hideBorder ? '' : ' show-border')}>
@@ -56,11 +57,13 @@ export default class FieldItem extends React.Component<Props, null> {
               <div className='unique'>Unique</div>
             )}
           </div>
-          <Link to={`/${projectName}/permissions`}>
-            <PermissionsTag
-              permissions={permissions}
-            />
-          </Link>
+          {!create && (
+            <Link to={`/${projectName}/permissions`}>
+              <PermissionsTag
+                permissions={permissions}
+              />
+            </Link>
+          )}
         </div>
       </div>
     )
@@ -70,7 +73,7 @@ export default class FieldItem extends React.Component<Props, null> {
       link = `/${projectName}/schema/relations/edit/${field.relation.name}`
     }
     return (
-      field.isSystem ? (
+      (field.isSystem || create) ? (
         item
       ) : (
         <Link to={link}>

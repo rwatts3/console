@@ -40,6 +40,9 @@ class SchemaViewer extends React.Component<Props, null> {
               @p: .absolute, .top0, .right0, .pa10, .ma10, .bgWhite, .z999, .pointer, .br100;
               box-shadow: 0 0 30px 30px white;
             }
+            :global(#intercom-container) {
+              display: none;
+            }
           `}</style>
           <Voyager
             introspection={this.introspectionProvider}

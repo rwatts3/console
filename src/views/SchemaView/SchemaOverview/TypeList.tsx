@@ -7,14 +7,24 @@ import TypeBox from './TypeBox'
 interface Props {
   project: Project
   activeFilter: SchemaOverviewFilter
+  opacity?: number
 }
 
 class TypeList extends React.Component<Props,null> {
   render() {
-    const {activeFilter, project} = this.props
-    const models = project.models.edges.map(edge => edge.node)
+    const {activeFilter, project, opacity} = this.props
+    const models = project.models.edges
+      .map(edge => edge.node)
+      .sort((a, b) => a.id < b.id ? 1 : -1)
+    let style = {}
+    if (typeof opacity === 'number' && !isNaN(opacity)) {
+      style = {opacity}
+    }
     return (
-      <div className='type-list'>
+      <div
+        className='type-list'
+        style={style}
+      >
         <style jsx>{`
           .type-list {
             @p: .pa16;
