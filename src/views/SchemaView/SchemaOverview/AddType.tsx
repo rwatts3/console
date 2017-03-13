@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FieldItem from './FieldItem'
-import {Field, Project} from '../../../types/types'
+import {Field, Project, Model} from '../../../types/types'
 import * as Relay from 'react-relay'
 import {connect} from 'react-redux'
 import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
@@ -12,15 +12,20 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import tracker from '../../../utils/metrics'
 import AddModelMutation from '../../../mutations/AddModelMutation'
 import {ConsoleEvents} from 'graphcool-metrics'
+import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
+import Loading from '../../../components/Loading/Loading'
 
 interface State {
   modelName: string
   showError: boolean
+  editing: boolean
+  loading: boolean
 }
 
 interface Props {
   onRequestClose: () => void
   projectId: string
+  model: Model
   // injected by redux
   showNotification: ShowNotificationCallback
   showDonePopup: () => void
@@ -46,17 +51,20 @@ class AddType extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      modelName: '',
+      modelName: props.model && props.model.name || '',
       showError: false,
+      editing: Boolean(props.model),
+      loading: false,
     }
   }
   render() {
-    const {showError} = this.state
+    const {showError, editing, loading} = this.state
+
     return (
       <div className='add-type'>
         <style jsx>{`
           .add-type {
-            @p: .mt16, .ml16, .mr16, .bgWhite, .br2;
+            @p: .mt16, .ml16, .mr16, .bgWhite, .br2, .relative;
             box-shadow: 0 1px 10px $gray30;
           }
           .header {
@@ -98,9 +106,16 @@ class AddType extends React.Component<Props, State> {
           .error {
             @p: .orange, .f14, .ml10;
           }
+          .loading {
+            @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70, .flex, .itemsCenter, .justifyCenter;
+          }
         `}</style>
         <div className='header'>
-          <div className='badge'>New Type</div>
+          {editing ? (
+            <div className='badge update'>Update Type</div>
+          ) : (
+            <div className='badge'>New Type</div>
+          )}
           <div className='input-wrapper'>
             <input
               type='text'
@@ -109,6 +124,7 @@ class AddType extends React.Component<Props, State> {
               autoFocus
               value={this.state.modelName}
               onChange={this.onModelNameChange}
+              onKeyDown={this.handleKeyDown}
             />
             {showError && (
               <div className='error'>
@@ -130,8 +146,19 @@ class AddType extends React.Component<Props, State> {
           <div className='button cancel' onClick={this.props.onRequestClose}>Cancel</div>
           <div className='button save' onClick={this.save}>Save</div>
         </div>
+        {loading && (
+          <div className='loading'>
+            <Loading />
+          </div>
+        )}
       </div>
     )
+  }
+
+  private handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      this.save()
+    }
   }
 
   private onModelNameChange = (e) => {
@@ -139,15 +166,18 @@ class AddType extends React.Component<Props, State> {
   }
 
   private save = () => {
-    const {modelName} = this.state
+    const {modelName, editing} = this.state
     if (modelName != null && !validateModelName(modelName)) {
-      this.setState({showError: true} as State)
-      return
+      return this.setState({showError: true} as State)
     }
 
-    this.addModel(modelName)
-    this.props.onRequestClose()
-    tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
+    this.setState({loading: true} as State, () => {
+      if (editing) {
+        this.editModel(modelName)
+      } else {
+        this.addModel(modelName)
+      }
+    })
   }
 
   private addModel = (modelName: string) => {
@@ -167,13 +197,35 @@ class AddType extends React.Component<Props, State> {
               this.props.showDonePopup()
               this.props.nextStep()
             }
+            tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
+            this.props.onRequestClose()
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({loading: false} as State)
           },
         },
       )
     }
+  }
+
+  private editModel = (modelName: string) => {
+    Relay.Store.commitUpdate(
+      new UpdateModelNameMutation({
+        name: modelName,
+        modelId: this.props.model.id,
+      }),
+      {
+        onSuccess: () => {
+          tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
+          this.props.onRequestClose()
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
+        },
+      },
+    )
   }
 }
 

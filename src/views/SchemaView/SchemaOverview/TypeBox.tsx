@@ -5,11 +5,13 @@ import FieldItem from './FieldItem'
 import {Link} from 'react-router'
 import {Icon, $v} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
+import TypeBoxSettings from './TypeBoxSettings'
 
 interface Props {
   projectName: string
   model: Model
   extended: boolean
+  onEditModel: (model: Model) => void
 }
 
 interface State {
@@ -44,8 +46,11 @@ class TypeBox extends React.Component<Props,State> {
             box-shadow: 0 1px 10px $gray30;
           }
           .type-box-head {
-            @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative;
+            @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween;
             padding-top: 15px;
+          }
+          .flexy {
+            @p: .flex, .itemsCenter;
           }
           .type-box-head.extended {
             @p: .pb25;
@@ -94,35 +99,54 @@ class TypeBox extends React.Component<Props,State> {
             left: -14px;
             bottom: -15px;
           }
+          .setting {
+            @p: .pv10, .ph16, .flex, .itemsCenter;
+            .text {
+              @p: .ml10, .f14, .fw6, .black60, .ttu;
+            }
+          }
         `}</style>
         <div className={'type-box-head' + (extended ? ' extended' : '')}>
-          <div className='extend-button' onClick={this.toggleExtended}>
-            <Icon
-              src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
-              stroke
-              color={$v.white}
-              strokeWidth={4}
-              rotate={extended ? 180 : 0}
-              height={16}
-              width={16}
-            />
-          </div>
-          <div className='title'>{model.name}</div>
-          {extended && (
-            <div className='add-buttons'>
-              <Link to={`/${projectName}/schema/${model.name}/create`}>
-                <div className='add-button'>
-                  <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
-                  <span>Add Field</span>
-                </div>
-              </Link>
-              <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
-                <div className='add-button'>
-                  <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
-                  <span>Add Relation</span>
-                </div>
-              </Link>
+          <div className='flexy'>
+            <div className='extend-button' onClick={this.toggleExtended}>
+              <Icon
+                src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
+                stroke
+                color={$v.white}
+                strokeWidth={4}
+                rotate={extended ? 180 : 0}
+                height={16}
+                width={16}
+              />
             </div>
+            <div className='title'>{model.name}</div>
+            {extended && (
+              <div className='add-buttons'>
+                <Link to={`/${projectName}/schema/${model.name}/create`}>
+                  <div className='add-button'>
+                    <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                    <span>Add Field</span>
+                  </div>
+                </Link>
+                <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
+                  <div className='add-button'>
+                    <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                    <span>Add Relation</span>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
+          {!model.isSystem && (
+            <TypeBoxSettings>
+              <div className='setting' onClick={() => this.props.onEditModel(model)}>
+                <Icon
+                  src={require('graphcool-styles/icons/fill/settings.svg')}
+                  color={$v.gray20}
+                />
+                <div className='text'>Type Settings</div>
+              </div>
+            </TypeBoxSettings>
           )}
         </div>
         <div className={'type-box-body' + (extended ? ' extended' : '')}>
@@ -180,6 +204,7 @@ export default Relay.createContainer(TypeBox, {
       fragment on Model {
         id
         name
+        isSystem
         permissions(first: 100) {
           edges {
             node {
