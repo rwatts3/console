@@ -76,9 +76,9 @@ class TypeBox extends React.Component<Props,State> {
           }
           .add-button {
             @p: .bgWhite, .relative, .br2, .buttonShadow, .black60, .ttu, .fw6, .f12, .pa6, .flex, .ml10, .pointer;
-            :global(i) {
-              @p: .o30;
-            }
+          }
+          .add-button :global(i) {
+            @p: .o30;
           }
           .add-button:hover {
             @p: .blue;
