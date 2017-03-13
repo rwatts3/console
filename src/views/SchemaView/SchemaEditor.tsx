@@ -2,6 +2,7 @@ import * as React from 'react'
 const Codemirror: any = require('react-codemirror')
 import * as Relay from 'react-relay'
 import {Project} from '../../types/types'
+import * as FileSaver from 'file-saver'
 
 interface Props {
   project: Project
@@ -29,12 +30,33 @@ class SchemaEditor extends React.Component<Props,null> {
       <div className='schema-editor'>
         <style jsx={true}>{`
           .schema-editor {
-            @p: .flex1;
+            @p: .flex1, .bgDarkerBlue;
             border-top: 6px solid $darkBlue;
           }
           .schema-editor :global(.CodeMirror) {
-            height: calc(100vh - 57px);
+            height: calc(100vh - 57px - 86px);
             padding: 25px;
+            padding-left: 16px;
+          }
+          .footer {
+            @p: .flex, .w100, .pa25, .relative;
+            &:after {
+              @p: .absolute, .left0, .right0, .top0;
+              z-index: 30;
+              margin-top: -86px;
+              content: "";
+              height: 100px;
+              background: linear-gradient(to top, $darkerBlue, rgba(0,0,0,0));
+            }
+          }
+          .button {
+            @p: .bgWhite04, .fw6, .f14, .white50, .ttu, .br2, .pointer, .o50;
+            padding: 7px 9px 8px 11px;
+            letter-spacing: 0.53px;
+            transition: $duration linear opacity;
+          }
+          .button:hover {
+            @p: .o100;
           }
         `}</style>
         <Codemirror
@@ -45,6 +67,7 @@ class SchemaEditor extends React.Component<Props,null> {
             mode: 'graphql',
             theme: 'graphiql',
             readOnly: true,
+            lineNumbers: true,
           }}
           onFocusChange={(focused) => {
             if (focused) {
@@ -52,8 +75,16 @@ class SchemaEditor extends React.Component<Props,null> {
             }
           }}
         />
+        <div className='footer'>
+          <div className='button' onClick={this.downloadSchema}>Export Schema</div>
+        </div>
       </div>
     )
+  }
+
+  private downloadSchema = () => {
+    const blob = new Blob([this.props.project.schema], {type: 'text/plain;charset=utf-8'})
+    FileSaver.saveAs(blob, `${this.props.project.name}.schema`)
   }
 }
 
@@ -62,6 +93,7 @@ export default Relay.createContainer(SchemaEditor, {
     project: () => Relay.QL`
       fragment on Project {
         schema
+        name
       }
     `,
   },
