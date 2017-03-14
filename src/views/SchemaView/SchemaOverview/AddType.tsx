@@ -14,6 +14,7 @@ import AddModelMutation from '../../../mutations/AddModelMutation'
 import {ConsoleEvents} from 'graphcool-metrics'
 import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 import Loading from '../../../components/Loading/Loading'
+import Tether from '../../../components/Tether/Tether'
 
 interface State {
   modelName: string
@@ -144,7 +145,23 @@ class AddType extends React.Component<Props, State> {
         </div>
         <div className='footer'>
           <div className='button cancel' onClick={this.props.onRequestClose}>Cancel</div>
-          <div className='button save' onClick={this.save}>Save</div>
+          <Tether
+            style={{
+                pointerEvents: 'none',
+              }}
+            steps={[{
+              step: 'STEP1_CREATE_POST_MODEL',
+              title: `Create a Model called "Post"`,
+              description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
+            }]}
+            offsetX={15}
+            offsetY={-5}
+            width={351}
+            horizontal='right'
+            key='STEP3_CLICK_ADD_NODE2'
+          >
+            <div className='button save' onClick={this.save}>Save</div>
+          </Tether>
         </div>
         {loading && (
           <div className='loading'>

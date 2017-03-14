@@ -4,6 +4,7 @@ import TypeList from './TypeList'
 import * as Relay from 'react-relay'
 import {Project, Model} from '../../../types/types'
 import AddType from './AddType'
+import Tether from '../../../components/Tether/Tether'
 
 interface Props {
   project: Project
@@ -36,20 +37,37 @@ class SchemaOverview extends React.Component<Props,State> {
             height: calc(100vh - 51px);
           }
         `}</style>
-        {addingType ? (
-          <AddType
-            onRequestClose={this.closeAddType}
-            projectId={this.props.project.id}
-            model={editingModel}
-          />
-        ) : (
-          <SchemaOverviewHeader
-            activeFilter={activeFilter}
-            onChangeFilter={this.handleFilterChange}
-            projectId={this.props.project.id}
-            onOpenAddType={this.openAddType}
-          />
-        )}
+          {addingType ? (
+            <AddType
+              onRequestClose={this.closeAddType}
+              projectId={this.props.project.id}
+              model={editingModel}
+            />
+          ) : (
+            <Tether
+              style={{
+                pointerEvents: 'none',
+              }}
+              steps={[{
+                step: 'STEP1_CREATE_POST_MODEL',
+                title: `Create a Model called "Post"`,
+                description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
+              }]}
+              offsetX={14}
+              offsetY={-22}
+              width={351}
+              horizontal='left'
+              key='STEP3_CLICK_ADD_NODE2'
+              zIndex={1000}
+            >
+              <SchemaOverviewHeader
+                activeFilter={activeFilter}
+                onChangeFilter={this.handleFilterChange}
+                projectId={this.props.project.id}
+                onOpenAddType={this.openAddType}
+              />
+            </Tether>
+          )}
         <TypeList
           activeFilter={activeFilter}
           project={this.props.project}

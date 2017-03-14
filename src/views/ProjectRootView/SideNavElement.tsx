@@ -10,13 +10,14 @@ interface Props {
   text: string
   size?: number
   minimalHighlight?: boolean
+  onClick?: () => void
 }
 
 export default class SideNavElement extends React.Component<Props, null> {
   render() {
-    const {link, active, iconSrc, text, size, minimalHighlight} = this.props
+    const {link, active, iconSrc, text, size, minimalHighlight, onClick} = this.props
     return (
-      <Link to={link}>
+      <Link to={link} onClick={onClick}>
         <div
           className={cn(
             'side-nav-element', {

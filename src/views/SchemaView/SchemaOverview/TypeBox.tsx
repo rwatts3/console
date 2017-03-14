@@ -6,12 +6,19 @@ import {Link} from 'react-router'
 import {Icon, $v} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
 import TypeBoxSettings from './TypeBoxSettings'
+import {idToBeginning} from '../../../utils/utils'
+import Tether from '../../../components/Tether/Tether'
+import {connect} from 'react-redux'
+import {nextStep} from '../../../actions/gettingStarted'
+import {GettingStartedState} from '../../../types/gettingStarted'
 
 interface Props {
   projectName: string
   model: Model
   extended: boolean
   onEditModel: (model: Model) => void
+  nextStep: () => void
+  gettingStartedState: GettingStartedState
 }
 
 interface State {
@@ -36,7 +43,8 @@ class TypeBox extends React.Component<Props,State> {
     const propsExtended = this.props.extended
     const stateExtended = this.state.extended
     const extended = typeof stateExtended === 'boolean' ? stateExtended : propsExtended
-    const fields = model.fields.edges.map(edge => edge.node)
+    const fields = model.fields.edges.map(edge => edge.node).sort(idToBeginning)
+
     const permissions = model.permissions.edges.map(edge => edge.node)
     return (
       <div className='type-box'>
@@ -121,13 +129,38 @@ class TypeBox extends React.Component<Props,State> {
             </div>
             <div className='title'>{model.name}</div>
             {extended && (
-              <div className='add-buttons'>
-                <Link to={`/${projectName}/schema/${model.name}/create`}>
-                  <div className='add-button'>
-                    <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
-                    <span>Add Field</span>
-                  </div>
-                </Link>
+              <div className='add-buttons' onClick={e => e.stopPropagation()}>
+                {model.name === 'Post' ? (
+                  <Tether
+                    steps={[{
+                      step: 'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
+                      title: 'Create a field for the image URL',
+                    }, {
+                      step: 'STEP2_CREATE_FIELD_DESCRIPTION',
+                      title: 'Good job!',
+                      description: 'Create another field called "description" which is of type "String"',
+                    }]}
+                    offsetX={1}
+                    offsetY={-1}
+                    width={240}
+                    horizontal='left'
+                    zIndex={2}
+                  >
+                    <Link to={`/${projectName}/schema/${model.name}/create`} onClick={this.handleCreateFieldClick}>
+                      <div className='add-button'>
+                        <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                        <span>Add Field</span>
+                      </div>
+                    </Link>
+                  </Tether>
+                ) : (
+                  <Link to={`/${projectName}/schema/${model.name}/create`}>
+                    <div className='add-button'>
+                      <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                      <span>Add Field</span>
+                    </div>
+                  </Link>
+                )}
                 <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
                   <div className='add-button'>
                     <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
@@ -189,6 +222,12 @@ class TypeBox extends React.Component<Props,State> {
     )
   }
 
+  private handleCreateFieldClick = () => {
+    if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL')) {
+      this.props.nextStep()
+    }
+  }
+
   private toggleExtended = () => {
     this.setState(({extended}) => {
       const newExtended = typeof extended === 'boolean' ? !extended : !this.props.extended
@@ -199,7 +238,16 @@ class TypeBox extends React.Component<Props,State> {
   }
 }
 
-export default Relay.createContainer(TypeBox, {
+const ConnectedTypebox = connect(
+  state => {
+    return {
+      gettingStartedState: state.gettingStarted.gettingStartedState,
+    }
+  },
+  { nextStep },
+)(TypeBox)
+
+export default Relay.createContainer(ConnectedTypebox, {
   fragments: {
     model: () => Relay.QL`
       fragment on Model {

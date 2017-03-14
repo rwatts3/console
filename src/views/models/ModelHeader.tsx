@@ -179,7 +179,7 @@ class ModelHeader extends React.Component<Props, State> {
                 </BlueSettingsLink>
               ) : (
                 <SettingsLink
-                  to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/schema`}
+                  to={`/${this.props.params.projectName}/schema`}
                   onClick={this.onClickEditSchema}
                 >
                   <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>

@@ -1,6 +1,6 @@
 const modalStyle = {
   overlay: {
-    zIndex: 20,
+    zIndex: 100,
     backgroundColor: 'rgba(255,255,255,.9)',
     display: 'flex',
     alignItems: 'center',
@@ -26,7 +26,7 @@ export default modalStyle
 
 export const fieldModalStyle = {
   overlay: {
-    zIndex: 20,
+    zIndex: 100,
     backgroundColor: 'rgba(255,255,255,.9)',
     display: 'flex',
     alignItems: 'center',
