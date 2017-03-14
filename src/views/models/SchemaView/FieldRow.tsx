@@ -31,7 +31,6 @@ interface Props {
   allModels: Model[]
   params: any
   model: Model
-  possibleRelatedPermissionPaths: Field[][]
   showNotification: ShowNotificationCallback
   projectId: string
   setFieldPopupSource: (source: FieldPopupSource) => void
