@@ -160,7 +160,7 @@ export interface Model {
   name: string
   namePlural: string
   fields: RelayConnection<Field>
-  unconnectedReverseRelationFieldsFrom: Field[]
+  unconnectedReverseRelationFieldsFrom?: Field[]
   itemCount: number
   description: string
   isSystem: boolean

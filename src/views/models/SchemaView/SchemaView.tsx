@@ -25,7 +25,6 @@ import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
 
 interface Props {
   params: any
-  possibleRelatedPermissionPaths: Field[][]
   availableUserRoles: string[]
   fields: Field[]
   allModels: Model[]
@@ -185,7 +184,6 @@ class SchemaView extends React.Component<Props, State> {
                   params={this.props.params}
                   model={this.props.model}
                   allModels={this.props.allModels}
-                  possibleRelatedPermissionPaths={this.props.possibleRelatedPermissionPaths}
                   availableUserRoles={this.props.availableUserRoles}
                 />
               ))}
@@ -240,10 +238,6 @@ const MappedSchemaView = mapProps({
   params: (props) => props.params,
   availableUserRoles: (props) => props.viewer.project.availableUserRoles,
   allModels: (props) => props.viewer.project.models.edges.map((edge) => edge.node),
-  possibleRelatedPermissionPaths: (props) => (
-    props.viewer.model.possibleRelatedPermissionPaths.edges
-      .map((edge) => edge.node.fields)
-  ),
   fields: (props) => (
     props.viewer.model.fields.edges
       .map((edge) => edge.node)
@@ -264,17 +258,6 @@ export default Relay.createContainer(MappedSchemaView, {
         model: modelByName(projectName: $projectName, modelName: $modelName) {
           id
           isSystem
-          possibleRelatedPermissionPaths(first: 100) {
-            edges {
-              node {
-                fields {
-                  id
-                  name
-                  typeIdentifier
-                }
-              }
-            }
-          }
           fields(first: 100) {
             edges {
               node {
@@ -298,13 +281,6 @@ export default Relay.createContainer(MappedSchemaView, {
               node {
                 id
                 name
-                unconnectedReverseRelationFieldsFrom(relatedModelName: $modelName) {
-                  id
-                  name
-                  relation {
-                    id
-                  }
-                }
               }
             }
           }
