@@ -212,7 +212,7 @@ export class SideNav extends React.PureComponent<Props, State> {
                   steps={[{
                     step: 'STEP3_CLICK_DATA_BROWSER',
                     title: 'Switch to Data Browser',
-                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).'
+                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
                   }]}
                   width={280}
                   offsetX={10}
@@ -292,6 +292,12 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private handleDatabrowserClick = () => {
     if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
+      this.props.nextStep()
+    }
+  }
+
+  private handlePostModelClick = () => {
+    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_POST_MODEL')) {
       this.props.nextStep()
     }
   }
@@ -456,22 +462,23 @@ export class SideNav extends React.PureComponent<Props, State> {
                     [$p.bgWhite07]: modelActive(model),
                   },
                 )}
+                onClick={this.handlePostModelClick}
               >
                 <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
                   {model.name === 'Post' ? (
                     <Tether
                       steps={[{
-                      step: 'STEP3_CLICK_POST_MODEL',
-                      title: 'Select the "Post" Model',
-                      description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).'
-                    }]}
+                        step: 'STEP3_CLICK_POST_MODEL',
+                        title: 'Select the "Post" Model',
+                      description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
+                      }]}
                       width={280}
-                      offsetX={10}
-                      offsetY={15}
+                      offsetX={-5}
+                      offsetY={1}
                       zIndex={2000}
                       style={{
-                      pointerEvents: 'none',
-                    }}
+                        pointerEvents: 'none',
+                      }}
                     >
                       <div>{model.name}</div>
                     </Tether>
