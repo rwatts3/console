@@ -32,7 +32,6 @@ class SchemaEditor extends React.Component<Props,null> {
           .schema-editor {
             @p: .flex1, .bgDarkerBlue;
             border-top: 6px solid $darkBlue;
-            height: calc(100% - 6px);
           }
           .schema-editor :global(.CodeMirror) {
             height: calc(100vh - 57px - 86px);

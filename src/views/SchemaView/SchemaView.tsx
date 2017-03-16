@@ -16,7 +16,8 @@ class NewSchemaView extends React.Component<Props,null> {
       <div className='schema-view'>
         <style jsx>{`
           .schema-wrapper {
-            @p: .flex;
+            @p: .flex, .overflowHidden;
+            height: calc(100vh - 57px);
           }
         `}</style>
         <SchemaHeader projectName={viewer.project.name} />
