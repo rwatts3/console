@@ -35,7 +35,6 @@ export default class SchemaHeader extends React.Component<Props,null> {
           }
           .right {
             @p: .flex, .itemsCenter;
-            margin-bottom: 12px;
           }
           a {
             @p: .underline;

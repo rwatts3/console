@@ -33,7 +33,7 @@ export default class TypeBoxSettings extends React.Component<Props, State> {
               .popup {
                 @p: .bgWhite, .br2, .absolute, .nowrap, .pointer;
                 box-shadow: 0 1px 7px $gray20;
-                transform: translate(calc(-100% - 16px), 0);
+                transform: translate(calc(-100% - 16px), -50%);
               }
               .row + .row {
                 @p: .bt, .bBlack10;
@@ -51,12 +51,15 @@ export default class TypeBoxSettings extends React.Component<Props, State> {
         <div className='dots' ref={ref => this.ref = ref} onClick={this.open}>
           <style jsx>{`
             .dots {
-              @p: .pr16, .pointer;
+              @p: .pr25, .pointer;
+            }
+            .dots:hover :global(svg) {
+              fill: $gray50;
             }
           `}</style>
           <Icon
             src={require('assets/icons/vdots.svg')}
-            color={$v.gray60}
+            color={$v.gray30}
             width={4}
             height={19}
           />

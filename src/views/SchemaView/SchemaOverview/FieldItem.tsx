@@ -4,6 +4,8 @@ import TypeTag from './TypeTag'
 import {Link} from 'react-router'
 import PermissionsTag from './PermissionsTag'
 import {isScalar} from '../../../utils/graphql'
+import {Icon} from 'graphcool-styles'
+import Info from '../../../components/Info'
 
 interface Props {
   projectName?: string
@@ -44,11 +46,42 @@ export default class FieldItem extends React.Component<Props, null> {
             @p: .br2, .ba, .bBlack30, .black30, .f10, .fw7, .ttu, .mr10;
             padding: 3px 4px 4px 6px;
           }
+          .flexy :global(.lock) {
+            @p: .mr6;
+            opacity: 0.75;
+          }
+          a.underline {
+            @p: .underline;
+          }
         `}</style>
         <div className='flexy'>
-            <span className='name'>
-              {field.name}
-            </span>
+          {field.isSystem && (
+            <div>
+              <Info
+                customTip={
+                  <Icon
+                    src={require('assets/icons/lock.svg')}
+                    className='lock'
+                  />
+                }
+                offsetX={30}
+              >
+                <div style={{whiteSpace: 'initial'}}>
+                  {'This is a system field. Read more about system fields '}
+                  <a
+                    href='https://www.graph.cool/docs/reference/platform/system-artifacts-uhieg2shio/'
+                    target='_blank'
+                    className='underline'
+                  >
+                    {'here'}
+                  </a>
+                </div>
+              </Info>
+            </div>
+          )}
+          <span className='name'>
+            {field.name}
+          </span>
           <TypeTag field={field} />
         </div>
         <div className='flexy'>

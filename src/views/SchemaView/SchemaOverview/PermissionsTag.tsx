@@ -19,6 +19,14 @@ export default class PermissionsTag extends React.Component<Props,null> {
             border-radius: 11px;
           }
         `}</style>
+        {(!READ && !CREATE && !UPDATE && !DELETE) && (
+          <Icon
+            src={require('graphcool-styles/icons/fill/permissions.svg')}
+            width={14}
+            height={14}
+            color={$v.gray40}
+          />
+        )}
         {READ && (
           <Icon src={icons['READ']} stroke strokeWidth={3} width={20} height={20} color={$v.gray40} />
         )}
