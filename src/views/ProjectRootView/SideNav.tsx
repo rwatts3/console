@@ -1,12 +1,10 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-// import * as ReactDOM from 'react-dom'
 import * as Relay from 'react-relay'
 import {withRouter, Link} from 'react-router'
 import {connect} from 'react-redux'
 import cuid from 'cuid'
 import mapProps from '../../components/MapProps/MapProps'
-// import {validateModelName} from '../../utils/nameValidator'
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Tether from '../../components/Tether/Tether'
 import AddModelMutation from '../../mutations/AddModelMutation'
@@ -23,13 +21,15 @@ import EndpointPopup from './EndpointPopup'
 import AddModelPopup from './AddModelPopup'
 import styled from 'styled-components'
 import * as cx from 'classnames'
-import {$p, variables, Icon} from 'graphcool-styles'
+import {$p, $v, Icon} from 'graphcool-styles'
 import { ExcludeProps } from '../../utils/components'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import SideNavElement from './SideNavElement'
 
 interface Props {
   params: any
+  location: any
   project: Project
   projectCount: number
   viewer: Viewer
@@ -53,26 +53,17 @@ interface State {
   newModelName: string
   newModelIsValid: boolean
   modelsExpanded: boolean
-  modelsFit: boolean
 }
 
 // Section (Models, Relations, Permissions, etc.)
 
-const Section = styled.div`
-  padding: ${variables.size38} 0 0;
-
-  &:last-child {
-    margin-bottom: ${variables.size38}
-  }
-`
-
 // Section Heads
 
 const activeHead = `
-  color: ${variables.white};
+  color: ${$v.white};
 
   svg {
-    fill: ${variables.white};
+    fill: ${$v.white};
     stroke: none !important;
   }
 
@@ -80,7 +71,7 @@ const activeHead = `
     color: inherit;
 
     svg {
-      fill: ${variables.white};
+      fill: ${$v.white};
       stroke: none !important;
     }
   }
@@ -90,32 +81,32 @@ const activeHead = `
 const Head = styled(ExcludeProps(Link, ['active']))`
   letter-spacing: 1px;
   line-height: 1;
-  padding: 0 ${variables.size25};
+  padding: 0 ${$v.size25};
   display: flex;
   align-items: center;
   text-transform: uppercase;
   font-weight: 600;
-  color: ${variables.white60};
-  transition: color ${variables.duration} linear;
+  color: ${$v.white60};
+  transition: color ${$v.duration} linear;
 
   &:hover {
-    color: ${variables.white80};
+    color: ${$v.white80};
 
     svg {
-      fill: ${variables.white80};
+      fill: ${$v.white80};
       stroke: none !important;
     }
   }
 
   > div {
     line-height: 1;
-    margin-left: ${variables.size10};
+    margin-left: ${$v.size10};
   }
 
   svg {
-    fill: ${variables.white60};
+    fill: ${$v.white60};
     stroke: none !important;
-    transition: fill ${variables.duration} linear;
+    transition: fill ${$v.duration} linear;
   }
 
   ${props => props.active && activeHead}
@@ -124,28 +115,28 @@ const Head = styled(ExcludeProps(Link, ['active']))`
 const footerSectionStyle = `
   display: flex;
   align-items: center;
-  padding: ${variables.size25};
+  padding: ${$v.size25};
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 1px;
-  color: ${variables.white60};
+  color: ${$v.white60};
   cursor: pointer;
-  transition: color ${variables.duration} linear;
+  transition: color ${$v.duration} linear;
 
   > div {
-    margin-left: ${variables.size10};
+    margin-left: ${$v.size10};
   }
 
   svg {
-    fill: ${variables.white60};
-    transition: fill ${variables.duration} linear
+    fill: ${$v.white60};
+    transition: fill ${$v.duration} linear
 
   }
 
   &:hover {
-    color: ${variables.white80};
+    color: ${$v.white80};
     svg {
-      fill: ${variables.white80};
+      fill: ${$v.white80};
     }
   }
 `
@@ -153,11 +144,6 @@ const FooterSection = styled.div`${footerSectionStyle}`
 const FooterLink = styled.a`${footerSectionStyle}`
 
 export class SideNav extends React.PureComponent<Props, State> {
-
-  refs: {
-    [key: string]: any;
-    newModelInput: HTMLInputElement
-  }
 
   shouldComponentUpdate: any
 
@@ -169,31 +155,19 @@ export class SideNav extends React.PureComponent<Props, State> {
       newModelName: '',
       newModelIsValid: true,
       modelsExpanded: false,
-      modelsFit: true,
     }
   }
 
   componentDidMount() {
-    // subscribe to sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(this.fetch, this)
-    this.setModelsFit()
-    window.addEventListener('resize', this.setModelsFit)
   }
 
   componentWillUnmount() {
-    // unsubscribe from sideNavSyncer - THIS IS A HACK
     sideNavSyncer.setCallback(null, null)
-    window.removeEventListener('resize', this.setModelsFit)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.models.length !== prevProps.models.length) {
-      this.setModelsFit()
-    }
   }
 
   render() {
-    const {isBetaCustomer} = this.props
+    const {isBetaCustomer, project} = this.props
     return (
       <div
         className={cx(
@@ -201,19 +175,76 @@ export class SideNav extends React.PureComponent<Props, State> {
           $p.w100,
           $p.h100,
           $p.white,
-          $p.bgDarkBlue,
+          $p.bgDarkerBlue,
           $p.f14,
         )}
         onMouseLeave={() => this.setState({forceShowModels: false} as State)}
       >
+        <style jsx>{`
+          .links {
+            @p: .flex, .flexColumn, .justifyBetween, .mt16;
+            height: calc(100% - 16px);
+          }
+        `}</style>
         <div className={cx($p.h100)} style={{ paddingBottom: '70px' }}>
           <ScrollBox>
-            {this.renderModels()}
-            {this.renderRelations()}
-            {this.renderPermissions()}
-            {this.renderActions()}
-            {this.renderPlayground()}
-            {this.renderIntegrations()}
+            <div className='links'>
+              <div>
+                <SideNavElement
+                  link={`/${project.name}/schema`}
+                  iconSrc={require('assets/icons/schema.svg')}
+                  text='Schema'
+                  size={24}
+                  active={location.pathname.endsWith('schema')}
+                />
+                <Tether
+                  steps={[{
+                    step: 'STEP3_CLICK_DATA_BROWSER',
+                    title: 'Switch to Data Browser',
+                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
+                  }]}
+                  width={280}
+                  offsetX={10}
+                  offsetY={15}
+                  zIndex={2000}
+                  style={{
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <SideNavElement
+                    active={location.pathname.endsWith('databrowser')}
+                    link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
+                    iconSrc={require('assets/icons/databrowser.svg')}
+                    text='Data'
+                    size={16}
+                    minimalHighlight
+                    onClick={this.handleDatabrowserClick}
+                  />
+                </Tether>
+                {location.pathname.endsWith('databrowser') && (
+                  this.renderModels()
+                )}
+                <SideNavElement
+                  link={`/${project.name}/permissions`}
+                  iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
+                  text='Permissions'
+                  active={location.pathname.includes('/permissions')}
+                />
+                <SideNavElement
+                  link={`/${project.name}/actions`}
+                  iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
+                  text='Mutation Callbacks'
+                  active={location.pathname.endsWith('/actions')}
+                />
+                <SideNavElement
+                  link={`/${project.name}/integrations`}
+                  iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
+                  text='Integrations'
+                  active={location.pathname.endsWith('/integrations')}
+                />
+              </div>
+              {this.renderPlayground()}
+            </div>
           </ScrollBox>
         </div>
         <div
@@ -224,7 +255,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             $p.flex,
             $p.itemsCenter,
             $p.justifyBetween,
-            $p.bgDarkerBlue,
+            $p.bgDarkBlue,
             $p.white60,
           )}
           style={{ height: '70px' }}
@@ -248,6 +279,18 @@ export class SideNav extends React.PureComponent<Props, State> {
     )
   }
 
+  private handleDatabrowserClick = () => {
+    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
+      this.props.nextStep()
+    }
+  }
+
+  private handlePostModelClick = () => {
+    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_POST_MODEL')) {
+      this.props.nextStep()
+    }
+  }
+
   private renderPlayground = () => {
     const playgroundPageActive = this.props.router.isActive(`/${this.props.params.projectName}/playground`)
     const showGettingStartedOnboardingPopup = () => {
@@ -257,152 +300,48 @@ export class SideNav extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Section>
-        <Head
+      <div className='playground'>
+        <style jsx>{`
+          .playground {
+            @p: .mt16;
+          }
+          .playground-button {
+            @p: .br2, .darkBlue, .f14, .fw6, .inlineFlex, .ttu, .ml25, .mb25, .itemsCenter;
+            letter-spacing: 0.53px;
+            background-color: rgb(185,191,196);
+            padding: 7px 10px 8px 10px;
+          }
+          .text {
+            @p: .ml10;
+          }
+        `}</style>
+        <Link
           to={`/${this.props.params.projectName}/playground`}
-          active={playgroundPageActive}
           onClick={showGettingStartedOnboardingPopup}
         >
-          <Icon
-            width={20}
-            height={20}
-            src={require('graphcool-styles/icons/fill/playground.svg')}
-          />
-          <Tether
-            side='top'
-            steps={[{
+          <div className='playground-button'>
+            <Icon
+              width={20}
+              height={20}
+              src={require('graphcool-styles/icons/fill/playground.svg')}
+              color={$v.darkBlue}
+            />
+            <Tether
+              side='top'
+              steps={[{
                 step: 'STEP4_CLICK_PLAYGROUND',
                 title: 'Open the Playground',
                 description: 'Now that we have defined our data model and added example data it\'s time to send some queries to our backend!', // tslint:disable-line
               }]}
-            offsetY={-20}
-            width={280}
-          >
-            <div>Playground</div>
-          </Tether>
-        </Head>
-      </Section>
+              offsetY={-20}
+              width={280}
+            >
+              <div className='text'>Playground</div>
+            </Tether>
+          </div>
+        </Link>
+      </div>
     )
-  }
-
-  private renderActions = () => {
-    const actionsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/actions`)
-    return (
-      <Section>
-        <Head
-          to={`/${this.props.params.projectName}/actions`}
-          active={actionsPageActive}
-        >
-          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/actions.svg')}/>
-          <div>Mutation Callbacks</div>
-        </Head>
-      </Section>
-    )
-  }
-
- private renderPermissions = () => {
-   const permissionsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/permissions`)
-   return (
-     <Section>
-       <Head
-         to={`/${this.props.params.projectName}/permissions`}
-         active={permissionsPageActive}
-       >
-         <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/permissions.svg')}/>
-         <div>Permissions</div>
-       </Head>
-     </Section>
-   )
- }
-
-  private renderIntegrations = () => {
-    const integrationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/integrations`)
-    return (
-      <Section>
-        <Head
-          to={`/${this.props.params.projectName}/integrations`}
-          active={integrationsPageActive}
-        >
-          <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/integrations.svg')}/>
-          <div>Integrations</div>
-        </Head>
-      </Section>
-    )
-  }
-
-  private renderRelations = () => {
-    const relationsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/relations`)
-
-    const activeRelationsHead = `
-      svg {
-        fill: none;
-        stroke: ${variables.white} !important;
-      }
-
-      &:hover {
-        svg {
-          stroke: ${variables.white} !important;
-        }
-      }
-    `
-
-    const RelationsHead = styled(Head)`
-      svg {
-        fill: none;
-        stroke: ${variables.white60} !important;
-        stroke-width: 4px !important;
-        transition: stroke ${variables.duration} linear;
-      }
-
-      &:hover {
-        svg {
-          fill: none;
-          stroke: ${variables.white80} !important;
-        }
-      }
-
-      ${props => props.active && activeRelationsHead}
-    `
-
-    return (
-      <Section>
-        <RelationsHead
-          to={`/${this.props.params.projectName}/relations`}
-          active={relationsPageActive}
-        >
-          <Icon width={20} height={20} stroke src={require('graphcool-styles/icons/stroke/relationsSmall.svg')}/>
-          <div>Relations</div>
-        </RelationsHead>
-      </Section>
-    )
-  }
-
-  private setModelsFit = () => {
-    const HEADER_HEIGHT = 64
-    const FOOTER_HEIGHT = 70
-
-    const MODEL_MARGIN_TOP = 68
-    const MODEL_HEIGHT = 36
-    const numModels = this.props.models.length
-    const MODEL_MARGIN_BOTTOM = 38
-
-    const NUM_LINKS = 4
-    const LINK_HEIGHT = 58
-    const LINKS_MARGIN = 38
-
-    const height = window.innerHeight
-
-    const fit = height > (
-      HEADER_HEIGHT +
-      FOOTER_HEIGHT +
-      MODEL_MARGIN_TOP +
-      MODEL_HEIGHT * numModels +
-      MODEL_MARGIN_BOTTOM +
-      NUM_LINKS * LINK_HEIGHT +
-      LINKS_MARGIN
-    )
-
-    this.setState({modelsFit: fit} as State)
   }
 
   private renderModels = () => {
@@ -410,25 +349,6 @@ export class SideNav extends React.PureComponent<Props, State> {
       this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/schema`) ||
       this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/databrowser`)
     )
-
-    // const modelsPageActive = this.props.router.isActive(`/${this.props.params.projectName}/models`)
-    // const showsModels = modelsPageActive || this.state.forceShowModels
-
-    const ModelsHead = styled(Head)`
-      &:hover {
-        color: ${variables.white60};
-        cursor: default;
-      }
-    `
-
-    const AddModel = styled.div`
-      margin: -3px -4px 0 0;
-
-      svg {
-        stroke: ${variables.white};
-        stroke-width: 4px;
-      }
-    `
 
     const turnedToggleMore = `
       i {
@@ -441,8 +361,8 @@ export class SideNav extends React.PureComponent<Props, State> {
     `
 
     const ToggleMore = styled.div`
-      height: ${variables.size60};
-      background: linear-gradient(to bottom, ${variables.darkerBlue0} 0%, ${variables.darkerBlue} 80%);
+      height: ${$v.size60};
+      background: linear-gradient(to bottom, ${$v.darkerBlue0} 0%, ${$v.darkerBlue} 80%);
 
       svg {
         stroke-width: 4px;
@@ -453,75 +373,83 @@ export class SideNav extends React.PureComponent<Props, State> {
     `
 
     const activeListElement = `
-      color: ${variables.white} !important;
-      background: ${variables.white07};
+      color: ${$v.white} !important;
+      background: ${$v.white07};
       cursor: default;
-
       &:before {
         content: "";
         position: absolute;
         top: -1px;
         bottom: -1px;
         left: 0;
-        width: ${variables.size06};
-        background: ${variables.green};
+        width: ${$v.size06};
+        background: ${$v.green};
         border-radius: 0 2px 2px 0;
       }
-
       &:hover {
         color: inherit;
       }
     `
+
     const ListElement = styled(ExcludeProps(Link, ['active']))`
-      transition: color ${variables.duration} linear;
+      transition: color ${$v.duration} linear;
+      height: 32px;
 
       &:hover {
-         color: ${variables.white60};
+         color: ${$v.white60};
       }
 
       ${props => props.active && activeListElement}
     `
 
     return (
-      <Section className={cx(
+      <div className={cx(
         $p.relative,
-        $p.bgDarkerBlue,
       )}>
-        <ModelsHead>
-          Models
-        </ModelsHead>
         <div
           className={cx($p.overflowHidden)}
           style={{
-            height: this.state.modelsFit
-              ? 'auto' : (this.state.modelsExpanded ? 76 + 41 * this.props.models.length : window.innerHeight - 456),
+            height: 'auto',
             transition: 'height .5s ease',
           }}
         >
           <div
-            className={cx(
-              $p.flex,
-              $p.flexColumn,
-              $p.pt16,
-              this.state.modelsFit ? $p.pb38 : $p.pb60,
-            )}
+            className={cx($p.flex, $p.flexColumn, $p.mt10, $p.mb16)}
           >
             {this.props.models && this.props.models.map((model) => (
               <ListElement
                 key={model.name}
-                to={`/${this.props.params.projectName}/models/${model.name}`}
+                to={`/${this.props.params.projectName}/models/${model.name}/databrowser`}
                 active={modelActive(model)}
                 className={cx(
-                $p.relative,
-                $p.pv10,
-                $p.fw6,
-                $p.white30,
-                $p.ph25,
-                $p.flex,
-                $p.justifyBetween,
-              )}>
+                  $p.relative, $p.fw6, $p.white30, $p.ph25, $p.flex, $p.justifyBetween, $p.itemsCenter, $p.mb6,
+                  {
+                    [$p.bgWhite07]: modelActive(model),
+                  },
+                )}
+                onClick={this.handlePostModelClick}
+              >
                 <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
-                  <div>{model.name}</div>
+                  {model.name === 'Post' ? (
+                    <Tether
+                      steps={[{
+                        step: 'STEP3_CLICK_POST_MODEL',
+                        title: 'Select the "Post" Model',
+                      description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
+                      }]}
+                      width={280}
+                      offsetX={-5}
+                      offsetY={1}
+                      zIndex={2000}
+                      style={{
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      <div>{model.name}</div>
+                    </Tether>
+                  ) : (
+                    <div>{model.name}</div>
+                  )}
                   {model.isSystem && (
                     <div
                       className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
@@ -532,84 +460,10 @@ export class SideNav extends React.PureComponent<Props, State> {
               </ListElement>
             ))}
           </div>
-
         </div>
-
-        <AddModel
-          className={cx(
-            $p.absolute,
-            $p.top38,
-            $p.right25,
-            $p.lhSolid,
-            $p.ba,
-            $p.brPill,
-            $p.bWhite,
-            $p.pointer,
-            $p.o60,
-          )}
-          onClick={this.showAddModelPopup}
-        >
-          <Tether
-            steps={[{
-              step: 'STEP1_CREATE_POST_MODEL',
-              title: 'Create a Model called "Post"',
-              description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
-            }]}
-            offsetY={-5}
-            offsetX={-13}
-            width={350}
-            style={{
-              pointerEvents: 'none',
-            }}
-          >
-            <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
-          </Tether>
-        </AddModel>
-        {!this.state.modelsFit &&
-          <ToggleMore
-            onClick={() => this.setState({modelsExpanded: !this.state.modelsExpanded} as State )}
-            className={cx(
-              $p.absolute,
-              $p.bottom0,
-              $p.left0,
-              $p.w100,
-              $p.flex,
-              $p.justifyCenter,
-              $p.itemsCenter,
-              $p.pointer,
-            )}
-            turned={this.state.modelsExpanded}
-          >
-            <Icon
-              width={18}
-              height={18}
-              stroke
-              color={variables.white}
-              src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
-              onClick={this.toggleModels}
-              className={cx(
-                $p.brPill,
-                $p.bgDarkBlue,
-              )}
-            />
-          </ToggleMore>
-        }
-      </Section>
+      </div>
     )
   }
-
-  // private handleNewModelChange = (e) => {
-  //   this.setState({
-  //     newModelName: e.target.value,
-  //     newModelIsValid: e.target.value === '' ? true : validateModelName(e.target.value),
-  //   } as State)
-  // }
-  //
-  // private handleNewModelKeyDown = (e) => {
-  //   if (e.keyCode === 13) {
-  //     this.addModel()
-  //   }
-  // }
 
   private toggleModels = () => {
     const { modelsExpanded } = this.state
@@ -620,23 +474,6 @@ export class SideNav extends React.PureComponent<Props, State> {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
     this.props.relay.forceFetch()
   }
-  //
-  // private toggleAddModelInput = () => {
-  //   if (this.state.addingNewModel && this.state.newModelIsValid) {
-  //     this.addModel()
-  //   }
-  //
-  //   this.setState(
-  //     {
-  //       addingNewModel: !this.state.addingNewModel,
-  //     } as State,
-  //     () => {
-  //       if (this.state.addingNewModel) {
-  //         ReactDOM.findDOMNode<HTMLInputElement>(this.refs.newModelInput).focus()
-  //       }
-  //     }
-  //   )
-  // }
 
   private addModel = (modelName: string) => {
     const redirect = () => {

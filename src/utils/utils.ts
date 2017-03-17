@@ -1,5 +1,6 @@
 import * as moment from 'moment'
 import {ISO8601} from './constants'
+import {Field} from '../types/types'
 
 export function randomString(length: number): string {
   let text = ''
@@ -144,4 +145,15 @@ export function todayString(): string {
   const yyyy = today.getFullYear()
   const todayString = mm + '/' + dd + '/' + yyyy
   return todayString
+}
+
+export const idToBeginning = (a: Field, b: Field) => {
+  if (a.name === 'id') {
+    return -1
+  }
+  if (b.name === 'id') {
+    return 1
+  }
+
+  return a.name > b.name ? 1 : -1
 }

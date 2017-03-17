@@ -139,6 +139,12 @@ export interface Field {
   model?: Model
   migrationValue?: TypedValue
   constraints?: Constraint[]
+  interface?: Interface
+}
+
+interface Interface {
+  isSystem: boolean
+  name: string
 }
 
 export interface Relation {
@@ -164,7 +170,7 @@ export interface Model {
   itemCount: number
   description: string
   isSystem: boolean
-  permissions: ModelPermission[]
+  permissions: RelayConnection<ModelPermission>
   permissionSchema: string
   permissionQueryArguments: PermissionQueryArgument[]
 }
