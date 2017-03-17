@@ -22,7 +22,7 @@ import logger from 'redux-logger'
 import * as ReactGA from 'react-ga'
 import * as cookiestore from 'cookiestore'
 
-import '../node_modules/graphql-voyager/dist/voyager.css'
+import './styles/voyager.css'
 import './utils/polyfils'
 import {reduceCodeGeneration} from './reducers/codeGeneration'
 require('offline-plugin/runtime').install()

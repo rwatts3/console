@@ -19,27 +19,53 @@ interface Props {
   onEditModel: (model: Model) => void
   nextStep: () => void
   gettingStartedState: GettingStartedState
+  highlighted?: boolean
 }
 
 interface State {
   extended?: boolean
+  greenBackground: boolean
 }
 
 class TypeBox extends React.Component<Props,State> {
+  ref: any
   constructor(props) {
     super(props)
 
     this.state = {
       extended: undefined,
+      greenBackground: Boolean(props.highlighted),
     }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.extended !== nextProps.extended) {
-      this.setState({extended: undefined})
+      this.setState({extended: undefined} as State)
+    }
+  }
+  componentDidMount() {
+    this.scrollIntoView()
+    setTimeout(
+      () => {
+        this.setState({greenBackground: false} as State)
+      },
+      2500,
+    )
+  }
+  componentDidUpdate() {
+    this.scrollIntoView()
+  }
+  scrollIntoView() {
+    if (typeof this.props.highlighted === 'boolean' && this.props.highlighted) {
+      setTimeout(
+        () => {
+          this.ref.scrollIntoView()
+        },
+        100,
+      )
     }
   }
   render() {
-    const {model, projectName} = this.props
+    const {model, projectName, highlighted} = this.props
     const propsExtended = this.props.extended
     const stateExtended = this.state.extended
     const extended = typeof stateExtended === 'boolean' ? stateExtended : propsExtended
@@ -47,21 +73,28 @@ class TypeBox extends React.Component<Props,State> {
 
     const permissions = model.permissions.edges.map(edge => edge.node)
     return (
-      <div className='type-box'>
+      <div className={'type-box' + (this.state.greenBackground ? ' highlighted' : '')} ref={ref => this.ref = ref}>
         <style jsx>{`
           .type-box {
             @p: .br2, .bgWhite, .mb16, .relative, .w100;
             box-shadow: 0 1px 10px $gray30;
+            transition: .1s linear all;
+          }
+          .type-box:first-child {
+            @p: .mt16;
+          }
+          .type-box.highlighted {
+            background-color: #E9F9EC;
           }
           .type-box-head {
-            @p: .pb16, .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .pointer;
-            padding-top: 15px;
+            @p: .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .pointer;
+            height: 65px;
           }
           .flexy {
             @p: .flex, .itemsCenter;
           }
           .type-box-head.extended {
-            @p: .pb25;
+            height: 74px;
           }
           .type-box-body.extended {
             @p: .mt16;
@@ -92,6 +125,9 @@ class TypeBox extends React.Component<Props,State> {
             @p: .bgWhite, .relative, .br2, .buttonShadow, .black60, .ttu, .fw6, .f12, .pa6, .flex, .ml10, .pointer;
             :global(i) {
             }
+            span {
+              @p: .ml4;
+            }
           }
           .add-button :global(i) {
               @p: .o30;
@@ -112,6 +148,18 @@ class TypeBox extends React.Component<Props,State> {
             .text {
               @p: .ml10, .f14, .fw6, .black60, .ttu;
             }
+          }
+          .simple-button {
+            @p: .mr16, .pa6, .flex, .itemsCenter;
+          }
+          .simple-button span {
+            @p: .ml6, .ttu, .black30, .fw6, .f14;
+          }
+          .simple-button:hover span {
+            @p: .black50;
+          }
+          .simple-button:hover :global(svg) {
+            fill: $gray50 !important;
           }
         `}</style>
         <div className={'type-box-head' + (extended ? ' extended' : '')} onClick={this.toggleExtended}>
@@ -148,7 +196,14 @@ class TypeBox extends React.Component<Props,State> {
                   >
                     <Link to={`/${projectName}/schema/${model.name}/create`} onClick={this.handleCreateFieldClick}>
                       <div className='add-button'>
-                        <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                        <Icon
+                          src={require('assets/icons/addField.svg')}
+                          strokeWidth={1.5}
+                          stroke
+                          color={$v.black}
+                          width={18}
+                          height={18}
+                        />
                         <span>Add Field</span>
                       </div>
                     </Link>
@@ -156,7 +211,14 @@ class TypeBox extends React.Component<Props,State> {
                 ) : (
                   <Link to={`/${projectName}/schema/${model.name}/create`}>
                     <div className='add-button'>
-                      <Icon src={require('assets/icons/addField.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                      <Icon
+                        src={require('assets/icons/addField.svg')}
+                        strokeWidth={1.5}
+                        stroke
+                        color={$v.black}
+                        width={18}
+                        height={18}
+                      />
                       <span>Add Field</span>
                     </div>
                   </Link>
@@ -170,17 +232,28 @@ class TypeBox extends React.Component<Props,State> {
               </div>
             )}
           </div>
-          {!model.isSystem && (
-            <TypeBoxSettings>
-              <div className='setting' onClick={() => this.props.onEditModel(model)}>
+          <div className='flexy'>
+            <Link to={`/${projectName}/models/${model.name}/databrowser`}>
+              <div className='simple-button'>
                 <Icon
-                  src={require('graphcool-styles/icons/fill/settings.svg')}
-                  color={$v.gray20}
+                  src={require('assets/icons/databrowser.svg')}
+                  color={$v.gray30}
                 />
-                <div className='text'>Type Settings</div>
+                <span>Data</span>
               </div>
-            </TypeBoxSettings>
-          )}
+            </Link>
+            {!model.isSystem && (
+              <TypeBoxSettings>
+                <div className='setting' onClick={() => this.props.onEditModel(model)}>
+                  <Icon
+                    src={require('graphcool-styles/icons/fill/settings.svg')}
+                    color={$v.gray20}
+                  />
+                  <div className='text'>Type Settings</div>
+                </div>
+              </TypeBoxSettings>
+            )}
+          </div>
         </div>
         <div className={'type-box-body' + (extended ? ' extended' : '')}>
           {!extended && (
@@ -229,9 +302,10 @@ class TypeBox extends React.Component<Props,State> {
   }
 
   private toggleExtended = () => {
-    this.setState(({extended}) => {
+    this.setState(({extended, ...rest}) => {
       const newExtended = typeof extended === 'boolean' ? !extended : !this.props.extended
       return {
+        ...rest,
         extended: newExtended,
       }
     })

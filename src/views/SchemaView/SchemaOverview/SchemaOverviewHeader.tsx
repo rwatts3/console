@@ -21,9 +21,9 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
         (if it should be like in the design)
       */
       <div className='schema-overview-header'>
-        <style jsx={true}>{`
+        <style jsx>{`
           .schema-overview-header {
-            @p: .flex, .itemsCenter, .pa16;
+            @p: .flex, .itemsCenter, .pt16, .pl16, .pr16;
           }
           .add-type {
             @p: .flex1, .flex, .itemsCenter, .br2, .ph12, .o50, .pointer;

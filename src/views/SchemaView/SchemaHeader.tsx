@@ -13,9 +13,8 @@ export default class SchemaHeader extends React.Component<Props,null> {
       <div className='schema-header'>
         <style jsx={true}>{`
           .schema-header {
-            @p: .flex, .justifyEnd;
-            height: 57px;
-            padding-top: 12px;
+            @p: .flex, .justifyEnd, .flexFixed;
+            height: 58px;
             padding-right: 12px;
             background-color: #08131B;
           }

@@ -79,9 +79,13 @@ class ModelHeader extends React.Component<Props, State> {
       transition: color ${variables.duration} linear, background ${variables.duration} linear;
 
       svg {
-        fill: ${variables.gray40};
+        fill: ${variables.gray40} !important;
         stroke: ${variables.gray40};
         transition: fill ${variables.duration} linear;
+        path {
+          fill: ${variables.gray40} !important;
+          stroke: ${variables.gray40} !important;
+        }
       }
 
       > div {
@@ -92,7 +96,7 @@ class ModelHeader extends React.Component<Props, State> {
         color: ${variables.white};
         background: ${variables.gray20};
 
-        svg, svg g {
+        svg, svg path {
           fill: ${variables.white} !important;
           stroke: ${variables.white} !important;
         }
@@ -179,10 +183,10 @@ class ModelHeader extends React.Component<Props, State> {
                 </BlueSettingsLink>
               ) : (
                 <SettingsLink
-                  to={`/${this.props.params.projectName}/schema`}
+                  to={`/${this.props.params.projectName}/schema?selectedModel=${this.props.params.modelName}`}
                   onClick={this.onClickEditSchema}
                 >
-                  <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/structure.svg')}/>
+                  <Icon width={20} height={20} src={require('assets/icons/schema.svg')} />
                   <div>Edit Schema</div>
                 </SettingsLink>
               )}

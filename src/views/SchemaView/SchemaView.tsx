@@ -7,23 +7,27 @@ import {Viewer} from '../../types/types'
 
 interface Props {
   viewer: Viewer
+  location: any
 }
 
 class NewSchemaView extends React.Component<Props,null> {
   render() {
-    const {viewer} = this.props
+    const {viewer, location} = this.props
     return (
       <div className='schema-view'>
         <style jsx>{`
+          .schema-view {
+            @p: .flex, .flexColumn, .h100;
+            background-color: rgb(11,20,28);
+          }
           .schema-wrapper {
-            @p: .flex, .overflowHidden;
-            height: calc(100vh - 57px);
+            @p: .flex, .h100, .pt6, .bgDarkBlue;
           }
         `}</style>
         <SchemaHeader projectName={viewer.project.name} />
         <div className='schema-wrapper'>
           <SchemaEditor project={viewer.project} />
-          <SchemaOverview project={viewer.project} />
+          <SchemaOverview location={location} project={viewer.project} />
         </div>
         {this.props.children}
       </div>

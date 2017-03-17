@@ -30,16 +30,18 @@ class SchemaEditor extends React.Component<Props,null> {
       <div className='schema-editor'>
         <style jsx={true}>{`
           .schema-editor {
-            @p: .flex1, .bgDarkerBlue;
-            border-top: 6px solid $darkBlue;
+            @p: .w50, .bgDarkerBlue, .flex, .flexColumn;
           }
           .schema-editor :global(.CodeMirror) {
-            height: calc(100vh - 57px - 86px);
+            @p: .h100;
             padding: 25px;
             padding-left: 16px;
           }
+          .schema-editor :global(.ReactCodeMirror) {
+            @p: .h100, .overflowAuto;
+          }
           .footer {
-            @p: .flex, .w100, .pa25, .relative;
+            @p: .flex, .w100, .pa25, .relative, .bgDarkerBlue, .flexFixed;
             &:after {
               @p: .absolute, .left0, .right0, .top0;
               z-index: 30;
@@ -47,6 +49,7 @@ class SchemaEditor extends React.Component<Props,null> {
               content: "";
               height: 100px;
               background: linear-gradient(to top, $darkerBlue, rgba(0,0,0,0));
+              pointer-events: none;
             }
           }
           .button {

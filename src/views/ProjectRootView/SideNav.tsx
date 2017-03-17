@@ -53,7 +53,6 @@ interface State {
   newModelName: string
   newModelIsValid: boolean
   modelsExpanded: boolean
-  modelsFit: boolean
 }
 
 // Section (Models, Relations, Permissions, etc.)
@@ -156,25 +155,15 @@ export class SideNav extends React.PureComponent<Props, State> {
       newModelName: '',
       newModelIsValid: true,
       modelsExpanded: false,
-      modelsFit: true,
     }
   }
 
   componentDidMount() {
     sideNavSyncer.setCallback(this.fetch, this)
-    this.setModelsFit()
-    window.addEventListener('resize', this.setModelsFit)
   }
 
   componentWillUnmount() {
     sideNavSyncer.setCallback(null, null)
-    window.removeEventListener('resize', this.setModelsFit)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.models.length !== prevProps.models.length) {
-      this.setModelsFit()
-    }
   }
 
   render() {
@@ -186,7 +175,7 @@ export class SideNav extends React.PureComponent<Props, State> {
           $p.w100,
           $p.h100,
           $p.white,
-          $p.bgDarkBlue,
+          $p.bgDarkerBlue,
           $p.f14,
         )}
         onMouseLeave={() => this.setState({forceShowModels: false} as State)}
@@ -266,7 +255,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             $p.flex,
             $p.itemsCenter,
             $p.justifyBetween,
-            $p.bgDarkerBlue,
+            $p.bgDarkBlue,
             $p.white60,
           )}
           style={{ height: '70px' }}
@@ -311,11 +300,11 @@ export class SideNav extends React.PureComponent<Props, State> {
     }
 
     return (
-      <Link
-        to={`/${this.props.params.projectName}/playground`}
-        onClick={showGettingStartedOnboardingPopup}
-      >
+      <div className='playground'>
         <style jsx>{`
+          .playground {
+            @p: .mt16;
+          }
           .playground-button {
             @p: .br2, .darkBlue, .f14, .fw6, .inlineFlex, .ttu, .ml25, .mb25, .itemsCenter;
             letter-spacing: 0.53px;
@@ -326,56 +315,33 @@ export class SideNav extends React.PureComponent<Props, State> {
             @p: .ml10;
           }
         `}</style>
-        <div className='playground-button'>
-          <Icon
-            width={20}
-            height={20}
-            src={require('graphcool-styles/icons/fill/playground.svg')}
-            color={$v.darkBlue}
-          />
-          <Tether
-            side='top'
-            steps={[{
-              step: 'STEP4_CLICK_PLAYGROUND',
-              title: 'Open the Playground',
-              description: 'Now that we have defined our data model and added example data it\'s time to send some queries to our backend!', // tslint:disable-line
-            }]}
-            offsetY={-20}
-            width={280}
-          >
-            <div className='text'>Playground</div>
-          </Tether>
-        </div>
-      </Link>
+        <Link
+          to={`/${this.props.params.projectName}/playground`}
+          onClick={showGettingStartedOnboardingPopup}
+        >
+          <div className='playground-button'>
+            <Icon
+              width={20}
+              height={20}
+              src={require('graphcool-styles/icons/fill/playground.svg')}
+              color={$v.darkBlue}
+            />
+            <Tether
+              side='top'
+              steps={[{
+                step: 'STEP4_CLICK_PLAYGROUND',
+                title: 'Open the Playground',
+                description: 'Now that we have defined our data model and added example data it\'s time to send some queries to our backend!', // tslint:disable-line
+              }]}
+              offsetY={-20}
+              width={280}
+            >
+              <div className='text'>Playground</div>
+            </Tether>
+          </div>
+        </Link>
+      </div>
     )
-  }
-
-  private setModelsFit = () => {
-    const HEADER_HEIGHT = 64
-    const FOOTER_HEIGHT = 70
-
-    const MODEL_MARGIN_TOP = 68
-    const MODEL_HEIGHT = 36
-    const numModels = this.props.models.length
-    const MODEL_MARGIN_BOTTOM = 38
-
-    const NUM_LINKS = 5
-    const LINK_HEIGHT = 58
-    const LINKS_MARGIN = 38
-
-    const height = window.innerHeight
-
-    const fit = height > (
-      HEADER_HEIGHT +
-      FOOTER_HEIGHT +
-      MODEL_MARGIN_TOP +
-      MODEL_HEIGHT * numModels +
-      MODEL_MARGIN_BOTTOM +
-      NUM_LINKS * LINK_HEIGHT +
-      LINKS_MARGIN
-    )
-
-    this.setState({modelsFit: fit} as State)
   }
 
   private renderModels = () => {
@@ -443,8 +409,7 @@ export class SideNav extends React.PureComponent<Props, State> {
         <div
           className={cx($p.overflowHidden)}
           style={{
-            height: this.state.modelsFit
-              ? 'auto' : (this.state.modelsExpanded ? 76 + 41 * this.props.models.length : window.innerHeight - 456),
+            height: 'auto',
             transition: 'height .5s ease',
           }}
         >
@@ -495,37 +460,7 @@ export class SideNav extends React.PureComponent<Props, State> {
               </ListElement>
             ))}
           </div>
-
         </div>
-        {!this.state.modelsFit &&
-          <ToggleMore
-            onClick={() => this.setState({modelsExpanded: !this.state.modelsExpanded} as State )}
-            className={cx(
-              $p.absolute,
-              $p.bottom0,
-              $p.left0,
-              $p.w100,
-              $p.flex,
-              $p.justifyCenter,
-              $p.itemsCenter,
-              $p.pointer,
-            )}
-            turned={this.state.modelsExpanded}
-          >
-            <Icon
-              width={18}
-              height={18}
-              stroke
-              color={$v.white}
-              src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
-              onClick={this.toggleModels}
-              className={cx(
-                $p.brPill,
-                $p.bgDarkBlue,
-              )}
-            />
-          </ToggleMore>
-        }
       </div>
     )
   }
