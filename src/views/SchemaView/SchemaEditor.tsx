@@ -45,9 +45,9 @@ class SchemaEditor extends React.Component<Props,null> {
             &:after {
               @p: .absolute, .left0, .right0, .top0;
               z-index: 30;
-              margin-top: -86px;
+              margin-top: -36px;
               content: "";
-              height: 100px;
+              height: 36px;
               background: linear-gradient(to top, $darkerBlue, rgba(0,0,0,0));
               pointer-events: none;
             }
