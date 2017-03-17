@@ -64,8 +64,25 @@ const NodeQuery = {
   `,
 }
 
+/**
+ * Looks in the route and in parent routes for a loadingColor property
+ * @param routes
+ * @returns {string}
+ */
+function getLoadingColor(routes) {
+  const stack = routes.slice()
+  let color = null
+  while (stack.length > 0 && color === null) {
+    const route = stack.pop()
+    if (route.hasOwnProperty('loadingColor')) {
+      color = route['loadingColor']
+    }
+  }
+  return color !== null ? color : '#8989B1'
+}
+
 /* eslint-disable react/prop-types */
-const render = ({error, props, routerProps, element}) => {
+const render = ({error, props, routerProps, element, ...rest}) => {
   if (error) {
     const err = error.source.errors[0]
 
@@ -98,9 +115,16 @@ const render = ({error, props, routerProps, element}) => {
     return React.cloneElement(element, props)
   }
 
+  const color = getLoadingColor(routerProps.routes)
+
   return (
-    <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      <Loading color='#8989B1'/>
+    <div className='loader'>
+      <style jsx>{`
+        .loader {
+          @p: .top0, .left0, .right0, .bottom0, .fixed, .flex, .justifyCenter, .itemsCenter, .z999;
+        }
+      `}</style>
+      <Loading color={color} />
     </div>
   )
 }
@@ -132,7 +156,7 @@ export default (
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>
         <IndexRedirect to='settings'/>
       </Route>
-      <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render}>
+      <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>
         <Route path='relations'>
           <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
           <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>

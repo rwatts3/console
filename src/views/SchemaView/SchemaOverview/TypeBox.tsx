@@ -154,7 +154,7 @@ class TypeBox extends React.Component<Props,State> {
             }
           }
           .simple-button {
-            @p: .mr25, .pa6, .flex, .itemsCenter;
+            @p: .mr16, .pa6, .flex, .itemsCenter;
           }
           .simple-button span {
             @p: .ml6, .ttu, .black30, .fw6, .f14;
@@ -170,6 +170,12 @@ class TypeBox extends React.Component<Props,State> {
           }
           a.underline {
             @p: .underline;
+          }
+          .settings {
+            @p: .pa25;
+          }
+          .settings:hover :global(svg) {
+            fill: $gray50;
           }
         `}</style>
         <div className={'type-box-head' + (extended ? ' extended' : '')} onClick={this.toggleExtended}>
@@ -251,7 +257,7 @@ class TypeBox extends React.Component<Props,State> {
                     </div>
                   </Link>
                 )}
-                <Link to={`/${projectName}/relations/create?leftModelName=${model.name}`}>
+                <Link to={`/${projectName}/schema/relations/create?leftModelName=${model.name}`}>
                   <div className='add-button'>
                     <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
                     <span>Add Relation</span>
@@ -271,6 +277,19 @@ class TypeBox extends React.Component<Props,State> {
               </div>
             </Link>
             {!model.isSystem && (
+              <div
+                className='settings'
+                onClick={e => {
+                  e.stopPropagation()
+                  this.props.onEditModel(model)
+                }}
+              >
+                <Icon
+                  src={require('graphcool-styles/icons/fill/settings.svg')}
+                  color={$v.gray20}
+                />
+              </div>
+              /*
               <TypeBoxSettings>
                 <div className='setting' onClick={() => this.props.onEditModel(model)}>
                   <Icon
@@ -280,6 +299,7 @@ class TypeBox extends React.Component<Props,State> {
                   <div className='text'>Type Settings</div>
                 </div>
               </TypeBoxSettings>
+               */
             )}
           </div>
         </div>

@@ -19,6 +19,7 @@ class NewSchemaView extends React.Component<Props,null> {
           .schema-view {
             @p: .flex, .flexColumn, .h100;
             background-color: rgb(11,20,28);
+            border-left: 6px solid #08131B;
           }
           .schema-wrapper {
             @p: .flex, .h100, .pt6, .bgDarkBlue;

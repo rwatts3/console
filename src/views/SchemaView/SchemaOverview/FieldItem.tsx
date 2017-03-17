@@ -33,6 +33,9 @@ export default class FieldItem extends React.Component<Props, null> {
           .field-item {
             @p: .pa16, .flex, .justifyBetween, .nowrap;
           }
+          .field-item:hover {
+            @p: .bgBlack04;
+          }
           .field-item.show-border {
             @p: .bt, .bBlack10;
           }
@@ -47,7 +50,7 @@ export default class FieldItem extends React.Component<Props, null> {
             padding: 3px 4px 4px 6px;
           }
           .flexy :global(.lock) {
-            @p: .mr6;
+            @p: .ml6;
             opacity: 0.75;
           }
           a.underline {
@@ -55,33 +58,31 @@ export default class FieldItem extends React.Component<Props, null> {
           }
         `}</style>
         <div className='flexy'>
-          {field.isSystem && (
-            <div>
-              <Info
-                customTip={
-                  <Icon
-                    src={require('assets/icons/lock.svg')}
-                    className='lock'
-                  />
-                }
-                offsetX={30}
-              >
-                <div style={{whiteSpace: 'initial'}}>
-                  {'This is a system field. Read more about system fields '}
-                  <a
-                    href='https://www.graph.cool/docs/reference/platform/system-artifacts-uhieg2shio/'
-                    target='_blank'
-                    className='underline'
-                  >
-                    {'here'}
-                  </a>
-                </div>
-              </Info>
-            </div>
-          )}
           <span className='name'>
             {field.name}
           </span>
+          {field.isSystem && (
+            <Info
+              customTip={
+                <Icon
+                  src={require('assets/icons/lock.svg')}
+                  className='lock'
+                />
+              }
+              offsetX={30}
+            >
+              <div style={{whiteSpace: 'initial'}}>
+                {'This is a system field. Read more about system fields '}
+                <a
+                  href='https://www.graph.cool/docs/reference/platform/system-artifacts-uhieg2shio/'
+                  target='_blank'
+                  className='underline'
+                >
+                  {'here'}
+                </a>
+              </div>
+            </Info>
+          )}
           <TypeTag field={field} />
         </div>
         <div className='flexy'>
