@@ -32,6 +32,10 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
             .text {
               @p: .ml10, .white80, .f16;
             }
+            transition: $duration all;
+          }
+          .add-type:hover {
+            @p: .o70;
           }
           .switches {
             @p: .ml25, .flex, .o60, .pointer;
@@ -44,6 +48,9 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
           }
           .schema-overview-header :global(i) {
             @p: .o40;
+          }
+          .schema-overview-header :global(i:hover) {
+            @p: .o70;
           }
           .schema-overview-header :global(i.active) {
             @p: .o100;
@@ -68,7 +75,7 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
             width={23}
             height={20}
             onClick={() => onChangeFilter('detail')}
-        />
+          />
           <Icon
             className={'s' + (activeFilter === 'overview' ? ' active' : '')}
             src={require('assets/icons/schema/detail.svg')}

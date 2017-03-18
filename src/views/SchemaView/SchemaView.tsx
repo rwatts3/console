@@ -8,11 +8,13 @@ import {Viewer} from '../../types/types'
 interface Props {
   viewer: Viewer
   location: any
+  params: any
 }
 
 class NewSchemaView extends React.Component<Props,null> {
   render() {
-    const {viewer, location} = this.props
+    const {viewer, location, params} = this.props
+    const editingModelName = params.modelName
     return (
       <div className='schema-view'>
         <style jsx>{`
@@ -28,7 +30,11 @@ class NewSchemaView extends React.Component<Props,null> {
         <SchemaHeader projectName={viewer.project.name} />
         <div className='schema-wrapper'>
           <SchemaEditor project={viewer.project} />
-          <SchemaOverview location={location} project={viewer.project} />
+          <SchemaOverview
+            location={location}
+            project={viewer.project}
+            editingModelName={editingModelName}
+          />
         </div>
         {this.props.children}
       </div>

@@ -9,6 +9,7 @@ import Tether from '../../../components/Tether/Tether'
 interface Props {
   project: Project
   location: any
+  editingModelName?: string
 }
 export type SchemaOverviewFilter = 'detail' | 'overview'
 
@@ -29,6 +30,7 @@ class SchemaOverview extends React.Component<Props,State> {
     }
   }
   render() {
+    const {editingModelName} = this.props
     const {activeFilter, addingType, editingModel} = this.state
     let selectedModel = undefined
     if (this.props.location.query.hasOwnProperty('selectedModel')) {
@@ -37,7 +39,7 @@ class SchemaOverview extends React.Component<Props,State> {
 
     return (
       <div className='schema-overview'>
-        <style jsx={true}>{`
+        <style jsx>{`
           .schema-overview {
             @p: .bgDarkBlue, .w50, .flex, .flexColumn;
           }
@@ -84,6 +86,7 @@ class SchemaOverview extends React.Component<Props,State> {
           opacity={addingType ? 0.5 : 1}
           onEditModel={this.handleEditModel}
           selectedModel={selectedModel}
+          editingModelName={editingModelName}
         />
       </div>
     )

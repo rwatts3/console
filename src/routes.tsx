@@ -162,9 +162,11 @@ export default (
           <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
         </Route>
         <Route path=':modelName'>
-          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
+          <Route path='edit' component={null} render={render} />
+          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />
           <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
         </Route>
+
       </Route>
       <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
       <Route path='models'>

@@ -15,6 +15,8 @@ import {ConsoleEvents} from 'graphcool-metrics'
 import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
+import {withRouter} from 'react-router'
+import {idToBeginning} from '../../../utils/utils'
 
 interface State {
   modelName: string
@@ -24,14 +26,16 @@ interface State {
 }
 
 interface Props {
-  onRequestClose: () => void
+  onRequestClose?: () => void
   projectId: string
   model: Model
+  router: ReactRouter.InjectedRouter
   // injected by redux
   showNotification: ShowNotificationCallback
   showDonePopup: () => void
   nextStep: () => Promise<any>
   gettingStartedState: GettingStartedState
+
 }
 
 const idField = {
@@ -60,13 +64,23 @@ class AddType extends React.Component<Props, State> {
   }
   render() {
     const {showError, editing, loading} = this.state
+    const {model} = this.props
+    let fields
+    let permissions
+    if (model) {
+      fields = model.fields.edges.map(edge => edge.node).sort(idToBeginning)
+      permissions = model.permissions.edges.map(edge => edge.node)
+    }
 
     return (
-      <div className='add-type'>
+      <div className={'add-type' + (Boolean(model) ? ' editing' : '')}>
         <style jsx>{`
           .add-type {
             @p: .mt16, .ml16, .mr16, .bgWhite, .br2, .relative;
             box-shadow: 0 1px 10px $gray30;
+          }
+          .add-type.editing {
+            @p: .mh0, .mb16;
           }
           .header {
             @p: .pv16, .flex, .itemsCenter, .bb, .bBlack10, .nowrap;
@@ -135,16 +149,27 @@ class AddType extends React.Component<Props, State> {
           </div>
         </div>
         <div className='fields'>
-           <FieldItem
-             key={idField.id}
-             field={idField as Field}
-             permissions={[]}
-             hideBorder={true}
-             create
-          />
+          {model ? (
+            fields.map((field, index) => (
+              <FieldItem
+                key={field.id}
+                field={field}
+                permissions={permissions}
+                hideBorder={index === 0}
+              />
+            ))
+          ) : (
+            <FieldItem
+              key={idField.id}
+              field={idField as Field}
+              permissions={[]}
+              hideBorder={true}
+              create
+            />
+          )}
         </div>
         <div className='footer'>
-          <div className='button cancel' onClick={this.props.onRequestClose}>Cancel</div>
+          <div className='button cancel' onClick={this.close}>Cancel</div>
           <Tether
             style={{
                 pointerEvents: 'none',
@@ -215,7 +240,7 @@ class AddType extends React.Component<Props, State> {
               this.props.nextStep()
             }
             tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
-            this.props.onRequestClose()
+            this.close()
           },
           onFailure: (transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -235,7 +260,7 @@ class AddType extends React.Component<Props, State> {
       {
         onSuccess: () => {
           tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
-          this.props.onRequestClose()
+          this.close()
         },
         onFailure: (transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
@@ -244,6 +269,18 @@ class AddType extends React.Component<Props, State> {
       },
     )
   }
+
+  private close = () => {
+    const {onRequestClose, router, projectId} = this.props
+    if (typeof onRequestClose === 'function') {
+      onRequestClose()
+    }
+
+    // if we're editing, go back to the schema page of the project
+    if (this.props.model) {
+      router.goBack()
+    }
+  }
 }
 
 export default connect(
@@ -251,4 +288,4 @@ export default connect(
   {
     showNotification, nextStep, showDonePopup,
   },
-)(AddType)
+)(withRouter(AddType))

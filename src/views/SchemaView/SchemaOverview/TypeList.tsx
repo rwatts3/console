@@ -3,6 +3,7 @@ import {Project, Model} from '../../../types/types'
 import {SchemaOverviewFilter} from './SchemaOverview'
 import * as Relay from 'react-relay'
 import TypeBox from './TypeBox'
+import AddType from './AddType'
 
 interface Props {
   project: Project
@@ -10,11 +11,12 @@ interface Props {
   opacity?: number
   onEditModel: (model: Model) => void
   selectedModel?: string
+  editingModelName?: string
 }
 
 class TypeList extends React.Component<Props,null> {
   render() {
-    const {activeFilter, project, opacity, selectedModel} = this.props
+    const {activeFilter, project, opacity, selectedModel, editingModelName} = this.props
     const models = project.models.edges
       .map(edge => edge.node)
       .sort((a, b) => a.id < b.id ? 1 : -1)
@@ -43,14 +45,21 @@ class TypeList extends React.Component<Props,null> {
           style={style}
         >
           {models.map(model => (
-            <TypeBox
-              key={model.id}
-              model={model}
-              projectName={project.name}
-              extended={activeFilter === 'detail'}
-              onEditModel={this.props.onEditModel}
-              highlighted={selectedModel ? model.name === selectedModel : undefined}
-            />
+            model.name === editingModelName ? (
+              <AddType
+                projectId={this.props.project.id}
+                model={model}
+              />
+            ) : (
+              <TypeBox
+                key={model.id}
+                model={model}
+                projectName={project.name}
+                extended={activeFilter === 'detail'}
+                onEditModel={this.props.onEditModel}
+                highlighted={selectedModel ? model.name === selectedModel : undefined}
+              />
+            )
           ))}
         </div>
       </div>
@@ -68,7 +77,38 @@ export default Relay.createContainer(TypeList, {
             node {
               id
               name
-              ${TypeBox.getFragment('model')}
+              isSystem
+              permissions(first: 100) {
+                edges {
+                  node {
+                    isActive
+                    operation
+                    applyToWholeModel
+                    fieldIds
+                  }
+                }
+              }
+              fields(first: 100) {
+                edges {
+                  node {
+                    id
+                    name
+                    typeIdentifier
+                    isList
+                    isRequired
+                    isSystem
+                    isUnique
+                    isReadonly
+                    relation {
+                      name
+                    }
+                    relatedModel {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
             }
           }
         }
