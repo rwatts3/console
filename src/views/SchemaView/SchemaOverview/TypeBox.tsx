@@ -88,14 +88,14 @@ class TypeBox extends React.Component<Props,State> {
             background-color: #E9F9EC;
           }
           .type-box-head {
-            @p: .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .pointer;
+            @p: .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .pointer, .cbox;
             height: 65px;
+          }
+          .type-box-head.extended {
+            @p: .pb10;
           }
           .flexy {
             @p: .flex, .itemsCenter;
-          }
-          .type-box-head.extended {
-            height: 74px;
           }
           .type-box-body.extended {
             @p: .mt16;
@@ -145,7 +145,7 @@ class TypeBox extends React.Component<Props,State> {
           .add-buttons {
             @p: .absolute, .flex;
             left: -14px;
-            bottom: -15px;
+            margin-top: -16px;
           }
           .setting {
             @p: .pv10, .ph16, .flex, .itemsCenter;
@@ -210,61 +210,6 @@ class TypeBox extends React.Component<Props,State> {
                 </Info>
               )}
             </div>
-            {extended && (
-              <div className='add-buttons' onClick={e => e.stopPropagation()}>
-                {model.name === 'Post' ? (
-                  <Tether
-                    steps={[{
-                      step: 'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
-                      title: 'Create a field for the image URL',
-                    }, {
-                      step: 'STEP2_CREATE_FIELD_DESCRIPTION',
-                      title: 'Good job!',
-                      description: 'Create another field called "description" which is of type "String"',
-                    }]}
-                    offsetX={1}
-                    offsetY={-1}
-                    width={240}
-                    horizontal='left'
-                    zIndex={2}
-                  >
-                    <Link to={`/${projectName}/schema/${model.name}/create`} onClick={this.handleCreateFieldClick}>
-                      <div className='add-button'>
-                        <Icon
-                          src={require('assets/icons/addField.svg')}
-                          strokeWidth={1.5}
-                          stroke
-                          color={$v.black}
-                          width={18}
-                          height={18}
-                        />
-                        <span>Add Field</span>
-                      </div>
-                    </Link>
-                  </Tether>
-                ) : (
-                  <Link to={`/${projectName}/schema/${model.name}/create`}>
-                    <div className='add-button'>
-                      <Icon
-                        src={require('assets/icons/addField.svg')}
-                        strokeWidth={1.5}
-                        stroke
-                        color={$v.black}
-                        width={18}
-                        height={18}
-                      />
-                      <span>Add Field</span>
-                    </div>
-                  </Link>
-                )}
-                <Link to={`/${projectName}/schema/relations/create?leftModelName=${model.name}`}>
-                  <div className='add-button'>
-                    <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
-                    <span>Add Relation</span>
-                  </div>
-                </Link>
-              </div>
-            )}
           </div>
           <div className='flexy'>
             <Link to={`/${projectName}/models/${model.name}/databrowser`}>
@@ -303,6 +248,61 @@ class TypeBox extends React.Component<Props,State> {
             )}
           </div>
         </div>
+        {extended && (
+          <div className='add-buttons' onClick={e => e.stopPropagation()}>
+            {model.name === 'Post' ? (
+                <Tether
+                  steps={[{
+                      step: 'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
+                      title: 'Create a field for the image URL',
+                    }, {
+                      step: 'STEP2_CREATE_FIELD_DESCRIPTION',
+                      title: 'Good job!',
+                      description: 'Create another field called "description" which is of type "String"',
+                    }]}
+                  offsetX={1}
+                  offsetY={-1}
+                  width={240}
+                  horizontal='left'
+                  zIndex={2}
+                >
+                  <Link to={`/${projectName}/schema/${model.name}/create`} onClick={this.handleCreateFieldClick}>
+                    <div className='add-button'>
+                      <Icon
+                        src={require('assets/icons/addField.svg')}
+                        strokeWidth={1.5}
+                        stroke
+                        color={$v.black}
+                        width={18}
+                        height={18}
+                      />
+                      <span>Add Field</span>
+                    </div>
+                  </Link>
+                </Tether>
+              ) : (
+                <Link to={`/${projectName}/schema/${model.name}/create`}>
+                  <div className='add-button'>
+                    <Icon
+                      src={require('assets/icons/addField.svg')}
+                      strokeWidth={1.5}
+                      stroke
+                      color={$v.black}
+                      width={18}
+                      height={18}
+                    />
+                    <span>Add Field</span>
+                  </div>
+                </Link>
+              )}
+            <Link to={`/${projectName}/schema/relations/create?leftModelName=${model.name}`}>
+              <div className='add-button'>
+                <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                <span>Add Relation</span>
+              </div>
+            </Link>
+          </div>
+        )}
         <div className={'type-box-body' + (extended ? ' extended' : '')}>
           {!extended && (
             <div className='flat-field-list'>

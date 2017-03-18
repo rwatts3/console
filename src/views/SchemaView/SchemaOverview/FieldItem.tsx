@@ -47,7 +47,7 @@ export default class FieldItem extends React.Component<Props, null> {
           }
           .unique {
             @p: .br2, .ba, .bBlack30, .black30, .f10, .fw7, .ttu, .mr10;
-            padding: 3px 4px 4px 6px;
+            padding: 3px 4px 3px 4px;
           }
           .flexy :global(.lock) {
             @p: .ml6;
