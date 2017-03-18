@@ -166,7 +166,7 @@ export default (
           <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
         </Route>
       </Route>
-      <Route path='voyager' component={SchemaViewer} queries={ViewerQuery} render={render} />
+      <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
       <Route path='models'>
         <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
         <Route path=':modelName/schema' component={SchemaView} queries={ViewerQuery} render={render}>

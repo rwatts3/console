@@ -52,7 +52,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
               </a>
             </Info>
           </div>
-          <Link to={`/${this.props.projectName}/voyager`}>
+          <Link to={`/${this.props.projectName}/graph-view`}>
             <div className='button'>
               <Icon
                 width={15}
