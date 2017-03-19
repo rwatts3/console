@@ -11,6 +11,7 @@ interface Props {
 export default class PermissionsTag extends React.Component<Props,null> {
   render() {
     const {permissions: {CREATE, READ, UPDATE, DELETE}} = this.props
+    const hasPermission = (READ || CREATE || UPDATE || DELETE)
     return (
       <div>
         <style jsx>{`
@@ -43,19 +44,21 @@ export default class PermissionsTag extends React.Component<Props,null> {
           }
         `}</style>
         <Info
-          padding={6}
+          padding={
+            hasPermission ? 6 : undefined
+          }
           width={
-            (!READ && !CREATE && !UPDATE && !DELETE) ? 165 : 'auto'
+            hasPermission ? 'auto' : 165
           }
           offsetX={
-            (!READ && !CREATE && !UPDATE && !DELETE) ? -70 : -10
+            hasPermission ? -10 : -70
           }
           cursorOffset={
-            (!READ && !CREATE && !UPDATE && !DELETE) ? -8 : 20
+            hasPermission ? 20 : -8
           }
           customTip={(
             <div className='permissions-tag'>
-              {(!READ && !CREATE && !UPDATE && !DELETE) && (
+              {!hasPermission && (
                 <Icon
                   src={require('graphcool-styles/icons/fill/permissions.svg')}
                   width={14}
@@ -85,7 +88,7 @@ export default class PermissionsTag extends React.Component<Props,null> {
             </div>
           )}
         >
-          {(READ || CREATE || UPDATE || DELETE) ? (
+          {hasPermission ? (
             <div>
               <div>Permissions</div>
               {CREATE && (

@@ -56,6 +56,9 @@ export default class FieldItem extends React.Component<Props, null> {
           a.underline {
             @p: .underline;
           }
+          .wrap {
+            @p: .wsNormal;
+          }
         `}</style>
         <div className='flexy'>
           <span className='name'>
@@ -70,6 +73,7 @@ export default class FieldItem extends React.Component<Props, null> {
                 />
               }
               offsetX={30}
+              cursorOffset={-5}
             >
               <div style={{whiteSpace: 'initial'}}>
                 {'This is a system field. Read more about system fields '}
@@ -88,7 +92,17 @@ export default class FieldItem extends React.Component<Props, null> {
         <div className='flexy'>
           <div>
             {field.isUnique && (
-              <div className='unique'>Unique</div>
+              <Info
+                customTip={
+                  <div className='unique'>Unique</div>
+                }
+                width={180}
+                offsetX={-40}
+              >
+                <div className='wrap'>
+                  The content of the field must be unique
+                </div>
+              </Info>
             )}
           </div>
           {!create && (
