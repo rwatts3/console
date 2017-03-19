@@ -30,7 +30,7 @@ class SchemaEditor extends React.Component<Props,null> {
       <div className='schema-editor'>
         <style jsx={true}>{`
           .schema-editor {
-            @p: .w50, .bgDarkerBlue, .flex, .flexColumn;
+            @p: .w50, .bgDarkerBlue, .flex, .flexColumn, .relative;
           }
           .schema-editor :global(.CodeMirror) {
             @p: .h100;
@@ -40,6 +40,13 @@ class SchemaEditor extends React.Component<Props,null> {
           .schema-editor :global(.ReactCodeMirror) {
             @p: .h100, .overflowAuto;
           }
+          .schema-editor :global(.CodeMirror-cursor) {
+            @p: .dn;
+          }
+          .schema-editor :global(.CodeMirror-selected) {
+            background: rgba(255,255,255,.1);
+          }
+
           .footer {
             @p: .flex, .w100, .pa25, .relative, .bgDarkerBlue, .flexFixed;
             &:after {
@@ -61,6 +68,9 @@ class SchemaEditor extends React.Component<Props,null> {
           .button:hover {
             @p: .o100;
           }
+          .soon-editable {
+            @p: .absolute, .ma16, .top0, .right0, .ttu, .f14, .fw6, .white30;
+          }
         `}</style>
         <Codemirror
           value={this.props.project.schema}
@@ -81,6 +91,7 @@ class SchemaEditor extends React.Component<Props,null> {
         <div className='footer'>
           <div className='button' onClick={this.downloadSchema}>Export Schema</div>
         </div>
+        <div className='soon-editable'>soon editable</div>
       </div>
     )
   }

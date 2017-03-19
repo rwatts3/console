@@ -6,13 +6,31 @@ interface Props {
   bright?: boolean
   customTip?: JSX.Element
   offsetX?: number
+  width?: number | string
+  cursorOffset?: number
+  padding?: number
 }
 
-const Info = (props: Props) => (
-  <div
-    className='info'
-  >
-    <style jsx>{`
+const Info = (props: Props) => {
+  let tooltipStyle = {
+    transform: `translateX(${props.offsetX ? (props.offsetX + 'px') : 0})`,
+  }
+  if (props.width) {
+    tooltipStyle['width'] = props.width
+  }
+
+  let tooltipContentStyle = {}
+  if (props.padding) {
+    tooltipContentStyle['padding'] = props.padding
+  }
+
+  const cursorOffset = -props.offsetX + (props.cursorOffset ? props.cursorOffset : 0)
+
+  return (
+    <div
+      className='info'
+    >
+      <style jsx>{`
       .question-mark {
         @p: .bgBlack10, .flex, .itemsCenter, .justifyCenter, .black40, .f12, .fw6, .br100, .pointer, .ml10;
         width: 18px;
@@ -58,30 +76,29 @@ const Info = (props: Props) => (
       }
 
     `}</style>
-    {props.customTip ? (
-      props.customTip
-    ) : (
-      <div className={'question-mark' + (Boolean(props.bright) ? ' bright' : '')}>
-        <span>?</span>
-      </div>
-    )}
-    <div
-      className={'tooltip' + (Boolean(props.slim) ? ' slim' : '')}
-      style={{
-        transform: `translateX(${props.offsetX ? (props.offsetX + 'px') : 0})`,
-      }}
-    >
-      <div className='tooltip-content'>
-        <div
-          className='before'
-          style={{
-            transform: `translateX(-${props.offsetX}px) rotate(45deg)`,
-          }}
-        />
-        {props.children}
+      {props.customTip ? (
+          props.customTip
+        ) : (
+          <div className={'question-mark' + (Boolean(props.bright) ? ' bright' : '')}>
+            <span>?</span>
+          </div>
+        )}
+      <div
+        className={'tooltip' + (Boolean(props.slim) ? ' slim' : '')}
+        style={tooltipStyle}
+      >
+        <div className='tooltip-content' style={tooltipContentStyle}>
+          <div
+            className='before'
+            style={{
+              transform: `translateX(${cursorOffset}px) rotate(45deg)`,
+            }}
+          />
+          {props.children}
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Info
