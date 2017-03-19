@@ -195,7 +195,7 @@ export class SideNav extends React.PureComponent<Props, State> {
                   iconSrc={require('assets/icons/schema.svg')}
                   text='Schema'
                   size={24}
-                  active={location.pathname.endsWith('schema')}
+                  active={location.pathname.includes(`${this.props.params.projectName}/schema`)}
                 />
                 <Tether
                   steps={[{

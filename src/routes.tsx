@@ -157,6 +157,10 @@ export default (
         <IndexRedirect to='settings'/>
       </Route>
       <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>
+        <Route path='all' component={null} render={render} />
+        <Route path='types' component={null} render={render} />
+        <Route path='interfaces' component={null} render={render} />
+        <Route path='enums' component={null} render={render} />
         <Route path='relations'>
           <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
           <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
@@ -166,7 +170,6 @@ export default (
           <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />
           <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
         </Route>
-
       </Route>
       <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
       <Route path='models'>

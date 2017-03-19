@@ -179,13 +179,9 @@ acorn@^2.1.0, acorn@^2.4.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-2.7.0.tgz#ab6e7d9d886aaca8b085bc3312b79a198433f0e7"
 
-acorn@^4.0.11:
+acorn@^4.0.11, acorn@^4.0.3, acorn@^4.0.4:
   version "4.0.11"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.11.tgz#edcda3bd937e7556410d42ed5860f67399c794c0"
-
-acorn@^4.0.3, acorn@^4.0.4:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.8.tgz#f41e52020ce78118a3c68ed0e9215eb8fc68b5b1"
 
 add-dom-event-listener@1.x:
   version "1.0.2"
@@ -3118,9 +3114,9 @@ graphcool-styles@0.0.98:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphcool-styles@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.1.tgz#b776113bbd36e637e976b788c6f47ec39114e614"
+graphcool-styles@0.1.6:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.5.tgz#d11f57395a8d76b21fbd7111a868e9684d3ce7cc"
   dependencies:
     html-webpack-plugin "^2.24.1"
     interactive "^0.1.9"

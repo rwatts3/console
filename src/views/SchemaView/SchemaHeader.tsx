@@ -2,18 +2,23 @@ import * as React from 'react'
 import {$v,Icon} from 'graphcool-styles'
 import Info from '../../components/Info'
 import {Link} from 'react-router'
+import * as cx from 'classnames'
+import ComingSoonTag from './ComingSoonTag'
 
 interface Props {
   projectName: string
+  location: any
 }
 
 export default class SchemaHeader extends React.Component<Props,null> {
   render() {
+    const {projectName} = this.props
+
     return (
       <div className='schema-header'>
         <style jsx={true}>{`
           .schema-header {
-            @p: .flex, .justifyEnd, .flexFixed;
+            @p: .flex, .justifyBetween, .flexFixed;
             height: 58px;
             padding-right: 12px;
             background-color: #08131B;
@@ -39,7 +44,93 @@ export default class SchemaHeader extends React.Component<Props,null> {
           a {
             @p: .underline;
           }
+          .left {
+            @p: .flex, .itemsEnd;
+          }
+          .tab {
+            @p: .br2, .white30, .brTop, .ml10, .flex, .itemsCenter;
+            padding: 10px 13px;
+          }
+          .tab.active {
+            @p: .bgDarkBlue, .white;
+          }
+          .tab.inactive {
+            @p: .bgDarkerBlue;
+          }
+          .tab span {
+            @p: .ttu, .fw6, .f16, .ml6;
+          }
+          .star {
+            @p: .f25, .relative;
+            line-height: 1;
+            transform: translateY(4px);
+          }
+          .types.active :global(.light) {
+            fill: $green;
+          }
+          .types.active :global(.dark) {
+            fill: rgba(28,191,50,.50);
+          }
+          .interfaces.active :global(.dark) {
+            fill: rgba(164,3,111,.7);
+          }
+          .interfaces.active :global(.light) {
+            fill: $purple;
+          }
+          .enums.active :global(.light) {
+            fill: rgba(241,143,1,.6);
+          }
+          .enums.active :global(.dark) {
+            fill: $lightOrange;
+          }
+          .coming-soon {
+            cursor: not-allowed;
+          }
         `}</style>
+        <div className='left'>
+          <Link to={`/${projectName}/schema`}>
+            <div className={cx(
+              'tab',
+              {
+                'active': `/${projectName}/schema` === this.props.location.pathname,
+              },
+            )}>
+              <div className='star'>*</div>
+              <span>All</span>
+            </div>
+          </Link>
+          <Link to={`/${projectName}/schema/types`}>
+            <div className={this.tabClass('types')}>
+              <Icon
+                src={require('graphcool-styles/icons/fill/types.svg')}
+                width={19}
+                height={18}
+                color={$v.white20}
+              />
+              <span>Types</span>
+            </div>
+          </Link>
+          <div className={'coming-soon ' + this.tabClass('interfaces')}>
+            <Icon
+              src={require('graphcool-styles/icons/fill/interfaces.svg')}
+              width={19}
+              height={18}
+              color={$v.white20}
+            />
+            <span>Interfaces</span>
+            <ComingSoonTag />
+          </div>
+          <div className={'coming-soon ' + this.tabClass('enums')}>
+            <Icon
+              src={require('graphcool-styles/icons/fill/enums.svg')}
+              width={23}
+              height={9}
+              color={$v.white20}
+            />
+            <span>Enums</span>
+            <ComingSoonTag />
+          </div>
+        </div>
         <div className='right'>
           <div className='info'>
             <Info bright slim>
@@ -66,5 +157,15 @@ export default class SchemaHeader extends React.Component<Props,null> {
         </div>
       </div>
     )
+  }
+
+  private tabClass(tabName: string) {
+    let className = 'tab'
+    if (this.props.location.pathname.endsWith(`schema/${tabName}`)) {
+      className += ' active'
+    } else {
+      className += ' inactive'
+    }
+    return className + ` ${tabName}`
   }
 }
