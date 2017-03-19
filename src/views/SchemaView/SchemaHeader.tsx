@@ -88,6 +88,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
           }
         `}</style>
         <div className='left'>
+          {/*
           <Link to={`/${projectName}/schema`}>
             <div className={cx(
               'tab',
@@ -99,6 +100,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
               <span>All</span>
             </div>
           </Link>
+           */}
           <Link to={`/${projectName}/schema/types`}>
             <div className={this.tabClass('types')}>
               <Icon
@@ -110,7 +112,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
               <span>Types</span>
             </div>
           </Link>
-          <div className={'coming-soon ' + this.tabClass('interfaces')}>
+          <div className={'coming-soon tab' /* + this.tabClass('interfaces')*/}>
             <Icon
               src={require('graphcool-styles/icons/fill/interfaces.svg')}
               width={19}
@@ -120,7 +122,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
             <span>Interfaces</span>
             <ComingSoonTag />
           </div>
-          <div className={'coming-soon ' + this.tabClass('enums')}>
+          <div className={'coming-soon tab' /* + this.tabClass('enums')*/}>
             <Icon
               src={require('graphcool-styles/icons/fill/enums.svg')}
               width={23}
