@@ -102,7 +102,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
           </Link>
            */}
           <Link to={`/${projectName}/schema/types`}>
-            <div className={this.tabClass('types')}>
+            <div className={'tab active types'/*this.tabClass('types')*/}>
               <Icon
                 src={require('graphcool-styles/icons/fill/types.svg')}
                 width={19}

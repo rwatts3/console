@@ -12,6 +12,11 @@ import {connect} from 'react-redux'
 import {nextStep} from '../../../actions/gettingStarted'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import Info from '../../../components/Info'
+import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {showNotification} from '../../../actions/notification'
+import {ShowNotificationCallback} from '../../../types/utils'
+import {withRouter} from 'react-router'
 
 interface Props {
   projectName: string
@@ -21,11 +26,15 @@ interface Props {
   nextStep: () => void
   gettingStartedState: GettingStartedState
   highlighted?: boolean
+  showNotification: ShowNotificationCallback
+  router: ReactRouter.InjectedRouter
 }
 
 interface State {
   extended?: boolean
   greenBackground: boolean
+  editingModelName: boolean
+  modelName: string
 }
 
 class TypeBox extends React.Component<Props,State> {
@@ -36,6 +45,8 @@ class TypeBox extends React.Component<Props,State> {
     this.state = {
       extended: undefined,
       greenBackground: Boolean(props.highlighted),
+      editingModelName: false,
+      modelName: props.model.name,
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -88,7 +99,7 @@ class TypeBox extends React.Component<Props,State> {
             background-color: #E9F9EC;
           }
           .type-box-head {
-            @p: .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .pointer, .cbox;
+            @p: .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .cbox;
             height: 65px;
           }
           .type-box-head.extended {
@@ -104,7 +115,7 @@ class TypeBox extends React.Component<Props,State> {
             @p: .ml12, .flex, .itemsCenter;
           }
           .model-name {
-            @p: .f20, .fw6, .black80;
+            @p: .f20, .fw6, .black80, .pointer;
             letter-spacing: 0.53px;
           }
           .extend-button {
@@ -182,9 +193,9 @@ class TypeBox extends React.Component<Props,State> {
             opacity: 0.75;
           }
         `}</style>
-        <div className={'type-box-head' + (extended ? ' extended' : '')} onClick={this.toggleExtended}>
+        <div className={'type-box-head' + (extended ? ' extended' : '')}>
           <div className='flexy'>
-            <div className='extend-button'>
+            <div className='extend-button' onClick={this.toggleExtended}>
               <Icon
                 src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
                 stroke
@@ -196,7 +207,24 @@ class TypeBox extends React.Component<Props,State> {
               />
             </div>
             <div className='title'>
-              <div className='model-name'>{model.name}</div>
+              {this.state.editingModelName ? (
+                  <input
+                    type='text'
+                    value={this.state.modelName}
+                    className='model-name'
+                    onChange={this.onChangeModelName}
+                    onKeyDown={this.handleKeyDown}
+                    autoFocus
+                  />
+              ) : (
+                <div
+                  className='model-name'
+                  title={model.description || ''}
+                  onDoubleClick={this.editModelName}
+                >
+                  {model.name}
+                </div>
+              )}
               {model.isSystem && (
                 <Info
                   customTip={(
@@ -360,6 +388,48 @@ class TypeBox extends React.Component<Props,State> {
       }
     })
   }
+
+  private editModelName = e => {
+    if (this.props.model.itemCount === 0) {
+      this.setState({editingModelName: true} as State)
+    } else {
+      const {projectName, model} = this.props
+      this.props.router.push(`/${projectName}/schema/${model.name}/edit`)
+    }
+    e.stopPropagation()
+  }
+
+  private handleKeyDown = e => {
+    if (e.keyCode === 13) {
+      this.editModel(this.state.modelName)
+    }
+  }
+
+  private stopEditModelName() {
+    this.setState({editingModelName: false} as State)
+  }
+
+  private editModel = (modelName: string) => {
+    Relay.Store.commitUpdate(
+      new UpdateModelNameMutation({
+        name: modelName,
+        modelId: this.props.model.id,
+      }),
+      {
+        onSuccess: () => {
+          this.stopEditModelName()
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.stopEditModelName()
+        },
+      },
+    )
+  }
+
+  private onChangeModelName = e => {
+    this.setState({modelName: e.target.value} as State)
+  }
 }
 
 const ConnectedTypebox = connect(
@@ -368,7 +438,7 @@ const ConnectedTypebox = connect(
       gettingStartedState: state.gettingStarted.gettingStartedState,
     }
   },
-  { nextStep },
-)(TypeBox)
+  { nextStep, showNotification },
+)(withRouter(TypeBox))
 
 export default ConnectedTypebox

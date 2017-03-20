@@ -75,9 +75,11 @@ export default Relay.createContainer(TypeList, {
         models(first: 100) {
           edges {
             node {
+              itemCount
               id
               name
               isSystem
+              description
               permissions(first: 100) {
                 edges {
                   node {

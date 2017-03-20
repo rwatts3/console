@@ -17,12 +17,15 @@ import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
 import {withRouter} from 'react-router'
 import {idToBeginning} from '../../../utils/utils'
+import UpdateModelMutation from '../../../mutations/UpdateModelMutation'
 
 interface State {
   modelName: string
   showError: boolean
   editing: boolean
   loading: boolean
+  editingDescription: boolean
+  description?: string
 }
 
 interface Props {
@@ -56,14 +59,18 @@ class AddType extends React.Component<Props, State> {
     super(props)
 
     this.state = {
+      // model
       modelName: props.model && props.model.name || '',
+      description: props.model && props.model.description || '',
+      // ui state
       showError: false,
       editing: Boolean(props.model),
       loading: false,
+      editingDescription: false,
     }
   }
   render() {
-    const {showError, editing, loading} = this.state
+    const {showError, editing, loading, editingDescription, description} = this.state
     const {model} = this.props
     let fields
     let permissions
@@ -86,7 +93,7 @@ class AddType extends React.Component<Props, State> {
             @p: .pv16, .flex, .itemsCenter, .bb, .bBlack10, .nowrap;
           }
           .badge {
-            @p: .bgGreen, .white, .relative, .f12, .fw6, .ttu, .top0, .br2;
+            @p: .bgGreen, .white, .relative, .f12, .fw6, .ttu, .top0, .br2, .selfStart;
             padding: 2px 4px;
             left: -4px;
           }
@@ -94,13 +101,18 @@ class AddType extends React.Component<Props, State> {
             @p: .bgBlue;
           }
           .input-wrapper {
-            @p: .flexAuto;
+            @p: .w100, .ml10;
           }
           .name-input {
-            @p: .blue, .f20, .fw6, .ml10;
+            @p: .blue, .f20, .fw6;
             width: calc(100% - 20px);
             line-height: 1.3;
             letter-spacing: 0.53px;
+          }
+          .description-input {
+            @p: .f16, .db, .mt16;
+            line-height: 1.3;
+            margin-left: 1px;
           }
           .fields {
             @p: .w100;
@@ -124,6 +136,15 @@ class AddType extends React.Component<Props, State> {
           .loading {
             @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70, .flex, .itemsCenter, .justifyCenter;
           }
+          .underline {
+            @p: .underline;
+          }
+          .edit-description {
+            @p: .pointer, .mt16;
+          }
+          .description-wrapper {
+            height: 24px;
+          }
         `}</style>
         <div className='header'>
           {editing ? (
@@ -146,6 +167,26 @@ class AddType extends React.Component<Props, State> {
                 Models must begin with an uppercase letter and only contain letters and numbers
               </div>
             )}
+            <div className='description-wrapper'>
+              {(editingDescription || (this.state.description && this.state.description.length > 0)) ? (
+                <input
+                  type='text'
+                  className='description-input'
+                  placeholder='Choose a description...'
+                  autoFocus={!editing}
+                  value={this.state.description}
+                  onChange={this.onDescriptionChange}
+                  onKeyDown={this.handleDescriptionKeyDown}
+                />
+              ) : (
+                <div className='edit-description' onClick={this.editDescription}>
+                  <div className='f16 black40'>
+                    <span className='underline'>add description</span>
+                    <span className='black30'> (optional)</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className='fields'>
@@ -197,35 +238,56 @@ class AddType extends React.Component<Props, State> {
     )
   }
 
-  private handleKeyDown = (e) => {
+  private editDescription = e => {
+    e.stopPropagation()
+    this.setState({editingDescription: true} as State)
+  }
+
+  private stopEditDescription(e) {
+    e.stopPropagation()
+    this.setState({editingDescription: false} as State)
+  }
+
+  private handleDescriptionKeyDown = e => {
+    if (e.keyCode === 13) {
+      this.stopEditDescription(e)
+    }
+  }
+
+  private handleKeyDown = e => {
     if (e.keyCode === 13) {
       this.save()
     }
   }
 
-  private onModelNameChange = (e) => {
+  private onDescriptionChange = e => {
+    this.setState({description: e.target.value} as State)
+  }
+
+  private onModelNameChange = e => {
     this.setState({modelName: e.target.value} as State)
   }
 
   private save = () => {
-    const {modelName, editing} = this.state
+    const {modelName, editing, description} = this.state
     if (modelName != null && !validateModelName(modelName)) {
       return this.setState({showError: true} as State)
     }
 
     this.setState({loading: true} as State, () => {
       if (editing) {
-        this.editModel(modelName)
+        this.editModel(modelName, description)
       } else {
-        this.addModel(modelName)
+        this.addModel(modelName, description)
       }
     })
   }
 
-  private addModel = (modelName: string) => {
+  private addModel = (modelName: string, description: string) => {
     if (modelName) {
       Relay.Store.commitUpdate(
         new AddModelMutation({
+          description,
           modelName,
           projectId: this.props.projectId,
         }),
@@ -251,10 +313,11 @@ class AddType extends React.Component<Props, State> {
     }
   }
 
-  private editModel = (modelName: string) => {
+  private editModel = (modelName: string, description: string) => {
     Relay.Store.commitUpdate(
-      new UpdateModelNameMutation({
+      new UpdateModelMutation({
         name: modelName,
+        description,
         modelId: this.props.model.id,
       }),
       {

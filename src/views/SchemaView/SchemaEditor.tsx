@@ -69,7 +69,7 @@ class SchemaEditor extends React.Component<Props,null> {
             @p: .o100;
           }
           .soon-editable {
-            @p: .absolute, .ma16, .top0, .right0, .ttu, .f14, .fw6, .white30;
+            @p: .absolute, .ma25, .top0, .right0, .ttu, .f14, .fw6, .white30;
           }
         `}</style>
         <Codemirror
