@@ -160,7 +160,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     this.lokka = getLokka(this.props.project.id)
     this.fieldColumnWidths = calculateFieldColumnWidths(window.innerWidth - 300, this.props.fields, this.props.nodes)
     this.state = {
-      shouldLeaveRoute: false,
+      shouldLeaveRoute: true,
     }
   }
 
@@ -186,13 +186,14 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                 shouldLeaveRoute: true,
               } as State,
               () => {
+                this.props.resetDataAndUI()
                 this.props.router.push(nextLocation)
               },
             )
           })
         return false
       } else {
-        this.props.resetDataAndUI()
+        return true
       }
     })
 
@@ -328,6 +329,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                     addNew={this.props.newRowActive}
                     onScroll={(input) => this.props.setScrollTop(input.scrollTop)}
                     newRowActive={this.props.newRowActive}
+                    updateCalled={this.handleUpdateCalled}
 
                     hideNewRow={this.props.hideNewRow.bind(this)}
                     addNewNode={this.addNewNode.bind(this)}
@@ -692,6 +694,12 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           this.props.model,
         )
       })
+  }
+
+  private handleUpdateCalled = () => {
+    if (this.state.shouldLeaveRoute) {
+      this.setState({shouldLeaveRoute: false} as State)
+    }
   }
 }
 

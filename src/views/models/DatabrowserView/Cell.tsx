@@ -61,6 +61,7 @@ interface Props {
   fields: Field[]
 
   loaded: boolean[]
+  onChange?: (e: any) => void
 }
 
 interface State {
@@ -196,6 +197,9 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private onKeyDown = (e: any): void => {
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(e)
+    }
     if (e.shiftKey && e.keyCode !== 9) {
       return
     }

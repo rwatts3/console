@@ -33,6 +33,7 @@ interface Props {
   loading: boolean
   loaded: Immutable.List<boolean>
   writing: boolean
+  updateCalled: () => void
 }
 
 interface State {
@@ -180,6 +181,7 @@ class NewRow extends React.Component<Props, State> {
         modelNamePlural={this.props.model.namePlural}
         reload={() => null}
         rowIndex={-1}
+        onChange={this.props.updateCalled}
       />
     </div>
   )
@@ -225,6 +227,7 @@ class NewRow extends React.Component<Props, State> {
   }
 
   private update = (value: TypedValue, field: Field, callback) => {
+    this.props.updateCalled()
     if (this.props.gettingStarted.isCurrentStep('STEP3_CLICK_ENTER_IMAGEURL') &&
         field.name === 'imageUrl') {
       this.props.nextStep()
