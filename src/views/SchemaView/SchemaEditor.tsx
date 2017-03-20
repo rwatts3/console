@@ -3,6 +3,7 @@ const Codemirror: any = require('react-codemirror')
 import * as Relay from 'react-relay'
 import {Project} from '../../types/types'
 import * as FileSaver from 'file-saver'
+import {sortSchema} from '../../../sortSchema'
 
 interface Props {
   project: Project
@@ -25,6 +26,8 @@ class SchemaEditor extends React.Component<Props,null> {
     require('codemirror-graphql/info')
     require('codemirror-graphql/jump')
     require('codemirror-graphql/mode')
+
+    const sortedSchema = sortSchema(this.props.project.schema, this.props.project.models.edges.map(edge => edge.node))
 
     return (
       <div className='schema-editor'>
@@ -73,7 +76,7 @@ class SchemaEditor extends React.Component<Props,null> {
           }
         `}</style>
         <Codemirror
-          value={this.props.project.schema}
+          value={sortedSchema}
           options={{
             height: 'auto',
             viewportMargin: Infinity,
@@ -108,6 +111,14 @@ export default Relay.createContainer(SchemaEditor, {
       fragment on Project {
         schema
         name
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
       }
     `,
   },

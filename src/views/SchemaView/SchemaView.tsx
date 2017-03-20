@@ -14,7 +14,7 @@ interface Props {
 class NewSchemaView extends React.Component<Props,null> {
   render() {
     const {viewer, location, params} = this.props
-    const editingModelName = params.modelName
+    const editingModelName = location.pathname.endsWith(`${params.modelName}/edit`) ? params.modelName : undefined
     return (
       <div className='schema-view'>
         <style jsx>{`

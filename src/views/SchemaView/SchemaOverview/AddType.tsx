@@ -154,6 +154,9 @@ class AddType extends React.Component<Props, State> {
           .description-wrapper {
             height: 24px;
           }
+          .flexy {
+            @p: .flex, .itemsCenter;
+          }
         `}</style>
         <div className='header'>
           {editing ? (
@@ -234,31 +237,36 @@ class AddType extends React.Component<Props, State> {
           ) : (
             <div className='button cancel' onClick={this.close}>Cancel</div>
           )}
-          {breaking ? (
-            <ConfirmModel
-              onConfirmBreakingChanges={this.save}
-              onResetBreakingChanges={this.reset}
-              initialModelName={this.props.model.name}
-              mutatedModelName={this.state.modelName}
-            />
-          ) : (
-            <Tether
-              style={{
+          <div className='flexy'>
+            {editing && (
+              <div className='button cancel mr16' onClick={this.close}>Cancel</div>
+            )}
+            {breaking ? (
+              <ConfirmModel
+                onConfirmBreakingChanges={this.save}
+                onResetBreakingChanges={this.reset}
+                initialModelName={this.props.model.name}
+                mutatedModelName={this.state.modelName}
+              />
+            ) : (
+              <Tether
+                style={{
                   pointerEvents: 'none',
                 }}
-              steps={[{
-                step: 'STEP1_CREATE_POST_MODEL',
-                title: `Save the Model "Post"`,
-              }]}
-              offsetX={15}
-              offsetY={5}
-              width={300}
-              horizontal='right'
-              key='STEP1_CREATE_POST_MODEL'
-            >
-              <div className='button save' onClick={this.save}>Save</div>
-            </Tether>
-          )}
+                steps={[{
+                  step: 'STEP1_CREATE_POST_MODEL',
+                  title: `Save the Model "Post"`,
+                }]}
+                offsetX={15}
+                offsetY={5}
+                width={300}
+                horizontal='right'
+                key='STEP1_CREATE_POST_MODEL'
+              >
+                <div className='button save' onClick={this.save}>Save</div>
+              </Tether>
+            )}
+          </div>
         </div>
         {loading && (
           <div className='loading'>
