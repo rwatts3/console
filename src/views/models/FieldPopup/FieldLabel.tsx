@@ -5,7 +5,6 @@ import ErrorInfo from './ErrorInfo'
 import Tether from '../../../components/Tether/Tether'
 
 interface State {
-  isEnteringName: boolean
   isHoveringName: boolean
   isEnteringDescription: boolean
   isHoveringDescription: boolean
@@ -23,7 +22,6 @@ interface Props {
 export default class FieldLabel extends React.Component<Props, State> {
 
   state = {
-    isEnteringName: true,
     isHoveringName: false,
     isEnteringDescription: false,
     isHoveringDescription: false,
@@ -31,7 +29,7 @@ export default class FieldLabel extends React.Component<Props, State> {
 
   render() {
 
-    const {isEnteringName, isEnteringDescription} = this.state
+    const {isEnteringDescription} = this.state
     const {name, description, errors, showErrors} = this.props
 
     return (
@@ -73,8 +71,6 @@ export default class FieldLabel extends React.Component<Props, State> {
           }
 
         `}</style>
-        {isEnteringName || name.length === 0 ?
-          (
             <div className='flex itemsCenter pr38 edit-name'>
               <Tether
                 steps={[{
@@ -91,12 +87,8 @@ export default class FieldLabel extends React.Component<Props, State> {
                   autoFocus={true}
                   placeholder='Select a name ...'
                   value={name}
-                  onKeyDown={this.handleKeyDownOnFieldName}
                   onChange={(e: any) => {
                     this.props.onChangeName(e.target.value)
-                    this.setState({
-                      isEnteringName: true,
-                    } as State)
                   }}
                   onFocus={() =>
                     this.setState({
@@ -113,30 +105,6 @@ export default class FieldLabel extends React.Component<Props, State> {
                 )}
               </div>
             </div>
-          )
-          :
-          (
-            <div
-              className='flex ph25 itemsCenter pointer edit-name edit-name-value relative'
-              onMouseEnter={() => this.setState({isHoveringName: true} as State)}
-              onMouseLeave={() => this.setState({isHoveringName: false} as State)}
-              onClick={() => this.setState({
-                isEnteringName: true,
-                isHoveringName: false,
-              } as State)}
-            >
-              <div className='f38 fw3 black80'>{name}</div>
-              {this.state.isHoveringName && (
-                <Icon
-                  className='ml6'
-                  src={require('../../../assets/icons/edit_project_name.svg')}
-                  width={20}
-                  height={20}
-                />
-              )}
-            </div>
-          )
-        }
         {isEnteringDescription ?
           (
             <div className='flex itemsCenter mv25 bbox edit-description'>
@@ -148,11 +116,6 @@ export default class FieldLabel extends React.Component<Props, State> {
                 onKeyDown={this.handleKeyDownOnFieldDescription}
                 onChange={(e: any) =>
                   this.props.onChangeDescription(e.target.value)
-                }
-                onFocus={() =>
-                  this.setState({
-                    isEnteringName: false,
-                  } as State)
                 }
               />
             </div>
@@ -195,18 +158,6 @@ export default class FieldLabel extends React.Component<Props, State> {
         }
       </div>
     )
-  }
-
-  private handleKeyDownOnFieldName = (e) => {
-    if (e.keyCode === 13) {
-      this.setState({
-        isEnteringName: false,
-      } as State)
-    } else if (e.keyCode === 27) {
-      this.setState({
-        isEnteringName: false,
-      } as State)
-    }
   }
 
   private handleKeyDownOnFieldDescription = (e) => {

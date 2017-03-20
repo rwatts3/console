@@ -41,6 +41,8 @@ import CreateRelationPopup from './views/RelationsPopup/CreateRelationPopup'
 import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
 import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
 import ImportSchemaView from './views/ImportSchemaView/ImportSchemaView'
+import NewSchemaView from './views/SchemaView/SchemaView'
+import SchemaViewer from './views/SchemaView/SchemaViewer'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -62,8 +64,25 @@ const NodeQuery = {
   `,
 }
 
+/**
+ * Looks in the route and in parent routes for a loadingColor property
+ * @param routes
+ * @returns {string}
+ */
+function getLoadingColor(routes) {
+  const stack = routes.slice()
+  let color = null
+  while (stack.length > 0 && color === null) {
+    const route = stack.pop()
+    if (route.hasOwnProperty('loadingColor')) {
+      color = route['loadingColor']
+    }
+  }
+  return color !== null ? color : '#8989B1'
+}
+
 /* eslint-disable react/prop-types */
-const render = ({error, props, routerProps, element}) => {
+const render = ({error, props, routerProps, element, ...rest}) => {
   if (error) {
     const err = error.source.errors[0]
 
@@ -96,9 +115,16 @@ const render = ({error, props, routerProps, element}) => {
     return React.cloneElement(element, props)
   }
 
+  const color = getLoadingColor(routerProps.routes)
+
   return (
-    <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      <Loading color='#8989B1'/>
+    <div className='loader'>
+      <style jsx>{`
+        .loader {
+          @p: .top0, .left0, .right0, .bottom0, .fixed, .flex, .justifyCenter, .itemsCenter, .z999;
+        }
+      `}</style>
+      <Loading color={color} />
     </div>
   )
 }
@@ -113,7 +139,8 @@ export default (
     <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
-    <Redirect from='settings' to='settings/general' />
+      <IndexRedirect to='schema'/>
+      <Redirect from='settings' to='settings/general' />
       <Route path='settings' component={Settings} render={render}>
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
@@ -129,6 +156,22 @@ export default (
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>
         <IndexRedirect to='settings'/>
       </Route>
+      <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>
+        <Route path='all' component={null} render={render} />
+        <Route path='types' component={null} render={render} />
+        <Route path='interfaces' component={null} render={render} />
+        <Route path='enums' component={null} render={render} />
+        <Route path='relations'>
+          <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
+          <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
+        </Route>
+        <Route path=':modelName'>
+          <Route path='edit' component={null} render={render} />
+          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />
+          <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
+        </Route>
+      </Route>
+      <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
       <Route path='models'>
         <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
         <Route path=':modelName/schema' component={SchemaView} queries={ViewerQuery} render={render}>
@@ -157,7 +200,6 @@ export default (
       <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
         <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
       </Route>
-      <IndexRedirect to='models'/>
     </Route>
   </Route>
 )

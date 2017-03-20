@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const cssnano = require('cssnano')
 const path = require('path')
 const cheerio = require('cheerio')
@@ -160,6 +161,7 @@ module.exports = {
       context: '.',
       manifest: require('./dll/vendor-manifest.json'),
     }),
+    // new BundleAnalyzerPlugin(),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],

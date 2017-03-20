@@ -19,6 +19,7 @@ interface Props {
   onMouseEnter: () => any
   onMouseLeave: () => any
   onClick?: (e: any, step: TetherStep) => void
+
   style: any
 }
 

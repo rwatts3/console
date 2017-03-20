@@ -120,7 +120,7 @@ describe('async data actions', () => {
         itemCount: 5,
         description: '',
         isSystem: false,
-        permissions: [],
+        permissions: {edges: []},
         permissionSchema: '',
         permissionQueryArguments: [],
       },
@@ -142,7 +142,7 @@ describe('async data actions', () => {
     unconnectedReverseRelationFieldsFrom: [],
     description: '',
     isSystem: false,
-    permissions: [],
+    permissions: {edges: []},
     permissionSchema: '',
     permissionQueryArguments: [],
   }

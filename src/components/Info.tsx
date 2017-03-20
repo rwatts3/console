@@ -1,50 +1,104 @@
 import * as React from 'react'
 
-const Info = (props) => (
-  <div className='info'>
-    <style jsx>{`
+interface Props {
+  children?: JSX.Element
+  slim?: boolean
+  bright?: boolean
+  customTip?: JSX.Element
+  offsetX?: number
+  width?: number | string
+  cursorOffset?: number
+  padding?: number
+}
+
+const Info = (props: Props) => {
+  let tooltipStyle = {
+    transform: `translateX(${props.offsetX ? (props.offsetX + 'px') : 0})`,
+  }
+  if (props.width) {
+    tooltipStyle['width'] = props.width
+  }
+
+  let tooltipContentStyle = {}
+  if (props.padding) {
+    tooltipContentStyle['padding'] = props.padding
+  }
+
+  const cursorOffset = -props.offsetX + (props.cursorOffset ? props.cursorOffset : 0)
+
+  return (
+    <div
+      className='info'
+    >
+      <style jsx>{`
       .question-mark {
-        @inherit: .bgBlack10, .flex, .itemsCenter, .justifyCenter, .black40, .f12, .fw6, .br100, .pointer;
+        @p: .bgBlack10, .flex, .itemsCenter, .justifyCenter, .black40, .f12, .fw6, .br100, .pointer, .ml10;
         width: 18px;
         height: 18px;
       }
+      .question-mark.bright {
+        @p: .bgBlue, .white;
+      }
       .tooltip {
-        @inherit: .dn, .absolute;
+        @p: .dn, .absolute;
         z-index: 20;
         width: 250px;
         padding-top: 5px;
         left: -50px;
       }
+      .tooltip.slim {
+        width: 200px;
+      }
       .tooltip-content {
-        @inherit: .br2, .bgWhite, .pa16, .black50, .f14, .fw4, .relative, .buttonShadow;
-        &:before {
-          @inherit: .absolute, .bgWhite;
-          content: "";
-          top: -4px;
-          left: 55px;
-          transform: rotate(45deg);
-          width: 8px;
-          height: 8px;
-        }
+        @p: .br2, .bgWhite, .pa16, .black50, .f14, .fw4, .relative, .buttonShadow;
+      }
+      .tooltip-content .before {
+        @p: .absolute, .bgWhite;
+        content: "";
+        top: -4px;
+        left: 65px;
+        transform: rotate(45deg);
+        width: 8px;
+        height: 8px;
       }
       .info {
-        @inherit: .ml10, .relative;
+        @p: .relative;
         &:hover .tooltip {
-          @inherit: .db;
+          @p: .db;
         }
         &:hover .question-mark {
-          @inherit: .bgBlue, .white;
+          @p: .bgBlue, .white;
         }
+      }
+      span {
+        @p: .relative;
+        left: 1px;
       }
 
     `}</style>
-    <div className='question-mark'>?</div>
-    <div className='tooltip'>
-      <div className='tooltip-content'>
-        {props.children}
+      {props.customTip ? (
+          props.customTip
+        ) : (
+          <div className={'question-mark' + (Boolean(props.bright) ? ' bright' : '')}>
+            <span>?</span>
+          </div>
+        )}
+      <div
+        className={'tooltip' + (Boolean(props.slim) ? ' slim' : '')}
+        style={tooltipStyle}
+      >
+        <div className='tooltip-content' style={tooltipContentStyle}>
+          <div
+            className='before'
+            style={{
+              transform: `translateX(${cursorOffset}px) rotate(45deg)`,
+            }}
+          />
+          {props.children}
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Info

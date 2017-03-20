@@ -3,6 +3,7 @@ import * as Relay from 'react-relay'
 interface Props {
   projectId: string
   modelName: string
+  description?: string
 }
 
 export default class AddModelMutation extends Relay.Mutation<Props, {}> {
@@ -37,6 +38,7 @@ export default class AddModelMutation extends Relay.Mutation<Props, {}> {
     return {
       projectId: this.props.projectId,
       modelName: this.props.modelName,
+      description: this.props.description,
     }
   }
 }

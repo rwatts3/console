@@ -5,7 +5,6 @@ import {isScalar} from '../utils/graphql'
 interface Props {
   modelId: string
   projectId: string
-  fields: RelayConnection<Field>
 }
 
 export interface RelationData {
@@ -30,8 +29,6 @@ export default class DeleteModelMutation extends Relay.Mutation<Props, {}> {
   }
 
   getConfigs () {
-    const {fields} = this.props
-
     const modelDelete = {
       type: 'NODE_DELETE',
       parentName: 'project',
