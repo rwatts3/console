@@ -197,30 +197,15 @@ export class SideNav extends React.PureComponent<Props, State> {
                   size={24}
                   active={location.pathname.includes(`${this.props.params.projectName}/schema`)}
                 />
-                <Tether
-                  steps={[{
-                    step: 'STEP3_CLICK_DATA_BROWSER',
-                    title: 'Switch to Data Browser',
-                    description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
-                  }]}
-                  width={280}
-                  offsetX={10}
-                  offsetY={15}
-                  zIndex={2000}
-                  style={{
-                    pointerEvents: 'none',
-                  }}
-                >
-                  <SideNavElement
-                    active={location.pathname.endsWith('databrowser')}
-                    link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
-                    iconSrc={require('assets/icons/databrowser.svg')}
-                    text='Data'
-                    size={16}
-                    minimalHighlight
-                    onClick={this.handleDatabrowserClick}
-                  />
-                </Tether>
+                <SideNavElement
+                  active={location.pathname.endsWith('databrowser')}
+                  link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
+                  iconSrc={require('assets/icons/databrowser.svg')}
+                  text='Data'
+                  size={16}
+                  minimalHighlight
+                  onClick={this.handleDatabrowserClick}
+                />
                 {location.pathname.endsWith('databrowser') && (
                   this.renderModels()
                 )}
@@ -281,12 +266,6 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private handleDatabrowserClick = () => {
     if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
-      this.props.nextStep()
-    }
-  }
-
-  private handlePostModelClick = () => {
-    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_POST_MODEL')) {
       this.props.nextStep()
     }
   }
@@ -427,29 +406,9 @@ export class SideNav extends React.PureComponent<Props, State> {
                     [$p.bgWhite07]: modelActive(model),
                   },
                 )}
-                onClick={this.handlePostModelClick}
               >
                 <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
-                  {model.name === 'Post' ? (
-                    <Tether
-                      steps={[{
-                        step: 'STEP3_CLICK_POST_MODEL',
-                        title: 'Select the "Post" Model',
-                      description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
-                      }]}
-                      width={280}
-                      offsetX={-5}
-                      offsetY={1}
-                      zIndex={2000}
-                      style={{
-                        pointerEvents: 'none',
-                      }}
-                    >
-                      <div>{model.name}</div>
-                    </Tether>
-                  ) : (
-                    <div>{model.name}</div>
-                  )}
+                  <div>{model.name}</div>
                   {model.isSystem && (
                     <div
                       className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}

@@ -83,7 +83,7 @@ class AddType extends React.Component<Props, State> {
       permissions = model.permissions.edges.map(edge => edge.node)
     }
 
-    const breaking = model.itemCount > 0 && this.state.modelName !== this.props.model.name
+    const breaking = Boolean(model) && model.itemCount > 0 && this.state.modelName !== this.props.model.name
 
     return (
       <div className={'add-type' + (Boolean(model) ? ' editing' : '')}>
@@ -248,14 +248,13 @@ class AddType extends React.Component<Props, State> {
                 }}
               steps={[{
                 step: 'STEP1_CREATE_POST_MODEL',
-                title: `Create a Model called "Post"`,
-                description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
+                title: `Save the Model "Post"`,
               }]}
               offsetX={15}
-              offsetY={-5}
-              width={351}
+              offsetY={5}
+              width={300}
               horizontal='right'
-              key='STEP3_CLICK_ADD_NODE2'
+              key='STEP1_CREATE_POST_MODEL'
             >
               <div className='button save' onClick={this.save}>Save</div>
             </Tether>

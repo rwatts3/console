@@ -9,7 +9,6 @@ export type Step =
   'STEP2_CLICK_CONFIRM_IMAGEURL' |
   'STEP2_CREATE_FIELD_DESCRIPTION' |
   'STEP3_CLICK_DATA_BROWSER' |
-  'STEP3_CLICK_POST_MODEL' |
   'STEP3_CLICK_ADD_NODE1' |
   'STEP3_CLICK_ENTER_IMAGEURL' |
   'STEP3_CLICK_ENTER_DESCRIPTION' |
@@ -51,7 +50,6 @@ export class GettingStartedState {
     'STEP2_CLICK_CONFIRM_IMAGEURL',
     'STEP2_CREATE_FIELD_DESCRIPTION',
     'STEP3_CLICK_DATA_BROWSER',
-    'STEP3_CLICK_POST_MODEL',
     'STEP3_CLICK_ADD_NODE1',
     'STEP3_CLICK_ENTER_IMAGEURL',
     'STEP3_CLICK_ENTER_DESCRIPTION',
@@ -115,7 +113,6 @@ export class GettingStartedState {
       'STEP2_CREATE_FIELD_DESCRIPTION': () => ({ index: 2, total: 2, done: 1 }),
 
       'STEP3_CLICK_DATA_BROWSER': () => ({ index: 3, total: 2, done: 0 }),
-      'STEP3_CLICK_POST_MODEL': () => ({ index: 3, total: 2, done: 0 }),
       'STEP3_CLICK_ADD_NODE1': () => ({ index: 3, total: 2, done: 0 }),
       'STEP3_CLICK_ENTER_IMAGEURL': () => ({ index: 3, total: 2, done: 0 }),
       'STEP3_CLICK_ENTER_DESCRIPTION': () => ({ index: 3, total: 2, done: 0 }),

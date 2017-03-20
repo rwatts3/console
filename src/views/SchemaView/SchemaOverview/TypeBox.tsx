@@ -247,13 +247,46 @@ class TypeBox extends React.Component<Props,State> {
             </div>
           </div>
           <div className='flexy'>
-            <Link to={`/${projectName}/models/${model.name}/databrowser`} className='simple-button'>
-              <Icon
-                src={require('assets/icons/databrowser.svg')}
-                color={$v.gray30}
-              />
-              <span>Data</span>
-            </Link>
+            {model.name === 'Post' ? (
+              <Tether
+                steps={[{
+                  step: 'STEP3_CLICK_DATA_BROWSER',
+                  title: 'Switch to Data Browser',
+                  description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
+                }]}
+                width={280}
+                offsetX={10}
+                offsetY={-5}
+                zIndex={2000}
+                style={{
+                  pointerEvents: 'none',
+                }}
+              >
+                  <Link
+                    to={`/${projectName}/models/${model.name}/databrowser`}
+                    className='simple-button'
+                    onClick={this.handleDatabrowserClick}
+                  >
+                    <Icon
+                      src={require('assets/icons/databrowser.svg')}
+                      color={$v.gray30}
+                    />
+                    <span>Data</span>
+                  </Link>
+                </Tether>
+            ) : (
+              <Link
+                to={`/${projectName}/models/${model.name}/databrowser`}
+                className='simple-button'
+                onClick={this.handleDatabrowserClick}
+              >
+                <Icon
+                  src={require('assets/icons/databrowser.svg')}
+                  color={$v.gray30}
+                />
+                <span>Data</span>
+              </Link>
+            )}
             {!model.isSystem && (
               <Link
                 className='settings'
@@ -371,6 +404,12 @@ class TypeBox extends React.Component<Props,State> {
         </div>
       </div>
     )
+  }
+
+  private handleDatabrowserClick = () => {
+    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
+      this.props.nextStep()
+    }
   }
 
   private handleCreateFieldClick = () => {
