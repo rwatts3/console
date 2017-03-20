@@ -47,6 +47,7 @@ import {throttle} from 'lodash'
 import {LightCell} from './LightCell'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import {idToBeginning} from '../../../utils/utils'
 
 const classes: any = require('./DatabrowserView.scss')
 const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
@@ -771,6 +772,7 @@ const MappedDatabrowserView = mapProps({
   fields: (props) => (
     props.viewer.model.fields.edges
       .map((edge) => edge.node)
+      .sort(idToBeginning)
   ),
   model: (props) => props.viewer.model,
   project: (props) => props.viewer.project,

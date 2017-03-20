@@ -18,6 +18,7 @@ import {nextCell} from '../../../actions/databrowser/ui'
 import {GridPosition} from '../../../types/databrowser/ui'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import {idToBeginning} from '../../../utils/utils'
 
 interface Props {
   model: Model
@@ -60,6 +61,7 @@ class NewRow extends React.Component<Props, State> {
   getFields = () => {
     return this.props.model.fields.edges
       .map((edge) => edge.node)
+      .sort(idToBeginning)
   }
 
   componentDidMount() {
