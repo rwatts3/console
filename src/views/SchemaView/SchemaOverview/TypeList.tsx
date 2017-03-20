@@ -47,6 +47,7 @@ class TypeList extends React.Component<Props,null> {
           {models.map(model => (
             model.name === editingModelName ? (
               <AddType
+                key={model.id}
                 projectId={this.props.project.id}
                 model={model}
               />

@@ -297,7 +297,6 @@ class ModelHeader extends React.Component<Props, State> {
           new DeleteModelMutation({
             projectId: this.props.project.id,
             modelId: this.props.model.id,
-            fields: this.props.model.fields,
           }),
           {
             onSuccess: () => {

@@ -18,14 +18,17 @@ import Tether from '../../../components/Tether/Tether'
 import {withRouter} from 'react-router'
 import {idToBeginning} from '../../../utils/utils'
 import UpdateModelMutation from '../../../mutations/UpdateModelMutation'
+import ConfirmModel from './ConfirmModel'
+import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
 
 interface State {
   modelName: string
+  description?: string
   showError: boolean
   editing: boolean
   loading: boolean
   editingDescription: boolean
-  description?: string
+  showDeletePopup: boolean
 }
 
 interface Props {
@@ -67,10 +70,11 @@ class AddType extends React.Component<Props, State> {
       editing: Boolean(props.model),
       loading: false,
       editingDescription: false,
+      showDeletePopup: false,
     }
   }
   render() {
-    const {showError, editing, loading, editingDescription, description} = this.state
+    const {showError, editing, loading, editingDescription, description, showDeletePopup} = this.state
     const {model} = this.props
     let fields
     let permissions
@@ -78,6 +82,8 @@ class AddType extends React.Component<Props, State> {
       fields = model.fields.edges.map(edge => edge.node).sort(idToBeginning)
       permissions = model.permissions.edges.map(edge => edge.node)
     }
+
+    const breaking = model.itemCount > 0 && this.state.modelName !== this.props.model.name
 
     return (
       <div className={'add-type' + (Boolean(model) ? ' editing' : '')}>
@@ -118,7 +124,7 @@ class AddType extends React.Component<Props, State> {
             @p: .w100;
           }
           .footer {
-            @p: .flex, .justifyBetween, .bgBlack04, .pa16, .bt, .bBlack10;
+            @p: .flex, .justifyBetween, .bgBlack04, .pa16, .bt, .bBlack10, .relative;
           }
           .button {
             @p: .f14, .pointer, .br2;
@@ -129,6 +135,9 @@ class AddType extends React.Component<Props, State> {
           }
           .button.cancel {
             @p: .black60;
+          }
+          .button.delete {
+            @p: .red;
           }
           .error {
             @p: .orange, .f14, .ml10;
@@ -210,24 +219,47 @@ class AddType extends React.Component<Props, State> {
           )}
         </div>
         <div className='footer'>
-          <div className='button cancel' onClick={this.close}>Cancel</div>
-          <Tether
-            style={{
-                pointerEvents: 'none',
-              }}
-            steps={[{
-              step: 'STEP1_CREATE_POST_MODEL',
-              title: `Create a Model called "Post"`,
-              description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
-            }]}
-            offsetX={15}
-            offsetY={-5}
-            width={351}
-            horizontal='right'
-            key='STEP3_CLICK_ADD_NODE2'
-          >
-            <div className='button save' onClick={this.save}>Save</div>
-          </Tether>
+          {editing ? (
+            showDeletePopup ? (
+              <ConfirmModel
+                delete
+                onConfirmDeletion={this.delete}
+                onCancel={this.hideDeletePopup}
+                initialModelName={this.props.model.name}
+                mutatedModelName={this.state.modelName}
+              />
+            ) : (
+              <div className='button delete' onClick={this.showDeletePopup}>Delete</div>
+            )
+          ) : (
+            <div className='button cancel' onClick={this.close}>Cancel</div>
+          )}
+          {breaking ? (
+            <ConfirmModel
+              onConfirmBreakingChanges={this.save}
+              onResetBreakingChanges={this.reset}
+              initialModelName={this.props.model.name}
+              mutatedModelName={this.state.modelName}
+            />
+          ) : (
+            <Tether
+              style={{
+                  pointerEvents: 'none',
+                }}
+              steps={[{
+                step: 'STEP1_CREATE_POST_MODEL',
+                title: `Create a Model called "Post"`,
+                description: 'Models represent a certain type of data. To manage our Instagram posts, the "Post" model will have an image URL and a description.', // tslint:disable-line
+              }]}
+              offsetX={15}
+              offsetY={-5}
+              width={351}
+              horizontal='right'
+              key='STEP3_CLICK_ADD_NODE2'
+            >
+              <div className='button save' onClick={this.save}>Save</div>
+            </Tether>
+          )}
         </div>
         {loading && (
           <div className='loading'>
@@ -236,6 +268,18 @@ class AddType extends React.Component<Props, State> {
         )}
       </div>
     )
+  }
+
+  private showDeletePopup = () => {
+    this.setState({showDeletePopup: true} as State)
+  }
+
+  private hideDeletePopup = () => {
+    this.setState({showDeletePopup: false} as State)
+  }
+
+  private reset = () => {
+    this.setState({modelName: this.props.model.name} as State)
   }
 
   private editDescription = e => {
@@ -280,6 +324,26 @@ class AddType extends React.Component<Props, State> {
       } else {
         this.addModel(modelName, description)
       }
+    })
+  }
+
+  private delete = () => {
+    this.setState({loading: true} as State, () => {
+      Relay.Store.commitUpdate(
+        new DeleteModelMutation({
+          projectId: this.props.projectId,
+          modelId: this.props.model.id,
+        }),
+        {
+          onSuccess: () => {
+            this.close()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({loading: false} as State)
+          },
+        },
+      )
     })
   }
 
