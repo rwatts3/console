@@ -73,6 +73,12 @@ class AddType extends React.Component<Props, State> {
       showDeletePopup: false,
     }
   }
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleEsc)
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEsc)
+  }
   render() {
     const {showError, editing, loading, editingDescription, description, showDeletePopup} = this.state
     const {model} = this.props
@@ -277,6 +283,12 @@ class AddType extends React.Component<Props, State> {
     )
   }
 
+  private handleEsc = e => {
+    if (e.keyCode === 27) {
+      this.close()
+    }
+  }
+
   private showDeletePopup = () => {
     this.setState({showDeletePopup: true} as State)
   }
@@ -321,7 +333,7 @@ class AddType extends React.Component<Props, State> {
 
   private save = () => {
     const {modelName, editing, description} = this.state
-    if (modelName != null && !validateModelName(modelName)) {
+    if (modelName !== null && !validateModelName(modelName)) {
       return this.setState({showError: true} as State)
     }
 
