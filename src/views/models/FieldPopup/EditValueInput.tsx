@@ -37,25 +37,28 @@ export default class EditValueInput extends React.Component<Props, State> {
           .container {
             @p: .bgWhite;
           }
-          .valueInputField {
-            @p: .f16, .w100;
-            color: rgba(42,127,211,1);
-          }
-
           .edit-value {
+            @p: .flex, .justifyCenter;
             height: 26px;
           }
-
+          .relative-box {
+            @p: .relative;
+          }
         `}</style>
         <style jsx global>{`
           .field-popup .edit-value input {
             background: none;
           }
+          .field-popup .edit-value > div > div > div:nth-of-type(2) {
+            border: none !important;
+          }
         `}</style>
         {isEnteringValue ?
           (
-            <div className='flex itemsCenter bbox edit-value'>
-              {this.getInput()}
+            <div className='edit-value'>
+              <div className='relative-box'>
+                {this.getInput()}
+              </div>
             </div>
           )
           :
