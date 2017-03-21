@@ -292,18 +292,14 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
   private didSelectLeftModel = (model: Model) => {
     const {relation} = this.props.viewer
-
     this.setState(
       {
         leftSelectedModel: model,
       } as State,
       () => {
-        this.setState({
-          fieldOnRightModelName: this.rightFieldName(),
-          fieldOnLeftModelName: this.leftFieldName(),
-          leftModelIsBreakingChange: relation ? relation.leftModel.name !== model.name : false,
-        } as State)
-      })
+        this.updateFieldNames(model)
+      },
+    )
   }
 
   private didSelectRightModel = (model: Model) => {
@@ -314,12 +310,39 @@ class CreateRelationPopup extends React.Component<Props, State> {
         rightSelectedModel: model,
       } as State,
       () => {
-        this.setState({
-          fieldOnLeftModelName: this.leftFieldName(),
+       this.updateFieldNames(model)
+      },
+    )
+  }
+
+  private updateFieldNames = (model: Model) => {
+    this.setState(
+      state => {
+        const {relation} = this.props.viewer
+        let relationName = state.relationName
+        const relationNames = this.props.viewer.project.relations.edges.map(edge => edge.node.name)
+        let counter = 0
+        if (state.leftSelectedModel && state.rightSelectedModel) {
+          relationName = `${state.leftSelectedModel.name}On${state.rightSelectedModel.name}`
+          if (relationNames.includes(relationName)) {
+            counter = 1
+            while (relationNames.includes(`${relationName}${counter}`)) {
+              counter++
+            }
+          }
+        }
+        if (counter > 0) {
+          relationName += counter
+        }
+        return {
+          ...state,
           fieldOnRightModelName: this.rightFieldName(),
-          rightModelIsBreakingChange: relation ? relation.rightModel.name !== model.name : false,
-        } as State)
-      })
+          fieldOnLeftModelName: this.leftFieldName(),
+          leftModelIsBreakingChange: relation ? relation.leftModel.name !== model.name : false,
+          relationName,
+        }
+      },
+    )
   }
 
   private didSelectCardinality = (cardinality: Cardinality) => {
@@ -678,6 +701,13 @@ export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
         }
         project: projectByName(projectName: $projectName) {
           id
+          relations(first: 1000) {
+            edges {
+              node {
+                name
+              }
+            }
+          }
           models(first: 1000) {
             edges {
               node {
