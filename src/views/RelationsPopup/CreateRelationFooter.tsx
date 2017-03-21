@@ -84,10 +84,13 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
     return (
       <div className='flex itemsCenter'>
         <style jsx={true}>{`
-            .toggleDisplayStateButton {
-              @inherit: .blue, .f14, .fw6, .ttu, .pointer;
-            }
-          `}</style>
+          .toggleDisplayStateButton {
+            @inherit: .blue, .f14, .fw6, .ttu, .pointer;
+          }
+          .saveButton {
+            @inherit: .white, .bgGreen, .pv10, .ph16, .f16, .pointer, .br2;
+          }
+        `}</style>
         <div
           className='toggleDisplayStateButton'
           onClick={() => this.props.switchDisplayState('SET_MUTATIONS')}
@@ -101,6 +104,21 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
           height={12}
           rotate={180}
         />
+        <div
+          className={`saveButton ml25 ${!this.props.canSubmit && 'o50'}`}
+          onClick={
+            this.props.canSubmit &&
+            (this.props.isEditingExistingRelation ?
+              () => this.props.onClickEditRelation()
+              :
+              () => this.props.onClickCreateRelation()
+            )
+          }
+        >
+          {this.props.isEditingExistingRelation ?
+            'Update Relation' : 'Create Relation'
+          }
+        </div>
       </div>
     )
   }
@@ -109,15 +127,14 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
     return (
       <div className='flex itemsCenter'>
         <style jsx={true}>{`
-            .toggleDisplayStateButton {
-              @inherit: .blue, .f14, .fw6, .ttu, .pointer;
-            }
-            .saveButton {
-              @inherit: .white, .bgGreen, .pv10, .ph16, .f16, .pointer, .br2;
-            }          `
-        }</style>
+          .toggleDisplayStateButton {
+            @inherit: .blue, .f14, .fw6, .ttu, .pointer;
+          }
+          .saveButton {
+            @inherit: .white, .bgGreen, .pv10, .ph16, .f16, .pointer, .br2;
+          }
+        `}</style>
         {this.props.displayState === 'SET_MUTATIONS' as RelationPopupDisplayState ?
-
           <div className={`flex itemsCenter ${this.props.displayConfirmBreakingChangesPopup && 'mr96'}`}>
             <Icon
               className='mr6'
@@ -132,9 +149,7 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
               Define Relations
             </div>
           </div>
-
           :
-
           <div className={`flex itemsCenter ${this.props.displayConfirmBreakingChangesPopup && 'mr96'}`}>
             <div
               className='toggleDisplayStateButton'
@@ -150,7 +165,6 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
               rotate={180}
             />
           </div>
-
         }
         <div
           className={`saveButton ml25 ${!this.props.canSubmit && 'o50'}`}

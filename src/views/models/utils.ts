@@ -125,12 +125,21 @@ export function calculateFieldColumnWidths (width: number,
   const widths = fields.mapToObject(
     (field) => field.name,
     (field) => {
+      switch (field.name) {
+        case 'id':
+          return 220
+        case 'createdAt':
+        case 'updatedAt':
+          return 180
+      }
+
       const cellWidths = nodes
       .filter(node => !!node)
       .map(node => node.get(field.name))
       .map(value => valueToString(value, field, false))
       .map(str => calculateSize(str, cellFontOptions).width + 41)
       .toArray()
+
       const headerWidth = calculateSize(`${field.name} ${getFieldTypeName(field)}`, headerFontOptions).width + 90
 
       const maxWidth = Math.max(...cellWidths, headerWidth)
@@ -151,7 +160,11 @@ export function calculateFieldColumnWidths (width: number,
   const totalWidth = fields.reduce((sum, {name}) => sum + widths[name], 0)
   const fieldWidth = width - 34 - 250
   if (totalWidth < fieldWidth) {
-    fields.forEach(({name}) => widths[name] = (widths[name] / totalWidth) * fieldWidth)
+    fields.forEach(({name}) => {
+      if (!['id', 'createdAt', 'updatedAt'].includes(name)) {
+        widths[name] = (widths[name] / totalWidth) * fieldWidth
+      }
+    })
   }
   return widths
 }

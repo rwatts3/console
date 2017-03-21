@@ -82,10 +82,11 @@ export default class ConfirmPopup extends React.Component<Props, State> {
           </div>
         </div>
         <div className='pa25 f16 black50 bb bBlack10'>
-          Your changes will break Relations between
+          This change might break queries or mutations for this relation between
           <span className='fw6'> {this.props.leftModelName} </span>
           and
           <span className='fw6'> {this.props.rightModelName}</span>
+          {' in your applications.'}
         </div>
         {this.props.red ? this.generateFooterForDeletion() : this.generateFooterForBreakingChanges()}
       </div>

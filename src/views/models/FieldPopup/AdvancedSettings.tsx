@@ -117,8 +117,11 @@ export default class AdvancedSettings extends React.Component<Props, State> {
             margin-top: -125px;
             right: 10px;
           }
+          .migration-input-wrapper {
+            @p: .pa38, .flex, .justifyCenter;
+          }
           .migration-input {
-            @p: .pa38;
+            @p: .relative;
           }
         `}
         </style>
@@ -128,6 +131,9 @@ export default class AdvancedSettings extends React.Component<Props, State> {
           }
           .field-popup .migration-input input {
             background: none;
+          }
+          .migration-input-wrapper .migration-input > div > div:nth-of-type(2) {
+            border: none !important;
           }
         `}</style>
         <div className='is-required'>
@@ -177,8 +183,10 @@ export default class AdvancedSettings extends React.Component<Props, State> {
               )*/}
             </div>
             {editingMigration ? (
-              <div className='migration-input'>
-                {this.getMigrationInput()}
+              <div className='migration-input-wrapper'>
+                <div className='migration-input'>
+                  {this.getMigrationInput()}
+                </div>
               </div>
             ) : (
               <div
