@@ -185,18 +185,20 @@ export default class BaseSettings extends React.Component<Props,State> {
   }
 
   private handleChange = (enumValues: string[]) => {
-    const newEnum = enumValues[enumValues.length - 1]
-    const newFirstChar = newEnum[0]
-    const firstCharNumber = parseInt(newFirstChar, 10)
-    if (newFirstChar === newFirstChar.toLowerCase() || !isNaN(firstCharNumber)) {
-      const proposal1 = newEnum[0].toUpperCase() + newEnum.slice(1, newEnum.length)
-      const proposal2 = newEnum.toUpperCase()
-      this.props.showNotification({
-        message: `${newEnum} is no valid enum value, the first character must be an uppercase letter.`
-        + ` Try '${proposal1}' or '${proposal2}'.`,
-        level: 'error',
-      })
-      return
+    if (enumValues.length > 0) {
+      const newEnum = enumValues[enumValues.length - 1]
+      const newFirstChar = newEnum[0]
+      const firstCharNumber = parseInt(newFirstChar, 10)
+      if (newFirstChar === newFirstChar.toLowerCase() || !isNaN(firstCharNumber)) {
+        const proposal1 = newEnum[0].toUpperCase() + newEnum.slice(1, newEnum.length)
+        const proposal2 = newEnum.toUpperCase()
+        this.props.showNotification({
+          message: `${newEnum} is no valid enum value, the first character must be an uppercase letter.`
+          + ` Try '${proposal1}' or '${proposal2}'.`,
+          level: 'error',
+        })
+        return
+      }
     }
     this.props.onChangeEnumValues(enumValues)
   }
