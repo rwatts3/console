@@ -304,7 +304,6 @@ class CreateRelationPopup extends React.Component<Props, State> {
 
   private didSelectRightModel = (model: Model) => {
     const {relation} = this.props.viewer
-
     this.setState(
       {
         rightSelectedModel: model,
