@@ -40,6 +40,8 @@ interface Props {
 
   selectedCell: GridPosition
   params: any
+
+  updateCalled: () => void
 }
 
 export default class InfiniteTable extends React.Component<Props, {}> {
@@ -84,6 +86,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 deleteSelectedNodes={this.props.deleteSelectedNodes}
                 ref={registerChild}
                 params={this.props.params}
+                updateCalled={this.props.updateCalled}
               />
               <Grid
                 ref={registerChild}

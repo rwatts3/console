@@ -304,16 +304,17 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   }
 
   private toggleField = (id: string) => {
+    const applyToWholeModel = false
     if (!this.state.fieldIds.includes(id)) {
       const fieldIds = this.state.fieldIds.concat(id)
-      this.setState({fieldIds} as PermissionPopupState)
+      this.setState({fieldIds, applyToWholeModel} as PermissionPopupState)
     } else {
       const i = this.state.fieldIds.indexOf(id)
 
       const fieldIds = this.state.fieldIds.slice()
       fieldIds.splice(i, 1)
 
-      this.setState({fieldIds} as PermissionPopupState)
+      this.setState({fieldIds, applyToWholeModel} as PermissionPopupState)
     }
   }
 

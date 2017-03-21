@@ -18,6 +18,7 @@ import {nextCell} from '../../../actions/databrowser/ui'
 import {GridPosition} from '../../../types/databrowser/ui'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import {idToBeginning} from '../../../utils/utils'
 
 interface Props {
   model: Model
@@ -33,6 +34,7 @@ interface Props {
   loading: boolean
   loaded: Immutable.List<boolean>
   writing: boolean
+  updateCalled: () => void
 }
 
 interface State {
@@ -59,6 +61,7 @@ class NewRow extends React.Component<Props, State> {
   getFields = () => {
     return this.props.model.fields.edges
       .map((edge) => edge.node)
+      .sort(idToBeginning)
   }
 
   componentDidMount() {
@@ -180,6 +183,7 @@ class NewRow extends React.Component<Props, State> {
         modelNamePlural={this.props.model.namePlural}
         reload={() => null}
         rowIndex={-1}
+        onChange={this.props.updateCalled}
       />
     </div>
   )
@@ -225,6 +229,7 @@ class NewRow extends React.Component<Props, State> {
   }
 
   private update = (value: TypedValue, field: Field, callback) => {
+    this.props.updateCalled()
     if (this.props.gettingStarted.isCurrentStep('STEP3_CLICK_ENTER_IMAGEURL') &&
         field.name === 'imageUrl') {
       this.props.nextStep()

@@ -22,13 +22,13 @@ const guides: Tutorial[] = [
   {
     title: 'Learn Relay',
     description: 'A comprehensive, interactive introduction to Relay',
-    link: 'https://learnrelay.org/',
+    link: 'https://www.learnrelay.org/',
     image: require('../../../assets/graphics/relay.png'),
   },
   {
     title: 'Learn Apollo',
     description: 'A hands-on tutorial for Apollo GraphQL Client',
-    link: 'https://learnapollo.org',
+    link: 'https://www.learnapollo.com/',
     image: require('../../../assets/graphics/apollo.png'),
   },
   {

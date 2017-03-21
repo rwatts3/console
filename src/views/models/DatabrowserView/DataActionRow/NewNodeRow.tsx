@@ -20,6 +20,7 @@ interface Props {
   newRowActive: boolean
   selectedCell: GridPosition
   params: any
+  updateCalled: () => void
 }
 
 interface State {
@@ -37,6 +38,7 @@ class NewNodeRow extends React.Component<Props, State> {
             add={this.props.addNewNode}
             cancel={this.props.hideNewRow}
             width={this.props.width}
+            updateCalled={this.props.updateCalled}
           />
         )
     }
