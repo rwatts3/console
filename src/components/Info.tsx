@@ -41,7 +41,7 @@ const Info = (props: Props) => {
       }
       .tooltip {
         @p: .dn, .absolute;
-        z-index: 20;
+        z-index: 999;
         width: 250px;
         padding-top: 5px;
         left: -50px;

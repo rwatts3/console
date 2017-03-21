@@ -2,6 +2,7 @@ import * as React from 'react'
 import {Icon} from 'graphcool-styles'
 import Tooltip from 'rc-tooltip'
 import {BreakingChangeIndicatorStyle} from '../../types/types'
+import Info from '../../components/Info'
 
 interface Props {
   className?: string
@@ -45,17 +46,21 @@ export default class BreakingChangeIndicator extends React.Component<Props, {}> 
             style={indicatorStyle === 'RIGHT' ? {top: offset + '%'} : {left: offset + '%'}}
           >
             {messages && messages.length === offsets.length ?
-              (<Tooltip
-                overlay={messages[i]}
+              (<Info
+                offsetX={40}
+                cursorOffset={10}
+                customTip={
+                  <Icon
+                    className='pointer'
+                    src={plain[i] ? breakingPlain : breaking}
+                    width={width}
+                    height={height}
+                    rotate={indicatorStyle === 'TOP' && -90}
+                  />
+                }
               >
-                <Icon
-                  className='pointer'
-                  src={plain[i] ? breakingPlain : breaking}
-                  width={width}
-                  height={height}
-                  rotate={indicatorStyle === 'TOP' && -90}
-                />
-              </Tooltip>)
+                {messages[i]}
+              </Info>)
               :
               (
                 <Icon
