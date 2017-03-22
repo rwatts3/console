@@ -6,6 +6,7 @@ const config = require('./webpack.config')
 const OfflinePlugin = require('offline-plugin')
 
 module.exports = {
+  devtool: 'source-map',
   entry: {
     app: [
       './src/main',
@@ -23,7 +24,7 @@ module.exports = {
   output: {
     path: './dist',
     filename: '[name].[hash].js',
-    sourceMapFilename: '[name].[hash].js.map',
+    sourceMapFilename: '[file].map',
     publicPath: '/',
   },
   module: {

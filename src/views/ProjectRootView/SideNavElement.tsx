@@ -11,13 +11,14 @@ interface Props {
   size?: number
   minimalHighlight?: boolean
   onClick?: () => void
+  small?: boolean
 }
 
 export default class SideNavElement extends React.Component<Props, null> {
   render() {
-    const {link, active, iconSrc, text, size, minimalHighlight, onClick} = this.props
+    const {link, active, iconSrc, text, size, minimalHighlight, onClick, small} = this.props
     return (
-      <Link to={link} onClick={onClick}>
+      <Link to={link} onClick={onClick} title={text}>
         <div
           className={cn(
             'side-nav-element', {
@@ -55,6 +56,9 @@ export default class SideNavElement extends React.Component<Props, null> {
            .text {
              @p: .ml4;
            }
+           .text.small {
+             transform: translateX(50px);
+           }
           `}</style>
           <div className='icon'>
             <Icon
@@ -64,7 +68,7 @@ export default class SideNavElement extends React.Component<Props, null> {
               width={size || 20}
             />
           </div>
-          <div className='text'>
+          <div className={cn('text', {small})}>
             {text}
           </div>
         </div>

@@ -107,6 +107,7 @@
     "react-notification-system": "^0.2.7",
     "react-redux": "^4.4.5",
     "react-relay": "^0.9.3",
+    "react-resizable": "^1.6.0",
     "react-router": "^2.6.0",
     "react-router-relay": "^0.13.4",
     "react-tagsinput": "^3.12.0",

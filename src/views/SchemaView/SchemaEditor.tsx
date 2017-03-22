@@ -41,7 +41,7 @@ class SchemaEditor extends React.Component<Props,null> {
             padding-left: 16px;
           }
           .schema-editor :global(.ReactCodeMirror) {
-            @p: .h100, .overflowAuto;
+            @p: .flex1, .overflowAuto;
           }
           .schema-editor :global(.CodeMirror-cursor) {
             @p: .dn;
@@ -58,7 +58,7 @@ class SchemaEditor extends React.Component<Props,null> {
               margin-top: -36px;
               content: "";
               height: 36px;
-              background: linear-gradient(to top, $darkerBlue, rgba(0,0,0,0));
+              background: linear-gradient(to top, $darkerBlue, rgba(15,32,46,0));
               pointer-events: none;
             }
           }

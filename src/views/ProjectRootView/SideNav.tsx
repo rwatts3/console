@@ -45,6 +45,7 @@ interface Props {
   itemCount: number
   countChanges: Immutable.Map<string, number>
   isBetaCustomer: boolean
+  expanded: boolean
 }
 
 interface State {
@@ -178,8 +179,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             @p: .relative, .h100, .white, .bgDarkerBlue, .f14;
           }
           .links {
-            @p: .flex, .flexColumn, .justifyBetween, .mt16;
-            height: calc(100% - 16px);
+            @p: .flex, .flexColumn, .justifyBetween, .mt16, .h100;
           }
         `}</style>
         <div className={cx($p.h100)} style={{ paddingBottom: '70px' }}>
@@ -192,6 +192,7 @@ export class SideNav extends React.PureComponent<Props, State> {
                   text='Schema'
                   size={24}
                   active={location.pathname.includes(`${this.props.params.projectName}/schema`)}
+                  small={!this.props.expanded}
                 />
                 <SideNavElement
                   active={location.pathname.endsWith('databrowser')}
@@ -201,6 +202,7 @@ export class SideNav extends React.PureComponent<Props, State> {
                   size={16}
                   minimalHighlight
                   onClick={this.handleDatabrowserClick}
+                  small={!this.props.expanded}
                 />
                 {location.pathname.endsWith('databrowser') && (
                   this.renderModels()
@@ -210,18 +212,21 @@ export class SideNav extends React.PureComponent<Props, State> {
                   iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
                   text='Permissions'
                   active={location.pathname.includes('/permissions')}
+                  small={!this.props.expanded}
                 />
                 <SideNavElement
                   link={`/${project.name}/actions`}
                   iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
                   text='Mutation Callbacks'
                   active={location.pathname.endsWith('/actions')}
+                  small={!this.props.expanded}
                 />
                 <SideNavElement
                   link={`/${project.name}/integrations`}
                   iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
                   text='Integrations'
                   active={location.pathname.endsWith('/integrations')}
+                  small={!this.props.expanded}
                 />
               </div>
               {this.renderPlayground()}
@@ -275,7 +280,7 @@ export class SideNav extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className='playground'>
+      <div className={cx('playground', {small: !this.props.expanded})}>
         <style jsx>{`
           .playground {
             @p: .mt16;
@@ -286,8 +291,17 @@ export class SideNav extends React.PureComponent<Props, State> {
             background-color: rgb(185,191,196);
             padding: 7px 10px 8px 10px;
           }
+          .playground.small .playground-button {
+            @p: .bgDarkerBlue, .pl0;
+          }
           .text {
             @p: .ml10;
+          }
+          .playground.small .text {
+            transform: translateX(20px);
+          }
+          .playground.small :global(svg) {
+            fill: rgb(185,191,196) !important;
           }
         `}</style>
         <Link
@@ -404,14 +418,20 @@ export class SideNav extends React.PureComponent<Props, State> {
                 )}
               >
                 <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
-                  <div>{model.name}</div>
-                  {model.isSystem && (
-                    <div
-                      className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
-                    >System</div>
+                  <div title={model.name}>
+                    {this.props.expanded ? model.name : model.name.slice(0, 2).toUpperCase()}
+                  </div>
+                  {this.props.expanded && (
+                    model.isSystem && (
+                      <div
+                        className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
+                      >System</div>
+                    )
                   )}
                 </div>
-                <div>{model.itemCount + (this.props.countChanges.get(model.id) || 0)}</div>
+                {this.props.expanded && (
+                  <div>{model.itemCount + (this.props.countChanges.get(model.id) || 0)}</div>
+                )}
               </ListElement>
             ))}
           </div>

@@ -34,6 +34,7 @@ interface Props {
   project: Project
   showNotification: ShowNotificationCallback
   showPopup: (popup: Popup) => void
+  sidebarExpanded: boolean
 }
 
 interface State {
@@ -203,35 +204,36 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 color='#fff'
               />
             </div>
-            <div
-              className={cx($p.flex, $p.justifyBetween, $p.selfStretch, $p.itemsCenter, $p.ph25, $p.pointer)}
-              style={{
-                flexGrow: 2,
-              }}
-            >
-              <ProjectName className={cx($p.overflowHidden)}>
-                <div className={cx($p.overflowHidden, $p.toe)}>
-                  {this.props.selectedProject.name}
-                </div>
-                {this.collaboratorElement()}
-              </ProjectName>
-              <Arrow
-                turned={this.state.expanded}
-                className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.brPill)}
+            {this.props.sidebarExpanded && (
+              <div
+                className={cx($p.flex, $p.justifyBetween, $p.selfStretch, $p.itemsCenter, $p.ph25, $p.pointer)}
                 style={{
-                  marginRight: '-3px',
+                  flexGrow: 2,
                 }}
-                onclick={this.closeProjectsList}
               >
-                <Icon
-                  width={18}
-                  height={18}
-                  stroke
-                  src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
-                />
-              </Arrow>
-            </div>
-
+                <ProjectName className={cx($p.overflowHidden)}>
+                  <div className={cx($p.overflowHidden, $p.toe)}>
+                    {this.props.selectedProject.name}
+                  </div>
+                  {this.collaboratorElement()}
+                </ProjectName>
+                <Arrow
+                  turned={this.state.expanded}
+                  className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.brPill)}
+                  style={{
+                    marginRight: '-3px',
+                  }}
+                  onclick={this.closeProjectsList}
+                >
+                  <Icon
+                    width={18}
+                    height={18}
+                    stroke
+                    src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
+                  />
+                </Arrow>
+              </div>
+            )}
           </div>
           {this.state.expanded &&
           <div className={cx($p.absolute, $p.w100, $p.vh100, $p.bgGreen, $p.flex, $p.flexColumn)}>
