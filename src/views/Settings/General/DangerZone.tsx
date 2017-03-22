@@ -9,6 +9,7 @@ import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {ShowNotificationCallback} from '../../../types/utils'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface Props {
   viewer: Viewer
@@ -177,7 +178,7 @@ class DangerZone extends React.Component<Props, State> {
               this.props.router.replace(`/${this.props.project.name}/settings/general`)
             },
             onFailure: (transaction) => {
-              this.props.showNotification({message: transaction.getError().message, level: 'error'})
+              onFailureShowNotification(transaction, this.props.showNotification)
             },
           })
       })
@@ -196,7 +197,7 @@ class DangerZone extends React.Component<Props, State> {
               this.props.router.replace(`/${this.props.project.name}/settings/general`)
             },
             onFailure: (transaction) => {
-              this.props.showNotification({message: transaction.getError().message, level: 'error'})
+              onFailureShowNotification(transaction, this.props.showNotification)
             },
           })
       })

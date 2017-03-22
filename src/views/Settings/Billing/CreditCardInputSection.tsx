@@ -15,6 +15,7 @@ import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
 import SetPlanMutation from '../../../mutations/SetPlanMutation'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
   creditCardNumber: string
@@ -414,7 +415,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
             this.props.close()
           },
           onFailure: (transaction) => {
-            this.props.showNotification({message: transaction.getError().message, level: 'error'})
+            onFailureShowNotification(transaction, this.props.showNotification)
             this.props.setLoading(false)
           },
         },
@@ -450,14 +451,14 @@ class CreditCardInputSection extends React.Component<Props, State> {
                 this.props.close()
               },
               onFailure: (transaction) => {
-                this.props.showNotification({message: transaction.getError().message, level: 'error'})
+                onFailureShowNotification(transaction, this.props.showNotification)
                 this.props.setLoading(false)
               },
             },
           )
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.props.setLoading(false)
         },
       },
