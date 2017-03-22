@@ -297,9 +297,6 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
-    if (e.keyCode === 27 && (e.target instanceof HTMLInputElement)) {
-      this.close()
-    }
     // if it is an input, only if it has the enter-event class
     if (e.keyCode === 13 && (
       e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
