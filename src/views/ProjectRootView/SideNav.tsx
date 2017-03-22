@@ -170,17 +170,13 @@ export class SideNav extends React.PureComponent<Props, State> {
     const {isBetaCustomer, project} = this.props
     return (
       <div
-        className={cx(
-          $p.relative,
-          $p.w100,
-          $p.h100,
-          $p.white,
-          $p.bgDarkerBlue,
-          $p.f14,
-        )}
+        className='side-nav'
         onMouseLeave={() => this.setState({forceShowModels: false} as State)}
       >
         <style jsx>{`
+          .side-nav {
+            @p: .relative, .h100, .white, .bgDarkerBlue, .f14;
+          }
           .links {
             @p: .flex, .flexColumn, .justifyBetween, .mt16;
             height: calc(100% - 16px);
@@ -250,7 +246,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             <div>Endpoints</div>
           </FooterSection>
           <FooterLink
-            href='https://graph.cool/docs'
+            href='https://www.graph.cool/docs/'
             target='_blank'
             onClick={() => {
               tracker.track(ConsoleEvents.Sidenav.docsOpened())

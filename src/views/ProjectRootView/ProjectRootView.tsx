@@ -3,7 +3,7 @@ import {withRouter} from 'react-router'
 import * as Relay from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import {bindActionCreators} from 'redux'
-import {classnames} from '../../utils/classnames'
+import * as cx from 'classnames'
 import mapProps from '../../components/MapProps/MapProps'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import OnboardingPopup from '../../components/onboarding/OnboardingPopup/OnboardingPopup'
@@ -22,7 +22,6 @@ import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-const classes: any = require('./ProjectRootView.scss')
 import drumstick from 'drumstick'
 import Alert from '../../components/Window/Alert'
 require('../../styles/core.scss')
@@ -162,31 +161,44 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       )
     }
 
-    const blurBackground = this.props.popup.popups.reduce((acc, p) => p.blurBackground || acc, false)
+    const blur = this.props.popup.popups.reduce((acc, p) => p.blurBackground || acc, false)
     const error = !validateProjectName(this.state.projectName)
 
     return (
-      <div className={classes.root}>
-        <div className={`${blurBackground ? classes.blur : ''} flex w-100`}>
-          <div className={classes.sidebar}>
-            <div className={classes.projectSelection}>
-              <ProjectSelection
-                params={this.props.params}
-                projects={this.props.allProjects}
-                selectedProject={this.props.project}
-                add={this.handleShowProjectModal}
-              />
-            </div>
-            <div className={classes.sidenav}>
-              <SideNav
-                params={this.props.params}
-                project={this.props.project}
-                viewer={this.props.viewer}
-                projectCount={this.props.allProjects.length}
-              />
-            </div>
+      <div className='project-root-view'>
+        <style jsx>{`
+          .project-root-view {
+            @p: .h100, .overflowHidden, .flex;
+          }
+          .project-wrapper {
+            @p: .flex, .w100;
+          }
+          .blur {
+            filter: blur(5px);
+          }
+          .sidebar {
+            @p: .flexFixed, .h100, .flex, .flexColumn;
+          }
+          .content {
+            @p: .h100, .w100, .flex;
+          }
+        `}</style>
+        <div className={cx('project-wrapper', {blur})}>
+          <div className='sidebar'>
+            <ProjectSelection
+              params={this.props.params}
+              projects={this.props.allProjects}
+              selectedProject={this.props.project}
+              add={this.handleShowProjectModal}
+            />
+            <SideNav
+              params={this.props.params}
+              project={this.props.project}
+              viewer={this.props.viewer}
+              projectCount={this.props.allProjects.length}
+            />
           </div>
-          <div className={classnames(classes.content, 'flex')}>
+          <div className='content'>
             <div
               className='overflow-auto'
               style={{

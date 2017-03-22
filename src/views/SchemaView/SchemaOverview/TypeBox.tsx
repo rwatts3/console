@@ -214,6 +214,7 @@ class TypeBox extends React.Component<Props,State> {
                     className='model-name'
                     onChange={this.onChangeModelName}
                     onKeyDown={this.handleKeyDown}
+                    onBlur={this.handleOnBlur}
                     autoFocus
                   />
               ) : (
@@ -436,6 +437,10 @@ class TypeBox extends React.Component<Props,State> {
       this.props.router.push(`/${projectName}/schema/${model.name}/edit`)
     }
     e.stopPropagation()
+  }
+
+  private handleOnBlur = e => {
+    this.editModel(this.state.modelName)
   }
 
   private handleKeyDown = e => {

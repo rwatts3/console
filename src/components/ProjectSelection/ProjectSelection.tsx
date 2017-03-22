@@ -46,6 +46,8 @@ const expandedRoot = `
 `
 
 const Root = styled.div`
+  flex: 0 0 auto;
+  height: 64px;
   &:hover {
 
   }
