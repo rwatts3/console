@@ -23,7 +23,7 @@ module.exports = {
   output: {
     path: './dist',
     filename: '[name].[hash].js',
-    sourceMapFilename: '[name].[hash].js',
+    sourceMapFilename: '[name].[hash].js.map',
     publicPath: '/',
   },
   module: {
