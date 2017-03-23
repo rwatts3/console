@@ -19,7 +19,7 @@ class NewSchemaView extends React.Component<Props,null> {
       <div className='schema-view'>
         <style jsx>{`
           .schema-view {
-            @p: .flex, .flexColumn, .h100;
+            @p: .flex, .flexColumn, .h100, .itemsStretch;
             background-color: rgb(11,20,28);
             border-left: 6px solid #08131B;
           }

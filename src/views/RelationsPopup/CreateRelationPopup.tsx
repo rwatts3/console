@@ -19,6 +19,17 @@ import {showNotification} from '../../actions/notification'
 import {bindActionCreators} from 'redux'
 import Loading from '../../components/Loading/Loading'
 import {onFailureShowNotification} from '../../utils/relay'
+import * as Modal from 'react-modal'
+import ModalDocs from '../../components/ModalDocs/ModalDocs'
+import {fieldModalStyle} from '../../utils/modalStyle'
+
+const customModalStyle = {
+  overlay: fieldModalStyle.overlay,
+  content: {
+    ...fieldModalStyle.content,
+    width: 745,
+  },
+}
 
 interface State {
 
@@ -148,9 +159,13 @@ class CreateRelationPopup extends React.Component<Props, State> {
     )]
 
     return (
-      <PopupWrapper
-        onClickOutside={this.close}>
-        <style global jsx={true}>{`
+    <Modal
+      isOpen
+      onRequestClose={this.close}
+      contentLabel='Relation'
+      style={customModalStyle}
+    >
+        <style global jsx>{`
 
           .relationPopupContent {
             @inherit: .buttonShadow;
@@ -167,6 +182,18 @@ class CreateRelationPopup extends React.Component<Props, State> {
           }
 
         `}</style>
+        <ModalDocs
+          title='How to define Relations'
+          id='relations-popup'
+          resources={[
+            {
+              title: 'An introduction to Relations',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/relations-goh5uthoc1/',
+            },
+          ]}
+          videoId='3EdEcyBc1RI'
+        >
         <div className='flex itemsCenter justifyCenter w100 h100 bgWhite90'>
           <BreakingChangeIndicator
             className='relationPopupContent'
@@ -250,7 +277,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
             </div>
           </BreakingChangeIndicator>
         </div>
-      </PopupWrapper>
+        </ModalDocs>
+      </Modal>
     )
   }
 

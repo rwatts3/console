@@ -3,7 +3,7 @@ import {withRouter} from 'react-router'
 import * as Relay from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import {bindActionCreators} from 'redux'
-import {classnames} from '../../utils/classnames'
+import * as cx from 'classnames'
 import mapProps from '../../components/MapProps/MapProps'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import OnboardingPopup from '../../components/onboarding/OnboardingPopup/OnboardingPopup'
@@ -22,7 +22,6 @@ import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-const classes: any = require('./ProjectRootView.scss')
 import drumstick from 'drumstick'
 import Alert from '../../components/Window/Alert'
 require('../../styles/core.scss')
@@ -30,12 +29,14 @@ import AddProjectPopup from './AddProjectPopup'
 import {showNotification} from '../../actions/notification'
 import {onFailureShowNotification} from '../../utils/relay'
 import {ShowNotificationCallback} from '../../types/utils'
+import ResizableBox from '../../components/ResizableBox'
 
 interface State {
   showCreateProjectModal: boolean
   projectName: string
   showError: boolean
   createProjectModalLoading: boolean
+  sidebarExpanded: boolean
 }
 
 interface Props {
@@ -54,6 +55,8 @@ interface Props {
   update: (step: string, skipped: boolean, customerId: string) => void
   showNotification: ShowNotificationCallback
 }
+
+const MIN_SIDEBAR_WIDTH = 67
 
 class ProjectRootView extends React.PureComponent<Props, State> {
 
@@ -98,6 +101,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       createProjectModalLoading: false,
       showError: false,
       projectName: '',
+      sidebarExpanded: true,
     }
   }
 
@@ -162,42 +166,79 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       )
     }
 
-    const blurBackground = this.props.popup.popups.reduce((acc, p) => p.blurBackground || acc, false)
+    const blur = this.props.popup.popups.reduce((acc, p) => p.blurBackground || acc, false)
     const error = !validateProjectName(this.state.projectName)
 
     return (
-      <div className={classes.root}>
-        <div className={`${blurBackground ? classes.blur : ''} flex w-100`}>
-          <div className={classes.sidebar}>
-            <div className={classes.projectSelection}>
+      <div className='project-root-view'>
+        <style jsx>{`
+          .project-root-view {
+            @p: .vh100, .overflowHidden, .flex;
+          }
+          .project-wrapper {
+            @p: .flex, .w100;
+          }
+          .project-wrapper :global(.react-resizable) {
+            @p: .relative;
+          }
+          .project-wrapper :global(.react-resizable-handle) {
+            @p: .absolute, .top0, .bottom0, .z2;
+            right: -10px;
+            width: 20px;
+            cursor: col-resize;
+          }
+          .blur {
+            filter: blur(5px);
+          }
+          .sidebar {
+            @p: .flexFixed, .vh100, .flex, .flexColumn, .itemsStretch;
+          }
+          .content {
+            @p: .vh100, .w100, .flex, .itemsStretch, .overflowAuto;
+          }
+          .inner-content {
+            @p: .w100, .vh100;
+          }
+          .onboarding-nav {
+            @p: .flexFixed, .z999, .vh100, .bgGreen, .flex;
+          }
+        `}</style>
+        <div className={cx('project-wrapper', {blur})}>
+          <ResizableBox
+            width={290}
+            height={window.innerHeight}
+            minConstraints={[MIN_SIDEBAR_WIDTH, window.innerHeight]}
+            maxConstraints={[290, window.innerHeight]}
+            draggableOpts={{grid: [226,226]}}
+            onResize={this.handleResize}
+          >
+            <div className='sidebar'>
               <ProjectSelection
                 params={this.props.params}
                 projects={this.props.allProjects}
                 selectedProject={this.props.project}
                 add={this.handleShowProjectModal}
+                sidebarExpanded={this.state.sidebarExpanded}
               />
-            </div>
-            <div className={classes.sidenav}>
               <SideNav
                 params={this.props.params}
                 project={this.props.project}
                 viewer={this.props.viewer}
                 projectCount={this.props.allProjects.length}
+                expanded={this.state.sidebarExpanded}
               />
             </div>
-          </div>
-          <div className={classnames(classes.content, 'flex')}>
+          </ResizableBox>
+          <div className='content'>
             <div
-              className='overflow-auto'
-              style={{
-                flex: `0 0 calc(100%${this.props.gettingStartedState.isActive() ? ' - 266px' : ''})`,
-              }}>
+              className='inner-content'
+            >
               {this.props.children}
             </div>
             {this.props.gettingStartedState.isActive() &&
-            <div className='flex bg-accent' style={{ flex: '0 0 266px', zIndex: 1000, height: '100vh' }}>
-              <OnboardSideNav params={this.props.params}/>
-            </div>
+              <div className='onboarding-nav'>
+                <OnboardSideNav params={this.props.params}/>
+              </div>
             }
           </div>
         </div>
@@ -234,6 +275,14 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         )}
       </div>
     )
+  }
+
+  private handleResize = (_, {size}) => {
+    if (size.width === MIN_SIDEBAR_WIDTH) {
+      this.setState({sidebarExpanded: false} as State)
+    } else {
+      this.setState({sidebarExpanded: true} as State)
+    }
   }
 
   private updateForceFetching() {

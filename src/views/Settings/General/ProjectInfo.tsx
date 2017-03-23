@@ -11,6 +11,7 @@ import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Info from '../../../components/Info'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 // Note: the checks for this.props.project are there to make the UI
 // look better when a project gets deleted - otherwise there is a flicker
@@ -303,7 +304,7 @@ class ProjectInfo extends React.Component<Props, State> {
           this.props.router.replace(`/${this.state.newProjectName}/settings/general`)
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
         },
       })
   }

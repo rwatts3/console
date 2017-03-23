@@ -13,6 +13,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
+import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
   newCreditCardNumber: string
@@ -401,9 +402,8 @@ class Billing extends React.Component<Props, State> {
           this.props.relay.forceFetch()
         },
         onFailure: (transaction) => {
-          this.props.showNotification({message: transaction.getError().message, level: 'error'})
+          onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({isLoading: false} as State)
-          console.error('error in setting new credit card', transaction.getError().message)
         },
       },
     )

@@ -6,6 +6,7 @@ const config = require('./webpack.config')
 const OfflinePlugin = require('offline-plugin')
 
 module.exports = {
+  devtool: 'source-map',
   entry: {
     app: [
       './src/main',
@@ -23,6 +24,7 @@ module.exports = {
   output: {
     path: './dist',
     filename: '[name].[hash].js',
+    sourceMapFilename: '[file].map',
     publicPath: '/',
   },
   module: {
@@ -76,6 +78,7 @@ module.exports = {
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
       },
+      __EXAMPLE_ADDR__: '"https://dynamic-resources.graph.cool"',
     }),
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',

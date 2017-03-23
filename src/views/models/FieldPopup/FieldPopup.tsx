@@ -44,6 +44,7 @@ import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import Loading from '../../../components/Loading/Loading'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import tracker from '../../../utils/metrics'
+import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 
 interface Props {
   field?: Field
@@ -210,83 +211,96 @@ class FieldPopup extends React.Component<Props, State> {
             @p: .fixed, .top0, .left0, .right0, .bottom0, .bgWhite50, .flex, .justifyCenter, .itemsCenter;
           }
         `}</style>
-        <div
-          className='field-popup'
+        <ModalDocs
+          title='How to define Fields'
+          id='field-popup'
+          resources={[
+            {
+              title: 'An introduction to Fields',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/fields-teizeit5se/',
+            },
+          ]}
+          videoId='e_sotn1uGqk'
         >
-          <FieldPopupHeader
-            tabs={tabs}
-            activeTabIndex={activeTabIndex}
-            onSelectTab={this.handleSelectTab}
-            onRequestClose={this.close}
-            errors={errors}
-            showErrors={showErrors}
-            create={create}
-          />
           <div
-            className='popup-body'
+            className='field-popup'
           >
-            {activeTabIndex === 0 ? (
-                <BaseSettings
-                  name={name}
-                  typeIdentifier={typeIdentifier || ''}
-                  description={description || ''}
-                  isList={isList}
-                  enumValues={enumValues}
-                  onChangeName={this.updateField(updateName)}
-                  onChangeDescription={this.updateField(updateDescription)}
-                  onToggleIsList={this.updateField(toggleIsList)}
-                  onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
-                  onChangeEnumValues={this.updateField(updateEnumValues)}
-                  errors={errors}
-                  showErrors={showErrors}
-                  showNotification={this.props.showNotification}
-                />
-              ) : activeTabIndex === 1 ? (
-                  <AdvancedSettings
-                    isRequired={isRequired}
-                    onToggleIsRequired={this.updateField(toggleIsRequired)}
-                    defaultValue={defaultValue}
-                    migrationValue={migrationValue}
-                    onChangeDefaultValue={this.updateField(updateDefaultValue)}
-                    onChangeMigrationValue={this.updateField(updateMigrationValue)}
-                    showMigration={migrationUI.showMigration}
-                    migrationOptional={migrationUI.migrationOptional}
-                    showErrors={showErrors}
+            <FieldPopupHeader
+              tabs={tabs}
+              activeTabIndex={activeTabIndex}
+              onSelectTab={this.handleSelectTab}
+              onRequestClose={this.close}
+              errors={errors}
+              showErrors={showErrors}
+              create={create}
+            />
+            <div
+              className='popup-body'
+            >
+              {activeTabIndex === 0 ? (
+                  <BaseSettings
+                    name={name}
+                    typeIdentifier={typeIdentifier || ''}
+                    description={description || ''}
+                    isList={isList}
+                    enumValues={enumValues}
+                    onChangeName={this.updateField(updateName)}
+                    onChangeDescription={this.updateField(updateDescription)}
+                    onToggleIsList={this.updateField(toggleIsList)}
+                    onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
+                    onChangeEnumValues={this.updateField(updateEnumValues)}
                     errors={errors}
-                    projectId={projectId}
-                    field={this.state.field}
+                    showErrors={showErrors}
+                    showNotification={this.props.showNotification}
                   />
-                ) : activeTabIndex === 2 && (
-                  <Constraints
-                    isUnique={isUnique}
-                    onToggleIsUnique={this.updateField(toggleIsUnique)}
-                    constraints={constraints || []}
-                    onRemoveConstraint={this.updateField(removeConstraint)}
-                    onAddConstraint={this.updateField(addConstraint)}
-                    onEditConstraint={this.updateField(editConstraint)}
-                  />
-                )}
+                ) : activeTabIndex === 1 ? (
+                    <AdvancedSettings
+                      isRequired={isRequired}
+                      onToggleIsRequired={this.updateField(toggleIsRequired)}
+                      defaultValue={defaultValue}
+                      migrationValue={migrationValue}
+                      onChangeDefaultValue={this.updateField(updateDefaultValue)}
+                      onChangeMigrationValue={this.updateField(updateMigrationValue)}
+                      showMigration={migrationUI.showMigration}
+                      migrationOptional={migrationUI.migrationOptional}
+                      showErrors={showErrors}
+                      errors={errors}
+                      projectId={projectId}
+                      field={this.state.field}
+                    />
+                  ) : activeTabIndex === 2 && (
+                    <Constraints
+                      isUnique={isUnique}
+                      onToggleIsUnique={this.updateField(toggleIsUnique)}
+                      constraints={constraints || []}
+                      onRemoveConstraint={this.updateField(removeConstraint)}
+                      onAddConstraint={this.updateField(addConstraint)}
+                      onEditConstraint={this.updateField(editConstraint)}
+                    />
+                  )}
+            </div>
+            <FieldPopupFooter
+              create={create}
+              valid={valid}
+              activeTabIndex={activeTabIndex}
+              tabs={tabs}
+              onSelectIndex={this.handleSelectTab}
+              onSubmit={this.handleSubmit}
+              changed={changed}
+              needsMigrationIndex={errors.migrationValueMissing ? 1 : -1}
+              breaking={breaking}
+              name={name}
+              onReset={this.handleReset}
+              onConfirmBreakingChanges={this.handleSubmit}
+              onDelete={this.handleDelete}
+              onDeletePopupVisibilityChange={this.handleDeletePopupVisibilityChange}
+              onCancel={this.close}
+              initialField={this.props.field}
+              mutatedField={this.state.field}
+            />
           </div>
-          <FieldPopupFooter
-            create={create}
-            valid={valid}
-            activeTabIndex={activeTabIndex}
-            tabs={tabs}
-            onSelectIndex={this.handleSelectTab}
-            onSubmit={this.handleSubmit}
-            changed={changed}
-            needsMigrationIndex={errors.migrationValueMissing ? 1 : -1}
-            breaking={breaking}
-            name={name}
-            onReset={this.handleReset}
-            onConfirmBreakingChanges={this.handleSubmit}
-            onDelete={this.handleDelete}
-            onDeletePopupVisibilityChange={this.handleDeletePopupVisibilityChange}
-            onCancel={this.close}
-            initialField={this.props.field}
-            mutatedField={this.state.field}
-          />
-        </div>
+        </ModalDocs>
         {loading && (
           <div className='loading'>
             <Loading />
@@ -297,12 +311,9 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
-    if (e.keyCode === 27 && (e.target instanceof HTMLInputElement)) {
-      this.close()
-    }
     // if it is an input, only if it has the enter-event class
     if (e.keyCode === 13 && (
-      e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
+        e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
     ) {
       this.handleSubmit()
     }
@@ -539,9 +550,9 @@ export default Relay.createContainer(MappedFieldPopup, {
           itemCount
         }
         field: fieldByName(
-          projectName: $projectName
-          modelName: $modelName
-          fieldName: $fieldName
+        projectName: $projectName
+        modelName: $modelName
+        fieldName: $fieldName
         ) @include(if: $fieldExists) {
           id
           name

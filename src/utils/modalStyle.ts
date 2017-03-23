@@ -1,3 +1,4 @@
+// this modal style has overflow: hidden, fieldModalStyle has overflow: visible
 const modalStyle = {
   overlay: {
     zIndex: 100,
