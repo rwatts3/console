@@ -176,79 +176,67 @@ export class SideNav extends React.PureComponent<Props, State> {
       >
         <style jsx>{`
           .side-nav {
-            @p: .relative, .h100, .white, .bgDarkerBlue, .f14;
+            @p: .relative, .h100, .white, .bgDarkerBlue, .f14, .flex, .flexColumn, .overflowHidden;
           }
-          .links {
-            @p: .flex, .flexColumn, .justifyBetween, .mt16, .h100;
+          .scrollable {
+            @p: .flex1, .h100, .flexColumn, .justifyBetween, .pt16, .overflowAuto, .nosb;
+          }
+          .footer {
+            @p: .w100, .flexFixed, .bgDarkBlue, .flex, .itemsCenter, .justifyBetween, .white60;
+            height: 70px;
           }
         `}</style>
-        <div className={cx($p.h100)} style={{ paddingBottom: '70px' }}>
-          <ScrollBox>
-            <div className='links'>
-              <div>
-                <SideNavElement
-                  link={`/${project.name}/schema`}
-                  iconSrc={require('assets/icons/schema.svg')}
-                  text='Schema'
-                  size={24}
-                  active={location.pathname.includes(`${this.props.params.projectName}/schema`)}
-                  small={!this.props.expanded}
-                />
-                <SideNavElement
-                  active={location.pathname.endsWith('databrowser')}
-                  link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
-                  iconSrc={require('assets/icons/databrowser.svg')}
-                  text='Data'
-                  size={16}
-                  minimalHighlight
-                  onClick={this.handleDatabrowserClick}
-                  small={!this.props.expanded}
-                />
-                {location.pathname.endsWith('databrowser') && (
-                  this.renderModels()
-                )}
-                <SideNavElement
-                  link={`/${project.name}/permissions`}
-                  iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
-                  text='Permissions'
-                  active={location.pathname.includes('/permissions')}
-                  small={!this.props.expanded}
-                />
-                <SideNavElement
-                  link={`/${project.name}/actions`}
-                  iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
-                  text='Mutation Callbacks'
-                  active={location.pathname.endsWith('/actions')}
-                  small={!this.props.expanded}
-                />
-                <SideNavElement
-                  link={`/${project.name}/integrations`}
-                  iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
-                  text='Integrations'
-                  active={location.pathname.endsWith('/integrations')}
-                  small={!this.props.expanded}
-                />
-              </div>
-              {this.renderPlayground()}
-            </div>
-          </ScrollBox>
-        </div>
-        <div
-          className={cx(
-            $p.absolute,
-            $p.w100,
-            $p.bottom0,
-            $p.flex,
-            $p.itemsCenter,
-            $p.justifyBetween,
-            $p.bgDarkBlue,
-            $p.white60,
+        <div className={cx('scrollable', $p.h100)} style={{ paddingBottom: '70px' }}>
+          <SideNavElement
+            link={`/${project.name}/schema`}
+            iconSrc={require('assets/icons/schema.svg')}
+            text='Schema'
+            size={24}
+            active={location.pathname.includes(`${this.props.params.projectName}/schema`)}
+            small={!this.props.expanded}
+          />
+          <SideNavElement
+            active={location.pathname.endsWith('databrowser')}
+            link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
+            iconSrc={require('assets/icons/databrowser.svg')}
+            text='Data'
+            size={16}
+            minimalHighlight
+            onClick={this.handleDatabrowserClick}
+            small={!this.props.expanded}
+          />
+          {location.pathname.endsWith('databrowser') && (
+            this.renderModels()
           )}
-          style={{ height: '70px' }}
-        >
+          <SideNavElement
+            link={`/${project.name}/permissions`}
+            iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
+            text='Permissions'
+            active={location.pathname.includes('/permissions')}
+            small={!this.props.expanded}
+          />
+          <SideNavElement
+            link={`/${project.name}/actions`}
+            iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
+            text='Mutation Callbacks'
+            active={location.pathname.endsWith('/actions')}
+            small={!this.props.expanded}
+          />
+          <SideNavElement
+            link={`/${project.name}/integrations`}
+            iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
+            text='Integrations'
+            active={location.pathname.endsWith('/integrations')}
+            small={!this.props.expanded}
+          />
+        </div>
+        {this.renderPlayground()}
+        <div className='footer'>
           <FooterSection onClick={this.showEndpointPopup}>
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
-            <div>Endpoints</div>
+            {this.props.expanded && (
+              <div>Endpoints</div>
+            )}
           </FooterSection>
           <FooterLink
             href='https://www.graph.cool/docs/'
@@ -258,7 +246,9 @@ export class SideNav extends React.PureComponent<Props, State> {
             }}
           >
             <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
-            <div>Docs</div>
+            {this.props.expanded && (
+              <div>Docs</div>
+            )}
           </FooterLink>
         </div>
       </div>
@@ -290,6 +280,10 @@ export class SideNav extends React.PureComponent<Props, State> {
             letter-spacing: 0.53px;
             background-color: rgb(185,191,196);
             padding: 7px 10px 8px 10px;
+            transition: $duration all;
+          }
+          .playground-button:hover {
+            @p: .bgWhite90;
           }
           .playground.small .playground-button {
             @p: .bgDarkerBlue, .pl0;

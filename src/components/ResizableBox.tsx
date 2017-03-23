@@ -25,7 +25,7 @@ export default class ResizableBox extends React.Component<any,any> {
     const {width, height} = size
 
     if (this.props.onResize) {
-      if (typeof e.persist === 'undefined') {
+      if (typeof e.persist === 'function') {
         e.persist()
       }
       this.setState(size, () => this.props.onResize(e, {element, size}))
@@ -56,7 +56,7 @@ export default class ResizableBox extends React.Component<any,any> {
             @p: .relative;
           }
           .resizer {
-            @p: .br100, .bgDarkerBlue, .absolute, .right0, .flex, .itemsCenter, .justifyCenter, .pointer, .z2, .o0;
+            @p: .br100, .bgDarkBlue, .absolute, .right0, .flex, .itemsCenter, .justifyCenter, .pointer, .z2, .o0;
             pointer-events: none;
             top: 50%;
             transform: translate(50%,-50%);

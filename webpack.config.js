@@ -127,6 +127,7 @@ module.exports = {
       'process.env': {
         'NODE_ENV': JSON.stringify('dev'),
       },
+      __EXAMPLE_ADDR__: '"https://dynamic-resources.graph.cool/"',
     }),
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',
