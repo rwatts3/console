@@ -3,6 +3,7 @@ import * as cx from 'classnames'
 import {$g} from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import DocsResource from './DocsResource'
+import VideoPopup from './VideoPopup'
 
 export type ResourceType = 'faq' | 'guide' | 'example' | 'article'
 
@@ -17,11 +18,13 @@ interface Props {
   // the ID is needed for the remember function of the active state
   id: string
   title: string
+  videoId?: string
 }
 
 interface State {
   open: boolean
   firstTime: boolean
+  videoOpen: boolean
 }
 
 export default class ModalDocs extends React.Component<Props, State> {
@@ -35,6 +38,7 @@ export default class ModalDocs extends React.Component<Props, State> {
     this.state = {
       open: false,
       firstTime: !Boolean(opened),
+      videoOpen: false,
     }
 
     localStorage.setItem(key, '1')
@@ -77,7 +81,7 @@ export default class ModalDocs extends React.Component<Props, State> {
           }
           .button {
             @p: .bgWhite, .pv10, .ph16, .lhSolid, .br2, .f20, .pointer, .nowrap;
-            @p: .inlineFlex, .buttonShadow, .itemsCenter;
+            @p: .inlineFlex, .buttonShadow, .itemsCenter, .noUnderline;
             color: rgba(23,42,58,.7);
           }
           .button:hover {
@@ -103,19 +107,19 @@ export default class ModalDocs extends React.Component<Props, State> {
               <div className='title'>{this.props.title}</div>
             )}
           </div>
-          {/*
-          <div className='content'>
-            <div className='button'>
-              <Icon
-                src={require('graphcool-styles/icons/fill/triangle.svg')}
-                color='rgba(23,42,58,.4)'
-                width={15}
-                height={13}
-              />
-              <span>Watch an introduction</span>
+          {this.props.videoId && this.state.open && (
+            <div className='content'>
+              <div className='button' onClick={this.openVideo}>
+                <Icon
+                  src={require('graphcool-styles/icons/fill/triangle.svg')}
+                  color='rgba(23,42,58,.4)'
+                  width={15}
+                  height={13}
+                />
+                <span>Watch an introduction</span>
+              </div>
             </div>
-          </div>
-           */}
+          )}
           {this.state.open && (
             <div className='content'>
               {this.props.resources.map(resource => (
@@ -127,8 +131,22 @@ export default class ModalDocs extends React.Component<Props, State> {
             </div>
           )}
         </div>
+        {this.state.videoOpen && (
+          <VideoPopup
+            videoId={this.props.videoId || ''}
+            onRequestClose={this.closeVideo}
+          />
+        )}
       </div>
     )
+  }
+
+  private openVideo = () => {
+    this.setState({videoOpen: true} as State)
+  }
+
+  private closeVideo = () => {
+    this.setState({videoOpen: false} as State)
   }
 
   private toggle = () => {

@@ -221,6 +221,7 @@ class FieldPopup extends React.Component<Props, State> {
               link: 'https://www.graph.cool/docs/reference/platform/fields-teizeit5se/',
             },
           ]}
+          videoId='e_sotn1uGqk'
         >
           <div
             className='field-popup'

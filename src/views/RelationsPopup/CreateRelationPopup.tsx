@@ -192,6 +192,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
               link: 'https://www.graph.cool/docs/reference/platform/relations-goh5uthoc1/',
             },
           ]}
+          videoId='3EdEcyBc1RI'
         >
         <div className='flex itemsCenter justifyCenter w100 h100 bgWhite90'>
           <BreakingChangeIndicator
