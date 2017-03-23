@@ -168,7 +168,7 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {isBetaCustomer, project} = this.props
+    const {isBetaCustomer, project, expanded} = this.props
     return (
       <div
         className='side-nav'
@@ -181,12 +181,15 @@ export class SideNav extends React.PureComponent<Props, State> {
           .scrollable {
             @p: .flex1, .h100, .flexColumn, .justifyBetween, .pt16, .overflowAuto, .nosb;
           }
+          .scrollable.thin {
+            @p: .overflowXHidden;
+          }
           .footer {
             @p: .w100, .flexFixed, .bgDarkBlue, .flex, .itemsCenter, .justifyBetween, .white60;
             height: 70px;
           }
         `}</style>
-        <div className={cx('scrollable', $p.h100)} style={{ paddingBottom: '70px' }}>
+        <div className={cx('scrollable', $p.h100, {thin: !expanded})} style={{ paddingBottom: '70px' }}>
           <SideNavElement
             link={`/${project.name}/schema`}
             iconSrc={require('assets/icons/schema.svg')}
