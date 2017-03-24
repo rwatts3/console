@@ -22,7 +22,7 @@ module.exports = {
     vendor: config.entry.vendor,
   },
   output: {
-    path: './dist',
+    path: __dirname + '/dist',
     filename: '[name].[hash].js',
     sourceMapFilename: '[file].map',
     publicPath: '/',
@@ -90,7 +90,8 @@ module.exports = {
         unused: true,
         dead_code: true,
         warnings: false,
-      }
+      },
+      sourceMap: true,
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
     new webpack.optimize.CommonsChunkPlugin('vendor'),
