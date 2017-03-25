@@ -208,15 +208,15 @@ class TypeBox extends React.Component<Props,State> {
             </div>
             <div className='title'>
               {this.state.editingModelName ? (
-                  <input
-                    type='text'
-                    value={this.state.modelName}
-                    className='model-name'
-                    onChange={this.onChangeModelName}
-                    onKeyDown={this.handleKeyDown}
-                    onBlur={this.handleOnBlur}
-                    autoFocus
-                  />
+                <input
+                  type='text'
+                  value={this.state.modelName}
+                  className='model-name'
+                  onChange={this.onChangeModelName}
+                  onKeyDown={this.handleKeyDown}
+                  onBlur={this.handleOnBlur}
+                  autoFocus
+                />
               ) : (
                 <div
                   className='model-name'
@@ -241,7 +241,7 @@ class TypeBox extends React.Component<Props,State> {
                     about='_blank'
                     className='underline'
                   >
-                    {`here`}
+                    here
                   </a>
                 </Info>
               )}
