@@ -21,13 +21,6 @@ export function forceShowNewRow() {
   }
 }
 
-export function setDataBrowserViewRef(ref: HTMLElement) {
-  return {
-    type: Constants.SET_DATA_BROWSER_VIEW_REF,
-    payload: ref,
-  }
-}
-
 export function toggleNewRow(fields: Field[], modelNamePlural: string): ReduxThunk {
   return (dispatch, getState) => {
     if (SYSTEM_MODELS_PLURAL.includes(modelNamePlural)) {
@@ -134,16 +127,21 @@ export function editCell(position: GridPosition): ReduxAction {
 
 export function stopEditCell(): ReduxThunk {
   return (dispatch, getState) => {
-
-    const { browserViewRef } = getState().databrowser.ui
-
-    if (browserViewRef !== null) {
-      browserViewRef.focus()
+    const dataBrowserView = document.getElementById('data-browser-view')
+    if (dataBrowserView) {
+      dataBrowserView.focus()
     }
 
     dispatch({
       type: Constants.STOP_EDIT_CELL,
     })
+  }
+}
+
+export function setDataBrowserViewRef(ref: HTMLElement) {
+  return {
+    type: Constants.SET_DATA_BROWSER_VIEW_REF,
+    payload: ref,
   }
 }
 

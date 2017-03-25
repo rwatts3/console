@@ -118,5 +118,6 @@ export function reduceData(state: DataBrowserDataState = initialState, action: R
     case SharedConstants.RESET:
       return initialState
   }
+  global['state'] = state
   return state
 }

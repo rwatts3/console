@@ -72,6 +72,8 @@ const store = createStore(reducers, compose(
 
 store.dispatch(fetchGettingStartedState())
 
+global['store'] = store
+
 ReactDOM.render(
   (
     <Provider store={store}>
