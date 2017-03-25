@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
+import * as fetch from 'isomorphic-fetch'
 import * as Relay from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import {bindActionCreators} from 'redux'
@@ -30,6 +31,7 @@ import {showNotification} from '../../actions/notification'
 import {onFailureShowNotification} from '../../utils/relay'
 import {ShowNotificationCallback} from '../../types/utils'
 import ResizableBox from '../../components/ResizableBox'
+import * as Dropzone from 'react-dropzone'
 
 interface State {
   showCreateProjectModal: boolean
@@ -203,45 +205,55 @@ class ProjectRootView extends React.PureComponent<Props, State> {
             @p: .flexFixed, .z999, .vh100, .bgGreen, .flex;
           }
         `}</style>
-        <div className={cx('project-wrapper', {blur})}>
-          <ResizableBox
-            width={290}
-            height={window.innerHeight}
-            minConstraints={[MIN_SIDEBAR_WIDTH, window.innerHeight]}
-            maxConstraints={[290, window.innerHeight]}
-            draggableOpts={{grid: [226,226]}}
-            onResize={this.handleResize}
-          >
-            <div className='sidebar'>
-              <ProjectSelection
-                params={this.props.params}
-                projects={this.props.allProjects}
-                selectedProject={this.props.project}
-                add={this.handleShowProjectModal}
-                sidebarExpanded={this.state.sidebarExpanded}
-              />
-              <SideNav
-                params={this.props.params}
-                project={this.props.project}
-                viewer={this.props.viewer}
-                projectCount={this.props.allProjects.length}
-                expanded={this.state.sidebarExpanded}
-              />
-            </div>
-          </ResizableBox>
-          <div className='content'>
-            <div
-              className='inner-content'
+        <Dropzone
+          onDrop={this.onDrop}
+          disableClick={true}
+          multiple={false}
+          style={{
+            height: '100vh',
+            width: '100vw',
+          }}
+        >
+          <div className={cx('project-wrapper', {blur})}>
+            <ResizableBox
+              width={290}
+              height={window.innerHeight}
+              minConstraints={[MIN_SIDEBAR_WIDTH, window.innerHeight]}
+              maxConstraints={[290, window.innerHeight]}
+              draggableOpts={{grid: [226,226]}}
+              onResize={this.handleResize}
             >
-              {this.props.children}
-            </div>
-            {this.props.gettingStartedState.isActive() &&
-              <div className='onboarding-nav'>
-                <OnboardSideNav params={this.props.params}/>
+              <div className='sidebar'>
+                <ProjectSelection
+                  params={this.props.params}
+                  projects={this.props.allProjects}
+                  selectedProject={this.props.project}
+                  add={this.handleShowProjectModal}
+                  sidebarExpanded={this.state.sidebarExpanded}
+                />
+                <SideNav
+                  params={this.props.params}
+                  project={this.props.project}
+                  viewer={this.props.viewer}
+                  projectCount={this.props.allProjects.length}
+                  expanded={this.state.sidebarExpanded}
+                />
               </div>
-            }
+            </ResizableBox>
+            <div className='content'>
+              <div
+                className='inner-content'
+              >
+                {this.props.children}
+              </div>
+              {this.props.gettingStartedState.isActive() &&
+                <div className='onboarding-nav'>
+                  <OnboardSideNav params={this.props.params}/>
+                </div>
+              }
+            </div>
           </div>
-        </div>
+        </Dropzone>
         {this.props.popup.popups.map(popup =>
           <PopupWrapper key={popup.id} id={popup.id}>
             {popup.element}
@@ -348,6 +360,39 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         }
       },
     )
+  }
+
+  private onDrop = (acceptedFiles, rejectedFiles) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0]
+      const fileEndpoint = `${__BACKEND_ADDR__}/file/v1/${this.props.viewer.project.id}`
+      const data = new FormData()
+      data.append('data', file)
+
+      fetch(fileEndpoint, {
+        method: 'POST',
+        body: data,
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log('res', res)
+        if (res.error) {
+          this.props.showNotification({
+            level: 'error',
+            message: res.error,
+          })
+        } else {
+          this.props.showNotification({
+            level: 'success',
+            message: `Successfuly uploaded the file ${res.name}. It's now available at ${res.url}.`,
+          })
+        }
+
+        this.props.relay.forceFetch({}, () => {
+          //
+        })
+      })
+    }
   }
 }
 
