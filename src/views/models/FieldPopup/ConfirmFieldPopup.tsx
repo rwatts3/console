@@ -208,12 +208,14 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
           Cancel
         </div>
         {this.props.fieldName === this.state.enteredFieldName ?
-          (<div
+          (<button
             className='confirmButtonRed'
             onClick={() => typeof this.props.onConfirmDeletion === 'function' && this.props.onConfirmDeletion()}
+            tabIndex={1}
+            autoFocus
           >
             Delete
-          </div>)
+          </button>)
           :
           <input
             className='redBorder inputField'

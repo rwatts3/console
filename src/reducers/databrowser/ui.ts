@@ -18,8 +18,6 @@ const initialState: DataBrowserUIState = {
     field: null,
   },
   editing: false,
-  browserViewRef: null,
-  dataBrowserViewRef: null,
   searchQuery: null,
 }
 
@@ -107,14 +105,6 @@ export function reduceUI(state: DataBrowserUIState = initialState, action: Redux
     case Constants.ACTIVATE_DELETE_NODE_ROW:
       return Object.assign({}, state, {
         actionRow: ActionRowState.DeleteNode,
-      })
-    case Constants.SET_BROWSER_VIEW_REF:
-      return Object.assign({}, state, {
-        browserViewRef: action.payload,
-      })
-    case Constants.SET_DATA_BROWSER_VIEW_REF:
-      return Object.assign({}, state, {
-        dataBrowserViewRef: action.payload,
       })
     case SharedConstants.RESET:
       return initialState

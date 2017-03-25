@@ -38,7 +38,10 @@ class HeaderCell extends React.Component<Props, {}> {
       type = `${type}!`
     }
 
-    const editUrl = `/${params.projectName}/models/${params.modelName}/schema/edit/${field.name}`
+    let editUrl = `/${params.projectName}/schema/${params.modelName}/edit/${field.name}`
+    if (!isScalar(field.typeIdentifier)) {
+      editUrl = `/${params.projectName}/schema/relations/edit/${field.relation.name}`
+    }
 
     return (
       <div
@@ -51,7 +54,7 @@ class HeaderCell extends React.Component<Props, {}> {
           })}>
             {field.name}
             <span className={classes.type}>{type}</span>
-            {isScalar(field.typeIdentifier) && !field.isSystem &&
+            {!field.isSystem &&
             <Link
               to={editUrl}
               className={classes.edit}
@@ -114,6 +117,9 @@ export default Relay.createContainer(ConnectedHeaderCell, {
             isRequired
             enumValues
             relatedModel {
+              name
+            }
+            relation {
               name
             }
           }

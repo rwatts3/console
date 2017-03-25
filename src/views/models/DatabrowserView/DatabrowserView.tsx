@@ -302,11 +302,11 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         </ModelHeader>
         <div
           className={`${classes.table} ${this.props.loading ? classes.loading : ''}`}
-          ref={this.props.setDataBrowserViewRef}
+          id='data-browser-view-wrapper'
         >
           <div
             className={`${classes.tableContainer} w-100`}
-            ref={this.props.setBrowserViewRef}
+            id='data-browser-view'
             tabIndex={100}
           >
             <AutoSizer>

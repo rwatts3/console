@@ -75,8 +75,10 @@ export function nextStep(): ReduxThunk {
     const nextStep = GettingStartedState.steps[currentStepIndex + 1]
 
     if (nextStep === 'STEP3_CLICK_SAVE_NODE1') {
-      const {dataBrowserViewRef} = getState().databrowser.ui
-      dataBrowserViewRef.scrollLeft = window.innerWidth
+      const dataBrowserWrapper = document.getElementById('data-browser-view-wrapper')
+      if (dataBrowserWrapper) {
+        dataBrowserWrapper.scrollLeft = window.innerWidth
+      }
     }
 
     return updateReduxAndRelay(dispatch, nextStep, skipped, onboardingStatusId, selectedExample)
