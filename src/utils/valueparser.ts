@@ -26,9 +26,13 @@ export function valueToString(
     }
 
     if (!isStringlyType(field, serialize)) {
-      return `[${valueArray.map((val) => `${atomicValueToString(val, field, returnNullAsString)}`).join(', ')}]`
+      return `[${valueArray.map((val) =>
+        `${atomicValueToString(val, field, returnNullAsString, serialize)}`,
+      ).join(', ')}]`
     } else {
-      return `[${valueArray.map((val) => `"${atomicValueToString(val, field, returnNullAsString)}"`).join(', ')}]`
+      return `[${valueArray.map((val) =>
+        `"${atomicValueToString(val, field, returnNullAsString, serialize)}"`,
+      ).join(', ')}]`
     }
 
   } else {
@@ -43,6 +47,8 @@ function isStringlyType(field: Field, serialize: boolean = false): boolean {
     switch (type) {
       case 'Boolean':
       case 'Int':
+      case 'Enum':
+      case 'Json':
       case 'Float':
         return false
       default:
@@ -53,6 +59,7 @@ function isStringlyType(field: Field, serialize: boolean = false): boolean {
       case 'Enum':
       case 'Boolean':
       case 'Int':
+      case 'Json':
       case 'Float':
         return false
       default:
