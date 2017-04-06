@@ -375,7 +375,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       })
       .then(res => res.json())
       .then(res => {
-        console.log('res', res)
         if (res.error) {
           this.props.showNotification({
             level: 'error',
