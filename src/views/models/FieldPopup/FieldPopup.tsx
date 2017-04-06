@@ -118,7 +118,6 @@ class FieldPopup extends React.Component<Props, State> {
         loading: false,
       }
     }
-    global['f'] = this
   }
 
   componentDidMount() {
@@ -558,6 +557,7 @@ export default Relay.createContainer(MappedFieldPopup, {
           id
           name
           typeIdentifier
+          description
           isRequired
           isList
           isUnique
