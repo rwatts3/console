@@ -117,7 +117,10 @@ export default class EditValueInput extends React.Component<Props, State> {
 
     const requirements: CellRequirements = {
       value,
-      field: this.props.field,
+      field: {
+        ...this.props.field,
+        isRequired: false, // always show `null`, as it must be possible to remove the default value
+      },
       inList: true,
       projectId: this.props.projectId,
       methods: {
