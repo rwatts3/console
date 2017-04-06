@@ -60,7 +60,7 @@ interface Props {
   location: any
 }
 
-class CreateRelationPopup extends React.Component<Props, State> {
+class RelationPopup extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -515,6 +515,10 @@ class CreateRelationPopup extends React.Component<Props, State> {
       return null
     }
 
+    if (!relation.fieldOnLeftModel || !relation.fieldOnRightModel) {
+      return `ONE_TO_ONE` as Cardinality
+    }
+
     const leftCardinalityValue = relation.fieldOnRightModel.isList ? 'MANY' : 'ONE'
     const rightCardinalityValue = relation.fieldOnLeftModel.isList ? 'MANY' : 'ONE'
     return (leftCardinalityValue + '_TO_' + rightCardinalityValue) as Cardinality
@@ -696,7 +700,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({showNotification}, dispatch)
 }
 
-const mappedCreateRelationPopup = connect(null, mapDispatchToProps)(CreateRelationPopup)
+const mappedCreateRelationPopup = connect(null, mapDispatchToProps)(RelationPopup)
 
 export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
   initialVariables: {
