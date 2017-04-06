@@ -130,7 +130,7 @@ export function calculateFieldColumnWidths (width: number,
           return 220
         case 'createdAt':
         case 'updatedAt':
-          return 180
+          return 200
       }
 
       const cellWidths = nodes
