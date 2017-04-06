@@ -124,7 +124,7 @@
     "redux-thunk": "^2.1.0",
     "styled-components": "^1.1.1",
     "styled-jsx": "0.5.2",
-    "styled-jsx-postcss": "git+https://github.com/timsuchanek/styled-jsx-postcss#build",
+    "styled-jsx-postcss": "git+https://github.com/timsuchanek/styled-jsx-postcss#build3",
     "tachyons": "^4.5.2",
     "webpack-bundle-analyzer": "^2.3.1"
   },
