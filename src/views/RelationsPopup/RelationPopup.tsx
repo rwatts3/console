@@ -2,10 +2,10 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import {Transaction} from 'react-relay'
 import {RelationPopupDisplayState, Cardinality, Model, Relation} from '../../types/types'
-import CreateRelationHeader from './CreateRelationHeader'
+import RelationHeader from './RelationHeader'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import {withRouter} from 'react-router'
-import CreateRelationFooter from './CreateRelationFooter'
+import RelationFooter from './RelationFooter'
 import DefineRelation from './DefineRelation'
 import SetMutation from './SetMutation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
@@ -133,20 +133,27 @@ class CreateRelationPopup extends React.Component<Props, State> {
       leftInputIsBreakingChange, rightInputIsBreakingChange, relationNameIsBreakingChange,
     } = this.state
 
-    const displayBreakingIndicator = (Boolean(this.props.viewer.relation)) &&
-      (leftInputIsBreakingChange || rightInputIsBreakingChange ||
-      relationNameIsBreakingChange || leftModelIsBreakingChange || rightModelIsBreakingChange)
+    let displayBreakingIndicator = false
+    const noItems = leftSelectedModel && leftSelectedModel.itemCount === 0
+      && rightSelectedModel && rightSelectedModel.itemCount === 0
 
-    const rightTabHasBreakingChange = relationNameIsBreakingChange
-    const leftTabHasBreakingChange = leftInputIsBreakingChange || rightInputIsBreakingChange ||
-      leftModelIsBreakingChange || rightModelIsBreakingChange
+    if (!noItems) {
+      displayBreakingIndicator = (Boolean(this.props.viewer.relation)) &&
+        (leftInputIsBreakingChange || rightInputIsBreakingChange ||
+        relationNameIsBreakingChange || leftModelIsBreakingChange || rightModelIsBreakingChange)
+    }
 
-    const displayBreakingIndicatorOnLeftTab = leftTabHasBreakingChange && displayState !== 'DEFINE_RELATION'
-    const displayBreakingIndicatorOnRightTab = rightTabHasBreakingChange && displayState !== 'SET_MUTATIONS'
+    const rightTabHasBreakingChange = !noItems && relationNameIsBreakingChange
+    const leftTabHasBreakingChange = !noItems && (leftInputIsBreakingChange || rightInputIsBreakingChange ||
+      leftModelIsBreakingChange || rightModelIsBreakingChange)
 
-    const displayBreakingIndicatorOnCurrentView =
-      (displayState === 'DEFINE_RELATION' as RelationPopupDisplayState && leftTabHasBreakingChange) ||
-      (displayState === 'SET_MUTATIONS' as RelationPopupDisplayState && rightTabHasBreakingChange)
+    const displayBreakingIndicatorOnLeftTab = !noItems && leftTabHasBreakingChange && displayState !== 'DEFINE_RELATION'
+    const displayBreakingIndicatorOnRightTab = !noItems && rightTabHasBreakingChange && displayState !== 'SET_MUTATIONS'
+
+    const displayBreakingIndicatorOnCurrentView = !noItems && (
+        (displayState === 'DEFINE_RELATION' as RelationPopupDisplayState && leftTabHasBreakingChange) ||
+        (displayState === 'SET_MUTATIONS' as RelationPopupDisplayState && rightTabHasBreakingChange)
+      )
 
     const breakingChangeMessageElements: JSX.Element[] =
       displayBreakingIndicator && this.breakingChangeMessages().map((message, i) =>
@@ -206,7 +213,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
           >
             <div className='flex flexColumn justifyBetween h100 bgWhite relative'>
               <div>
-                <CreateRelationHeader
+                <RelationHeader
                   displayState={displayState}
                   switchDisplayState={this.switchToDisplayState}
                   close={this.close}
@@ -254,7 +261,7 @@ class CreateRelationPopup extends React.Component<Props, State> {
                     />
                 }
               </div>
-              <CreateRelationFooter
+              <RelationFooter
                 displayState={displayState}
                 switchDisplayState={this.switchToDisplayState}
                 onClickCreateRelation={this.addRelation}
@@ -264,8 +271,8 @@ class CreateRelationPopup extends React.Component<Props, State> {
                 canSubmit={leftSelectedModel && rightSelectedModel && relationName.length > 0}
                 isEditingExistingRelation={Boolean(relation)}
                 close={this.close}
-                leftModelName={relation && relation.leftModel.name}
-                rightModelName={relation && relation.rightModel.name}
+                leftModel={relation && relation.leftModel}
+                rightModel={relation && relation.rightModel}
                 relationName={relation && relation.name}
                 displayConfirmBreakingChangesPopup={displayBreakingIndicator}
               />
@@ -519,6 +526,11 @@ class CreateRelationPopup extends React.Component<Props, State> {
       return []
     }
 
+    const {leftSelectedModel, rightSelectedModel} = this.state
+    if (leftSelectedModel.itemCount === 0 && rightSelectedModel.itemCount === 0) {
+      return []
+    }
+
     let messages: string[] = []
 
     const relationNameIsBreakingChangeMessage = 'The relation was renamed to \'' + this.state.relationName +
@@ -719,11 +731,13 @@ export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
             id
             name
             namePlural
+            itemCount
           }
           rightModel {
             id
             name
             namePlural
+            itemCount
           }
         }
         project: projectByName(projectName: $projectName) {
