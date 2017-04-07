@@ -76,7 +76,7 @@
     "graphcool-metrics": "0.2.3",
     "graphcool-styles": "0.1.6",
     "graphiql": "^0.8.0",
-    "graphql-voyager": "^1.0.0-rc.1",
+    "graphql-voyager": "git+https://github.com/timsuchanek/graphql-voyager#build",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.2",

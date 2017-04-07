@@ -46,6 +46,36 @@ class SchemaViewer extends React.Component<Props, null> {
           `}</style>
           <Voyager
             introspection={this.introspectionProvider}
+            displayOptions={{
+              transformSchema: function(schema) {
+                const {types} = schema
+                const copy = Object.assign({}, types)
+
+                Object.keys(copy).forEach(typeName => {
+                  if (typeName.startsWith('_all') || typeName.startsWith('all')) {
+                    delete copy[typeName]
+                  } else {
+                    const type = copy[typeName]
+
+                    if (type.fields) {
+                      Object.keys(type.fields).forEach(fieldName => {
+                        const field = type.fields[fieldName]
+                        if (field.type === '_QueryMeta') {
+                          delete copy[typeName].fields[fieldName]
+                        }
+                      })
+                    }
+                  }
+                })
+
+                return Object.assign({}, schema, {
+                  queryType: 'Node',
+                  types: copy,
+                })
+              },
+              hideDocs: true,
+              hideRoot: true,
+            }}
           />
           <div className='close' onClick={this.close}>
             <Icon
