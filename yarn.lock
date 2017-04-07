@@ -3141,9 +3141,9 @@ graphql-tag@^1.2.4:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-1.3.1.tgz#16cdf13635f10bbc968c6f2c6265ffe883a906da"
 
-"graphql-voyager@git+https://github.com/timsuchanek/graphql-voyager#build":
+"graphql-voyager@git+https://github.com/timsuchanek/graphql-voyager#build3":
   version "1.0.0-rc.3"
-  resolved "git+https://github.com/timsuchanek/graphql-voyager#4e917b0ccfe29b70b2de0b53fde54457656aedf2"
+  resolved "git+https://github.com/timsuchanek/graphql-voyager#348340e59b6d871b7cd7abe4d5933f78a8b49062"
   dependencies:
     "@f/animate" "^1.0.1"
     classnames "^2.2.5"
