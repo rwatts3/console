@@ -43,7 +43,7 @@ class ModelPermissionFields extends React.Component<Props, {}> {
       fields && fields.length > 0 && (
         <Container className={cx($p.flexAuto, $p.relative, $p.overflowHidden)}>
           <InnerContainer
-            className={cx($p.relative, $p.flex, $p.flex1, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowXScroll)}
+            className={cx($p.relative, $p.flex, $p.flex1, $p.flexRow, $p.ml16, $p.itemsCenter, $p.overflowAuto)}
           >
             <div className={cx($p.black50, $p.fw6)}>
               {applyToWholeModel ? (
