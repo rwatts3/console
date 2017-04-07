@@ -10,7 +10,6 @@ import ProjectRootView from './views/ProjectRootView/ProjectRootView'
 import RootRedirectView from './views/ProjectRootView/RootRedirectView'
 import TokenRedirectView from './views/ProjectRootView/TokenRedirectView'
 import ProjectSettingsView from './views/ProjectSettingsView/ProjectSettingsView'
-import RelationsView from './views/RelationsView/RelationsView'
 import RootView from './views/RootView/RootView'
 import SignUpView from './views/SignUpView/SignUpView'
 import AfterSignUpView from './views/AfterSignUpView/AfterSignUpView'
@@ -37,7 +36,7 @@ import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-import CreateRelationPopup from './views/RelationsPopup/CreateRelationPopup'
+import RelationPopup from './views/RelationsPopup/RelationPopup'
 import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
 import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
 import ImportSchemaView from './views/ImportSchemaView/ImportSchemaView'
@@ -162,8 +161,8 @@ export default (
         <Route path='interfaces' component={null} render={render} />
         <Route path='enums' component={null} render={render} />
         <Route path='relations'>
-          <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
-          <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
+          <Route path='create' component={RelationPopup} queries={ViewerQuery}  render={render}/>
+          <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>
         </Route>
         <Route path=':modelName'>
           <Route path='edit' component={null} render={render} />
@@ -188,10 +187,6 @@ export default (
           queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
           render={render}/>
         <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render}/>
-      </Route>
-      <Route path='relations' component={RelationsView} queries={ViewerQuery} render={render}>
-        <Route path='create' component={CreateRelationPopup} queries={ViewerQuery}  render={render}/>
-        <Route path='edit/:relationName' component={CreateRelationPopup} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {RelationPopupDisplayState} from '../../types/types'
+import {RelationPopupDisplayState, Model} from '../../types/types'
 import {Icon} from 'graphcool-styles'
 import ConfirmPopup from './ConfirmPopup'
 
@@ -17,8 +17,8 @@ interface Props {
   canSubmit: boolean
   close: Function
   isEditingExistingRelation: boolean
-  leftModelName?: string
-  rightModelName?: string
+  leftModel?: Model
+  rightModel?: Model
   relationName?: string
   displayConfirmBreakingChangesPopup: boolean
 }
@@ -44,21 +44,29 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
           :
           this.generateRightSideForFooterForEditingExistingRelation()
         }
-        {this.props.displayConfirmBreakingChangesPopup && <ConfirmPopup
-          red={false}
-          leftModelName={this.props.leftModelName}
-          rightModelName={this.props.rightModelName}
-          onConfirmBreakingChanges={this.props.onClickEditRelation}
-          onResetBreakingChanges={this.props.resetToInitialState}
-        />}
-        {this.state.displayConfirmDeletionPopup && <ConfirmPopup
-          red={true}
-          onCancel={() => this.setState({displayConfirmDeletionPopup: false} as State)}
-          leftModelName={this.props.leftModelName}
-          rightModelName={this.props.rightModelName}
-          relationName={this.props.relationName}
-          onConfirmDeletion={this.props.onClickDeleteRelation}
-        />}
+        {this.props.leftModel &&
+         this.props.rightModel &&
+         this.props.displayConfirmBreakingChangesPopup &&
+          <ConfirmPopup
+            red={false}
+            leftModelName={this.props.leftModel.name}
+            rightModelName={this.props.rightModel.name}
+            onConfirmBreakingChanges={this.props.onClickEditRelation}
+            onResetBreakingChanges={this.props.resetToInitialState}
+          />
+        }
+        {this.props.leftModel &&
+         this.props.rightModel &&
+         this.state.displayConfirmDeletionPopup &&
+          <ConfirmPopup
+            red={true}
+            onCancel={() => this.setState({displayConfirmDeletionPopup: false} as State)}
+            leftModelName={this.props.leftModel.name}
+            rightModelName={this.props.rightModel.name}
+            relationName={this.props.relationName}
+            onConfirmDeletion={this.props.onClickDeleteRelation}
+          />
+        }
       </div>
     )
   }
@@ -67,17 +75,25 @@ export default class CreateRelationFooter extends React.Component<Props, State> 
     return (
       <div
         className={`f16 pointer ${this.props.isEditingExistingRelation ? 'red' : 'black50'}`}
-        onClick={!this.props.isEditingExistingRelation ?
-            (() => this.props.close())
-            :
-            (() => {
-              this.setState({displayConfirmDeletionPopup: true} as State)
-            })
-          }
+        onClick={this.handleDelete}
       >
         {this.props.isEditingExistingRelation ? 'Delete' : 'Cancel'}
       </div>
     )
+  }
+
+  private handleDelete = () => {
+    if (
+      this.props.leftModel &&
+      this.props.leftModel.itemCount === 0 &&
+      this.props.rightModel && this.props.rightModel.itemCount === 0
+    ) {
+      this.props.onClickDeleteRelation()
+    } else if (this.props.isEditingExistingRelation) {
+        this.setState({displayConfirmDeletionPopup: true} as State)
+    } else {
+      this.props.close()
+    }
   }
 
   private generateRightSideForFooterForCreatingNewRelation = (): JSX.Element => {

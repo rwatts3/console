@@ -329,6 +329,9 @@ class CreditCardInputSection extends React.Component<Props, State> {
     if (newValue.length > 5) {
       return
     }
+    if (newValue.length === 4 && /^\d{4,4}$/.test(newValue)) {
+      newValue = newValue.slice(0, 2) + '/' + newValue.slice(-2)
+    }
     this.setState({expirationDate: newValue} as State, () => this.validateCreditCardDetails())
   }
 

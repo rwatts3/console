@@ -118,7 +118,6 @@ class FieldPopup extends React.Component<Props, State> {
         loading: false,
       }
     }
-    global['f'] = this
   }
 
   componentDidMount() {
@@ -178,7 +177,7 @@ class FieldPopup extends React.Component<Props, State> {
     // if there is an error, it's not valid
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
     const changed = didChange(this.state.field, this.props.field)
-    const breaking = isBreaking(this.state.field, this.props.field) && !deleting
+    const breaking = isBreaking(nodeCount, this.state.field, this.props.field) && !deleting
 
     let modalStyling = fieldModalStyle
     if (breaking || deletePopupVisible) {
@@ -298,6 +297,7 @@ class FieldPopup extends React.Component<Props, State> {
               onCancel={this.close}
               initialField={this.props.field}
               mutatedField={this.state.field}
+              nodeCount={nodeCount}
             />
           </div>
         </ModalDocs>
@@ -557,6 +557,7 @@ export default Relay.createContainer(MappedFieldPopup, {
           id
           name
           typeIdentifier
+          description
           isRequired
           isList
           isUnique

@@ -49,6 +49,26 @@ class HeaderCell extends React.Component<Props, {}> {
         className={classes.root}
       >
         <div className={classes.row}>
+          <div className='sort-wrapper'>
+            <style jsx>{`
+              .sort-wrapper {
+                width: 31px;
+              }
+            `}</style>
+            {isScalar(field.typeIdentifier) && !field.isList && (
+              <div
+                onClick={this.toggleSortOrder}
+                className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
+              >
+                <Icon
+                  src={require('assets/icons/arrow.svg')}
+                  width={11}
+                  height={6}
+                  rotate={sortOrder === 'DESC' ? 180 : 0}
+                />
+              </div>
+            )}
+          </div>
           <div className={classnames(classes.fieldName, {
             [classes.nonsystem]: !field.isSystem,
           })}>
@@ -71,19 +91,6 @@ class HeaderCell extends React.Component<Props, {}> {
             </Link>
             }
           </div>
-          {isScalar(field.typeIdentifier) && !field.isList &&
-          <div
-            onClick={this.toggleSortOrder}
-            className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
-          >
-            <Icon
-              src={require('assets/icons/arrow.svg')}
-              width={11}
-              height={6}
-              rotate={sortOrder === 'DESC' ? 180 : 0}
-            />
-          </div>
-          }
         </div>
       </div>
     )

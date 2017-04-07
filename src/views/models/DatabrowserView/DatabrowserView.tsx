@@ -48,6 +48,7 @@ import {LightCell} from './LightCell'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import {idToBeginning} from '../../../utils/utils'
+import Helmet from 'react-helmet'
 
 const classes: any = require('./DatabrowserView.scss')
 const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
@@ -238,6 +239,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         className={classes.root}
         onKeyDown={this.onKeyDown}
       >
+        <Helmet title={`${this.props.model.name} - Data`} />
         <ModelHeader
           params={this.props.params}
           model={this.props.model}

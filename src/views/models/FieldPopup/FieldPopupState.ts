@@ -46,7 +46,10 @@ export function isValid(nodeCount: number, mutatedField: Field, initialField?: F
   return errors
 }
 
-export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
+export function isBreaking(nodeCount: number, mutatedField: Field, initialField?: Field): boolean {
+  if (nodeCount === 0) {
+    return false
+  }
   if (!initialField) {
     return false
   }
