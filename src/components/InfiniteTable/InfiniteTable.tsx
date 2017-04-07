@@ -44,6 +44,22 @@ interface Props {
   updateCalled: () => void
 }
 
+export function createCellRenderer (cellRenderer) {
+  // console.warn('cellRenderer udpate needed')
+
+  return function cellRendererWrapper ({ key, style, ...rest }) {
+    return (
+      <div
+        className='Grid__cell'
+        key={key}
+        style={style}
+      >
+        {cellRenderer(rest)}
+      </div>
+    )
+  }
+}
+
 export default class InfiniteTable extends React.Component<Props, {}> {
 
   render() {
@@ -67,7 +83,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 columnWidth={this.props.columnWidth}
                 columnCount={this.props.columnCount}
                 height={this.props.headerHeight}
-                cellRenderer={this.props.headerRenderer}
+                cellRenderer={createCellRenderer(this.props.headerRenderer)}
                 cellStyle={{position: 'absolute', marginTop: '-1px'}}
                 rowHeight={this.props.headerHeight}
                 rowCount={1}
@@ -113,7 +129,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                 columnCount={this.props.columnCount}
                 columnWidth={this.props.columnWidth}
                 rowCount={this.props.rowCount}
-                cellRenderer={this.renderCell}
+                cellRenderer={createCellRenderer(this.renderCell)}
                 onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
                 scrollToRow={this.props.selectedCell.row}
                 overscanRowCount={20}

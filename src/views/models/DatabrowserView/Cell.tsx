@@ -17,6 +17,7 @@ import {
 } from '../../../actions/databrowser/ui'
 import {ReduxThunk, ReduxAction} from '../../../types/reducers'
 import {GridPosition} from '../../../types/databrowser/ui'
+import SelectNodesCell from './Cell/SelectNodesCell/SelectNodesCell'
 const classes: any = require('./Cell.scss')
 import { variables, particles } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -441,7 +442,7 @@ export default Relay.createContainer(MappedCell, {
           name
         }
         relatedModel {
-          ${NodeSelector.getFragment('relatedModel')}
+          ${SelectNodesCell.getFragment('model')}
           id
           name
         }

@@ -13,6 +13,7 @@ import RelationsPopup from '../RelationsPopup'
 import {isScalar, isNonScalarList} from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
 import NullableCell from './NullableCell'
+import SelectNodesCell from './SelectNodesCell/SelectNodesCell'
 
 export interface CellRequirements {
   value: any
@@ -42,11 +43,7 @@ export function getEditCell(reqs: CellRequirements): JSX.Element {
 
 function getSpecificEditCell(reqs: CellRequirements): JSX.Element {
   if (!isScalar(reqs.field.typeIdentifier)) {
-    if (reqs.field.isList) {
-      return getNonScalarListEditCell(reqs)
-    } else {
-      return getNonScalarEditCell(reqs)
-    }
+    return getNonScalarEditCell(reqs)
   }
 
   if (reqs.field.isList) {
@@ -68,16 +65,37 @@ function getNonScalarListEditCell(reqs: CellRequirements): JSX.Element {
 }
 
 function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
+  const isList = reqs.field.isList
+  let values
+
+  if (isList) {
+    values = reqs.value
+  } else {
+    // if it is null, don't add []
+    values = reqs.value ? [reqs.value] : reqs.value
+  }
+
   return (
-    <NodeSelector
-      relatedModel={reqs.field.relatedModel}
+    <SelectNodesCell
+      endpointUrl={`${__BACKEND_ADDR__}/simple/v1/${reqs.projectId}`}
       projectId={reqs.projectId}
-      value={reqs.value ? reqs.value.id : null}
-      onKeyDown={reqs.methods.onKeyDown}
+      model={reqs.field.relatedModel}
+      values={values}
+      multiSelect={reqs.field.isList}
       save={reqs.methods.save}
       cancel={reqs.methods.cancel}
     />
   )
+  // return (
+  //   <NodeSelector
+  //     relatedModel={reqs.field.relatedModel}
+  //     projectId={reqs.projectId}
+  //     value={reqs.value ? reqs.value.id : null}
+  //     onKeyDown={reqs.methods.onKeyDown}
+  //     save={reqs.methods.save}
+  //     cancel={reqs.methods.cancel}
+  //   />
+  // )
 }
 
 function getScalarListEditCell(reqs: CellRequirements): JSX.Element {
