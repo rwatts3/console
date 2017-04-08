@@ -2,14 +2,16 @@ import * as React from 'react'
 import {Field} from '../../../types/types'
 import {isScalar} from '../../../utils/graphql'
 import {Icon, $v} from 'graphcool-styles'
+import * as cn from 'classnames'
 
 interface Props {
   field: Field
+  big?: boolean
 }
 
 export default class TypeTag extends React.Component<Props, null> {
   render() {
-    const {field} = this.props
+    const {field, big} = this.props
 
     let type: string = field.typeIdentifier
     if (field.isList) {
@@ -19,7 +21,7 @@ export default class TypeTag extends React.Component<Props, null> {
       type = `${type}!`
     }
     return (
-      <div className='type-tag'>
+      <div className={cn('type-tag', {big})}>
         <style jsx>{`
         .type-tag {
           @p: .bgBlack04, .br2, .black50, .dib, .ml16, .f12, .flex, .itemsCenter;
@@ -31,6 +33,10 @@ export default class TypeTag extends React.Component<Props, null> {
                   'Monaco',
                   monospace;
           padding: 3px 6px 4px 6px;
+        }
+        .type-tag.big {
+          @p: .f16;
+          padding: 5px 8px 6px 8px;
         }
         .type-tag :global(i) {
           @p: .mr4;

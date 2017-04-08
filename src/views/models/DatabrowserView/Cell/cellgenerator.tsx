@@ -84,6 +84,7 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
       multiSelect={reqs.field.isList}
       save={reqs.methods.save}
       cancel={reqs.methods.cancel}
+      field={reqs.field}
     />
   )
   // return (

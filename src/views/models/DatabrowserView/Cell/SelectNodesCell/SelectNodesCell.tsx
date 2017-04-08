@@ -10,6 +10,7 @@ import {Model, Field} from '../../../../../types/types'
 import * as Relay from 'react-relay'
 import mapProps from 'map-props'
 import {isScalar} from '../../../../../utils/graphql'
+import TypeTag from '../../../../SchemaView/SchemaOverview/TypeTag'
 
 interface State {
   startIndex: number
@@ -22,6 +23,7 @@ interface State {
 }
 
 interface Props {
+  field: Field
   projectId: string
   model: Model
   fields: Field[]
@@ -59,6 +61,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         width: 'auto',
         minWidth: '600px',
         maxWidth: window.innerWidth - 100 + 'px',
+        overflow: 'visible',
       }),
     })
 
@@ -75,7 +78,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
   render() {
 
-    const {model, fields} = this.props
+    const {model, fields, field} = this.props
     // put id to beginning
     return (
       <Modal
@@ -86,14 +89,14 @@ class SelectNodesCell extends React.Component<Props, State> {
       >
         <style jsx>{`
           .select-user-popup {
-            @p: .bgWhite, .relative, .mh25;
+            @p: .bgWhite, .relative;
           }
           .title-wrapper {
             @p: .flex, .w100, .itemsCenter, .justifyCenter, .bb, .bBlack10;
             padding: 45px;
           }
           .title {
-            @p: .fw3, .f38;
+            @p: .fw3, .f38, .flex, .itemsCenter;
             letter-spacing: 0.54px;
           }
           .search {
@@ -125,7 +128,11 @@ class SelectNodesCell extends React.Component<Props, State> {
         <div className='select-user-popup'>
           <div className='title-wrapper'>
             <div className='title'>
-              Select a {model.name}
+              <span>{field.name}</span>
+              <TypeTag
+                field={field}
+                big
+              />
             </div>
             {this.state.selectedRowIndex > -1 && (
               <div className='selected-user'>

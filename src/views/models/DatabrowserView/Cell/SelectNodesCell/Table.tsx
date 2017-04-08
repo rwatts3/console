@@ -48,7 +48,7 @@ class TableComponent extends React.Component<Props, State> {
       <div className='popup-table'>
         <style jsx global>{`
           .popup-table {
-            @inherit: .bgBlack02, .w100, .overflowXScroll;
+            @inherit: .bgBlack02, .overflowXScroll, .relative, .w100;
             padding-top: 30px;
           }
           .popup-table .table-row {
