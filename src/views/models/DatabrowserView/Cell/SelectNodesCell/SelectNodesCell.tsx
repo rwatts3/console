@@ -20,7 +20,6 @@ interface State {
   items: any[]
   count: number
   query: string
-  selectedRowIndex: number
   scrollToIndex?: number
   selectedTabIndex: number
   values: string[] | null
@@ -33,7 +32,7 @@ interface Props {
   fields: Field[]
   values: string[] | null
   multiSelect: boolean
-  save: (values: string[]) => void
+  save: (values: string[] | string) => void
   cancel: () => void
   endpointUrl: string
   adminAuthToken: string
@@ -53,16 +52,17 @@ class SelectNodesCell extends React.Component<Props, State> {
       items: Immutable([]),
       query: '',
       count: 0,
-      selectedRowIndex: -1,
       scrollToIndex: undefined,
       selectedTabIndex: 0,
-      values: props.values,
+      values: props.values ? props.values.map(item => item.id) : props.values,
     }
 
     this.getItems({startIndex: 0, stopIndex: 50}, props.fields)
 
     this.style = Object.assign({}, modalStyle, {
-      overlay: modalStyle.overlay,
+      overlay: Object.assign({}, modalStyle.overlay, {
+        backgroundColor: 'transparent',
+      }),
       content: Object.assign({}, modalStyle.content, {
         width: 'auto',
         minWidth: '600px',
@@ -77,7 +77,7 @@ class SelectNodesCell extends React.Component<Props, State> {
   componentWillReceiveProps(nextProps) {
     const {startIndex, stopIndex} = this.state
 
-    if (nextProps.userFields.length !== this.props.fields.length) {
+    if (nextProps.fields.length !== this.props.fields.length) {
       this.getItems({startIndex, stopIndex}, nextProps.fields)
     }
   }
@@ -187,7 +187,26 @@ class SelectNodesCell extends React.Component<Props, State> {
   }
 
   private save = () => {
-    this.props.save(this.state.values)
+    let values: string | string[] = this.state.values
+    if (!this.props.multiSelect) {
+      values = (values && values.length > 0) ? values[0] : null
+    }
+    if (values) {
+      values = this.mapNodes(values)
+    }
+    this.props.save(values)
+  }
+
+  private mapNodes(id: string | string[]) {
+    if (Array.isArray(id)) {
+      return id.map(this.mapNode, this)
+    } else {
+      return this.mapNode(id)
+    }
+  }
+
+  private mapNode(id: string) {
+    return this.state.items.find(item => item.id === id)
   }
 
   private handleSetNull = () => {
@@ -196,20 +215,30 @@ class SelectNodesCell extends React.Component<Props, State> {
 
   private handleRowSelection = ({index, rowData}) => {
     this.setState(state => {
-      let {items} = state
+      let {items, values} = state
+      const row = items[index]
 
-      if (state.selectedRowIndex > -1 && !this.props.multiSelect && state.selectedRowIndex !== index) {
-        console.log('setting in 1')
-        items = Immutable.setIn(items, [state.selectedRowIndex, 'selected'], false)
+      if (!this.props.multiSelect && values && values.length > 0 && row.id !== values[0]) {
+        const itemIndex = items.findIndex(item => item.id === values[0])
+        items = Immutable.setIn(items, [itemIndex, 'selected'], false)
       }
 
       // TODO this is tricky and necessary for required relations to be changed
       const newValue = !items[index].selected
-      console.log('setting in 2', newValue)
       items = Immutable.setIn(items, [index, 'selected'], newValue)
+
+      let newValues = values ? values.slice() : []
+      // either remove or add the id to the list of values
+      if (newValues.includes(row.id)) {
+        const i = newValues.indexOf(row.id)
+        newValues.splice(i, 1)
+      } else {
+        newValues.push(row.id)
+      }
 
       return {
         ...state,
+        values: newValues,
         items,
         selectedRowIndex: index,
       }
@@ -250,7 +279,7 @@ class SelectNodesCell extends React.Component<Props, State> {
     if ((query && query.length > 0) || tab !== 'all') {
       filter = ' filter: {'
       if (query && query.length) {
-        filter = 'OR: ['
+        filter += 'OR: ['
         const whiteList = ['GraphQLID', 'String', 'Enum']
 
         const filtered = fields.filter((field: Field) => {
@@ -283,9 +312,6 @@ class SelectNodesCell extends React.Component<Props, State> {
       }
     `
 
-    console.log('the query')
-    console.log(itemsQuery)
-
     fetch(
       this.props.endpointUrl,
       {
@@ -304,7 +330,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         const meta = res.data[this.getAllNameMeta()]
         const newItems = res.data[this.getAllName()]
 
-        let {items} = this.state
+        let {items, values} = this.state
 
         // reset data if search changed
         if (query !== this.lastQuery) {
@@ -312,6 +338,9 @@ class SelectNodesCell extends React.Component<Props, State> {
         }
 
         newItems.forEach((item, i) => {
+          if (values && values.includes(item.id)) {
+            item['selected'] = true
+          }
           items = Immutable.set(items, (i + startIndex), item)
         })
 
@@ -371,6 +400,9 @@ export default Relay.createContainer(MappedSelectNodesCell, {
               id
               typeIdentifier
               name
+              relatedModel {
+                name
+              }
             }
           }
         }

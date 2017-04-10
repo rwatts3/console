@@ -44,8 +44,14 @@ function valueToGQL(value: TypedValue, field: Field): string {
   }
 
   if (!isScalar(field.typeIdentifier)) {
-    if (field.isList && (value as any[]).length === 0) {
-      return '"[]"'
+    if (field.isList) {
+      // we can safely assume that it's a list at this point
+      const values = value as any[]
+      if (values.length === 0) {
+        return '"[]"'
+      } else {
+        return `[${values.map(v => `"${v.id}"`).join(',')}]`
+      }
     }
     return `"${(value as NonScalarValue).id}"`
   }
@@ -60,13 +66,14 @@ function valueToGQL(value: TypedValue, field: Field): string {
 }
 
 export function toGQL(value: TypedValue, field: Field): string {
-  const key = isScalar(field.typeIdentifier) ? field.name : `${field.name}Id`
+  let key = isScalar(field.typeIdentifier) ? field.name : field.isList ? `${field.name}Ids` : `${field.name}Id`
 
   if (value === null && field.isRequired) {
     return ''
   }
 
-  return `${key}: ${valueToGQL(value, field)}`
+  const output = valueToGQL(value, field)
+  return `${key}: ${output}`
 }
 
 export function compareFields(a: Field, b: Field): number {
@@ -110,7 +117,7 @@ export function getDefaultFieldValues(fields: Field[]): { [key: string]: any } {
 
 export function calculateFieldColumnWidths (width: number,
                                             fields: Field[],
-                                            nodes: Immutable.List<Immutable.Map<string, any>>,
+                                            nodes: any,
                                            ): FieldWidths {
   const cellFontOptions = {
     font: 'Open Sans',
@@ -133,12 +140,14 @@ export function calculateFieldColumnWidths (width: number,
           return 200
       }
 
-      const cellWidths = nodes
+      let cellWidths = nodes
       .filter(node => !!node)
-      .map(node => node.get(field.name))
+      .map(node => node.hasOwnProperty('get') ? node.get(field.name) : node[field.name])
       .map(value => valueToString(value, field, false))
       .map(str => calculateSize(str, cellFontOptions).width + 41)
-      .toArray()
+      if (cellWidths.hasOwnProperty('toArray')) {
+        cellWidths = cellWidths.toArray()
+      }
 
       const headerWidth = calculateSize(`${field.name} ${getFieldTypeName(field)}`, headerFontOptions).width + 90
 

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { InfiniteLoader, Table, Column } from 'react-virtualized'
 import {Model} from '../../../../../types/types'
 import * as Relay from 'react-relay'
+import {calculateFieldColumnWidths} from '../../../utils'
 
 interface Props {
   rows: any[]
@@ -26,6 +27,8 @@ function pZ(n: number) {
 
 class TableComponent extends React.Component<Props, State> {
 
+  widths: {[fieldName: string]: number}
+
   constructor(props) {
     super(props)
 
@@ -37,10 +40,12 @@ class TableComponent extends React.Component<Props, State> {
     }
 
     global['t'] = this
+    // due to the nature of how this component is used, we can safely assume that the field props won't change
+    this.widths = calculateFieldColumnWidths(window.innerWidth - 200, props.fields, props.rows)
   }
 
   render() {
-    const { rowCount, fields } = this.props
+    const { rowCount, fields, rows } = this.props
     const { height, rowHeight, overscanRowCount } = this.state
 
     return (
@@ -89,7 +94,7 @@ class TableComponent extends React.Component<Props, State> {
               rowGetter={this.rowGetter}
               headerClassName='table-header'
               ref={registerChild}
-              width={fields.map(field => field.width || 200).reduce((acc, value) => (acc + value), 0)}
+              width={fields.map(field => this.widths[field.name]).reduce((acc, value) => (acc + value), 0)}
               onRowsRendered={onRowsRendered}
               onRowClick={this.props.onRowSelection}
               rowClassName={this.rowClassName}
@@ -100,7 +105,7 @@ class TableComponent extends React.Component<Props, State> {
                   key={field.name}
                   label={field.name}
                   dataKey={field.name}
-                  width={field.width || 200}
+                  width={this.widths[field.name]}
                 />
               ))}
             </Table>
@@ -145,6 +150,18 @@ class TableComponent extends React.Component<Props, State> {
   }
 
   private textToString(value) {
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        return '[]'
+      }
+      if (value[0] && value[0].id) {
+        const values = value as any[]
+        return `[${value.map(v => `"${v.id}"`).join(',')}]`
+      }
+    }
+    if (typeof value === 'object' && value && value.hasOwnProperty('id')) {
+      return String(value['id'])
+    }
     if (value instanceof Date) {
       return `${pZ(value.getMonth() + 1)}/${pZ(value.getDate())}/${value.getFullYear().toString().slice(2,4)} ` +
         `${value.getHours()}:${pZ(value.getMinutes())}:${pZ(value.getSeconds())}`
