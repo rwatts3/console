@@ -42,7 +42,6 @@ class TableComponent extends React.Component<Props, State> {
   render() {
     const { rowCount, fields } = this.props
     const { height, rowHeight, overscanRowCount } = this.state
-    console.log('Table.render()', rowCount, fields)
 
     return (
       <div className='popup-table'>

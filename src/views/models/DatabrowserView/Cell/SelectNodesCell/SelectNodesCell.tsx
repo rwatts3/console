@@ -11,6 +11,8 @@ import * as Relay from 'react-relay'
 import mapProps from 'map-props'
 import {isScalar} from '../../../../../utils/graphql'
 import TypeTag from '../../../../SchemaView/SchemaOverview/TypeTag'
+import Tabs from './Tabs'
+import SelectNodesCellFooter from './SelectNodesCellFooter'
 
 interface State {
   startIndex: number
@@ -20,6 +22,8 @@ interface State {
   query: string
   selectedRowIndex: number
   scrollToIndex?: number
+  selectedTabIndex: number
+  values: string[] | null
 }
 
 interface Props {
@@ -27,7 +31,7 @@ interface Props {
   projectId: string
   model: Model
   fields: Field[]
-  values: string[]
+  values: string[] | null
   multiSelect: boolean
   save: (values: string[]) => void
   cancel: () => void
@@ -51,6 +55,8 @@ class SelectNodesCell extends React.Component<Props, State> {
       count: 0,
       selectedRowIndex: -1,
       scrollToIndex: undefined,
+      selectedTabIndex: 0,
+      values: props.values,
     }
 
     this.getItems({startIndex: 0, stopIndex: 50}, props.fields)
@@ -79,6 +85,7 @@ class SelectNodesCell extends React.Component<Props, State> {
   render() {
 
     const {model, fields, field} = this.props
+    const {selectedTabIndex} = this.state
     // put id to beginning
     return (
       <Modal
@@ -99,8 +106,8 @@ class SelectNodesCell extends React.Component<Props, State> {
             @p: .fw3, .f38, .flex, .itemsCenter;
             letter-spacing: 0.54px;
           }
-          .search {
-            @p: .absolute, .w100, .bbox, .ph38, .z2, .flex, .justifyCenter;
+          .header {
+            @p: .absolute, .w100, .bbox, .ph25, .z2, .flex, .justifyBetween, .itemsCenter;
             margin-top: -24px;
           }
           .search-box {
@@ -134,12 +141,6 @@ class SelectNodesCell extends React.Component<Props, State> {
                 big
               />
             </div>
-            {this.state.selectedRowIndex > -1 && (
-              <div className='selected-user'>
-                <div>Selected {model.name} ID</div>
-                <div className='selected-user-id'>{this.state.items[this.state.selectedRowIndex].id}</div>
-              </div>
-            )}
           </div>
           <Icon
             src={require('graphcool-styles/icons/stroke/cross.svg')}
@@ -151,7 +152,12 @@ class SelectNodesCell extends React.Component<Props, State> {
             color={$v.gray50}
             onClick={this.props.cancel}
           />
-          <div className='search'>
+          <div className='header'>
+            <Tabs
+              options={tabs}
+              activeIndex={selectedTabIndex}
+              onChangeIndex={this.handleTabChange}
+            />
             <div className='search-box'>
               <SearchBox
                 placeholder={`Search for a ${model.name} ...`}
@@ -170,24 +176,37 @@ class SelectNodesCell extends React.Component<Props, State> {
             onRowSelection={this.handleRowSelection}
             scrollToIndex={this.state.scrollToIndex}
           />
+          <SelectNodesCellFooter
+            onSetNull={this.handleSetNull}
+            onCancel={this.props.cancel}
+            onSave={this.save}
+          />
         </div>
       </Modal>
     )
   }
 
-  private handleRowSelection = ({index, rowData}) => {
-    if (index === this.state.selectedRowIndex) {
-      return
-    }
+  private save = () => {
+    this.props.save(this.state.values)
+  }
 
+  private handleSetNull = () => {
+    this.setState({values: null} as State)
+  }
+
+  private handleRowSelection = ({index, rowData}) => {
     this.setState(state => {
       let {items} = state
 
-      if (state.selectedRowIndex > -1) {
+      if (state.selectedRowIndex > -1 && !this.props.multiSelect && state.selectedRowIndex !== index) {
+        console.log('setting in 1')
         items = Immutable.setIn(items, [state.selectedRowIndex, 'selected'], false)
       }
 
-      items = Immutable.setIn(items, [index, 'selected'], true)
+      // TODO this is tricky and necessary for required relations to be changed
+      const newValue = !items[index].selected
+      console.log('setting in 2', newValue)
+      items = Immutable.setIn(items, [index, 'selected'], newValue)
 
       return {
         ...state,
@@ -197,11 +216,17 @@ class SelectNodesCell extends React.Component<Props, State> {
     })
   }
 
+  private handleTabChange = index => {
+    this.setState({selectedTabIndex: index} as State, this.getItemsFromState)
+  }
+
   private handleSearch = (value) => {
-    this.setState({query: value} as State, () => {
-      const {startIndex, stopIndex} = this.state
-      this.getItems({startIndex, stopIndex})
-    })
+    this.setState({query: value} as State, this.getItemsFromState)
+  }
+
+  private getItemsFromState = () => {
+    const {startIndex, stopIndex} = this.state
+    this.getItems({startIndex, stopIndex})
   }
 
   /**
@@ -212,7 +237,8 @@ class SelectNodesCell extends React.Component<Props, State> {
    *        we make this available as a parameter
    */
   private getItems = ({startIndex, stopIndex}: {startIndex: number, stopIndex: number}, customFields?: Field[]) => {
-    const {query} = this.state
+    const {query, selectedTabIndex} = this.state
+    const tab = tabs[selectedTabIndex]
     const fields = customFields || this.props.fields
 
     if (fields.length === 0) {
@@ -220,24 +246,35 @@ class SelectNodesCell extends React.Component<Props, State> {
     }
 
     let filter = ''
-    if (query && query.length > 0) {
-      filter = ' filter: { OR: ['
+    // either there must be a search query or the tab unequal all
+    if ((query && query.length > 0) || tab !== 'all') {
+      filter = ' filter: {'
+      if (query && query.length) {
+        filter = 'OR: ['
+        const whiteList = ['GraphQLID', 'String', 'Enum']
 
-      const whiteList = ['GraphQLID', 'String', 'Enum']
+        const filtered = fields.filter((field: Field) => {
+          return whiteList.indexOf(field.typeIdentifier.toString()) > -1
+        })
 
-      const filtered = fields.filter((field: Field) => {
-        return whiteList.indexOf(field.typeIdentifier.toString()) > -1
-      })
+        filter += filtered.map(field => `{${field.name}_contains: "${query}"}`).join(',\n')
 
-      filter += filtered.map(field => `{${field.name}_contains: "${query}"}`).join(',\n')
+        filter += ']'
+      }
 
-      filter += ']}'
+      if (tab !== 'all') {
+        const {values} = this.state
+        const related = tab === 'related' ? '' : '_not'
+        filter += `id${related}_in: [${values ? values.map(value => `"${value}"`).join(',') : ''}]`
+      }
+
+      filter += '}'
     }
 
     const count = stopIndex - startIndex
-    const userQuery = `
+    const itemsQuery = `
       {
-        ${this.getAllNameMeta()} {
+        ${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
           count
         }
         ${this.getAllName()}(skip: ${startIndex} first: ${count}${filter}){
@@ -245,6 +282,9 @@ class SelectNodesCell extends React.Component<Props, State> {
         }
       }
     `
+
+    console.log('the query')
+    console.log(itemsQuery)
 
     fetch(
       this.props.endpointUrl,
@@ -255,7 +295,7 @@ class SelectNodesCell extends React.Component<Props, State> {
           'Authorization': `Bearer ${this.props.adminAuthToken}`,
           'X-GraphCool-Source': 'playground',
         },
-        body: JSON.stringify({query: userQuery}),
+        body: JSON.stringify({query: itemsQuery}),
       },
     )
       .then(res => res.json())
@@ -309,6 +349,8 @@ class SelectNodesCell extends React.Component<Props, State> {
     return `_${this.getAllName()}Meta`
   }
 }
+
+const tabs = ['all', 'related', 'unrelated']
 
 const MappedSelectNodesCell = mapProps({
   model: props => props.model,
