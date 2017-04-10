@@ -1,8 +1,11 @@
 import * as React from 'react'
 import { InfiniteLoader, Table, Column } from 'react-virtualized'
-import {Model} from '../../../../../types/types'
+import {Model} from '../../../../../../types/types'
 import * as Relay from 'react-relay'
-import {calculateFieldColumnWidths} from '../../../utils'
+import {calculateFieldColumnWidths} from '../../../../utils'
+import headerRenderer from './headerRenderer'
+import {Icon} from 'graphcool-styles'
+import * as cn from 'classnames'
 
 interface Props {
   rows: any[]
@@ -12,6 +15,7 @@ interface Props {
   onRowSelection: (input: {index: number}) => void
   scrollToIndex?: number
   model: Model
+  showOption: boolean
 }
 
 interface State {
@@ -45,37 +49,46 @@ class TableComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { rowCount, fields, rows } = this.props
+    const { rowCount, fields, rows, showOption } = this.props
     const { height, rowHeight, overscanRowCount } = this.state
 
     return (
-      <div className='popup-table'>
+      <div className={cn('popup-table', {single: !showOption})}>
         <style jsx global>{`
           .popup-table {
-            @inherit: .bgBlack02, .overflowXScroll, .relative, .w100;
+            @p: .bgBlack02, .overflowXScroll, .relative, .w100;
             padding-top: 30px;
           }
           .popup-table .table-row {
-            @inherit: .flex, .pointer;
+            @p: .flex, .pointer;
             &:focus {
               outline: none;
             }
           }
           .popup-table .table-row.selected {
-            @inherit: .bgBlue, .white;
+            @p: .bgBlue, .white;
           }
           .ReactVirtualized__Table__Grid {
-            @inherit: .bgWhite;
+            @p: .bgWhite;
             box-shadow: 0 1px 4px rgba(0,0,0,.1);
           }
           .table-header {
-            @inherit: .fw6;
+            @p: .fw6;
           }
           .ReactVirtualized__Table__headerColumn {
-            @inherit: .ph25, .pv16, .bbox, .overflowHidden, .toe, .black60;
+            @p: .ph25, .pv16, .bbox, .overflowHidden, .toe, .black60;
           }
           .ReactVirtualized__Table__rowColumn {
-            @inherit: .overflowHidden, .ph25, .pv16, .toe, .br, .bb, .bBlack10, .nowrap;
+            @p: .overflowHidden, .toe, .br, .bb, .bBlack10, .nowrap;
+          }
+          .ReactVirtualized__Table__rowColumn + .ReactVirtualized__Table__rowColumn {
+            @p: .ph25, .pv16;
+          }
+          .table-row.selected .ReactVirtualized__Table__rowColumn {
+            @p: .bn;
+          }
+          .popup-table.single .ReactVirtualized__Table__rowColumn {
+            @p: .ph25, .pv16;
           }
         `}</style>
         <InfiniteLoader
@@ -100,17 +113,61 @@ class TableComponent extends React.Component<Props, State> {
               rowClassName={this.rowClassName}
               scrollToIndex={this.props.scrollToIndex}
             >
+              {showOption && (
+                <Column
+                  key='option'
+                  label='Select'
+                  dataKey='Select'
+                  width={54}
+                  cellRenderer={this.optionCellRenderer}
+                  headerRenderer={() => null}
+                />
+              )}
               {fields.map(field => (
                 <Column
                   key={field.name}
                   label={field.name}
                   dataKey={field.name}
                   width={this.widths[field.name]}
+                  headerRenderer={headerRenderer(field)}
                 />
               ))}
             </Table>
           )}
         </InfiniteLoader>
+      </div>
+    )
+  }
+
+  private optionCellRenderer = ({rowData}) => {
+    const active = rowData.selected === 'true'
+    return (
+      <div className='option-cell'>
+        <style jsx>{`
+          .option-cell {
+            @p: .flex, .itemsCenter, .justifyCenter;
+            height: 54px;
+            width: 54px;
+          }
+          .option {
+            @p: .flex, .itemsCenter, .justifyCenter, .br100, .ba, .bBlack10;
+            width: 25px;
+            height: 25px;
+          }
+          .option.active {
+            @p: .bn, .bgWhite20;
+          }
+        `}</style>
+        <div className={cn('option', {active})}>
+          {active && (
+            <Icon
+              src={require('graphcool-styles/icons/fill/check.svg')}
+              color='white'
+              width={17}
+              height={17}
+            />
+          )}
+        </div>
       </div>
     )
   }
@@ -124,7 +181,7 @@ class TableComponent extends React.Component<Props, State> {
       <div className='no-rows'>
         <style jsx>{`
          .no-rows {
-           @inherit: .w100, .h100, .flex, .justifyCenter, .itemsCenter;
+           @p: .w100, .h100, .flex, .justifyCenter, .itemsCenter;
          }
         `}</style>
         <div>
@@ -181,9 +238,9 @@ class TableComponent extends React.Component<Props, State> {
   //     >
   //       <style jsx>{`
   //         .cell {
-  //           @inherit: .bbox, .pv16, .ph25, .f16;
+  //           @p: .bbox, .pv16, .ph25, .f16;
   //           &.selected {
-  //             @inherit: .bgBlue, .white;
+  //             @p: .bgBlue, .white;
   //           }
   //         }
   //       `}</style>

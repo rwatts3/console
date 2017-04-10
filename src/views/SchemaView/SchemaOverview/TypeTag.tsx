@@ -24,7 +24,7 @@ export default class TypeTag extends React.Component<Props, null> {
       <div className={cn('type-tag', {big})}>
         <style jsx>{`
         .type-tag {
-          @p: .bgBlack04, .br2, .black50, .dib, .ml16, .f12, .flex, .itemsCenter;
+          @p: .bgBlack04, .br2, .black50, .dib, .ml16, .f12, .flex, .itemsCenter, .fw4;
           font-family:
                   'Source Code Pro',
                   'Consolas',

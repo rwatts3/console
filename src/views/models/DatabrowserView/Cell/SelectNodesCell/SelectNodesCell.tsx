@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as fetch from 'isomorphic-fetch'
 import * as Modal from 'react-modal'
 import {Icon, $v} from 'graphcool-styles'
-import Table from './Table'
+import Table from './Table/Table'
 import SearchBox from './SearchBox'
 import * as Immutable from 'seamless-immutable'
 import modalStyle from '../../../../../utils/modalStyle'
@@ -175,6 +175,7 @@ class SelectNodesCell extends React.Component<Props, State> {
             loadMoreRows={this.getItems}
             onRowSelection={this.handleRowSelection}
             scrollToIndex={this.state.scrollToIndex}
+            showOption={this.props.multiSelect}
           />
           <SelectNodesCellFooter
             onSetNull={this.handleSetNull}
@@ -210,15 +211,28 @@ class SelectNodesCell extends React.Component<Props, State> {
   }
 
   private handleSetNull = () => {
-    this.setState({values: null} as State)
+    this.setState(state => {
+
+      return {
+        ...state,
+        items: state.items.map(item => {
+          return {
+            ...item,
+            selected: false,
+          }
+        }),
+        values: null,
+      }
+    })
   }
 
   private handleRowSelection = ({index, rowData}) => {
     this.setState(state => {
+      const {multiSelect} = this.props
       let {items, values} = state
       const row = items[index]
 
-      if (!this.props.multiSelect && values && values.length > 0 && row.id !== values[0]) {
+      if (!multiSelect && values && values.length > 0 && row.id !== values[0]) {
         const itemIndex = items.findIndex(item => item.id === values[0])
         items = Immutable.setIn(items, [itemIndex, 'selected'], false)
       }
@@ -227,7 +241,7 @@ class SelectNodesCell extends React.Component<Props, State> {
       const newValue = !items[index].selected
       items = Immutable.setIn(items, [index, 'selected'], newValue)
 
-      let newValues = values ? values.slice() : []
+      let newValues = (values && multiSelect) ? values.slice() : []
       // either remove or add the id to the list of values
       if (newValues.includes(row.id)) {
         const i = newValues.indexOf(row.id)
