@@ -77,6 +77,7 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private escaped: boolean
+  private saving: boolean
 
   constructor(props: Props) {
     super(props)
@@ -144,6 +145,11 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private save = (value: TypedValue, keepEditing: boolean = false): void => {
+    if (this.saving) {
+      return
+    }
+    this.saving = true
+
     if (this.props.isReadonly) {
       return
     }
@@ -185,7 +191,7 @@ export class Cell extends React.PureComponent<Props, State> {
     }
 
     this.props.update(value, this.props.field, () => {
-      //
+      this.saving = false
     })
   }
 

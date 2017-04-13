@@ -80,23 +80,13 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
       endpointUrl={`${__BACKEND_ADDR__}/simple/v1/${reqs.projectId}`}
       projectId={reqs.projectId}
       model={reqs.field.relatedModel}
-      values={values}
       multiSelect={reqs.field.isList}
       save={reqs.methods.save}
       cancel={reqs.methods.cancel}
       field={reqs.field}
+      nodeId={reqs.nodeId}
     />
   )
-  // return (
-  //   <NodeSelector
-  //     relatedModel={reqs.field.relatedModel}
-  //     projectId={reqs.projectId}
-  //     value={reqs.value ? reqs.value.id : null}
-  //     onKeyDown={reqs.methods.onKeyDown}
-  //     save={reqs.methods.save}
-  //     cancel={reqs.methods.cancel}
-  //   />
-  // )
 }
 
 function getScalarListEditCell(reqs: CellRequirements): JSX.Element {

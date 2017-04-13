@@ -23,16 +23,16 @@ interface State {
   query: string
   scrollToIndex?: number
   selectedTabIndex: number
-  values: string[] | null
   adminAuthToken: string
+  values: string[] | null
 }
 
 interface Props {
   field: Field
+  nodeId?: string
   projectId: string
   model: Model
   fields: Field[]
-  values: string[] | null
   multiSelect: boolean
   save: (values: string[] | string) => void
   cancel: () => void
@@ -54,8 +54,8 @@ class SelectNodesCell extends React.Component<Props, State> {
       query: '',
       count: 0,
       scrollToIndex: undefined,
-      selectedTabIndex: 0,
-      values: props.values ? props.values.map(item => item.id) : props.values,
+      selectedTabIndex: 1,
+      values: [],
       adminAuthToken: cookiestore.has('graphcool_auth_token') && cookiestore.get('graphcool_auth_token'),
     }
 
@@ -307,24 +307,29 @@ class SelectNodesCell extends React.Component<Props, State> {
         filter += ']'
       }
 
-      if (tab !== 'all') {
+      if (tab === 'unrelated') {
         const {values} = this.state
-        const related = tab === 'related' ? '' : '_not'
-        filter += `id${related}_in: [${values ? values.map(value => `"${value}"`).join(',') : ''}]`
+        filter += `id_not_in: [${values ? values.map(value => `"${value}"`).join(',') : ''}]`
       }
 
       filter += '}'
     }
 
+    const {nodeId, field} = this.props
+    const getRelated = nodeId && tab === 'related'
     const count = stopIndex - startIndex
+    const nodeSelector = getRelated ? `${field.model.name}(id: "${nodeId}") {` : ''
+
     const itemsQuery = `
       {
+        ${nodeSelector}
         ${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
           count
         }
         ${this.getAllName()}(skip: ${startIndex} first: ${count}${filter}){
           ${fields.map(f => f.name + (isScalar(f.typeIdentifier) ? '' : ' {id} ')).join('\n')}
         }
+        ${getRelated ? '}' : ''}
       }
     `
 
@@ -343,10 +348,20 @@ class SelectNodesCell extends React.Component<Props, State> {
       .then(res => res.json())
       .then(res => {
 
-        const meta = res.data[this.getAllNameMeta()]
-        const newItems = res.data[this.getAllName()]
+        let pointer = res.data
+
+        if (getRelated) {
+          pointer = pointer[field.model.name]
+        }
+
+        const meta = pointer[this.getAllNameMeta()]
+        const newItems = pointer[this.getAllName()]
 
         let {items, values} = this.state
+
+        if (tab === 'related') {
+          values = newItems.map(item => item.id)
+        }
 
         // reset data if search changed
         if (query !== this.lastQuery) {
@@ -362,6 +377,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
         let newState = {
           items,
+          values,
           count: meta.count,
         }
 
@@ -387,6 +403,9 @@ class SelectNodesCell extends React.Component<Props, State> {
   }
 
   private getAllName() {
+    if (this.props.nodeId && this.state.selectedTabIndex === 1) {
+      return this.props.field.name
+    }
     return `all${this.props.model.namePlural}`
   }
 
