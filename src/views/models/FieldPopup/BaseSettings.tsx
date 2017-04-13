@@ -161,7 +161,7 @@ export default class BaseSettings extends React.Component<Props,State> {
                     height={26}
                   />
                 </div>
-                <div className='enum-values-placeholder-text'>add space-seperated enum values</div>
+                <div className='enum-values-placeholder-text'>add space-separated enum values</div>
               </div>
             )}
             {showErrors && errors.enumValueMissing && (

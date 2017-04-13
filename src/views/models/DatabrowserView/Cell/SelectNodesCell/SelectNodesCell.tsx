@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as cookiestore from 'cookiestore'
 import * as fetch from 'isomorphic-fetch'
 import * as Modal from 'react-modal'
 import {Icon, $v} from 'graphcool-styles'
@@ -23,6 +24,7 @@ interface State {
   scrollToIndex?: number
   selectedTabIndex: number
   values: string[] | null
+  adminAuthToken: string
 }
 
 interface Props {
@@ -35,7 +37,6 @@ interface Props {
   save: (values: string[] | string) => void
   cancel: () => void
   endpointUrl: string
-  adminAuthToken: string
 }
 
 class SelectNodesCell extends React.Component<Props, State> {
@@ -55,6 +56,7 @@ class SelectNodesCell extends React.Component<Props, State> {
       scrollToIndex: undefined,
       selectedTabIndex: 0,
       values: props.values ? props.values.map(item => item.id) : props.values,
+      adminAuthToken: cookiestore.has('graphcool_auth_token') && cookiestore.get('graphcool_auth_token'),
     }
 
     this.getItems({startIndex: 0, stopIndex: 50}, props.fields)
@@ -332,7 +334,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.props.adminAuthToken}`,
+          'Authorization': `Bearer ${this.state.adminAuthToken}`,
           'X-GraphCool-Source': 'playground',
         },
         body: JSON.stringify({query: itemsQuery}),
