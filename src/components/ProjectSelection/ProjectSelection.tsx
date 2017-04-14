@@ -157,10 +157,6 @@ const AddProject = styled.div`
   }
 `
 
-const ProjectName = styled.div`
-  max-width: 180px;
-`
-
 class ProjectSelection extends React.PureComponent<Props, State> {
 
   state = {
@@ -190,7 +186,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
             className={cx($p.h100, $p.w100, $p.f20, $p.flex, $p.itemsCenter)}
           >
             <div
-              className={cx($p.bgGreen, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
+            className={cx($p.bgGreen, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer, $p.flexFixed)}
               style={{
                 width: '67px',
                 height: '67px',
@@ -206,20 +202,32 @@ class ProjectSelection extends React.PureComponent<Props, State> {
             </div>
             {this.props.sidebarExpanded && (
               <div
-                className={cx($p.flex, $p.justifyBetween, $p.selfStretch, $p.itemsCenter, $p.ph25, $p.pointer)}
-                style={{
-                  flexGrow: 2,
-                }}
+                className={cx($p.flex, $p.itemsCenter, $p.ph16, $p.pointer, $p.w100, $p.flexAuto)}
               >
-                <ProjectName className={cx($p.overflowHidden)}>
-                  <div className={cx($p.overflowHidden, $p.toe)}>
+                <div className='project-name-wrapper'>
+                  <style jsx>{`
+                    .project-name-wrapper {
+                      @p: .overflowHidden, .w100, .relative;
+                    }
+                    .project-name-wrapper:after {
+                      @p: .absolute, .right0, .top0, .bottom0;
+                      pointer-events: none;
+                      content: "";
+                      width: 20px;
+                      background: linear-gradient(to right, rgba(23,42,58, 0), rgba(23,42,58, 1));
+                    }
+                    .project-name {
+                      @p: .nowrap, .overflowAuto;
+                    }
+                  `}</style>
+                  <div className='project-name' title={this.props.selectedProject.name}>
                     {this.props.selectedProject.name}
                   </div>
                   {this.collaboratorElement()}
-                </ProjectName>
+                </div>
                 <Arrow
                   turned={this.state.expanded}
-                  className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.brPill)}
+                  className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.brPill, $p.flexFixed)}
                   style={{
                     marginRight: '-3px',
                   }}
