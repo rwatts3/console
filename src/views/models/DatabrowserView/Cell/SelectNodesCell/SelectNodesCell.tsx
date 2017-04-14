@@ -67,7 +67,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
     this.style = Object.assign({}, modalStyle, {
       overlay: Object.assign({}, modalStyle.overlay, {
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(255,255,255,.4)',
       }),
       content: Object.assign({}, modalStyle.content, {
         width: 'auto',
