@@ -42,6 +42,7 @@ interface State {
 }
 
 interface Props {
+  location: any
   router: ReactRouter.InjectedRouter
   children: Element
   isLoggedin: boolean
@@ -233,6 +234,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
                 />
                 <SideNav
                   params={this.props.params}
+                  location={this.props.location}
                   project={this.props.project}
                   viewer={this.props.viewer}
                   projectCount={this.props.allProjects.length}

@@ -169,6 +169,7 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   render() {
     const {isBetaCustomer, project, expanded} = this.props
+    console.log(this.props.location)
     return (
       <div
         className='side-nav'
@@ -195,11 +196,11 @@ export class SideNav extends React.PureComponent<Props, State> {
             iconSrc={require('assets/icons/schema.svg')}
             text='Schema'
             size={24}
-            active={location.pathname.includes(`${this.props.params.projectName}/schema`)}
+            active={this.props.location.pathname.includes(`/schema`) && this.props.params.projectName}
             small={!this.props.expanded}
           />
           <SideNavElement
-            active={location.pathname.endsWith('databrowser')}
+            active={this.props.location.pathname.endsWith('databrowser')}
             link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
             iconSrc={require('assets/icons/databrowser.svg')}
             text='Data'
@@ -215,21 +216,21 @@ export class SideNav extends React.PureComponent<Props, State> {
             link={`/${project.name}/permissions`}
             iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
             text='Permissions'
-            active={location.pathname.includes('/permissions')}
+            active={this.props.location.pathname.includes('/permissions')}
             small={!this.props.expanded}
           />
           <SideNavElement
             link={`/${project.name}/actions`}
             iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
             text='Mutation Callbacks'
-            active={location.pathname.endsWith('/actions')}
+            active={this.props.location.pathname.endsWith('/actions')}
             small={!this.props.expanded}
           />
           <SideNavElement
             link={`/${project.name}/integrations`}
             iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
             text='Integrations'
-            active={location.pathname.endsWith('/integrations')}
+            active={this.props.location.pathname.endsWith('/integrations')}
             small={!this.props.expanded}
           />
         </div>

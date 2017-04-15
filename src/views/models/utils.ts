@@ -48,7 +48,7 @@ function valueToGQL(value: TypedValue, field: Field): string {
       // we can safely assume that it's a list at this point
       const values = value as any[]
       if (values.length === 0) {
-        return '"[]"'
+        return '[]'
       } else {
         return `[${values.map(v => `"${v.id}"`).join(',')}]`
       }
