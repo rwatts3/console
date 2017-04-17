@@ -28,16 +28,16 @@ class TypeList extends React.Component<Props,null> {
       <div className='type-list-wrapper'>
         <style jsx>{`
           .type-list-wrapper {
-            @p: .h100, .flex, .flexColumn, .relative;
-            &:after {
-              @p: .absolute, .top0, .left0, .right0, .z2;
-              content: "";
-              height: 16px;
-              background: linear-gradient(to bottom, rgba(23, 42, 58, 1), rgba(23, 42, 58, 0));
-            }
+            @p: .flex, .flexColumn, .relative, .flex1;
+          }
+          .type-list-wrapper:after {
+            @p: .absolute, .top0, .left0, .right0, .z2;
+            content: "";
+            height: 16px;
+            background: linear-gradient(to bottom, rgba(23, 42, 58, 1), rgba(23, 42, 58, 0));
           }
           .type-list {
-            @p: .pl16, .pb16, .pr16, .overflowAuto, .h100;
+            @p: .pl16, .pb16, .pr16, .overflowAuto, .flex1;
           }
         `}</style>
         <div
