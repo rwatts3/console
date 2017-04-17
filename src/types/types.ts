@@ -74,6 +74,7 @@ export interface Project {
   schema: string
   seats: RelayConnection<Seat>
   projectBillingInformation: ProjectBillingInformation
+  region?: string
 }
 
 export interface ProjectBillingInformation {
