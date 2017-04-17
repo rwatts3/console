@@ -23,6 +23,7 @@ interface Props {
   customerId: string
   router: any
   showNotification: ShowNotificationCallback
+  isBeta: boolean
 }
 
 interface State {
@@ -41,8 +42,9 @@ const modalStyling = {
   },
 }
 
-const regions = ['us-west-2', 'eu-west-1', 'ap-northeast-1']
-const regionsEnum: Region[] = ['US_WEST_2', 'EU_WEST_1', 'AP_NORTHEAST_1']
+const regions = ['eu-west-1', 'us-west-2', 'ap-northeast-1']
+const regionsEnum: Region[] = ['EU_WEST_1', 'US_WEST_2', 'AP_NORTHEAST_1']
+const choices = ['EU (Ireland)', 'US West (Oregon)', 'Asia Pacific (Tokyo)']
 
 class AddProjectPopup extends React.Component<Props, State> {
   constructor(props) {
@@ -56,37 +58,39 @@ class AddProjectPopup extends React.Component<Props, State> {
     }
   }
   componentWillMount() {
-    let times = []
-    Bluebird.map(
-      regions,
-      (region, index) => {
-        const randomString1 = btoa(String(Math.random() * 10000000 | 0))
-        const randomString2 = btoa(String(Math.random() * 10000000 | 0))
-        // the first request is always slow, so send 2
-        return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
-          .then(() => {
-            const timer = performance.now()
-            return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
-              .then(() => {
-                const time = performance.now() - timer
-                return time
-              })
-          })
-      },
-      {
-        concurrency: 1,
-      },
-    )
-    .then(results => {
-      const minIndex = results.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
-      this.setState({
-        selectedIndex: minIndex,
-        times: results,
-      } as State)
-    })
+    if (this.props.isBeta) {
+      let times = []
+      Bluebird.map(
+        regions,
+        (region, index) => {
+          const randomString1 = btoa(String(Math.random() * 10000000 | 0))
+          const randomString2 = btoa(String(Math.random() * 10000000 | 0))
+          // the first request is always slow, so send 2
+          return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
+            .then(() => {
+              const timer = performance.now()
+              return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
+                .then(() => {
+                  const time = performance.now() - timer
+                  return time
+                })
+            })
+        },
+        {
+          concurrency: 1,
+        },
+      )
+      .then(results => {
+        const minIndex = results.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
+        this.setState({
+          selectedIndex: minIndex,
+          times: results,
+        } as State)
+      })
+    }
   }
   render() {
-    const {onRequestClose} = this.props
+    const {onRequestClose, isBeta} = this.props
     const {showError, projectName, loading, times} = this.state
     const error = !validateProjectName(this.state.projectName)
 
@@ -179,18 +183,20 @@ class AddProjectPopup extends React.Component<Props, State> {
               </div>
             )}
           </div>
-          <div className='select-region'>
-            <h2>Choose a Region</h2>
-            <FieldHorizontalSelect
-              activeBackgroundColor={$v.blue}
-              inactiveBackgroundColor='#F5F5F5'
-              choices={choices}
-              infos={infos}
-              selectedIndex={this.state.selectedIndex}
-              inactiveTextColor={$v.gray30}
-              onChange={this.onSelectIndex}
-            />
-          </div>
+          {isBeta && (
+            <div className='select-region'>
+              <h2>Choose a Region</h2>
+              <FieldHorizontalSelect
+                activeBackgroundColor={$v.blue}
+                inactiveBackgroundColor='#F5F5F5'
+                choices={choices}
+                infos={infos}
+                selectedIndex={this.state.selectedIndex}
+                inactiveTextColor={$v.gray30}
+                onChange={this.onSelectIndex}
+              />
+            </div>
+          )}
           <div className='footer'>
             <div className='button cancel' onClick={onRequestClose}>Cancel</div>
             <div className={'button green' + (error ? ' disabled' : '')} onClick={this.addProject}>Ok</div>
@@ -245,6 +251,5 @@ class AddProjectPopup extends React.Component<Props, State> {
     )
   }
 }
-const choices = ['US West (Oregon)', 'EU (Ireland)', 'Asia Pacific (Tokyo)']
 
 export default connect(null, {showNotification})(withRouter(AddProjectPopup))

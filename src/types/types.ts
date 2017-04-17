@@ -45,6 +45,7 @@ export interface CrmCustomerInformation {
   id: string
   name: string
   email: string
+  isBeta: boolean
 }
 
 export type Environment = 'Node' | 'Browser'
