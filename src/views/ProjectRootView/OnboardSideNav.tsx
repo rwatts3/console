@@ -28,8 +28,8 @@ class OnboardSideNav extends React.Component<Props, {}> {
     const progress = 100 * this.props.gettingStartedState.progress.index / 5
 
     return (
-      <div className='flex flex-column'>
-        <div style={{ flex: '0 0 auto' }} className='relative'>
+      <div className='flex flex-column' style={{maxWidth: 300}}>
+        <div className='relative flexAuto'>
           <div
             className='absolute o-30 pointer'
             style={{ top: 25, right: 25 }}
