@@ -63,10 +63,10 @@ class AddProjectPopup extends React.Component<Props, State> {
         const randomString1 = btoa(String(Math.random() * 10000000 | 0))
         const randomString2 = btoa(String(Math.random() * 10000000 | 0))
         // the first request is always slow, so send 2
-        return fetch(`http://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
+        return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
           .then(() => {
             const timer = performance.now()
-            return fetch(`http://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
+            return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
               .then(() => {
                 const time = performance.now() - timer
                 return time
@@ -90,11 +90,14 @@ class AddProjectPopup extends React.Component<Props, State> {
     const {showError, projectName, loading, times} = this.state
     const error = !validateProjectName(this.state.projectName)
 
-    let infos = null
-
-    if (times.length > 0) {
-      infos = times.map(time => `${Math.round(time)} ms`)
-    }
+    const infos = regions.map((_, index) => {
+      const time = times[index]
+      if (time) {
+        return `${Math.round(time)} ms`
+      } else {
+        return `~ ms`
+      }
+    })
 
     return (
       <Modal
