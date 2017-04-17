@@ -57,7 +57,7 @@ class AddProjectPopup extends React.Component<Props, State> {
       times: [],
     }
   }
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.isBeta) {
       let times = []
       Bluebird.map(
