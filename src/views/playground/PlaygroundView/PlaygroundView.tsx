@@ -29,6 +29,7 @@ import CodeGenerationPopup from './CodeGenerationPopup/CodeGenerationPopup'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import Playground from 'graphcool-graphiql'
+import getSubscriptionEndpoint from '../../../utils/region'
 
 require('graphcool-graphiql/graphiql_dark.css')
 
@@ -203,6 +204,9 @@ class PlaygroundView extends React.Component<Props, State> {
 
   render () {
 
+    const {project} = this.props.viewer
+    const subscriptionsEndpoint = getSubscriptionEndpoint(project.region)
+
     return (
       <div className={classes.root}>
         <Helmet title='Playground' />
@@ -211,7 +215,7 @@ class PlaygroundView extends React.Component<Props, State> {
           projectId={this.props.viewer.project.id}
           onSuccess={this.handleResponse}
           httpApiPrefix={__BACKEND_ADDR__}
-          wsApiPrefix={__BACKEND_WS_ADDR__ + '/v1'}
+          wsApiPrefix={subscriptionsEndpoint + '/v1'}
         />
         {this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART1') &&
           <PopupWrapper blur={true}>
@@ -305,6 +309,7 @@ export default Relay.createContainer(MappedPlaygroundView, {
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
           id
+          region
         }
         userModel: modelByName(projectName: $projectName, modelName: "User"){
           id
