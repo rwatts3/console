@@ -171,6 +171,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
   }
 
   render () {
+    const {expanded} = this.state
     return (
       <ClickOutside
         onClickOutside={(e) => {
@@ -178,7 +179,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
         }}
       >
         <Root
-          expanded={this.state.expanded}
+          expanded={expanded}
           className={cx($p.relative, $p.w100, $p.h100, $p.white, $p.z5, $p.bgDarkBlue)}
         >
           <div
@@ -204,7 +205,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
               <div
                 className={cx($p.flex, $p.itemsCenter, $p.ph16, $p.pointer, $p.w100, $p.flexAuto)}
               >
-                <div className='project-name-wrapper'>
+                <div className={cx('project-name-wrapper', {expanded})}>
                   <style jsx>{`
                     .project-name-wrapper {
                       @p: .overflowHidden, .w100, .relative;
@@ -216,6 +217,9 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                       width: 20px;
                       background: linear-gradient(to right, rgba(23,42,58, 0), rgba(23,42,58, 1));
                     }
+                    .project-name-wrapper.expanded:after {
+                      background: linear-gradient(to right, $green0, $green);
+                    }
                     .project-name {
                       @p: .nowrap, .overflowAuto;
                     }
@@ -226,7 +230,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                   {this.collaboratorElement()}
                 </div>
                 <Arrow
-                  turned={this.state.expanded}
+                  turned={expanded}
                   className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.brPill, $p.flexFixed)}
                   style={{
                     marginRight: '-3px',
@@ -243,7 +247,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
               </div>
             )}
           </div>
-          {this.state.expanded &&
+          {expanded &&
           <div className={cx($p.absolute, $p.w100, $p.vh100, $p.bgGreen, $p.flex, $p.flexColumn)}>
             <div className={cx($p.pa25, $p.flex, $p.justifyBetween)}>
               <SettingsLink to={`/${this.props.params.projectName}/settings`}>
