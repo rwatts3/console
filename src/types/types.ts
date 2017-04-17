@@ -319,6 +319,8 @@ export interface PricingPlanInfo {
 
 export type CreditCardInputDisplayState = 'CREDIT_CARD_DATA' | 'ADDRESS_DATA'
 
+export type Region = 'EU_WEST_1' | 'AP_NORTHEAST_1' | 'US_WEST_2'
+
 export interface PermissionVariable {
   name: string
   typeIdentifier: FieldType

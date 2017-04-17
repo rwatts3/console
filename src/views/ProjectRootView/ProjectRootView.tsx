@@ -35,8 +35,6 @@ import * as Dropzone from 'react-dropzone'
 
 interface State {
   showCreateProjectModal: boolean
-  projectName: string
-  showError: boolean
   createProjectModalLoading: boolean
   sidebarExpanded: boolean
 }
@@ -102,8 +100,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
     this.state = {
       showCreateProjectModal: false,
       createProjectModalLoading: false,
-      showError: false,
-      projectName: '',
       sidebarExpanded: true,
     }
   }
@@ -170,7 +166,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
     }
 
     const blur = this.props.popup.popups.reduce((acc, p) => p.blurBackground || acc, false)
-    const error = !validateProjectName(this.state.projectName)
 
     return (
       <div className='project-root-view'>
@@ -277,14 +272,8 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         <Alert />
         {this.state.showCreateProjectModal && (
           <AddProjectPopup
-            projectName={this.state.projectName}
-            isOpen={this.state.showCreateProjectModal}
             onRequestClose={this.handleCloseProjectModal}
-            onSubmit={this.addProject}
-            onChangeProjectName={this.handleChangeProjectName}
-            error={error}
-            showError={this.state.showError}
-            loading={this.state.createProjectModalLoading}
+            customerId={this.props.user.id}
           />
         )}
       </div>
@@ -327,41 +316,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
   private handleCloseProjectModal = () => {
     this.setState({showCreateProjectModal: false} as State)
-  }
-
-  private handleChangeProjectName = (e: any) => {
-    this.setState({projectName: e.target.value} as State)
-  }
-
-  private addProject = () => {
-    const {projectName} = this.state
-    if (!validateProjectName(projectName)) {
-      return this.setState({showError: true} as State)
-    }
-    this.setState(
-      {createProjectModalLoading: true} as State,
-      () => {
-        if (projectName) {
-          Relay.Store.commitUpdate(
-            new AddProjectMutation({
-              projectName,
-              customerId: this.props.viewer.user.id,
-            }),
-            {
-              onSuccess: () => {
-                tracker.track(ConsoleEvents.Project.created({name: projectName}))
-                this.setState({showCreateProjectModal: false, createProjectModalLoading: false} as State)
-                this.props.router.replace(`${projectName}`)
-              },
-              onFailure: (transaction) => {
-                this.setState({createProjectModalLoading: false} as State)
-                onFailureShowNotification(transaction, this.props.showNotification)
-              },
-            },
-          )
-        }
-      },
-    )
   }
 
   private onDrop = (acceptedFiles, rejectedFiles) => {
