@@ -169,7 +169,6 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   render() {
     const {isBetaCustomer, project, expanded} = this.props
-    console.log(this.props.location)
     return (
       <div
         className='side-nav'
@@ -486,7 +485,6 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private showEndpointPopup = () => {
     const id = cuid()
-    console.log('showing popup', this.props.project.region)
     this.props.showPopup({
       element: (
         <EndpointPopup

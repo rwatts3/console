@@ -27,6 +27,11 @@ export function onFailureShowNotification (
 ): void {
   const error = transaction.getError() as any
   // NOTE if error returns non-200 response, there is no `source` provided (probably because of fetch)
+  if (typeof Raven !== 'undefined') {
+    Raven.captureException(error, {
+      tags: {url: location.pathname},
+    })
+  }
   if (error.source && error.source.errors) {
     return error.source.errors
       .map(error => ({message: error.message, level: 'error'}))

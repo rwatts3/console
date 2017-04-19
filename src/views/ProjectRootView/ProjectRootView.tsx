@@ -129,6 +129,16 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
         }
       })
+
+      if (typeof Raven !== 'undefined') {
+        Raven.setUserContext({
+          userId: this.props.user.id,
+          email: this.props.user.crm.information.email,
+          name: this.props.user.crm.information.name,
+          projectId: this.props.project.id,
+        })
+      }
+
     } else {
       // TODO migrate to tracker
       // analytics.identify({
