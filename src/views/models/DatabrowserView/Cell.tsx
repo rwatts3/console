@@ -274,7 +274,7 @@ export class Cell extends React.PureComponent<Props, State> {
       )
     }
 
-    if (isNonScalarList(this.props.field)) {
+    if (!isScalar(this.props.field.typeIdentifier)) {
       return (
         <span className={invalidStyle}>Should be added later</span>
       )
