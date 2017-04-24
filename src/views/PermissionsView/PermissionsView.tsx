@@ -5,6 +5,7 @@ import mapProps from '../../components/MapProps/MapProps'
 import {Project} from '../../types/types'
 import PermissionsList from './PermissionsList/PermissionsList'
 import PermissionsHeader from './PermissionsHeader/PermissionsHeader'
+import AllRelationPermissionsList from './RelationPermissionsList/AllRelationPermissionsList'
 import {$p} from 'graphcool-styles'
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
@@ -32,6 +33,7 @@ class PermissionsView extends React.Component<Props, {}> {
       >
         <Helmet title='Permissions'/>
         <PermissionsHeader />
+        <AllRelationPermissionsList params={params} project={project} />
         <PermissionsList params={params} project={project} />
         {this.props.children}
       </div>
@@ -52,6 +54,7 @@ export default Relay.createContainer(MappedPermissionsView, {
       fragment on Viewer {
         project: projectByName(projectName: $projectName) {
           ${PermissionsList.getFragment('project')}
+          ${AllRelationPermissionsList.getFragment('project')}
         }
       }
     `,

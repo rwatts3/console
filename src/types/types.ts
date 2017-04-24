@@ -196,6 +196,19 @@ export interface ModelPermission {
   userType: UserType
 }
 
+export interface RelationPermission {
+  id: string
+  connect: boolean
+  disconnect: boolean
+  ruleWebhookUrl?: string
+  rule: Rule
+  ruleName?: string
+  ruleGraphQuery?: string
+  isActive: boolean
+  operation: Operation
+  userType: UserType
+}
+
 export type Rule = 'NONE' | 'GRAPH' | 'WEBHOOK'
 export type Operation = 'READ' | 'CREATE' | 'UPDATE' | 'DELETE'
 
