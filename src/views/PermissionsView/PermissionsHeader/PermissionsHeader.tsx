@@ -11,7 +11,8 @@ interface Props {
 export default class PermissionsHeader extends React.Component<Props, {}> {
   render() {
     const {params} = this.props
-    const activeTab = this.props.location.pathname.startsWith(`/${params.projectName}/permissions/relations`) ? 1 : 0
+    const pathname = decodeURIComponent(this.props.location.pathname)
+    const activeTab = pathname.startsWith(`/${params.projectName}/permissions/relations`) ? 1 : 0
     return (
       <div className='permissions-header'>
         <style jsx={true}>{`
