@@ -276,7 +276,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
     const {permissionQueryArguments, userType} = this.props
     let args = permissionQueryArguments
     if (userType === 'EVERYONE') {
-      args = permissionQueryArguments.filter(arg => arg.group !== 'Current User')
+      args = permissionQueryArguments.filter(arg => arg.group !== 'Authenticated User')
     }
     const variables = groupBy(args, arg => arg.group)
     return variables
@@ -387,7 +387,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
             <div className='variable-category' key={group}>
               <div className='variable-title'>
                 <span>{group}</span>
-                {group === 'Current User' && (
+                {group === 'Authenticated User' && (
                   <Icon
                     src={require('graphcool-styles/icons/stroke/lock.svg')}
                     color={$v.white40}
@@ -422,10 +422,10 @@ export default class PermissionConditions extends React.Component<Props, State> 
   private sortVariables(categories) {
     const cats = categories.slice()
     return cats.sort((a, b) => {
-      if (a === 'Current User') {
+      if (a === 'Authenticated User') {
         return -1
       }
-      if (b === 'Current User') {
+      if (b === 'Authenticated User') {
         return 1
       }
       return a < b ? -1 : 1
@@ -475,40 +475,3 @@ export default class PermissionConditions extends React.Component<Props, State> 
       .filter(variable => selectedVariableNames.includes(variable.name))
   }
 }
-
-// const variables = {
-//   'Mutation Variables': [
-//     {
-//       name: 'nodeId',
-//       typeIdentifier: 'ID',
-//     },
-//   ],
-//   'Node Fields': [
-//     {
-//       name: 'id',
-//       typeIdentifier: 'ID',
-//     },
-//     {
-//       name: 'description',
-//       typeIdentifier: 'String',
-//     },
-//     {
-//       name: 'published',
-//       typeIdentifier: 'Boolean',
-//     },
-//   ],
-//   'Old Node Fields': [
-//     {
-//       name: 'oldId',
-//       typeIdentifier: 'ID',
-//     },
-//     {
-//       name: 'oldDescription',
-//       typeIdentifier: 'String',
-//     },
-//     {
-//       name: 'oldPublished',
-//       typeIdentifier: 'Boolean',
-//     },
-//   ],
-// }
