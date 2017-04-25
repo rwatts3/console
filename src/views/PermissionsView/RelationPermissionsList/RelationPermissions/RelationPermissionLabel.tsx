@@ -54,7 +54,7 @@ const RelationPermissionLabel = (props: Props) => {
           @p: .br1, .ph6, .dib, .nowrap, .fw6, .o50;
         }
         .relation-permission-label.editable {
-          @p: .pointer;
+          @p: .pointer, .pa10;
         }
         .relation-permission-label.active {
           @p: .o100;

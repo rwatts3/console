@@ -70,7 +70,8 @@ export default class PermissionConditions extends React.Component<Props, State> 
 
   private reflectQueryVariablesToUI = debounce(
     (query: string) => {
-      const {variables, valid} = getVariableNamesFromQuery(query, true)
+      const schema = buildClientSchema(JSON.parse(this.props.permissionSchema))
+      const {variables, valid} = getVariableNamesFromQuery(query, true, schema)
       this.setState({
         selectedVariableNames: variables,
       } as State)
@@ -296,6 +297,8 @@ export default class PermissionConditions extends React.Component<Props, State> 
     const {ruleGraphQuery, permissionSchema, rule} = this.props
     const variables = this.getVariables()
     const inactive = rule !== 'GRAPH'
+    const schema = buildClientSchema(JSON.parse(permissionSchema))
+
     return (
       <div className={cx('permission-query-wrapper', {fullscreen, inactive})}>
         <style jsx={true}>{`
@@ -372,7 +375,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
         <div className='query'>
           <CustomGraphiQL
             rerenderQuery={true}
-            schema={buildClientSchema(JSON.parse(permissionSchema))}
+            schema={schema}
             variables={''}
             query={ruleGraphQuery}
             fetcher={() => { return null }}

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import {buildClientSchema} from 'graphql'
 import * as Relay from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -73,6 +74,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
     this.mutationType = props.permission ? 'Update' : 'Create'
 
+    const schema = buildClientSchema(JSON.parse(this.props.model.permissionSchema))
     if (props.permission) {
       const {operation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery, ruleName} = props.permission
       this.state = {
@@ -84,7 +86,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         rule,
         ruleGraphQuery: (!ruleGraphQuery || ruleGraphQuery === '') ?
           getEmptyPermissionQuery(props.model.name, operation, userType) :
-          addVarsAndName(props.model.namePlural, ruleGraphQuery, props.model.permissionQueryArguments),
+          addVarsAndName(props.model.namePlural, ruleGraphQuery, props.model.permissionQueryArguments, schema),
         queryValid: true,
         tabs: ['Select affected Fields', 'Define Rules'],
         selectedTabIndex: 0,

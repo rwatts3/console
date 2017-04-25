@@ -1,4 +1,5 @@
 import {parse, visit} from 'graphql'
+import {validate} from 'graphql/validation'
 
 import {PermissionVariable, PermissionQueryArgument} from '../../../types/types'
 export function putVariablesToQuery(query: string, variables: PermissionQueryArgument[]) {
@@ -58,7 +59,7 @@ export function extractSelection(query: string) {
   return newQuery
 }
 
-export function addVarsAndName(modelNamePlural: string, query: string, vars: PermissionQueryArgument[]) {
+export function addVarsAndName(modelNamePlural: string, query: string, vars: PermissionQueryArgument[], schema: any) {
   let newQuery = query
 
   try {
@@ -76,7 +77,7 @@ export function addVarsAndName(modelNamePlural: string, query: string, vars: Per
       },
     })
 
-    const {variables} = getVariableNamesFromQuery(query)
+    const {variables} = getVariableNamesFromQuery(query, false, schema)
     const mappedVariables = variables.map(variable => vars.find(arg => arg.name === variable))
 
     const printedVariables = renderVariables(mappedVariables)
@@ -92,6 +93,7 @@ export function addVarsAndName(modelNamePlural: string, query: string, vars: Per
 export function getVariableNamesFromQuery(
   query: string,
   definitionOnly: boolean = false,
+  schema: any,
 ): {variables: string[], valid: boolean} {
   let variables = new Set()
   let valid = true
@@ -116,6 +118,11 @@ export function getVariableNamesFromQuery(
     }
 
     visit(ast, config)
+
+    const validation = validate(schema, ast)
+    if (validation.length > 0) {
+      valid = false
+    }
   } catch (e) {
     valid = false
   }
