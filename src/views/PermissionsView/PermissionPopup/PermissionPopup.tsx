@@ -36,6 +36,7 @@ interface Props {
   permission?: ModelPermission
   isBetaCustomer: boolean
   showNotification: ShowNotificationCallback
+  relay: Relay.RelayProp
 }
 
 export interface PermissionPopupState {
@@ -91,6 +92,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         loading: false,
         queryChanged: false,
       }
+      this.updateRelayVariables()
       return
     }
 
@@ -111,6 +113,14 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       ruleName: '',
     }
     global['p'] = this
+  }
+
+  updateRelayVariables() {
+    if (this.state.selectedOperation) {
+      this.props.relay.setVariables({
+        operation: this.state.selectedOperation,
+      })
+    }
   }
 
   componentDidMount() {
@@ -218,7 +228,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
               {(editing ? selectedTabIndex === 1 : selectedTabIndex === 2) && (
                 <PermissionConditions
                   userType={userType}
-                  isBetaCustomer={this.props.isBetaCustomer}
                   rule={rule}
                   permissionSchema={model.permissionSchema}
                   permissionQueryArguments={model.permissionQueryArguments}
@@ -335,17 +344,22 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   }
 
   private setOperation = (operation: Operation) => {
-    this.setState(state => {
-      let {ruleGraphQuery} = state
-      if (!ruleGraphQuery || ruleGraphQuery === '') {
-        ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, operation, state.userType)
-      }
-      return {
-        ...state,
-        selectedOperation: operation,
-        ruleGraphQuery,
-      }
-    })
+    this.setState(
+      state => {
+        let {ruleGraphQuery} = state
+        if (!ruleGraphQuery || ruleGraphQuery === '') {
+          ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, operation, state.userType)
+        }
+        return {
+          ...state,
+          selectedOperation: operation,
+          ruleGraphQuery,
+        }
+      },
+      () => {
+        this.updateRelayVariables()
+      },
+    )
   }
 
   private setRule = (rule: PermissionRuleType) => {
@@ -471,6 +485,9 @@ const MappedPermissionPopup = mapProps({
 })(ReduxContainer)
 
 export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
+  initialVariables: {
+    operation: 'CREATE',
+  },
   fragments: {
     node: () => Relay.QL`
       fragment on Node {
@@ -487,8 +504,8 @@ export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermis
           model {
             name
             namePlural
-            permissionSchema(operation: READ)
-            permissionQueryArguments(operation: READ) {
+            permissionSchema(operation: $operation)
+            permissionQueryArguments(operation: $operation) {
               group
               name
               typeName
@@ -526,6 +543,7 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
   initialVariables: {
     projectName: null, // injected from router
     modelName: null, // injected from router
+    operation: 'CREATE',
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -541,8 +559,8 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
           id
           name
           namePlural
-          permissionSchema(operation: CREATE)
-          permissionQueryArguments(operation: CREATE) {
+          permissionSchema(operation: $operation)
+          permissionQueryArguments(operation: $operation) {
             group
             name
             typeName

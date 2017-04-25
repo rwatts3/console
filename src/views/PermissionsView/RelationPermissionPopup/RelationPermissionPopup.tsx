@@ -189,7 +189,6 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
             {(selectedTabIndex === 1) && (
               <PermissionConditions
                 userType={userType}
-                isBetaCustomer={this.props.isBetaCustomer}
                 rule={rule}
                 permissionSchema={relation.permissionSchema}
                 permissionQueryArguments={relation.permissionQueryArguments}

@@ -46,7 +46,6 @@ interface Props {
   setRuleGraphQuery: (query: string) => void
   onRuleNameChange: (e: any) => void
   userType: UserType
-  isBetaCustomer: boolean
   rule: PermissionRuleType
   permissionSchema: string
   ruleGraphQuery: string
@@ -97,7 +96,6 @@ export default class PermissionConditions extends React.Component<Props, State> 
   render() {
     const {
       rule,
-      isBetaCustomer,
       permissionSchema,
       ruleGraphQuery,
       setRuleGraphQuery,
