@@ -19,6 +19,7 @@ import {fieldModalStyle} from '../../../utils/modalStyle'
 import {PermissionPopupErrors} from './PermissionPopupState'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 import Checkbox from '../../../components/Checkbox'
+import {sortBy} from 'lodash'
 
 const ConditionButton = styled.div`
   &:not(.${$p.bgBlue}):hover {
@@ -270,8 +271,13 @@ export default class PermissionConditions extends React.Component<Props, State> 
   }
 
   private getVariables() {
-    const {permissionQueryArguments} = this.props
-    return groupBy(permissionQueryArguments, arg => arg.group)
+    const {permissionQueryArguments, userType} = this.props
+    let args = permissionQueryArguments
+    if (userType === 'EVERYONE') {
+      args = permissionQueryArguments.filter(arg => arg.group !== 'Current User')
+    }
+    const variables = groupBy(args, arg => arg.group)
+    return variables
   }
 
   private toggleFullscreen = () => {
@@ -339,7 +345,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
             flex: 0 0 320px;
           }
           .variable-title {
-            @p: .fw6, .f12, .white30, .ttu, .mb16;
+            @p: .fw6, .f12, .white30, .ttu, .mb16, .flex, .itemsCenter;
           }
           .extend {
             @p: .absolute, .top0, .right0, .pa4, .bgDarkBlue, .pointer;
@@ -375,9 +381,22 @@ export default class PermissionConditions extends React.Component<Props, State> 
           />
         </div>
         <div className={'variables' + (fullscreen ? ' fullscreen' : '')}>
-          {Object.keys(variables).map(group => (
+          {this.sortVariables(Object.keys(variables)).map(group => (
             <div className='variable-category' key={group}>
-              <div className='variable-title'>{group}</div>
+              <div className='variable-title'>
+                <span>{group}</span>
+                {group === 'Current User' && (
+                  <Icon
+                    src={require('graphcool-styles/icons/stroke/lock.svg')}
+                    color={$v.white40}
+                    stroke
+                    strokeWidth={2.5}
+                    height={18}
+                    width={18}
+                    className='ml10'
+                  />
+                )}
+              </div>
               {variables[group].map(variable => (
                 <VariableTag
                   key={variable.name}
@@ -396,6 +415,19 @@ export default class PermissionConditions extends React.Component<Props, State> 
         )}
       </div>
     )
+  }
+
+  private sortVariables(categories) {
+    const cats = categories.slice()
+    return cats.sort((a, b) => {
+      if (a === 'Current User') {
+        return -1
+      }
+      if (b === 'Current User') {
+        return 1
+      }
+      return a < b ? -1 : 1
+    })
   }
 
   private handleEditQuery = (query: string) => {

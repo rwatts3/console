@@ -81,7 +81,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         ruleName,
         rule,
         ruleGraphQuery: (!ruleGraphQuery || ruleGraphQuery === '') ?
-          getEmptyPermissionQuery(props.model.name, operation) :
+          getEmptyPermissionQuery(props.model.name, operation, userType) :
           addVarsAndName(props.model.namePlural, ruleGraphQuery, props.model.permissionQueryArguments),
         queryValid: true,
         tabs: ['Select affected Fields', 'Define Rules'],
@@ -100,7 +100,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       userType: 'EVERYONE' as UserType,
       applyToWholeModel: false,
       rule: 'NONE' as PermissionRuleType,
-      ruleGraphQuery: getEmptyPermissionQuery(props.model.name, 'CREATE'),
+      ruleGraphQuery: getEmptyPermissionQuery(props.model.name, 'CREATE', 'EVERYONE'),
       queryValid: true,
       tabs: ['Select Operation', 'Select affected Fields', 'Define Rules'],
       selectedTabIndex: 0,
@@ -260,9 +260,20 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   private handleToggleUserType = () => {
     this.setState(state => {
       const oldUserType = state.userType
+      const userType = oldUserType === 'EVERYONE' ? 'AUTHENTICATED' : 'EVERYONE'
+      let {ruleGraphQuery} = state
+      const emptyDefault = getEmptyPermissionQuery(this.props.model.name, state.selectedOperation, state.userType)
+      if (
+        !ruleGraphQuery ||
+        ruleGraphQuery === '' ||
+        ruleGraphQuery === emptyDefault
+      ) {
+        ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, state.selectedOperation, userType)
+      }
       return {
         ...state,
-        userType: oldUserType === 'EVERYONE' ? 'AUTHENTICATED' : 'EVERYONE',
+        ruleGraphQuery,
+        userType,
       }
     })
   }
@@ -327,7 +338,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     this.setState(state => {
       let {ruleGraphQuery} = state
       if (!ruleGraphQuery || ruleGraphQuery === '') {
-        ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, operation)
+        ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, operation, state.userType)
       }
       return {
         ...state,
@@ -530,8 +541,8 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
           id
           name
           namePlural
-          permissionSchema(operation: READ)
-          permissionQueryArguments(operation: READ) {
+          permissionSchema(operation: CREATE)
+          permissionQueryArguments(operation: CREATE) {
             group
             name
             typeName
@@ -553,8 +564,14 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
   },
 })
 
-function getEmptyPermissionQuery(modelName: string, operation: Operation) {
+function getEmptyPermissionQuery(modelName: string, operation: Operation, userType: UserType) {
   if (operation === 'CREATE') {
+    if (userType === 'EVERYONE') {
+      return `query {
+  SomeUserExists
+}
+`
+    }
     return `query ($user_id: ID!) {
   SomeUserExists(
     filter: {
