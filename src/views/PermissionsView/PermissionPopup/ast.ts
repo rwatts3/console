@@ -6,15 +6,16 @@ export function putVariablesToQuery(query: string, variables: PermissionQueryArg
 
   try {
     let ast = parse(query)
-    let nameEnd = -1
+    // let nameEnd = -1
     let selectionStart = -1
 
     visit(ast, {
-      Name(node) {
-        if (nameEnd === -1) {
-          nameEnd = node.loc.end
-        }
-      },
+      // Name(node) {
+      //   if (nameEnd === -1) {
+      //     nameEnd = node.loc.end
+      //     debugger
+      //   }
+      // },
       SelectionSet(node) {
         if (selectionStart === -1) {
           selectionStart = node.loc.start
@@ -22,7 +23,8 @@ export function putVariablesToQuery(query: string, variables: PermissionQueryArg
       },
     })
 
-    newQuery = query.slice(0, nameEnd) + renderVariables(variables) + query.slice(selectionStart, query.length)
+    // newQuery = query.slice(0, nameEnd) + renderVariables(variables) + query.slice(selectionStart, query.length)
+    newQuery = 'query ' + renderVariables(variables) + query.slice(selectionStart, query.length)
   } catch (e) {
     //
   }
@@ -79,7 +81,7 @@ export function addVarsAndName(modelNamePlural: string, query: string, vars: Per
 
     const printedVariables = renderVariables(mappedVariables)
 
-    newQuery = `query permit${modelNamePlural}` + printedVariables + query.slice(selectionStart, query.length)
+    newQuery = `query ` + printedVariables + query.slice(selectionStart, query.length)
   } catch (e) {
     //
   }
