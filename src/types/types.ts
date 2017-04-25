@@ -157,6 +157,9 @@ export interface Relation {
   rightModel: Model
   fieldOnLeftModel: Field
   fieldOnRightModel: Field
+  permissionSchema: string
+  permissions: RelayConnection<RelationPermission>
+  permissionQueryArguments: PermissionQueryArgument[]
 }
 
 export type UserType = 'EVERYONE' | 'AUTHENTICATED'
@@ -193,6 +196,18 @@ export interface ModelPermission {
   applyToWholeModel: boolean
   isActive: boolean
   operation: Operation
+  userType: UserType
+}
+
+export interface RelationPermission {
+  id: string
+  connect: boolean
+  disconnect: boolean
+  ruleWebhookUrl?: string
+  rule: Rule
+  ruleName?: string
+  ruleGraphQuery?: string
+  isActive: boolean
   userType: UserType
 }
 

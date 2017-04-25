@@ -30,6 +30,7 @@ class PermissionsList extends React.Component<Props, {}> {
               }
             />,
           )}
+          {this.props.children}
         </div>
     )
   }
