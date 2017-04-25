@@ -155,7 +155,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
             height: 24px;
           }
           .description-input {
-            @p: .f16, .db;
+            @p: .f16, .db, .w100;
             line-height: 1.3;
             margin-left: 1px;
           }
@@ -312,9 +312,8 @@ export default class PermissionConditions extends React.Component<Props, State> 
             margin-left: -45px;
             margin-right: -45px;
           }
-          .permission-query-wrapper.inactive:after {
-            @p: .bgWhite80, .top0, .left0, .bottom0, .right0, .absolute, .z999;
-            content: "";
+          .permission-query-wrapper.inactive .after {
+            @p: .bgWhite80, .top0, .left0, .bottom0, .right0, .absolute, .z999, .pointer;
           }
           .permission-query-wrapper.fullscreen {
             @p: .bbox, .ma60;
@@ -391,6 +390,10 @@ export default class PermissionConditions extends React.Component<Props, State> 
             </div>
           ))}
         </div>
+        {inactive && (
+          <div className='after' onClick={this.props.toggleRuleType}>
+          </div>
+        )}
       </div>
     )
   }

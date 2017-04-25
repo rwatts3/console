@@ -139,7 +139,7 @@ export default class PermissionPopupFooter extends React.Component<Props, null> 
               />
             )}
           </div>
-          {((!create && changed) || (create)) && (
+          {((!create && changed) || (create && activeTabIndex === 2)) && (
             <div className={'button' + (valid ? ' active' : '')} onClick={onSubmit}>
               {create ? 'Create' : 'Update'} Permission
             </div>

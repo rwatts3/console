@@ -16,43 +16,25 @@ interface Props {
 const operations = [
   {
     icon: require('graphcool-styles/icons/stroke/editAddSpaced.svg'),
-    text: 'Create Node',
+    text: 'Create',
     operation: 'CREATE',
   },
   {
-    icon: require('graphcool-styles/icons/stroke/deleteSpaced.svg'),
-    text: 'Delete Node',
-    operation: 'DELETE',
-  },
-  {
     icon: require('graphcool-styles/icons/stroke/viewSpaced.svg'),
-    text: 'View Data',
+    text: 'Read',
     operation: 'READ',
   },
   {
     icon: require('graphcool-styles/icons/stroke/editSpaced.svg'),
-    text: 'Edit Data',
+    text: 'Update',
     operation: 'UPDATE',
   },
+  {
+    icon: require('graphcool-styles/icons/stroke/deleteSpaced.svg'),
+    text: 'Delete',
+    operation: 'DELETE',
+  },
 ]
-
-const Placeholder = styled.div`
-`
-
-const OperationButton = styled.div`
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  &:not(.${$p.bgBlue}):hover {
-    background-color: ${variables.gray04};
-    position: absolute;
-    padding: 6px;
-  }
-`
-
-const Operations = styled.div`
-  height: 35px;
-`
 
 export default class OperationChooser extends React.Component<Props, {}> {
   render() {
@@ -79,6 +61,21 @@ export default class OperationChooser extends React.Component<Props, {}> {
             margin-top: -30px;
             right: -30px;
           }
+          .operations {
+            @p: .bgBlack04, .inlineFlex, .flexRow, .justifyAround, .ph16, .pv6, .relative, .itemsCenter;
+            height: 37px;
+          }
+          .operation-button {
+            @p: .nowrap, .flex, .itemsCenter, .relative, .mh16, .pointer, .pv6;
+          }
+          .operation-button:not(.active):hover {
+            @p: .bgBlack04;
+          }
+          .operation-button.active {
+            @p: .bgBlue, .br2, .ph10, .pv8;
+            top: 0;
+            bottom: -2px;
+          }
         `}</style>
         <div
           className={cx($p.ph38, $p.pb38)}
@@ -88,57 +85,38 @@ export default class OperationChooser extends React.Component<Props, {}> {
             The operation that will be allowed by this permission.
           </div>
         </div>
-        <Operations
-          className={cx(
-            $p.bgBlack04,
-            $p.flex,
-            $p.flexRow,
-            $p.justifyAround,
-            $p.ph16,
-            $p.pv6,
-            $p.relative,
-            $p.itemsCenter,
-           )}
-        >
+        <div className='operations'>
           {selectedOperation === null && (
             <div className='placeholder'>
-              <div className='bar'>
-
-              </div>
+              <div className='bar' />
             </div>
           )}
           {operations.map(operation => (
             <div
               key={operation.operation}
-              className={cx($p.relative, $p.flex1, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
+              className={cx('operation-button', {active: operation.operation === selectedOperation})}
               onClick={() => setOperation(operation.operation as Operation)}
             >
-              <OperationButton
-                className={cx($p.nowrap, $p.flex, $p.flexRow, $p.itemsCenter, $p.absolute, {
-                  [cx($p.bgBlue, $p.br2, $p.ph10, $p.pv8)]: operation.operation === selectedOperation,
-                })}
+              <Icon
+                stroke={true}
+                strokeWidth={2}
+                src={operation.icon}
+                color={operation.operation === selectedOperation ? variables.white : variables.gray30}
+                width={23}
+                height={23}
+              />
+              <div
+                className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
+                    [$p.black30]: operation.operation !== selectedOperation,
+                    [$p.white]: operation.operation === selectedOperation,
+                  },
+                )}
               >
-                <Icon
-                  stroke={true}
-                  strokeWidth={2}
-                  src={operation.icon}
-                  color={operation.operation === selectedOperation ? variables.white : variables.gray30}
-                  width={23}
-                  height={23}
-                />
-                <div
-                  className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
-                      [$p.black30]: operation.operation !== selectedOperation,
-                      [$p.white]: operation.operation === selectedOperation,
-                    },
-                  )}
-                >
-                  {operation.text}
-                </div>
-              </OperationButton>
+                {operation.text}
+              </div>
             </div>
           ))}
-        </Operations>
+        </div>
         {this.props.errors.permissionTypeMissing && this.props.showErrors && (
           <div className='operation-error'>
             <ErrorInfo>
