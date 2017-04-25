@@ -46,6 +46,8 @@ import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
 import ImportSchemaView from './views/ImportSchemaView/ImportSchemaView'
 import NewSchemaView from './views/SchemaView/SchemaView'
 import SchemaViewer from './views/SchemaView/SchemaViewer'
+import AllRelationPermissionsList from './views/PermissionsView/RelationPermissionsList/AllRelationPermissionsList'
+import PermissionsList from './views/PermissionsView/PermissionsList/PermissionsList'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -185,7 +187,8 @@ export default (
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
-        <Route path='relations'>
+        <IndexRoute component={PermissionsList} />
+        <Route path='relations' component={AllRelationPermissionsList}>
           <Route
             path=':relationName/edit/:id'
             component={EditRelationPermissionPopup}
@@ -199,13 +202,15 @@ export default (
             render={render}
           />
         </Route>
-        <Route
-          path=':modelName/edit/:id'
-          component={EditPermissionPopup}
-          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-          render={render}
-        />
-        <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render}/>
+        <Route component={PermissionsList}>
+          <Route
+            path=':modelName/edit/:id'
+            component={EditPermissionPopup}
+            queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+            render={render}
+          />
+          <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render}/>
+        </Route>
       </Route>
       <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
       <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>

@@ -28,6 +28,7 @@ class AllRelationPermissionsList extends React.Component<Props, {}> {
               }
           />,
         )}
+        {this.props.children}
       </div>
     )
   }

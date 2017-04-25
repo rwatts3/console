@@ -391,7 +391,7 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
 
   private closePopup = () => {
     const {router, params} = this.props
-    router.push(`/${params.projectName}/permissions`)
+    router.push(`/${params.projectName}/permissions/relations`)
   }
 }
 

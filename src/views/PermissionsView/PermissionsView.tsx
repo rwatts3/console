@@ -23,9 +23,7 @@ class PermissionsView extends React.Component<Props, null> {
     tracker.track(ConsoleEvents.Permissions.viewed())
   }
   render() {
-    const {project, params} = this.props
-    const {pathname} = this.props.location
-    const activeTab = pathname.endsWith('relations') ? 1 : 0
+    const {project, params, location} = this.props
     return (
       <div
         className={cx(
@@ -35,18 +33,20 @@ class PermissionsView extends React.Component<Props, null> {
         )}
       >
         <Helmet title='Permissions'/>
-        <PermissionsHeader params={params} activeTab={activeTab} />
-        {activeTab === 0 && (
-          <PermissionsList params={params} project={project} />
+        <PermissionsHeader params={params} location={location} />
+        {this.props.children && (
+          React.cloneElement(this.props.children, {params, project})
         )}
-        {activeTab === 1 && (
-          <AllRelationPermissionsList params={params} project={project} />
-        )}
-        {this.props.children}
       </div>
     )
   }
 }
+// {activeTab === 0 && (
+//   <PermissionsList params={params} project={project} />
+// )}
+// {activeTab === 1 && (
+//   <AllRelationPermissionsList params={params} project={project} />
+// )}
 
 const MappedPermissionsView = mapProps({
   project: props => props.viewer.project,

@@ -5,12 +5,13 @@ import {Link} from 'react-router'
 
 interface Props {
   params: any
-  activeTab: number
+  location: any
 }
 
 export default class PermissionsHeader extends React.Component<Props, {}> {
   render() {
-    const {params, activeTab} = this.props
+    const {params} = this.props
+    const activeTab = this.props.location.pathname.startsWith(`/${params.projectName}/permissions/relations`) ? 1 : 0
     return (
       <div className='permissions-header'>
         <style jsx={true}>{`
