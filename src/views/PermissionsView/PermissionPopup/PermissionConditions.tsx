@@ -46,12 +46,13 @@ interface Props {
   permissionSchema: string
   ruleGraphQuery: string
   setRuleGraphQuery: (query: string) => void
-  operation: Operation
-  fields: Field[]
+  operation?: Operation
   permissionQueryArguments: PermissionQueryArgument[]
-  errors: PermissionPopupErrors
+  queryValid: boolean
   showErrors: boolean
   onQueryValidityChange: (valid: boolean) => void
+  ruleName: string
+  onRuleNameChange: (e: any) => void
 }
 
 interface State {
@@ -122,11 +123,13 @@ export default class PermissionConditions extends React.Component<Props, State> 
             [$p.pb38]: rule !== 'GRAPH',
           })}
         >
-          <div className={$p.black50}>
-            Who can
-            <span className='whocan'>{(operation ? operation.toLowerCase() : 'access') + ' data'}</span>
-            in the selected fields?
-          </div>
+          {operation && (
+            <div className={$p.black50}>
+              Who can
+              <span className='whocan'>{(operation ? operation.toLowerCase() : 'access') + ' data'}</span>
+              in the selected fields?
+            </div>
+          )}
           <div className={cx($p.dib, $p.mt25, $p.w100)}>
             <div
               className={cx(
@@ -248,7 +251,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
           )}
 
         </div>
-        {this.props.errors.invalidQuery && this.props.showErrors && (
+        {!this.props.queryValid && this.props.showErrors && (
           <div className='query-error'>
             <ErrorInfo>
               The Query is invalid

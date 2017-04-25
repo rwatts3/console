@@ -13,7 +13,7 @@ export default function ({relation, params}: Props) {
     <div className='relation-permission-header'>
       <style jsx>{`
         .relation-permission-header {
-          @p: .relative, .ph25, .flex, .justifyBetween;
+          @p: .relative, .ph16, .flex, .justifyBetween;
         }
         .relation-permission-header:before {
           width: 100%;
@@ -25,14 +25,14 @@ export default function ({relation, params}: Props) {
           z-index: -1;
         }
         h2 {
-          @p: .black50, .fw4, .bgWhite;
+          @p: .black50, .fw4, .bgWhite, .ph6;
         }
         .btn {
           @p: .f14, .pa10, .pointer, .ttu, .bgWhite, .black50, .lhSolid, .fw6, .buttonShadow, .tracked, .flex;
         }
       `}</style>
       <h2>{relation.name}</h2>
-      <Link to={`/${params.projectName}/permissions/relation/${relation.id}/create`}>
+      <Link to={`/${params.projectName}/permissions/relation/${relation.name}/create`}>
         <div className='btn'>
           <Icon
             src={require('graphcool-styles/icons/stroke/add.svg')}

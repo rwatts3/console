@@ -16,7 +16,7 @@ import AddPermissionMutation from '../../../mutations/ModelPermission/AddPermiss
 import UpdatePermissionMutation from '../../../mutations/ModelPermission/UpdatePermissionMutation'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
-import DeleteModelPermissionMutation from '../../../mutations/DeleteModelPermissionMutation'
+import DeleteModelPermissionMutation from '../../../mutations/ModelPermission/DeleteModelPermissionMutation'
 import {isValid, didChange} from './PermissionPopupState'
 import {connect} from 'react-redux'
 import * as Modal from 'react-modal'
@@ -45,6 +45,7 @@ export interface PermissionPopupState {
   applyToWholeModel: boolean
   rule: PermissionRuleType
   ruleGraphQuery: string
+  ruleName: string
   queryValid: boolean
   tabs: string[]
   showErrors: boolean
@@ -71,15 +72,16 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     this.mutationType = props.permission ? 'Update' : 'Create'
 
     if (props.permission) {
-      const {operation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery} = props.permission
+      const {operation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery, ruleName} = props.permission
       this.state = {
         selectedOperation: operation,
         fieldIds,
         userType,
         applyToWholeModel,
-        rule: rule,
+        ruleName,
+        rule,
         ruleGraphQuery: (!ruleGraphQuery || ruleGraphQuery === '') ?
-          getEmptyPermissionQuery(props.model.namePlural) :
+          getEmptyPermissionQuery(props.model.name, operation) :
           addVarsAndName(props.model.namePlural, ruleGraphQuery, props.model.permissionQueryArguments),
         queryValid: true,
         tabs: ['Select affected Fields', 'Set Audience'],
@@ -98,7 +100,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       userType: 'EVERYONE' as UserType,
       applyToWholeModel: false,
       rule: 'NONE' as PermissionRuleType,
-      ruleGraphQuery: getEmptyPermissionQuery(props.model.namePlural),
+      ruleGraphQuery: getEmptyPermissionQuery(props.model.namePlural, 'CREATE'),
       queryValid: true,
       tabs: ['Set Permission Type', 'Select affected Fields', 'Set Audience'],
       selectedTabIndex: 0,
@@ -106,6 +108,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       editing: false,
       loading: false,
       queryChanged: false,
+      ruleName: '',
     }
     global['p'] = this
   }
@@ -123,6 +126,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       applyToWholeModel,
       rule,
       ruleGraphQuery,
+      ruleName,
       selectedTabIndex,
       showErrors,
       tabs,
@@ -216,7 +220,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                   userType={userType}
                   isBetaCustomer={this.props.isBetaCustomer}
                   rule={rule}
-                  fields={fields}
                   permissionSchema={model.permissionSchema}
                   permissionQueryArguments={model.permissionQueryArguments}
                   ruleGraphQuery={ruleGraphQuery}
@@ -224,9 +227,11 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                   setRuleType={this.setRule}
                   setRuleGraphQuery={this.setRuleGraphQuery}
                   operation={selectedOperation}
-                  errors={errors}
+                  queryValid={!errors.invalidQuery}
                   showErrors={showErrors}
                   onQueryValidityChange={this.handleQueryValidityChange}
+                  ruleName={ruleName}
+                  onRuleNameChange={this.handleRuleNameChange}
                 />
               )}
             </div>
@@ -249,6 +254,12 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
           </div>
       </Modal>
     )
+  }
+
+  private handleRuleNameChange = e => {
+    this.setState({
+      ruleName: e.target.value,
+    } as PermissionPopupState)
   }
 
   private handleQueryValidityChange = (valid: boolean) => {
@@ -292,7 +303,17 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   }
 
   private setOperation = (operation: Operation) => {
-    this.setState({selectedOperation: operation} as PermissionPopupState)
+    this.setState(state => {
+      let {ruleGraphQuery} = state
+      if (!ruleGraphQuery || ruleGraphQuery === '') {
+        ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, operation)
+      }
+      return {
+        ...state,
+        selectedOperation: operation,
+        ruleGraphQuery,
+      }
+    })
   }
 
   private setRule = (rule: PermissionRuleType) => {
@@ -509,23 +530,22 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
   },
 })
 
-function getEmptyPermissionQuery(modelNamePlural: string) {
-  return `# This is a permission query.
-# If the query you define returns a node, the permission is valid.
-# To have as powerful queries as possible, we provide you a lot of
-# variables. The first variable that is already preselected for you 
-# is the $nodeId. Each permission is executed per each single node.
-# For the mutations it's the node that will be mutated,
-# for the select case it's the node that is being requested.
-# You can explore more variables on the right hand side.
-
-query permit${modelNamePlural}($nodeId: ID) {
-  all${modelNamePlural}(
+function getEmptyPermissionQuery(modelName: string, operation: Operation) {
+  if (operation === 'CREATE') {
+    return `query ($userId: ID) {
+      SomeUserExists(
+        filter: {
+          id: $userId
+        }
+      )
+    }
+`
+  }
+  return `query ($nodeId: ID) {
+  Some${modelName}Exists(
     filter: {
       id: $nodeId
     }
-  ) {
-    id
-  }
+  )
 }`
 }

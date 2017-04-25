@@ -7,9 +7,9 @@ import NewToggleButton from '../../../../components/NewToggleButton/NewToggleBut
 import RelationPermissionLabel from './RelationPermissionLabel'
 import styled from 'styled-components'
 import {Link, withRouter} from 'react-router'
-import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import ToggleRelationPermissionMutation from '../../../../mutations/RelationPermission/ToggleRelationPermission'
 
 interface Props {
   permission: RelationPermission
@@ -55,7 +55,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
       >
         <Link
           className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1, $p.itemsCenter)}
-          to={`/${projectName}/permissions/${relation.name}/edit/${permission.id}`}
+          to={`/${projectName}/permissions/relation/${relation.name}/edit/${permission.id}`}
         >
           <PermissionType className={cx(
             $p.flex,
@@ -103,7 +103,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   private toggleActiveState = () => {
     const {permission} = this.props
     Relay.Store.commitUpdate(
-      new ToggleActivePermissionMutation({id: permission.id, isActive: !permission.isActive}),
+      new ToggleRelationPermissionMutation({id: permission.id, isActive: !permission.isActive}),
       {
         onFailure: (transaction) => console.log(transaction),
       },

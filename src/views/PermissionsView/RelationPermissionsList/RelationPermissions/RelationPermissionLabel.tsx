@@ -10,22 +10,30 @@ function getTagSettings(operation: RelationPermissionType) {
     case 'connect':
       return {
         text: 'Connect',
-        color: variables.pblue,
-        containerClass: cx($p.bgPblue20),
+        color: variables.pgreen,
+        containerClass: cx($p.bgPlightgreen50),
       }
     case 'disconnect':
       return {
         text: 'Disconnect',
-        color: variables.pbrown,
-        containerClass: cx($p.bgPyellow40),
+        color: variables.pred,
+        containerClass: cx($p.bgPred20),
       }
     default:
       return null
   }
 }
 
-const PermissionLabel = (props) => {
-  const {operation, isActive, className} = props
+interface Props {
+  operation: RelationPermissionType
+  onClick?: () => void
+  isActive?: boolean
+  className?: string
+  editable?: boolean
+}
+
+const RelationPermissionLabel = (props: Props) => {
+  const {operation, isActive, onClick, className, editable} = props
 
   const {text, color, containerClass} = getTagSettings(operation)
 
@@ -34,12 +42,30 @@ const PermissionLabel = (props) => {
   `
 
   return (
-    <div className={cx('container', $p.br1, $p.ph6, $p.dib, $p.nowrap, $p.fw6, containerClass, className, {
-      [$p.o50]: !isActive,
-    })}>
+    <div
+      className={cx('relation-permission-label', className, containerClass, {
+        active: isActive,
+        editable,
+      })}
+      onClick={onClick}
+    >
+      <style jsx>{`
+        .relation-permission-label {
+          @p: .br1, .ph6, .dib, .nowrap, .fw6, .o50;
+        }
+        .relation-permission-label.editable {
+          @p: .pointer;
+        }
+        .relation-permission-label.active {
+          @p: .o100;
+        }
+        .relation-permission-label.editable.active:hover {
+          @p: .o90;
+        }
+      `}</style>
       <Text>{text}</Text>
     </div>
   )
 }
 
-export default PermissionLabel
+export default RelationPermissionLabel

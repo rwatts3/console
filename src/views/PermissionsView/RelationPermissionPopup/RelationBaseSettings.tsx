@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Relation} from '../../../types/types'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
+import RelationPermissionLabel from '../RelationPermissionsList/RelationPermissions/RelationPermissionLabel'
 
 interface Props {
   relation: Relation
@@ -14,16 +15,34 @@ export default function RelationBaseSettings({connect, disconnect, toggleConnect
   return (
     <div className='relation-base-settings'>
       <style jsx={true}>{`
-
+        .relation-base-settings {
+          @p: .pl38, .pr38, .pb38;
+        }
+        .intro {
+          @p: .black50;
+        }
+        .labels {
+          @p: .flex, .mt25;
+        }
       `}</style>
-
-      <div className='flex'>
-        <div className="label">Connect</div>
-        <NewToggleButton defaultChecked={connect} onChange={toggleConnect} />
+      <div className='intro'>
+        Select the events that should be affected by this permission.
       </div>
-      <div className='flex'>
-        <div className="label">Disconnect</div>
-        <NewToggleButton defaultChecked={disconnect} onChange={toggleDisconnect} />
+
+      <div className='labels'>
+        <RelationPermissionLabel
+          operation='connect'
+          isActive={connect}
+          onClick={toggleConnect}
+          editable
+        />
+        <RelationPermissionLabel
+          operation='disconnect'
+          isActive={disconnect}
+          onClick={toggleDisconnect}
+          className='ml16'
+          editable
+        />
       </div>
     </div>
   )

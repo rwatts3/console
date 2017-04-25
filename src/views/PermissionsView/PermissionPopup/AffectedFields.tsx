@@ -112,6 +112,7 @@ class AffectedFields extends React.Component<Props, {}> {
                   selected={fieldIds.includes(field.id) || applyToWholeModel}
                   onClick={() => toggleField && toggleField(field.id)}
                   className={cx($p.pointer, $p.mr10, $p.mb10)}
+                  editable
                 />
               ),
             )}
