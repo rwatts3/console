@@ -166,9 +166,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
           .
         `}</style>
         <div
-          className={cx($p.ph38, {
-            [$p.pb38]: rule !== 'GRAPH',
-          })}
+          className={cx($p.ph38)}
         >
           {operation && (
             <div className={$p.black50}>

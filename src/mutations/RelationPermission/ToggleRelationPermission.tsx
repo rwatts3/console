@@ -35,7 +35,7 @@ export default class ToggleRelationPermissionMutation extends Relay.Mutation<Pro
     return [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        modelPermission: this.props.id,
+        relationPermission: this.props.id,
       },
     }]
   }
