@@ -88,11 +88,11 @@ class AffectedFields extends React.Component<Props, {}> {
                       className={$p.mr4}
                     />
                   )}
-                  Apply to whole Model
+                  Apply to whole Type
                 </div>
               }
             >
-              "Apply to whole Model" means, that also fields that will be created in the future are affected by
+              "Apply to whole Type" means, that also fields that will be created in the future are affected by
               this permission.
             </Info>
           </div>
