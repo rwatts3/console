@@ -112,6 +112,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
     const {selectedVariableNames, fullscreen} = this.state
 
     const variables = this.getVariables()
+    const disabled = rule !== 'GRAPH'
 
     return (
       <div className='permission-conditions'>
@@ -152,6 +153,11 @@ export default class PermissionConditions extends React.Component<Props, State> 
           .description-wrapper {
             @p: .mt25;
             height: 24px;
+          }
+          .description-wrapper.disabled {
+            @p: .o50;
+            cursor: initial;
+            pointer-events: none;
           }
           .description-input {
             @p: .f16, .db, .w100;
@@ -206,7 +212,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
               <div className='label'>Use Permission Query</div>
             </Checkbox>
           </div>
-          <div className='description-wrapper'>
+          <div className={cx('description-wrapper', {disabled})}>
             {(this.state.editingRuleName || (this.props.ruleName && this.props.ruleName.length > 0)) ? (
                 <input
                   type='text'
