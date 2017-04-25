@@ -35,6 +35,9 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
           .tabs :global(.tab:not(.active):hover) {
             @p: .black50;
           }
+          a {
+            @p: .underline, .ml4;
+          }
         `}</style>
         <div className='flex itemsCenter'>
           <h1>Permissions</h1>

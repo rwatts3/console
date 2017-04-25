@@ -26,6 +26,7 @@ import {extractSelection, addVarsAndName} from './ast'
 import {showNotification} from '../../../actions/notification'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
+import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 
 interface Props {
   params: any
@@ -182,6 +183,23 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
             box-shadow: 0 0 10px rgba(255,255,255,.8);
           }
         `}</style>
+        <ModalDocs
+          title='How to define a Type Permission'
+          id='type-type-permission-popup'
+          resources={[
+            {
+              title: 'Overview over Permissions',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+            },
+            {
+              title: 'How to define Permission Queries',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
+            },
+          ]}
+          videoId='e_sotn1uGqk'
+        >
           <div
             className='permission-popup'
           >
@@ -262,6 +280,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
               </div>
             )}
           </div>
+        </ModalDocs>
       </Modal>
     )
   }

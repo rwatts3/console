@@ -27,6 +27,7 @@ import PermissionPopupFooter from '../PermissionPopup/PermissionPopupFooter'
 import UpdateRelationPermissionMutation from '../../../mutations/RelationPermission/UpdateRelationPermission'
 import DeleteRelationPermissionMutation from '../../../mutations/RelationPermission/DeleteRelationPermission'
 import AddRelationPermissionMutation from '../../../mutations/RelationPermission/AddRelationPermission'
+import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 
 interface Props {
   params: any
@@ -59,6 +60,7 @@ const modalStyling = {
   ...fieldModalStyle,
   content: {
     ...fieldModalStyle.content,
+    overflow: 'visible',
     width: 750,
   },
 }
@@ -163,68 +165,86 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
             box-shadow: 0 0 10px rgba(255,255,255,.8);
           }
         `}</style>
-        <div
-          className='permission-popup'
+        <ModalDocs
+          title='How to define a Relation Permission'
+          id='type-relation-permission-popup'
+          resources={[
+            {
+              title: 'Overview over Permissions',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+            },
+            {
+              title: 'How to define Permission Queries',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
+            },
+          ]}
+          videoId='e_sotn1uGqk'
         >
-          <RelationPermissionPopupHeader
-            errors={errors}
-            tabs={tabs}
-            relationName={params.relationName}
-            activeTabIndex={selectedTabIndex}
-            onRequestClose={this.closePopup}
-            onSelectTab={this.handleSelectTab}
-            showErrors={showErrors}
-            editing={editing}
-          />
-          <div className='popup-body'>
-            {(selectedTabIndex === 0) && (
-              <RelationBaseSettings
-                relation={relation}
-                connect={connect}
-                disconnect={disconnect}
-                toggleConnect={this.toggleConnect}
-                toggleDisconnect={this.toggleDisconnect}
-              />
-            )}
-            {(selectedTabIndex === 1) && (
-              <PermissionConditions
-                userType={userType}
-                rule={rule}
-                permissionSchema={relation.permissionSchema}
-                permissionQueryArguments={relation.permissionQueryArguments}
-                ruleGraphQuery={ruleGraphQuery}
-                setUserType={this.setUserType}
-                setRuleGraphQuery={this.setRuleGraphQuery}
-                queryValid={!errors.invalidQuery}
-                showErrors={showErrors}
-                onQueryValidityChange={this.handleQueryValidityChange}
-                ruleName={this.state.ruleName}
-                onRuleNameChange={this.handleRuleNameChange}
-                relation={this.props.relation}
-                connect={connect}
-                disconnect={disconnect}
-                toggleUserType={this.handleToggleUserType}
-                toggleRuleType={this.handleToggleRuleType}
-              />
+          <div
+            className='permission-popup'
+          >
+            <RelationPermissionPopupHeader
+              errors={errors}
+              tabs={tabs}
+              relationName={params.relationName}
+              activeTabIndex={selectedTabIndex}
+              onRequestClose={this.closePopup}
+              onSelectTab={this.handleSelectTab}
+              showErrors={showErrors}
+              editing={editing}
+            />
+            <div className='popup-body'>
+              {(selectedTabIndex === 0) && (
+                <RelationBaseSettings
+                  relation={relation}
+                  connect={connect}
+                  disconnect={disconnect}
+                  toggleConnect={this.toggleConnect}
+                  toggleDisconnect={this.toggleDisconnect}
+                />
+              )}
+              {(selectedTabIndex === 1) && (
+                <PermissionConditions
+                  userType={userType}
+                  rule={rule}
+                  permissionSchema={relation.permissionSchema}
+                  permissionQueryArguments={relation.permissionQueryArguments}
+                  ruleGraphQuery={ruleGraphQuery}
+                  setUserType={this.setUserType}
+                  setRuleGraphQuery={this.setRuleGraphQuery}
+                  queryValid={!errors.invalidQuery}
+                  showErrors={showErrors}
+                  onQueryValidityChange={this.handleQueryValidityChange}
+                  ruleName={this.state.ruleName}
+                  onRuleNameChange={this.handleRuleNameChange}
+                  relation={this.props.relation}
+                  connect={connect}
+                  disconnect={disconnect}
+                  toggleUserType={this.handleToggleUserType}
+                  toggleRuleType={this.handleToggleRuleType}
+                />
+              )}
+            </div>
+            <PermissionPopupFooter
+              valid={valid}
+              onCancel={this.closePopup}
+              onDelete={this.deletePermission}
+              onSubmit={this.handleSubmit}
+              create={!editing}
+              onSelectIndex={this.handleSelectTab}
+              activeTabIndex={this.state.selectedTabIndex}
+              changed={changed}
+              tabs={tabs}
+            />
+            {this.state.loading && (
+              <div className='loading'>
+                <Loading />
+              </div>
             )}
           </div>
-          <PermissionPopupFooter
-            valid={valid}
-            onCancel={this.closePopup}
-            onDelete={this.deletePermission}
-            onSubmit={this.handleSubmit}
-            create={!editing}
-            onSelectIndex={this.handleSelectTab}
-            activeTabIndex={this.state.selectedTabIndex}
-            changed={changed}
-            tabs={tabs}
-          />
-          {this.state.loading && (
-            <div className='loading'>
-              <Loading />
-            </div>
-          )}
-        </div>
+        </ModalDocs>
       </Modal>
     )
   }
