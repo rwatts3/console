@@ -84,7 +84,9 @@ export default class OperationChooser extends React.Component<Props, {}> {
           className={cx($p.ph38, $p.pb38)}
         >
           <h2 className={cx($p.fw3, $p.mb10)}>Operation</h2>
-          <div className={$p.black50}>The Operation that needs to be restricted by the permission</div>
+          <div className={$p.black50}>
+            The operation that will be allowed by this permission.
+          </div>
         </div>
         <Operations
           className={cx(
@@ -140,7 +142,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
         {this.props.errors.permissionTypeMissing && this.props.showErrors && (
           <div className='operation-error'>
             <ErrorInfo>
-              Please specify the operation that the permission should affect.
+              Please specify the operation that this permission should affect.
             </ErrorInfo>
           </div>
         )}

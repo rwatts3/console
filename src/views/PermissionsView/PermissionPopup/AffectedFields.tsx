@@ -64,7 +64,7 @@ class AffectedFields extends React.Component<Props, {}> {
         <div className={cx($p.pl38, $p.pr25)}>
           <div className={cx($p.flex, $p.flexRow, $p.itemsStart, $p.justifyBetween, $p.pb25)}>
             <div className='intro'>
-              Select the fields that should be affected by this permission.
+              Select the fields for which this permission should be applied.
             </div>
             <Info
               offsetX={100}

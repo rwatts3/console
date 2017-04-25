@@ -83,7 +83,7 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
           getEmptyRelationPermissionQuery(props.relation) :
           addVarsAndName(props.relation.name, ruleGraphQuery, props.relation.permissionQueryArguments),
         queryValid: true,
-        tabs: ['Set Permission Events', 'Set Audience'],
+        tabs: ['Select Operations', 'Define Rules'],
         selectedTabIndex: 0,
         showErrors: false,
         editing: true,
@@ -99,7 +99,7 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
       ruleGraphQuery: getEmptyRelationPermissionQuery(props.relation),
       ruleName: '',
       queryValid: true,
-      tabs: ['Set Permission Events', 'Set Audience'],
+      tabs: ['Select Operations', 'Define Rules'],
       selectedTabIndex: 0,
       showErrors: false,
       editing: false,

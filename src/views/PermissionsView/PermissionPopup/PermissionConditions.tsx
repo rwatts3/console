@@ -173,19 +173,19 @@ export default class PermissionConditions extends React.Component<Props, State> 
         >
           {operation && (
             <div className={$p.black50}>
-              Who can
+              Restrict who can
               <span className='whocan'>{(operation ? operation.toLowerCase() : 'access') + ' data'}</span>
-              in the selected fields?
+              in the selected fields.
             </div>
           )}
           {relation && (
             <div className={$p.black50}>
-              {'Who can '}
+              {'Restrict who can '}
               {connect && 'connect'}
               {connect && disconnect && ' / '}
               {disconnect && 'disconnect'}
               <span className='whocan'>{relation.leftModel.name}</span> nodes with
-              <span className='whocan'>{relation.rightModel.name}</span> nodes?
+              <span className='whocan'>{relation.rightModel.name}</span> nodes.
             </div>
           )}
           <div className='setting'>

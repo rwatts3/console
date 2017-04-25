@@ -84,7 +84,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
           getEmptyPermissionQuery(props.model.name, operation) :
           addVarsAndName(props.model.namePlural, ruleGraphQuery, props.model.permissionQueryArguments),
         queryValid: true,
-        tabs: ['Select affected Fields', 'Set Audience'],
+        tabs: ['Select affected Fields', 'Define Rules'],
         selectedTabIndex: 0,
         showErrors: false,
         editing: true,
@@ -102,7 +102,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       rule: 'NONE' as PermissionRuleType,
       ruleGraphQuery: getEmptyPermissionQuery(props.model.name, 'CREATE'),
       queryValid: true,
-      tabs: ['Set Permission Type', 'Select affected Fields', 'Set Audience'],
+      tabs: ['Select Operation', 'Select affected Fields', 'Define Rules'],
       selectedTabIndex: 0,
       showErrors: false,
       editing: false,

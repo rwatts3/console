@@ -26,7 +26,7 @@ export default function RelationBaseSettings({connect, disconnect, toggleConnect
         }
       `}</style>
       <div className='intro'>
-        Select the events that should be affected by this permission.
+        The operations that will be allowed by this permission. (Multiple selection possible.)
       </div>
 
       <div className='labels'>
