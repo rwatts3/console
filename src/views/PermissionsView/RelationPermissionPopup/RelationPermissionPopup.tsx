@@ -195,13 +195,17 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
                 permissionQueryArguments={relation.permissionQueryArguments}
                 ruleGraphQuery={ruleGraphQuery}
                 setUserType={this.setUserType}
-                setRuleType={this.setRule}
                 setRuleGraphQuery={this.setRuleGraphQuery}
                 queryValid={!errors.invalidQuery}
                 showErrors={showErrors}
                 onQueryValidityChange={this.handleQueryValidityChange}
                 ruleName={this.state.ruleName}
                 onRuleNameChange={this.handleRuleNameChange}
+                relation={this.props.relation}
+                connect={connect}
+                disconnect={disconnect}
+                toggleUserType={this.handleToggleUserType}
+                toggleRuleType={this.handleToggleRuleType}
               />
             )}
           </div>
@@ -224,6 +228,26 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
         </div>
       </Modal>
     )
+  }
+
+  private handleToggleUserType = () => {
+    this.setState(state => {
+      const oldUserType = state.userType
+      return {
+        ...state,
+        userType: oldUserType === 'EVERYONE' ? 'AUTHENTICATED' : 'EVERYONE',
+      }
+    })
+  }
+
+  private handleToggleRuleType = () => {
+    this.setState(state => {
+      const oldRule = state.rule
+      return {
+        ...state,
+        rule: oldRule === 'GRAPH' ? 'NONE' : 'GRAPH',
+      }
+    })
   }
 
   private handleRuleNameChange = e => {
@@ -289,13 +313,14 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
 
   private updatePermission = () => {
     const {permission: {isActive, id}} = this.props
-    const {userType, rule, ruleGraphQuery, connect, disconnect} = this.state
+    const {userType, rule, ruleGraphQuery, connect, disconnect, ruleName} = this.state
 
     const updatedNode = {
       id,
       userType,
-      rule: rule,
+      rule,
       ruleGraphQuery: extractSelection(ruleGraphQuery),
+      ruleName,
       isActive,
       connect,
       disconnect,
@@ -389,6 +414,7 @@ export const EditRelationPermissionPopup = Relay.createContainer(withRouter(Mapp
           isActive
           rule
           ruleGraphQuery
+          ruleName
           userType
           relation {
             name
@@ -460,15 +486,15 @@ export const AddRelationPermissionPopup = Relay.createContainer(withRouter(Mappe
 
 function getEmptyRelationPermissionQuery(relation: Relation) {
   return `query ($nodeId: ID) {
-    Some${relation.leftModel.name}Exists(
-      filter: {
-        id: $nodeId
-      }
-    )
-    Some${relation.rightModel.name}Exists(
-      filter: {
-        id: $nodeId
-      }
-    )
-  }`
+  Some${relation.leftModel.name}Exists(
+    filter: {
+      id: $nodeId
+    }
+  )
+  Some${relation.rightModel.name}Exists(
+    filter: {
+      id: $nodeId
+    }
+  )
+}`
 }

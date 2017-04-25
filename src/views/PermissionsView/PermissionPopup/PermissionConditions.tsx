@@ -6,7 +6,7 @@ import {buildClientSchema} from 'graphql'
 import {CustomGraphiQL} from 'graphcool-graphiql'
 import {
   UserType, PermissionRuleType, Operation, Field, FieldType, PermissionVariable,
-  PermissionQueryArgument,
+  PermissionQueryArgument, Relation,
 } from '../../../types/types'
 import {texts} from '../../../utils/permission'
 import PermissionField from '../PermissionsList/ModelPermissions/PermissionField'
@@ -18,6 +18,7 @@ import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
 import {PermissionPopupErrors} from './PermissionPopupState'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
+import Checkbox from '../../../components/Checkbox'
 
 const ConditionButton = styled.div`
   &:not(.${$p.bgBlue}):hover {
@@ -39,25 +40,30 @@ const modalStyling = {
 
 interface Props {
   setUserType: (userType: UserType) => void
+  toggleUserType: () => void
+  toggleRuleType: () => void
+  setRuleGraphQuery: (query: string) => void
+  onRuleNameChange: (e: any) => void
   userType: UserType
   isBetaCustomer: boolean
-  setRuleType: (ruleType: PermissionRuleType) => void
   rule: PermissionRuleType
   permissionSchema: string
   ruleGraphQuery: string
-  setRuleGraphQuery: (query: string) => void
   operation?: Operation
   permissionQueryArguments: PermissionQueryArgument[]
   queryValid: boolean
   showErrors: boolean
   onQueryValidityChange: (valid: boolean) => void
   ruleName: string
-  onRuleNameChange: (e: any) => void
+  relation?: Relation
+  connect?: boolean
+  disconnect?: boolean
 }
 
 interface State {
   selectedVariableNames: string[]
   fullscreen: boolean
+  editingRuleName: boolean
 }
 
 export default class PermissionConditions extends React.Component<Props, State> {
@@ -79,6 +85,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
     this.state = {
       selectedVariableNames: ['nodeId'],
       fullscreen: false,
+      editingRuleName: false,
     }
   }
 
@@ -94,10 +101,14 @@ export default class PermissionConditions extends React.Component<Props, State> 
       ruleGraphQuery,
       setRuleGraphQuery,
       operation,
-      setRuleType,
       setUserType,
       userType,
       permissionQueryArguments,
+      relation,
+      connect,
+      disconnect,
+      toggleUserType,
+      toggleRuleType,
     } = this.props
     const {selectedVariableNames, fullscreen} = this.state
 
@@ -117,6 +128,43 @@ export default class PermissionConditions extends React.Component<Props, State> 
             top: 185px;
             right: -40px;
           }
+          .setting {
+            @p: .mt25, .w100, .f16, .black40, .flex, .itemsCenter;
+          }
+          .label {
+            @p: .black40, .f16, .mr10, .ml16;
+          }
+          .divider {
+            @p: .relative, .flex, .justifyCenter, .mt25;
+          }
+          .divider:before {
+            @p: .absolute, .bBlack10, .bb;
+            left: -38px;
+            right: -38px;
+            content: "";
+            top: 50%;
+          }
+          .divider-text {
+            @p: .bgWhite, .f16, .tc, .ph6, .relative, .black50;
+          }
+          .edit-description {
+            @p: .pointer, .f16, .black40, .flex, .itemsCenter;
+          }
+          .description-wrapper {
+            @p: .mt25;
+            height: 24px;
+          }
+          .description-input {
+            @p: .f16, .db;
+            line-height: 1.3;
+            margin-left: 1px;
+          }
+          .description-icon {
+            @p: .bgBlack10, .br100, .flex, .justifyCenter, .itemsCenter;
+            width: 26px;
+            height: 26px;
+          }
+          .
         `}</style>
         <div
           className={cx($p.ph38, {
@@ -130,124 +178,73 @@ export default class PermissionConditions extends React.Component<Props, State> 
               in the selected fields?
             </div>
           )}
-          <div className={cx($p.dib, $p.mt25, $p.w100)}>
-            <div
-              className={cx(
-                $p.flex,
-                $p.flexRow,
-                $p.justifyAround,
-                $p.ph16,
-                $p.pv6,
-                $p.relative,
-                $p.itemsCenter,
-              )}
-            >
-              <div
-                className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
-                onClick={() => setUserType && setUserType('EVERYONE')}
-                style={{width: 70}}
-              >
-                <ConditionButton
-                  className={cx($p.nowrap, $p.absolute, $p.ph10, $p.flex, $p.flexRow, $p.itemsCenter, {
-                    [cx($p.pv6, $p.bgBlack04)]: userType !== 'EVERYONE',
-                    [cx($p.bgBlue, $p.br2, $p.pv8, $p.z1)]: userType === 'EVERYONE',
-                  })}
-                >
-                  <div
-                    className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
-                        [$p.black30]: userType !== 'EVERYONE',
-                        [$p.white]: userType === 'EVERYONE',
-                      },
-                    )}
-                  >
-                    Everyone
-                  </div>
-                </ConditionButton>
-              </div>
-              <div
-                className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
-                onClick={() => setUserType && setUserType('AUTHENTICATED')}
-                style={{width: 190}}
-              >
-                <ConditionButton
-                  className={cx($p.nowrap, $p.absolute, $p.ph10, $p.flex, $p.flexRow, $p.itemsCenter, {
-                    [cx($p.pv6, $p.bgBlack04)]: userType !== 'AUTHENTICATED',
-                    [cx($p.bgBlue, $p.br2, $p.pv8, $p.z1)]: userType === 'AUTHENTICATED',
-                  })}
-                >
-                  <div
-                    className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
-                        [$p.black30]: userType !== 'AUTHENTICATED',
-                        [$p.white]: userType === 'AUTHENTICATED',
-                      },
-                    )}
-                  >
-                    Authenticated
-                  </div>
-                  <Icon
-                    color={userType === 'AUTHENTICATED' ? $v.white : $v.gray30}
-                    stroke={true}
-                    strokeWidth={4}
-                    src={require('graphcool-styles/icons/stroke/lock.svg')}
-                    className={$p.ml6}
-                    width={15}
-                    height={15}
-                  />
-                </ConditionButton>
-              </div>
-              <div className={cx($p.flexAuto)}>
-              </div>
-              {isBetaCustomer &&
-                <div
-                  className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyEnd, $p.pointer)}
-                  onClick={() => {
-                    const newRuleType = rule === 'NONE' ? 'GRAPH' : 'NONE'
-                    if (setRuleType) {
-                    setRuleType(newRuleType)
-                  }
-                }}
-                  style={{width: 190}}
-                >
-                <ConditionButton
-                  className={cx($p.nowrap, $p.absolute, $p.ph10, $p.pv8, $p.flex, $p.flexRow, $p.itemsCenter, $p.br2, {
-                    [cx($p.bgBlack04)]: rule === 'NONE',
-                    [cx($p.bgBlue, $p.br2, $p.z1)]: rule !== 'NONE',
-                  })}
-                >
-                  <div
-                    className={cx($p.ml6, $p.mr6, $p.ttu, $p.fw6, $p.f14, $p.flex, $p.itemsCenter, {
-                        [$p.black30]: rule === 'NONE',
-                        [$p.white]: rule !== 'NONE',
-                      },
-                    )}
-                  >
-                    <Icon
-                      className='star'
-                      src={require('assets/icons/star.svg')}
-                      width={14}
-                      height={14}
-                      color={rule === 'NONE' ? $v.gray30 : $v.white}
-                    />
-                    <span className='custom-rule'>Custom Rule</span>
-                  </div>
-                </ConditionButton>
-              </div>}
+          {relation && (
+            <div className={$p.black50}>
+              {'Who can '}
+              {connect && 'connect'}
+              {connect && disconnect && ' / '}
+              {disconnect && 'disconnect'}
+              <span className='whocan'>{relation.leftModel.name}</span> nodes with
+              <span className='whocan'>{relation.rightModel.name}</span> nodes?
             </div>
+          )}
+          <div className='setting'>
+            <Checkbox checked={userType === 'AUTHENTICATED'} onToggle={toggleUserType}>
+              <div className='label'>Authentication required</div>
+              <Icon
+                src={require('graphcool-styles/icons/stroke/lock.svg')}
+                color={$v.gray40}
+                stroke
+                strokeWidth={2}
+                height={20}
+                width={20}
+              />
+            </Checkbox>
+          </div>
+          <div className='divider'>
+            <div className='divider-text'>Permission Query (optional)</div>
+          </div>
+          <div className='setting'>
+            <Checkbox checked={rule === 'GRAPH'} onToggle={toggleRuleType}>
+              <div className='label'>Use Permission Query</div>
+            </Checkbox>
+          </div>
+          <div className='description-wrapper'>
+            {(this.state.editingRuleName || (this.props.ruleName && this.props.ruleName.length > 0)) ? (
+                <input
+                  type='text'
+                  className='description-input'
+                  placeholder='Choose a description...'
+                  value={this.props.ruleName || ''}
+                  onChange={this.props.onRuleNameChange}
+                  onKeyDown={this.handleRuleNameKeyDown}
+                  autoFocus
+                />
+              ) : (
+                <div className='edit-description' onClick={this.editRuleName}>
+                  <Icon
+                    src={require('assets/icons/edit_circle_gray.svg')}
+                    color={$v.gray40}
+                    height={26}
+                    width={26}
+                  />
+                  <span className='underline ml16'>{' add description '}</span>
+                  <span className='ml6 black30'> (optional)</span>
+                </div>
+              )}
           </div>
 
-          {rule === 'GRAPH' && (
-            fullscreen ? (
-              <Modal
-                isOpen={true}
-                style={modalStyling}
-                contentLabel='Permission Query Editor'
-                onRequestClose={this.toggleFullscreen}
-              >
-                {this.renderQuery()}
-              </Modal>
-            ) : (
-              this.renderQuery()
-            )
+          {fullscreen ? (
+            <Modal
+              isOpen={true}
+              style={modalStyling}
+              contentLabel='Permission Query Editor'
+              onRequestClose={this.toggleFullscreen}
+            >
+              {this.renderQuery()}
+            </Modal>
+          ) : (
+            this.renderQuery()
           )}
 
         </div>
@@ -260,6 +257,16 @@ export default class PermissionConditions extends React.Component<Props, State> 
         )}
       </div>
     )
+  }
+
+  private editRuleName = () => {
+    this.setState({editingRuleName: true} as State)
+  }
+
+  private handleRuleNameKeyDown = e => {
+    if (e.keyCode === 13) {
+      this.setState({editingRuleName: false} as State)
+    }
   }
 
   private getVariables() {
@@ -278,10 +285,11 @@ export default class PermissionConditions extends React.Component<Props, State> 
 
   private renderQuery() {
     const {fullscreen, selectedVariableNames} = this.state
-    const {ruleGraphQuery, permissionSchema} = this.props
+    const {ruleGraphQuery, permissionSchema, rule} = this.props
     const variables = this.getVariables()
+    const inactive = rule !== 'GRAPH'
     return (
-      <div className={'permission-query-wrapper' + (fullscreen ? ' fullscreen' : '')}>
+      <div className={cx('permission-query-wrapper', {fullscreen, inactive})}>
         <style jsx={true}>{`
           .permission-query-wrapper :global(.star) {
             @p: .mr6;
@@ -303,6 +311,10 @@ export default class PermissionConditions extends React.Component<Props, State> 
             height: 400px;
             margin-left: -45px;
             margin-right: -45px;
+          }
+          .permission-query-wrapper.inactive:after {
+            @p: .bgWhite80, .top0, .left0, .bottom0, .right0, .absolute, .z999;
+            content: "";
           }
           .permission-query-wrapper.fullscreen {
             @p: .bbox, .ma60;

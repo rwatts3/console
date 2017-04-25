@@ -100,7 +100,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       userType: 'EVERYONE' as UserType,
       applyToWholeModel: false,
       rule: 'NONE' as PermissionRuleType,
-      ruleGraphQuery: getEmptyPermissionQuery(props.model.namePlural, 'CREATE'),
+      ruleGraphQuery: getEmptyPermissionQuery(props.model.name, 'CREATE'),
       queryValid: true,
       tabs: ['Set Permission Type', 'Select affected Fields', 'Set Audience'],
       selectedTabIndex: 0,
@@ -224,7 +224,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                   permissionQueryArguments={model.permissionQueryArguments}
                   ruleGraphQuery={ruleGraphQuery}
                   setUserType={this.setUserType}
-                  setRuleType={this.setRule}
                   setRuleGraphQuery={this.setRuleGraphQuery}
                   operation={selectedOperation}
                   queryValid={!errors.invalidQuery}
@@ -232,6 +231,8 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                   onQueryValidityChange={this.handleQueryValidityChange}
                   ruleName={ruleName}
                   onRuleNameChange={this.handleRuleNameChange}
+                  toggleUserType={this.handleToggleUserType}
+                  toggleRuleType={this.handleToggleRuleType}
                 />
               )}
             </div>
@@ -254,6 +255,26 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
           </div>
       </Modal>
     )
+  }
+
+  private handleToggleUserType = () => {
+    this.setState(state => {
+      const oldUserType = state.userType
+      return {
+        ...state,
+        userType: oldUserType === 'EVERYONE' ? 'AUTHENTICATED' : 'EVERYONE',
+      }
+    })
+  }
+
+  private handleToggleRuleType = () => {
+    this.setState(state => {
+      const oldRule = state.rule
+      return {
+        ...state,
+        rule: oldRule === 'GRAPH' ? 'NONE' : 'GRAPH',
+      }
+    })
   }
 
   private handleRuleNameChange = e => {
@@ -450,8 +471,10 @@ export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermis
           isActive
           rule
           ruleGraphQuery
+          ruleName
           userType
           model {
+            name
             namePlural
             permissionSchema(operation: READ)
             permissionQueryArguments(operation: READ) {
