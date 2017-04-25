@@ -84,16 +84,20 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
               />
             </Arrow>
           </PermissionType>
-          <RelationPermissionLabel
-            isActive={permission.isActive && permission.connect}
-            operation='connect'
-            className={$p.ml10}
-          />
-          <RelationPermissionLabel
-            isActive={permission.isActive && permission.disconnect}
-            operation='disconnect'
-            className={$p.ml10}
-          />
+          {permission.connect && (
+            <RelationPermissionLabel
+              isActive={permission.isActive}
+              operation='connect'
+              className={$p.ml10}
+            />
+          )}
+          {permission.disconnect && (
+            <RelationPermissionLabel
+              isActive={permission.isActive}
+              operation='disconnect'
+              className={$p.ml10}
+            />
+          )}
         </Link>
         <div>
           <NewToggleButton defaultChecked={permission.isActive} onChange={this.toggleActiveState} />

@@ -62,7 +62,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
             right: -30px;
           }
           .operations {
-            @p: .bgBlack04, .inlineFlex, .flexRow, .justifyAround, .ph16, .pv6, .relative, .itemsCenter;
+            @p: .bgBlack04, .inlineFlex, .flexRow, .justifyCenter, .ph16, .pv6, .relative, .itemsCenter, .w100;
             height: 37px;
           }
           .operation-button {
@@ -76,12 +76,18 @@ export default class OperationChooser extends React.Component<Props, {}> {
             top: 0;
             bottom: -2px;
           }
+          h2 {
+            @p: .fw3, .mb10, .tl;
+          }
+          .description {
+            @p: .black50, .tl;
+          }
         `}</style>
         <div
           className={cx($p.ph38, $p.pb38)}
         >
-          <h2 className={cx($p.fw3, $p.mb10)}>Operation</h2>
-          <div className={$p.black50}>
+          <h2>Operation</h2>
+          <div className='description'>
             The operation that will be allowed by this permission.
           </div>
         </div>

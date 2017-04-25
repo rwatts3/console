@@ -184,7 +184,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
           }
         `}</style>
         <ModalDocs
-          title='How to define a Type Permission'
+          title='How do permissions work?'
           id='type-type-permission-popup'
           resources={[
             {
@@ -197,8 +197,13 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
               type: 'guide',
               link: 'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
             },
+            {
+              title: 'Design Patterns',
+              type: 'article',
+              link: 'https://www.graph.cool/docs/tutorials/authorization-content-management-system-miesho4goo/',
+            },
           ]}
-          videoId='e_sotn1uGqk'
+          videoId='l1KEssmlhPA'
         >
           <div
             className='permission-popup'
