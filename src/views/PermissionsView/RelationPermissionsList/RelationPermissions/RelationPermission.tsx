@@ -55,7 +55,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
       >
         <Link
           className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1, $p.itemsCenter)}
-          to={`/${projectName}/permissions/relation/${relation.name}/edit/${permission.id}`}
+          to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
         >
           <PermissionType className={cx(
             $p.flex,

@@ -32,7 +32,7 @@ export default function ({relation, params}: Props) {
         }
       `}</style>
       <h2>{relation.name}</h2>
-      <Link to={`/${params.projectName}/permissions/relation/${relation.name}/create`}>
+      <Link to={`/${params.projectName}/permissions/relations/${relation.name}/create`}>
         <div className='btn'>
           <Icon
             src={require('graphcool-styles/icons/stroke/add.svg')}

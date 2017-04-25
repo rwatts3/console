@@ -15,25 +15,17 @@ interface Props {
   params: any
   project: Project
   children: JSX.Element
+  location: any
 }
 
-interface State {
-  activeTab: number
-}
-
-class PermissionsView extends React.Component<Props, State> {
-  constructor(props) {
-    super(props)
-    this.state = {
-      activeTab: 0,
-    }
-  }
+class PermissionsView extends React.Component<Props, null> {
   componentDidMount() {
     tracker.track(ConsoleEvents.Permissions.viewed())
   }
   render() {
     const {project, params} = this.props
-    const {activeTab} = this.state
+    const {pathname} = this.props.location
+    const activeTab = pathname.endsWith('relations') ? 1 : 0
     return (
       <div
         className={cx(
@@ -43,7 +35,7 @@ class PermissionsView extends React.Component<Props, State> {
         )}
       >
         <Helmet title='Permissions'/>
-        <PermissionsHeader activeTab={activeTab} onChangeTab={this.handleTabChange} />
+        <PermissionsHeader params={params} activeTab={activeTab} />
         {activeTab === 0 && (
           <PermissionsList params={params} project={project} />
         )}
@@ -53,10 +45,6 @@ class PermissionsView extends React.Component<Props, State> {
         {this.props.children}
       </div>
     )
-  }
-
-  private handleTabChange = i => {
-    this.setState({activeTab: i})
   }
 }
 

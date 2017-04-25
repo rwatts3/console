@@ -185,7 +185,7 @@ export default (
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
-        <Route path='relation'>
+        <Route path='relations'>
           <Route
             path=':relationName/edit/:id'
             component={EditRelationPermissionPopup}

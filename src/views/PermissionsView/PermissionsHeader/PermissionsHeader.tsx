@@ -1,15 +1,16 @@
 import * as React from 'react'
 import Info from '../../../components/Info'
 import * as cn from 'classnames'
+import {Link} from 'react-router'
 
 interface Props {
+  params: any
   activeTab: number
-  onChangeTab: (i: number) => void
 }
 
 export default class PermissionsHeader extends React.Component<Props, {}> {
   render() {
-    const {activeTab, onChangeTab} = this.props
+    const {params, activeTab} = this.props
     return (
       <div className='permissions-header'>
         <style jsx={true}>{`
@@ -22,15 +23,15 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
           .tabs {
             @p: .flex, .justifyStart, .mt25;
           }
-          .tab {
-            @p: .fw4, .f25, .black30, .relative, .mr10, .pointer, .z2;
+          .tabs :global(.tab) {
+            @p: .fw3, .f25, .black30, .relative, .mr10, .pointer, .z2;
             bottom: -1px;
             padding: 10px 20px;
           }
-          .tab.active {
+          .tabs :global(.tab.active) {
             @p: .black50, .bgWhite, .bt, .bl, .br, .bBlack10, .br2;
           }
-          .tab:not(.active):hover {
+          .tabs :global(.tab:not(.active):hover) {
             @p: .black50;
           }
         `}</style>
@@ -47,18 +48,12 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
           </Info>
         </div>
         <div className='tabs'>
-          <div
-            className={cn('tab', {active: activeTab === 0})}
-            onClick={() => onChangeTab(0)}
-          >
+          <Link className={cn('tab', {active: activeTab === 0})} to={`/${params.projectName}/permissions`}>
             Types
-          </div>
-          <div
-            className={cn('tab', {active: activeTab === 1})}
-            onClick={() => onChangeTab(1)}
-          >
+          </Link>
+          <Link className={cn('tab', {active: activeTab === 1})} to={`/${params.projectName}/permissions/relations`}>
             Relations
-          </div>
+          </Link>
         </div>
       </div>
     )
