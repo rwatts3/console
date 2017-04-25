@@ -556,12 +556,12 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
 function getEmptyPermissionQuery(modelName: string, operation: Operation) {
   if (operation === 'CREATE') {
     return `query ($user_id: ID!) {
-      SomeUserExists(
-        filter: {
-          id: $user_id
-        }
-      )
+  SomeUserExists(
+    filter: {
+      id: $user_id
     }
+  )
+}
 `
   }
   return `query ($node_id: ID!) {

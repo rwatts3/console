@@ -485,8 +485,12 @@ export const AddRelationPermissionPopup = Relay.createContainer(withRouter(Mappe
 })
 
 function getEmptyRelationPermissionQuery(relation: Relation) {
-  return `query ($nodeId: ID!) {
-  Some${relation.leftModel.name}Exists()
-  Some${relation.rightModel.name}Exists
+  return `query {
+  Some${relation.leftModel.name}Exists(filter: {
+    # ...
+  })
+  Some${relation.rightModel.name}Exists(filter: {
+    # ...
+  })
 }`
 }
