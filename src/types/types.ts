@@ -64,6 +64,7 @@ export interface Project {
   id: string
   name: string
   alias: string
+  version: number
   models: RelayConnection<Model>
   relations: RelayConnection<Relation>
   actions: RelayConnection<Action>

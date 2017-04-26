@@ -9,6 +9,7 @@ interface Props {
   viewer: Viewer
   location: any
   params: any
+  relay: any
 }
 
 class NewSchemaView extends React.Component<Props,null> {
@@ -32,7 +33,10 @@ class NewSchemaView extends React.Component<Props,null> {
           location={this.props.location}
         />
         <div className='schema-wrapper'>
-          <SchemaEditor project={viewer.project} />
+          <SchemaEditor
+            project={viewer.project}
+            forceFetchSchemaView={this.props.relay.forceFetch}
+          />
           <SchemaOverview
             location={location}
             project={viewer.project}
