@@ -4,6 +4,7 @@ import * as Relay from 'react-relay'
 import {Project} from '../../types/types'
 import * as FileSaver from 'file-saver'
 import {sortSchema} from '../../../sortSchema'
+import {Link} from 'react-router'
 
 interface Props {
   project: Project
@@ -27,6 +28,7 @@ class SchemaEditor extends React.Component<Props,null> {
     require('codemirror-graphql/jump')
     require('codemirror-graphql/mode')
 
+    const {project} = this.props
     const sortedSchema = sortSchema(this.props.project.schema, this.props.project.models.edges.map(edge => edge.node))
 
     return (
@@ -62,13 +64,13 @@ class SchemaEditor extends React.Component<Props,null> {
               pointer-events: none;
             }
           }
-          .button {
-            @p: .bgWhite04, .fw6, .f14, .white50, .ttu, .br2, .pointer, .o50;
+          .schema-editor :global(.button) {
+            @p: .bgWhite04, .fw6, .f14, .white50, .ttu, .br2, .pointer, .o50, .mr16;
             padding: 7px 9px 8px 11px;
             letter-spacing: 0.53px;
             transition: $duration linear opacity;
           }
-          .button:hover {
+          .schema-editor :global(.button:hover) {
             @p: .o100;
           }
           .soon-editable {
@@ -93,6 +95,7 @@ class SchemaEditor extends React.Component<Props,null> {
         />
         <div className='footer'>
           <div className='button' onClick={this.downloadSchema}>Export Schema</div>
+          <Link className='button' to={`/${project.name}/clone`}>Clone Project</Link>
         </div>
         <div className='soon-editable'>soon editable</div>
       </div>
