@@ -6,7 +6,6 @@ const subscriptionRegions = {
 
 export default function getSubscriptionEndpoint(region) {
   const endpoint = subscriptionRegions[region]
-  const dev = process.env.NODE_ENV === 'production' ? '' : 'dev.'
 
-  return `${dev}${endpoint}`
+  return `${endpoint}`
 }
