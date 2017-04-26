@@ -42,7 +42,7 @@ declare var analytics: any
 declare var __BACKEND_ADDR__: string
 declare var __EXAMPLE_ADDR__: string
 declare var __SUBSCRIPTIONS_EU_WEST_1__: any
-declare var __SUBSCRIPTIONS_US_WEST_1__: any
+declare var __SUBSCRIPTIONS_US_WEST_2__: any
 declare var __SUBSCRIPTIONS_AP_NORTHEAST_1__: any
 declare var __HEARTBEAT_ADDR__: string | boolean
 declare var __INTERCOM_ID__: string
