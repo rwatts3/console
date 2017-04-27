@@ -91,6 +91,7 @@
     "postcss-inherit": "git+https://github.com/timsuchanek/postcss-inherit#build3",
     "postcss-inject": "^1.0.1",
     "postcss-simple-vars": "^3.0.0",
+    "prop-types": "^15.5.8",
     "rc-tooltip": "^3.4.2",
     "react": "^15.2.1",
     "react-addons-pure-render-mixin": "^15.2.1",
