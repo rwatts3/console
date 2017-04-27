@@ -4,6 +4,7 @@ import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../types/types'
+import ResizableBox from '../../components/ResizableBox'
 
 interface Props {
   viewer: Viewer
@@ -33,10 +34,16 @@ class NewSchemaView extends React.Component<Props,null> {
           location={this.props.location}
         />
         <div className='schema-wrapper'>
-          <SchemaEditor
-            project={viewer.project}
-            forceFetchSchemaView={this.props.relay.forceFetch}
-          />
+          <ResizableBox
+            width={(window.innerWidth - 290) / 2}
+            height={window.innerHeight - 64}
+            hideArrow
+          >
+            <SchemaEditor
+              project={viewer.project}
+              forceFetchSchemaView={this.props.relay.forceFetch}
+            />
+          </ResizableBox>
           <SchemaOverview
             location={location}
             project={viewer.project}

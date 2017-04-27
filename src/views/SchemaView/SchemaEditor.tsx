@@ -81,7 +81,7 @@ class SchemaEditor extends React.Component<Props, State> {
       <div className={cn('schema-editor', {beta})}>
         <style jsx={true}>{`
           .schema-editor {
-            @p: .w50, .bgDarkerBlue, .flex, .flexColumn, .relative;
+            @p: .w100, .bgDarkerBlue, .flex, .flexColumn, .relative, .h100;
           }
           .schema-editor :global(.CodeMirror) {
             @p: .h100;

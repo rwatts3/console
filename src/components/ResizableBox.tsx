@@ -9,10 +9,12 @@ export default class ResizableBox extends React.Component<any,any> {
   static propTypes = {
     height: PropTypes.number,
     width: PropTypes.number,
+    hideArrow: PropTypes.bool,
   }
 
   static defaultProps = {
     handleSize: [20,20],
+    hideArrow: false,
   }
 
   props: any
@@ -48,7 +50,7 @@ export default class ResizableBox extends React.Component<any,any> {
     // If you use Resizable directly, you are responsible for updating the child component
     // with a new width and height.
     const {handleSize, onResize, onResizeStart, onResizeStop, draggableOpts,
-      minConstraints, maxConstraints, lockAspectRatio, axis, width, height, ...props} = this.props
+      minConstraints, maxConstraints, lockAspectRatio, axis, width, height, hideArrow, ...props} = this.props
     return (
       <div className='box'>
         <style jsx>{`
@@ -87,18 +89,20 @@ export default class ResizableBox extends React.Component<any,any> {
         >
           <div style={{width: this.state.width + 'px', height: this.state.height + 'px'}} {...props} />
         </Resizable>
-        <div className='resizer' onClick={this.toggle}>
-          <Icon
-            src={
-              this.state.width === 67 ?
-              require('graphcool-styles/icons/stroke/arrowRight.svg') :
-              require('graphcool-styles/icons/stroke/arrowLeft.svg')
-            }
-            color={$v.white60}
-            strokeWidth={4}
-            stroke
-          />
-        </div>
+        {!hideArrow && (
+          <div className='resizer' onClick={this.toggle}>
+            <Icon
+              src={
+                this.state.width === 67 ?
+                require('graphcool-styles/icons/stroke/arrowRight.svg') :
+                require('graphcool-styles/icons/stroke/arrowLeft.svg')
+              }
+              color={$v.white60}
+              strokeWidth={4}
+              stroke
+            />
+          </div>
+        )}
       </div>
     )
   }
