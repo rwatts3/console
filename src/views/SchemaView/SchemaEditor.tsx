@@ -250,28 +250,56 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private patchSchemaRemarks(schema) {
-    let splitted =  this.state.schema.split('\n')
-    splitted[14] += ' # @rename(oldName: "")'
+    const splittedOld = this.state.schema.split('\n')
+    let splittedNew = schema.split('\n')
     const cursor = this.editor.getCursor()
-    this.setState(
-      {schema: splitted.join('\n')} as State,
-      () => {
-        this.editor.setCursor(cursor)
-      },
-    )
-    return schema
+
+    const oldLine = splittedOld[cursor.line]
+    const newLine = splittedNew[cursor.line]
+    const oldFieldName = this.getFieldName(oldLine)
+    const newFieldName = this.getFieldName(newLine)
+    let changed = false
+
+    if (
+      oldLine !== newLine
+      && this.isField(oldLine)
+      && this.isField(newLine)
+      && !oldLine.includes('@rename')
+      && !newLine.includes('@rename')
+      && oldFieldName !== newFieldName
+    ) {
+      splittedNew[cursor.line] += ` @rename(oldName: "${oldFieldName}")`
+      changed = true
+    }
+    return {
+      schema: splittedNew.join('\n'),
+      changed,
+      cursor,
+    }
   }
 
   private isField(line) {
-    return /.+:.+/.test(line)
+    return /.+?:.+/.test(line)
   }
 
-  private handleSchemaChange = schema => {
+  private getFieldName(line) {
+    const res = /(.+?):.*/.exec(line)
+    return res ? res[1].trim() : ''
+  }
+
+  private handleSchemaChange = newSchema => {
     if (!this.state.beta) {
       return
     }
-    // const newSchema = this.patchSchemaRemarks(schema)
-    this.setState({schema, errors: [], messages: [], isDryRun: true} as State)
+    const {schema, changed, cursor} = this.patchSchemaRemarks(newSchema)
+    this.setState(
+      {schema, errors: [], messages: [], isDryRun: true} as State,
+      () => {
+        if (changed) {
+          this.editor.setCursor(cursor)
+        }
+      },
+    )
   }
 
   private downloadSchema = () => {
