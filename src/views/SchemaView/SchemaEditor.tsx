@@ -8,7 +8,7 @@ import {sortSchema} from '../../../sortSchema'
 import {Link} from 'react-router'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
 import MigrationMessages from './MigrationMessages'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
+const QueryEditor: any = require('./Editor/QueryEditor').QueryEditor
 import {showNotification} from '../../actions/notification'
 import {connect} from 'react-redux'
 import {ShowNotificationCallback} from '../../types/utils'
@@ -21,6 +21,7 @@ interface Props {
   relay: any
   forceFetchSchemaView: () => void
   showNotification: ShowNotificationCallback
+  onTypesChange: (changed: boolean) => void
 }
 
 export interface MigrationMessage {
@@ -54,6 +55,8 @@ interface State {
 }
 
 class SchemaEditor extends React.Component<Props, State> {
+  private lastDidChange = false
+  private editor: any
   constructor(props) {
     super(props)
     this.state = {
@@ -65,11 +68,34 @@ class SchemaEditor extends React.Component<Props, State> {
       errors: [],
       loading: false,
     }
+    global['s'] = this
   }
+  // componentDidMount() {
+  //   document.addEventListener('keydown', (e) => {
+  //     if (e.keyCode === 27) {
+  //       let splitted =  this.state.schema.split('\n')
+  //       splitted[14] += ' # @rename(oldName: "oldName")'
+  //       const cursor = this.editor.getCursor()
+  //       this.setState(
+  //         {schema: splitted.join('\n')} as State,
+  //         () => {
+  //           this.editor.setCursor(cursor)
+  //         },
+  //       )
+  //     }
+  //   })
+  // }
   componentWillReceiveProps(nextProps) {
     if (nextProps.project.schema !== this.props.project.schema) {
       this.setState({schema: nextProps.project.schema} as State)
     }
+  }
+  componentDidUpdate() {
+    const didChange = this.state.schema.trim() !== this.props.project.schema.trim()
+    if (didChange !== this.lastDidChange) {
+      this.props.onTypesChange(didChange)
+    }
+    this.lastDidChange = didChange
   }
   render() {
     const {project} = this.props
@@ -140,6 +166,9 @@ class SchemaEditor extends React.Component<Props, State> {
             value={schema}
             onEdit={this.handleSchemaChange}
             onRunQuery={this.updateSchema}
+            onEditorInstance={instance => {
+              this.editor = instance
+            }}
           />
           {loading && (
             <div className='loader'>
@@ -218,8 +247,26 @@ class SchemaEditor extends React.Component<Props, State> {
 # version: ${version}\n` + schema
   }
 
+  private patchSchemaRemarks(schema) {
+    let splitted =  this.state.schema.split('\n')
+    splitted[14] += ' # @rename(oldName: "")'
+    const cursor = this.editor.getCursor()
+    this.setState(
+      {schema: splitted.join('\n')} as State,
+      () => {
+        this.editor.setCursor(cursor)
+      },
+    )
+    return schema
+  }
+
+  private isField(line) {
+    return /.+:.+/.test(line)
+  }
+
   private handleSchemaChange = schema => {
-    this.setState({schema, errors: [], messages: [], isDryRun: true} as State)
+    const newSchema = this.patchSchemaRemarks(schema)
+    this.setState({schema: newSchema, errors: [], messages: [], isDryRun: true} as State)
   }
 
   private downloadSchema = () => {

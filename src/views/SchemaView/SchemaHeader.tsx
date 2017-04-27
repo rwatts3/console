@@ -8,11 +8,12 @@ import ComingSoonTag from './ComingSoonTag'
 interface Props {
   projectName: string
   location: any
+  typesChanged: boolean
 }
 
 export default class SchemaHeader extends React.Component<Props,null> {
   render() {
-    const {projectName} = this.props
+    const {projectName, typesChanged} = this.props
 
     return (
       <div className='schema-header'>
@@ -109,7 +110,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
                 height={18}
                 color={$v.white20}
               />
-              <span>Types</span>
+              <span>Types {typesChanged ? ' *' : ''}</span>
             </div>
           </Link>
           <div className={'coming-soon tab' /* + this.tabClass('interfaces')*/}>
