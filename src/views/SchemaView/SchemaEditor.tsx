@@ -8,12 +8,19 @@ import {sortSchema} from '../../../sortSchema'
 import {Link} from 'react-router'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
 import MigrationMessages from './MigrationMessages'
+import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
+import {showNotification} from '../../actions/notification'
+import {connect} from 'react-redux'
+import {ShowNotificationCallback} from '../../types/utils'
+import {onFailureShowNotification} from '../../utils/relay'
+import Loading from '../../components/Loading/Loading'
 require('graphcool-graphiql/graphiql_dark.css')
 
 interface Props {
   project: Project
   relay: any
   forceFetchSchemaView: () => void
+  showNotification: ShowNotificationCallback
 }
 
 export interface MigrationMessage {
@@ -43,36 +50,8 @@ interface State {
   isDryRun: boolean
   messages: MigrationMessage[]
   errors: MigrationError[]
+  loading: boolean
 }
-
-const mockMessages = [{
-  "name": "Asd",
-  "description": "The type `Asd` is updated.",
-  "subDescriptions": [{
-    "action": "Create",
-    "description": "A new field with the name `sdf` and type `String` is created.",
-    "name": "sdf",
-    "type": "Field"
-  }, {
-    "action": "Update",
-    "description": "The field `a` is updated.",
-    "name": "a",
-    "type": "Field"
-  }, {
-    "action": "Update",
-    "description": "The field `newerName` is updated.",
-    "name": "newerName",
-    "type": "Field"
-  }, {
-    "action": "Update",
-    "description": "The field `text` is updated.",
-    "name": "text",
-    "type": "Field"
-  }],
-  "type": "Type",
-  "action": "Update"
-}]
-
 
 class SchemaEditor extends React.Component<Props, State> {
   constructor(props) {
@@ -84,6 +63,7 @@ class SchemaEditor extends React.Component<Props, State> {
       isDryRun: true,
       messages: [],
       errors: [],
+      loading: false,
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -92,22 +72,8 @@ class SchemaEditor extends React.Component<Props, State> {
     }
   }
   render() {
-    require('codemirror/addon/hint/show-hint')
-    require('codemirror/addon/comment/comment')
-    require('codemirror/addon/edit/matchbrackets')
-    require('codemirror/addon/edit/closebrackets')
-    require('codemirror/addon/fold/foldgutter')
-    require('codemirror/addon/fold/brace-fold')
-    require('codemirror/addon/lint/lint')
-    require('codemirror/keymap/sublime')
-    require('codemirror-graphql/hint')
-    require('codemirror-graphql/lint')
-    require('codemirror-graphql/info')
-    require('codemirror-graphql/jump')
-    require('codemirror-graphql/mode')
-
     const {project} = this.props
-    const {schema, beta} = this.state
+    const {schema, beta, isDryRun, loading} = this.state
 
     const didChange = this.state.schema.trim() !== project.schema.trim()
 
@@ -122,8 +88,11 @@ class SchemaEditor extends React.Component<Props, State> {
             padding: 25px;
             padding-left: 16px;
           }
-          .schema-editor :global(.ReactCodeMirror) {
-            @p: .flex1, .overflowAuto;
+          .editor-wrapper {
+            @p: .flex1, .overflowAuto, .relative;
+          }
+          .loader {
+            @p: .absolute, .top0, .right0, .bottom0, .left0, .flex, .justifyCenter, .itemsCenter;
           }
           .schema-editor:not(.beta) :global(.CodeMirror-cursor) {
             @p: .dn;
@@ -166,24 +135,18 @@ class SchemaEditor extends React.Component<Props, State> {
             @p: .pa10, .white40, .f16, .pointer;
           }
         `}</style>
-        <Codemirror
-          value={schema}
-          options={{
-            height: 'auto',
-            viewportMargin: Infinity,
-            mode: 'graphql',
-            theme: 'graphiql',
-            readOnly: !beta,
-            lineNumbers: true,
-            tabSize: 2,
-          }}
-          onFocusChange={(focused) => {
-            if (focused) {
-              // TODO track
-            }
-          }}
-          onChange={this.handleSchemaChange}
-        />
+        <div className='editor-wrapper'>
+          <QueryEditor
+            value={schema}
+            onEdit={this.handleSchemaChange}
+            onRunQuery={this.updateSchema}
+          />
+          {loading && (
+            <div className='loader'>
+              <Loading color='white' />
+            </div>
+          )}
+        </div>
         {didChange ? (
           <div>
             {(this.state.messages.length > 0 || this.state.errors.length > 0) && (
@@ -191,7 +154,10 @@ class SchemaEditor extends React.Component<Props, State> {
             )}
             <div className='footer editing'>
               <div className='cancel' onClick={this.reset}>Cancel</div>
-              <div className='apply-changes' onClick={this.updateSchema}>Apply Changes</div>
+              <div className='apply-changes' onClick={this.updateSchema}>
+                {isDryRun ? 'Preview ' : 'Apply '}
+                Changes
+              </div>
             </div>
           </div>
         ) : (
@@ -210,6 +176,7 @@ class SchemaEditor extends React.Component<Props, State> {
   private updateSchema = () => {
     const {schema, isDryRun} = this.state
     const newSchema = this.addFrontmatter(schema)
+    this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new MigrateProject({
         newSchema,
@@ -217,20 +184,21 @@ class SchemaEditor extends React.Component<Props, State> {
       }),
       {
         onSuccess: (res) => {
-          console.log(res)
           if (isDryRun) {
             this.setState({
               messages: res.migrateProject.migrationMessages,
               isDryRun: false,
               errors: res.migrateProject.errors,
+              loading: false,
             } as State)
           } else {
-            this.setState({messages: [], isDryRun: true, errors: []} as State)
+            this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
             this.props.forceFetchSchemaView()
           }
         },
         onFailure: (transaction) => {
-          console.log('fail', transaction)
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
         },
       },
     )
@@ -251,7 +219,7 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private handleSchemaChange = schema => {
-    this.setState({schema} as State)
+    this.setState({schema, errors: [], messages: [], isDryRun: true} as State)
   }
 
   private downloadSchema = () => {
@@ -260,7 +228,9 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(SchemaEditor, {
+const SchemaEditorRedux = connect(null, {showNotification})(SchemaEditor)
+
+export default Relay.createContainer(SchemaEditorRedux, {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {

@@ -50,7 +50,7 @@ export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, 
               schema
             }
           }
-        `
+        `,
       ],
     }]
   }
