@@ -68,6 +68,7 @@ class NewSchemaView extends React.Component<Props, State> {
               project={viewer.project}
               forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
+              isBeta={viewer.user.crm.information.isBeta}
             />
           </ResizableBox>
           <SchemaOverview
@@ -99,6 +100,13 @@ export default Relay.createContainer(NewSchemaView, {
           name
           ${SchemaEditor.getFragment('project')}
           ${SchemaOverview.getFragment('project')}
+        }
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
         }
       }
     `,

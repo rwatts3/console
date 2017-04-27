@@ -22,6 +22,7 @@ interface Props {
   forceFetchSchemaView: () => void
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
+  isBeta: boolean
 }
 
 export interface MigrationMessage {
@@ -62,7 +63,7 @@ class SchemaEditor extends React.Component<Props, State> {
     this.state = {
       // schema: sortSchema(props.project.schema, props.project.models.edges.map(edge => edge.node)),
       schema: props.project.schema,
-      beta: true,
+      beta: props.isBeta,
       isDryRun: true,
       messages: [],
       errors: [],
@@ -169,6 +170,7 @@ class SchemaEditor extends React.Component<Props, State> {
             onEditorInstance={instance => {
               this.editor = instance
             }}
+            readOnly={!beta}
           />
           {loading && (
             <div className='loader'>
@@ -265,8 +267,11 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private handleSchemaChange = schema => {
-    const newSchema = this.patchSchemaRemarks(schema)
-    this.setState({schema: newSchema, errors: [], messages: [], isDryRun: true} as State)
+    if (!this.state.beta) {
+      return
+    }
+    // const newSchema = this.patchSchemaRemarks(schema)
+    this.setState({schema, errors: [], messages: [], isDryRun: true} as State)
   }
 
   private downloadSchema = () => {

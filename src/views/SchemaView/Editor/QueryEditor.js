@@ -38,6 +38,7 @@ export class QueryEditor extends React.Component {
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
     onEditorInstance: PropTypes.func,
+    readOnly: PropTypes.bool,
   }
 
   constructor(props) {
@@ -77,6 +78,7 @@ export class QueryEditor extends React.Component {
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
+      readOnly: typeof this.props.readOnly === 'boolean' ? this.props.readOnly : false,
       foldGutter: {
         minFoldSize: 4
       },
