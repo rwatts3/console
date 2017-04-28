@@ -111,12 +111,14 @@ class SchemaEditor extends React.Component<Props, State> {
             @p: .w100, .bgDarkerBlue, .flex, .flexColumn, .relative, .h100;
           }
           .schema-editor :global(.CodeMirror) {
-            @p: .h100;
-            padding: 25px;
+            @p: .hAuto;
+            padding-top: 25px;
             padding-left: 16px;
+            padding-bottom: 0;
+            padding-right: 0;
           }
           .editor-wrapper {
-            @p: .flex1, .overflowAuto, .relative;
+            @p: .flexAuto, .overflowAuto, .relative, .nosb;
           }
           .loader {
             @p: .absolute, .top0, .right0, .bottom0, .left0, .flex, .justifyCenter, .itemsCenter;
@@ -279,7 +281,7 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private isField(line) {
-    return /.+?:.+/.test(line)
+    return /.+?:.+?/.test(line)
   }
 
   private getFieldName(line) {

@@ -37,7 +37,7 @@ class TypeList extends React.Component<Props,null> {
             background: linear-gradient(to bottom, rgba(23, 42, 58, 1), rgba(23, 42, 58, 0));
           }
           .type-list {
-            @p: .pl16, .pb16, .pr16, .overflowAuto, .flex1;
+            @p: .pl16, .pb16, .pr16, .overflowAuto, .flex1, .nosb;
           }
         `}</style>
         <div

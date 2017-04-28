@@ -122,7 +122,9 @@ export class QueryEditor extends React.Component {
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
+      viewportMargin: Infinity,
+      scrollbarStyle: null,
     });
 
     if (typeof this.props.onEditorInstance === 'function') {
