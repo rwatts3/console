@@ -89,6 +89,13 @@ function getLoadingColor(routes) {
 /* eslint-disable react/prop-types */
 const render = ({error, props, routerProps, element, ...rest}) => {
   if (error) {
+    if (error.message && error.message === 'Failed to fetch' && location.pathname === '/') {
+      cookiestore.remove('graphcool_auth_token')
+      cookiestore.remove('graphcool_customer_id')
+      window.location.pathname = '/'
+      return null
+    }
+
     const err = error.source.errors[0]
 
     tracker.track(ConsoleEvents.unexpectedError({error: JSON.stringify(err)}))
