@@ -153,6 +153,7 @@ export default (
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <IndexRedirect to='schema'/>
       <Redirect from='settings' to='settings/general' />
+      <Route path='token' component={TokenRedirectView}/>
       <Route path='settings' component={Settings} render={render}>
         <Route path='general' component={General} queries={ViewerQuery} render={render} />
         <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
