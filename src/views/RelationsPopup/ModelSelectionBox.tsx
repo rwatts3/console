@@ -3,6 +3,9 @@ import {Model} from '../../types/types'
 import {Combobox} from 'react-input-enhancements'
 import FieldNameInput from './FieldNameInput'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
+import {$v} from 'graphcool-styles'
+import FieldHorizontalSelect from '../models/FieldPopup/FieldHorizontalSelect'
+import Info from '../../components/Info'
 
 interface Props {
   relatedFieldName: string | null
@@ -15,6 +18,10 @@ interface Props {
   inputIsBreakingChange: boolean
   modelIsBreakingChange: boolean
   forbiddenFieldNames: string[]
+  isRequired: boolean
+  didChangeIsRequired: (isRequired: boolean) => void
+  isBeta: boolean
+  singleCardinality: boolean
   // messagesForBreakingChange: string[]
 }
 
@@ -114,7 +121,38 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
               relatedFieldType={this.props.relatedFieldType}
               didChangeFieldName={this.props.didChangeFieldName}
               forbiddenFieldNames={this.props.forbiddenFieldNames}
+              isRequired={this.props.isRequired}
             />
+            {this.props.isBeta && (
+              this.props.singleCardinality ? (
+                <FieldHorizontalSelect
+                  activeBackgroundColor={$v.blue}
+                  inactiveBackgroundColor='#F5F5F5'
+                  choices={['required', 'optional']}
+                  selectedIndex={this.props.isRequired ? 0 : 1}
+                  inactiveTextColor={$v.gray30}
+                  onChange={(index) => this.props.didChangeIsRequired([true, false][index])}
+                  small
+                />
+              ) : (
+                <Info
+                  customTip={
+                    <FieldHorizontalSelect
+                      activeBackgroundColor={$v.blue}
+                      inactiveBackgroundColor='#F5F5F5'
+                      choices={['required', 'optional']}
+                      selectedIndex={this.props.isRequired ? 0 : 1}
+                      inactiveTextColor={$v.gray30}
+                      onChange={(index) => this.props.didChangeIsRequired([true, false][index])}
+                      small
+                      readOnly
+                    />
+                  }
+                >
+                  The "many" side of a relation cannot be required.
+                </Info>
+              )
+            )}
           </BreakingChangeIndicator>
         </div>
         {this.props.many &&

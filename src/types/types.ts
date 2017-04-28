@@ -153,6 +153,7 @@ interface Interface {
 export interface Relation {
   id: string
   name: string
+  isRequired: boolean
   description?: string
   leftModel: Model
   rightModel: Model
