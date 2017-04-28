@@ -452,7 +452,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
   private createPermission = () => {
     const {model} = this.props
-    const {selectedOperation, fieldIds, userType, applyToWholeModel} = this.state
+    const {selectedOperation, fieldIds, userType, applyToWholeModel, rule, ruleName, ruleGraphQuery} = this.state
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as PermissionPopupState, () => {
@@ -463,6 +463,9 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
           fieldIds,
           userType,
           applyToWholeModel,
+          rule,
+          ruleName,
+          ruleGraphQuery,
         }),
         {
           onSuccess: () => this.closePopup(),
