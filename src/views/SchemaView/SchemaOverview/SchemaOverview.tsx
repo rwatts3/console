@@ -12,6 +12,7 @@ interface Props {
   location: any
   editingModelName?: string
   blur: boolean
+  setScroll: (n: number) => void
 }
 export type SchemaOverviewFilter = 'detail' | 'overview'
 
@@ -40,7 +41,9 @@ class SchemaOverview extends React.Component<Props,State> {
     }
 
     return (
-      <div className={cn('schema-overview', {blur})}>
+      <div
+        className={cn('schema-overview', {blur})}
+      >
         <style jsx>{`
           .schema-overview {
             @p: .bgDarkBlue, .w100, .flex, .flexColumn;
@@ -94,6 +97,7 @@ class SchemaOverview extends React.Component<Props,State> {
           onEditModel={this.handleEditModel}
           selectedModel={selectedModel}
           editingModelName={editingModelName}
+          setScroll={this.props.setScroll}
         />
       </div>
     )
