@@ -1740,11 +1740,11 @@ codemirror-graphql@^0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.3.tgz#01f8841dab54c69e9f182caed39bd376c5ba3cb4"
 
-codemirror@5.22.2, codemirror@^5.22.2:
+codemirror@5.22.2:
   version "5.22.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.22.2.tgz#38274c20e3628b4f7a982bffc2cddb61ceed6a09"
 
-codemirror@5.25.2, codemirror@^5.13.4, codemirror@^5.15.2:
+codemirror@5.25.2, codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
   version "5.25.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.25.2.tgz#8c77677ca9c9248d757d3a07ed1e89a8404850b7"
 
@@ -3067,9 +3067,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@1.5.5:
-  version "1.5.5"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.5.5.tgz#2f0027a1986757a3375f4529b2d8045a316ad83f"
+graphcool-graphiql@1.5.6:
+  version "1.5.6"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.5.6.tgz#e84107db352611ff7dffe5774298f6d389d13c88"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"

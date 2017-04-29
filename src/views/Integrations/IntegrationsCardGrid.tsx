@@ -62,11 +62,11 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
             color='#00B861'
           />
           <div className='email'>
-            Email
+            Email-Password Auth
           </div>
         </div>
       ),
-      description: 'The built-in Email Auth Provider of Graphcool',
+      description: 'Built-in Email-Password based Auth Provider',
       link: `/${projectName}/integrations/authentication/email`,
     }
 

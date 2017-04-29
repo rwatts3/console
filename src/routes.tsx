@@ -25,7 +25,6 @@ import Team from './views/Settings/Team/Team'
 import Billing from './views/Settings/Billing/Billing'
 import ModelRedirectView from './views/models/ModelRedirectView'
 import FieldPopup from './views/models/FieldPopup/FieldPopup'
-import SchemaView from './views/models/SchemaView/SchemaView'
 import AuthProviderPopup from './views/models/AuthProviderPopup/AuthProviderPopup'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
@@ -187,10 +186,6 @@ export default (
       <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
       <Route path='models'>
         <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
-        <Route path=':modelName/schema' component={SchemaView} queries={ViewerQuery} render={render}>
-          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
-          <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
-        </Route>
         <Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render}/>
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render}/>
       </Route>

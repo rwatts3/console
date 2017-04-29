@@ -27,6 +27,7 @@ interface Props {
   isBeta: boolean
   setBlur: (active: boolean) => void
   scroll: number
+  showEnums: boolean
 }
 
 export interface MigrationMessage {
@@ -45,9 +46,9 @@ export interface MigrationSubMessage {
 }
 
 export interface MigrationError {
-  type: String
-  field: String
-  description: String
+  type: string
+  field: string
+  description: string
 }
 
 interface State {
@@ -74,7 +75,7 @@ class SchemaEditor extends React.Component<Props, State> {
     super(props)
     this.state = {
       // schema: sortSchema(props.project.schema, props.project.models.edges.map(edge => edge.node)),
-      schema: props.project.schema,
+      schema: props.showEnums ? enumIdl : props.project.schema,
       beta: props.isBeta,
       isDryRun: true,
       messages: [],
@@ -105,6 +106,9 @@ class SchemaEditor extends React.Component<Props, State> {
     if (this.props.scroll !== nextProps.scroll) {
       this.scrollToPercentage(nextProps.scroll)
     }
+    if (this.props.showEnums !== nextProps.showEnums) {
+      this.setState({schema: nextProps.showEnums ? enumIdl : nextProps.project.schema} as State)
+    }
   }
   scrollToPercentage(scroll) {
     const container = this.containerRef
@@ -128,7 +132,7 @@ class SchemaEditor extends React.Component<Props, State> {
     return (
       <div
         className={cn('schema-editor', {beta})}
-        onFocus={() => this.props.setBlur(true)}
+        onFocus={() => this.props.setBlur(didChange)}
         onBlur={() => this.props.setBlur(false)}
       >
         <style jsx={true}>{`
@@ -363,3 +367,16 @@ export default Relay.createContainer(SchemaEditorRedux, {
     `,
   },
 })
+
+const enumIdl = `enum Role {
+  Admin,
+  User,
+  Guest
+}
+
+enum Wood {
+  Beech,
+  Oak,
+  Fir,
+  Mahagony
+}`

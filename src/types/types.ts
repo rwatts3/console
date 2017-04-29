@@ -176,6 +176,12 @@ export type UserType = 'EVERYONE' | 'AUTHENTICATED'
 
 export type PermissionRuleType = 'NONE' | 'GRAPH' | 'WEBHOOK'
 
+export interface Enum {
+  id: string
+  name: string
+  values: string[]
+}
+
 export interface Model {
   id: string
   name: string
