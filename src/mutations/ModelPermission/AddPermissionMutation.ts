@@ -1,5 +1,5 @@
 import * as Relay from 'react-relay'
-import {UserType, Operation} from '../../types/types'
+import {UserType, Operation, Rule} from '../../types/types'
 
 interface Props {
   modelId: string
@@ -7,6 +7,9 @@ interface Props {
   userType: UserType
   fieldIds: string[]
   applyToWholeModel: boolean
+  rule: Rule
+  ruleName?: string
+  ruleGraphQuery?: string
 }
 
 interface Response {
@@ -50,7 +53,7 @@ export default class AddPermissionMutation extends Relay.Mutation<Props, Respons
   }
 
   getVariables () {
-    const {modelId, operation, userType, fieldIds, applyToWholeModel} = this.props
+    const {modelId, operation, userType, fieldIds, applyToWholeModel, rule, ruleName, ruleGraphQuery} = this.props
 
     return {
       modelId,
@@ -59,7 +62,9 @@ export default class AddPermissionMutation extends Relay.Mutation<Props, Respons
       fieldIds,
       applyToWholeModel,
       isActive: true,
-      rule: 'NONE',
+      rule,
+      ruleName,
+      ruleGraphQuery,
     }
   }
 }

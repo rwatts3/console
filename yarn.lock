@@ -1740,9 +1740,13 @@ codemirror-graphql@^0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.3.tgz#01f8841dab54c69e9f182caed39bd376c5ba3cb4"
 
-codemirror@5.22.2, codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
+codemirror@5.22.2, codemirror@^5.22.2:
   version "5.22.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.22.2.tgz#38274c20e3628b4f7a982bffc2cddb61ceed6a09"
+
+codemirror@5.25.2, codemirror@^5.13.4, codemirror@^5.15.2:
+  version "5.25.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.25.2.tgz#8c77677ca9c9248d757d3a07ed1e89a8404850b7"
 
 color-convert@^0.5.3:
   version "0.5.3"
@@ -2731,7 +2735,7 @@ fbjs@^0.3.1:
     ua-parser-js "^0.7.9"
     whatwg-fetch "^0.9.0"
 
-fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.5, fbjs@^0.8.7, fbjs@^0.8.8:
+fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.5, fbjs@^0.8.7, fbjs@^0.8.8, fbjs@^0.8.9:
   version "0.8.9"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.9.tgz#180247fbd347dcc9004517b904f865400a0c8f14"
   dependencies:
@@ -3063,9 +3067,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.5.4.tgz#7d5602674de6529e6703b383f4b00642ea557d60"
+graphcool-graphiql@1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.5.5.tgz#2f0027a1986757a3375f4529b2d8045a316ad83f"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"
@@ -3115,7 +3119,15 @@ graphcool-styles@0.1.6:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphiql@^0.8.0, graphiql@^0.8.1:
+graphiql@0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-0.10.1.tgz#7e0c4eb62291fa639b56e1936de21d22bac293fb"
+  dependencies:
+    codemirror "5.25.2"
+    codemirror-graphql "^0.6.3"
+    marked "0.3.6"
+
+graphiql@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-0.8.1.tgz#3bb65ea5dc44e251650af61a9e478e00707e6ee2"
   dependencies:
@@ -4488,7 +4500,7 @@ marked-terminal@^1.6.2:
     lodash.assign "^4.2.0"
     node-emoji "^1.4.1"
 
-marked@^0.3.5, marked@^0.3.6:
+marked@0.3.6, marked@^0.3.5, marked@^0.3.6:
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.6.tgz#b2c6c618fccece4ef86c4fc6cb8a7cbf5aeda8d7"
 
@@ -5811,6 +5823,12 @@ prompt@^0.2.14:
     revalidator "0.1.x"
     utile "0.2.x"
     winston "0.8.x"
+
+prop-types@^15.5.8:
+  version "15.5.8"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.8.tgz#6b7b2e141083be38c8595aa51fc55775c7199394"
+  dependencies:
+    fbjs "^0.8.9"
 
 propagate@0.4.0:
   version "0.4.0"
@@ -7221,6 +7239,10 @@ tough-cookie@^2.3.1, tough-cookie@~2.3.0:
 tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
+
+tracekit@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/tracekit/-/tracekit-0.4.4.tgz#8f990ed3c152a760cb4b7a9892c21e25f368f90c"
 
 trim-newlines@^1.0.0:
   version "1.0.0"

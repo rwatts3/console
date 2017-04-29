@@ -118,6 +118,10 @@ export default class PermissionConditions extends React.Component<Props, State> 
     return (
       <div className='permission-conditions'>
         <style jsx={true}>{`
+          .permission-conditions {
+            @p: .overflowAuto;
+            max-height: calc(100vh - 150px);
+          }
           .whocan {
             @p: .fw6, .mh6;
           }
@@ -319,7 +323,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
           }
           .permission-query-wrapper {
             @p: .mt38, .flex, .relative;
-            height: 400px;
+            height: 300px;
             margin-left: -45px;
             margin-right: -45px;
           }

@@ -19,6 +19,10 @@ interface Props {
   leftFieldType: string
   didChangeFieldNameOnLeftModel: (newFieldName: string) => void
   didChangeFieldNameOnRightModel: (newFieldName: string) => void
+  fieldOnLeftModelIsRequired: boolean
+  fieldOnRightModelIsRequired: boolean
+  didChangeFieldOnLeftModelIsRequired: (isRequired: boolean) => void
+  didChangeFieldOnRightModelIsRequired: (isRequired: boolean) => void
   fieldOnLeftModelName: string | null
   fieldOnRightModelName: string | null
   leftInputIsBreakingChange: boolean
@@ -27,6 +31,7 @@ interface Props {
   rightModelIsBreakingChange: boolean
   forbiddenFieldNamesForLeftModel: string[]
   forbiddenFieldNamesForRightModel: string[]
+  isBeta: boolean
 }
 
 export default class ModelSelection extends React.Component<Props, {}> {
@@ -68,6 +73,10 @@ export default class ModelSelection extends React.Component<Props, {}> {
             inputIsBreakingChange={this.props.leftInputIsBreakingChange}
             modelIsBreakingChange={this.props.leftModelIsBreakingChange}
             forbiddenFieldNames={this.props.forbiddenFieldNamesForLeftModel}
+            isRequired={this.props.fieldOnLeftModelIsRequired}
+            didChangeIsRequired={this.props.didChangeFieldOnLeftModelIsRequired}
+            isBeta={this.props.isBeta}
+            singleCardinality={!this.props.selectedCardinality.endsWith('MANY')}
           />
           <div className='greenLine' />
         </div>
@@ -99,6 +108,10 @@ export default class ModelSelection extends React.Component<Props, {}> {
             inputIsBreakingChange={this.props.rightInputIsBreakingChange}
             modelIsBreakingChange={this.props.rightModelIsBreakingChange}
             forbiddenFieldNames={this.props.forbiddenFieldNamesForRightModel}
+            isRequired={this.props.fieldOnRightModelIsRequired}
+            didChangeIsRequired={this.props.didChangeFieldOnRightModelIsRequired}
+            isBeta={this.props.isBeta}
+            singleCardinality={!this.props.selectedCardinality.startsWith('MANY')}
           />
         </div>
       </div>

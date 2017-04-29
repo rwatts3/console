@@ -102,6 +102,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       createProjectModalLoading: false,
       sidebarExpanded: true,
     }
+    global['rv'] = this
   }
 
   componentWillMount() {

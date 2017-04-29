@@ -14,6 +14,7 @@ interface Props {
   relatedFieldType: string | null
   didChangeFieldName: (newFieldName: string) => void
   forbiddenFieldNames: string[]
+  isRequired: boolean
 }
 
 export default class FieldNameInput extends React.Component<Props, State> {
@@ -67,7 +68,9 @@ export default class FieldNameInput extends React.Component<Props, State> {
 
           `}</style>
           {!this.state.isEnteringFieldName && !this.state.isHovered &&
-          (<div className={`f20 purpleColor`}>{this.props.relatedFieldName}</div>
+          (<div className={`f20 purpleColor`}>
+            {this.props.relatedFieldName}
+          </div>
           )}
           {!this.state.isEnteringFieldName && this.state.isHovered &&
           (<div className='flex itemsCenter '>
@@ -112,7 +115,12 @@ export default class FieldNameInput extends React.Component<Props, State> {
               />
             </div>
           )}
-          <div className={`move fieldType ${!shouldBreak ? 'ml6' : ''}`}>{this.props.relatedFieldType}</div>
+          <div className={`move fieldType ${!shouldBreak ? 'ml6' : ''}`}>
+            {this.props.relatedFieldType}
+            {this.props.isRequired && (
+              '!'
+            )}
+          </div>
         </div>
       )
     } else {

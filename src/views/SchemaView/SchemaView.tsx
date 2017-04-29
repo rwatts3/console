@@ -4,16 +4,40 @@ import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
 import * as Relay from 'react-relay'
 import {Viewer} from '../../types/types'
+import ResizableBox from '../../components/ResizableBox'
+import {throttle} from 'lodash'
 
 interface Props {
   viewer: Viewer
   location: any
   params: any
+  relay: any
 }
 
-class NewSchemaView extends React.Component<Props,null> {
+interface State {
+  editorWidth: number
+  typesChanged: boolean
+}
+
+class NewSchemaView extends React.Component<Props, State> {
+  private handleResize = throttle(
+    (_, {size}) => {
+      localStorage.setItem('schema-editor-width', size.width)
+    },
+    300,
+  )
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      editorWidth: parseInt(localStorage.getItem('schema-editor-width'), 10) || (window.innerWidth - 290) / 2,
+      typesChanged: false,
+    }
+  }
   render() {
     const {viewer, location, params} = this.props
+    const {editorWidth, typesChanged} = this.state
     const editingModelName = location.pathname.endsWith(`${params.modelName}/edit`) ? params.modelName : undefined
     return (
       <div className='schema-view'>
@@ -30,9 +54,23 @@ class NewSchemaView extends React.Component<Props,null> {
         <SchemaHeader
           projectName={viewer.project.name}
           location={this.props.location}
+          typesChanged={typesChanged}
         />
         <div className='schema-wrapper'>
-          <SchemaEditor project={viewer.project} />
+          <ResizableBox
+            id='schema-view'
+            width={editorWidth}
+            height={window.innerHeight - 64}
+            hideArrow
+            onResize={this.handleResize}
+          >
+            <SchemaEditor
+              project={viewer.project}
+              forceFetchSchemaView={this.props.relay.forceFetch}
+              onTypesChange={this.handleTypesChange}
+              isBeta={viewer.user.crm.information.isBeta}
+            />
+          </ResizableBox>
           <SchemaOverview
             location={location}
             project={viewer.project}
@@ -42,6 +80,10 @@ class NewSchemaView extends React.Component<Props,null> {
         {this.props.children}
       </div>
     )
+  }
+
+  private handleTypesChange = typesChanged => {
+    this.setState({typesChanged} as State)
   }
 }
 
@@ -58,6 +100,13 @@ export default Relay.createContainer(NewSchemaView, {
           name
           ${SchemaEditor.getFragment('project')}
           ${SchemaOverview.getFragment('project')}
+        }
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
         }
       }
     `,

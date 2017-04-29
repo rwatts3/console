@@ -41,7 +41,7 @@ class SchemaOverview extends React.Component<Props,State> {
       <div className='schema-overview'>
         <style jsx>{`
           .schema-overview {
-            @p: .bgDarkBlue, .w50, .flex, .flexColumn;
+            @p: .bgDarkBlue, .w100, .flex, .flexColumn;
           }
           .schema-overview-header {
             @p: .flexFixed;
