@@ -23,6 +23,7 @@ interface Props {
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
   isBeta: boolean
+  setBlur: (active: boolean) => void
 }
 
 export interface MigrationMessage {
@@ -105,7 +106,11 @@ class SchemaEditor extends React.Component<Props, State> {
     const didChange = this.state.schema.trim() !== project.schema.trim()
 
     return (
-      <div className={cn('schema-editor', {beta})}>
+      <div
+        className={cn('schema-editor', {beta})}
+        onFocus={() => this.props.setBlur(true)}
+        onBlur={() => this.props.setBlur(false)}
+      >
         <style jsx={true}>{`
           .schema-editor {
             @p: .w100, .bgDarkerBlue, .flex, .flexColumn, .relative, .h100;

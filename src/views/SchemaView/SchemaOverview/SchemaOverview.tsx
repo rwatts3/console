@@ -5,11 +5,13 @@ import * as Relay from 'react-relay'
 import {Project, Model} from '../../../types/types'
 import AddType from './AddType'
 import Tether from '../../../components/Tether/Tether'
+import * as cn from 'classnames'
 
 interface Props {
   project: Project
   location: any
   editingModelName?: string
+  blur: boolean
 }
 export type SchemaOverviewFilter = 'detail' | 'overview'
 
@@ -30,7 +32,7 @@ class SchemaOverview extends React.Component<Props,State> {
     }
   }
   render() {
-    const {editingModelName} = this.props
+    const {editingModelName, blur} = this.props
     const {activeFilter, addingType, editingModel} = this.state
     let selectedModel = undefined
     if (this.props.location.query.hasOwnProperty('selectedModel')) {
@@ -38,10 +40,15 @@ class SchemaOverview extends React.Component<Props,State> {
     }
 
     return (
-      <div className='schema-overview'>
+      <div className={cn('schema-overview', {blur})}>
         <style jsx>{`
           .schema-overview {
             @p: .bgDarkBlue, .w100, .flex, .flexColumn;
+            transition: .3s linear all;
+          }
+          .schema-overview.blur {
+            @p: .o50;
+            filter: blur(5px);
           }
           .schema-overview-header {
             @p: .flexFixed;
