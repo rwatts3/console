@@ -6,17 +6,19 @@ import {Project} from '../../types/types'
 import {$p} from 'graphcool-styles'
 import IntegrationsCard from './IntegrationsCard'
 import IntegrationsCardPlaceholder from './IntegrationsCardPlaceholder'
+import {Icon} from 'graphcool-styles'
 
 interface Props {
   project: Project
   params: any
+  isBeta: boolean
 }
 
 class IntegrationsCardGrid extends React.Component<Props, {}> {
   render() {
     const isEnabled = this.props.project.integrations.edges.length > 0
       && this.props.project.integrations.edges[0].node.isEnabled
-    const {params: {projectName}} = this.props
+    const {params: {projectName}, isBeta} = this.props
 
     const providers = this.props.project.authProviders.edges.map(edge => edge.node)
 
@@ -41,6 +43,60 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
       link: `/${projectName}/integrations/authentication/digits`,
     }
 
+    const emailIntegration = {
+      isEnabled: Boolean(providers.find(prov => prov.type === 'AUTH_PROVIDER_EMAIL' && prov.isEnabled)),
+      logo: (
+        <div className='email-auth-provider'>
+          <style jsx>{`
+            .email-auth-provider {
+              @p: .flex, .itemsCenter, .w100, .justifyCenter;
+            }
+            .email {
+              @p: .fw3, .f25, .ml16;
+            }
+          `}</style>
+          <Icon
+            src={require('assets/icons/logo.svg')}
+            width={40}
+            height={40}
+            color='#00B861'
+          />
+          <div className='email'>
+            Email
+          </div>
+        </div>
+      ),
+      description: 'The built-in Email Auth Provider of Graphcool',
+      link: `/${projectName}/integrations/authentication/email`,
+    }
+
+    const anonymousIntegration = {
+      isEnabled: false,
+      logo: (
+        <div className='email-auth-provider'>
+          <style jsx>{`
+            .email-auth-provider {
+              @p: .flex, .itemsCenter, .w100, .justifyCenter;
+            }
+            .email {
+              @p: .fw3, .f25, .ml16;
+            }
+          `}</style>
+          <Icon
+            src={require('assets/icons/logo.svg')}
+            width={40}
+            height={40}
+            color='#00B861'
+          />
+          <div className='email'>
+            Anonymous Auth
+          </div>
+        </div>
+      ),
+      description: 'The anonymous auth provider can be used if you need temporary sessions.',
+      link: `/${projectName}/integrations/authentication/anonymous`,
+    }
+
     return (
       <div className={cx($p.flex, $p.flexColumn, $p.mr25)}>
         <div className={cx($p.flex, $p.flexRow)}>
@@ -49,8 +105,12 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
           <IntegrationsCard integration={digitsIntegration} />
         </div>
         <div className={cx($p.flex, $p.flexRow)}>
-          <IntegrationsCardPlaceholder />
-          <IntegrationsCardPlaceholder />
+          <IntegrationsCard integration={emailIntegration} />
+          {isBeta ? (
+            <IntegrationsCard integration={anonymousIntegration} />
+          ) : (
+            <IntegrationsCardPlaceholder />
+          )}
           <div
             style={{width: '317px', height: '322px', margin: '12px'}}
             className={cx(

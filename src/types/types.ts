@@ -76,6 +76,14 @@ export interface Project {
   seats: RelayConnection<Seat>
   projectBillingInformation: ProjectBillingInformation
   region?: string
+  packageDefinitions: RelayConnection<PackageDefinition>
+}
+
+export interface PackageDefinition {
+  id: string
+  definition: string
+  email: string
+  name: string
 }
 
 export interface ProjectBillingInformation {
@@ -276,7 +284,8 @@ export interface AuthProvider {
   auth0: AuthProviderAuth0 | null
 }
 
-export type AuthProviderType = 'AUTH_PROVIDER_EMAIL' | 'AUTH_PROVIDER_DIGITS' | 'AUTH_PROVIDER_AUTH0'
+export type AuthProviderType = 'AUTH_PROVIDER_EMAIL' | 'AUTH_PROVIDER_DIGITS'
+  | 'AUTH_PROVIDER_AUTH0' | 'anonymous-auth-provider'
 
 export interface AuthProviderAuth0 {
   domain: string
