@@ -9,16 +9,21 @@ import {Field, OrderBy} from '../types/types'
 import {TypedValue} from '../types/utils'
 
 export function updateNetworkLayer (): void {
-  const isLoggedin = cookiestore.has('graphcool_auth_token') && cookiestore.has('graphcool_customer_id')
-  const headers = isLoggedin
-    ? {
-      'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
-    }
-    : null
-  const api = `${__BACKEND_ADDR__}/system`
-  const layer = new DefaultNetworkLayer(api, { headers, retryDelays: [] })
+  try {
+    const isLoggedin = cookiestore.has('graphcool_auth_token') && cookiestore.has('graphcool_customer_id')
+    const headers = isLoggedin
+      ? {
+        'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
+      }
+      : null
+    const api = `${__BACKEND_ADDR__}/system`
+    const layer = new DefaultNetworkLayer(api, { headers, retryDelays: [] })
 
-  injectNetworkLayer(layer)
+    injectNetworkLayer(layer)
+  } catch (e) {
+    console.log('fu')
+    console.error(e)
+  }
 }
 
 export function onFailureShowNotification (

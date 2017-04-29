@@ -21,6 +21,7 @@ import { StateTree } from './types/reducers'
 import logger from 'redux-logger'
 import * as ReactGA from 'react-ga'
 import * as cookiestore from 'cookiestore'
+import * as TraceKit from 'tracekit'
 
 import './styles/voyager.css'
 import './utils/polyfils'
@@ -45,6 +46,17 @@ if (__GA_CODE__) {
 if (typeof Raven !== 'undefined' && process.env.NODE_ENV === 'production') {
   Raven.config('https://f4b2d5e7865742e290a3bf77849d5e4a@sentry.io/135786').install()
 }
+
+TraceKit.report.subscribe((error) => {
+  if (error.message === 'performanceNow is not defined') {
+    alert(
+      'The console cannot start because you are using React Devtools,'
+      + ' which have a problem with Relay at the moment. '
+      + 'Please disable React Devtools. If that doesn\'t help, please'
+      + ' consult us in Slack. Thanks for your understanding.',
+    )
+  }
+})
 
 const reducers = combineReducers({
   gettingStarted: reduceGettingStartedState,
