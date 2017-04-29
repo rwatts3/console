@@ -65,11 +65,8 @@ class SchemaEditor extends React.Component<Props, State> {
   private containerRef = null
   private handleScroll = debounce(
     () => {
-
       const container = this.containerRef
-      console.log(container.scrollTop)
       const scrollPercentage = 100 * container.scrollTop / (container.scrollHeight - container.clientHeight)
-      console.log(scrollPercentage)
     },
     100,
   )
@@ -106,7 +103,6 @@ class SchemaEditor extends React.Component<Props, State> {
       this.setState({schema: nextProps.project.schema} as State)
     }
     if (this.props.scroll !== nextProps.scroll) {
-      console.log('change', nextProps.scroll)
       this.scrollToPercentage(nextProps.scroll)
     }
   }
