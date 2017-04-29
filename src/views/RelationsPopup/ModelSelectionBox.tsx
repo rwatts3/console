@@ -56,6 +56,12 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
     return (
       <div className={`model-selection-box ${this.props.many && 'topMargin20'}`}>
         <style jsx={true}>{`
+          .model-selection-box :global(.required-relation-chooser) {
+            @p: .dn;
+          }
+          .model-selection-box:hover :global(.required-relation-chooser) {
+            @p: .flex;
+          }
           .bottomBorder {
             border-bottom-style: solid;
             border-bottom-width: 1px;
@@ -121,10 +127,9 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
               relatedFieldType={this.props.relatedFieldType}
               didChangeFieldName={this.props.didChangeFieldName}
               forbiddenFieldNames={this.props.forbiddenFieldNames}
-              isRequired={this.props.isRequired}
             />
             {this.props.isBeta && (
-              this.props.singleCardinality ? (
+              this.props.singleCardinality && (
                 <FieldHorizontalSelect
                   activeBackgroundColor={$v.blue}
                   inactiveBackgroundColor='#F5F5F5'
@@ -133,24 +138,8 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
                   inactiveTextColor={$v.gray30}
                   onChange={(index) => this.props.didChangeIsRequired([true, false][index])}
                   small
+                  className='required-relation-chooser'
                 />
-              ) : (
-                <Info
-                  customTip={
-                    <FieldHorizontalSelect
-                      activeBackgroundColor={$v.blue}
-                      inactiveBackgroundColor='#F5F5F5'
-                      choices={['required', 'optional']}
-                      selectedIndex={this.props.isRequired ? 0 : 1}
-                      inactiveTextColor={$v.gray30}
-                      onChange={(index) => this.props.didChangeIsRequired([true, false][index])}
-                      small
-                      readOnly
-                    />
-                  }
-                >
-                  The "many" side of a relation cannot be required.
-                </Info>
               )
             )}
           </BreakingChangeIndicator>

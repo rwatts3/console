@@ -491,28 +491,30 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   private rightFieldType = () => {
-    const {leftSelectedModel, selectedCardinality} = this.state
+    const {leftSelectedModel, selectedCardinality, fieldOnRightModelIsRequired} = this.state
 
     if (!leftSelectedModel) {
       return null
     }
 
     if (selectedCardinality.startsWith('MANY')) {
-      return '[' + leftSelectedModel.name + ']'
+      return '[' + leftSelectedModel.name + '!]!'
     }
-    return leftSelectedModel.name
+    const required = fieldOnRightModelIsRequired ? '!' : ''
+    return leftSelectedModel.name + required
   }
 
   private leftFieldType = () => {
-    const {rightSelectedModel, selectedCardinality} = this.state
+    const {rightSelectedModel, selectedCardinality, fieldOnLeftModelIsRequired} = this.state
 
     if (!rightSelectedModel) {
       return null
     }
     if (selectedCardinality.endsWith('MANY')) {
-      return '[' + rightSelectedModel.name + ']'
+      return '[' + rightSelectedModel.name + '!]!'
     }
-    return rightSelectedModel.name
+    const required = fieldOnLeftModelIsRequired ? '!' : ''
+    return rightSelectedModel.name + required
   }
 
   private onChangeRelationNameInput = (relationName: string) => {

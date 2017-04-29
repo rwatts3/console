@@ -12,18 +12,19 @@ interface Props {
   infos?: string[]
   small?: boolean
   readOnly?: boolean
+  className?: string
 }
 
 export default class FieldHorizontalSelect extends React.Component<Props, {}> {
 
   render() {
 
-    const {activeBackgroundColor, selectedIndex, onChange, choices, infos, small, readOnly} = this.props
+    const {activeBackgroundColor, selectedIndex, onChange, choices, infos, small, readOnly, className} = this.props
     const inactiveTextColor = this.props.inactiveTextColor || $v.gray30
     const inactiveBackgroundColor = this.props.inactiveBackgroundColor || $v.gray04
 
     return (
-      <div className={cn('container', {'none-selected': selectedIndex === -1, small, readOnly})}>
+      <div className={cn('container', {'none-selected': selectedIndex === -1, small, readOnly}, className)}>
         <style jsx>{`
           .container {
             @inherit: .flex, .itemsCenter, .justifyCenter, .mv38, .relative, .ph16, .w100, .bbox;
