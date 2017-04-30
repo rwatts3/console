@@ -5,7 +5,7 @@ functions:
   authenticateAnonymousUser:
     schema: >
       interface input {
-        secret: String! @isUnique
+        secret: String!
       }
       interface output {
         token: String!
@@ -17,7 +17,7 @@ interfaces:
   AnonymousUser:
     schema: >
       interface AnonymousUser {
-        secret: String
+        secret: String @isUnique
         isVerified: Boolean!
       }
 
