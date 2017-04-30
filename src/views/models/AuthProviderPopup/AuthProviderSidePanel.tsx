@@ -60,7 +60,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       selectedAnonymousModel: props.anonymousPackage ?
         this.getSelectedType(props.anonymousPackage.definition) : firstModel.name,
     }
-    console.log(this.state)
     global['a'] = this
   }
 
@@ -153,7 +152,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                 </div>
                 <div>
                   <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                    {`authenticateAnonymous[typeName](secret: String!): token`}
+                    {`authenticateAnonymous${this.state.selectedAnonymousModel}(secret: String!): token`}
                   </span>
                 </div>
               </div>

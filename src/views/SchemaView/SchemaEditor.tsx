@@ -14,6 +14,8 @@ import {connect} from 'react-redux'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
 import Loading from '../../components/Loading/Loading'
+import {debounce} from 'lodash'
+import {smoothScrollTo} from '../../utils/smooth'
 require('graphcool-graphiql/graphiql_dark.css')
 
 interface Props {
@@ -23,6 +25,8 @@ interface Props {
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
   isBeta: boolean
+  setBlur: (active: boolean) => void
+  scroll: number
 }
 
 export interface MigrationMessage {
@@ -58,6 +62,14 @@ interface State {
 class SchemaEditor extends React.Component<Props, State> {
   private lastDidChange = false
   private editor: any
+  private containerRef = null
+  private handleScroll = debounce(
+    () => {
+      const container = this.containerRef
+      const scrollPercentage = 100 * container.scrollTop / (container.scrollHeight - container.clientHeight)
+    },
+    100,
+  )
   constructor(props) {
     super(props)
     this.state = {
@@ -90,6 +102,15 @@ class SchemaEditor extends React.Component<Props, State> {
     if (nextProps.project.schema !== this.props.project.schema) {
       this.setState({schema: nextProps.project.schema} as State)
     }
+    if (this.props.scroll !== nextProps.scroll) {
+      this.scrollToPercentage(nextProps.scroll)
+    }
+  }
+  scrollToPercentage(scroll) {
+    const container = this.containerRef
+    const scrollPercentage = 100 * container.scrollTop / (container.scrollHeight - container.clientHeight)
+    const newScrollTop = (scroll * (container.scrollHeight - container.clientHeight)) / 100
+    smoothScrollTo(this.containerRef, newScrollTop, 300)
   }
   componentDidUpdate() {
     const didChange = this.state.schema.trim() !== this.props.project.schema.trim()
@@ -105,7 +126,11 @@ class SchemaEditor extends React.Component<Props, State> {
     const didChange = this.state.schema.trim() !== project.schema.trim()
 
     return (
-      <div className={cn('schema-editor', {beta})}>
+      <div
+        className={cn('schema-editor', {beta})}
+        onFocus={() => this.props.setBlur(true)}
+        onBlur={() => this.props.setBlur(false)}
+      >
         <style jsx={true}>{`
           .schema-editor {
             @p: .w100, .bgDarkerBlue, .flex, .flexColumn, .relative, .h100;
@@ -164,7 +189,13 @@ class SchemaEditor extends React.Component<Props, State> {
             @p: .pa10, .white40, .f16, .pointer;
           }
         `}</style>
-        <div className='editor-wrapper'>
+        <div
+          className='editor-wrapper'
+          onScroll={this.handleScroll}
+          ref={ref => {
+            this.containerRef = ref
+          }}
+        >
           <QueryEditor
             value={schema}
             onEdit={this.handleSchemaChange}

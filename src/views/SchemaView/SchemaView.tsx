@@ -17,6 +17,8 @@ interface Props {
 interface State {
   editorWidth: number
   typesChanged: boolean
+  blur: boolean
+  scroll: number
 }
 
 class NewSchemaView extends React.Component<Props, State> {
@@ -33,12 +35,15 @@ class NewSchemaView extends React.Component<Props, State> {
     this.state = {
       editorWidth: parseInt(localStorage.getItem('schema-editor-width'), 10) || (window.innerWidth - 290) / 2,
       typesChanged: false,
+      blur: false,
+      scroll: 0,
     }
   }
   render() {
     const {viewer, location, params} = this.props
     const {editorWidth, typesChanged} = this.state
     const editingModelName = location.pathname.endsWith(`${params.modelName}/edit`) ? params.modelName : undefined
+    const isBeta = viewer.user.crm.information.isBeta
     return (
       <div className='schema-view'>
         <style jsx>{`
@@ -68,13 +73,17 @@ class NewSchemaView extends React.Component<Props, State> {
               project={viewer.project}
               forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
-              isBeta={viewer.user.crm.information.isBeta}
+              isBeta={isBeta}
+              setBlur={this.setBlur}
+              scroll={this.state.scroll}
             />
           </ResizableBox>
           <SchemaOverview
             location={location}
             project={viewer.project}
             editingModelName={editingModelName}
+            blur={isBeta ? this.state.blur : false}
+            setScroll={this.scroll}
           />
         </div>
         {this.props.children}
@@ -84,6 +93,14 @@ class NewSchemaView extends React.Component<Props, State> {
 
   private handleTypesChange = typesChanged => {
     this.setState({typesChanged} as State)
+  }
+
+  private setBlur = (blur: boolean) => {
+    this.setState({blur} as State)
+  }
+
+  private scroll = (n: number) => {
+    this.setState({scroll: n} as State)
   }
 }
 
