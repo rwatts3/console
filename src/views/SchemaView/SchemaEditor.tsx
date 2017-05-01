@@ -16,7 +16,6 @@ import {onFailureShowNotification} from '../../utils/relay'
 import Loading from '../../components/Loading/Loading'
 import {debounce} from 'lodash'
 import {smoothScrollTo} from '../../utils/smooth'
-require('graphcool-graphiql/graphiql_dark.css')
 
 interface Props {
   project: Project
