@@ -31,8 +31,6 @@ import {ConsoleEvents} from 'graphcool-metrics'
 import Playground from 'graphcool-graphiql'
 import getSubscriptionEndpoint from '../../../utils/region'
 
-require('graphcool-graphiql/graphiql_dark.css')
-
 const DASHBOARD_ADMIN = {
   id: 'ADMIN',
 }

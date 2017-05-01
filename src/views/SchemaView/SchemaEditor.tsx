@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-const Codemirror: any = require('react-codemirror')
 import * as Relay from 'react-relay'
 import {Project} from '../../types/types'
 import * as FileSaver from 'file-saver'
@@ -16,7 +15,6 @@ import {onFailureShowNotification} from '../../utils/relay'
 import Loading from '../../components/Loading/Loading'
 import {debounce} from 'lodash'
 import {smoothScrollTo} from '../../utils/smooth'
-require('graphcool-graphiql/graphiql_dark.css')
 
 interface Props {
   project: Project

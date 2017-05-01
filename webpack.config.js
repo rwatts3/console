@@ -89,7 +89,6 @@ module.exports = {
       loader: 'style-loader!css-loader',
     }, {
       test: /\.scss$/,
-      // loader: 'style!css?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap',
       loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader',
       exclude: /node_modules/,
     }, {
