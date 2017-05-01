@@ -18,10 +18,11 @@ import { reduceUI as reduceDataBrowserUI } from './reducers/databrowser/ui'
 import { reduceNotification } from './reducers/notification'
 import  popupSources from './reducers/popupSources'
 import { StateTree } from './types/reducers'
-import logger from 'redux-logger'
+import { createLogger } from 'redux-logger'
 import * as ReactGA from 'react-ga'
 import * as cookiestore from 'cookiestore'
 import * as TraceKit from 'tracekit'
+import 'graphcool-graphiql/graphiql_dark.css'
 
 import './styles/voyager.css'
 import './utils/polyfils'
@@ -74,7 +75,7 @@ const reducers = combineReducers({
 let middlewares = [thunk.default]
 
 if (process.env.NODE_ENV !== 'production') {
-  middlewares.push(logger())
+  middlewares.push(createLogger())
 }
 
 const store = createStore(reducers, compose(

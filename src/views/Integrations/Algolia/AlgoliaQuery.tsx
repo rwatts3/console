@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
+const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor')
 import {Model, SearchProviderAlgolia} from '../../../types/types'
 import {withRouter} from 'react-router'
 import { buildClientSchema } from 'graphql'

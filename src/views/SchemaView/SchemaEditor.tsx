@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-const Codemirror: any = require('react-codemirror')
 import * as Relay from 'react-relay'
 import {Project} from '../../types/types'
 import * as FileSaver from 'file-saver'
