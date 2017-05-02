@@ -28,7 +28,7 @@ import {
   isValid,
   updateEnumValues,
   didChange,
-  isBreaking, updateMigrationValue,
+  isBreaking, updateMigrationValue, updateEnumId,
 } from './FieldPopupState'
 import {showNotification} from '../../../actions/notification'
 import {
@@ -183,18 +183,23 @@ class FieldPopup extends React.Component<Props, State> {
     const changed = didChange(this.state.field, this.props.field)
     const breaking = isBreaking(nodeCount, this.state.field, this.props.field) && !deleting
 
-    let modalStyling = fieldModalStyle
+    let modalStyling = {
+      ...fieldModalStyle,
+      content: {
+        ...fieldModalStyle.content,
+        width: this.props.isGlobalEnumsEnabled ? 615 : 554,
+      },
+    }
+
     if (breaking || deletePopupVisible) {
       modalStyling = {
-        ...fieldModalStyle,
+        ...modalStyling,
         content: {
-          ...fieldModalStyle.content,
+          ...modalStyling.content,
           marginBottom: '120px',
         },
       }
     }
-
-    console.log('enums', this.props.enums)
 
     return (
       <Modal
@@ -208,7 +213,7 @@ class FieldPopup extends React.Component<Props, State> {
             @p: .bgWhite;
           }
           .popup-body {
-            @p: .overflowXHidden;
+            @p: .overflowVisible;
             transition: .1s linear height;
             max-height: calc(100vh - 200px);
           }
@@ -258,6 +263,7 @@ class FieldPopup extends React.Component<Props, State> {
                     onToggleIsList={this.updateField(toggleIsList)}
                     onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
                     onChangeEnumValues={this.updateField(updateEnumValues)}
+                    onChangeEnumId={this.updateField(updateEnumId)}
                     errors={errors}
                     showErrors={showErrors}
                     showNotification={this.props.showNotification}

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {$v, Icon} from 'graphcool-styles'
+import * as cn from 'classnames'
 
 interface Props {
   enums: string[]
@@ -34,10 +35,15 @@ export default class EnumEditor extends React.Component<Props, State> {
           @p: .flex, .itemsCenter;
         }
         .value {
-          @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10, .pointer;
+          @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10, .pointer, .flex, .itemsCenter;
         }
         .value:hover {
           @p: .bgBlack20, .black70;
+        }
+        .value:not(.readOnly):hover:after {
+          @p: .pl4, .f16, .fw7;
+          line-height: 1;
+          content: "×";
         }
         .plus {
           @p: .bgBlue20, .flex, .itemsCenter, .justifyCenter, .br100, .ml10, .pointer;
@@ -49,7 +55,7 @@ export default class EnumEditor extends React.Component<Props, State> {
         }
       `}</style>
         {enums.map(enumValue => (
-          <div key={enumValue} className='value'>
+          <div key={enumValue} className={cn('value', {readOnly})} onClick={() => this.rmValue(enumValue)}>
             <span>{enumValue}</span>
           </div>
         ))}
@@ -77,6 +83,16 @@ export default class EnumEditor extends React.Component<Props, State> {
         )}
       </div>
     )
+  }
+
+  private rmValue = (value) => {
+    if (this.props.readOnly) {
+      return
+    }
+    const index = this.props.enums.indexOf(value)
+    const newEnums = this.props.enums.slice(0)
+    newEnums.splice(index, 1)
+    this.props.onChange(newEnums)
   }
 
   private handleChangeEnumValue = (e) => {
