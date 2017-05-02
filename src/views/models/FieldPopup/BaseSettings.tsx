@@ -4,12 +4,14 @@ import {$v, Icon} from 'graphcool-styles'
 import {fieldTypes} from './constants'
 import FieldLabel from './FieldLabel'
 import OptionInput from './OptionInput'
-import {FieldType} from '../../../types/types'
+import {Enum, FieldType} from '../../../types/types'
 import * as TagsInput from 'react-tagsinput'
 import {FieldPopupErrors} from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
 import Tether from '../../../components/Tether/Tether'
 import {ShowNotificationCallback} from '../../../types/utils'
+import {Combobox} from 'react-input-enhancements'
+import * as cn from 'classnames'
 
 require('./react-tagsinput.css')
 
@@ -24,10 +26,14 @@ interface Props {
   onChangeTypeIdentifier: (type: FieldType) => void
   onToggleIsList: () => void
   onChangeEnumValues: (values: string[]) => void
+  onChangeEnumId: (id: string) => void
   enumValues: string[]
   errors: FieldPopupErrors
   showErrors: boolean
   showNotification: ShowNotificationCallback
+  enumId: string
+  enums: Enum[]
+  isGlobalEnumsEnabled: boolean
 }
 
 interface State {
@@ -125,7 +131,7 @@ export default class BaseSettings extends React.Component<Props,State> {
           <FieldHorizontalSelect
             activeBackgroundColor={$v.blue}
             inactiveBackgroundColor='#F5F5F5'
-            choices={fieldTypes}
+            choices={this.mapEnumComponent(fieldTypes)}
             selectedIndex={fieldTypes.indexOf(typeIdentifier || '')}
             inactiveTextColor={$v.gray30}
             onChange={(index) => onChangeTypeIdentifier(fieldTypes[index] as FieldType)}
@@ -138,7 +144,7 @@ export default class BaseSettings extends React.Component<Props,State> {
             </ErrorInfo>
           </div>
         )}
-        {typeIdentifier === 'Enum' && (
+        {typeIdentifier === 'Enum' && !this.props.isGlobalEnumsEnabled && (
           <div className='enum-values'>
             {editingEnumValues || enumValues.length > 0 ? (
               <TagsInput
@@ -182,6 +188,59 @@ export default class BaseSettings extends React.Component<Props,State> {
         </div>
       </div>
     )
+  }
+
+  private mapEnumComponent = (types: any[]) => {
+    const active = this.props.typeIdentifier === 'Enum'
+    return types.map(type => {
+      if (type === 'Enum' && this.props.isGlobalEnumsEnabled) {
+        const value = this.props.enums.find(e => e.id === this.props.enumId)
+        return (
+          <div className={cn('enum', {active})}>
+            <style jsx>{`
+              .enum :global(input) {
+                @p: .f14, .fw6, .black30;
+                background: transparent;
+              }
+              .enum.active :global(input) {
+                @p: .white;
+              }
+            `}</style>
+            <style jsx global>{`
+              .enum .dropdown>div:nth-child(3) {
+                width: 100% !important;
+                left: 0 !important;
+              }
+            `}</style>
+            <Combobox
+              value={value ? value.name : ''}
+              dropdownProps={{
+                className: `dropdown`,
+              }}
+              options={this.props.enums.map(value => value.name)}
+              onSelect={(name: string) => {
+                const enumId = this.props.enums.find(e => e.name === name).id
+                this.props.onChangeEnumId(enumId)
+              }}
+            >
+              {({style, ...inputProps}) => {
+                const newStyle = {
+                  ...style,
+                  width: 130,
+                }
+                return <input
+                  {...inputProps}
+                  style={newStyle}
+                  type='text'
+                  placeholder='Choose an enum...'
+                />
+              }}
+            </Combobox>
+          </div>
+        )
+      }
+      return type
+    })
   }
 
   private handleChange = (enumValues: string[]) => {

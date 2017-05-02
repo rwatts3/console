@@ -4,7 +4,7 @@ import * as cn from 'classnames'
 
 interface Props {
   selectedIndex: number
-  choices: string[]
+  choices: any[]
   activeBackgroundColor: string
   onChange: (index: number, choice: string) => void
   inactiveBackgroundColor?: string

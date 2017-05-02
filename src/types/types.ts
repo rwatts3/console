@@ -73,6 +73,8 @@ export interface Project {
   integrations: RelayConnection<Integration>
   actionSchema: string
   schema: string
+  typeSchema: string
+  enumSchema: string
   seats: RelayConnection<Seat>
   projectBillingInformation: ProjectBillingInformation
   region?: string
@@ -139,6 +141,8 @@ export interface Field {
   isRequired: boolean
   isList: boolean
   isUnique: boolean
+  enumId?: string
+  enum?: Enum
   isSystem?: boolean
   isReadonly?: boolean
   typeIdentifier?: FieldType
@@ -175,6 +179,12 @@ export interface Relation {
 export type UserType = 'EVERYONE' | 'AUTHENTICATED'
 
 export type PermissionRuleType = 'NONE' | 'GRAPH' | 'WEBHOOK'
+
+export interface Enum {
+  id: string
+  name: string
+  values: string[]
+}
 
 export interface Model {
   id: string

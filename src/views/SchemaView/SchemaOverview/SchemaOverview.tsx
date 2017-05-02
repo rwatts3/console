@@ -52,6 +52,7 @@ class SchemaOverview extends React.Component<Props,State> {
           .schema-overview.blur {
             @p: .o50;
             filter: blur(5px);
+            pointer-events: none;
           }
           .schema-overview-header {
             @p: .flexFixed;

@@ -41,7 +41,8 @@ export function isValid(nodeCount: number, mutatedField: Field, initialField?: F
   errors.migrationValueMissing = (!migrationUI.migrationOptional && migrationUI.showMigration)
     && (typeof mutatedField.migrationValue === 'undefined')
 
-  errors.enumValueMissing = mutatedField.typeIdentifier === 'Enum' && mutatedField.enumValues.length === 0
+  // errors.enumValueMissing = mutatedField.typeIdentifier === 'Enum' && mutatedField.enumValues.length === 0
+  errors.enumValueMissing = false
 
   return errors
 }
@@ -140,6 +141,13 @@ export function updateEnumValues(state: Field, enumValues: string[]): Field {
   return {
     ...state,
     enumValues,
+  }
+}
+
+export function updateEnumId(state: Field, enumId: string): Field {
+  return {
+    ...state,
+    enumId,
   }
 }
 
