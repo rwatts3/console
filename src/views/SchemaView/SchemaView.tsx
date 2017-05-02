@@ -3,9 +3,10 @@ import SchemaOverview from './SchemaOverview/SchemaOverview'
 import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
 import * as Relay from 'react-relay'
-import {Viewer} from '../../types/types'
+import {Viewer, Enum} from '../../types/types'
 import ResizableBox from '../../components/ResizableBox'
 import {throttle} from 'lodash'
+import EnumsOverview from './EnumsOverview/EnumsOverview'
 
 interface Props {
   viewer: Viewer
@@ -17,11 +18,12 @@ interface Props {
 interface State {
   editorWidth: number
   typesChanged: boolean
+  enumsChanged: boolean
   blur: boolean
   scroll: number
 }
 
-class NewSchemaView extends React.Component<Props, State> {
+class SchemaView extends React.Component<Props, State> {
   private handleResize = throttle(
     (_, {size}) => {
       localStorage.setItem('schema-editor-width', size.width)
@@ -35,15 +37,18 @@ class NewSchemaView extends React.Component<Props, State> {
     this.state = {
       editorWidth: parseInt(localStorage.getItem('schema-editor-width'), 10) || (window.innerWidth - 290) / 2,
       typesChanged: false,
+      enumsChanged: false,
       blur: false,
       scroll: 0,
     }
   }
   render() {
     const {viewer, location, params} = this.props
-    const {editorWidth, typesChanged} = this.state
+    const {editorWidth, typesChanged, enumsChanged} = this.state
     const editingModelName = location.pathname.endsWith(`${params.modelName}/edit`) ? params.modelName : undefined
+    const editingEnumName = location.pathname.endsWith(`edit/${params.enumName}`) ? params.enumName : undefined
     const isBeta = viewer.user.crm.information.isBeta
+    const showEnums = location.pathname.includes('schema/enums')
     return (
       <div className='schema-view'>
         <style jsx>{`
@@ -60,6 +65,7 @@ class NewSchemaView extends React.Component<Props, State> {
           projectName={viewer.project.name}
           location={this.props.location}
           typesChanged={typesChanged}
+          enumsChanged={enumsChanged}
         />
         <div className='schema-wrapper'>
           <ResizableBox
@@ -73,18 +79,33 @@ class NewSchemaView extends React.Component<Props, State> {
               project={viewer.project}
               forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
+              onEnumsChange={this.handleEnumsChange}
               isBeta={isBeta}
               setBlur={this.setBlur}
               scroll={this.state.scroll}
+              showEnums={showEnums}
             />
           </ResizableBox>
-          <SchemaOverview
-            location={location}
-            project={viewer.project}
-            editingModelName={editingModelName}
-            blur={isBeta ? this.state.blur : false}
-            setScroll={this.scroll}
-          />
+          {showEnums ? (
+            <EnumsOverview
+              enums={mockEnums}
+              location={location}
+              project={viewer.project}
+              editingEnumName={editingEnumName}
+              blur={false}
+              setScroll={() => {
+                // comment for tslint
+              }}
+            />
+          ) : (
+            <SchemaOverview
+              location={location}
+              project={viewer.project}
+              editingModelName={editingModelName}
+              blur={isBeta ? this.state.blur : false}
+              setScroll={this.scroll}
+            />
+          )}
         </div>
         {this.props.children}
       </div>
@@ -93,6 +114,9 @@ class NewSchemaView extends React.Component<Props, State> {
 
   private handleTypesChange = typesChanged => {
     this.setState({typesChanged} as State)
+  }
+  private handleEnumsChange = enumsChanged => {
+    this.setState({enumsChanged} as State)
   }
 
   private setBlur = (blur: boolean) => {
@@ -104,7 +128,7 @@ class NewSchemaView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(NewSchemaView, {
+export default Relay.createContainer(SchemaView, {
   initialVariables: {
     projectName: null, // injected from router
   },
@@ -117,6 +141,7 @@ export default Relay.createContainer(NewSchemaView, {
           name
           ${SchemaEditor.getFragment('project')}
           ${SchemaOverview.getFragment('project')}
+          ${EnumsOverview.getFragment('project')}
         }
         user {
           crm {
@@ -129,3 +154,16 @@ export default Relay.createContainer(NewSchemaView, {
     `,
   },
 })
+
+const mockEnums: Enum[] = [
+  {
+    id: 'role',
+    name: 'Role',
+    values: ['Admin', 'User', 'Guest'],
+  },
+  {
+    id: 'wood',
+    name: 'Wood',
+    values: ['Beech', 'Oak', 'Fir', 'Mahagony'],
+  },
+]

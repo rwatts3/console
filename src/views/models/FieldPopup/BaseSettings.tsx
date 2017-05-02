@@ -4,7 +4,7 @@ import {$v, Icon} from 'graphcool-styles'
 import {fieldTypes} from './constants'
 import FieldLabel from './FieldLabel'
 import OptionInput from './OptionInput'
-import {FieldType} from '../../../types/types'
+import {Enum, FieldType} from '../../../types/types'
 import * as TagsInput from 'react-tagsinput'
 import {FieldPopupErrors} from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
@@ -28,6 +28,9 @@ interface Props {
   errors: FieldPopupErrors
   showErrors: boolean
   showNotification: ShowNotificationCallback
+  enumId: string
+  enums: Enum[]
+  isGlobalEnumsEnabled: boolean
 }
 
 interface State {
