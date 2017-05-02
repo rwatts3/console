@@ -3,7 +3,7 @@ import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
 import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
-import {Field, FieldType, Constraint, ConstraintType} from '../../../types/types'
+import {Field, FieldType, Constraint, ConstraintType, Enum} from '../../../types/types'
 import {ConsoleEvents, MutationType, FieldPopupSource} from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
@@ -48,6 +48,7 @@ import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 
 interface Props {
   field?: Field
+  enums: Enum[]
   nodeCount: number
   params: any
   router: ReactRouter.InjectedRouter
@@ -57,6 +58,7 @@ interface Props {
   showDonePopup: () => void
   gettingStartedState: GettingStartedState
   nextStep: any
+  isGlobalEnumsEnabled: boolean
 }
 
 export interface State {
@@ -79,7 +81,7 @@ export interface MigrationUIState {
 
 class FieldPopup extends React.Component<Props, State> {
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     const {field} = props
 
@@ -92,11 +94,12 @@ class FieldPopup extends React.Component<Props, State> {
           level: 'warning',
         })
       }
+      field['enumId'] = field.enum.id
       this.state = {
         field: {
           ...field,
           // if null, put it to undefined
-          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue, field),
+          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue as string, field),
         },
 
         activeTabIndex: 0,
@@ -160,6 +163,7 @@ class FieldPopup extends React.Component<Props, State> {
         migrationValue,
         isUnique,
         constraints,
+        enumId,
       },
 
       showErrors,
@@ -170,7 +174,7 @@ class FieldPopup extends React.Component<Props, State> {
       loading,
     } = this.state
 
-    const {nodeCount, projectId} = this.props
+    const {nodeCount, projectId, enums, isGlobalEnumsEnabled} = this.props
 
     const migrationUI = getMigrationUI(nodeCount, this.state.field, this.props.field)
     const errors = isValid(nodeCount, this.state.field, this.props.field)
@@ -189,6 +193,8 @@ class FieldPopup extends React.Component<Props, State> {
         },
       }
     }
+
+    console.log('enums', this.props.enums)
 
     return (
       <Modal
@@ -240,6 +246,9 @@ class FieldPopup extends React.Component<Props, State> {
               {activeTabIndex === 0 ? (
                   <BaseSettings
                     name={name}
+                    enums={enums}
+                    enumId={enumId}
+                    isGlobalEnumsEnabled={isGlobalEnumsEnabled}
                     typeIdentifier={typeIdentifier || ''}
                     description={description || ''}
                     isList={isList}
@@ -431,6 +440,8 @@ class FieldPopup extends React.Component<Props, State> {
       input = {
         ...input,
         modelId,
+        // enumId: 'cj26domcw0f0m0143gglbv0zy',
+        // enumValues: [],
       }
 
       Relay.Store.commitUpdate(
@@ -530,6 +541,8 @@ const MappedFieldPopup = mapProps({
   nodeCount: props => props.viewer.model.itemCount,
   modelId: props => props.viewer.model.id,
   projectId: props => props.viewer.project.id,
+  enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
+  isGlobalEnumsEnabled: props => props.viewer.project.isGlobalEnumsEnabled,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedFieldPopup, {
@@ -564,6 +577,9 @@ export default Relay.createContainer(MappedFieldPopup, {
           isSystem
           enumValues
           defaultValue
+          enum {
+            id
+          }
           relation {
             id
           }
@@ -573,6 +589,15 @@ export default Relay.createContainer(MappedFieldPopup, {
         }
         project: projectByName(projectName: $projectName) {
           id
+          isGlobalEnumsEnabled
+          enums(first: 100) {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
         }
       }
     `,

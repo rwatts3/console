@@ -172,7 +172,9 @@ export default (
         <Route path='all' component={null} render={render} />
         <Route path='types' component={null} render={render} />
         <Route path='interfaces' component={null} render={render} />
-        <Route path='enums' component={null} render={render} />
+        <Route path='enums' component={null} render={render}>
+          <Route path='edit/:enumName' component={null} render={render} />
+        </Route>
         <Route path='relations'>
           <Route path='create' component={RelationPopup} queries={ViewerQuery}  render={render}/>
           <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>

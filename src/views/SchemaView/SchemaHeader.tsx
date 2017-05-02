@@ -9,11 +9,12 @@ interface Props {
   projectName: string
   location: any
   typesChanged: boolean
+  enumsChanged: boolean
 }
 
 export default class SchemaHeader extends React.Component<Props,null> {
   render() {
-    const {projectName, typesChanged} = this.props
+    const {projectName, typesChanged, enumsChanged} = this.props
 
     return (
       <div className='schema-header'>
@@ -134,7 +135,7 @@ export default class SchemaHeader extends React.Component<Props,null> {
                 height={9}
                 color={$v.white20}
               />
-              <span>Enums</span>
+              <span>Enums {enumsChanged ? ' *' : ''}</span>
             </div>
           </Link>
         </div>
@@ -168,7 +169,8 @@ export default class SchemaHeader extends React.Component<Props,null> {
 
   private tabClass(tabName: string) {
     let className = 'tab'
-    if (this.props.location.pathname.endsWith(`schema/${tabName}`)) {
+    const typesActive = tabName === 'types' ? this.props.location.pathname.endsWith('schema') : false
+    if (this.props.location.pathname.endsWith(`schema/${tabName}`) || typesActive) {
       className += ' active'
     } else {
       className += ' inactive'

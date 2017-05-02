@@ -33,6 +33,7 @@ interface State {
   greenBackground: boolean
   editingEnumName: boolean
   enumName: string
+  values: string[]
 }
 
 class EnumBox extends React.Component<Props,State> {
@@ -45,6 +46,7 @@ class EnumBox extends React.Component<Props,State> {
       greenBackground: Boolean(props.highlighted),
       editingEnumName: false,
       enumName: props.enumValue.name,
+      values: props.enumValue.values,
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -238,7 +240,7 @@ class EnumBox extends React.Component<Props,State> {
           <div className='flexy'>
             <Link
               className='settings'
-              to={`/${projectName}/schema/${enumValue.name}/edit`}
+              to={`/${projectName}/schema/enums/edit/${enumValue.name}`}
             >
               <Icon
                 src={require('graphcool-styles/icons/fill/settings.svg')}
@@ -248,10 +250,18 @@ class EnumBox extends React.Component<Props,State> {
           </div>
         </div>
         <div className='enum-box-body'>
-          <EnumEditor onChange={() => {/**/}} enums={enumValue.values} />
+          <EnumEditor
+            onChange={this.handleValuesChange}
+            enums={this.state.values}
+            readOnly
+          />
         </div>
       </div>
     )
+  }
+
+  private handleValuesChange = (values: string[]) => {
+    this.setState({values} as State)
   }
 
   private handleDatabrowserClick = () => {

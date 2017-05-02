@@ -2,9 +2,9 @@ import * as React from 'react'
 import {$v, Icon} from 'graphcool-styles'
 
 interface Props {
-
   enums: string[]
   onChange: (enums: string[]) => void
+  readOnly?: boolean
 }
 
 interface State {
@@ -18,13 +18,13 @@ export default class EnumEditor extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      addingEnum: false,
+      addingEnum: props.values ? props.values.length === 0 : true,
       enumValue: '',
     }
   }
 
   render() {
-    const {enums, onChange} = this.props
+    const {enums, onChange, readOnly} = this.props
     const {addingEnum, enumValue} = this.state
 
     return (
@@ -49,9 +49,11 @@ export default class EnumEditor extends React.Component<Props, State> {
         }
       `}</style>
         {enums.map(enumValue => (
-          <div className='value'>{enumValue}</div>
+          <div key={enumValue} className='value'>
+            <span>{enumValue}</span>
+          </div>
         ))}
-        {addingEnum && (
+        {addingEnum && !readOnly && (
           <input
             type='text'
             autoFocus
@@ -61,22 +63,24 @@ export default class EnumEditor extends React.Component<Props, State> {
             onKeyDown={this.keyDown}
           />
         )}
-        <div className='plus' onClick={this.addEnum}>
-          <Icon
-            src={require('graphcool-styles/icons/stroke/add.svg')}
-            width={20}
-            height={20}
-            color={$v.blue}
-            stroke
-            strokeWidth={3}
-          />
-        </div>
+        {!readOnly && (
+          <div className='plus' onClick={this.addEnum}>
+            <Icon
+              src={require('graphcool-styles/icons/stroke/add.svg')}
+              width={20}
+              height={20}
+              color={$v.blue}
+              stroke
+              strokeWidth={3}
+            />
+          </div>
+        )}
       </div>
     )
   }
 
   private handleChangeEnumValue = (e) => {
-    this.setState({enumValue: e.target.value} as State)
+    this.setState({enumValue: e.target.value.trim()} as State)
   }
 
   private addEnum = () => {
@@ -88,7 +92,8 @@ export default class EnumEditor extends React.Component<Props, State> {
   }
 
   private keyDown = e => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      e.preventDefault()
       this.submitCurrentValue()
     }
   }

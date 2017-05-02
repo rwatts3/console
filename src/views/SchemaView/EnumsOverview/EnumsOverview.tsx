@@ -90,7 +90,6 @@ class EnumsOverview extends React.Component<Props,State> {
             )}
         </div>
         <EnumList
-          enums={this.props.enums}
           project={this.props.project}
           opacity={addingEnum ? 0.5 : 1}
           onEditEnum={this.handleEditEnum}

@@ -4,6 +4,7 @@ import * as Relay from 'react-relay'
 import EnumBox from './EnumBox'
 import AddEnum from './AddEnum'
 import {debounce} from 'lodash'
+import mapProps from '../../../components/MapProps/MapProps'
 
 interface Props {
   project: Project
@@ -48,42 +49,65 @@ class EnumList extends React.Component<Props,null> {
           .type-list {
             @p: .pl16, .pb16, .pr16, .overflowAuto, .flex1, .nosb;
           }
+          .no-enums {
+            @p: .f16, .white50, .pa25;
+          }
         `}</style>
-        <div
-          className='type-list'
-          style={style}
-          onScroll={this.handleScroll}
-          ref={ref => {
-            this.containerRef = ref
-          }}
-        >
-          {enums.map(enumValue => (
-            enumValue.name === editingEnumName ? (
-              <AddEnum
-                key={enumValue.id}
-                projectId={this.props.project.id}
-                enumValue={enumValue}
-              />
-            ) : (
-              <EnumBox
-                key={enumValue.id}
-                enumValue={enumValue}
-                projectName={project.name}
-                onEditEnum={this.props.onEditEnum}
-              />
-            )
-          ))}
-        </div>
+        {enums.length > 0 ? (
+          <div
+            className='type-list'
+            style={style}
+            onScroll={this.handleScroll}
+            ref={ref => {
+              this.containerRef = ref
+            }}
+          >
+            {enums.map(enumValue => (
+              enumValue.name === editingEnumName ? (
+                <AddEnum
+                  key={enumValue.id}
+                  projectId={this.props.project.id}
+                  enumValue={enumValue}
+                />
+              ) : (
+                <EnumBox
+                  key={enumValue.id}
+                  enumValue={enumValue}
+                  projectName={project.name}
+                  onEditEnum={this.props.onEditEnum}
+                />
+              )
+            ))}
+          </div>
+        ) : (
+          <div className='no-enums'>
+            You don't have any global enum defined yet.
+            Click on 'Add Enum' at the top to create a new enum.
+          </div>
+        )}
       </div>
     )
   }
 }
 
-export default Relay.createContainer(EnumList, {
+const MappedEnumList = mapProps({
+  enums: props => props.project.enums.edges.map(edge => edge.node),
+})(EnumList)
+
+export default Relay.createContainer(MappedEnumList, {
   fragments: {
     project: () => Relay.QL`
       fragment on Project {
         name
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
+            }
+          }
+        }
       }
     `,
   },

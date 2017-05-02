@@ -16,6 +16,9 @@ import {withRouter} from 'react-router'
 import {idToBeginning} from '../../../utils/utils'
 import ConfirmEnum from './ConfirmEnum'
 import EnumEditor from './EnumEditor'
+import AddEnumMutation from '../../../mutations/Enums/AddEnum'
+import UpdateEnumMutation from '../../../mutations/Enums/UpdateEnum'
+import DeleteEnumMutation from '../../../mutations/Enums/DeleteEnum'
 
 interface State {
   name: string
@@ -53,16 +56,16 @@ const idField = {
 }
 
 class AddEnum extends React.Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
       // model
-      name: '',
-      values: [],
+      name: props.enumValue ? props.enumValue.name : '',
+      values: props.enumValue ? props.enumValue.values : [],
       // ui state
       showError: false,
-      editing: Boolean(props.enum),
+      editing: Boolean(props.enumValue),
       loading: false,
       showDeletePopup: false,
     }
@@ -80,6 +83,8 @@ class AddEnum extends React.Component<Props, State> {
     let permissions
 
     const breaking = false
+
+    console.log('ENUMVALUE', enumValue)
 
     return (
       <div className={'add-enum' + (Boolean(enumValue) ? ' editing' : '')}>
@@ -182,8 +187,8 @@ class AddEnum extends React.Component<Props, State> {
         </div>
         <div className='values'>
           <EnumEditor
-            enums={['Abc', 'Balala']}
-            onChange={() => {/**/}}
+            enums={this.state.values}
+            onChange={this.handleValuesChange}
           />
         </div>
         <div className='footer'>
@@ -242,6 +247,10 @@ class AddEnum extends React.Component<Props, State> {
     )
   }
 
+  private handleValuesChange = (values: string[]) => {
+    this.setState({values} as State)
+  }
+
   private handleEsc = e => {
     if (e.keyCode === 27) {
       this.close()
@@ -271,88 +280,80 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private save = () => {
-    // const {modelName, editing, description} = this.state
-    // if (modelName !== null && !validateModelName(modelName)) {
-    //   return this.setState({showError: true} as State)
-    // }
-    //
-    // this.setState({loading: true} as State, () => {
-    //   if (editing) {
-    //     this.editModel(modelName, description)
-    //   } else {
-    //     this.addModel(modelName, description)
-    //   }
-    // })
+    const {name, editing} = this.state
+    if (name !== null && !validateModelName(name)) {
+      return this.setState({showError: true} as State)
+    }
+
+    this.setState({loading: true} as State, () => {
+      if (editing) {
+        this.editEnum()
+      } else {
+        this.addEnum()
+      }
+    })
   }
 
   private delete = () => {
-    // this.setState({loading: true} as State, () => {
-    //   Relay.Store.commitUpdate(
-    //     new DeleteModelMutation({
-    //       projectId: this.props.projectId,
-    //       modelId: this.props.model.id,
-    //     }),
-    //     {
-    //       onSuccess: () => {
-    //         this.close()
-    //       },
-    //       onFailure: (transaction) => {
-    //         onFailureShowNotification(transaction, this.props.showNotification)
-    //         this.setState({loading: false} as State)
-    //       },
-    //     },
-    //   )
-    // })
+    this.setState({loading: true} as State, () => {
+      Relay.Store.commitUpdate(
+        new DeleteEnumMutation({
+          enumId: this.props.enumValue.id,
+          projectId: this.props.projectId,
+        }),
+        {
+          onSuccess: () => {
+            this.close()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({loading: false} as State)
+          },
+        },
+      )
+    })
   }
 
-  private addModel = (modelName: string, description: string) => {
-    // if (modelName) {
-    //   Relay.Store.commitUpdate(
-    //     new AddModelMutation({
-    //       description,
-    //       modelName,
-    //       projectId: this.props.projectId,
-    //     }),
-    //     {
-    //       onSuccess: () => {
-    //         tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
-    //         if (
-    //           modelName === 'Post' &&
-    //           this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
-    //         ) {
-    //           this.props.showDonePopup()
-    //           this.props.nextStep()
-    //         }
-    //         tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
-    //         this.close()
-    //       },
-    //       onFailure: (transaction) => {
-    //         onFailureShowNotification(transaction, this.props.showNotification)
-    //         this.setState({loading: false} as State)
-    //       },
-    //     },
-    //   )
-    // }
+  private addEnum = () => {
+    const {name, values} = this.state
+    if (name && values.length > 0) {
+      Relay.Store.commitUpdate(
+        new AddEnumMutation({
+          name,
+          values,
+          projectId: this.props.projectId,
+        }),
+        {
+          onSuccess: () => {
+            this.close()
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.setState({loading: false} as State)
+          },
+        },
+      )
+    }
   }
 
-  private editModel = (modelName: string, description: string) => {
-    // Relay.Store.commitUpdate(
-    //   new UpdateModelMutation({
-    //     name: modelName,
-    //     description,
-    //     modelId: this.props.model.id,
-    //   }),
-    //   {
-    //     onSuccess: () => {
-    //       tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
-    //       this.close()
-    //     },
-    //     onFailure: (transaction) => {
-    //       onFailureShowNotification(transaction, this.props.showNotification)
-    //       this.setState({loading: false} as State)
-    //     },
-    //   },
-    // )
+  private editEnum = () => {
+    const {name, values} = this.state
+    Relay.Store.commitUpdate(
+      new UpdateEnumMutation({
+        name,
+        values,
+        enumId: this.props.enumValue.id,
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
+        },
+      },
+    )
   }
 
   private close = () => {

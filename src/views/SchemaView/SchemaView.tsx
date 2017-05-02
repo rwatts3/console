@@ -18,6 +18,7 @@ interface Props {
 interface State {
   editorWidth: number
   typesChanged: boolean
+  enumsChanged: boolean
   blur: boolean
   scroll: number
 }
@@ -36,16 +37,18 @@ class SchemaView extends React.Component<Props, State> {
     this.state = {
       editorWidth: parseInt(localStorage.getItem('schema-editor-width'), 10) || (window.innerWidth - 290) / 2,
       typesChanged: false,
+      enumsChanged: false,
       blur: false,
       scroll: 0,
     }
   }
   render() {
     const {viewer, location, params} = this.props
-    const {editorWidth, typesChanged} = this.state
+    const {editorWidth, typesChanged, enumsChanged} = this.state
     const editingModelName = location.pathname.endsWith(`${params.modelName}/edit`) ? params.modelName : undefined
+    const editingEnumName = location.pathname.endsWith(`edit/${params.enumName}`) ? params.enumName : undefined
     const isBeta = viewer.user.crm.information.isBeta
-    const showEnums = location.pathname.endsWith('schema/enums')
+    const showEnums = location.pathname.incl('schema/enums')
     return (
       <div className='schema-view'>
         <style jsx>{`
@@ -62,6 +65,7 @@ class SchemaView extends React.Component<Props, State> {
           projectName={viewer.project.name}
           location={this.props.location}
           typesChanged={typesChanged}
+          enumsChanged={enumsChanged}
         />
         <div className='schema-wrapper'>
           <ResizableBox
@@ -75,6 +79,7 @@ class SchemaView extends React.Component<Props, State> {
               project={viewer.project}
               forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
+              onEnumsChange={this.handleEnumsChange}
               isBeta={isBeta}
               setBlur={this.setBlur}
               scroll={this.state.scroll}
@@ -86,9 +91,11 @@ class SchemaView extends React.Component<Props, State> {
               enums={mockEnums}
               location={location}
               project={viewer.project}
-              editingEnumName={false}
+              editingEnumName={editingEnumName}
               blur={false}
-              setScroll={() => {/**/}}
+              setScroll={() => {
+                // comment for tslint
+              }}
             />
           ) : (
             <SchemaOverview
@@ -107,6 +114,9 @@ class SchemaView extends React.Component<Props, State> {
 
   private handleTypesChange = typesChanged => {
     this.setState({typesChanged} as State)
+  }
+  private handleEnumsChange = enumsChanged => {
+    this.setState({enumsChanged} as State)
   }
 
   private setBlur = (blur: boolean) => {
@@ -131,6 +141,7 @@ export default Relay.createContainer(SchemaView, {
           name
           ${SchemaEditor.getFragment('project')}
           ${SchemaOverview.getFragment('project')}
+          ${EnumsOverview.getFragment('project')}
         }
         user {
           crm {

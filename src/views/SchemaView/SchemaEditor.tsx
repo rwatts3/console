@@ -24,6 +24,7 @@ interface Props {
   forceFetchSchemaView: () => void
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
+  onEnumsChange: (enums: boolean) => void
   isBeta: boolean
   setBlur: (active: boolean) => void
   scroll: number
@@ -52,7 +53,8 @@ export interface MigrationError {
 }
 
 interface State {
-  schema: string
+  typeSchema: string
+  enumSchema: string
   beta: boolean
   isDryRun: boolean
   messages: MigrationMessage[]
@@ -61,7 +63,8 @@ interface State {
 }
 
 class SchemaEditor extends React.Component<Props, State> {
-  private lastDidChange = false
+  private lastDidChangeType = false
+  private lastDidChangeEnum = false
   private editor: any
   private containerRef = null
   private handleScroll = debounce(
@@ -71,11 +74,12 @@ class SchemaEditor extends React.Component<Props, State> {
     },
     100,
   )
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       // schema: sortSchema(props.project.schema, props.project.models.edges.map(edge => edge.node)),
-      schema: props.showEnums ? enumIdl : props.project.schema,
+      enumSchema: props.project.enumSchema,
+      typeSchema: props.project.typeSchema,
       beta: props.isBeta,
       isDryRun: true,
       messages: [],
@@ -99,15 +103,15 @@ class SchemaEditor extends React.Component<Props, State> {
   //     }
   //   })
   // }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.project.schema !== this.props.project.schema) {
-      this.setState({schema: nextProps.project.schema} as State)
-    }
+  componentWillReceiveProps(nextProps: Props) {
     if (this.props.scroll !== nextProps.scroll) {
       this.scrollToPercentage(nextProps.scroll)
     }
-    if (this.props.showEnums !== nextProps.showEnums) {
-      this.setState({schema: nextProps.showEnums ? enumIdl : nextProps.project.schema} as State)
+    if (this.props.project.typeSchema !== nextProps.project.typeSchema) {
+      this.setState({typeSchema: nextProps.project.typeSchema} as State)
+    }
+    if (this.props.project.enumSchema !== nextProps.project.enumSchema) {
+      this.setState({enumSchema: nextProps.project.enumSchema} as State)
     }
   }
   scrollToPercentage(scroll) {
@@ -117,24 +121,39 @@ class SchemaEditor extends React.Component<Props, State> {
     smoothScrollTo(this.containerRef, newScrollTop, 300)
   }
   componentDidUpdate() {
-    const didChange = this.state.schema.trim() !== this.props.project.schema.trim()
-    if (didChange !== this.lastDidChange) {
-      this.props.onTypesChange(didChange)
+    // type
+    const didChangeType = this.didChangeType()
+    if (didChangeType !== this.lastDidChangeType) {
+      this.props.onTypesChange(didChangeType)
     }
-    this.lastDidChange = didChange
+    this.lastDidChangeType = didChangeType
+
+    // enum
+    const didChangeEnum = this.didChangeEnum()
+    if (didChangeEnum !== this.lastDidChangeEnum) {
+      this.props.onEnumsChange(didChangeEnum)
+    }
+    this.lastDidChangeEnum = didChangeEnum
+  }
+  didChangeType() {
+    return this.state.typeSchema !== this.props.project.typeSchema
+  }
+  didChangeEnum() {
+    return this.state.enumSchema !== this.props.project.enumSchema
+  }
+  didChange() {
+    return this.didChangeType() || this.didChangeEnum()
   }
   render() {
     const {project} = this.props
-    const {schema, beta, isDryRun, loading} = this.state
+    const {beta, isDryRun, loading} = this.state
 
-    const didChange = this.state.schema.trim() !== project.schema.trim()
+    const schema = this.props.showEnums ? this.state.enumSchema : this.state.typeSchema
+
+    const didChange = this.didChange()
 
     return (
-      <div
-        className={cn('schema-editor', {beta})}
-        onFocus={() => this.props.setBlur(didChange)}
-        onBlur={() => this.props.setBlur(false)}
-      >
+      <div className={cn('schema-editor', {beta})}>
         <style jsx={true}>{`
           .schema-editor {
             @p: .w100, .bgDarkerBlue, .flex, .flexColumn, .relative, .h100;
@@ -242,8 +261,10 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private updateSchema = () => {
-    const {schema, isDryRun} = this.state
+    const {typeSchema, enumSchema, isDryRun} = this.state
+    const schema = typeSchema + '\n' + enumSchema
     const newSchema = this.addFrontmatter(schema)
+    console.log(newSchema)
     this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new MigrateProject({
@@ -287,7 +308,8 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private patchSchemaRemarks(schema) {
-    const splittedOld = this.state.schema.split('\n')
+    const oldSchema = this.props.showEnums ? this.state.enumSchema : this.state.typeSchema
+    const splittedOld = oldSchema.split('\n')
     let splittedNew = schema.split('\n')
     const cursor = this.editor.getCursor()
 
@@ -329,8 +351,14 @@ class SchemaEditor extends React.Component<Props, State> {
       return
     }
     const {schema, changed, cursor} = this.patchSchemaRemarks(newSchema)
+    const schemaName = this.props.showEnums ? 'enumSchema' : 'typeSchema'
     this.setState(
-      {schema, errors: [], messages: [], isDryRun: true} as State,
+      {
+        [schemaName]: schema,
+        errors: [],
+        messages: [],
+        isDryRun: true,
+      } as State,
       () => {
         if (changed) {
           this.editor.setCursor(cursor)
@@ -353,6 +381,8 @@ export default Relay.createContainer(SchemaEditorRedux, {
       fragment on Project {
         id
         schema
+        typeSchema
+        enumSchema
         name
         version
         models(first: 100) {
