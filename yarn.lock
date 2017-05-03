@@ -1740,13 +1740,9 @@ codemirror-graphql@^0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.3.tgz#01f8841dab54c69e9f182caed39bd376c5ba3cb4"
 
-codemirror@5.22.2:
+codemirror@5.22.2, codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
   version "5.22.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.22.2.tgz#38274c20e3628b4f7a982bffc2cddb61ceed6a09"
-
-codemirror@5.25.2, codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
-  version "5.25.2"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.25.2.tgz#8c77677ca9c9248d757d3a07ed1e89a8404850b7"
 
 color-convert@^0.5.3:
   version "0.5.3"
@@ -3109,9 +3105,9 @@ graphcool-styles@0.0.98:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphcool-styles@0.1.6:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.5.tgz#d11f57395a8d76b21fbd7111a868e9684d3ce7cc"
+graphcool-styles@0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.12.tgz#b312acab63883568a50f39f6ccb8311c11227be4"
   dependencies:
     html-webpack-plugin "^2.24.1"
     interactive "^0.1.9"
@@ -3119,15 +3115,7 @@ graphcool-styles@0.1.6:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphiql@0.10.1:
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-0.10.1.tgz#7e0c4eb62291fa639b56e1936de21d22bac293fb"
-  dependencies:
-    codemirror "5.25.2"
-    codemirror-graphql "^0.6.3"
-    marked "0.3.6"
-
-graphiql@^0.8.1:
+graphiql@^0.8.0, graphiql@^0.8.1:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-0.8.1.tgz#3bb65ea5dc44e251650af61a9e478e00707e6ee2"
   dependencies:
@@ -4500,7 +4488,7 @@ marked-terminal@^1.6.2:
     lodash.assign "^4.2.0"
     node-emoji "^1.4.1"
 
-marked@0.3.6, marked@^0.3.5, marked@^0.3.6:
+marked@^0.3.5, marked@^0.3.6:
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.6.tgz#b2c6c618fccece4ef86c4fc6cb8a7cbf5aeda8d7"
 

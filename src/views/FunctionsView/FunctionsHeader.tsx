@@ -37,6 +37,9 @@ export default function FunctionsHeader({params}: Props) {
         .title span {
           @p: .ml10;
         }
+        .docs {
+          @p: .z2;
+        }
       `}</style>
       <div className='flex itemsCenter'>
         <div className='title flex itemsCenter'>

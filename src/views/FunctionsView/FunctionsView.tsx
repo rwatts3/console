@@ -32,7 +32,7 @@ class FunctionsView extends React.Component<Props, State> {
           }
         `}</style>
         <FunctionsHeader params={this.props.params} />
-        <FunctionsList project={this.props.project} />
+        <FunctionsList project={this.props.project} params={this.props.params} />
         {this.props.children}
       </div>
     )
