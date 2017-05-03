@@ -47,6 +47,9 @@ import NewSchemaView from './views/SchemaView/SchemaView'
 import SchemaViewer from './views/SchemaView/SchemaViewer'
 import AllRelationPermissionsList from './views/PermissionsView/RelationPermissionsList/AllRelationPermissionsList'
 import PermissionsList from './views/PermissionsView/PermissionsList/PermissionsList'
+import FunctionsView from './views/FunctionsView/FunctionsView'
+import {CreateFunctionPopup, EditFunctionPopup} from './views/FunctionsView/FunctionPopup/FunctionPopup'
+import {FunctionLogs} from './views/FunctionsView/FunctionLogs/FunctionLogs'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -164,6 +167,21 @@ export default (
         <Route path='team' component={Team} queries={ViewerQuery} render={render} />
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
+      <Route path='functions' component={FunctionsView} queries={ViewerQuery} render={render}>
+        <Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render} />
+        <Route
+          path=':id/logs'
+          component={FunctionLogs}
+          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+          render={render}
+        />
+        <Route
+          path=':id/edit'
+          component={EditFunctionPopup}
+          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+          render={render}
+        />
+      </Route>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>
         <IndexRedirect to='settings'/>

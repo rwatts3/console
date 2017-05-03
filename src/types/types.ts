@@ -79,7 +79,42 @@ export interface Project {
   projectBillingInformation: ProjectBillingInformation
   region?: string
   packageDefinitions: RelayConnection<PackageDefinition>
+  functions: RelayConnection<ServerlessFunction>
 }
+
+export interface ServerlessFunction {
+  id: string
+  name: string
+  type?: FunctionType
+  binding?: FunctionBinding
+  webhookUrl: string
+  webhookHeaders: string
+  inlineCode?: string
+  auth0Id?: string
+  logs: RelayConnection<Log>
+  modelId?: string
+  model?: Model
+}
+
+export interface Log {
+  id: string
+  requestId: string
+  duration: number
+  status: LogStatus
+  timestamp: Date
+  message: string
+}
+
+export type LogStatus = 'SUCCESS' | 'FAILURE'
+
+export interface RequestPipelineMutationFunction extends ServerlessFunction {
+  model: Model
+  binding: FunctionBinding
+}
+
+export type FunctionType = 'WEBHOOK' | 'AUTH0'
+
+export type FunctionBinding = 'TRANSFORM_ARGUMENT' | 'PRE_WRITE' | 'TRANSFORM_PAYLOAD'
 
 export interface PackageDefinition {
   id: string
