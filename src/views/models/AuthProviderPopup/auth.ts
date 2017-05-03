@@ -9,6 +9,7 @@ functions:
       }
       interface output {
         token: String!
+        id: String!
       }
     type: webhook
     url: https://162yijip11.execute-api.eu-west-1.amazonaws.com/dev/anonymous-auth-provider/authenticateAnonymousUser
@@ -18,7 +19,7 @@ interfaces:
     schema: >
       interface AnonymousUser {
         secret: String @isUnique
-        isVerified: Boolean!
+        isVerified: Boolean! @defaultValue(value: false) @migrationValue(value: false)
       }
 
 # This is configured by user when installing
