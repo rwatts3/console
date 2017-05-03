@@ -49,7 +49,7 @@ class FunctionsList extends React.Component<Props, State> {
           </thead>
           <tbody>
             {functions.map(fn => (
-              <FunctionRow fn={fn} params={this.props.params} />
+              <FunctionRow key={fn.id} fn={fn} params={this.props.params} />
             ))}
           </tbody>
         </table>

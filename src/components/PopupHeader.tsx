@@ -51,7 +51,7 @@ const PopupHeader = ({
         @p: .bgBlue;
       }
       .top {
-        @p: .bb, .bBlack10, .overflowVisible, .flex, .itemsCenter, .pointer;
+        @p: .bb, .bBlack10, .overflowVisible, .flex, .itemsCenter, .pointer, .w100;
         height: 43px;
       }
       .tabs {
@@ -60,9 +60,12 @@ const PopupHeader = ({
         margin-right: 72px;
       }
       .close {
-        @p: .absolute, .pointer;
-        top: 23px;
-        right: 24px;
+        @p: .absolute, .pointer, .bgWhite;
+        top: 0;
+        right: 0;
+        padding-top: 23px;
+        padding-right: 24px;
+        padding-left: 25px;
       }
     `}</style>
       <div className='top'>

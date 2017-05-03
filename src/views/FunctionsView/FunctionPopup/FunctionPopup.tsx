@@ -10,6 +10,12 @@ import PopupFooter from '../../../components/PopupFooter'
 import {Model, ServerlessFunction} from '../../../types/types'
 import {getEmptyFunction, updateBinding, updateInlineCode, updateModel, updateName} from './functionPopupState'
 import * as Codemirror from 'react-codemirror'
+import Step0 from './Step0'
+import * as cookiestore from 'cookiestore'
+import Trigger from './Trigger'
+
+export type EventType = 'SSS' | 'RP' | 'CRON'
+export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
 
 interface Props {
   params: any
@@ -23,6 +29,15 @@ interface State {
   showErrors: boolean
   fn: ServerlessFunction
   loading: boolean
+  eventType: EventType
+}
+
+const customModalStyle = {
+  overlay: modalStyle.overlay,
+  content: {
+    ...modalStyle.content,
+    width: 700,
+  }
 }
 
 class FunctionPopup extends React.Component<Props, State> {
@@ -31,25 +46,29 @@ class FunctionPopup extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      activeTabIndex: 0,
+      activeTabIndex: 1,
       editing: false,
       showErrors: false,
       fn: props.node || getEmptyFunction(),
       loading: false,
+      // eventType: this.getEventTypeFromFunction(props.node),
+      eventType: 'RP',
     }
   }
 
   render() {
     const {models} = this.props
-    const {activeTabIndex, editing, showErrors, fn} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType} = this.state
 
     const changed = false
     const valid = true
 
+    const tabs = this.getTabs()
+
     return (
       <Modal
         contentLabel='Function Popup'
-        style={modalStyle}
+        style={customModalStyle}
         isOpen
         onRequestClose={(e) => {
           if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) {
@@ -77,7 +96,6 @@ class FunctionPopup extends React.Component<Props, State> {
               .function-popup {
               }
               .popup-body {
-                @p: .pa25;
                 max-height: calc(100vh - 200px);
               }
             `}</style>
@@ -93,39 +111,21 @@ class FunctionPopup extends React.Component<Props, State> {
               tabs={tabs}
             />
             <div className='popup-body'>
-              <input type='text' placeholder='Function Name' onChange={this.update(updateName)} />
-              <div className='mt25'>
-                <div>
-                  Binding:
-                </div>
-                <select value={fn.binding} onChange={this.update(updateBinding)}>
-                  {bindings.map(binding => (
-                    <option key={binding} value={binding}>{binding}</option>
-                  ))}
-                </select>
-              </div>
-              <div className='mt25'>
-                <div>
-                  Model:
-                </div>
-                <select value={fn.modelId} onChange={this.update(updateModel)}>
-                  {models.map(model => (
-                    <option key={model.id} value={model.id}>{model.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className='mt25'>
-                <Codemirror
-                  value={fn.inlineCode}
-                  onChange={this.update(updateInlineCode)}
-                  options={{
-                    lineNumbers: true,
-                    mode: 'javascript',
-                    theme: 'mdn-like',
-                    // theme: 'mdn-like',
-                  }}
+              {activeTabIndex === 0 && (
+                <Step0
+                  eventType={eventType}
+                  onChangeEventType={this.handleEventTypeChange}
                 />
-              </div>
+              )}
+              {activeTabIndex === 1 && eventType === 'RP' && (
+                <Trigger
+                  models={models}
+                  selectedModelId={fn.modelId}
+                  binding={fn.binding}
+                  onModelChange={this.update(updateModel)}
+                  onBindingChange={this.update(updateBinding)}
+                />
+              )}
             </div>
             <PopupFooter
               entityName='Function'
@@ -143,6 +143,16 @@ class FunctionPopup extends React.Component<Props, State> {
         </ModalDocs>
       </Modal>
     )
+  }
+
+  private getTabs = () => {
+    const {eventType} = this.state
+
+    return ['Set Event Type', 'Choose Trigger', 'Define Function']
+  }
+
+  private handleEventTypeChange = (eventType: EventType) => {
+    this.setState({eventType} as State)
   }
 
   private update = (func: Function, done?: Function) => {
@@ -165,10 +175,11 @@ class FunctionPopup extends React.Component<Props, State> {
 
   private createExtendFunction = () => {
     const {fn: {inlineCode}} = this.state
+    const authToken = cookiestore.get('graphcool_auth_token')
 
     return fetch('https://bju4v1fpt2.execute-api.us-east-1.amazonaws.com/dev/', {
       method: 'post',
-      body: JSON.stringify({code: inlineCode}),
+      body: JSON.stringify({code: inlineCode, authToken}),
     })
     .then(res => res.json())
   }
@@ -205,9 +216,19 @@ class FunctionPopup extends React.Component<Props, State> {
   private setTabIndex = (index: number) => {
     this.setState({activeTabIndex: index} as State)
   }
-}
 
-const tabs = ['Choose Type', 'Hook Point', 'Cot']
+  private getEventTypeFromFunction(fn: ServerlessFunction | null): EventType {
+    if (!fn) {
+      return null
+    }
+
+    if (fn.hasOwnProperty('binding')) {
+      return 'RP'
+    }
+
+    return 'CRON'
+  }
+}
 
 const MappedFunctionsPopup = mapProps({
   project: props => props.viewer.project,
@@ -248,6 +269,9 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
         id
         ... on Function {
           name
+          ... on RequestPipelineMutationFunction {
+            binding
+          }
         }
       }
     `,
