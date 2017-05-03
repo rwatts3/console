@@ -1740,9 +1740,9 @@ codemirror-graphql@^0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.3.tgz#01f8841dab54c69e9f182caed39bd376c5ba3cb4"
 
-codemirror@5.22.2, codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
-  version "5.22.2"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.22.2.tgz#38274c20e3628b4f7a982bffc2cddb61ceed6a09"
+codemirror@^5.15.2, codemirror@^5.18.2, codemirror@^5.22.2, codemirror@asdasda:
+  version "5.25.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.25.2.tgz#8c77677ca9c9248d757d3a07ed1e89a8404850b7"
 
 color-convert@^0.5.3:
   version "0.5.3"
@@ -4272,7 +4272,7 @@ lodash.curry@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.curry/-/lodash.curry-4.1.1.tgz#248e36072ede906501d75966200a86dab8b23170"
 
-lodash.debounce@^4.0.4, lodash.debounce@^4.0.8:
+lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
@@ -6028,13 +6028,13 @@ react-base16-styling@^0.4.6, react-base16-styling@^0.4.7:
   version "1.1.0"
   resolved "git+https://github.com/tj/react-click-outside#82d51114d841a151e6285ac542d6fd98690910e6"
 
-react-codemirror@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/react-codemirror/-/react-codemirror-0.2.6.tgz#e71e35717ce6effae68df1dbf2b5a75b84a44f84"
+react-codemirror@au9dha9s8dasd:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-codemirror/-/react-codemirror-0.3.0.tgz#cd6bd6ef458ec1e035cfd8b3fe7b30c8c7883c6c"
   dependencies:
-    classnames "^2.2.3"
-    codemirror "^5.13.4"
-    lodash.debounce "^4.0.4"
+    classnames "^2.2.5"
+    codemirror "^5.18.2"
+    lodash.debounce "^4.0.8"
 
 react-copy-to-clipboard@^4.2.1:
   version "4.2.3"

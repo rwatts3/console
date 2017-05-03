@@ -5,6 +5,9 @@ import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
 import {Log, ServerlessFunction} from '../../../types/types'
 import {withRouter} from 'react-router'
+import {range} from 'lodash'
+import {Icon, $v} from 'graphcool-styles'
+import LogComponent from './Log'
 
 interface Props {
   logs: Log[]
@@ -14,6 +17,15 @@ interface Props {
 
 interface State {
 
+}
+
+const customModalStyle = {
+  overlay: modalStyle.overlay,
+  content: {
+    ...modalStyle.content,
+    width: 'calc(100vw - 100px)',
+    maxWidth: 1400,
+  },
 }
 
 class FunctionLogsComponent extends React.Component<Props, State> {
@@ -32,32 +44,92 @@ class FunctionLogsComponent extends React.Component<Props, State> {
     return (
       <Modal
         contentLabel='Function Logs'
-        style={modalStyle}
+        style={customModalStyle}
         isOpen
         onRequestClose={this.close}
       >
         <style jsx={true}>{`
           .function-logs {
-            @p: .pa25;
+            @p: .bgDarkBlue, .overflowHidden, .pb25;
           }
           .logs {
+            @p: .overflowAuto;
+            max-height: calc(100vh - 200px);
           }
           .log {
             @p: .mt25, .br2, .bgLightOrange, .pa16;
           }
+          table {
+            @p: .w100;
+            border-collapse: collapse;
+            table-layout: fixed;
+          }
+          .head {
+            @p: .justifyBetween, .flex, .pa25;
+          }
+          .title {
+            @p: .white40, .f16, .fw6, .ttu, .ml16;
+          }
+          th {
+            @p: .white40, .ttu, .fw6, .f14, .ph10, .pv12, .bb, .bWhite10, .tl;
+            letter-spacing: 0.6px;
+          }
+          th:first-child {
+            @p: .pl25;
+            width: 250px;
+          }
+          th:nth-child(2) {
+            width: 120px;
+          }
+          th:last-child {
+            @p: .pr25;
+            width: 120px;
+          }
+          .logs :global(tr:first-child) :global(td) {
+            @p: .pt16;
+          }
       `}</style>
         <div className='function-logs'>
-          <h1>Function Logs for {node.name}</h1>
-          <div className='logs'>
-            {logs.map(log => (
-              <div className='log' key={log.id}>
-                <div><b>requestId</b>: {log.requestId}</div>
-                <div><b>status</b>: {log.status}</div>
-                <div><b>duration</b>: {log.duration}</div>
-                <div><b>timestamp</b>: {log.timestamp}</div>
-                <div><b>message</b>: {log.message}</div>
+          <div className='head'>
+            <div className='flex itemsCenter'>
+              <Icon
+                src={require('graphcool-styles/icons/fill/logs.svg')}
+                color={$v.white40}
+                width={24}
+                height={24}
+              />
+              <div className='title'>
+                Logs
               </div>
-            ))}
+            </div>
+            <Icon
+              src={require('graphcool-styles/icons/stroke/cross.svg')}
+              stroke
+              strokeWidth={3}
+              color={$v.white}
+              width={26}
+              height={26}
+            />
+          </div>
+          <div className='logs'>
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Duration</th>
+                  <th>Message</th>
+                  <th>Time Ago</th>
+                </tr>
+              </thead>
+              <tbody>
+                {range(100).map(n => {
+                  const log = logs[n % 2]
+                  return (
+                    <LogComponent log={log} />
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </Modal>

@@ -15,6 +15,9 @@ interface State {
 
 }
 
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/javascript/javascript'
+
 class FunctionsView extends React.Component<Props, State> {
 
   constructor(props) {

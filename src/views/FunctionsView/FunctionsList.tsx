@@ -26,7 +26,7 @@ class FunctionsList extends React.Component<Props, State> {
             @p: .w100;
           }
           table {
-            @P: .w100;
+            @p: .w100;
             border-collapse: collapse;
           }
           thead {
