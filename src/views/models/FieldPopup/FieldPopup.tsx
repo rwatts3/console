@@ -94,7 +94,9 @@ class FieldPopup extends React.Component<Props, State> {
           level: 'warning',
         })
       }
-      field['enumId'] = field.enum.id
+      if (field.enum) {
+        field['enumId'] = field.enum.id
+      }
       this.state = {
         field: {
           ...field,
