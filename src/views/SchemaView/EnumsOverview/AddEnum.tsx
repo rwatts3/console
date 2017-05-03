@@ -6,7 +6,7 @@ import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
 import {showNotification} from '../../../actions/notification'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {GettingStartedState} from '../../../types/gettingStarted'
-import {validateModelName} from '../../../utils/nameValidator'
+import {validateEnumName} from '../../../utils/nameValidator'
 import {onFailureShowNotification} from '../../../utils/relay'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
@@ -83,8 +83,6 @@ class AddEnum extends React.Component<Props, State> {
     let permissions
 
     const breaking = false
-
-    console.log('ENUMVALUE', enumValue)
 
     return (
       <div className={'add-enum' + (Boolean(enumValue) ? ' editing' : '')}>
@@ -180,7 +178,7 @@ class AddEnum extends React.Component<Props, State> {
             />
             {showError && (
               <div className='error'>
-                Enums must begin with an uppercase letter and only contain letters and numbers
+                Enums must begin with an uppercase letter and only contain letters, underscores and numbers.
               </div>
             )}
           </div>
@@ -281,7 +279,7 @@ class AddEnum extends React.Component<Props, State> {
 
   private save = () => {
     const {name, editing} = this.state
-    if (name !== null && !validateModelName(name)) {
+    if (name !== null && !validateEnumName(name)) {
       return this.setState({showError: true} as State)
     }
 
