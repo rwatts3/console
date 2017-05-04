@@ -23,8 +23,7 @@ const customModalStyle = {
   overlay: modalStyle.overlay,
   content: {
     ...modalStyle.content,
-    width: 'calc(100vw - 100px)',
-    maxWidth: 1400,
+    width: '100vw',
   },
 }
 
@@ -50,11 +49,12 @@ class FunctionLogsComponent extends React.Component<Props, State> {
       >
         <style jsx={true}>{`
           .function-logs {
-            @p: .bgDarkBlue, .overflowHidden, .pb25;
+            @p: .overflowHidden, .pa60;
+            background-color: rgba(23,42,58,.94)
           }
           .logs {
             @p: .overflowAuto;
-            max-height: calc(100vh - 200px);
+            max-height: calc(100vh - 100px);
           }
           .log {
             @p: .mt25, .br2, .bgLightOrange, .pa16;
@@ -88,6 +88,9 @@ class FunctionLogsComponent extends React.Component<Props, State> {
           .logs :global(tr:first-child) :global(td) {
             @p: .pt16;
           }
+          .head :global(i) {
+            @p: .pointer;
+          }
       `}</style>
         <div className='function-logs'>
           <div className='head'>
@@ -109,6 +112,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
               color={$v.white}
               width={26}
               height={26}
+              onClick={this.close}
             />
           </div>
           <div className='logs'>

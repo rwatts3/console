@@ -73,7 +73,7 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
           @p: .flex, .itemsStart, .pt25, .ph10;
         }
         a {
-          @p: .blue;
+          @p: .blue, .underline;
         }
         .description {
           margin-left: 7px;

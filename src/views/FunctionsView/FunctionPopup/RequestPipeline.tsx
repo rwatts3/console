@@ -2,6 +2,7 @@ import * as React from 'react'
 import {FunctionBinding} from '../../../types/types'
 import {Icon, $v} from 'graphcool-styles'
 import * as cn from 'classnames'
+import Info from '../../../components/Info'
 
 interface Props {
   binding: FunctionBinding
@@ -44,46 +45,58 @@ export default function RequestPipeline({binding, onChange}: Props) {
         }
       `}</style>
       <Arrow />
-      <div className='step'>
-        <Circle disabled />
-        <div className='label disabled'>TRANSFORM _REQUEST</div>
-      </div>
+      <Info top customTip={
+        <div className='step'>
+          <Circle disabled />
+          <div className='label disabled'>TRANSFORM _REQUEST</div>
+        </div>
+      }>This hook includes the raw input without any GraphQL Type checking.</Info>
       <div className='step'>
         <Tip>Schema Validation</Tip>
         <Arrow />
       </div>
-      <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENTS' as FunctionBinding)}>
-        <Circle active={argActive} />
-        <div className={cn('label', {active: argActive})}>TRANSFORM _ARGUMENTS</div>
-      </div>
+      <Info top customTip={
+        <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENTS' as FunctionBinding)}>
+          <Circle active={argActive}/>
+          <div className={cn('label', {active: argActive})}>TRANSFORM _ARGUMENTS</div>
+        </div>
+      }>In this hook you can transform the input data</Info>
       <div className='step'>
         <Tip>Data Validation</Tip>
         <Arrow />
       </div>
-      <div className='step' onClick={() => onChange('PRE_WRITE')}>
-        <Circle active={preActive} />
-        <div className={cn('label', {active: preActive})}>PRE_WRITE</div>
-      </div>
+      <Info top customTip={
+        <div className='step' onClick={() => onChange('PRE_WRITE')}>
+          <Circle active={preActive}/>
+          <div className={cn('label', {active: preActive})}>PRE_WRITE</div>
+        </div>
+      }>In this step you can perform validation or eg. charge a User on Stripe</Info>
       <Arrow />
-      <div className='step'>
-        <Tip bottom={35}>Data Write</Tip>
-        <Icon
-          src={require('graphcool-styles/icons/fill/writedatabase.svg')}
-          width={34}
-          height={34}
-          color={$v.darkBlue30}
-        />
-      </div>
+      <Info top customTip={
+        <div className='step'>
+          <Tip bottom={35}>Data Write</Tip>
+          <Icon
+            src={require('graphcool-styles/icons/fill/writedatabase.svg')}
+            width={34}
+            height={34}
+            color={$v.darkBlue30}
+          />
+        </div>
+      }>Here the data is actually written to the datbase.</Info>
       <Arrow />
-      <div className='step' onClick={() => onChange('TRANSFORM_PAYLOAD')}>
-        <Circle active={payloadActive} />
-        <div  className={cn('label', {active: payloadActive})}>TRANSFORM _PAYLOAD</div>
-      </div>
+      <Info top customTip={
+        <div className='step' onClick={() => onChange('TRANSFORM_PAYLOAD')}>
+          <Circle active={payloadActive}/>
+          <div className={cn('label', {active: payloadActive})}>TRANSFORM _PAYLOAD</div>
+        </div>
+      }>This step allows you to transform the payload, eg. removing secret data</Info>
       <Arrow />
-      <div className='step'>
-        <Circle disabled />
-        <div className='label disabled'>TRANSFORM _RESPONSE</div>
-      </div>
+      <Info top customTip={
+        <div className='step'>
+          <Circle disabled/>
+          <div className='label disabled'>TRANSFORM _RESPONSE</div>
+        </div>
+      }>This hook would allow manipulating the raw output without any GraphQL Checks</Info>
       <Arrow disableArrow />
     </div>
   )
@@ -154,8 +167,8 @@ function Circle({active, disabled, onClick}: CircleProps) {
       <Icon
         src={require('graphcool-styles/icons/fill/check.svg')}
         color={disabled ? $v.darkBlue20 : $v.white}
-        width={22}
-        height={22}
+        width={21}
+        height={21}
       />
     </div>
   )

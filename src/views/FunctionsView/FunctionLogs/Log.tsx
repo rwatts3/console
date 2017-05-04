@@ -26,6 +26,9 @@ export default class LogComponent extends React.Component<Props, State> {
     return (
       <div className='graphiql-container' onClick={this.ignoreClick}>
         <style jsx>{`
+          .graphiql-container :global(div.CodeMirror) {
+            background: transparent;
+          }
           .graphiql-container :global(div.CodeMirror-lines) {
             @p: .pa0;
           }
