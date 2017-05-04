@@ -3105,10 +3105,22 @@ graphcool-styles@0.0.98:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphcool-styles@0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.12.tgz#b312acab63883568a50f39f6ccb8311c11227be4"
+graphcool-styles@0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.16.tgz#4ff80bf335e3ebf66fe8408d15a46da0c1c75e26"
   dependencies:
+    graphcool-styles "0.1.8"
+    html-webpack-plugin "^2.24.1"
+    interactive "^0.1.9"
+    object-assign "^4.1.0"
+    react-dom "^15.3.2"
+    webpack-dev-server "^1.16.2"
+
+graphcool-styles@0.1.8:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.13.tgz#38a91e6fc8772ea914b66d77c33d79356ac7b356"
+  dependencies:
+    graphcool-styles "0.1.8"
     html-webpack-plugin "^2.24.1"
     interactive "^0.1.9"
     object-assign "^4.1.0"

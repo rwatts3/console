@@ -37,7 +37,7 @@ const customModalStyle = {
   content: {
     ...modalStyle.content,
     width: 700,
-  }
+  },
 }
 
 class FunctionPopup extends React.Component<Props, State> {

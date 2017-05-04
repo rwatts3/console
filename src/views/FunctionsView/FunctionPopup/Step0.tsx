@@ -25,36 +25,36 @@ export default class Step0 extends React.Component<Props, State> {
   render() {
     const {eventType, onChangeEventType} = this.props
     const choices = [
-      <div className="flex itemsCenter">
+      <div className='flex itemsCenter'>
         <Icon
           src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
           width={40}
           height={20}
           color={$v.darkBlue50}
         />
-        <div className="ml16">
+        <div className='ml16'>
           Server-Side Subscription
         </div>
       </div>,
-      <div className="flex itemsCenter">
+      <div className='flex itemsCenter'>
         <Icon
           src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
           width={40}
           height={20}
           color={$v.darkBlue50}
         />
-        <div className="ml16">
+        <div className='ml16'>
           Request Pipeline
         </div>
       </div>,
-      <div className="flex itemsCenter">
+      <div className='flex itemsCenter'>
         <Icon
           src={require('graphcool-styles/icons/fill/cron.svg')}
           width={20}
           height={20}
           color={$v.darkBlue50}
         />
-        <div className="ml16">
+        <div className='ml16'>
           Cron Job
         </div>
       </div>,
@@ -69,7 +69,7 @@ export default class Step0 extends React.Component<Props, State> {
             margin-top: 8px;
           }
         `}</style>
-        <div className="intro">
+        <div className='intro'>
           Choose the type of function, you want to define.
           For sure there’s a lot more we could tell as an introduction here.
         </div>
@@ -82,7 +82,7 @@ export default class Step0 extends React.Component<Props, State> {
           onChange={(index) => onChangeEventType(eventTypes[index])}
           spread
         />
-        <div className="mh38 mb38">
+        <div className='mh38 mb38'>
           <InfoBox>
             {this.getInfoText()}
           </InfoBox>
