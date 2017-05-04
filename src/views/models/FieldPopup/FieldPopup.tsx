@@ -550,7 +550,7 @@ const MappedFieldPopup = mapProps({
   modelId: props => props.viewer.model.id,
   projectId: props => props.viewer.project.id,
   enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
-  isGlobalEnumsEnabled: props => props.viewer.project.isGlobalEnumsEnabled,
+  isGlobalEnumsEnabled: true,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedFieldPopup, {

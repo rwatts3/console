@@ -22,6 +22,10 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
 
     const providers = this.props.project.authProviders.edges.map(edge => edge.node)
 
+    const anonEnabled = !!this.props.project.packageDefinitions.edges
+      .map(edge => edge.node)
+      .find(node => node.name === 'anonymous-auth-provider')
+
     const algoliaIntegration = {
       isEnabled,
       logoURI: require('../../assets/graphics/algolia-logo.svg'),
@@ -71,7 +75,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     }
 
     const anonymousIntegration = {
-      isEnabled: false,
+      isEnabled: anonEnabled,
       logo: (
         <div className='email-auth-provider'>
           <style jsx>{`
@@ -145,6 +149,13 @@ export default Relay.createContainer(IntegrationsCardGrid, {
             node {
               isEnabled
               type 
+            }
+          }
+        }
+        packageDefinitions(first: 100) {
+          edges {
+            node {
+              name
             }
           }
         }
