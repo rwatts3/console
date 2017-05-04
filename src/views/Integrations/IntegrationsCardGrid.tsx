@@ -106,11 +106,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
         </div>
         <div className={cx($p.flex, $p.flexRow)}>
           <IntegrationsCard integration={emailIntegration} />
-          {isBeta ? (
-            <IntegrationsCard integration={anonymousIntegration} />
-          ) : (
-            <IntegrationsCardPlaceholder />
-          )}
+          <IntegrationsCard integration={anonymousIntegration} />
           <div
             style={{width: '317px', height: '322px', margin: '12px'}}
             className={cx(
