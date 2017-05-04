@@ -12,6 +12,11 @@ export function getEmptyFunction(): ServerlessFunction {
       edges: [],
     },
     binding: 'PRE_WRITE',
+    operation: undefined,
+    stats: {
+      edges: [],
+    },
+    isActive: true,
   }
 }
 

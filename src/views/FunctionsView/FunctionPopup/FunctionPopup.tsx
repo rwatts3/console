@@ -17,6 +17,7 @@ import Step0 from './Step0'
 import * as cookiestore from 'cookiestore'
 import Trigger from './Trigger'
 import RequestPipelineFunction from './RequestPipelineFunction'
+import {RelayProp} from 'react-relay'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -25,6 +26,8 @@ interface Props {
   params: any
   router: ReactRouter.InjectedRouter
   models: Model[]
+  relay: RelayProp
+  schema: string
 }
 
 interface State {
@@ -63,10 +66,21 @@ class FunctionPopup extends React.Component<Props, State> {
       // TODO reenable!!!
       // isInline: this.getIsInline(props.node),
     }
+
+    // selectedModelName: null,
+    //   modelSelected: false,
+    //   binding: null,
+    //   operation: null,
+    this.props.relay.setVariables({
+      modelSelected: true,
+      operation: 'CREATE',
+      selectedModelName: 'User',
+      binding: 'PRE_WRITE',
+    })
   }
 
   render() {
-    const {models} = this.props
+    const {models, schema} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, isInline} = this.state
 
     const changed = false
@@ -103,6 +117,7 @@ class FunctionPopup extends React.Component<Props, State> {
           >
             <style jsx>{`
               .function-popup {
+                @p: .bgWhite;
               }
               .popup-body {
                 max-height: calc(100vh - 200px);
@@ -146,6 +161,7 @@ class FunctionPopup extends React.Component<Props, State> {
                   onIsInlineChange={this.handleIsInlineChange}
                   onChangeUrl={this.update(updateWebhookUrl)}
                   webhookUrl={fn.webhookUrl}
+                  schema={schema}
                 />
               )}
             </div>
@@ -271,6 +287,7 @@ class FunctionPopup extends React.Component<Props, State> {
 const MappedFunctionsPopup = mapProps({
   project: props => props.viewer.project,
   models: props => props.viewer.project.models.edges.map(edge => edge.node),
+  schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
 })(withRouter(FunctionPopup))
 
 export const EditFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
@@ -325,6 +342,10 @@ const bindings = [
 export const CreateFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
   initialVariables: {
     projectName: null, // injected from router
+    selectedModelName: null,
+    modelSelected: false,
+    binding: null,
+    operation: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -341,6 +362,9 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
               }
             }
           }
+        }
+        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          requestPipelineFunctionSchema(binding: $binding operation: $operation)
         }
         user {
           crm {

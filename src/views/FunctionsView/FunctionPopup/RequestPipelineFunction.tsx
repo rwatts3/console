@@ -12,6 +12,7 @@ interface Props {
   onIsInlineChange: (isInline: boolean) => void
   onChangeUrl: (url: string) => void
   webhookUrl: string
+  schema: string
 }
 
 interface State {
@@ -31,7 +32,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
   render() {
     const {
       name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onIsInlineChange,
-      webhookUrl, onChangeUrl,
+      webhookUrl, onChangeUrl, schema,
     } = this.props
     return (
       <div className='request-pipeline-function'>
@@ -68,7 +69,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           Constraints and Permissions APIs. Use this to transform credit card numbers, slugs etc.
         </p>
         <RequestPipelineFunctionInput
-          schema={fakeSchema}
+          schema={schema}
           onChange={onInlineCodeChange}
           value={inlineCode}
           isInline={isInline}
@@ -84,10 +85,3 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
     this.props.onNameChange(e.target.value)
   }
 }
-
-const fakeSchema = `input CreateUser {
-  name: String!
-  email: String!
-  age: Int!
-  address: String!
-}`

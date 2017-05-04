@@ -6,6 +6,8 @@ import * as cn from 'classnames'
 import JsEditor from './JsEditor'
 import Toggle from './Toggle'
 import WebhookEditor from './WebhookEditor'
+import * as Modal from 'react-modal'
+import {fieldModalStyle} from '../../../utils/modalStyle'
 
 interface Props {
   schema: string
@@ -21,6 +23,17 @@ interface State {
   inputWidth: number
   fullscreen: boolean
 }
+const modalStyling = {
+  ...fieldModalStyle,
+  content: {
+    ...fieldModalStyle.content,
+    width: window.innerWidth,
+  },
+  overlay: {
+    ...fieldModalStyle.overlay,
+    backgroundColor: 'rgba(15,32,46,.9)',
+  },
+}
 
 export default class RequestPipelineFunctionInput extends React.Component<Props, State> {
   constructor(props) {
@@ -31,10 +44,28 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     }
   }
   render() {
+    const {fullscreen} = this.state
+
+    if (fullscreen) {
+      return (
+        <Modal
+          isOpen
+          style={modalStyling}
+          contentLabel='Function Editor'
+          onRequestClose={this.toggleFullscreen}
+        >
+          {this.renderComponent()}
+        </Modal>
+      )
+    }
+
+    return this.renderComponent()
+  }
+  renderComponent() {
     const {inputWidth, fullscreen} = this.state
     const {schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl} = this.props
     return (
-      <div className='request-pipeline-function-input'>
+      <div className={cn('request-pipeline-function-input', {fullscreen})}>
         <style jsx>{`
           .request-pipeline-function-input {
             @p: .br2, .buttonShadow, .flex;
@@ -42,8 +73,13 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             margin-left: -4px;
             margin-right: -4px;
           }
+          .request-pipeline-function-input.fullscreen {
+            @p: .pa60, .center;
+            height: 100vh;
+            max-width: 1400px;
+          }
           .input {
-            @p: .pa20, .relative;
+            @p: .pa20, .relative, .br2, .brLeft;
             background: #F5F5F5;
           }
           .input:after {
@@ -86,7 +122,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .pointer;
           }
           .body {
-            @p: .pt10, .flex, .flexColumn, .flexAuto;
+            @p: .pt10, .flex, .flexColumn, .flexAuto, .br2, .brRight;
           }
         `}</style>
         <div className='input'>

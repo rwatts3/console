@@ -37,7 +37,7 @@ export default class WebhookEditor extends React.Component<Props, State> {
         `}</style>
         <textarea
           autoFocus
-          rows={1}
+          rows={3}
           onChange={this.urlChange}
           onKeyDown={this.keyDown}
           placeholder='Paste your webhook url here…'

@@ -50,7 +50,7 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
           @p: .flex, .itemsCenter, .ph10;
         }
         select {
-          @p: .ml38, .f20, .blue, .fw6, .tl, .relative;
+          @p: .f20, .blue, .fw6, .tl, .relative;
           border: 2px solid $blue50;
           border-radius: 3px;
           padding: 12px 16px;
@@ -91,11 +91,20 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
         <div className='line mv25 ph16'></div>
         <div className='choose'>
           <div className='n active'>1</div>
-          <div className='description'>Choose a type to hook in:</div>
+          <div className='description'>Choose a type and mutation to hook in:</div>
           <div className='relative'>
-            <select value={selectedModelId}>
+            <select value={selectedModelId} className='ml38'>
               {models.map(model => (
                 <option key={model.id} value={model.id}>{model.name}</option>
+              ))}
+            </select>
+            <div className='triangle'>▼</div>
+          </div>
+          <div className='mh16'>is</div>
+          <div className='relative'>
+            <select value={selectedModelId}>
+              {operations.map(operation => (
+                <option key={operation} value={operation}>{operation.toLowerCase() + 'd'}</option>
               ))}
             </select>
             <div className='triangle'>▼</div>
@@ -121,3 +130,5 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
     </div>
   )
 }
+
+const operations = ['CREATE', 'UPDATE', 'DELETE']

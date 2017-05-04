@@ -92,9 +92,21 @@ export interface ServerlessFunction {
   inlineCode?: string
   auth0Id?: string
   logs: RelayConnection<Log>
+  stats: RelayConnection<FunctionStats>
   modelId?: string
   model?: Model
+  operation?: RequestPipelineMutationOperation
+  isActive: boolean
 }
+
+export interface FunctionStats {
+  requestHistogram: number[]
+  requestCount: number
+  errorCount: number
+  lastRequest: Date
+}
+
+type RequestPipelineMutationOperation = 'CREATE' | 'UPDATE' | 'DELETE'
 
 export interface Log {
   id: string
