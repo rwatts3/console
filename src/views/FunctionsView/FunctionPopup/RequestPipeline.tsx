@@ -82,7 +82,7 @@ export default function RequestPipeline({binding, onChange}: Props) {
             color={$v.darkBlue30}
           />
         </div>
-      }>Here the data is actually written to the datbase.</Info>
+      }>Here the data is actually written to the database.</Info>
       <Arrow />
       <Info top customTip={
         <div className='step' onClick={() => onChange('TRANSFORM_PAYLOAD')}>

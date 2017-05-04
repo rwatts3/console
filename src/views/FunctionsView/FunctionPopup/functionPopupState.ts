@@ -6,13 +6,21 @@ export function getEmptyFunction(): ServerlessFunction {
     type: 'AUTH0',
     webhookUrl: '',
     webhookHeaders: '',
-    inlineCode: 'module.exports = function(body, cb) { cb(null, { body }) }',
+    inlineCode,
     auth0Id: '',
     logs: {
       edges: [],
     },
+    binding: 'PRE_WRITE',
   }
 }
+
+const inlineCode = `export default function (event) {
+  const { data, context } = event
+  console.log(data)
+  return { data }
+}
+`
 
 export function updateInlineCode(state: ServerlessFunction, inlineCode: string): ServerlessFunction {
   return {
@@ -39,5 +47,12 @@ export function updateModel(state: ServerlessFunction, modelId: string): Serverl
   return {
     ...state,
     modelId,
+  }
+}
+
+export function updateWebhookUrl(state: ServerlessFunction, webhookUrl: string): ServerlessFunction {
+  return {
+    ...state,
+    webhookUrl,
   }
 }

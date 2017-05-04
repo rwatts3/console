@@ -8,11 +8,15 @@ import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 import PopupHeader from '../../../components/PopupHeader'
 import PopupFooter from '../../../components/PopupFooter'
 import {Model, ServerlessFunction} from '../../../types/types'
-import {getEmptyFunction, updateBinding, updateInlineCode, updateModel, updateName} from './functionPopupState'
+import {
+  getEmptyFunction, updateBinding, updateInlineCode, updateModel, updateName,
+  updateWebhookUrl,
+} from './functionPopupState'
 import * as Codemirror from 'react-codemirror'
 import Step0 from './Step0'
 import * as cookiestore from 'cookiestore'
 import Trigger from './Trigger'
+import RequestPipelineFunction from './RequestPipelineFunction'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -30,6 +34,7 @@ interface State {
   fn: ServerlessFunction
   loading: boolean
   eventType: EventType
+  isInline: boolean
 }
 
 const customModalStyle = {
@@ -46,19 +51,23 @@ class FunctionPopup extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      activeTabIndex: 1,
+      activeTabIndex: 2,
       editing: false,
       showErrors: false,
       fn: props.node || getEmptyFunction(),
       loading: false,
+      // TODO reenable!!!
       // eventType: this.getEventTypeFromFunction(props.node),
       eventType: 'RP',
+      isInline: false,
+      // TODO reenable!!!
+      // isInline: this.getIsInline(props.node),
     }
   }
 
   render() {
     const {models} = this.props
-    const {activeTabIndex, editing, showErrors, fn, eventType} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType, isInline} = this.state
 
     const changed = false
     const valid = true
@@ -126,6 +135,19 @@ class FunctionPopup extends React.Component<Props, State> {
                   onBindingChange={this.update(updateBinding)}
                 />
               )}
+              {activeTabIndex === 2 && eventType === 'RP' && (
+                <RequestPipelineFunction
+                  name={fn.name}
+                  inlineCode={fn.inlineCode}
+                  onInlineCodeChange={this.update(updateInlineCode)}
+                  onNameChange={this.update(updateName)}
+                  binding={fn.binding}
+                  isInline={isInline}
+                  onIsInlineChange={this.handleIsInlineChange}
+                  onChangeUrl={this.update(updateWebhookUrl)}
+                  webhookUrl={fn.webhookUrl}
+                />
+              )}
             </div>
             <PopupFooter
               entityName='Function'
@@ -143,6 +165,10 @@ class FunctionPopup extends React.Component<Props, State> {
         </ModalDocs>
       </Modal>
     )
+  }
+
+  private handleIsInlineChange = (isInline: boolean) => {
+    this.setState({isInline} as State)
   }
 
   private getTabs = () => {
@@ -227,6 +253,18 @@ class FunctionPopup extends React.Component<Props, State> {
     }
 
     return 'CRON'
+  }
+
+  private getIsInline(fn: ServerlessFunction| null): boolean {
+    if (fn) {
+      if (fn.inlineCode && fn.inlineCode.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+
+    return true
   }
 }
 

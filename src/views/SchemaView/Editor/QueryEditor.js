@@ -39,6 +39,8 @@ export class QueryEditor extends React.Component {
     editorTheme: PropTypes.string,
     onEditorInstance: PropTypes.func,
     readOnly: PropTypes.bool,
+    hideLineNumbers: PropTypes.bool,
+    hideFold: PropTypes.bool,
   }
 
   constructor(props) {
@@ -70,7 +72,7 @@ export class QueryEditor extends React.Component {
 
     this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
-      lineNumbers: true,
+      lineNumbers: !this.props.hideLineNumbers,
       tabSize: 2,
       mode: 'graphql',
       theme: this.props.editorTheme || 'graphiql',
@@ -80,7 +82,7 @@ export class QueryEditor extends React.Component {
       showCursorWhenSelecting: true,
       readOnly: typeof this.props.readOnly === 'boolean' ? this.props.readOnly : false,
       foldGutter: {
-        minFoldSize: 4
+        minFoldSize: this.props.hideFold ? Infinity : 4,
       },
       lint: {
         schema: this.props.schema,
@@ -99,7 +101,7 @@ export class QueryEditor extends React.Component {
         schema: this.props.schema,
         onClick: reference => this.props.onClickReference(reference),
       },
-      gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
+      gutters: this.props.hideFold ? [] : [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
       extraKeys: {
         'Cmd-Space': () => this.editor.showHint({ completeSingle: true }),
         'Ctrl-Space': () => this.editor.showHint({ completeSingle: true }),

@@ -78,6 +78,9 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
         .description {
           margin-left: 7px;
         }
+        select, option {
+          font-family: 'Open Sans', sans-serif;
+        }
       `}</style>
       <div className='intro'>
         <div className='text'>
