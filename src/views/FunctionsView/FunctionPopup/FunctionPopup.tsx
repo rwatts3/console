@@ -26,6 +26,7 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import Loading from '../../../components/Loading/Loading'
 import UpdateRequestPipelineMutationFunction from '../../../mutations/Functions/UpdateRequestPipelineMutationFunction'
+import DeleteFunction from '../../../mutations/Functions/DeleteFunction'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -70,6 +71,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         props.node.modelId = props.node.model.id
       }
       if (props.node.auth0Id && props.node.auth0Id.length > 0) {
+        props.node._webhookUrl = props.node.webhookUrl
         props.node.webhookUrl = ''
       }
     }
@@ -116,7 +118,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading} = this.state
 
     const changed = didChange(this.state.fn, this.props.node)
-    console.log('changed', changed, this.state.fn, this.props.node)
     const valid = isValid(this.state)
 
     const tabs = this.getTabs()
@@ -285,6 +286,23 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private delete = () => {
     // smepty
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new DeleteFunction({
+        functionId: this.props.node.id,
+        projectId: this.props.project.id,
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
   }
 
   private submit = () => {

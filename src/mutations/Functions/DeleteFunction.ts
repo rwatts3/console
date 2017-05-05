@@ -31,6 +31,8 @@ export default class DeleteFunction extends Relay.Mutation<Props, {}> {
   }
 
   getVariables () {
-    return this.props
+    return {
+      functionId: this.props.functionId,
+    }
   }
 }

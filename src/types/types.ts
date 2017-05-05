@@ -88,6 +88,7 @@ export interface ServerlessFunction {
   type?: FunctionType
   binding?: FunctionBinding
   webhookUrl: string
+  _webhookUrl?: string
   webhookHeaders: string
   inlineCode?: string
   auth0Id?: string
