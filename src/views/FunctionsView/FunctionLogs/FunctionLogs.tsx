@@ -38,7 +38,6 @@ class FunctionLogsComponent extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props)
     const {logs, node} = this.props
     return (
       <Modal

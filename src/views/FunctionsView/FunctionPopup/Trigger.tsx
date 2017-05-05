@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {FunctionBinding, Model} from '../../../types/types'
+import {FunctionBinding, Model, RequestPipelineMutationOperation} from '../../../types/types'
 import RequestPipeline from './RequestPipeline'
 
 interface Props {
@@ -8,9 +8,13 @@ interface Props {
   binding: FunctionBinding
   onModelChange: (modelId: string) => void
   onBindingChange: (binding: FunctionBinding) => void
+  operation: RequestPipelineMutationOperation
+  onChangeOperation: (operation: RequestPipelineMutationOperation) => void
 }
 
-export default function Trigger({models, selectedModelId, binding, onModelChange, onBindingChange}: Props) {
+export default function Trigger({
+  models, selectedModelId, binding, onModelChange, onBindingChange, operation, onChangeOperation,
+}: Props) {
   return (
     <div className='trigger'>
       <style jsx>{`
@@ -93,7 +97,11 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
           <div className='n active'>1</div>
           <div className='description'>Choose a type and mutation to hook in:</div>
           <div className='relative'>
-            <select value={selectedModelId} className='ml38'>
+            <select
+              value={selectedModelId}
+              className='ml38'
+              onChange={(e: any) => onModelChange(e.target.value)}
+            >
               {models.map(model => (
                 <option key={model.id} value={model.id}>{model.name}</option>
               ))}
@@ -102,7 +110,10 @@ export default function Trigger({models, selectedModelId, binding, onModelChange
           </div>
           <div className='mh16'>is</div>
           <div className='relative'>
-            <select value={selectedModelId}>
+            <select
+              value={operation}
+              onChange={(e: any) => onChangeOperation(e.target.value)}
+            >
               {operations.map(operation => (
                 <option key={operation} value={operation}>{operation.toLowerCase() + 'd'}</option>
               ))}

@@ -3,6 +3,7 @@ import {FunctionBinding, FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
 interface Props {
+  id: string
   projectId: string
   name: string
   binding?: FunctionBinding
@@ -14,17 +15,18 @@ interface Props {
   auth0Id?: string
   operation?: string
   isActive: boolean
+  functionId?: string
 }
 
-export default class AddRequestPipelineMutationFunction extends Relay.Mutation<Props, {}> {
+export default class UpdateRequestPipelineMutationFunction extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{addRequestPipelineMutationFunction}`
+    return Relay.QL`mutation{updateRequestPipelineMutationFunction}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on AddRequestPipelineMutationFunctionPayload {
+      fragment on UpdateRequestPipelineMutationFunctionPayload {
         function
         project
       }
@@ -33,21 +35,17 @@ export default class AddRequestPipelineMutationFunction extends Relay.Mutation<P
 
   getConfigs () {
     return [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: this.props.projectId,
-      connectionName: 'functions',
-      edgeName: 'functionEdge',
-      rangeBehaviors: {
-        '': 'append',
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        function: this.props.id,
       },
     }]
   }
 
   getVariables () {
     return pick(this.props, [
-      'projectId', 'name', 'isActive', 'binding', 'modelId', 'operation',
-      'type', 'webhookUrl', 'headers', 'inlineCode', 'auth0Id',
+      'name', 'isActive', 'binding', 'modelId', 'operation',
+      'type', 'webhookUrl', 'headers', 'inlineCode', 'auth0Id', 'functionId',
     ])
   }
 }

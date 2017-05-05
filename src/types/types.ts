@@ -106,7 +106,7 @@ export interface FunctionStats {
   lastRequest: Date
 }
 
-type RequestPipelineMutationOperation = 'CREATE' | 'UPDATE' | 'DELETE'
+export type RequestPipelineMutationOperation = 'CREATE' | 'UPDATE' | 'DELETE'
 
 export interface Log {
   id: string

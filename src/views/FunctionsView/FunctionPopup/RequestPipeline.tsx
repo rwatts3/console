@@ -11,7 +11,7 @@ interface Props {
 
 export default function RequestPipeline({binding, onChange}: Props) {
 
-  const argActive = binding === 'TRANSFORM_ARGUMENTS' as FunctionBinding
+  const argActive = binding === 'TRANSFORM_ARGUMENT' as FunctionBinding
   const preActive = binding === 'PRE_WRITE' as FunctionBinding
   const payloadActive = binding === 'TRANSFORM_PAYLOAD' as FunctionBinding
 
@@ -56,9 +56,9 @@ export default function RequestPipeline({binding, onChange}: Props) {
         <Arrow />
       </div>
       <Info top customTip={
-        <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENTS' as FunctionBinding)}>
+        <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}>
           <Circle active={argActive}/>
-          <div className={cn('label', {active: argActive})}>TRANSFORM _ARGUMENTS</div>
+          <div className={cn('label', {active: argActive})}>TRANSFORM _ARGUMENT</div>
         </div>
       }>In this hook you can transform the input data</Info>
       <div className='step'>

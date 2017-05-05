@@ -70,6 +70,7 @@ export default Relay.createContainer(FunctionsListMapped, {
         functions(first: 100) {
           edges {
             node {
+              id
               ${FunctionRow.getFragment('fn')}
             }
           }

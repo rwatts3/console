@@ -28,7 +28,7 @@ class FunctionRow extends React.Component<Props, State> {
 
   render() {
     const {fn, params: {projectName}} = this.props
-    const link = `/${this.props.params}/functions/${this.props.fn.id}/edit`
+    const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
     return (
       <tr key={fn.id} onClick={this.edit}>
         <style jsx={true}>{`

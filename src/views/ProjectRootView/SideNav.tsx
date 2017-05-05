@@ -240,9 +240,7 @@ export class SideNav extends React.PureComponent<Props, State> {
           />
           <SideNavElement
             link={`/${project.name}/functions`}
-            customIcon={
-              <div className='f'>ƒ</div>
-            }
+            iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
             text='Functions'
             active={this.props.location.pathname.includes('/functions')}
             small={!this.props.expanded}

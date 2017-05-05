@@ -1,5 +1,7 @@
-import {FunctionBinding, ServerlessFunction} from '../../../types/types'
-export function getEmptyFunction(): ServerlessFunction {
+import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
+import {FunctionPopupState} from './FunctionPopup'
+import {keysChanged} from '../../../utils/change'
+export function getEmptyFunction(models: Model[]): ServerlessFunction {
   return {
     id: '',
     name: '',
@@ -11,12 +13,13 @@ export function getEmptyFunction(): ServerlessFunction {
     logs: {
       edges: [],
     },
-    binding: 'PRE_WRITE',
-    operation: undefined,
+    binding: 'TRANSFORM_ARGUMENT',
+    operation: 'CREATE',
     stats: {
       edges: [],
     },
     isActive: true,
+    modelId: models[0].id,
   }
 }
 
@@ -55,9 +58,36 @@ export function updateModel(state: ServerlessFunction, modelId: string): Serverl
   }
 }
 
+export function updateOperation(
+  state: ServerlessFunction,
+  operation: RequestPipelineMutationOperation,
+): ServerlessFunction {
+  return {
+    ...state,
+    operation,
+  }
+}
+
 export function updateWebhookUrl(state: ServerlessFunction, webhookUrl: string): ServerlessFunction {
   return {
     ...state,
     webhookUrl,
   }
+}
+
+export function isValid(state: FunctionPopupState) {
+  if (!state.fn.webhookUrl && !state.fn.inlineCode) {
+    return false
+  }
+  return true
+}
+
+export function didChange(before: ServerlessFunction, after?: ServerlessFunction) {
+  if (!after) {
+    return false
+  }
+  return keysChanged(before, after, [
+    'name', 'isActive', 'binding', 'operation',
+    'type', 'url', 'headers', 'inlineCode', 'auth0Id',
+  ])
 }

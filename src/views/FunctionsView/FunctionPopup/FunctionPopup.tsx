@@ -7,9 +7,10 @@ import {withRouter} from 'react-router'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 import PopupHeader from '../../../components/PopupHeader'
 import PopupFooter from '../../../components/PopupFooter'
-import {Model, ServerlessFunction} from '../../../types/types'
+import {Model, Project, ServerlessFunction} from '../../../types/types'
 import {
-  getEmptyFunction, updateBinding, updateInlineCode, updateModel, updateName,
+  didChange,
+  getEmptyFunction, isValid, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
   updateWebhookUrl,
 } from './functionPopupState'
 import * as Codemirror from 'react-codemirror'
@@ -18,6 +19,13 @@ import * as cookiestore from 'cookiestore'
 import Trigger from './Trigger'
 import RequestPipelineFunction from './RequestPipelineFunction'
 import {RelayProp} from 'react-relay'
+import {showNotification} from '../../../actions/notification'
+import {connect} from 'react-redux'
+import AddRequestPipelineMutationFunction from '../../../mutations/Functions/AddRequestPipelineMutationFunction'
+import {onFailureShowNotification} from '../../../utils/relay'
+import {ShowNotificationCallback} from '../../../types/utils'
+import Loading from '../../../components/Loading/Loading'
+import UpdateRequestPipelineMutationFunction from '../../../mutations/Functions/UpdateRequestPipelineMutationFunction'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -28,9 +36,12 @@ interface Props {
   models: Model[]
   relay: RelayProp
   schema: string
+  showNotification: ShowNotificationCallback
+  project: Project
+  node: ServerlessFunction
 }
 
-interface State {
+export interface FunctionPopupState {
   activeTabIndex: number
   editing: boolean
   showErrors: boolean
@@ -48,29 +59,36 @@ const customModalStyle = {
   },
 }
 
-class FunctionPopup extends React.Component<Props, State> {
+class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
+    // prepare node that comes from the server
+    if (props.node) {
+      if (props.node.model) {
+        props.node.modelId = props.node.model.id
+      }
+      if (props.node.auth0Id && props.node.auth0Id.length > 0) {
+        props.node.webhookUrl = ''
+      }
+    }
+
     this.state = {
-      activeTabIndex: 2,
-      editing: false,
+      activeTabIndex: 0,
+      editing: Boolean(props.node),
       showErrors: false,
-      fn: props.node || getEmptyFunction(),
+      fn: props.node || getEmptyFunction(props.models),
       loading: false,
-      // TODO reenable!!!
-      // eventType: this.getEventTypeFromFunction(props.node),
-      eventType: 'RP',
-      isInline: false,
-      // TODO reenable!!!
-      // isInline: this.getIsInline(props.node),
+      eventType: this.getEventTypeFromFunction(props.node),
+      isInline: this.getIsInline(props.node),
     }
 
     // selectedModelName: null,
     //   modelSelected: false,
     //   binding: null,
     //   operation: null,
+    // TODO put in schema of selected fn
     this.props.relay.setVariables({
       modelSelected: true,
       operation: 'CREATE',
@@ -79,12 +97,27 @@ class FunctionPopup extends React.Component<Props, State> {
     })
   }
 
+  componentDidUpdate(prevProps: Props, prevState: FunctionPopupState) {
+    if (prevState.fn.modelId !== this.state.fn.modelId ||
+        prevState.fn.operation !== this.state.fn.operation ||
+        prevState.fn.binding !== this.state.fn.binding
+    ) {
+      this.props.relay.setVariables({
+        modelSelected: true,
+        operation: this.state.fn.operation,
+        selectedModelName: this.props.models.find(model => model.id === this.state.fn.modelId).name,
+        binding: this.state.fn.binding,
+      })
+    }
+  }
+
   render() {
     const {models, schema} = this.props
-    const {activeTabIndex, editing, showErrors, fn, eventType, isInline} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading} = this.state
 
-    const changed = false
-    const valid = true
+    const changed = didChange(this.state.fn, this.props.node)
+    console.log('changed', changed, this.state.fn, this.props.node)
+    const valid = isValid(this.state)
 
     const tabs = this.getTabs()
 
@@ -117,10 +150,19 @@ class FunctionPopup extends React.Component<Props, State> {
           >
             <style jsx>{`
               .function-popup {
-                @p: .bgWhite;
+                @p: .bgWhite, .relative;
               }
               .popup-body {
                 max-height: calc(100vh - 200px);
+              }
+              .loading {
+                @p: .absolute, .bgWhite70, .flex, .itemsCenter, .justifyCenter, .z999;
+                top: -10px;
+                left: -10px;
+                right: -10px;
+                bottom: -10px;
+                box-shadow: 0 0 5px 5px rga(255,255,255,0.7);
+                content: "";
               }
             `}</style>
             <PopupHeader
@@ -135,22 +177,24 @@ class FunctionPopup extends React.Component<Props, State> {
               tabs={tabs}
             />
             <div className='popup-body'>
-              {activeTabIndex === 0 && (
+              {activeTabIndex === 0 && !editing && (
                 <Step0
                   eventType={eventType}
                   onChangeEventType={this.handleEventTypeChange}
                 />
               )}
-              {activeTabIndex === 1 && eventType === 'RP' && (
+              {activeTabIndex === 1 && !editing && eventType === 'RP' && (
                 <Trigger
                   models={models}
                   selectedModelId={fn.modelId}
                   binding={fn.binding}
                   onModelChange={this.update(updateModel)}
                   onBindingChange={this.update(updateBinding)}
+                  operation={fn.operation}
+                  onChangeOperation={this.update(updateOperation)}
                 />
               )}
-              {activeTabIndex === 2 && eventType === 'RP' && (
+              {eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) && (
                 <RequestPipelineFunction
                   name={fn.name}
                   inlineCode={fn.inlineCode}
@@ -177,6 +221,11 @@ class FunctionPopup extends React.Component<Props, State> {
               onSubmit={this.submit}
               onSelectIndex={this.setTabIndex}
             />
+            {loading && (
+              <div className='loading'>
+                <Loading />
+              </div>
+            )}
           </div>
         </ModalDocs>
       </Modal>
@@ -184,17 +233,21 @@ class FunctionPopup extends React.Component<Props, State> {
   }
 
   private handleIsInlineChange = (isInline: boolean) => {
-    this.setState({isInline} as State)
+    this.setState({isInline} as FunctionPopupState)
   }
 
   private getTabs = () => {
     const {eventType} = this.state
 
+    if (eventType === 'RP' && this.state.editing) {
+      return ['Update Function']
+    }
+
     return ['Set Event Type', 'Choose Trigger', 'Define Function']
   }
 
   private handleEventTypeChange = (eventType: EventType) => {
-    this.setState({eventType} as State)
+    this.setState({eventType} as FunctionPopupState)
   }
 
   private update = (func: Function, done?: Function) => {
@@ -219,7 +272,7 @@ class FunctionPopup extends React.Component<Props, State> {
     const {fn: {inlineCode}} = this.state
     const authToken = cookiestore.get('graphcool_auth_token')
 
-    return fetch('https://bju4v1fpt2.execute-api.us-east-1.amazonaws.com/dev/', {
+    return fetch('https://bju4v1fpt2.execute-api.us-east-1.amazonaws.com/dev/create/', {
       method: 'post',
       body: JSON.stringify({code: inlineCode, authToken}),
     })
@@ -235,17 +288,68 @@ class FunctionPopup extends React.Component<Props, State> {
   }
 
   private submit = () => {
-    this.setState({loading: true} as State)
+    this.setState({loading: true} as FunctionPopupState)
     this.createExtendFunction()
-      .then(res => {
-        const {url} = res
-        const fn = {
-          ...this.state.fn,
-          url,
+      .then((res: any) => {
+        const {url, fn} = res
+        console.log(res)
+        if (this.state.editing) {
+          this.updateFunction(url, fn)
+        } else {
+          this.create(url, fn)
         }
-
-        console.log('going to submit fn', fn)
       })
+  }
+
+  private create(webhookUrl?: string, auth0Id?: string) {
+    const {fn} = this.state
+    const input = {
+      ...fn,
+      projectId: this.props.project.id,
+      webhookUrl: webhookUrl || fn.webhookUrl,
+      auth0Id: auth0Id || fn.auth0Id,
+    }
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new AddRequestPipelineMutationFunction(input),
+      {
+        onSuccess: () => {
+          console.log('DONE')
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
+  private updateFunction(webhookUrl?: string, auth0Id?: string) {
+    const {fn} = this.state
+    const input = {
+      ...fn,
+      projectId: this.props.project.id,
+      webhookUrl: webhookUrl || fn.webhookUrl,
+      auth0Id: auth0Id || fn.auth0Id,
+      functionId: fn.id,
+    }
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new UpdateRequestPipelineMutationFunction(input),
+      {
+        onSuccess: () => {
+          console.log('DONE')
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
   }
 
   private close = () => {
@@ -256,7 +360,7 @@ class FunctionPopup extends React.Component<Props, State> {
   private errorInTab = (index: number) => false
 
   private setTabIndex = (index: number) => {
-    this.setState({activeTabIndex: index} as State)
+    this.setState({activeTabIndex: index} as FunctionPopupState)
   }
 
   private getEventTypeFromFunction(fn: ServerlessFunction | null): EventType {
@@ -282,17 +386,27 @@ class FunctionPopup extends React.Component<Props, State> {
 
     return true
   }
+
+  private setLoading = (loading: boolean) => {
+    this.setState({loading} as FunctionPopupState)
+  }
 }
 
-const MappedFunctionsPopup = mapProps({
+const ConnectedFunctionPopup = connect(null, {showNotification})(FunctionPopup)
+
+const MappedFunctionPopup = mapProps({
   project: props => props.viewer.project,
   models: props => props.viewer.project.models.edges.map(edge => edge.node),
   schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
-})(withRouter(FunctionPopup))
+})(withRouter(ConnectedFunctionPopup))
 
-export const EditFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
+export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
     projectName: null, // injected from router
+    selectedModelName: null,
+    modelSelected: false,
+    binding: null,
+    operation: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -310,6 +424,9 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
             }
           }
         }
+        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          requestPipelineFunctionSchema(binding: $binding operation: $operation)
+        }
         user {
           crm {
             information {
@@ -321,11 +438,21 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
     `,
     node: () => Relay.QL`
       fragment on Node {
-        id
         ... on Function {
+          id
           name
+          inlineCode
+          isActive
+          type
+          auth0Id
+          webhookHeaders
+          webhookUrl
           ... on RequestPipelineMutationFunction {
             binding
+            model {
+              id
+            }
+            operation
           }
         }
       }
@@ -339,7 +466,7 @@ const bindings = [
   'TRANSFORM_PAYLOAD',
 ]
 
-export const CreateFunctionPopup = Relay.createContainer(MappedFunctionsPopup, {
+export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,

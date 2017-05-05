@@ -139,8 +139,8 @@ export default class PopupFooter extends React.Component<Props, null> {
               />
             )}
           </div>
-          {((!create && changed) || (create && activeTabIndex === (tabs.length - 1))) && (
-            <div className={'button' + (valid ? ' active' : '')} onClick={onSubmit}>
+          {((!create || activeTabIndex === (tabs.length - 1))) && (
+            <div className={'button' + ((create ? valid : (changed && valid)) ? ' active' : '')} onClick={onSubmit}>
               {create ? 'Create' : 'Update'} {entityName}
             </div>
           )}
