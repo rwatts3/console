@@ -23,10 +23,8 @@ export function getEmptyFunction(models: Model[]): ServerlessFunction {
   }
 }
 
-const inlineCode = `module.exports = function (event) {
-  const { data, context } = event
-  console.log(data)
-  return { data }
+const inlineCode = `module.exports = function (event, cb) {
+  cb({data: event.data})
 }
 `
 
