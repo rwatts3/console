@@ -12,6 +12,7 @@ interface Props {
   onCancel: (e: any) => void
   onSubmit: any
   entityName: string
+  getButtonForTab?: (tab: number) => React.ReactChild
 }
 
 export default class PopupFooter extends React.Component<Props, null> {
@@ -27,6 +28,7 @@ export default class PopupFooter extends React.Component<Props, null> {
       onDelete,
       onCancel,
       entityName,
+      getButtonForTab,
     } = this.props
 
     return (
@@ -139,6 +141,7 @@ export default class PopupFooter extends React.Component<Props, null> {
               />
             )}
           </div>
+          {typeof getButtonForTab === 'function' && getButtonForTab(activeTabIndex)}
           {((!create || activeTabIndex === (tabs.length - 1))) && (
             <div className={'button' + ((create ? valid : (changed && valid)) ? ' active' : '')} onClick={onSubmit}>
               {create ? 'Create' : 'Update'} {entityName}

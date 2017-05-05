@@ -23,7 +23,7 @@ export function getEmptyFunction(models: Model[]): ServerlessFunction {
   }
 }
 
-const inlineCode = `export default function (event) {
+const inlineCode = `module.exports = function (event) {
   const { data, context } = event
   console.log(data)
   return { data }
@@ -55,6 +55,13 @@ export function updateModel(state: ServerlessFunction, modelId: string): Serverl
   return {
     ...state,
     modelId,
+  }
+}
+
+export function updateAuth0Id(state: ServerlessFunction, auth0Id: string): ServerlessFunction {
+  return {
+    ...state,
+    auth0Id,
   }
 }
 

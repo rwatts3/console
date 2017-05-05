@@ -10,7 +10,7 @@ import PopupFooter from '../../../components/PopupFooter'
 import {Model, Project, ServerlessFunction} from '../../../types/types'
 import {
   didChange,
-  getEmptyFunction, isValid, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
+  getEmptyFunction, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
   updateWebhookUrl,
 } from './functionPopupState'
 import * as Codemirror from 'react-codemirror'
@@ -27,6 +27,8 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import Loading from '../../../components/Loading/Loading'
 import UpdateRequestPipelineMutationFunction from '../../../mutations/Functions/UpdateRequestPipelineMutationFunction'
 import DeleteFunction from '../../../mutations/Functions/DeleteFunction'
+import {Icon, $v} from 'graphcool-styles'
+import TestPopup from './TestPopup'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -50,6 +52,7 @@ export interface FunctionPopupState {
   loading: boolean
   eventType: EventType
   isInline: boolean
+  showTest: boolean
 }
 
 const customModalStyle = {
@@ -84,6 +87,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       loading: false,
       eventType: this.getEventTypeFromFunction(props.node),
       isInline: this.getIsInline(props.node),
+      showTest: false,
     }
 
     // selectedModelName: null,
@@ -115,7 +119,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   render() {
     const {models, schema} = this.props
-    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest} = this.state
 
     const changed = didChange(this.state.fn, this.props.node)
     const valid = isValid(this.state)
@@ -221,16 +225,71 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
               onDelete={this.delete}
               onSubmit={this.submit}
               onSelectIndex={this.setTabIndex}
+              getButtonForTab={this.footerButtonForTab}
             />
             {loading && (
               <div className='loading'>
                 <Loading />
               </div>
             )}
+            {showTest && (
+              <TestPopup
+                onRequestClose={this.closeTestPopup}
+                webhookUrl={((fn.webhookUrl && fn.webhookUrl.length > 0 && fn.webhookUrl) || fn._webhookUrl)}
+                isInline={isInline}
+              />
+            )}
           </div>
         </ModalDocs>
       </Modal>
     )
+  }
+
+  private closeTestPopup = () => {
+    this.setState({showTest: false} as FunctionPopupState)
+  }
+
+  private footerButtonForTab = (index: number) => {
+    const {editing, eventType} = this.state
+    if (editing || this.state.eventType === 'RP' && index === 2) {
+      return (
+        <div className='btn' onClick={this.showTestPopup}>
+          <style jsx>{`
+            .btn {
+              @p: .bgWhite, .darkBlue70, .f16, .ph16, .br2, .flex, .itemsCenter, .buttonShadow, .pointer;
+              padding-top: 9px;
+              padding-bottom: 10px;
+            }
+            .btn span {
+              @p: .ml10;
+            }
+          `}</style>
+          <Icon
+            src={require('graphcool-styles/icons/fill/triangle.svg')}
+            color={$v.darkBlue40}
+            width={10}
+            height={10}
+          />
+          <span>
+            Test Run
+          </span>
+        </div>
+      )
+    }
+
+    return null
+  }
+
+  private showTestPopup = () => {
+    this.setLoading(true)
+    this.createExtendFunction()
+      .then((res: any) => {
+        const {url, fn} = res
+        this.update(updateWebhookUrl)(url)
+        this.update(updateAuth0Id)(fn)
+        this.setLoading(false)
+        this.setState({showTest: true} as FunctionPopupState)
+      })
   }
 
   private handleIsInlineChange = (isInline: boolean) => {
