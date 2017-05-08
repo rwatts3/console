@@ -5,15 +5,23 @@ import {ServerlessFunction} from '../../types/types'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
 import {withRouter} from 'react-router'
 import {Icon, $v} from 'graphcool-styles'
+import ToggleActiveRequestPipelineMutationFunction
+  from '../../mutations/Functions/ToggleActiveRequestPipelineMutationFunction'
+import {onFailureShowNotification} from '../../utils/relay'
+import {showNotification} from '../../actions/notification'
+import {ShowNotificationCallback} from '../../types/utils'
+import {connect} from 'react-redux'
+import * as moment from 'moment'
 
 interface Props {
   fn: ServerlessFunction
   params: any
   router: ReactRouter.InjectedRouter
+  showNotification: ShowNotificationCallback
 }
 
 interface State {
-
+  isActive: boolean
 }
 
 class FunctionRow extends React.Component<Props, State> {
@@ -22,13 +30,20 @@ class FunctionRow extends React.Component<Props, State> {
     super(props)
 
     this.state = {
+      isActive: props.fn.isActive,
+    }
+  }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.fn.isActive !== nextProps.fn.isActive) {
+      this.setState({isActive: nextProps.fn.isActive} as State)
     }
   }
 
   render() {
     const {fn, params: {projectName}} = this.props
     const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
+
     return (
       <tr key={fn.id} onClick={this.edit}>
         <style jsx={true}>{`
@@ -77,11 +92,24 @@ class FunctionRow extends React.Component<Props, State> {
           .requests {
             @p: .flex, .itemsCenter;
           }
+          .failed-count {
+            @p: .buttonShadow, .br100, .bgRed, .white, .tc, .flex, .itemsCenter, .justifyCenter;
+            @p: .f12, .fw6;
+            line-height: 18px;
+            min-width: 18px;
+            height: 18px;
+          }
+          .failed-count-wrapper {
+            @p: .absolute, .br100;
+            border: 6px solid white;
+            left: 15px;
+            top: -16px;
+          }
         `}</style>
         <td>
           <div className='toggle'>
             <NewToggleButton
-              defaultChecked
+              defaultChecked={this.state.isActive}
               onChange={this.toggle}
             />
           </div>
@@ -107,19 +135,33 @@ class FunctionRow extends React.Component<Props, State> {
         <td>
           <Link to={link}>
             <div className='requests'>
-              <div className='good'>103</div>
-              <div className='time'>15 min ago</div>
+              <div className='good'>{fn.stats.requestCount}</div>
+              <div className='time'>{moment(fn.stats.lastRequest).fromNow()}</div>
             </div>
           </Link>
         </td>
         <td>
           <Link to={`/${this.props.params.projectName}/functions/${this.props.fn.id}/logs`}>
-            <Icon
-              src={require('graphcool-styles/icons/fill/logs.svg')}
-              color={$v.green}
-              width={28}
-              height={28}
-            />
+            {fn.stats.errorCount > 0 ? (
+              <div className='relative'>
+                <Icon
+                  src={require('graphcool-styles/icons/fill/logsFailed.svg')}
+                  color={$v.red}
+                  width={24}
+                  height={24}
+                />
+                <div className='failed-count-wrapper'>
+                  <div className='failed-count'>{fn.stats.errorCount}</div>
+                </div>
+              </div>
+            ) : (
+              <Icon
+                src={require('graphcool-styles/icons/fill/logs.svg')}
+                color={$v.green}
+                width={24}
+                height={24}
+              />
+            )}
           </Link>
         </td>
       </tr>
@@ -132,15 +174,43 @@ class FunctionRow extends React.Component<Props, State> {
 
   private toggle = () => {
     // lets toggle
+    this.setState(state => {
+      return {
+        isActive: !state.isActive,
+      }
+    })
+    Relay.Store.commitUpdate(
+      new ToggleActiveRequestPipelineMutationFunction({
+        functionId: this.props.fn.id,
+        isActive: !this.props.fn.isActive,
+      }),
+      {
+        onSuccess: () => {
+          console.log('success at toggling')
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        },
+      },
+    )
   }
 }
 
-export default Relay.createContainer(withRouter(FunctionRow), {
+const ConnectedFunctionRow = connect(null, {showNotification})(FunctionRow)
+
+export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
   fragments: {
     fn: () => Relay.QL`
       fragment on Function {
         id
         name
+        isActive
+        stats {
+          errorCount
+          lastRequest
+          requestCount
+          requestHistogram
+        }
         ... on RequestPipelineMutationFunction {
           binding
         }

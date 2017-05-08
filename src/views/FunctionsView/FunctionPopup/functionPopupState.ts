@@ -15,9 +15,7 @@ export function getEmptyFunction(models: Model[]): ServerlessFunction {
     },
     binding: 'TRANSFORM_ARGUMENT',
     operation: 'CREATE',
-    stats: {
-      edges: [],
-    },
+    stats: undefined,
     isActive: true,
     modelId: models[0].id,
   }

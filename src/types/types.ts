@@ -93,7 +93,7 @@ export interface ServerlessFunction {
   inlineCode?: string
   auth0Id?: string
   logs: RelayConnection<Log>
-  stats: RelayConnection<FunctionStats>
+  stats?: FunctionStats
   modelId?: string
   model?: Model
   operation?: RequestPipelineMutationOperation
