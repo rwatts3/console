@@ -63,7 +63,7 @@ export default function TestLog({response}: Props) {
       <div className='header'>
         <div className='header-sides'>
           {error ? (
-            <Icon src={require('graphcool-styles/icons/stroke/cross.svg')} color={$v.red} stroke strokeWidth={3} />
+            <Icon src={require('graphcool-styles/icons/stroke/cross.svg')} color={$v.red} stroke strokeWidth={4} />
           ) : (
             <Icon src={require('graphcool-styles/icons/fill/check.svg')} color={$v.green} />
           )}
