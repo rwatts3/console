@@ -23,6 +23,8 @@ export class ResultViewer extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     editorTheme: PropTypes.string,
+    editable: PropTypes.bool,
+    onChange: PropTypes.function
   }
 
   componentDidMount() {
@@ -39,14 +41,15 @@ export class ResultViewer extends React.Component {
     this.viewer = CodeMirror(this._node, {
       lineWrapping: true,
       value: this.props.value || '',
-      readOnly: true,
+      readOnly: !this.props.editable,
+      lineNumbers: this.props.editable,
       theme: this.props.editorTheme || 'graphiql',
       mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {
         minFoldSize: 4
       },
-      gutters: [ 'CodeMirror-foldgutter' ],
+      gutters: this.props.editable ? [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ] : ['CodeMirror-foldgutter' ],
       extraKeys: {
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
@@ -55,14 +58,42 @@ export class ResultViewer extends React.Component {
         'Alt-Right': 'goGroupRight',
       }
     });
+
+    this.viewer.on('change', this._onEdit);
+  }
+
+  componentDidUpdate(prevProps) {
+    const CodeMirror = require('codemirror');
+
+    // Ensure the changes caused by this update are not interpretted as
+    // user-input changes which could otherwise result in an infinite
+    // event loop.
+    this.ignoreChangeEvent = true;
+    if (this.props.schema !== prevProps.schema) {
+      this.viewer.options.lint.schema = this.props.schema;
+      this.viewer.options.hintOptions.schema = this.props.schema;
+      this.viewer.options.info.schema = this.props.schema;
+      this.viewer.options.jump.schema = this.props.schema;
+      CodeMirror.signal(this.viewer, 'change', this.viewer);
+    }
+    if (this.props.value !== prevProps.value &&
+      this.props.value !== this.cachedValue) {
+      this.cachedValue = this.props.value;
+      this.viewer.setValue(this.props.value);
+    }
+    this.ignoreChangeEvent = false;
+  }
+  _onEdit = () => {
+    if (!this.ignoreChangeEvent) {
+      this.cachedValue = this.viewer.getValue();
+      if (this.props.onChange) {
+        this.props.onChange(this.cachedValue);
+      }
+    }
   }
 
   shouldComponentUpdate(nextProps) {
     return this.props.value !== nextProps.value;
-  }
-
-  componentDidUpdate() {
-    this.viewer.setValue(this.props.value || '');
   }
 
   componentWillUnmount() {

@@ -232,13 +232,13 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 <Loading />
               </div>
             )}
-            {showTest && (
-              <TestPopup
-                onRequestClose={this.closeTestPopup}
-                webhookUrl={((fn.webhookUrl && fn.webhookUrl.length > 0 && fn.webhookUrl) || fn._webhookUrl)}
-                isInline={isInline}
-              />
-            )}
+            <TestPopup
+              onRequestClose={this.closeTestPopup}
+              webhookUrl={((fn.webhookUrl && fn.webhookUrl.length > 0 && fn.webhookUrl) || fn._webhookUrl)}
+              isInline={isInline}
+              isOpen={showTest}
+              schema={schema}
+            />
           </div>
         </ModalDocs>
       </Modal>
