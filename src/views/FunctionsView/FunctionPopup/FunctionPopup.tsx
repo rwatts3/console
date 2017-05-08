@@ -238,6 +238,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
               isInline={isInline}
               isOpen={showTest}
               schema={schema}
+              eventType={eventType}
+              binding={fn.binding}
             />
           </div>
         </ModalDocs>

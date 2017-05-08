@@ -3,10 +3,11 @@ import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
 import {Icon, $v} from 'graphcool-styles'
 import TestLog from './TestLog'
-import {Log} from '../../../types/types'
+import {FunctionBinding, Log} from '../../../types/types'
 import {smoothScrollTo} from '../../../utils/smooth'
 import DummyTestLog from './DummyTestLog'
 import {generateTestEvent} from '../../../utils/functionTest'
+import {EventType} from './FunctionPopup'
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
 
 interface Props {
@@ -15,6 +16,8 @@ interface Props {
   isInline: boolean
   isOpen: boolean
   schema: string
+  binding: FunctionBinding
+  eventType: EventType
 }
 
 interface State {
@@ -84,7 +87,7 @@ export default class TestPopup extends React.Component<Props, State> {
   }
 
   render() {
-    const {onRequestClose, isOpen} = this.props
+    const {onRequestClose, isOpen, binding, eventType} = this.props
     const {responses, input} = this.state
     return (
       <Modal
@@ -158,7 +161,7 @@ export default class TestPopup extends React.Component<Props, State> {
           <div className='input'>
             <div className='intro'>
               <h2>
-                Test Request Pipeline Hook
+                {this.getTitle(eventType, binding)}
               </h2>
               <p>
                 To test your function, choose a payload that represents a valid input,
@@ -224,6 +227,13 @@ export default class TestPopup extends React.Component<Props, State> {
         </div>
       </Modal>
     )
+  }
+
+  private getTitle(eventType: EventType, binding: FunctionBinding) {
+    let title = 'Test the '
+    if (eventType === 'RP') {
+      return `${title} ${binding} hook point`
+    }
   }
 
   private runTest = () => {
