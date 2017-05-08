@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as cn from 'classnames'
 
 interface Props {
   children?: JSX.Element
@@ -9,6 +10,7 @@ interface Props {
   width?: number | string
   cursorOffset?: number
   padding?: number
+  top?: boolean
 }
 
 const Info = (props: Props) => {
@@ -46,6 +48,9 @@ const Info = (props: Props) => {
         padding-top: 5px;
         left: -50px;
       }
+      .tooltip.top {
+        transform: translateY(calc(-100% - 40px)) !important;
+      }
       .tooltip.slim {
         width: 200px;
       }
@@ -60,6 +65,11 @@ const Info = (props: Props) => {
         transform: rotate(45deg);
         width: 8px;
         height: 8px;
+      }
+      .tooltip.top .tooltip-content .before {
+        top: initial;
+        bottom: -4px;
+        left: 60px;
       }
       .info {
         @p: .relative;
@@ -84,7 +94,7 @@ const Info = (props: Props) => {
           </div>
         )}
       <div
-        className={'tooltip' + (Boolean(props.slim) ? ' slim' : '')}
+        className={cn('tooltip', {slim: props.slim, top: props.top})}
         style={tooltipStyle}
       >
         <div className='tooltip-content' style={tooltipContentStyle}>

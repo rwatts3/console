@@ -188,6 +188,12 @@ export class SideNav extends React.PureComponent<Props, State> {
             @p: .w100, .flexFixed, .bgDarkBlue, .flex, .itemsCenter, .justifyBetween, .white60;
             height: 70px;
           }
+          .f {
+            @p: .ttl, .f20, .tc;
+            font-family: fantasy;
+            line-height: 1;
+            width: 24px;
+          }
         `}</style>
         <div className={cx('scrollable', $p.h100, {thin: !expanded})} style={{ paddingBottom: '70px' }}>
           <SideNavElement
@@ -232,6 +238,15 @@ export class SideNav extends React.PureComponent<Props, State> {
             active={this.props.location.pathname.endsWith('/integrations')}
             small={!this.props.expanded}
           />
+          {isBetaCustomer && (
+            <SideNavElement
+              link={`/${project.name}/functions`}
+              iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
+              text='Functions'
+              active={this.props.location.pathname.includes('/functions')}
+              small={!this.props.expanded}
+            />
+          )}
         </div>
         {this.renderPlayground()}
         <div className='footer'>

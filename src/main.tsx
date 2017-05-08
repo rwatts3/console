@@ -25,6 +25,7 @@ import * as TraceKit from 'tracekit'
 import 'graphcool-graphiql/graphiql_dark.css'
 
 import './styles/voyager.css'
+import './styles/mdn-like.css'
 import './utils/polyfils'
 import {reduceCodeGeneration} from './reducers/codeGeneration'
 require('offline-plugin/runtime').install()
