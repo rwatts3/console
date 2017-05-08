@@ -238,13 +238,15 @@ export class SideNav extends React.PureComponent<Props, State> {
             active={this.props.location.pathname.endsWith('/integrations')}
             small={!this.props.expanded}
           />
-          <SideNavElement
-            link={`/${project.name}/functions`}
-            iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
-            text='Functions'
-            active={this.props.location.pathname.includes('/functions')}
-            small={!this.props.expanded}
-          />
+          {isBetaCustomer && (
+            <SideNavElement
+              link={`/${project.name}/functions`}
+              iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
+              text='Functions'
+              active={this.props.location.pathname.includes('/functions')}
+              small={!this.props.expanded}
+            />
+          )}
         </div>
         {this.renderPlayground()}
         <div className='footer'>
