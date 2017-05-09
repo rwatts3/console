@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {FunctionBinding} from '../../../types/types'
 import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
+import StepMarker from './StepMarker'
 
 interface Props {
   name: string
@@ -15,6 +16,7 @@ interface Props {
   schema: string
   headers: {[key: string]: string}
   onChangeHeaders: (headers: {[key: string]: string}) => void
+  editing: boolean
 }
 
 interface State {
@@ -27,14 +29,13 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
     super(props)
 
     this.state = {
-
     }
   }
 
   render() {
     const {
       name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onIsInlineChange,
-      webhookUrl, onChangeUrl, schema,
+      webhookUrl, onChangeUrl, schema, editing,
     } = this.props
     return (
       <div className='request-pipeline-function'>
@@ -63,6 +64,9 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           placeholder='Set a function name...'
           autoFocus
         />
+        {!editing && (
+          <StepMarker active style={{marginTop: -30, marginLeft: -4}}>1</StepMarker>
+        )}
         <div className='line' />
         <p>
           By creating a function at
@@ -80,6 +84,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onChangeUrl={onChangeUrl}
           headers={this.props.headers}
           onChangeHeaders={this.props.onChangeHeaders}
+          editing={this.props.editing}
         />
       </div>
     )

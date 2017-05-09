@@ -214,6 +214,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   schema={schema}
                   headers={fn._webhookHeaders}
                   onChangeHeaders={this.update(updateWebhookHeaders)}
+                  editing={editing}
                 />
               )}
             </div>

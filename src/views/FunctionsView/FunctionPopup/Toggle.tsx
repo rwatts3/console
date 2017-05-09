@@ -23,6 +23,9 @@ export default function Toggle({choices, onChange, activeChoice}: ToggleProps) {
           @p: .darkerBlue;
           background: #b8bfc4;
         }
+        .choice:not(.active):hover {
+          @p: .white70;
+        }
       `}</style>
       {choices.map(choice => (
         <div

@@ -8,6 +8,7 @@ import Toggle from './Toggle'
 import WebhookEditor from './WebhookEditor'
 import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
+import StepMarker from './StepMarker'
 
 interface Props {
   schema: string
@@ -19,6 +20,7 @@ interface Props {
   onChangeUrl: (url: string) => void
   headers: {[key: string]: string}
   onChangeHeaders: (headers: {[key: string]: string}) => void
+  editing: boolean
 }
 
 interface State {
@@ -139,11 +141,16 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         </div>
         <div className='function'>
           <div className='head'>
-            <Toggle
-              choices={['Inline Code', 'Webhook']}
-              activeChoice={isInline ? 'Inline Code' : 'Webhook'}
-              onChange={choice => choice === 'Inline Code' ? onIsInlineChange(true) : onIsInlineChange(false)}
-            />
+            <div className='flex'>
+              {!this.props.editing && (
+                <StepMarker style={{left: -20, top: -1, position: 'relative'}}>2</StepMarker>
+              )}
+              <Toggle
+                choices={['Inline Code', 'Webhook']}
+                activeChoice={isInline ? 'Inline Code' : 'Webhook'}
+                onChange={choice => choice === 'Inline Code' ? onIsInlineChange(true) : onIsInlineChange(false)}
+              />
+            </div>
             <Icon
               src={
                 fullscreen ? require('assets/icons/compress.svg') : require('assets/icons/extend.svg')
