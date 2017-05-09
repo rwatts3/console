@@ -1,4 +1,5 @@
 // TS-lint disabled because otherwise React is not defined.
+import 'babel-polyfill'
 import * as React from 'react' // tslint:disable-line
 import * as Relay from 'react-relay'
 import * as ReactDOM from 'react-dom'

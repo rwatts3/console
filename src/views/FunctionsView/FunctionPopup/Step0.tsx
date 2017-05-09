@@ -3,6 +3,7 @@ import FieldHorizontalSelect from '../../models/FieldPopup/FieldHorizontalSelect
 import {Icon, $v} from 'graphcool-styles'
 import {EventType, eventTypes} from './FunctionPopup'
 import InfoBox from './InfoBox'
+import Info from '../../../components/Info'
 
 interface Props {
   eventType: EventType | null
@@ -47,17 +48,28 @@ export default class Step0 extends React.Component<Props, State> {
           Request Pipeline
         </div>
       </div>,
-      <div className='flex itemsCenter'>
-        <Icon
-          src={require('graphcool-styles/icons/fill/cron.svg')}
-          width={20}
-          height={20}
-          color={$v.darkBlue50}
-        />
-        <div className='ml16'>
-          Cron Job
+      <Info customTip={
+        <div className='flex itemsCenter'>
+          <Icon
+            src={require('graphcool-styles/icons/fill/cron.svg')}
+            width={20}
+            height={20}
+            color={$v.darkBlue50}
+          />
+          <div className='ml16'>
+            Cron Job
+          </div>
         </div>
-      </div>,
+      }>
+        <span>
+          <style jsx={true}>{`
+            span {
+              @p: .wsNormal;
+            }
+          `}</style>
+          Cron Jobs will soon be available
+        </span>
+      </Info>,
     ]
     return (
       <div className='step0'>
@@ -81,6 +93,7 @@ export default class Step0 extends React.Component<Props, State> {
           inactiveTextColor={$v.gray30}
           onChange={(index) => onChangeEventType(eventTypes[index])}
           spread
+          disabledIndeces={[2]}
         />
         <div className='mh38 mb38'>
           <InfoBox>

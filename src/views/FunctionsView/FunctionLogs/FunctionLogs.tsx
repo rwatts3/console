@@ -49,6 +49,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
         <style jsx={true}>{`
           .function-logs {
             @p: .overflowHidden, .pa60;
+            height: 100vh;
             background-color: rgba(23,42,58,.94)
           }
           .logs {
@@ -90,6 +91,9 @@ class FunctionLogsComponent extends React.Component<Props, State> {
           .head :global(i) {
             @p: .pointer;
           }
+          .empty {
+            @p: .white80, .tc, .pa25, .f20;
+          }
       `}</style>
         <div className='function-logs'>
           <div className='head'>
@@ -115,24 +119,25 @@ class FunctionLogsComponent extends React.Component<Props, State> {
             />
           </div>
           <div className='logs'>
-            <table>
-              <thead>
+            {logs.length > 0 ? (
+              <table>
+                <thead>
                 <tr>
                   <th>Timestamp</th>
                   <th>Duration</th>
                   <th>Message</th>
                   <th>Time Ago</th>
                 </tr>
-              </thead>
-              <tbody>
-                {range(100).map(n => {
-                  const log = logs[n % 2]
-                  return (
-                    <LogComponent log={log} />
-                  )
-                })}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                {logs.map(log => (
+                  <LogComponent log={log} key={log.id} />
+                ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className='empty'>There are no logs for this function yet</div>
+            )}
           </div>
         </div>
       </Modal>

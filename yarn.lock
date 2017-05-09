@@ -3105,9 +3105,9 @@ graphcool-styles@0.0.98:
     react-dom "^15.3.2"
     webpack-dev-server "^1.16.2"
 
-graphcool-styles@0.1.17:
-  version "0.1.17"
-  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.17.tgz#cdb639e7a6a042b2cafed9c79eb1823870c2bb64"
+graphcool-styles@0.1.20:
+  version "0.1.20"
+  resolved "https://registry.yarnpkg.com/graphcool-styles/-/graphcool-styles-0.1.20.tgz#8619acff5d84a6da0bf0f3c3d1a656353ec79eb4"
   dependencies:
     graphcool-styles "0.1.8"
     html-webpack-plugin "^2.24.1"
@@ -6179,9 +6179,9 @@ react-redux@5.0.3, react-redux@^5.0.3:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
 
-react-relay@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-0.9.3.tgz#74ddd8ed2d60fde7303471ada5306342f5db99a6"
+react-relay@0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-0.10.0.tgz#4b19c4450e0140b9f04fd6fe96d8f451f0804078"
   dependencies:
     babel-runtime "^6.6.1"
     fbjs "^0.8.1"
@@ -6226,6 +6226,12 @@ react-static-container@^1.0.1:
 react-style-proptype@^2.0.0, react-style-proptype@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/react-style-proptype/-/react-style-proptype-2.0.2.tgz#b4687990ac256deed89ee5777a3c58de5ac7bd15"
+
+react-svg-chart@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-svg-chart/-/react-svg-chart-4.0.0.tgz#9e5647b91bca9f51976e35f9f57a8abe8aa30a04"
+  dependencies:
+    svg-tween "^1.2.0"
 
 react-tagsinput@^3.12.0:
   version "3.14.0"
@@ -7107,6 +7113,10 @@ supports-color@^3.1.0, supports-color@^3.1.1, supports-color@^3.1.2, supports-co
   dependencies:
     has-flag "^1.0.0"
 
+svg-arc-to-cubic-bezier@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/svg-arc-to-cubic-bezier/-/svg-arc-to-cubic-bezier-1.0.1.tgz#4494fb85708951ce9fd006ff1269cc171849c672"
+
 svg-loader@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/svg-loader/-/svg-loader-0.0.2.tgz#601ab2fdaa1dadae3ca9975b550de92a07e1d92b"
@@ -7114,6 +7124,18 @@ svg-loader@^0.0.2:
 svg-pan-zoom@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/svg-pan-zoom/-/svg-pan-zoom-3.5.0.tgz#3e661d9df829c5ee0895b8b2b1cadb373c7953b3"
+
+svg-shapes@^1.9.1:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/svg-shapes/-/svg-shapes-1.9.2.tgz#7156b28af15441e4371345f398e10d5cc5659747"
+
+svg-tween@^1.2.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/svg-tween/-/svg-tween-1.4.0.tgz#59823341597a5961e9b42086006d5a4db857e72d"
+  dependencies:
+    svg-arc-to-cubic-bezier "^1.0.0"
+    svg-shapes "^1.9.1"
+    tweening "^1.1.0"
 
 svgo-loader@^1.1.0, svgo-loader@^1.1.2:
   version "1.1.2"
@@ -7294,6 +7316,16 @@ tty-browserify@0.0.0:
 tunnel-agent@~0.4.1:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
+
+tween-functions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tween-functions/-/tween-functions-1.2.0.tgz#1ae3a50e7c60bb3def774eac707acbca73bbc3ff"
+
+tweening@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tweening/-/tweening-1.2.0.tgz#7e1b4f4559c32ee350610d080797390b6883a3ed"
+  dependencies:
+    tween-functions "^1.2.0"
 
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"

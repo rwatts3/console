@@ -2,6 +2,7 @@ import * as React from 'react'
 import {Log} from '../../../types/types'
 import * as cn from 'classnames'
 import {Icon, $v} from 'graphcool-styles'
+import * as moment from 'moment'
 // import * as Codemirror from 'react-codemirror'
 // import {ResultViewer} from 'graphiql/dist/components/ResultViewer'
 // const Codemirror: any = require('./CodeMirror').default
@@ -90,7 +91,7 @@ export default class LogComponent extends React.Component<Props, State> {
         <td><span>{log.duration}ms</span></td>
         <td>
           {expanded ? (
-            this.renderMessage(message)
+            this.renderMessage(log.message)
           ) : (
             <div className='flex itemsCenter'>
               <Icon
@@ -100,12 +101,12 @@ export default class LogComponent extends React.Component<Props, State> {
                 height={6}
               />
               <div className='message'>
-                {message}
+                {log.message}
               </div>
             </div>
           )}
         </td>
-        <td><div className='ago'>2 min</div></td>
+        <td><div className='ago'>{moment(log.timestamp).fromNow(true)}</div></td>
       </tr>
     )
   }

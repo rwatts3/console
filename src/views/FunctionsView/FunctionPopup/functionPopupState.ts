@@ -1,7 +1,28 @@
 import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
 import {FunctionPopupState} from './FunctionPopup'
 import {keysChanged} from '../../../utils/change'
-export function getEmptyFunction(models: Model[]): ServerlessFunction {
+export function getEmptyFunction(models: Model[], functions: ServerlessFunction[]): ServerlessFunction {
+  const modelId = models[0].id
+
+  const bindings: FunctionBinding[] = ['TRANSFORM_ARGUMENT', 'PRE_WRITE', 'TRANSFORM_PAYLOAD']
+  // TODO continue when backend is ready
+  // const takenBindings = bindings
+  //   .map(binding => bindingTaken(modelId, binding, functions))
+  //
+  // let binding
+  //
+  // if (takenBindings[0] && takenBindings[1] && takenBindings[2]) {
+  //   binding = undefined
+  // } else if (!takenBindings[0]) {
+  //   binding = 'TRANSFORM_ARGUMENT'
+  // } else if (!takenBindings[1]) {
+  //   binding = 'PRE_WRITE'
+  // } else if (!takenBindings[2]) {
+  //   binding = 'TRANSFORM_PAYLOAD'
+  // }
+
+  const binding = 'TRANSFORM_ARGUMENT'
+
   return {
     id: '',
     name: '',
@@ -16,12 +37,16 @@ export function getEmptyFunction(models: Model[]): ServerlessFunction {
     logs: {
       edges: [],
     },
-    binding: 'TRANSFORM_ARGUMENT',
+    binding,
     operation: 'CREATE',
     stats: undefined,
     isActive: true,
-    modelId: models[0].id,
+    modelId,
   }
+}
+
+export function bindingTaken(modelId: string, binding: FunctionBinding, functions: ServerlessFunction[]) {
+  return functions.filter(fn => fn.model.id === modelId && fn.binding === binding)
 }
 
 const inlineCode = `module.exports = function (event) {

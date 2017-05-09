@@ -7,9 +7,12 @@ import Info from '../../../components/Info'
 interface Props {
   binding: FunctionBinding
   onChange: (binding: FunctionBinding) => void
+  argTaken: boolean
+  preTaken: boolean
+  payloadTaken: boolean
 }
 
-export default function RequestPipeline({binding, onChange}: Props) {
+export default function RequestPipeline({binding, onChange, argTaken, preTaken, payloadTaken}: Props) {
 
   const argActive = binding === 'TRANSFORM_ARGUMENT' as FunctionBinding
   const preActive = binding === 'PRE_WRITE' as FunctionBinding
@@ -37,11 +40,15 @@ export default function RequestPipeline({binding, onChange}: Props) {
         .label.active {
           @p: .blue;
         }
-        .step:hover .circle:not(.disabled):not(.active) :global(i) {
+        .step:hover .circle:not(.disabled):not(.active):not(.taken) :global(i) {
           @p: .o60;
         }
-        .step:hover .label:not(.disabled):not(.active) {
+        .step:hover .label:not(.disabled):not(.active):not(.taken) {
           @p: .blue;
+        }
+        .taken {
+          @p: .lightOrange;
+          cursor: no-drop;
         }
       `}</style>
       <Arrow />
@@ -57,10 +64,16 @@ export default function RequestPipeline({binding, onChange}: Props) {
       </div>
       <Info top customTip={
         <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}>
-          <Circle active={argActive}/>
-          <div className={cn('label', {active: argActive})}>TRANSFORM _ARGUMENT</div>
+          <Circle taken={argTaken} active={argActive}/>
+          <div className={cn('label', {active: argActive, taken: argTaken})}>TRANSFORM _ARGUMENT</div>
         </div>
-      }>In this hook you can transform the input data</Info>
+      }>
+        {argTaken ? (
+          'This hook is already being used by another function.'
+        ) : (
+          'In this hook you can transform the input data'
+        )}
+      </Info>
       <div className='step'>
         <Tip>Data Validation</Tip>
         <Arrow />
@@ -68,9 +81,15 @@ export default function RequestPipeline({binding, onChange}: Props) {
       <Info top customTip={
         <div className='step' onClick={() => onChange('PRE_WRITE')}>
           <Circle active={preActive}/>
-          <div className={cn('label', {active: preActive})}>PRE_WRITE</div>
+          <div className={cn('label', {active: preActive, taken: preTaken})}>PRE_WRITE</div>
         </div>
-      }>In this step you can perform validation or eg. charge a User on Stripe</Info>
+      }>
+        {argTaken ? (
+          'This hook is already being used by another function.'
+        ) : (
+          'In this step you can perform validation or eg. charge a User on Stripe'
+        )}
+      </Info>
       <Arrow />
       <Info top customTip={
         <div className='step'>
@@ -87,9 +106,15 @@ export default function RequestPipeline({binding, onChange}: Props) {
       <Info top customTip={
         <div className='step' onClick={() => onChange('TRANSFORM_PAYLOAD')}>
           <Circle active={payloadActive}/>
-          <div className={cn('label', {active: payloadActive})}>TRANSFORM _PAYLOAD</div>
+          <div className={cn('label', {active: payloadActive, taken: payloadTaken})}>TRANSFORM _PAYLOAD</div>
         </div>
-      }>This step allows you to transform the payload, eg. removing secret data</Info>
+      }>
+        {argTaken ? (
+          'This hook is already being used by another function.'
+        ) : (
+          'This step allows you to transform the payload, eg. removing secret data'
+        )}
+      </Info>
       <Arrow />
       <Info top customTip={
         <div className='step'>
@@ -133,11 +158,12 @@ interface CircleProps {
   active?: boolean
   disabled?: boolean
   onClick?: (e: any) => void
+  taken?: boolean
 }
 
-function Circle({active, disabled, onClick}: CircleProps) {
+function Circle({active, disabled, onClick, taken}: CircleProps) {
   return (
-    <div className={cn('circle', {active, disabled})} onClick={onClick}>
+    <div className={cn('circle', {active, disabled, taken})} onClick={onClick}>
       <style jsx>{`
       .circle {
         @p: .br100, .ba, .bw2, .bBlue, .o50, .flex, .itemsCenter, .justifyCenter, .pointer;
@@ -147,11 +173,16 @@ function Circle({active, disabled, onClick}: CircleProps) {
       .circle.active {
         @p: .bgBlue, .o100;
       }
-      .circle:not(.active):not(.disabled):hover {
+      .circle:not(.active):not(.disabled):not(.taken):hover {
         @p: .bgBlue;
       }
       .circle.disabled {
         @p: .o100, .bDarkBlue10;
+        cursor: no-drop;
+      }
+      .circle.taken {
+        @p: .o100;
+        border-color: $lightOrange !important;
         cursor: no-drop;
       }
       .circle :global(i) {
@@ -160,7 +191,7 @@ function Circle({active, disabled, onClick}: CircleProps) {
       .circle.active :global(i) {
         @p: .o100;
       }
-      .circle:not(.disabled):not(.active):hover :global(i) {
+      .circle:not(.disabled):not(.active):not(.taken):hover :global(i) {
         @p: .o60;
       }
       `}</style>
