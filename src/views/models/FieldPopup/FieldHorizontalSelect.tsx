@@ -13,6 +13,7 @@ interface Props {
   small?: boolean
   readOnly?: boolean
   className?: string
+  spread?: boolean
 }
 
 export default class FieldHorizontalSelect extends React.Component<Props, {}> {
@@ -20,15 +21,19 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
   render() {
 
     const {activeBackgroundColor, selectedIndex, onChange, choices, infos, small, readOnly, className} = this.props
+    const {spread} = this.props
     const inactiveTextColor = this.props.inactiveTextColor || $v.gray30
     const inactiveBackgroundColor = this.props.inactiveBackgroundColor || $v.gray04
 
     return (
-      <div className={cn('container', {'none-selected': selectedIndex === -1, small, readOnly}, className)}>
+      <div className={cn('container', {'none-selected': selectedIndex === -1, small, readOnly, spread}, className)}>
         <style jsx>{`
           .container {
             @inherit: .flex, .itemsCenter, .justifyCenter, .mv38, .relative, .ph16, .w100, .bbox;
             height: 42px;
+          }
+          .container.spread {
+            @p: .ph0;
           }
           .container.small {
             @p: .ma0;
@@ -64,15 +69,36 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
             height: 36px;
           }
 
+          .spread .element {
+            margin: 0;
+          }
+
+          .spread .outer-element {
+            @p: .flexAuto;
+            margin: 0 3px;
+          }
+
+          .spread .outer-element:nth-of-type(3) {
+            margin-right: 0;
+          }
+
           .element {
-            @inherit: .relative, .pointer, .br2, .f14, .fw6, .ttu, .nowrap, .z0;
+            @inherit: .relative, .pointer, .br2, .f14, .fw6, .ttu, .nowrap, .z0, .bgBlack04;
             margin: 0 -2px;
             padding: 10px 16px;
+          }
+
+          .element:not(.selected):hover {
+            background: $gray10 !important;
           }
 
           .element.selected {
             @p: .z2;
             padding: 12px 18px;
+          }
+
+          .element.selected :global(svg) {
+            fill: white !important;
           }
 
           .container.small .element {
@@ -89,7 +115,7 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
         `}</style>
         {choices.map((choice, i) => {
           return (
-            <div className='flex flexColumn justifyCenter'>
+            <div className='flex flexColumn justifyCenter outer-element'>
               <div
                 className={cn('element', {selected: selectedIndex === i})}
                 key={i}

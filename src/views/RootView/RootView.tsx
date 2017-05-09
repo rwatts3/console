@@ -29,6 +29,18 @@ class RootView extends React.Component<Props, {}> {
   render () {
     return (
       <div style={{ height: '100%' }}>
+        <style jsx global>{`
+          .butn {
+            @p: .br2, .buttonShadow, .pv12, .ph16, .f14, .fw6, .inlineFlex, .itemsCenter, .pointer;
+            letter-spacing: 0.3px;
+          }
+          .butn.primary {
+            @p: .bgGreen, .white;
+          }
+          .butn * + * {
+            @p: .ml10;
+          }
+        `}</style>
         <Helmet titleTemplate='%s | Graphcool'/>
         {this.props.children}
         <NotificationSystem ref='notificationSystem' />

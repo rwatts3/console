@@ -18,6 +18,7 @@ exports[`test ScalarListCell renders 1`] = `
         "boxShadow": "0 1px 7px rgba(0,0,0,.2)",
         "height": "auto",
         "left": "initial",
+        "overflow": "visible",
         "padding": 0,
         "position": "relative",
         "right": "initial",

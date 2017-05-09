@@ -32,7 +32,7 @@ export default class EnumEditor extends React.Component<Props, State> {
       <div className='enum-editor'>
         <style jsx={true}>{`
         .enum-editor {
-          @p: .flex, .itemsCenter;
+          @p: .flex, .itemsCenter, .flexWrap;
         }
         .value {
           @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10, .pointer, .flex, .itemsCenter;
