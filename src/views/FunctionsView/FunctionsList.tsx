@@ -47,7 +47,7 @@ class FunctionsList extends React.Component<Props, State> {
               <th></th>
               <th>Name</th>
               <th>Event Type</th>
-              <th>Last 24h Invocation</th>
+              <th>Last 30min Invocations</th>
               <th>Logs</th>
             </tr>
             </thead>

@@ -44,7 +44,6 @@ export default class LogComponent extends React.Component<Props, State> {
     const {log} = this.props
     const {expanded} = this.state
     const error = log.status === 'FAILURE'
-    console.log(log)
 
     return (
       <tr className={cn({error, expanded})} onClick={this.toggle}>

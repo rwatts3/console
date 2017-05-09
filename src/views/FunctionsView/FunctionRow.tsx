@@ -61,7 +61,7 @@ class FunctionRow extends React.Component<Props, State> {
             @p: .bgDarkBlue04;
           }
           td {
-            @p: .pa20, .pointer;
+            @p: .ph20, .pv10, .pointer;
             border-bottom: 2px solid rgba(23,42,58,.06);
           }
           .toggle {
@@ -85,7 +85,7 @@ class FunctionRow extends React.Component<Props, State> {
             @p: .f12, .fw6, .tr;
           }
           .good {
-            @p: .green;
+            @p: .green, .ml10;
           }
           .time {
             @p: .f14, .darkBlue50, .ml38;
@@ -136,9 +136,7 @@ class FunctionRow extends React.Component<Props, State> {
         <td>
           <Link to={link}>
             <div className='requests'>
-              {/*
-                <RequestGraph stats={fn.stats} />
-              */}
+              <RequestGraph stats={fn.stats} />
               <div className='good'>{fn.stats.requestCount}</div>
               <div className='time'>{moment(fn.stats.lastRequest).fromNow()}</div>
             </div>

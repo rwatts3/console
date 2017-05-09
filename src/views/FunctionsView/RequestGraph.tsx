@@ -21,37 +21,58 @@ export default class RequestGraph extends React.Component<Props, State> {
   }
 
   render() {
+    const {requestHistogram} = this.props.stats
+
+    const points = requestHistogram.map(value => ({
+      value,
+    }))
+
     return (
       <div>
-        <style jsx={true}>{`
-          div :global(.request-chart) {
-
+        <style jsx global>{`
+          .line-chart {
+            background: none;
+            box-sizing: border-box;
+          }
+          .line-chart__grid-x line,
+          .line-chart__grid-y line {
+            @p: .dn;
+          }
+          .line-chart__line {
+            stroke: $green;
+            stroke-width: 1px;
+          }
+          .line-chart__point {
+            @p: .dn;
+          }
+          .line-chart__label,
+          .line-chart__value {
+            fill: rgb( 55, 55, 55 );
+            font-size: 18px;
+          }
+          .line-chart__value {
+            @p: .dn;
+          }
+          .line-chart__value-bg {
+            @p: .dn;
           }
         `}</style>
         <LineChart
           lines={[
             {
-              points: [
-                { value: 0 },
-                { value: 1 },
-                { value: 2 },
-                { value: 3 },
-                { value: 4 },
-                { value: 3 },
-                { value: 2 },
-                { value: 1 },
-              ],
+              points,
             },
           ]}
-          width={300}
-          height={100}
+          width={200}
+          height={30}
           pointSize={1}
-          className='request-chart'
+          className='line-chart'
           labelSpacing={2}
           valueHeight={3}
           valueOffset={4}
-          valueWidth={8}
+          valueWidth={2}
           preserveAspectRatio='xMinYMid meet'
+          showLabels={false}
         />
       </div>
     )
