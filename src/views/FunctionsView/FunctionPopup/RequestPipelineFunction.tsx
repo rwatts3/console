@@ -44,6 +44,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           }
           input {
             @p: .hf32, .blue, .ml38;
+            line-height: 1.4;
           }
           .line {
             @p: .bgDarkBlue10, .ph16, .w100, .mv25;
@@ -65,7 +66,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           autoFocus
         />
         {!editing && (
-          <StepMarker active style={{marginTop: -30, marginLeft: -4}}>1</StepMarker>
+          <StepMarker active style={{marginTop: -32, marginLeft: -4}}>1</StepMarker>
         )}
         <div className='line' />
         <p>

@@ -6227,6 +6227,12 @@ react-style-proptype@^2.0.0, react-style-proptype@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/react-style-proptype/-/react-style-proptype-2.0.2.tgz#b4687990ac256deed89ee5777a3c58de5ac7bd15"
 
+react-svg-chart@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-svg-chart/-/react-svg-chart-4.0.0.tgz#9e5647b91bca9f51976e35f9f57a8abe8aa30a04"
+  dependencies:
+    svg-tween "^1.2.0"
+
 react-tagsinput@^3.12.0:
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/react-tagsinput/-/react-tagsinput-3.14.0.tgz#6729f8d5b313ed8fbb35496205ec2a97654af6bc"
@@ -7107,6 +7113,10 @@ supports-color@^3.1.0, supports-color@^3.1.1, supports-color@^3.1.2, supports-co
   dependencies:
     has-flag "^1.0.0"
 
+svg-arc-to-cubic-bezier@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/svg-arc-to-cubic-bezier/-/svg-arc-to-cubic-bezier-1.0.1.tgz#4494fb85708951ce9fd006ff1269cc171849c672"
+
 svg-loader@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/svg-loader/-/svg-loader-0.0.2.tgz#601ab2fdaa1dadae3ca9975b550de92a07e1d92b"
@@ -7114,6 +7124,18 @@ svg-loader@^0.0.2:
 svg-pan-zoom@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/svg-pan-zoom/-/svg-pan-zoom-3.5.0.tgz#3e661d9df829c5ee0895b8b2b1cadb373c7953b3"
+
+svg-shapes@^1.9.1:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/svg-shapes/-/svg-shapes-1.9.2.tgz#7156b28af15441e4371345f398e10d5cc5659747"
+
+svg-tween@^1.2.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/svg-tween/-/svg-tween-1.4.0.tgz#59823341597a5961e9b42086006d5a4db857e72d"
+  dependencies:
+    svg-arc-to-cubic-bezier "^1.0.0"
+    svg-shapes "^1.9.1"
+    tweening "^1.1.0"
 
 svgo-loader@^1.1.0, svgo-loader@^1.1.2:
   version "1.1.2"
@@ -7294,6 +7316,16 @@ tty-browserify@0.0.0:
 tunnel-agent@~0.4.1:
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.4.3.tgz#6373db76909fe570e08d73583365ed828a74eeeb"
+
+tween-functions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tween-functions/-/tween-functions-1.2.0.tgz#1ae3a50e7c60bb3def774eac707acbca73bbc3ff"
+
+tweening@^1.1.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tweening/-/tweening-1.2.0.tgz#7e1b4f4559c32ee350610d080797390b6883a3ed"
+  dependencies:
+    tween-functions "^1.2.0"
 
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"

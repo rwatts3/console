@@ -36,9 +36,13 @@ class FunctionsList extends React.Component<Props, State> {
           th {
             @p: .pa20, .f14, .fw6, .o30, .darkerBlue, .ttu, .tl;
           }
+          .empty {
+            @p: .tc, .pa60, .darkBlue50, .f20;
+          }
         `}</style>
-        <table>
-          <thead>
+        {functions.length > 0 ? (
+          <table>
+            <thead>
             <tr>
               <th></th>
               <th>Name</th>
@@ -46,13 +50,16 @@ class FunctionsList extends React.Component<Props, State> {
               <th>Last 24h Invocation</th>
               <th>Logs</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {functions.map(fn => (
               <FunctionRow key={fn.id} fn={fn} params={this.props.params} />
             ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        ) : (
+          <div className='empty'>There are no functions yet. Click "New Function" to define a new one.</div>
+        )}
       </div>
     )
   }

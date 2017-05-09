@@ -9,6 +9,7 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     app: [
+      'babel-polyfill',
       './src/main',
       './src/styles/codemirror.css',
       // './src/styles/graphiql.css',

@@ -12,6 +12,7 @@ import {showNotification} from '../../actions/notification'
 import {ShowNotificationCallback} from '../../types/utils'
 import {connect} from 'react-redux'
 import * as moment from 'moment'
+import RequestGraph from './RequestGraph'
 
 interface Props {
   fn: ServerlessFunction
@@ -135,6 +136,9 @@ class FunctionRow extends React.Component<Props, State> {
         <td>
           <Link to={link}>
             <div className='requests'>
+              {/*
+                <RequestGraph stats={fn.stats} />
+              */}
               <div className='good'>{fn.stats.requestCount}</div>
               <div className='time'>{moment(fn.stats.lastRequest).fromNow()}</div>
             </div>

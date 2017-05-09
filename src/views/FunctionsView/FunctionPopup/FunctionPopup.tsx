@@ -78,6 +78,13 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         props.node._webhookUrl = props.node.webhookUrl
         props.node.webhookUrl = ''
       }
+      if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
+        try {
+          this.props.node._webhookHeaders = JSON.parse(props.node.webhookHeaders)
+        } catch (e) {
+          //
+        }
+      }
     }
 
     this.state = {
@@ -399,7 +406,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
       auth0Id: auth0Id || fn.auth0Id,
-      headers: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
+      webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       inlineCode: isInline ? fn.inlineCode : '',
     }
     this.setLoading(true)
@@ -407,7 +414,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       new AddRequestPipelineMutationFunction(input),
       {
         onSuccess: () => {
-          console.log('DONE')
           this.close()
           this.setLoading(false)
         },
@@ -434,7 +440,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       new UpdateRequestPipelineMutationFunction(input),
       {
         onSuccess: () => {
-          console.log('DONE')
           this.close()
           this.setLoading(false)
         },
@@ -492,6 +497,7 @@ const MappedFunctionPopup = mapProps({
   project: props => props.viewer.project,
   models: props => props.viewer.project.models.edges.map(edge => edge.node),
   schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
+  node: props => props.node,
 })(withRouter(ConnectedFunctionPopup))
 
 export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
@@ -531,28 +537,36 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
       }
     `,
     node: () => Relay.QL`
-      fragment on Node {
-        ... on Function {
-          id
-          name
-          inlineCode
-          isActive
-          type
-          auth0Id
-          webhookHeaders
-          webhookUrl
-          ... on RequestPipelineMutationFunction {
-            binding
-            model {
-              id
-            }
-            operation
+      fragment on Function {
+        id
+        name
+        inlineCode
+        isActive
+        type
+        auth0Id
+        webhookHeaders
+        webhookUrl
+        ... on RequestPipelineMutationFunction {
+          binding
+          model {
+            id
           }
+          operation
         }
       }
     `,
   },
 })
+
+const fragment = Relay.QL`
+  fragment on RequestPipelineMutationFunction {
+    binding
+    model {
+      id
+    }
+    operation
+  }
+`
 
 const bindings = [
   'TRANSFORM_AGENT',

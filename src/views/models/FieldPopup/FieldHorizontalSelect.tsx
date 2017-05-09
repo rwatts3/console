@@ -14,6 +14,7 @@ interface Props {
   readOnly?: boolean
   className?: string
   spread?: boolean
+  disabledIndeces?: number[]
 }
 
 export default class FieldHorizontalSelect extends React.Component<Props, {}> {
@@ -21,7 +22,7 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
   render() {
 
     const {activeBackgroundColor, selectedIndex, onChange, choices, infos, small, readOnly, className} = this.props
-    const {spread} = this.props
+    const {spread, disabledIndeces} = this.props
     const inactiveTextColor = this.props.inactiveTextColor || $v.gray30
     const inactiveBackgroundColor = this.props.inactiveBackgroundColor || $v.gray04
 
@@ -112,14 +113,20 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
           .additional-info {
             @p: .flex, .tc, .justifyCenter, .mt10, .black50;
           }
+
+          .disabled {
+            @p: .o40;
+            cursor: no-drop;
+          }
         `}</style>
         {choices.map((choice, i) => {
+          const disabled = disabledIndeces.includes(i)
           return (
-            <div className='flex flexColumn justifyCenter outer-element'>
+            <div className={cn('flex flexColumn justifyCenter outer-element', {disabled})}>
               <div
                 className={cn('element', {selected: selectedIndex === i})}
                 key={i}
-                onClick={() => onChange(i, choice)}
+                onClick={() => !disabled && onChange(i, choice)}
                 style={{
                   backgroundColor: selectedIndex === i ? activeBackgroundColor : inactiveBackgroundColor,
                   color: selectedIndex === i ? 'white' : inactiveTextColor,
