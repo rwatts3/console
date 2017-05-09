@@ -17,6 +17,8 @@ interface Props {
   onIsInlineChange: (value: boolean) => void
   webhookUrl: string
   onChangeUrl: (url: string) => void
+  headers: {[key: string]: string}
+  onChangeHeaders: (headers: {[key: string]: string}) => void
 }
 
 interface State {
@@ -82,17 +84,6 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .pa20, .relative, .br2, .brLeft;
             background: #F5F5F5;
           }
-          .input:after {
-            @p: .absolute, .top50;
-            transform: translateY(-10px);
-            right: -12px;
-            content: "";
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 10px 0 10px 12px;
-            border-color: transparent transparent transparent #F5F5F5;
-          }
           .input :global(.CodeMirror-cursor) {
             @p: .dn;
           }
@@ -106,23 +97,23 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             color: rgba(0,0,0,.4);
           }
           .event-input {
-            @p: .darkBlue30, .ttu, .f14, .fw6, .flex, .itemsCenter;
+            @p: .darkBlue30, .ttu, .f14, .fw6, .flex, .itemsCenter, .mb10;
             letter-spacing: 0.3px;
           }
           .event-input span {
             @p: .mr10;
           }
           .function {
-            @p: .br2, .brRight, .bgDarkerBlue, .pa16, .flexAuto, .flex, .flexColumn;
+            @p: .br2, .brRight, .bgDarkerBlue, .flexAuto, .flex, .flexColumn;
           }
           .head {
-            @p: .flex, .justifyBetween, .flexFixed;
+            @p: .flex, .justifyBetween, .flexFixed, .pa16;
           }
           .head :global(i) {
             @p: .pointer;
           }
           .body {
-            @p: .pt10, .flex, .flexColumn, .flexAuto, .br2, .brRight;
+            @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight;
           }
         `}</style>
         <div className='input'>
@@ -167,7 +158,12 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             {isInline ? (
               <JsEditor onChange={onChange} value={value} />
             ) : (
-              <WebhookEditor onChangeUrl={this.props.onChangeUrl} url={webhookUrl} />
+              <WebhookEditor
+                onChangeUrl={this.props.onChangeUrl}
+                url={webhookUrl}
+                headers={this.props.headers}
+                onChangeHeaders={this.props.onChangeHeaders}
+              />
             )}
           </div>
         </div>

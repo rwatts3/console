@@ -90,6 +90,7 @@ export interface ServerlessFunction {
   webhookUrl: string
   _webhookUrl?: string
   webhookHeaders: string
+  _webhookHeaders?: {[key: string]: string}
   inlineCode?: string
   auth0Id?: string
   logs: RelayConnection<Log>

@@ -8,6 +8,9 @@ export function getEmptyFunction(models: Model[]): ServerlessFunction {
     type: 'AUTH0',
     webhookUrl: '',
     webhookHeaders: '',
+    _webhookHeaders: {
+      'Content-Type': 'application/json',
+    },
     inlineCode,
     auth0Id: '',
     logs: {
@@ -75,6 +78,14 @@ export function updateWebhookUrl(state: ServerlessFunction, webhookUrl: string):
   return {
     ...state,
     webhookUrl,
+  }
+}
+
+export function updateWebhookHeaders(state: ServerlessFunction, _webhookHeaders: {[key: string]: string}):
+ServerlessFunction {
+  return {
+    ...state,
+    _webhookHeaders,
   }
 }
 

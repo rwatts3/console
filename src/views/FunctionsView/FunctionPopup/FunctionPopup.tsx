@@ -11,6 +11,7 @@ import {Model, Project, ServerlessFunction} from '../../../types/types'
 import {
   didChange,
   getEmptyFunction, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
+  updateWebhookHeaders,
   updateWebhookUrl,
 } from './functionPopupState'
 import * as Codemirror from 'react-codemirror'
@@ -211,6 +212,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   onChangeUrl={this.update(updateWebhookUrl)}
                   webhookUrl={fn.webhookUrl}
                   schema={schema}
+                  headers={fn._webhookHeaders}
+                  onChangeHeaders={this.update(updateWebhookHeaders)}
                 />
               )}
             </div>
@@ -368,25 +371,35 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private submit = () => {
     this.setState({loading: true} as FunctionPopupState)
-    this.createExtendFunction()
-      .then((res: any) => {
-        const {url, fn} = res
-        console.log(res)
-        if (this.state.editing) {
-          this.updateFunction(url, fn)
-        } else {
-          this.create(url, fn)
-        }
-      })
+    if (this.state.isInline) {
+      this.createExtendFunction()
+        .then((res: any) => {
+          const {url, fn} = res
+          if (this.state.editing) {
+            this.updateFunction(url, fn)
+          } else {
+            this.create(url, fn)
+          }
+        })
+    } else {
+      const {webhookUrl} = this.state.fn
+      if (this.state.editing) {
+        this.updateFunction(webhookUrl)
+      } else {
+        this.create(webhookUrl)
+      }
+    }
   }
 
   private create(webhookUrl?: string, auth0Id?: string) {
-    const {fn} = this.state
+    const {fn, isInline} = this.state
     const input = {
       ...fn,
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
       auth0Id: auth0Id || fn.auth0Id,
+      headers: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
+      inlineCode: isInline ? fn.inlineCode : '',
     }
     this.setLoading(true)
     Relay.Store.commitUpdate(
@@ -411,6 +424,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       ...fn,
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
+      headers: fn.webhookHeaders,
       auth0Id: auth0Id || fn.auth0Id,
       functionId: fn.id,
     }
@@ -451,7 +465,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return 'RP'
     }
 
-    return 'CRON'
+    return 'RP'
   }
 
   private getIsInline(fn: ServerlessFunction| null): boolean {

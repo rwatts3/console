@@ -13,6 +13,8 @@ interface Props {
   onChangeUrl: (url: string) => void
   webhookUrl: string
   schema: string
+  headers: {[key: string]: string}
+  onChangeHeaders: (headers: {[key: string]: string}) => void
 }
 
 interface State {
@@ -76,6 +78,8 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onIsInlineChange={onIsInlineChange}
           webhookUrl={webhookUrl}
           onChangeUrl={onChangeUrl}
+          headers={this.props.headers}
+          onChangeHeaders={this.props.onChangeHeaders}
         />
       </div>
     )

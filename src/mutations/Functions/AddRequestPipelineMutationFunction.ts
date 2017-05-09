@@ -47,7 +47,7 @@ export default class AddRequestPipelineMutationFunction extends Relay.Mutation<P
   getVariables () {
     return pick(this.props, [
       'projectId', 'name', 'isActive', 'binding', 'modelId', 'operation',
-      'type', 'webhookUrl', 'headers', 'inlineCode', 'auth0Id',
+      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'headers',
     ])
   }
 }
