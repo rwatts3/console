@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {FunctionBinding, Model, RequestPipelineMutationOperation} from '../../../types/types'
+import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
 import RequestPipeline from './RequestPipeline'
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   onBindingChange: (binding: FunctionBinding) => void
   operation: RequestPipelineMutationOperation
   onChangeOperation: (operation: RequestPipelineMutationOperation) => void
+  functions: ServerlessFunction[]
 }
 
 export default function Trigger({
@@ -136,6 +137,9 @@ export default function Trigger({
         <RequestPipeline
           binding={binding}
           onChange={onBindingChange}
+          argTaken
+          preTaken
+          payloadTaken
         />
       </div>
     </div>

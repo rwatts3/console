@@ -19,7 +19,6 @@ class FunctionsList extends React.Component<Props, State> {
 
   render() {
     const {functions, project} = this.props
-    console.log(functions)
     return (
       <div className='functions'>
         <style jsx={true}>{`

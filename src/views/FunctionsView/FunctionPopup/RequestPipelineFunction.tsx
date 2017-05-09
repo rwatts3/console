@@ -2,6 +2,7 @@ import * as React from 'react'
 import {FunctionBinding} from '../../../types/types'
 import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
 import StepMarker from './StepMarker'
+import {getText} from './data'
 
 interface Props {
   name: string
@@ -72,8 +73,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
         <p>
           By creating a function at
           <span className='pre'>{binding}</span>
-          , you can manipulate your data before it get’s validated by our
-          Constraints and Permissions APIs. Use this to transform credit card numbers, slugs etc.
+          {getText(binding)}
         </p>
         <RequestPipelineFunctionInput
           schema={schema}

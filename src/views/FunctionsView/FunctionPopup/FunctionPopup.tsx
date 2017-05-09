@@ -43,6 +43,7 @@ interface Props {
   showNotification: ShowNotificationCallback
   project: Project
   node: ServerlessFunction
+  functions: ServerlessFunction[]
 }
 
 export interface FunctionPopupState {
@@ -91,10 +92,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       activeTabIndex: 0,
       editing: Boolean(props.node),
       showErrors: false,
-      fn: props.node || getEmptyFunction(props.models),
+      fn: props.node || getEmptyFunction(props.models, props.functions),
       loading: false,
       eventType: this.getEventTypeFromFunction(props.node),
-      isInline: this.getIsInline(props.node),
+      isInline: getIsInline(props.node),
       showTest: false,
     }
 
@@ -126,7 +127,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   render() {
-    const {models, schema} = this.props
+    const {models, schema, functions} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest} = this.state
 
     const changed = didChange(this.state.fn, this.props.node)
@@ -205,6 +206,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   onBindingChange={this.update(updateBinding)}
                   operation={fn.operation}
                   onChangeOperation={this.update(updateOperation)}
+                  functions={functions}
                 />
               )}
               {eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) && (
@@ -474,21 +476,20 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     return 'RP'
   }
 
-  private getIsInline(fn: ServerlessFunction| null): boolean {
-    if (fn) {
-      if (fn.inlineCode && fn.inlineCode.length > 0) {
-        return true
-      } else {
-        return false
-      }
-    }
-
-    return true
-  }
-
   private setLoading = (loading: boolean) => {
     this.setState({loading} as FunctionPopupState)
   }
+}
+export function getIsInline(fn: ServerlessFunction| null): boolean {
+  if (fn) {
+    if (fn.inlineCode && fn.inlineCode.length > 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  return true
 }
 
 const ConnectedFunctionPopup = connect(null, {showNotification})(FunctionPopup)
@@ -498,6 +499,7 @@ const MappedFunctionPopup = mapProps({
   models: props => props.viewer.project.models.edges.map(edge => edge.node),
   schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
   node: props => props.node,
+  functions: props => props.viewer.project.functions.edges.map(edge => edge.node),
 })(withRouter(ConnectedFunctionPopup))
 
 export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
@@ -589,11 +591,26 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
         project: projectByName(projectName: $projectName) {
           id
           name
-          models(first: 100) {
+          models(first: 1000) {
             edges {
               node {
                 id
                 name
+              }
+            }
+          }
+          functions(first: 1000) {
+            edges {
+              node {
+                id
+                ... on RequestPipelineMutationFunction {
+                  id
+                  binding
+                  model {
+                    id
+                    name
+                  }
+                }
               }
             }
           }

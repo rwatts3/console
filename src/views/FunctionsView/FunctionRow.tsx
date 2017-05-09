@@ -14,6 +14,7 @@ import {connect} from 'react-redux'
 import * as moment from 'moment'
 import RequestGraph from './RequestGraph'
 import * as cn from 'classnames'
+import {getIsInline} from './FunctionPopup/FunctionPopup'
 
 interface Props {
   fn: ServerlessFunction
@@ -45,8 +46,8 @@ class FunctionRow extends React.Component<Props, State> {
   render() {
     const {fn, params: {projectName}} = this.props
     const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
+    const isInline = getIsInline(fn)
 
-    console.log(fn)
     return (
       <tr key={fn.id} onClick={this.edit}>
         <style jsx={true}>{`
@@ -138,7 +139,7 @@ class FunctionRow extends React.Component<Props, State> {
         <td>
           <Link to={link}>
             <span className='name'>{fn.name}</span>
-            <span className='badge'>Webhook</span>
+            <span className='badge'>{isInline ? 'Inline' : 'Webhook'}</span>
           </Link>
         </td>
         <td>
@@ -234,6 +235,7 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
         id
         name
         isActive
+        inlineCode
         stats {
           errorCount
           lastRequest
