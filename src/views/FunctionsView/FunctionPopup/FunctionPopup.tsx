@@ -11,6 +11,7 @@ import {Model, Project, ServerlessFunction} from '../../../types/types'
 import {
   didChange,
   getEmptyFunction, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
+  updateQuery,
   updateWebhookHeaders,
   updateWebhookUrl,
 } from './functionPopupState'
@@ -55,13 +56,14 @@ export interface FunctionPopupState {
   eventType: EventType
   isInline: boolean
   showTest: boolean
+  sssModelName: string
 }
 
 const customModalStyle = {
   overlay: modalStyle.overlay,
   content: {
     ...modalStyle.content,
-    width: 700,
+    width: 788,
   },
 }
 
@@ -97,6 +99,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       eventType: this.getEventTypeFromFunction(props.node),
       isInline: getIsInline(props.node),
       showTest: false,
+      sssModelName: props.models[0].name,
     }
 
     // selectedModelName: null,
@@ -110,6 +113,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       selectedModelName: 'User',
       binding: 'PRE_WRITE',
     })
+    global['f'] = this
   }
 
   componentDidUpdate(prevProps: Props, prevState: FunctionPopupState) {
@@ -128,7 +132,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   render() {
     const {models, schema, functions} = this.props
-    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest, sssModelName} = this.state
 
     const changed = didChange(this.state.fn, this.props.node)
     const valid = isValid(this.state)
@@ -195,6 +199,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 <Step0
                   eventType={eventType}
                   onChangeEventType={this.handleEventTypeChange}
+                  sssModelName={sssModelName}
+                  onChangeSSSModel={this.handleChangeSSSModel}
+                  models={models}
                 />
               )}
               {activeTabIndex === 1 && !editing && eventType === 'RP' && (
@@ -209,7 +216,11 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   functions={functions}
                 />
               )}
-              {eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) && (
+              {
+                (
+                  eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) ||
+                  eventType === 'SSS' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 1))
+                ) && (
                 <RequestPipelineFunction
                   name={fn.name}
                   inlineCode={fn.inlineCode}
@@ -224,6 +235,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   headers={fn._webhookHeaders}
                   onChangeHeaders={this.update(updateWebhookHeaders)}
                   editing={editing}
+                  query={fn.query}
+                  onChangeQuery={this.update(updateQuery)}
+                  eventType={eventType}
+                  projectId={this.props.project.id}
                 />
               )}
             </div>
@@ -258,6 +273,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         </ModalDocs>
       </Modal>
     )
+  }
+
+  private handleChangeSSSModel = e => {
+    this.setState({sssModelName: e.target.value} as FunctionPopupState)
   }
 
   private closeTestPopup = () => {
@@ -316,6 +335,14 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     if (eventType === 'RP' && this.state.editing) {
       return ['Update Function']
+    }
+
+    if (eventType === 'SSS') {
+      if (this.state.editing) {
+        return ['Set Event Type']
+      } else {
+        return ['Set Event Type', 'Define Function']
+      }
     }
 
     return ['Set Event Type', 'Choose Trigger', 'Define Function']

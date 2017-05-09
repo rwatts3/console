@@ -42,6 +42,7 @@ export function getEmptyFunction(models: Model[], functions: ServerlessFunction[
     stats: undefined,
     isActive: true,
     modelId,
+    query: '',
   }
 }
 
@@ -111,6 +112,13 @@ ServerlessFunction {
   return {
     ...state,
     _webhookHeaders,
+  }
+}
+
+export function updateQuery(state: ServerlessFunction, query: string): ServerlessFunction {
+  return {
+    ...state,
+    query,
   }
 }
 

@@ -9,6 +9,8 @@ import WebhookEditor from './WebhookEditor'
 import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
 import StepMarker from './StepMarker'
+import {EventType} from './FunctionPopup'
+import { buildClientSchema, introspectionQuery } from 'graphql'
 
 interface Props {
   schema: string
@@ -21,12 +23,18 @@ interface Props {
   headers: {[key: string]: string}
   onChangeHeaders: (headers: {[key: string]: string}) => void
   editing: boolean
+  eventType: EventType
+  onChangeQuery: (query: string) => void
+  query: string
+  projectId: string
 }
 
 interface State {
   inputWidth: number
   fullscreen: boolean
+  ssschema: any
 }
+
 const modalStyling = {
   ...fieldModalStyle,
   content: {
@@ -45,6 +53,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     this.state = {
       inputWidth: 200,
       fullscreen: false,
+      ssschema: null,
     }
   }
   render() {
@@ -65,9 +74,41 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
 
     return this.renderComponent()
   }
+  componentDidMount() {
+    if (this.props.eventType === 'SSS') {
+      this.fetchSSSchema()
+    }
+  }
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.eventType === 'SSS') {
+      this.fetchSSSchema()
+    }
+  }
+  fetchSSSchema() {
+    const {projectId} = this.props
+    const endpointUrl = `${__BACKEND_ADDR__}/simple/v1/${projectId}`
+
+    return fetch(endpointUrl, { // tslint:disable-line
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-graphcool-source': 'console:playground',
+      },
+      body: JSON.stringify({query: introspectionQuery}),
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((res: any) => {
+        const ssschema = buildClientSchema(res.data)
+        this.setState({ssschema} as State)
+      })
+  }
   renderComponent() {
     const {inputWidth, fullscreen} = this.state
-    const {schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl} = this.props
+    const {schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl, eventType} = this.props
+    const {onChangeQuery} = this.props
+
     return (
       <div className={cn('request-pipeline-function-input', {fullscreen})}>
         <style jsx>{`
@@ -130,20 +171,32 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             hideArrow
             onResize={this.handleResize}
           >
-            <QueryEditor
-              value={schema}
-              readOnly
-              hideLineNumbers
-              hideFold
-              editorTheme='mdn-like'
-            />
+            {eventType === 'RP' && (
+              <QueryEditor
+                value={schema}
+                readOnly
+                hideLineNumbers
+                hideFold
+                editorTheme='mdn-like'
+              />
+            )}
+            {eventType === 'SSS' && (
+              <QueryEditor
+                value={this.props.query}
+                onEdit={onChangeQuery}
+                schema={this.state.ssschema}
+              />
+            )}
           </ResizableBox>
         </div>
         <div className='function'>
           <div className='head'>
             <div className='flex'>
               {!this.props.editing && (
-                <StepMarker style={{left: -20, top: -1, position: 'relative'}}>2</StepMarker>
+                <StepMarker style={{left: -20, top: -1, position: 'relative'}}>
+                  {eventType === 'RP' && '2'}
+                  {eventType === 'SSS' && '3'}
+                </StepMarker>
               )}
               <Toggle
                 choices={['Inline Code', 'Webhook']}

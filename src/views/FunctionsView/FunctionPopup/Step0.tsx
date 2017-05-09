@@ -4,10 +4,15 @@ import {Icon, $v} from 'graphcool-styles'
 import {EventType, eventTypes} from './FunctionPopup'
 import InfoBox from './InfoBox'
 import Info from '../../../components/Info'
+import Select from './Select'
+import {Model} from '../../../types/types'
 
 interface Props {
   eventType: EventType | null
   onChangeEventType: (eventType: EventType) => void
+  sssModelName: string
+  onChangeSSSModel: (e: any) => void
+  models: Model[]
 }
 
 interface State {
@@ -24,7 +29,7 @@ export default class Step0 extends React.Component<Props, State> {
   }
 
   render() {
-    const {eventType, onChangeEventType} = this.props
+    const {eventType, onChangeEventType, sssModelName, onChangeSSSModel, models} = this.props
     const choices = [
       <div className='flex itemsCenter'>
         <Icon
@@ -80,6 +85,9 @@ export default class Step0 extends React.Component<Props, State> {
             @p: .pl38, .pr38, .black50;
             margin-top: 8px;
           }
+          .sss-intro {
+            @p: .darkBlue50;
+          }
         `}</style>
         <div className='intro'>
           Choose the type of function, you want to define.
@@ -95,6 +103,20 @@ export default class Step0 extends React.Component<Props, State> {
           spread
           disabledIndeces={[2]}
         />
+        {eventType === 'SSS' && (
+          <div className='flex itemsCenter ml38 mb38'>
+            <div className='sss-intro'>Use one of your types to act as a trigger:</div>
+            <Select
+              value={sssModelName}
+              onChange={onChangeSSSModel}
+              className='ml38'
+            >
+              {models.map(model => (
+                <option value={model.name} key={model.name}>{model.name}</option>
+              ))}
+            </Select>
+          </div>
+        )}
         <div className='mh38 mb38'>
           <InfoBox>
             {this.getInfoText()}
@@ -110,6 +132,11 @@ export default class Step0 extends React.Component<Props, State> {
     if (eventType === 'RP') {
       return `The Request Pipeline let’s you transform data at each step of  of the data processing process.
       Read more about what you can do at each step.`
+    }
+
+    if (eventType === 'SSS') {
+      return `Server-side subscriptions give you the ability to react to events like mutations.
+      You could for example send emails everytime a user signs up.`
     }
 
     return 'You can’t change the function type after you created the function.'
