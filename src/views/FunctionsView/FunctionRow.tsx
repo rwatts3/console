@@ -13,6 +13,7 @@ import {ShowNotificationCallback} from '../../types/utils'
 import {connect} from 'react-redux'
 import * as moment from 'moment'
 import RequestGraph from './RequestGraph'
+import * as cn from 'classnames'
 
 interface Props {
   fn: ServerlessFunction
@@ -45,6 +46,7 @@ class FunctionRow extends React.Component<Props, State> {
     const {fn, params: {projectName}} = this.props
     const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
 
+    console.log(fn)
     return (
       <tr key={fn.id} onClick={this.edit}>
         <style jsx={true}>{`
@@ -61,7 +63,7 @@ class FunctionRow extends React.Component<Props, State> {
             @p: .bgDarkBlue04;
           }
           td {
-            @p: .ph20, .pv10, .pointer;
+            @p: .pointer;
             border-bottom: 2px solid rgba(23,42,58,.06);
           }
           .toggle {
@@ -106,10 +108,28 @@ class FunctionRow extends React.Component<Props, State> {
             left: 15px;
             top: -16px;
           }
+          td :global(a), td .toggle {
+            @p: .ph20, .pv16, .db;
+          }
+          td.less-padding :global(a) {
+            @p: .pv6;
+          }
+          .rp1 :global(.rp-step-1) {
+            opacity: 1;
+            fill: $blue;
+          }
+          .rp2 :global(.rp-step-2) {
+            opacity: 1;
+            fill: $blue;
+          }
+          .rp3 :global(.rp-step-3) {
+            opacity: 1;
+            fill: $blue;
+          }
         `}</style>
         <td>
           <div className='toggle'>
-            <NewToggleButton
+          <NewToggleButton
               defaultChecked={this.state.isActive}
               onChange={this.toggle}
             />
@@ -123,7 +143,14 @@ class FunctionRow extends React.Component<Props, State> {
         </td>
         <td>
           <Link to={link}>
-            <div className='event-type'>
+            <div className={cn(
+              'event-type',
+              {
+                'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
+                'rp2': fn.binding === 'PRE_WRITE',
+                'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
+              },
+            )}>
               <Icon
                 src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
                 color={$v.darkBlue50}
@@ -133,7 +160,7 @@ class FunctionRow extends React.Component<Props, State> {
             </div>
           </Link>
         </td>
-        <td>
+        <td className='less-padding'>
           <Link to={link}>
             <div className='requests'>
               <RequestGraph stats={fn.stats} />
