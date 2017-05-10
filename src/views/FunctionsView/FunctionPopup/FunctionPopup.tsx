@@ -471,7 +471,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private createSSSFunction(input) {
     this.setLoading(true)
-    console.log('creating a sss')
     Relay.Store.commitUpdate(
       new AddServerSideSubscriptionFunction(input),
       {
@@ -489,7 +488,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private createRPFunction(input) {
     this.setLoading(true)
-    console.log('creating a sss')
     Relay.Store.commitUpdate(
       new AddRequestPipelineMutationFunction(input),
       {
@@ -506,7 +504,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private updateSSSFunction(input) {
-    console.log('updating a sss')
     this.setLoading(true)
     Relay.Store.commitUpdate(
       new UpdateServerSideSubscriptionFunction(input),
@@ -525,7 +522,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private updateRPFunction(input) {
     this.setLoading(true)
-    console.log('updating a rp')
     Relay.Store.commitUpdate(
       new UpdateRequestPipelineMutationFunction(input),
       {
@@ -559,6 +555,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     if (fn.hasOwnProperty('binding')) {
       return 'RP'
+    }
+
+    if (fn.hasOwnProperty('query')) {
+      return 'SSS'
     }
 
     return 'RP'
