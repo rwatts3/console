@@ -9,8 +9,9 @@ import PopupHeader from '../../../components/PopupHeader'
 import PopupFooter from '../../../components/PopupFooter'
 import {Model, Project, ServerlessFunction} from '../../../types/types'
 import {
-  didChange,
+  didChange, getDefaultSSSQuery,
   getEmptyFunction, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
+  updateQuery,
   updateWebhookHeaders,
   updateWebhookUrl,
 } from './functionPopupState'
@@ -30,6 +31,8 @@ import UpdateRequestPipelineMutationFunction from '../../../mutations/Functions/
 import DeleteFunction from '../../../mutations/Functions/DeleteFunction'
 import {Icon, $v} from 'graphcool-styles'
 import TestPopup from './TestPopup'
+import AddServerSideSubscriptionFunction from '../../../mutations/Functions/AddServerSideSubscriptionFunction'
+import UpdateServerSideSubscriptionFunction from '../../../mutations/Functions/UpdateServerSideSubscriptionFunction'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -55,13 +58,14 @@ export interface FunctionPopupState {
   eventType: EventType
   isInline: boolean
   showTest: boolean
+  sssModelName: string
 }
 
 const customModalStyle = {
   overlay: modalStyle.overlay,
   content: {
     ...modalStyle.content,
-    width: 700,
+    width: 788,
   },
 }
 
@@ -97,6 +101,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       eventType: this.getEventTypeFromFunction(props.node),
       isInline: getIsInline(props.node),
       showTest: false,
+      sssModelName: props.models[0].name,
     }
 
     // selectedModelName: null,
@@ -110,6 +115,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       selectedModelName: 'User',
       binding: 'PRE_WRITE',
     })
+    global['f'] = this
   }
 
   componentDidUpdate(prevProps: Props, prevState: FunctionPopupState) {
@@ -124,11 +130,15 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         binding: this.state.fn.binding,
       })
     }
+
+    if (prevState.sssModelName !== this.state.sssModelName) {
+      this.update(updateQuery)(getDefaultSSSQuery(this.state.sssModelName))
+    }
   }
 
   render() {
     const {models, schema, functions} = this.props
-    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest, sssModelName} = this.state
 
     const changed = didChange(this.state.fn, this.props.node)
     const valid = isValid(this.state)
@@ -195,6 +205,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 <Step0
                   eventType={eventType}
                   onChangeEventType={this.handleEventTypeChange}
+                  sssModelName={sssModelName}
+                  onChangeSSSModel={this.handleChangeSSSModel}
+                  models={models}
                 />
               )}
               {activeTabIndex === 1 && !editing && eventType === 'RP' && (
@@ -209,7 +222,11 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   functions={functions}
                 />
               )}
-              {eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) && (
+              {
+                (
+                  eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) ||
+                  eventType === 'SSS' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 1))
+                ) && (
                 <RequestPipelineFunction
                   name={fn.name}
                   inlineCode={fn.inlineCode}
@@ -224,6 +241,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   headers={fn._webhookHeaders}
                   onChangeHeaders={this.update(updateWebhookHeaders)}
                   editing={editing}
+                  query={fn.query}
+                  onChangeQuery={this.update(updateQuery)}
+                  eventType={eventType}
+                  projectId={this.props.project.id}
                 />
               )}
             </div>
@@ -253,11 +274,16 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
               schema={schema}
               eventType={eventType}
               binding={fn.binding}
+              sssModelName={sssModelName}
             />
           </div>
         </ModalDocs>
       </Modal>
     )
+  }
+
+  private handleChangeSSSModel = e => {
+    this.setState({sssModelName: e.target.value} as FunctionPopupState)
   }
 
   private closeTestPopup = () => {
@@ -266,7 +292,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private footerButtonForTab = (index: number) => {
     const {editing, eventType} = this.state
-    if (editing || this.state.eventType === 'RP' && index === 2) {
+    if (editing || (this.state.eventType === 'RP' && index === 2) || (this.state.eventType === 'SSS' && index === 1)) {
       return (
         <div className='btn' onClick={this.showTestPopup}>
           <style jsx>{`
@@ -316,6 +342,14 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     if (eventType === 'RP' && this.state.editing) {
       return ['Update Function']
+    }
+
+    if (eventType === 'SSS') {
+      if (this.state.editing) {
+        return ['Set Event Type']
+      } else {
+        return ['Set Event Type', 'Define Function']
+      }
     }
 
     return ['Set Event Type', 'Choose Trigger', 'Define Function']
@@ -388,20 +422,37 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
           if (this.state.editing) {
             this.updateFunction(url, fn)
           } else {
-            this.create(url, fn)
+            this.createFunction(url, fn)
           }
         })
     } else {
       const {webhookUrl} = this.state.fn
       if (this.state.editing) {
-        this.updateFunction(webhookUrl)
+        this.updateRPFunction(webhookUrl)
       } else {
-        this.create(webhookUrl)
+        this.createRPFunction(webhookUrl)
       }
     }
   }
 
-  private create(webhookUrl?: string, auth0Id?: string) {
+  private updateFunction(webhookUrl?: string, auth0Id?: string) {
+    const {fn} = this.state
+    const input = {
+      ...fn,
+      projectId: this.props.project.id,
+      webhookUrl: webhookUrl || fn.webhookUrl,
+      headers: fn.webhookHeaders,
+      auth0Id: auth0Id || fn.auth0Id,
+      functionId: fn.id,
+    }
+    if (this.state.eventType === 'RP') {
+      return this.updateRPFunction(input)
+    } else if (this.state.eventType === 'SSS') {
+      return this.updateSSSFunction(input)
+    }
+  }
+
+  private createFunction(webhookUrl?: string, auth0Id?: string) {
     const {fn, isInline} = this.state
     const input = {
       ...fn,
@@ -411,6 +462,31 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       inlineCode: isInline ? fn.inlineCode : '',
     }
+    if (this.state.eventType === 'RP') {
+      return this.createRPFunction(input)
+    } else if (this.state.eventType === 'SSS') {
+      return this.createSSSFunction(input)
+    }
+  }
+
+  private createSSSFunction(input) {
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new AddServerSideSubscriptionFunction(input),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
+  private createRPFunction(input) {
     this.setLoading(true)
     Relay.Store.commitUpdate(
       new AddRequestPipelineMutationFunction(input),
@@ -427,16 +503,24 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     )
   }
 
-  private updateFunction(webhookUrl?: string, auth0Id?: string) {
-    const {fn} = this.state
-    const input = {
-      ...fn,
-      projectId: this.props.project.id,
-      webhookUrl: webhookUrl || fn.webhookUrl,
-      headers: fn.webhookHeaders,
-      auth0Id: auth0Id || fn.auth0Id,
-      functionId: fn.id,
-    }
+  private updateSSSFunction(input) {
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new UpdateServerSideSubscriptionFunction(input),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
+  private updateRPFunction(input) {
     this.setLoading(true)
     Relay.Store.commitUpdate(
       new UpdateRequestPipelineMutationFunction(input),
@@ -471,6 +555,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     if (fn.hasOwnProperty('binding')) {
       return 'RP'
+    }
+
+    if (fn.hasOwnProperty('query')) {
+      return 'SSS'
     }
 
     return 'RP'
@@ -554,6 +642,9 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
             id
           }
           operation
+        }
+        ... on ServerSideSubscriptionFunction {
+          query
         }
       }
     `,

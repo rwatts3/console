@@ -42,7 +42,22 @@ export function getEmptyFunction(models: Model[], functions: ServerlessFunction[
     stats: undefined,
     isActive: true,
     modelId,
+    query: getDefaultSSSQuery(models[0].name),
   }
+}
+
+export function getDefaultSSSQuery(modelName: string) {
+  return `\
+subscription {
+  ${modelName}(filter: {
+    mutation_in: [CREATED, UPDATED, DELETED]
+  }) {
+    updatedFields
+    node {
+      id
+    }
+  }
+}`
 }
 
 export function bindingTaken(modelId: string, binding: FunctionBinding, functions: ServerlessFunction[]) {
@@ -111,6 +126,13 @@ ServerlessFunction {
   return {
     ...state,
     _webhookHeaders,
+  }
+}
+
+export function updateQuery(state: ServerlessFunction, query: string): ServerlessFunction {
+  return {
+    ...state,
+    query,
   }
 }
 

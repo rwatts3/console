@@ -120,7 +120,7 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
           }
         `}</style>
         {choices.map((choice, i) => {
-          const disabled = disabledIndeces.includes(i)
+          const disabled = disabledIndeces && disabledIndeces.includes(i)
           return (
             <div className={cn('flex flexColumn justifyCenter outer-element', {disabled})}>
               <div

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
 import RequestPipeline from './RequestPipeline'
+import Select from './Select'
 
 interface Props {
   models: Model[]
@@ -54,23 +55,6 @@ export default function Trigger({
         .choose {
           @p: .flex, .itemsCenter, .ph10;
         }
-        select {
-          @p: .f20, .blue, .fw6, .tl, .relative;
-          border: 2px solid $blue50;
-          border-radius: 3px;
-          padding: 12px 16px;
-          padding-right: 44px;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
-          background-image: none;
-        }
-        .triangle {
-          @p: .absolute, .f12, .blue;
-          pointer-events: none;
-          top: 18px;
-          right: 15px;
-        }
         .steps {
           @p: .bgBlack02, .pb25;
         }
@@ -82,9 +66,6 @@ export default function Trigger({
         }
         .description {
           margin-left: 7px;
-        }
-        select, option {
-          font-family: 'Open Sans', sans-serif;
         }
       `}</style>
       <div className='intro'>
@@ -98,7 +79,7 @@ export default function Trigger({
           <div className='n active'>1</div>
           <div className='description'>Choose a type and mutation to hook in:</div>
           <div className='relative'>
-            <select
+            <Select
               value={selectedModelId}
               className='ml38'
               onChange={(e: any) => onModelChange(e.target.value)}
@@ -106,20 +87,18 @@ export default function Trigger({
               {models.map(model => (
                 <option key={model.id} value={model.id}>{model.name}</option>
               ))}
-            </select>
-            <div className='triangle'>▼</div>
+            </Select>
           </div>
           <div className='mh16'>is</div>
           <div className='relative'>
-            <select
+            <Select
               value={operation}
               onChange={(e: any) => onChangeOperation(e.target.value)}
             >
               {operations.map(operation => (
                 <option key={operation} value={operation}>{operation.toLowerCase() + 'd'}</option>
               ))}
-            </select>
-            <div className='triangle'>▼</div>
+            </Select>
           </div>
         </div>
       </div>

@@ -99,6 +99,7 @@ export interface ServerlessFunction {
   model?: Model
   operation?: RequestPipelineMutationOperation
   isActive: boolean
+  query?: string
 }
 
 export interface FunctionStats {

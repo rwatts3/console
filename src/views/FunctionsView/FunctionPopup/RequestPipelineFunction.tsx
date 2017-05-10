@@ -3,6 +3,8 @@ import {FunctionBinding} from '../../../types/types'
 import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
 import StepMarker from './StepMarker'
 import {getText} from './data'
+import {EventType} from './FunctionPopup'
+import N from './N'
 
 interface Props {
   name: string
@@ -18,6 +20,10 @@ interface Props {
   headers: {[key: string]: string}
   onChangeHeaders: (headers: {[key: string]: string}) => void
   editing: boolean
+  query: string
+  onChangeQuery: (query: string) => void
+  eventType: EventType
+  projectId: string
 }
 
 interface State {
@@ -36,7 +42,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
   render() {
     const {
       name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onIsInlineChange,
-      webhookUrl, onChangeUrl, schema, editing,
+      webhookUrl, onChangeUrl, schema, editing, eventType, onChangeQuery, query,
     } = this.props
     return (
       <div className='request-pipeline-function'>
@@ -67,14 +73,27 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           autoFocus
         />
         {!editing && (
-          <StepMarker active style={{marginTop: -32, marginLeft: -4}}>1</StepMarker>
+          <StepMarker active style={{marginTop: -36, marginLeft: -4}}>1</StepMarker>
         )}
         <div className='line' />
-        <p>
-          By creating a function at
-          <span className='pre'>{binding}</span>
-          {getText(binding)}
-        </p>
+        {eventType === 'RP' && (
+          <p>
+            By creating a function at
+            <span className='pre'>{binding}</span>
+            {getText(binding)}
+          </p>
+        )}
+        {eventType === 'SSS' && (
+          <p>
+            To create a server-side subscription, you need to
+            <N>1</N>
+            define a function name
+            <N>2</N>
+            define a trigger with some input (usually one or more mutations), as well as
+            <N>3</N>
+            write a function that get’s executed every time.
+          </p>
+        )}
         <RequestPipelineFunctionInput
           schema={schema}
           onChange={onInlineCodeChange}
@@ -86,6 +105,10 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           headers={this.props.headers}
           onChangeHeaders={this.props.onChangeHeaders}
           editing={this.props.editing}
+          eventType={eventType}
+          onChangeQuery={this.props.onChangeQuery}
+          query={this.props.query}
+          projectId={this.props.projectId}
         />
       </div>
     )
