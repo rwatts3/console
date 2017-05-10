@@ -101,6 +101,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       })
       .then((res: any) => {
         const ssschema = buildClientSchema(res.data)
+        // trim out mutationType and queryType
+        ssschema['_mutationType']['_fields'] = {}
+        ssschema['_queryType']['_fields'] = {}
         this.setState({ssschema} as State)
       })
   }
