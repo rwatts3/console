@@ -104,7 +104,7 @@ class ProjectInfo extends React.Component<Props, State> {
           }
 
           .actionButton {
-            @p: .pv10, .ph16, .f16, .nowrap, .br2, .pointer;
+            @p: .pv10, .ph16, .f16, .nowrap, .br2, .pointer, .mr16;
           }
           .actionButton.white {
             @p: .darkBlue70, .bgDarkBlue10;
