@@ -1,5 +1,21 @@
 import cuid from 'cuid'
 
+export function generateSSSTestEvent(modelName: string) {
+  return {
+    data: {
+      [modelName]: {
+        node: {
+          id: cuid(),
+        },
+        updatedFields: ['updatedAt'],
+      },
+    },
+    context: {
+      headers: {},
+    },
+  }
+}
+
 export function generateTestEvent(definition) {
   return {
     data: definition ? generateTestData(definition) : {},

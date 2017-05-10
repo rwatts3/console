@@ -6,8 +6,9 @@ import TestLog from './TestLog'
 import {FunctionBinding, Log} from '../../../types/types'
 import {smoothScrollTo} from '../../../utils/smooth'
 import DummyTestLog from './DummyTestLog'
-import {generateTestEvent} from '../../../utils/functionTest'
+import {generateSSSTestEvent, generateTestEvent} from '../../../utils/functionTest'
 import {EventType} from './FunctionPopup'
+import Loading from '../../../components/Loading/Loading'
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
 
 interface Props {
@@ -18,11 +19,13 @@ interface Props {
   schema: string
   binding: FunctionBinding
   eventType: EventType
+  sssModelName: string
 }
 
 interface State {
   input: string
   responses: TestResponse[]
+  loading: boolean
 }
 
 export interface TestResponse {
@@ -71,12 +74,13 @@ export default class TestPopup extends React.Component<Props, State> {
 
   private ref: any
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
       responses: [],
-      input: JSON.stringify(generateTestEvent(props.schema), null, 2),
+      input: this.getEventInput(props),
+      loading: false,
     }
   }
 
@@ -84,6 +88,21 @@ export default class TestPopup extends React.Component<Props, State> {
     if (this.props.schema !== nextProps.schema) {
       this.setState({input: JSON.stringify(generateTestEvent(nextProps.schema), null, 2)} as State)
     }
+
+    if (this.props.eventType !== nextProps.eventType) {
+      this.setState({input: this.getEventInput(nextProps)} as State)
+    }
+  }
+
+  getEventInput(props: Props) {
+    let inputData
+    if (props.eventType === 'RP') {
+      inputData = generateTestEvent(props.schema)
+    } else if (props.eventType === 'SSS') {
+      inputData = generateSSSTestEvent(props.sssModelName)
+    }
+
+    return JSON.stringify(inputData, null, 2)
   }
 
   render() {
@@ -96,9 +115,9 @@ export default class TestPopup extends React.Component<Props, State> {
         style={modalStyling}
         isOpen={isOpen}
       >
-        <style jsx={true}>{`
+        <style jsx>{`
           .test-popup {
-            @p: .pa60, .center, .flex, .justifyCenter;
+            @p: .pa60, .center, .flex, .justifyCenter, .relative;
           }
           .close-icon {
             @p: .absolute, .top38, .right38, .pointer;
@@ -143,6 +162,9 @@ export default class TestPopup extends React.Component<Props, State> {
           }
           .test-popup :global(.cross) {
             @p: .fixed, .top0, .right0, .pa60;
+          }
+          .loading {
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
           }
         `}</style>
         <div className='test-popup'>
@@ -224,9 +246,18 @@ export default class TestPopup extends React.Component<Props, State> {
               )}
             </div>
           </div>
+          {this.state.loading && (
+            <div className='loading'>
+              <Loading color={$v.white50} />
+            </div>
+          )}
         </div>
       </Modal>
     )
+  }
+
+  private setLoading(loading: boolean) {
+    this.setState({loading} as State)
   }
 
   private getTitle(eventType: EventType, binding: FunctionBinding) {
@@ -234,11 +265,16 @@ export default class TestPopup extends React.Component<Props, State> {
     if (eventType === 'RP') {
       return `${title} ${binding} hook point`
     }
+
+    if (eventType === 'SSS') {
+      return 'Test Server-Side Subscription'
+    }
   }
 
   private runTest = () => {
     const {webhookUrl, isInline} = this.props
     const {input} = this.state
+    this.setLoading(true)
     return fetch('https://bju4v1fpt2.execute-api.us-east-1.amazonaws.com/dev/execute/', {
       method: 'post',
       body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: input}),
@@ -254,6 +290,7 @@ export default class TestPopup extends React.Component<Props, State> {
           },
           this.scrollDown,
         )
+        this.setLoading(false)
       })
   }
 
