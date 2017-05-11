@@ -10,7 +10,7 @@ interface Props {
   modelId?: string
   type?: FunctionType
   webhookUrl: string
-  headers?: string
+  webhookHeaders?: string
   inlineCode?: string
   auth0Id?: string
   operation?: string
@@ -45,7 +45,7 @@ export default class UpdateRequestPipelineMutationFunction extends Relay.Mutatio
   getVariables () {
     return pick(this.props, [
       'name', 'isActive', 'binding', 'modelId', 'operation',
-      'type', 'webhookUrl', 'headers', 'inlineCode', 'auth0Id', 'functionId',
+      'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
     ])
   }
 }

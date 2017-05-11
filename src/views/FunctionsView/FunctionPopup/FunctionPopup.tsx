@@ -441,7 +441,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       ...fn,
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
-      headers: fn.webhookHeaders,
+      webhookHeaders: fn.webhookHeaders,
       auth0Id: auth0Id || fn.auth0Id,
       functionId: fn.id,
     }
@@ -610,6 +610,21 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
               node {
                 id
                 name
+              }
+            }
+          }
+          functions(first: 1000) {
+            edges {
+              node {
+                id
+                ... on RequestPipelineMutationFunction {
+                  id
+                  binding
+                  model {
+                    id
+                    name
+                  }
+                }
               }
             }
           }

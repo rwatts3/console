@@ -50,7 +50,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           .request-pipeline-function {
           }
           input {
-            @p: .hf32, .blue, .ml38;
+            @p: .hf32, .blue, .pl38, .w100;
             line-height: 1.4;
           }
           .line {

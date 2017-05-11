@@ -203,7 +203,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .z999;
           }
         `}</style>
-        <div className={cn('input', {sss: eventType === 'SSS'})}>
+        <div className={cn('input', {sss: eventType === 'SSS', rp: eventType === 'RP'})}>
           {eventType === 'RP' && (
             <div className='event-input'>
               <span>Event Input</span>
