@@ -64,7 +64,7 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
       </div>
       <Info top customTip={
         <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}>
-          <Circle taken={argTaken} active={argActive}/>
+          <Circle active={argActive}/>
           <div className={cn('label', {active: argActive, taken: argTaken})}>TRANSFORM _ARGUMENT</div>
         </div>
       }>

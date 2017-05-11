@@ -428,9 +428,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     } else {
       const {webhookUrl} = this.state.fn
       if (this.state.editing) {
-        this.updateRPFunction(webhookUrl)
+        this.updateFunction(webhookUrl)
       } else {
-        this.createRPFunction(webhookUrl)
+        this.createFunction(webhookUrl)
       }
     }
   }
@@ -539,7 +539,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private close = () => {
     const {router, params} = this.props
-    router.goBack()
+    router.push(`/${params.projectName}/functions`)
   }
 
   private errorInTab = (index: number) => false
