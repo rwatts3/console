@@ -46,7 +46,7 @@ class SchemaOverview extends React.Component<Props,State> {
       >
         <style jsx>{`
           .schema-overview {
-            @p: .bgDarkBlue, .w100, .flex, .flexColumn;
+            @p: .bgDarkBlue, .w100, .flex, .flexColumn, .overflowAuto;
             transition: .3s linear all;
           }
           .schema-overview.blur {

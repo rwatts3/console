@@ -62,7 +62,6 @@ export default class EnumEditor extends React.Component<Props, State> {
         {addingEnum && !readOnly && (
           <input
             type='text'
-            autoFocus
             value={enumValue}
             onChange={this.handleChangeEnumValue}
             placeholder='Add an enum value'
