@@ -114,9 +114,7 @@ class DangerZone extends React.Component<Props, State> {
             Reset Data
           </div>
         </div>
-        <div
-          className='actionRow bottomBorderForActionRow'
-        >
+        <div className='actionRow bottomBorderForActionRow'>
           <div>
             <div
               className={`fw3 f25 ${this.state.hoveredRowIndex === 1 ? 'solidOrange' : 'black50'}`}
