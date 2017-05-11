@@ -116,9 +116,9 @@ export default function Trigger({
         <RequestPipeline
           binding={binding}
           onChange={onBindingChange}
-          argTaken
-          preTaken
-          payloadTaken
+          argTaken={false}
+          preTaken={false}
+          payloadTaken={false}
         />
       </div>
     </div>

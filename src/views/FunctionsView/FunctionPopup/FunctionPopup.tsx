@@ -428,9 +428,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     } else {
       const {webhookUrl} = this.state.fn
       if (this.state.editing) {
-        this.updateRPFunction(webhookUrl)
+        this.updateFunction(webhookUrl)
       } else {
-        this.createRPFunction(webhookUrl)
+        this.createFunction(webhookUrl)
       }
     }
   }
@@ -441,7 +441,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       ...fn,
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
-      headers: fn.webhookHeaders,
+      webhookHeaders: fn.webhookHeaders,
       auth0Id: auth0Id || fn.auth0Id,
       functionId: fn.id,
     }
@@ -539,7 +539,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private close = () => {
     const {router, params} = this.props
-    router.goBack()
+    router.push(`/${params.projectName}/functions`)
   }
 
   private errorInTab = (index: number) => false
@@ -610,6 +610,21 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
               node {
                 id
                 name
+              }
+            }
+          }
+          functions(first: 1000) {
+            edges {
+              node {
+                id
+                ... on RequestPipelineMutationFunction {
+                  id
+                  binding
+                  model {
+                    id
+                    name
+                  }
+                }
               }
             }
           }
