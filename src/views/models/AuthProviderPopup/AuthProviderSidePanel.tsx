@@ -72,7 +72,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   render() {
     const {authProvider, errors} = this.state
     const text = texts[this.props.selectedType]
-    console.log('props in the prop', this.props)
 
     return (
       <div className='flex flex-column justify-between w-100'>

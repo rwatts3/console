@@ -27,6 +27,7 @@ interface State {
   editing: boolean
   loading: boolean
   showDeletePopup: boolean
+  showValuesError: boolean
 }
 
 interface Props {
@@ -39,7 +40,6 @@ interface Props {
   showDonePopup: () => void
   nextStep: () => Promise<any>
   gettingStartedState: GettingStartedState
-
 }
 
 const idField = {
@@ -68,6 +68,7 @@ class AddEnum extends React.Component<Props, State> {
       editing: Boolean(props.enumValue),
       loading: false,
       showDeletePopup: false,
+      showValuesError: false,
     }
   }
   componentDidMount() {
@@ -77,7 +78,7 @@ class AddEnum extends React.Component<Props, State> {
     document.removeEventListener('keydown', this.handleEsc)
   }
   render() {
-    const {showError, editing, loading, showDeletePopup, name, values} = this.state
+    const {showError, editing, loading, showDeletePopup, name, values, showValuesError} = this.state
     const {enumValue} = this.props
     let fields
     let permissions
@@ -95,10 +96,10 @@ class AddEnum extends React.Component<Props, State> {
             @p: .mh0, .mb16;
           }
           .header {
-            @p: .pv16, .flex, .itemsCenter, .bb, .bBlack10, .nowrap;
+            @p: .pv16, .flex, .itemsCenter, .bb, .bBlack10;
           }
           .badge {
-            @p: .bgLightOrange, .white, .relative, .f12, .fw6, .ttu, .top0, .br2, .selfStart;
+            @p: .bgLightOrange, .white, .relative, .f12, .fw6, .ttu, .top0, .br2, .selfStart, .nowrap;
             padding: 2px 4px;
             left: -4px;
           }
@@ -188,6 +189,11 @@ class AddEnum extends React.Component<Props, State> {
             enums={this.state.values}
             onChange={this.handleValuesChange}
           />
+          {showValuesError && (
+            <div className='error'>
+              Please add Enum Values
+            </div>
+          )}
         </div>
         <div className='footer'>
           {editing ? (
@@ -278,7 +284,10 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private save = () => {
-    const {name, editing} = this.state
+    const {name, editing, values} = this.state
+    if (values.length === 0) {
+      return this.setState({showValuesError: true} as State)
+    }
     if (name !== null && !validateEnumName(name)) {
       return this.setState({showError: true} as State)
     }

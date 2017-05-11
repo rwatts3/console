@@ -33,6 +33,7 @@ import {Icon, $v} from 'graphcool-styles'
 import TestPopup from './TestPopup'
 import AddServerSideSubscriptionFunction from '../../../mutations/Functions/AddServerSideSubscriptionFunction'
 import UpdateServerSideSubscriptionFunction from '../../../mutations/Functions/UpdateServerSideSubscriptionFunction'
+import {getEventTypeFromFunction} from '../../../utils/functions'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -75,6 +76,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     super(props)
 
     // prepare node that comes from the server
+
     if (props.node) {
       if (props.node.model) {
         props.node.modelId = props.node.model.id
@@ -85,7 +87,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       }
       if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
         try {
-          this.props.node._webhookHeaders = JSON.parse(props.node.webhookHeaders)
+          props.node._webhookHeaders = JSON.parse(props.node.webhookHeaders)
         } catch (e) {
           //
         }
@@ -98,7 +100,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       showErrors: false,
       fn: props.node || getEmptyFunction(props.models, props.functions),
       loading: false,
-      eventType: this.getEventTypeFromFunction(props.node),
+      eventType: getEventTypeFromFunction(props.node),
       isInline: getIsInline(props.node),
       showTest: false,
       sssModelName: props.models[0].name,
@@ -114,6 +116,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       operation: 'CREATE',
       selectedModelName: 'User',
       binding: 'PRE_WRITE',
+      includeFunctions: this.state.eventType === 'RP',
     })
     global['f'] = this
   }
@@ -128,6 +131,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         operation: this.state.fn.operation,
         selectedModelName: this.props.models.find(model => model.id === this.state.fn.modelId).name,
         binding: this.state.fn.binding,
+        includeFunctions: this.state.eventType === 'RP',
       })
     }
 
@@ -340,8 +344,12 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   private getTabs = () => {
     const {eventType} = this.state
 
-    if (eventType === 'RP' && this.state.editing) {
-      return ['Update Function']
+    if (eventType === 'RP') {
+      if (this.state.editing) {
+        return ['Update Function']
+      } else {
+        return ['Set Event Type', 'Choose Trigger', 'Define Function']
+      }
     }
 
     if (eventType === 'SSS') {
@@ -352,7 +360,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       }
     }
 
-    return ['Set Event Type', 'Choose Trigger', 'Define Function']
+    return ['Set Event Type']
   }
 
   private handleEventTypeChange = (eventType: EventType) => {
@@ -548,22 +556,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.setState({activeTabIndex: index} as FunctionPopupState)
   }
 
-  private getEventTypeFromFunction(fn: ServerlessFunction | null): EventType {
-    if (!fn) {
-      return null
-    }
-
-    if (fn.hasOwnProperty('binding')) {
-      return 'RP'
-    }
-
-    if (fn.hasOwnProperty('query')) {
-      return 'SSS'
-    }
-
-    return 'RP'
-  }
-
   private setLoading = (loading: boolean) => {
     this.setState({loading} as FunctionPopupState)
   }
@@ -587,7 +579,7 @@ const MappedFunctionPopup = mapProps({
   models: props => props.viewer.project.models.edges.map(edge => edge.node),
   schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
   node: props => props.node,
-  functions: props => props.viewer.project.functions.edges.map(edge => edge.node),
+  functions: props => props.viewer.project.functions ? props.viewer.project.functions.edges.map(edge => edge.node) : [],
 })(withRouter(ConnectedFunctionPopup))
 
 export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
@@ -597,6 +589,7 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
+    includeFunctions: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -613,7 +606,7 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
               }
             }
           }
-          functions(first: 1000) {
+          functions(first: 1000) @include(if: $includeFunctions) {
             edges {
               node {
                 id
@@ -665,16 +658,6 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     `,
   },
 })
-
-const fragment = Relay.QL`
-  fragment on RequestPipelineMutationFunction {
-    binding
-    model {
-      id
-    }
-    operation
-  }
-`
 
 const bindings = [
   'TRANSFORM_AGENT',
