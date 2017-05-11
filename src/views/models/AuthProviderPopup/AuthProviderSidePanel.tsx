@@ -24,7 +24,6 @@ interface Props {
   showNotification: ShowNotificationCallback
   forceFetchRoot: () => void
   anonymousPackage: PackageDefinition
-  isBeta: boolean
 }
 
 interface AuthProviderErrors {
@@ -72,7 +71,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
 
   render() {
     const {authProvider, errors} = this.state
-    const {isBeta} = this.props
     const text = texts[this.props.selectedType]
     console.log('props in the prop', this.props)
 
@@ -134,7 +132,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
             </div>
           </div>
           }
-          {isBeta && authProvider.type === 'anonymous-auth-provider' &&
+          {authProvider.type === 'anonymous-auth-provider' &&
             <div className='flex w-100 bg-black-70 justify-between white pa-25'>
               <div className='w-30 pr2 flex flex-column'>
                 <div className='b mb-16 white-50'>
@@ -158,7 +156,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
             </div>
           }
-          {isBeta && authProvider.type === 'anonymous-auth-provider' && (
+          {authProvider.type === 'anonymous-auth-provider' && (
             <div className='pa-25 flex flex-column fw1'>
               <style jsx={true}>{`
                 .btn {
