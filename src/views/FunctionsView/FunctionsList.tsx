@@ -79,9 +79,6 @@ export default Relay.createContainer(FunctionsListMapped, {
             node {
               id
               ${FunctionRow.getFragment('fn')}
-              ... on RequestPipelineMutationFunction {
-                binding
-              }
             }
           }
         }

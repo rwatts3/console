@@ -166,7 +166,6 @@ export default class WebhookEditor extends React.Component<Props, State> {
 
   private addRow = () => {
     const {currentName, currentValue} = this.state
-    console.log('adding row', currentName, currentValue)
     this.props.onChangeHeaders({
       ...this.props.headers,
       [currentName]: currentValue,

@@ -15,6 +15,7 @@ import * as moment from 'moment'
 import RequestGraph from './RequestGraph'
 import * as cn from 'classnames'
 import {getIsInline} from './FunctionPopup/FunctionPopup'
+import {getEventTypeFromFunction} from '../../utils/functions'
 
 interface Props {
   fn: ServerlessFunction
@@ -47,6 +48,7 @@ class FunctionRow extends React.Component<Props, State> {
     const {fn, params: {projectName}} = this.props
     const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
     const isInline = getIsInline(fn)
+    const eventType = getEventTypeFromFunction(fn)
 
     return (
       <tr key={fn.id} onClick={this.edit}>
@@ -144,21 +146,34 @@ class FunctionRow extends React.Component<Props, State> {
         </td>
         <td>
           <Link to={link}>
-            <div className={cn(
-              'event-type',
-              {
-                'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
-                'rp2': fn.binding === 'PRE_WRITE',
-                'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
-              },
-            )}>
-              <Icon
-                src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
-                color={$v.darkBlue50}
-                width={55}
-              />
-              <span>Request Pipeline</span>
-            </div>
+            {eventType === 'RP' && (
+              <div className={cn(
+                'event-type',
+                {
+                  'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
+                  'rp2': fn.binding === 'PRE_WRITE',
+                  'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
+                },
+              )}>
+                <Icon
+                  src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
+                  color={$v.darkBlue50}
+                  width={55}
+                />
+                <span>Request Pipeline</span>
+              </div>
+            )}
+            {eventType === 'SSS' && (
+              <div className='event-type'>
+                <Icon
+                  src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
+                  color={$v.darkBlue50}
+                  width={41}
+                  height={23}
+                />
+                <span>Server-side Subscription</span>
+              </div>
+            )}
           </Link>
         </td>
         <td className='less-padding'>
@@ -244,6 +259,9 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
         }
         ... on RequestPipelineMutationFunction {
           binding
+        }
+        ... on ServerSideSubscriptionFunction {
+          query
         }
       },
     `,
