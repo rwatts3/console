@@ -94,21 +94,21 @@ export default class ExampleProjectLeft extends React.Component<Props, {}> {
   }
 
   _subtitle = (): string => {
-    switch(this.props.projectType) {
+    switch (this.props.projectType) {
       case 'instagram': return '...in your terminal. '
       case 'blank': return '...in your terminal. So now you can start building your frontend around it.'
     }
   }
 
   _title = (): string => {
-    switch(this.props.projectType) {
+    switch (this.props.projectType) {
       case 'instagram': return 'Your first project is waiting'
       case 'blank': return 'A new blank project is ready'
     }
   }
 
   _info = (): JSX.Element => {
-    switch(this.props.projectType) {
+    switch (this.props.projectType) {
       case 'instagram': return (
         <div className='info'>
           <style jsx={true}>{`
@@ -140,7 +140,7 @@ export default class ExampleProjectLeft extends React.Component<Props, {}> {
   }
 
   _callToAction = (): JSX.Element => {
-    switch(this.props.projectType) {
+    switch (this.props.projectType) {
       case 'instagram': return (
         <div className='quickstart-logos'>
           <style jsx={true}>{`

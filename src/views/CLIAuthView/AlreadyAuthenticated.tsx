@@ -2,11 +2,7 @@ import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import {Button} from '../../components/Links'
 
-interface Props {
-
-}
-
-export default class AlreadyAuthenticated extends React.Component<Props, {}> {
+export default class AlreadyAuthenticated extends React.Component<{}, {}> {
 
   render() {
     return (
@@ -22,7 +18,7 @@ export default class AlreadyAuthenticated extends React.Component<Props, {}> {
           }
 
           .content {
-            @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .white, .mt96, .w100, .h100;
+            @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .white, .w100, .mh60;
             width: 530px;
           }
 
@@ -45,7 +41,8 @@ export default class AlreadyAuthenticated extends React.Component<Props, {}> {
           }
 
           .call-to-action {
-            @p: .flex, .flexRow, .itemsCenter, .justifyCenter, .mt25, .bgGreen, .white, .ttu, .fw6, .pv10, .ph16, .br2, .pointer;
+            @p: .flex, .flexRow, .itemsCenter, .justifyCenter, .mt25, .bgGreen, .white,
+              .ttu, .fw6, .pv10, .ph16, .br2, .pointer;
             max-width: 200px;
           }
 
@@ -70,7 +67,7 @@ export default class AlreadyAuthenticated extends React.Component<Props, {}> {
             <div className='close-now'>You can close this window now.</div>
             <div className='line' />
             <div className='info'>If you're stuck somewhere, you'll find all the answers in our Docs.</div>
-            <Button green className='mt25'>Frontend Quickstart</Button>
+            <Button green className='mt25'>Read the docs</Button>
           </div>
         </div>
       </div>

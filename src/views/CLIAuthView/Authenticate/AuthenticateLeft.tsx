@@ -1,35 +1,21 @@
 import * as React from 'react'
 import {A} from '../../../components/Links'
 
-interface State {
-
-}
-
 interface Props {
   className?: string
 }
 
-export default class AuthenticateLeft extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {}
-  }
+export default class AuthenticateLeft extends React.Component<Props, {}> {
 
   render() {
     return (
       <div
-        className={`authenticate-left ${this.props.className}`}
+        className={`${this.props.className}`}
       >
         <style jsx={true}>{`
 
-          .authenticate-left {
-
-          }
-
           .graphcool-cli-says {
-            @p: .white50, .mono;
+            @p: .white50, .mono, .ml20;
             font-size: 16px;
             font-weight: 500;
           }
@@ -48,7 +34,10 @@ export default class AuthenticateLeft extends React.Component<Props, State> {
           }
 
         `}</style>
-        <div className='graphcool-cli-says'>graphcool-cli says...</div>
+        <div className='flex itemsCenter'>
+          <img src={require('../../../assets/graphics/terminal.svg')}/>
+          <div className='graphcool-cli-says'>graphcool-cli says...</div>
+        </div>
         <div className='title'>You need to authenticate first.</div>
         <div className='subtitle'>
           We will create an account for you that handles your first project, and hopefully many more to come.
@@ -59,4 +48,3 @@ export default class AuthenticateLeft extends React.Component<Props, State> {
   }
 }
 
-//
