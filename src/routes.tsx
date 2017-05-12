@@ -6,7 +6,9 @@ import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
 import LoginView from './views/LoginView/LoginView'
-import CLIAuthView from './views/CLIAuthView/CLIAuthView'
+import CLIAuthView from './views/CLIAuthView/Authenticate/CLIAuthView'
+import ExampleProject from './views/CLIAuthView/ExampleProject/ExampleProject'
+import AlreadyAuthenticated from './views/CLIAuthView/AlreadyAuthenticated'
 import ProjectRootView from './views/ProjectRootView/ProjectRootView'
 import RootRedirectView from './views/ProjectRootView/RootRedirectView'
 import TokenRedirectView from './views/ProjectRootView/TokenRedirectView'
@@ -51,7 +53,6 @@ import PermissionsList from './views/PermissionsView/PermissionsList/Permissions
 import FunctionsView from './views/FunctionsView/FunctionsView'
 import {CreateFunctionPopup, EditFunctionPopup} from './views/FunctionsView/FunctionPopup/FunctionPopup'
 import {FunctionLogs} from './views/FunctionsView/FunctionLogs/FunctionLogs'
-
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
     query {
@@ -242,7 +243,7 @@ export default (
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
       <Route path='algolia' component={AlgoliaView} queries={ViewerQuery} render={render}/>
       <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
-    <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
+        <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
       </Route>
     </Route>
   </Route>

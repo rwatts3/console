@@ -17,6 +17,7 @@ interface Props {
   showNotification: ShowNotificationCallback
   initialScreen: 'login' | 'signUp'
   renderInElement?: boolean
+  successRedirect?: string
 }
 
 const ELEMENT_ID = 'auth0-lock'
@@ -28,18 +29,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
   _lock: any
 
-  constructor(props) {
-    super(props)
-
-    console.log(`Auth0LockWrapper - ${JSON.stringify(props)}`)
-  }
-
   componentDidMount() {
-    const options = this.props.renderInElement ? {container: ELEMENT_ID} : {}
-    console.log(`Show with options: ${JSON.stringify(options)}`)
-
-
-
     this._lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
       closable: false,
       additionalSignUpFields: [{
@@ -72,9 +62,9 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         await tracker.track(ConsoleEvents.Authentication.completed())
 
         if (new Date().getTime() - new Date(response.authenticateCustomer.user.createdAt).getTime() < 60000) {
-          window.location.pathname = '/after-signup'
+          window.location.pathname = this.props.successRedirect || '/after-signup'
         } else {
-          window.location.pathname = '/'
+          window.location.pathname = this.props.successRedirect || '/'
         }
 
       }

@@ -14,10 +14,16 @@ export default class AuthenticateRight extends React.Component<Props, {}> {
   render() {
     return (
       <div
-        className={this.props.className}
-      >
-        <Auth0LockWrapper renderInElement={true} initialScreen='login'/>
-
+        className={`authenticate-right ${this.props.className}`}
+      ><style jsx={true}>{`
+        .authenticate-right :global(.auth0-lock-header) {
+          @p: .dn;
+        }
+      `}</style>
+        <Auth0LockWrapper
+          renderInElement
+          successRedirect='/'
+          initialScreen='login'/>
       </div>
     )
   }
