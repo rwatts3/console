@@ -107,6 +107,7 @@ export default (
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render}/>
     <Route path='token' component={TokenRedirectView}/>
     <Route path='login' component={LoginView} render={render}/>
+    <Route path='auth' component={CLIAuthView} render={render}/>
     <Route path='reset-password' component={ResetPasswordView}/>
     <Route path='signup' component={SignUpView}/>
     <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
