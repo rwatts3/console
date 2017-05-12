@@ -6,7 +6,9 @@ import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
 import LoginView from './views/LoginView/LoginView'
-import CLIAuthView from './views/CLIAuthView/CLIAuthView'
+import CLIAuthView from './views/CLIAuthView/Authenticate/CLIAuthView'
+import ExampleProject from './views/CLIAuthView/ExampleProject/ExampleProject'
+
 import ProjectRootView from './views/ProjectRootView/ProjectRootView'
 import RootRedirectView from './views/ProjectRootView/RootRedirectView'
 import TokenRedirectView from './views/ProjectRootView/TokenRedirectView'
@@ -150,6 +152,7 @@ export default (
     {/*<Route path='token' component={TokenRedirectView}/>*/}
     {/*<Route path='login' component={LoginView} render={render}/>*/}
     <Route path='auth' component={CLIAuthView} render={render}/>
+    <Route path='init-example' component={ExampleProject} render={render}/>
     {/*<Route path='reset-password' component={ResetPasswordView}/>*/}
     {/*<Route path='signup' component={SignUpView}/>*/}
     {/*<Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />*/}

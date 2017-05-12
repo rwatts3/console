@@ -24,6 +24,7 @@ export default class AuthenticateLeft extends React.Component<Props, State> {
       >
         <style jsx={true}>{`
           .authenticate-left {
+
           }
 
           .graphcool-cli-says {
@@ -43,7 +44,6 @@ export default class AuthenticateLeft extends React.Component<Props, State> {
           .call-to-action {
             @p: .blue, .ttu, .f14, .fw6, .pointer;
           }
-
 
         `}</style>
         <div className='graphcool-cli-says'>graphcool-cli says...</div>

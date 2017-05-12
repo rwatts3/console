@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
-import AuthenticateLeft from './Authenticate/AuthenticateLeft'
-import AuthenticateRight from './Authenticate/AuthenticateRight'
+import AuthenticateLeft from './AuthenticateLeft'
+import AuthenticateRight from './AuthenticateRight'
 
 interface Props {
 }
@@ -34,7 +34,7 @@ export default class CLIAuthView extends React.Component<Props, State> {
             color={$v.green}
             width={34}
             height={40}
-            src={require('../../assets/icons/logo.svg')}
+            src={require('../../../assets/icons/logo.svg')}
           />
         </div>
         <div className='content'>
