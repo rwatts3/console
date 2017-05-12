@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import {A} from '../../../components/Links'
 
 interface State {
 
@@ -20,9 +20,10 @@ export default class AuthenticateLeft extends React.Component<Props, State> {
   render() {
     return (
       <div
-        className={this.props.className}
+        className={`authenticate-left ${this.props.className}`}
       >
         <style jsx={true}>{`
+
           .authenticate-left {
 
           }
@@ -34,34 +35,28 @@ export default class AuthenticateLeft extends React.Component<Props, State> {
           }
 
           .title {
-            @p: .f38, .fw6, .white;
+            @p: .f38, .fw6, .white, .mt38;
           }
 
           .subtitle {
-            @p: .f20, .white50;
+            @p: .f20, .white50, .mt38;
+            width: 540px;
           }
 
           .call-to-action {
-            @p: .blue, .ttu, .f14, .fw6, .pointer;
+            @p: .blue, .ttu, .f14, .fw6, .pointer, .mt25;
           }
 
         `}</style>
         <div className='graphcool-cli-says'>graphcool-cli says...</div>
         <div className='title'>You need to authenticate first.</div>
         <div className='subtitle'>
-          We will create an account for you that handles your first project, and hopefullu many more to come.
+          We will create an account for you that handles your first project, and hopefully many more to come.
         </div>
-        <div className='flex itemsCenter'>
-          <div className='call-to-action hover'>Learn more on our website</div>
-          <Icon
-            className='ml10'
-            src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
-            width={14}
-            height={11}
-            color={$v.blue}
-          />
-        </div>
+        <A className='mt38' target=''>Learn more on our website</A>
       </div>
     )
   }
 }
+
+//

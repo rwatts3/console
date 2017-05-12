@@ -1,12 +1,11 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
-
-interface State {
-
-}
+import {ProjectType} from './ExampleProject'
+import {Button} from '../../../components/Links'
 
 interface Props {
   className?: string
+  projectType: ProjectType
 }
 
 const quickstartLogos = [
@@ -17,13 +16,7 @@ const quickstartLogos = [
   require('graphcool-styles/icons/fill/androidLogoCentered.svg'),
 ]
 
-export default class ExampleProjectLeft extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {}
-  }
+export default class ExampleProjectLeft extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -44,7 +37,7 @@ export default class ExampleProjectLeft extends React.Component<Props, State> {
             }
 
             .content {
-              @p: .flex, .itemsCenter, .justifyCenter, .white, .w100, .h100;
+              @p: .flex, .justifyCenter, .white, .w100, .h100, .mv60;
             }
 
             .subtitle {
@@ -52,25 +45,13 @@ export default class ExampleProjectLeft extends React.Component<Props, State> {
               width: 420px;
             }
 
+            .subtitle-blank {
+              @p: .f20, .white50, .mt20;
+              width: 520px;
+            }
+
             a {
               @p: .blue, .noUnderline;
-            }
-
-            .info {
-              @p: .f16, .white60;
-              max-width: 530px;
-            }
-
-            .quickstartLogos {
-              @p: .flex, .flexRow, .itemsCenter, .mt38;
-            }
-
-            .quickstartLogo {
-              @p: .mr25;
-            }
-
-            .call-to-action {
-              @p: .flex, .flexRow, .itemsCenter, .bgGreen, .white, .ttu, .fw6, .pv10, .ph16, .br2;
             }
 
             .line {
@@ -90,9 +71,9 @@ export default class ExampleProjectLeft extends React.Component<Props, State> {
         </div>
         <div className='content'>
           <div>
-            <div className='title'>Your first project is waiting.</div>
-            <div className='subtitle mt96'>
-              ...in your terminal. You can also edit all aspects of it
+            <div className='title'>{this._title()}</div>
+            <div className={`${this.props.projectType === 'instagram' ? 'subtitle' : 'subtitle-blank'} mt96`}>
+              {this._subtitle()} You can also edit all aspects of it
               using our <a href='https://console.graph.cool'>console</a>.
             </div>
             <iframe
@@ -101,40 +82,101 @@ export default class ExampleProjectLeft extends React.Component<Props, State> {
               height='315'
               src='https://www.youtube.com/embed/SooujCyMHe4'
               frameBorder='0'
-              allowfullscreen
+              allowFullScreen
             />
             <div className='line'/>
-            <div className='info'>
-              Copy the endpoint from your terminal, get started with one of your frontend / mobile quickstart tutorials.
-            </div>
-            <div className='quickstartLogos'>
-              {quickstartLogos.map(logo => (
-                <div
-                  className='quickstartLogo'
-                >
-                <Icon
-                  key={logo}
-                  src={logo}
-                  width={30}
-                  height={30}
-                  color={$v.white50}
-                />
-                </div>
-              ))}
-              <div className='call-to-action'>
-                <div>Frontend Quickstart</div>
-                <Icon
-                  className='ml10'
-                  src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
-                  color={$v.white}
-                  width={14}
-                  height={11}
-                />
-              </div>
-            </div>
+            {this._info()}
+            {this._callToAction()}
           </div>
         </div>
       </div>
     )
   }
+
+  _subtitle = (): string => {
+    switch(this.props.projectType) {
+      case 'instagram': return '...in your terminal. '
+      case 'blank': return '...in your terminal. So now you can start building your frontend around it.'
+    }
+  }
+
+  _title = (): string => {
+    switch(this.props.projectType) {
+      case 'instagram': return 'Your first project is waiting'
+      case 'blank': return 'A new blank project is ready'
+    }
+  }
+
+  _info = (): JSX.Element => {
+    switch(this.props.projectType) {
+      case 'instagram': return (
+        <div className='info'>
+          <style jsx={true}>{`
+            .info {
+              @p: .f16, .white60;
+              max-width: 530px;
+            }
+          `}</style>
+          Copy the endpoint from your terminal, get started with one of your frontend / mobile quickstart tutorials.
+        </div>
+      )
+      case 'blank': return (
+        <div className='info'>
+          <style jsx={true}>{`
+            .info {
+              @p: .f16, .white60;
+              max-width: 530px;
+            }
+
+            a {
+              @p: .blue, .noUnderline;
+            }
+          `}</style>
+          If you don't know where to start, check out our <a href=''>Quickstart</a>. In all other cases, you'll find
+          all information you need in our documentation.
+        </div>
+      )
+    }
+  }
+
+  _callToAction = (): JSX.Element => {
+    switch(this.props.projectType) {
+      case 'instagram': return (
+        <div className='quickstart-logos'>
+          <style jsx={true}>{`
+
+            .quickstart-logos {
+              @p: .flex, .flexRow, .itemsCenter, .mt38;
+            }
+
+            .quickstart-logo {
+              @p: .mr25;
+            }
+
+            .call-to-action {
+              @p: .flex, .flexRow, .itemsCenter, .bgGreen, .white, .ttu, .fw6, .pv10, .ph16, .br2, .pointer;
+            }
+          `}</style>
+          {quickstartLogos.map(logo => (
+            <div
+              className='quickstart-logo'
+            >
+              <Icon
+                key={logo}
+                src={logo}
+                width={30}
+                height={30}
+                color={$v.white50}
+              />
+            </div>
+          ))}
+          <Button green>Frontend Quickstart</Button>
+        </div>
+      )
+      case 'blank': return (
+        <Button green className='mt25'>Read the docs</Button>
+      )
+    }
+  }
+
 }

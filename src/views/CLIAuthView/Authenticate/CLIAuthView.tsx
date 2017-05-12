@@ -3,13 +3,7 @@ import {Icon, $v} from 'graphcool-styles'
 import AuthenticateLeft from './AuthenticateLeft'
 import AuthenticateRight from './AuthenticateRight'
 
-interface Props {
-}
-
-interface State {
-}
-
-export default class CLIAuthView extends React.Component<Props, State> {
+export default class CLIAuthView extends React.Component<{}, {}> {
 
   render () {
     return (
@@ -17,17 +11,14 @@ export default class CLIAuthView extends React.Component<Props, State> {
         <style jsx={true}>{`
 
           .cli-auth-view {
-            @p: .w100, .h100;
+            @p: .w100, .fixed, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter, .white;
             background-image: radial-gradient(circle at 49% 49%, #172a3a, #0f202d);
           }
 
           .logo {
-            @p: .pl60, .pt60;
+            @p: .absolute, .left0, .top0, .pl60, .pt60;
           }
 
-          .content {
-            @p: .flex, .itemsCenter, .justifyCenter, .white, .mt96, .w100, .h100;
-          }
         `}</style>
         <div className='logo'>
           <Icon
@@ -37,12 +28,8 @@ export default class CLIAuthView extends React.Component<Props, State> {
             src={require('../../../assets/icons/logo.svg')}
           />
         </div>
-        <div className='content'>
-          <AuthenticateLeft
-            className=''
-          />
-          <AuthenticateRight/>
-        </div>
+        <AuthenticateLeft className='mr60' />
+        <AuthenticateRight className='ml60' />
       </div>
     )
   }

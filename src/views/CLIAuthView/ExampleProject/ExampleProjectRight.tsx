@@ -1,30 +1,21 @@
 import * as React from 'react'
-import * as CodeMirror from 'react-codemirror'
+import {ProjectType} from './ExampleProject'
 const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor').QueryEditor
 
-interface State {
-
-}
-
 interface Props {
+  projectType: ProjectType
 }
 
-export default class ExampleProjectRight extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {}
-  }
+export default class ExampleProjectRight extends React.Component<Props, {}> {
 
   render() {
     return (
       <div className='example-project-right'>
         <style jsx={true}>{`
           .example-project-right {
-            @p: .flex, .flexColumn, .pl38, .pr60;
+            @p: .flex, .flexColumn, .pl38, .pr60, .flexFixed;
             background-color: #0f202d;
-            width: 536px;
+            max-width: 536px;
           }
 
           .title {
@@ -48,11 +39,13 @@ export default class ExampleProjectRight extends React.Component<Props, State> {
           }
 
           .editor {
-            @p: .mv38;
-            background-color: #172a3a;
+            @p: .mv38, .bgDarkBlue;
             box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
           }
 
+          .editor :global(.CodeMirror), .editor :global(.CodeMirror-gutters) {
+            background: none;
+          }
         `}</style>
         <div className='title'>How to use our CLI</div>
         <div className='subtitle'>
@@ -62,7 +55,8 @@ export default class ExampleProjectRight extends React.Component<Props, State> {
 
         <div className='editor'>
           <QueryEditor
-            value={instagramExampleProjectFileContents}
+            value={this.props.projectType === 'instagram' ?
+              instagramExampleProjectFileContents : blankExampleProjectFileContents}
             readOnly={true}
           />
         </div>
@@ -75,6 +69,36 @@ export default class ExampleProjectRight extends React.Component<Props, State> {
     )
   }
 }
+
+const blankExampleProjectFileContents = `\
+# project: cj2lteo728kgy0107l51zmy8y
+# version: 1
+
+type File implements Node {
+  contentType: String!
+  createdAt: DateTime!
+  id: ID! @isUnique
+  name: String!
+  secret: String! @isUnique
+  size: Int!
+  updatedAt: DateTime!
+  url: String! @isUnique
+}
+
+type Post implements Node {
+  createdAt: DateTime!
+  description: String!
+  id: ID! @isUnique
+  imageUrl: String!
+  updatedAt: DateTime!
+}
+
+type User implements Node {
+  createdAt: DateTime!
+  id: ID! @isUnique
+  updatedAt: DateTime!
+`
+
 
 const instagramExampleProjectFileContents = `\
 # project: cj2lteo728kgy0107l51zmy8y
