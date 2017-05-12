@@ -275,7 +275,7 @@ export default class TestPopup extends React.Component<Props, State> {
     const {webhookUrl, isInline} = this.props
     const {input} = this.state
     this.setLoading(true)
-    return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute', {
+    return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
       method: 'post',
       body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: input}),
     })
