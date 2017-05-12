@@ -16,7 +16,10 @@ import {ConsoleEvents} from 'graphcool-metrics'
 interface Props {
   showNotification: ShowNotificationCallback
   initialScreen: 'login' | 'signUp'
+  renderInElement?: boolean
 }
+
+const ELEMENT_ID = 'auth0-lock'
 
 interface State {
 }
@@ -27,6 +30,15 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
+
+    console.log(`Auth0LockWrapper - ${JSON.stringify(props)}`)
+  }
+
+  componentDidMount() {
+    const options = this.props.renderInElement ? {container: ELEMENT_ID} : {}
+    console.log(`Show with options: ${JSON.stringify(options)}`)
+
+
 
     this._lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
       closable: false,
@@ -46,6 +58,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         params: {scope: 'openid email name user_metadata'},
       },
       initialScreen: this.props.initialScreen,
+      container: ELEMENT_ID,
     })
 
     this._lock.on('authenticated', (authResult) => {
@@ -77,9 +90,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         onFailure,
       })
     })
-  }
 
-  componentDidMount() {
     this._lock.show()
   }
 
@@ -88,9 +99,11 @@ class Auth0LockWrapper extends React.Component<Props, State> {
   }
 
   render() {
-    return (
-      <div className={$p.dn}/>
-    )
+    return this.props.renderInElement ? (
+        <div id={ELEMENT_ID} className='' />
+      ) : (
+        <div className={$p.dn}/>
+      )
   }
 }
 

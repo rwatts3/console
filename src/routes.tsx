@@ -6,6 +6,7 @@ import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
 import LoginView from './views/LoginView/LoginView'
+import CLIAuthView from './views/CLIAuthView/CLIAuthView'
 import ProjectRootView from './views/ProjectRootView/ProjectRootView'
 import RootRedirectView from './views/ProjectRootView/RootRedirectView'
 import TokenRedirectView from './views/ProjectRootView/TokenRedirectView'
@@ -146,103 +147,103 @@ const render = ({error, props, routerProps, element, ...rest}) => {
 export default (
   <Route path='/' component={RootView}>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render}/>
-    <Route path='token' component={TokenRedirectView}/>
-    <Route path='login' component={LoginView} render={render}/>
+    {/*<Route path='token' component={TokenRedirectView}/>*/}
+    {/*<Route path='login' component={LoginView} render={render}/>*/}
     <Route path='auth' component={CLIAuthView} render={render}/>
-    <Route path='reset-password' component={ResetPasswordView}/>
-    <Route path='signup' component={SignUpView}/>
-    <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
-    <Route path='showroom' component={ShowRoom}/>
-    <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
-      <IndexRedirect to='schema'/>
-      <Redirect from='settings' to='settings/general' />
-      <Route path='token' component={TokenRedirectView}/>
-      <Route path='settings' component={Settings} render={render}>
-        <Route path='general' component={General} queries={ViewerQuery} render={render} />
-        <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
-        <Route path='export' component={Export} queries={ViewerQuery} render={render} />
-        <Route path='billing' component={Billing} queries={ViewerQuery} render={render} >
-          <Route path='change-plan/:plan' component={ChangePricingPlan} render={render} />
-          <Route path='confirm-plan/:plan' component={ConfirmPricingPlan} queries={ViewerQuery} render={render} />
-        </Route>
-        <Route path='team' component={Team} queries={ViewerQuery} render={render} />
-      </Route>
-      <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
-      <Route path='functions' component={FunctionsView} queries={ViewerQuery} render={render}>
-        <Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render} />
-        <Route
-          path=':id/logs'
-          component={FunctionLogs}
-          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-          render={render}
-        />
-        <Route
-          path=':id/edit'
-          component={EditFunctionPopup}
-          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-          render={render}
-        />
-      </Route>
-      <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
-        <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>
-        <IndexRedirect to='settings'/>
-      </Route>
-      <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>
-        <Route path='all' component={null} render={render} />
-        <Route path='types' component={null} render={render} />
-        <Route path='interfaces' component={null} render={render} />
-        <Route path='enums' component={null} render={render}>
-          <Route path='edit/:enumName' component={null} render={render} />
-        </Route>
-        <Route path='relations'>
-          <Route path='create' component={RelationPopup} queries={ViewerQuery}  render={render}/>
-          <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>
-        </Route>
-        <Route path=':modelName'>
-          <Route path='edit' component={null} render={render} />
-          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />
-          <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
-        </Route>
-      </Route>
-      <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
-      <Route path='models'>
-        <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
-        <Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render}/>
-        <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render}/>
-      </Route>
-      <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
-        <IndexRoute component={PermissionsList} />
-        <Route path='relations' component={AllRelationPermissionsList}>
-          <Route
-            path=':relationName/edit/:id'
-            component={EditRelationPermissionPopup}
-            queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-            render={render}
-          />
-          <Route
-            path=':relationName/create'
-            component={AddRelationPermissionPopup}
-            queries={ViewerQuery}
-            render={render}
-          />
-        </Route>
-        <Route component={PermissionsList}>
-          <Route
-            path=':modelName/edit/:id'
-            component={EditPermissionPopup}
-            queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-            render={render}
-          />
-          <Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render}/>
-        </Route>
-      </Route>
-      <Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>
-      <Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>
-      <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
-      <Route path='algolia' component={AlgoliaView} queries={ViewerQuery} render={render}/>
-      <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
-        <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
-      </Route>
-    </Route>
+    {/*<Route path='reset-password' component={ResetPasswordView}/>*/}
+    {/*<Route path='signup' component={SignUpView}/>*/}
+    {/*<Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />*/}
+    {/*<Route path='showroom' component={ShowRoom}/>*/}
+    {/*<Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>*/}
+      {/*<IndexRedirect to='schema'/>*/}
+      {/*<Redirect from='settings' to='settings/general' />*/}
+      {/*<Route path='token' component={TokenRedirectView}/>*/}
+      {/*<Route path='settings' component={Settings} render={render}>*/}
+        {/*<Route path='general' component={General} queries={ViewerQuery} render={render} />*/}
+        {/*<Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />*/}
+        {/*<Route path='export' component={Export} queries={ViewerQuery} render={render} />*/}
+        {/*<Route path='billing' component={Billing} queries={ViewerQuery} render={render} >*/}
+          {/*<Route path='change-plan/:plan' component={ChangePricingPlan} render={render} />*/}
+          {/*<Route path='confirm-plan/:plan' component={ConfirmPricingPlan} queries={ViewerQuery} render={render} />*/}
+        {/*</Route>*/}
+        {/*<Route path='team' component={Team} queries={ViewerQuery} render={render} />*/}
+      {/*</Route>*/}
+      {/*<Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>*/}
+      {/*<Route path='functions' component={FunctionsView} queries={ViewerQuery} render={render}>*/}
+        {/*<Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render} />*/}
+        {/*<Route*/}
+          {/*path=':id/logs'*/}
+          {/*component={FunctionLogs}*/}
+          {/*queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}*/}
+          {/*render={render}*/}
+        {/*/>*/}
+        {/*<Route*/}
+          {/*path=':id/edit'*/}
+          {/*component={EditFunctionPopup}*/}
+          {/*queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}*/}
+          {/*render={render}*/}
+        {/*/>*/}
+      {/*</Route>*/}
+      {/*<Route path='account' component={AccountView} queries={ViewerQuery} render={render}>*/}
+        {/*<Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>*/}
+        {/*<IndexRedirect to='settings'/>*/}
+      {/*</Route>*/}
+      {/*<Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>*/}
+        {/*<Route path='all' component={null} render={render} />*/}
+        {/*<Route path='types' component={null} render={render} />*/}
+        {/*<Route path='interfaces' component={null} render={render} />*/}
+        {/*<Route path='enums' component={null} render={render}>*/}
+          {/*<Route path='edit/:enumName' component={null} render={render} />*/}
+        {/*</Route>*/}
+        {/*<Route path='relations'>*/}
+          {/*<Route path='create' component={RelationPopup} queries={ViewerQuery}  render={render}/>*/}
+          {/*<Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>*/}
+        {/*</Route>*/}
+        {/*<Route path=':modelName'>*/}
+          {/*<Route path='edit' component={null} render={render} />*/}
+          {/*<Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />*/}
+          {/*<Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>*/}
+        {/*</Route>*/}
+      {/*</Route>*/}
+      {/*<Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />*/}
+      {/*<Route path='models'>*/}
+        {/*<IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>*/}
+        {/*<Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render}/>*/}
+        {/*<Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render}/>*/}
+      {/*</Route>*/}
+      {/*<Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>*/}
+        {/*<IndexRoute component={PermissionsList} />*/}
+        {/*<Route path='relations' component={AllRelationPermissionsList}>*/}
+          {/*<Route*/}
+            {/*path=':relationName/edit/:id'*/}
+            {/*component={EditRelationPermissionPopup}*/}
+            {/*queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}*/}
+            {/*render={render}*/}
+          {/*/>*/}
+          {/*<Route*/}
+            {/*path=':relationName/create'*/}
+            {/*component={AddRelationPermissionPopup}*/}
+            {/*queries={ViewerQuery}*/}
+            {/*render={render}*/}
+          {/*/>*/}
+        {/*</Route>*/}
+        {/*<Route component={PermissionsList}>*/}
+          {/*<Route*/}
+            {/*path=':modelName/edit/:id'*/}
+            {/*component={EditPermissionPopup}*/}
+            {/*queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}*/}
+            {/*render={render}*/}
+          {/*/>*/}
+          {/*<Route path=':modelName/create' component={AddPermissionPopup} queries={ViewerQuery} render={render}/>*/}
+        {/*</Route>*/}
+      {/*</Route>*/}
+      {/*<Route path='actions' component={ActionsView} queries={ViewerQuery} render={render}/>*/}
+      {/*<Route path='playground' component={PlaygroundView} queries={ViewerQuery} render={render}/>*/}
+      {/*<Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>*/}
+      {/*<Route path='algolia' component={AlgoliaView} queries={ViewerQuery} render={render}/>*/}
+      {/*<Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>*/}
+    {/*<Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />*/}
+      {/*</Route>*/}
+    {/*</Route>*/}
   </Route>
 )
