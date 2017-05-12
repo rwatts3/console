@@ -381,7 +381,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {fn: {inlineCode}} = this.state
     const authToken = cookiestore.get('graphcool_auth_token')
 
-    return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/create', {
+    return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/create/', {
       method: 'post',
       body: JSON.stringify({code: inlineCode, authToken}),
     })
