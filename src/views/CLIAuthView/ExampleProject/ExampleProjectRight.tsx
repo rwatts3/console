@@ -74,7 +74,7 @@ export default class ExampleProjectRight extends React.Component<Props, {}> {
 }
 
 const blankExampleProjectFileContents = `\
-# project: cj2lteo728kgy0107l51zmy8y
+# project: <your-project-id>
 # version: 1
 
 type File implements Node {
@@ -95,7 +95,7 @@ type User implements Node {
 `
 
 const instagramExampleProjectFileContents = `\
-# project: cj2lteo728kgy0107l51zmy8y
+# project: <your-project-id>
 # version: 1
 
 type File implements Node {

@@ -67,7 +67,13 @@ export default class AlreadyAuthenticated extends React.Component<{}, {}> {
             <div className='close-now'>You can close this window now.</div>
             <div className='line' />
             <div className='info'>If you're stuck somewhere, you'll find all the answers in our Docs.</div>
-            <Button green className='mt25'>Read the docs</Button>
+            <Button
+              target='https://www.graph.cool/docs'
+
+              green
+              className='mt25'>
+              Read the docs
+            </Button>
           </div>
         </div>
       </div>

@@ -170,11 +170,14 @@ export default class ExampleProjectLeft extends React.Component<Props, {}> {
               />
             </div>
           ))}
-          <Button green>Frontend Quickstart</Button>
+          <Button target='https://www.graph.cool/docs/quickstart/' green>Frontend Quickstart</Button>
         </div>
       )
       case 'blank': return (
-        <Button green className='mt25'>Read the docs</Button>
+        <Button
+          target='https://www.graph.cool/docs'
+          green
+          className='mt25'>Read the docs</Button>
       )
     }
   }
