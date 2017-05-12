@@ -22,7 +22,7 @@ export default class ExampleProjectRight extends React.Component<Props, {}> {
           }
 
           .title {
-            @p: .pl10, .pt60, .white50, .f25, .fw6;
+            @p: .pl10, .pt60, .white70, .f25, .fw6;
           }
 
           .subtitle {
@@ -42,8 +42,7 @@ export default class ExampleProjectRight extends React.Component<Props, {}> {
           }
 
           .editor {
-            @p: .mv38, .bgDarkBlue;
-            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+            @p: .mv38, .bgDarkBlue, .overlayShadow;
           }
 
           .editor :global(.CodeMirror), .editor :global(.CodeMirror-gutters) {
