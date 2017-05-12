@@ -16,7 +16,11 @@ import {ConsoleEvents} from 'graphcool-metrics'
 interface Props {
   showNotification: ShowNotificationCallback
   initialScreen: 'login' | 'signUp'
+  renderInElement?: boolean
+  successRedirect?: string
 }
+
+const ELEMENT_ID = 'auth0-lock'
 
 interface State {
 }
@@ -25,9 +29,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
   _lock: any
 
-  constructor(props) {
-    super(props)
-
+  componentDidMount() {
     this._lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
       closable: false,
       additionalSignUpFields: [{
@@ -46,6 +48,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         params: {scope: 'openid email name user_metadata'},
       },
       initialScreen: this.props.initialScreen,
+      container: this.props.renderInElement ? ELEMENT_ID : null,
     })
 
     this._lock.on('authenticated', (authResult) => {
@@ -59,9 +62,9 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         await tracker.track(ConsoleEvents.Authentication.completed())
 
         if (new Date().getTime() - new Date(response.authenticateCustomer.user.createdAt).getTime() < 60000) {
-          window.location.pathname = '/after-signup'
+          window.location.pathname = this.props.successRedirect || '/after-signup'
         } else {
-          window.location.pathname = '/'
+          window.location.pathname = this.props.successRedirect || '/'
         }
 
       }
@@ -77,9 +80,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         onFailure,
       })
     })
-  }
 
-  componentDidMount() {
     this._lock.show()
   }
 
@@ -88,9 +89,11 @@ class Auth0LockWrapper extends React.Component<Props, State> {
   }
 
   render() {
-    return (
-      <div className={$p.dn}/>
-    )
+    return this.props.renderInElement ? (
+        <div id={ELEMENT_ID} className='' />
+      ) : (
+        <div className={$p.dn}/>
+      )
   }
 }
 
