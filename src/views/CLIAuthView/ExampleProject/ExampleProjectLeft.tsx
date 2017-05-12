@@ -132,7 +132,7 @@ export default class ExampleProjectLeft extends React.Component<Props, {}> {
               @p: .blue, .noUnderline;
             }
           `}</style>
-          If you don't know where to start, check out our <a href=''>Quickstart</a>. In all other cases, you'll find
+          If you don't know where to start, check out our <a href='https://www.graph.cool/docs/quickstart/'>Quickstart</a>. In all other cases, you'll find
           all information you need in our documentation.
         </div>
       )

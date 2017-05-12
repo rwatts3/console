@@ -69,7 +69,6 @@ export default class AlreadyAuthenticated extends React.Component<{}, {}> {
             <div className='info'>If you're stuck somewhere, you'll find all the answers in our Docs.</div>
             <Button
               target='https://www.graph.cool/docs'
-
               green
               className='mt25'>
               Read the docs
