@@ -2,7 +2,6 @@ import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import AuthenticateLeft from './AuthenticateLeft'
 import AuthenticateRight from './AuthenticateRight'
-import {ProjectType} from '../ExampleProject/ExampleProject'
 
 interface Props {
   location: any

@@ -2,11 +2,7 @@ import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import {Button} from '../../components/Links'
 
-interface Props {
-
-}
-
-export default class AlreadyAuthenticated extends React.Component<Props, {}> {
+export default class AlreadyAuthenticated extends React.Component<{}, {}> {
 
   render() {
     return (
@@ -22,7 +18,7 @@ export default class AlreadyAuthenticated extends React.Component<Props, {}> {
           }
 
           .content {
-            @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .white, .mt96, .w100, .h100;
+            @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .white, .w100, .mh60;
             width: 530px;
           }
 
