@@ -2,10 +2,17 @@ import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import AuthenticateLeft from './AuthenticateLeft'
 import AuthenticateRight from './AuthenticateRight'
+import {ProjectType} from '../ExampleProject/ExampleProject'
 
-export default class CLIAuthView extends React.Component<{}, {}> {
+interface Props {
+  location: any
+}
+
+export default class CLIAuthView extends React.Component<Props, {}> {
 
   render () {
+    // const schema = this.props.location.query.schema || ''
+    const projectType = this.props.location.query.projectType
     return (
       <div className='cli-auth-view'>
         <style jsx={true}>{`
@@ -29,7 +36,7 @@ export default class CLIAuthView extends React.Component<{}, {}> {
           />
         </div>
         <AuthenticateLeft className='mr60' />
-        <AuthenticateRight className='ml60' />
+        <AuthenticateRight projectType={projectType} className='ml60' />
       </div>
     )
   }

@@ -12,12 +12,14 @@ import * as cookiestore from 'cookiestore'
 import AuthenticateCustomerMutation from '../../mutations/AuthenticateCustomerMutation'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import {withRouter} from 'react-router'
 
 interface Props {
   showNotification: ShowNotificationCallback
   initialScreen: 'login' | 'signUp'
   renderInElement?: boolean
   successRedirect?: string
+  router: any
 }
 
 const ELEMENT_ID = 'auth0-lock'
@@ -62,9 +64,12 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         await tracker.track(ConsoleEvents.Authentication.completed())
 
         if (new Date().getTime() - new Date(response.authenticateCustomer.user.createdAt).getTime() < 60000) {
-          window.location.pathname = this.props.successRedirect || '/after-signup'
+          const path = this.props.successRedirect || '/after-signup'
+          this.props.router.push(path)
         } else {
-          window.location.pathname = this.props.successRedirect || '/'
+          // window.location.pathname = this.props.successRedirect || '/'
+          const path = this.props.successRedirect || '/'
+          this.props.router.push(path)
         }
 
       }
@@ -101,4 +106,4 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({showNotification}, dispatch)
 }
 
-export default connect(null, mapDispatchToProps)(Auth0LockWrapper)
+export default connect(null, mapDispatchToProps)(withRouter(Auth0LockWrapper))

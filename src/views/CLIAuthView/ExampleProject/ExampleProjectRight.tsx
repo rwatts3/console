@@ -4,11 +4,14 @@ const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor').QueryEdi
 
 interface Props {
   projectType: ProjectType
+  // schema: string
 }
 
 export default class ExampleProjectRight extends React.Component<Props, {}> {
 
   render() {
+    // const decodedSchema = decodeURIComponent(this.props.schema)
+    // console.log(`Decoded schema: ${decodedSchema}`)
     return (
       <div className='example-project-right'>
         <style jsx={true}>{`
@@ -85,20 +88,11 @@ type File implements Node {
   url: String! @isUnique
 }
 
-type Post implements Node {
-  createdAt: DateTime!
-  description: String!
-  id: ID! @isUnique
-  imageUrl: String!
-  updatedAt: DateTime!
-}
-
 type User implements Node {
   createdAt: DateTime!
   id: ID! @isUnique
   updatedAt: DateTime!
 `
-
 
 const instagramExampleProjectFileContents = `\
 # project: cj2lteo728kgy0107l51zmy8y

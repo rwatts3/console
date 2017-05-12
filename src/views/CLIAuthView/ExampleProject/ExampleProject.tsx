@@ -5,23 +5,17 @@ import ExampleProjectRight from './ExampleProjectRight'
 export type ProjectType = 'instagram' | 'blank'
 
 interface State {
-  projectType: ProjectType
 }
 
 interface Props {
+  location: any
 }
 
 export default class ExampleProject extends React.Component<Props, State> {
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      projectType: 'instagram'
-    }
-  }
-
   render() {
+    // const schema = this.props.location.query.schema || ''
+    const projectType = this.props.location.query.projectType as ProjectType
     return (
       <div className='example-project'>
         <style jsx={true}>{`
@@ -30,10 +24,10 @@ export default class ExampleProject extends React.Component<Props, State> {
             }
         `}</style>
         <ExampleProjectLeft
-          projectType={this.state.projectType}
+          projectType={projectType}
         />
         <ExampleProjectRight
-          projectType={this.state.projectType}
+          projectType={projectType}
         />
       </div>
     )
