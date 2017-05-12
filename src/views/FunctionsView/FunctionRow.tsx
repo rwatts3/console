@@ -179,7 +179,9 @@ class FunctionRow extends React.Component<Props, State> {
         <td className='less-padding'>
           <Link to={link}>
             <div className='requests'>
-              <RequestGraph stats={fn.stats} />
+              {fn.stats && fn.stats.requestHistogram && fn.stats.requestHistogram.length > 0 &&
+                <RequestGraph stats={fn.stats} />
+              }
               <div className='good'>{fn.stats.requestCount}</div>
               <div className='time'>{moment(fn.stats.lastRequest).fromNow()}</div>
             </div>

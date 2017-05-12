@@ -24,7 +24,7 @@ export default class RequestGraph extends React.Component<Props, State> {
     const {requestHistogram} = this.props.stats
 
     const points = requestHistogram.map(value => ({
-      value,
+      value: value + 1,
     }))
 
     return (
