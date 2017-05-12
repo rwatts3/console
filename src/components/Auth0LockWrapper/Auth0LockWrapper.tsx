@@ -48,7 +48,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         params: {scope: 'openid email name user_metadata'},
       },
       initialScreen: this.props.initialScreen,
-      container: ELEMENT_ID,
+      container: this.props.renderInElement ? ELEMENT_ID : null,
     })
 
     this._lock.on('authenticated', (authResult) => {
