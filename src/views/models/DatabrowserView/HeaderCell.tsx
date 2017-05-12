@@ -38,7 +38,10 @@ class HeaderCell extends React.Component<Props, {}> {
       type = `${type}!`
     }
 
-    const editUrl = `/${params.projectName}/models/${params.modelName}/schema/edit/${field.name}`
+    let editUrl = `/${params.projectName}/schema/${params.modelName}/edit/${field.name}`
+    if (!isScalar(field.typeIdentifier)) {
+      editUrl = `/${params.projectName}/schema/relations/edit/${field.relation.name}`
+    }
 
     return (
       <div
@@ -46,12 +49,32 @@ class HeaderCell extends React.Component<Props, {}> {
         className={classes.root}
       >
         <div className={classes.row}>
+          <div className='sort-wrapper'>
+            <style jsx>{`
+              .sort-wrapper {
+                width: 31px;
+              }
+            `}</style>
+            {isScalar(field.typeIdentifier) && !field.isList && (
+              <div
+                onClick={this.toggleSortOrder}
+                className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
+              >
+                <Icon
+                  src={require('assets/icons/arrow.svg')}
+                  width={11}
+                  height={6}
+                  rotate={sortOrder === 'DESC' ? 180 : 0}
+                />
+              </div>
+            )}
+          </div>
           <div className={classnames(classes.fieldName, {
             [classes.nonsystem]: !field.isSystem,
           })}>
             {field.name}
             <span className={classes.type}>{type}</span>
-            {isScalar(field.typeIdentifier) && !field.isSystem &&
+            {!field.isSystem &&
             <Link
               to={editUrl}
               className={classes.edit}
@@ -68,19 +91,6 @@ class HeaderCell extends React.Component<Props, {}> {
             </Link>
             }
           </div>
-          {isScalar(field.typeIdentifier) && !field.isList &&
-          <div
-            onClick={this.toggleSortOrder}
-            className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
-          >
-            <Icon
-              src={require('assets/icons/arrow.svg')}
-              width={11}
-              height={6}
-              rotate={sortOrder === 'DESC' ? 180 : 0}
-            />
-          </div>
-          }
         </div>
       </div>
     )
@@ -114,6 +124,9 @@ export default Relay.createContainer(ConnectedHeaderCell, {
             isRequired
             enumValues
             relatedModel {
+              name
+            }
+            relation {
               name
             }
           }

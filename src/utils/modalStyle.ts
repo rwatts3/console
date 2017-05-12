@@ -1,6 +1,7 @@
+// this modal style has overflow: hidden, fieldModalStyle has overflow: visible
 const modalStyle = {
   overlay: {
-    zIndex: 20,
+    zIndex: 100,
     backgroundColor: 'rgba(255,255,255,.9)',
     display: 'flex',
     alignItems: 'center',
@@ -19,6 +20,7 @@ const modalStyle = {
     border: 'none',
     background: 'none',
     boxShadow: '0 1px 7px rgba(0,0,0,.2)',
+    overflow: 'visible',
   },
 }
 
@@ -26,7 +28,7 @@ export default modalStyle
 
 export const fieldModalStyle = {
   overlay: {
-    zIndex: 20,
+    zIndex: 100,
     backgroundColor: 'rgba(255,255,255,.9)',
     display: 'flex',
     alignItems: 'center',

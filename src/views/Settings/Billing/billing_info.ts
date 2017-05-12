@@ -47,4 +47,22 @@ export const billingInfo: { [key: string]: PricingPlanInfo } = {
     pricePerAdditionalMB: -1,
     pricePerThousandAdditionalRequests: -1,
   },
+  '2017-04-agency': {
+    name: 'Agency',
+    price: 0,
+    maxStorage: 10000,
+    maxRequests: 50000000,
+    maxSeats: -1,
+    pricePerAdditionalMB: 0,
+    pricePerThousandAdditionalRequests: 0,
+  },
+  '2017-04-opensource': {
+    name: 'Open Source',
+    price: 0,
+    maxStorage: 10000,
+    maxRequests: 50000000,
+    maxSeats: -1,
+    pricePerAdditionalMB: 0,
+    pricePerThousandAdditionalRequests: 0,
+  },
 }

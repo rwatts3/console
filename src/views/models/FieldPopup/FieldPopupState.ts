@@ -41,12 +41,16 @@ export function isValid(nodeCount: number, mutatedField: Field, initialField?: F
   errors.migrationValueMissing = (!migrationUI.migrationOptional && migrationUI.showMigration)
     && (typeof mutatedField.migrationValue === 'undefined')
 
-  errors.enumValueMissing = mutatedField.typeIdentifier === 'Enum' && mutatedField.enumValues.length === 0
+  // errors.enumValueMissing = mutatedField.typeIdentifier === 'Enum' && mutatedField.enumValues.length === 0
+  errors.enumValueMissing = false
 
   return errors
 }
 
-export function isBreaking(mutatedField: Field, initialField?: Field): boolean {
+export function isBreaking(nodeCount: number, mutatedField: Field, initialField?: Field): boolean {
+  if (nodeCount === 0) {
+    return false
+  }
   if (!initialField) {
     return false
   }
@@ -137,6 +141,13 @@ export function updateEnumValues(state: Field, enumValues: string[]): Field {
   return {
     ...state,
     enumValues,
+  }
+}
+
+export function updateEnumId(state: Field, enumId: string): Field {
+  return {
+    ...state,
+    enumId,
   }
 }
 

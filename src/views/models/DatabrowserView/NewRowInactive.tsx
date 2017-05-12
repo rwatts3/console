@@ -8,6 +8,7 @@ import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 import Tether from '../../../components/Tether/Tether'
 import {Link} from 'react-router'
+import {idToBeginning} from '../../../utils/utils'
 
 interface Props {
   columnWidths: {[key: string]: number}
@@ -42,6 +43,7 @@ class NewRowInactive extends React.Component<Props, State> {
   render() {
     const fields = this.props.model.fields.edges
       .map((edge) => edge.node)
+      .sort(idToBeginning)
 
     return (
       <div

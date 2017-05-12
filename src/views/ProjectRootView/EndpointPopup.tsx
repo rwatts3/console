@@ -4,17 +4,19 @@ import {bindActionCreators} from 'redux'
 import {ReduxAction} from '../../types/reducers'
 import {closePopup} from '../../actions/popup'
 import styled, {keyframes} from 'styled-components'
-import {particles, variables, Icon} from 'graphcool-styles'
+import {$p, variables, Icon} from 'graphcool-styles'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import getSubscriptionEndpoint from '../../utils/region'
 
 interface Props {
   id: string
   projectId: string
   closePopup: (id: string) => ReduxAction
   alias: string
+  region: string
 }
 
 interface State {
@@ -22,7 +24,7 @@ interface State {
   copied: boolean
 }
 
-type Endpoint = 'simple/v1' | 'relay/v1' | 'file/v1'
+type Endpoint = 'simple/v1' | 'relay/v1' | 'file/v1' | 'subscription/v1'
 
 class EndpointPopup extends React.Component<Props, State> {
 
@@ -153,33 +155,38 @@ class EndpointPopup extends React.Component<Props, State> {
     `
 
     const {endpoint, copied} = this.state
-    const {projectId, alias} = this.props
+    const {projectId, alias, region} = this.props
 
-    const url = `https://api.graph.cool/${endpoint}/${(alias && alias.length > 0) ? alias : projectId}`
+    const aliasOrId = (alias && alias.length > 0) ? alias : projectId
+
+    let url = `https://api.graph.cool/${endpoint}/${aliasOrId}`
+    if (endpoint.includes('subscription')) {
+      url = getSubscriptionEndpoint(region) + `/v1/${aliasOrId}`
+    }
 
     return (
       <div
         className={cx(
-          particles.flex,
-          particles.bgBlack50,
-          particles.w100,
-          particles.h100,
-          particles.justifyCenter,
-          particles.itemsCenter,
+          $p.flex,
+          $p.bgBlack50,
+          $p.w100,
+          $p.h100,
+          $p.justifyCenter,
+          $p.itemsCenter,
         )}
       >
-        <Popup className={cx(particles.bgWhite, particles.br2)} style={{pointerEvents: 'all'}}>
-          <header className={cx(particles.relative, particles.pa60)}>
-            <h1 className={cx(particles.fw3, particles.f38, particles.tc)}>
+        <Popup className={cx($p.bgWhite, $p.br2)} style={{pointerEvents: 'all'}}>
+          <header className={cx($p.relative, $p.pa60)}>
+            <h1 className={cx($p.fw3, $p.f38, $p.tc)}>
               API Endpoints
             </h1>
             <div
               className={cx(
-                particles.absolute,
-                particles.pa25,
-                particles.top0,
-                particles.right0,
-                particles.pointer,
+                $p.absolute,
+                $p.pa25,
+                $p.top0,
+                $p.right0,
+                $p.pointer,
               )}
               onClick={() => this.props.closePopup(this.props.id)}
             >
@@ -196,14 +203,14 @@ class EndpointPopup extends React.Component<Props, State> {
           <Separator>
             <div
               className={cx(
-                particles.relative,
-                particles.ph16,
-                particles.bgWhite,
-                particles.f14,
-                particles.fw6,
-                particles.ttu,
-                particles.flex,
-                particles.itemsCenter,
+                $p.relative,
+                $p.ph16,
+                $p.bgWhite,
+                $p.f14,
+                $p.fw6,
+                $p.ttu,
+                $p.flex,
+                $p.itemsCenter,
               )}
             >
               <EndpointType
@@ -224,17 +231,23 @@ class EndpointPopup extends React.Component<Props, State> {
               >
                 File
               </EndpointType>
+              <EndpointType
+                active={endpoint === 'subscription/v1'}
+                onClick={() => this.selectEndpoint('subscription/v1')}
+              >
+                Subscriptions
+              </EndpointType>
             </div>
           </Separator>
-          <div className={cx(particles.flex, particles.ph38)}>
+          <div className={cx($p.flex, $p.ph38)}>
             <EndpointField
               className={cx(
-                particles.flexAuto,
-                particles.f16,
-                particles.fw3,
-                particles.pv38,
-                particles.overflowHidden,
-                particles.relative,
+                $p.flexAuto,
+                $p.f16,
+                $p.fw3,
+                $p.pv38,
+                $p.overflowHidden,
+                $p.relative,
               )}
             >
               {url}
@@ -243,22 +256,22 @@ class EndpointPopup extends React.Component<Props, State> {
                              onCopy={this.onCopy}>
               <Copy
                 className={cx(
-                  particles.relative,
-                  particles.bgWhite,
-                  particles.selfCenter,
-                  particles.br2,
-                  particles.buttonShadow,
-                  particles.pointer,
+                  $p.relative,
+                  $p.bgWhite,
+                  $p.selfCenter,
+                  $p.br2,
+                  $p.buttonShadow,
+                  $p.pointer,
                 )}
               >
                 {copied && (
                   <CopyIndicator
                     className={cx(
-                      particles.o0,
-                      particles.absolute,
-                      particles.f14,
-                      particles.fw6,
-                      particles.blue,
+                      $p.o0,
+                      $p.absolute,
+                      $p.f14,
+                      $p.fw6,
+                      $p.blue,
                     )}
                   >
                     Copied
@@ -275,16 +288,16 @@ class EndpointPopup extends React.Component<Props, State> {
           </div>
           <p
             className={cx(
-              particles.bt,
-              particles.bBlack10,
-              particles.pa38,
-              particles.lhCopy,
-              particles.black50,
+              $p.bt,
+              $p.bBlack10,
+              $p.pa38,
+              $p.lhCopy,
+              $p.black50,
             )}
           >
             {
               // tslint:disable-next-line
-            }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={particles.green} target='_blank' href='https://graph.cool/docs/reference/simple-api/overview-heshoov3ai#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={particles.green} target='_blank' href='https://github.com/graphcool-examples'>check out some code examples</a>.
+            }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={$p.green} target='_blank' href='https://graph.cool/docs/reference/simple-api/overview-heshoov3ai#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={$p.green} target='_blank' href='https://github.com/graphcool-examples'>check out some code examples</a>.
           </p>
         </Popup>
       </div>

@@ -47,6 +47,8 @@ import {throttle} from 'lodash'
 import {LightCell} from './LightCell'
 import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import {idToBeginning} from '../../../utils/utils'
+import Helmet from 'react-helmet'
 
 const classes: any = require('./DatabrowserView.scss')
 const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
@@ -160,7 +162,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     this.lokka = getLokka(this.props.project.id)
     this.fieldColumnWidths = calculateFieldColumnWidths(window.innerWidth - 300, this.props.fields, this.props.nodes)
     this.state = {
-      shouldLeaveRoute: false,
+      shouldLeaveRoute: true,
     }
   }
 
@@ -186,13 +188,14 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                 shouldLeaveRoute: true,
               } as State,
               () => {
+                this.props.resetDataAndUI()
                 this.props.router.push(nextLocation)
               },
             )
           })
         return false
       } else {
-        this.props.resetDataAndUI()
+        return true
       }
     })
 
@@ -236,6 +239,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         className={classes.root}
         onKeyDown={this.onKeyDown}
       >
+        <Helmet title={`${this.props.model.name} - Data`} />
         <ModelHeader
           params={this.props.params}
           model={this.props.model}
@@ -300,11 +304,11 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         </ModelHeader>
         <div
           className={`${classes.table} ${this.props.loading ? classes.loading : ''}`}
-          ref={this.props.setDataBrowserViewRef}
+          id='data-browser-view-wrapper'
         >
           <div
             className={`${classes.tableContainer} w-100`}
-            ref={this.props.setBrowserViewRef}
+            id='data-browser-view'
             tabIndex={100}
           >
             <AutoSizer>
@@ -328,6 +332,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                     addNew={this.props.newRowActive}
                     onScroll={(input) => this.props.setScrollTop(input.scrollTop)}
                     newRowActive={this.props.newRowActive}
+                    updateCalled={this.handleUpdateCalled}
 
                     hideNewRow={this.props.hideNewRow.bind(this)}
                     addNewNode={this.addNewNode.bind(this)}
@@ -693,6 +698,12 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         )
       })
   }
+
+  private handleUpdateCalled = () => {
+    if (this.state.shouldLeaveRoute) {
+      this.setState({shouldLeaveRoute: false} as State)
+    }
+  }
 }
 
 const mapStateToProps = (state: StateTree) => {
@@ -763,6 +774,7 @@ const MappedDatabrowserView = mapProps({
   fields: (props) => (
     props.viewer.model.fields.edges
       .map((edge) => edge.node)
+      .sort(idToBeginning)
   ),
   model: (props) => props.viewer.model,
   project: (props) => props.viewer.project,

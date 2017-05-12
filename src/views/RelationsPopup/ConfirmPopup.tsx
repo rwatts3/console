@@ -82,10 +82,8 @@ export default class ConfirmPopup extends React.Component<Props, State> {
           </div>
         </div>
         <div className='pa25 f16 black50 bb bBlack10'>
-          Your changes will break Relations between
-          <span className='fw6'> {this.props.leftModelName} </span>
-          and
-          <span className='fw6'> {this.props.rightModelName}</span>
+          This change might break queries or mutations for this relation
+          <span className='fw6'> {this.props.relationName} </span>
         </div>
         {this.props.red ? this.generateFooterForDeletion() : this.generateFooterForBreakingChanges()}
       </div>
@@ -119,12 +117,14 @@ export default class ConfirmPopup extends React.Component<Props, State> {
           Cancel
         </div>
         {this.props.relationName === this.state.enteredRelationName ?
-          (<div
+          (<button
             className='confirmButtonRed'
             onClick={() => this.props.onConfirmDeletion()}
+            tabIndex={1}
+            autoFocus
           >
             Delete
-          </div>)
+          </button>)
           :
           <input
             className='redBorder inputField'

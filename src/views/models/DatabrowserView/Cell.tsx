@@ -8,7 +8,7 @@ import NodeSelector from '../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
-import {isNonScalarList} from '../../../utils/graphql'
+import {isNonScalarList, isScalar} from '../../../utils/graphql'
 import { Link } from 'react-router'
 import {connect} from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -17,6 +17,7 @@ import {
 } from '../../../actions/databrowser/ui'
 import {ReduxThunk, ReduxAction} from '../../../types/reducers'
 import {GridPosition} from '../../../types/databrowser/ui'
+import SelectNodesCell from './Cell/SelectNodesCell/SelectNodesCell'
 const classes: any = require('./Cell.scss')
 import { variables, particles } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -61,6 +62,7 @@ interface Props {
   fields: Field[]
 
   loaded: boolean[]
+  onChange?: (e: any) => void
 }
 
 interface State {
@@ -75,6 +77,7 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private escaped: boolean
+  private saving: boolean
 
   constructor(props: Props) {
     super(props)
@@ -94,7 +97,9 @@ export class Cell extends React.PureComponent<Props, State> {
       [classes.rowselected]: this.props.rowSelected,
       [classes.rowhascursor]: this.props.rowHasCursor && !this.props.addnew,
     })
+    const {rowIndex, field} = this.props
 
+    const newSingleScalarField = isNewSingleScalarField(rowIndex, field)
     return (
       <div
         style={{
@@ -102,7 +107,7 @@ export class Cell extends React.PureComponent<Props, State> {
           overflow: 'visible',
         }}
         className={rootClassnames}
-        onClick={() => (this.props.addnew || this.props.selected)
+        onClick={() => (newSingleScalarField || this.props.selected)
           ? this.startEditing() : this.props.selectCell(this.props.position)}
         onDoubleClick={(e) => {
           this.stopEvent(e)
@@ -140,6 +145,11 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private save = (value: TypedValue, keepEditing: boolean = false): void => {
+    if (this.saving) {
+      return
+    }
+    this.saving = true
+
     if (this.props.isReadonly) {
       return
     }
@@ -181,7 +191,7 @@ export class Cell extends React.PureComponent<Props, State> {
     }
 
     this.props.update(value, this.props.field, () => {
-      //
+      this.saving = false
     })
   }
 
@@ -196,6 +206,9 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private onKeyDown = (e: any): void => {
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(e)
+    }
     if (e.shiftKey && e.keyCode !== 9) {
       return
     }
@@ -261,7 +274,7 @@ export class Cell extends React.PureComponent<Props, State> {
       )
     }
 
-    if (isNonScalarList(this.props.field)) {
+    if (!isScalar(this.props.field.typeIdentifier)) {
       return (
         <span className={invalidStyle}>Should be added later</span>
       )
@@ -392,12 +405,17 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 }
 
+function isNewSingleScalarField(rowIndex, field) {
+  return rowIndex === -1 && isScalar(field.typeIdentifier) && !field.isList
+}
+
 const MappedCell = connect(
   (state, props) => {
     const {rowIndex, field, addnew, selected} = props
     const { selectedCell, editing, newRowActive, writing } = state.databrowser.ui
 
-    const cellEditing = selected && !writing && (editing || ((field.isList) ? false : addnew))
+    const newSingleScalarField = isNewSingleScalarField(rowIndex, field)
+    const cellEditing = selected && !writing && (editing || newSingleScalarField)
 
     return {
       editing: cellEditing,
@@ -437,7 +455,7 @@ export default Relay.createContainer(MappedCell, {
           name
         }
         relatedModel {
-          ${NodeSelector.getFragment('relatedModel')}
+          ${SelectNodesCell.getFragment('model')}
           id
           name
         }

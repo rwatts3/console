@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const cssnano = require('cssnano')
 const path = require('path')
 const cheerio = require('cheerio')
@@ -58,6 +59,7 @@ module.exports = {
   devtool: 'cheap-module-eval-source-map',
   entry: {
     app: [
+      'babel-polyfill',
       './src/main',
       './src/styles/codemirror.css',
       // './src/styles/graphiql.css',
@@ -88,7 +90,6 @@ module.exports = {
       loader: 'style-loader!css-loader',
     }, {
       test: /\.scss$/,
-      // loader: 'style!css?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap',
       loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader',
       exclude: /node_modules/,
     }, {
@@ -115,7 +116,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
-      __BACKEND_WS_ADDR__: JSON.stringify(process.env.BACKEND_WS_ADDR || "wss://dev.subscriptions.graph.cool"),
+      __SUBSCRIPTIONS_EU_WEST_1__: JSON.stringify(process.env.SUBSCRIPTIONS_EU_WEST_1 || "wss://dev.subscriptions.graph.cool"),
+      __SUBSCRIPTIONS_US_WEST_2__: JSON.stringify(process.env.SUBSCRIPTIONS_US_WEST_1 || "wss://dev.subscriptions.us-west-2.graph.cool"),
+      __SUBSCRIPTIONS_AP_NORTHEAST_1__: JSON.stringify(process.env.SUBSCRIPTIONS_AP_NORTHEAST_1 || "wss://dev.subscriptions.ap-northeast-1.graph.cool"),
       __HEARTBEAT_ADDR__: false,
       __AUTH0_DOMAIN__: '"graphcool-customers-dev.auth0.com"',
       __AUTH0_CLIENT_ID__: '"2q6oEEGaIPv45R7v60ZMnkfAgY49pNnm"',
@@ -126,6 +129,7 @@ module.exports = {
       'process.env': {
         'NODE_ENV': JSON.stringify('dev'),
       },
+      __EXAMPLE_ADDR__: '"https://dynamic-resources.graph.cool"',
     }),
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',
@@ -160,6 +164,7 @@ module.exports = {
       context: '.',
       manifest: require('./dll/vendor-manifest.json'),
     }),
+    // new BundleAnalyzerPlugin(),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],

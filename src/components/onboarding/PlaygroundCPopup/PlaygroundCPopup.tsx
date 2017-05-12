@@ -22,13 +22,13 @@ const guides: Tutorial[] = [
   {
     title: 'Learn Relay',
     description: 'A comprehensive, interactive introduction to Relay',
-    link: 'https://learnrelay.org/',
+    link: 'https://www.learnrelay.org/',
     image: require('../../../assets/graphics/relay.png'),
   },
   {
     title: 'Learn Apollo',
     description: 'A hands-on tutorial for Apollo GraphQL Client',
-    link: 'https://learnapollo.org',
+    link: 'https://www.learnapollo.com/',
     image: require('../../../assets/graphics/apollo.png'),
   },
   {
@@ -106,7 +106,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
     const {mouseOver} = this.state
     const {selectedExample} = this.props.gettingStartedState
     const hovering = !this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')
-    const downloadUrl = (example) => `${__BACKEND_ADDR__}/resources/getting-started-example?repository=${examples[example].path}&project_id=${this.props.projectId}&user=graphcool-examples` // tslint:disable-line
+    const downloadUrl = (example) => `${__EXAMPLE_ADDR__}/?repository=${examples[example].path}&project_id=${this.props.projectId}&user=graphcool-examples` // tslint:disable-line
     const videoUrl = this.getExampleVideoUrl(selectedExample)
     return (
       <div

@@ -13,30 +13,25 @@ interface Props {
   params: any
 }
 
-const Container = styled.div`
-  height: calc(100vh - 100px);
-`
-
 class PermissionsList extends React.Component<Props, {}> {
   render() {
     const {models, params} = this.props
     return (
-        <Container className={cx($p.bgWhite, $p.bt, $p.bBlack10, $p.b)}>
-          <ScrollBox>
-            {models.map((model, index) =>
-              <ModelPermissions
-                params={params}
-                key={model.id}
-                model={model}
-                style={
-                  index === models.length - 1 ? {
-                    marginBottom: 100,
-                  } : {}
-                }
-              />,
-            )}
-          </ScrollBox>
-        </Container>
+        <div className={cx($p.bgWhite, $p.bt, $p.bBlack10, $p.b)}>
+          {models.map((model, index) =>
+            <ModelPermissions
+              params={params}
+              key={model.id}
+              model={model}
+              style={
+                index === models.length - 1 ? {
+                  marginBottom: 100,
+                } : {}
+              }
+            />,
+          )}
+          {this.props.children}
+        </div>
     )
   }
 }

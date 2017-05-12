@@ -20,6 +20,7 @@ const CustomInput = styled.input`
   text-shadow: 0px 0px 0px #000;
   -webkit-text-fill-color: transparent;
   width: 620px;
+  line-height: 1.5;
  
   &::-webkit-input-placeholder {
     color: ${$v.gray30};
@@ -170,7 +171,7 @@ class AfterSignUpView extends React.Component<Props, State> {
                 <Caret />
               )}
               <CustomInput
-                className={cx($p.white, $p.f38, $p.fw3, $p.tl)}
+                className={cx($p.f38, $p.fw3, $p.tl, (!source || source.length === 0) ? $p.white : $p.green)}
                 placeholder='Would you tell us how you got here?'
                 autoFocus
                 value={source || ''}

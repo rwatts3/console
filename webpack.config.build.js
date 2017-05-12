@@ -3,10 +3,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const cssnano = require('cssnano')
 const path = require('path')
 const config = require('./webpack.config')
+const OfflinePlugin = require('offline-plugin')
 
 module.exports = {
+  devtool: 'source-map',
   entry: {
     app: [
+      'babel-polyfill',
       './src/main',
       './src/styles/codemirror.css',
       // './src/styles/graphiql.css',
@@ -20,8 +23,9 @@ module.exports = {
     vendor: config.entry.vendor,
   },
   output: {
-    path: './dist',
+    path: __dirname + '/dist',
     filename: '[name].[hash].js',
+    sourceMapFilename: '[file].map',
     publicPath: '/',
   },
   module: {
@@ -64,7 +68,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
-      __BACKEND_WS_ADDR__: JSON.stringify(process.env.BACKEND_WS_ADDR || "wss://subscriptions.graph.cool"),
+      __SUBSCRIPTIONS_EU_WEST_1__: JSON.stringify(process.env.SUBSCRIPTIONS_EU_WEST_1.toString()),
+      __SUBSCRIPTIONS_US_WEST_2__: JSON.stringify(process.env.SUBSCRIPTIONS_US_WEST_2.toString()),
+      __SUBSCRIPTIONS_AP_NORTHEAST_1__: JSON.stringify(process.env.SUBSCRIPTIONS_AP_NORTHEAST_1.toString()),
       __HEARTBEAT_ADDR__: process.env.HEARTBEAT_ADDR ? JSON.stringify(process.env.HEARTBEAT_ADDR.toString()) : false,
       __AUTH0_DOMAIN__: JSON.stringify(process.env.AUTH0_DOMAIN.toString()),
       __AUTH0_CLIENT_ID__: JSON.stringify(process.env.AUTH0_CLIENT_ID.toString()),
@@ -75,6 +81,7 @@ module.exports = {
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
       },
+      __EXAMPLE_ADDR__: '"https://dynamic-resources.graph.cool"',
     }),
     new HtmlWebpackPlugin({
       favicon: 'static/favicon.png',
@@ -86,7 +93,8 @@ module.exports = {
         unused: true,
         dead_code: true,
         warnings: false,
-      }
+      },
+      sourceMap: true,
     }),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
     new webpack.optimize.CommonsChunkPlugin('vendor'),
@@ -112,6 +120,7 @@ module.exports = {
         },
       }
     }),
+    new OfflinePlugin(),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],

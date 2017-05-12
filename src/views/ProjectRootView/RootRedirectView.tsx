@@ -58,6 +58,7 @@ class RootRedirectView extends React.Component<Props, {}> {
           {
             projectName,
             customerId: this.props.viewer.user.id,
+            region: 'US_WEST_2',
           }),
         {
           onSuccess: () => {

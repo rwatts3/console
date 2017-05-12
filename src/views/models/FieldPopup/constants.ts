@@ -48,6 +48,7 @@ export const emptyField: Field = {
   defaultValue: undefined,
   migrationValue: undefined,
   isUnique: false,
+  enumId: '',
   constraints: mockConstraints, // TODO add real data when backend is ready
 }
 

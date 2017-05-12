@@ -6,6 +6,7 @@ import NewRowInactive from '../NewRowInactive'
 import {Grid} from 'react-virtualized'
 import {ActionRowState} from '../../../../types/databrowser/actionrow'
 import {GridPosition} from '../../../../types/databrowser/ui'
+import {createCellRenderer} from '../../../../components/InfiniteTable/InfiniteTable'
 
 interface Props {
   width: number
@@ -20,6 +21,7 @@ interface Props {
   newRowActive: boolean
   selectedCell: GridPosition
   params: any
+  updateCalled: () => void
 }
 
 interface State {
@@ -37,6 +39,7 @@ class NewNodeRow extends React.Component<Props, State> {
             add={this.props.addNewNode}
             cancel={this.props.hideNewRow}
             width={this.props.width}
+            updateCalled={this.props.updateCalled}
           />
         )
     }
@@ -68,7 +71,7 @@ class NewNodeRow extends React.Component<Props, State> {
         columnCount={1}
         columnWidth={this.props.width - (40 - 1)}
         rowCount={1}
-        cellRenderer={this.renderAddCell}
+        cellRenderer={createCellRenderer(this.renderAddCell)}
       />
     )
   }

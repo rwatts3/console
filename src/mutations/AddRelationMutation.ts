@@ -10,6 +10,8 @@ interface Props {
   fieldOnRightModelName: string
   fieldOnLeftModelIsList: boolean
   fieldOnRightModelIsList: boolean
+  fieldOnLeftModelIsRequired: boolean
+  fieldOnRightModelIsRequired: boolean
 }
 
 export default class AddRelationMutation extends Relay.Mutation<Props, {}> {

@@ -54,6 +54,11 @@ export class StringCell extends React.Component<CellProps<string>, State> {
             width: '100%',
           }}
           onBlur={(e: any) => {
+            if (this.enterPressed) {
+              this.stopEvent(e)
+              this.enterPressed = false
+              return
+            }
             this.props.save(stringToValue(e.target.value, this.props.field))
           }}
           onChange={this.onChange}
@@ -92,7 +97,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
   private onKeyDown = (e: any) => {
     // filter arrow keys
     const numLines = e.target.value.split(/\r\n|\r|\n/).length
-    if (e.keyCode === 13 && !e.metaKey) {
+    if (e.keyCode === 13 && (e.metaKey || e.shiftKey)) {
       if (numLines === 1) {
         this.setState({value: e.target.value + '\n'})
         this.enterPressed = true

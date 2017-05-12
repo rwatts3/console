@@ -77,6 +77,12 @@ export function reloadDataAsync(lokka: any,
 
 let lastModelNamePlural = null
 
+function cleanServerData(node, fields) {
+  fields.filter((field) => isNonScalarList(field))
+    .forEach(({name}) => node[name] = node[name].edges.map(({node}) => node))
+  return node
+}
+
 export function loadDataAsync(lokka: any,
                               modelNamePlural: string,
                               fields: Field[],
@@ -97,9 +103,7 @@ export function loadDataAsync(lokka: any,
           .edges.map(({node}) => {
             // Transforms the relay query into something that the valueparser understands
             // Previously we used the simple API that's why this is necessary
-            fields.filter((field) => isNonScalarList(field))
-              .forEach(({name}) => node[name] = node[name].edges.map(({node}) => node))
-            return node
+            return cleanServerData(node, fields)
           }).map(Immutable.Map)
 
         let nodes = data.nodes
@@ -147,7 +151,8 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
 
     return addRelayNode(lokka, model.name, fieldValues, fields)
       .then(res => {
-        const node = res[`create${model.name}`][lowercaseFirstLetter(model.name)]
+        let node = res[`create${model.name}`][lowercaseFirstLetter(model.name)]
+        node = cleanServerData(node, fields)
         dispatch(addNodeSuccess(Immutable.Map<string,any>(node)))
         dispatch(mutationSuccess())
 
@@ -163,6 +168,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
         }
       })
       .catch((err) => {
+        console.error(err)
         dispatch(mutationError())
         dispatch(decreaseCountChange(model.id))
         if (err.rawError) {

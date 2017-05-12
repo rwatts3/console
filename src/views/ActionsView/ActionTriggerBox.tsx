@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Relay from 'react-relay'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
 import {Icon} from 'graphcool-styles'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
+const QueryEditor: any = require('../SchemaView/Editor/QueryEditor').QueryEditor
 import ActionTrigger from './ActionTrigger'
 import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionTriggerBox.scss')

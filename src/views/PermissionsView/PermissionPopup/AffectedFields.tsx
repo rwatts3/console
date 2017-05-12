@@ -8,6 +8,7 @@ import PermissionField from '../PermissionsList/ModelPermissions/PermissionField
 import {validPermissionField} from '../../../utils/valueparser'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 import {PermissionPopupErrors} from './PermissionPopupState'
+import Info from '../../../components/Info'
 
 interface Props {
   fields: Field[]
@@ -63,28 +64,37 @@ class AffectedFields extends React.Component<Props, {}> {
         <div className={cx($p.pl38, $p.pr25)}>
           <div className={cx($p.flex, $p.flexRow, $p.itemsStart, $p.justifyBetween, $p.pb25)}>
             <div className='intro'>
-              Select the fields that should be affected by this permission.
+              Select the fields for which this permission should be applied.
             </div>
-            <div
-              className={cx(
-                $p.pv6, $p.ph10, $p.ttu, $p.f14, $p.fw6, $p.pointer, $p.flex, $p.flexRow, $p.itemsCenter, $p.br2,
-                $p.buttonShadow, $p.nowrap,
-                {
-                  [cx($p.bgWhite, $p.blue)]: !applyToWholeModel,
-                  [cx($p.bgBlue, $p.white)]: applyToWholeModel,
-                },
-              )}
-              onClick={toggleApplyToWholeModel}
+            <Info
+              offsetX={100}
+              cursorOffset={80}
+              customTip={
+                <div
+                  className={cx(
+                    $p.pv6, $p.ph10, $p.ttu, $p.f14, $p.fw6, $p.pointer, $p.flex, $p.flexRow, $p.itemsCenter, $p.br2,
+                    $p.buttonShadow, $p.nowrap,
+                    {
+                      [cx($p.bgWhite, $p.blue)]: !applyToWholeModel,
+                      [cx($p.bgBlue, $p.white)]: applyToWholeModel,
+                    },
+                  )}
+                  onClick={toggleApplyToWholeModel}
+                >
+                  {applyToWholeModel && (
+                    <Icon
+                      src={require('graphcool-styles/icons/fill/check.svg')}
+                      color={variables.white}
+                      className={$p.mr4}
+                    />
+                  )}
+                  Apply to whole Type
+                </div>
+              }
             >
-              {applyToWholeModel && (
-                <Icon
-                  src={require('graphcool-styles/icons/fill/check.svg')}
-                  color={variables.white}
-                  className={$p.mr4}
-                />
-              )}
-              Apply to whole Model
-            </div>
+              "Apply to whole Type" means, that also fields that will be created in the future are affected by
+              this permission.
+            </Info>
           </div>
           <div className={$p.mt16}>
             {fieldsFiltered.length === 0 && (
@@ -102,6 +112,7 @@ class AffectedFields extends React.Component<Props, {}> {
                   selected={fieldIds.includes(field.id) || applyToWholeModel}
                   onClick={() => toggleField && toggleField(field.id)}
                   className={cx($p.pointer, $p.mr10, $p.mb10)}
+                  editable
                 />
               ),
             )}

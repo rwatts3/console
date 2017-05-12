@@ -3,7 +3,7 @@ import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../../utils/modalStyle'
 import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
-import {Field, FieldType, Constraint, ConstraintType} from '../../../types/types'
+import {Field, FieldType, Constraint, ConstraintType, Enum} from '../../../types/types'
 import {ConsoleEvents, MutationType, FieldPopupSource} from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
@@ -28,7 +28,7 @@ import {
   isValid,
   updateEnumValues,
   didChange,
-  isBreaking, updateMigrationValue,
+  isBreaking, updateMigrationValue, updateEnumId,
 } from './FieldPopupState'
 import {showNotification} from '../../../actions/notification'
 import {
@@ -44,9 +44,11 @@ import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import Loading from '../../../components/Loading/Loading'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import tracker from '../../../utils/metrics'
+import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 
 interface Props {
   field?: Field
+  enums: Enum[]
   nodeCount: number
   params: any
   router: ReactRouter.InjectedRouter
@@ -56,6 +58,7 @@ interface Props {
   showDonePopup: () => void
   gettingStartedState: GettingStartedState
   nextStep: any
+  isGlobalEnumsEnabled: boolean
 }
 
 export interface State {
@@ -78,17 +81,27 @@ export interface MigrationUIState {
 
 class FieldPopup extends React.Component<Props, State> {
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     const {field} = props
 
     if (field) {
       // if there's a field, just passthrough the field to the stateG
+      if (field.isSystem) {
+        this.props.router.goBack()
+        this.props.showNotification({
+          message: 'You cannot edit system fields',
+          level: 'warning',
+        })
+      }
+      if (field.enum) {
+        field['enumId'] = field.enum.id
+      }
       this.state = {
         field: {
           ...field,
           // if null, put it to undefined
-          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue, field),
+          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue as string, field),
         },
 
         activeTabIndex: 0,
@@ -110,7 +123,6 @@ class FieldPopup extends React.Component<Props, State> {
         loading: false,
       }
     }
-    global['f'] = this
   }
 
   componentDidMount() {
@@ -153,6 +165,7 @@ class FieldPopup extends React.Component<Props, State> {
         migrationValue,
         isUnique,
         constraints,
+        enumId,
       },
 
       showErrors,
@@ -163,21 +176,28 @@ class FieldPopup extends React.Component<Props, State> {
       loading,
     } = this.state
 
-    const {nodeCount, projectId} = this.props
+    const {nodeCount, projectId, enums, isGlobalEnumsEnabled} = this.props
 
     const migrationUI = getMigrationUI(nodeCount, this.state.field, this.props.field)
     const errors = isValid(nodeCount, this.state.field, this.props.field)
     // if there is an error, it's not valid
     const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
     const changed = didChange(this.state.field, this.props.field)
-    const breaking = isBreaking(this.state.field, this.props.field) && !deleting
+    const breaking = isBreaking(nodeCount, this.state.field, this.props.field) && !deleting
 
-    let modalStyling = fieldModalStyle
+    let modalStyling = {
+      ...fieldModalStyle,
+      content: {
+        ...fieldModalStyle.content,
+        width: this.props.isGlobalEnumsEnabled ? 615 : 554,
+      },
+    }
+
     if (breaking || deletePopupVisible) {
       modalStyling = {
-        ...fieldModalStyle,
+        ...modalStyling,
         content: {
-          ...fieldModalStyle.content,
+          ...modalStyling.content,
           marginBottom: '120px',
         },
       }
@@ -195,7 +215,7 @@ class FieldPopup extends React.Component<Props, State> {
             @p: .bgWhite;
           }
           .popup-body {
-            @p: .overflowXHidden;
+            @p: .overflowVisible;
             transition: .1s linear height;
             max-height: calc(100vh - 200px);
           }
@@ -203,83 +223,101 @@ class FieldPopup extends React.Component<Props, State> {
             @p: .fixed, .top0, .left0, .right0, .bottom0, .bgWhite50, .flex, .justifyCenter, .itemsCenter;
           }
         `}</style>
-        <div
-          className='field-popup'
+        <ModalDocs
+          title='How to define Fields'
+          id='field-popup'
+          resources={[
+            {
+              title: 'An introduction to Fields',
+              type: 'guide',
+              link: 'https://www.graph.cool/docs/reference/platform/fields-teizeit5se/',
+            },
+          ]}
+          videoId='e_sotn1uGqk'
         >
-          <FieldPopupHeader
-            tabs={tabs}
-            activeTabIndex={activeTabIndex}
-            onSelectTab={this.handleSelectTab}
-            onRequestClose={this.close}
-            errors={errors}
-            showErrors={showErrors}
-            create={create}
-          />
           <div
-            className='popup-body'
+            className='field-popup'
           >
-            {activeTabIndex === 0 ? (
-                <BaseSettings
-                  name={name}
-                  typeIdentifier={typeIdentifier || ''}
-                  description={description || ''}
-                  isList={isList}
-                  enumValues={enumValues}
-                  onChangeName={this.updateField(updateName)}
-                  onChangeDescription={this.updateField(updateDescription)}
-                  onToggleIsList={this.updateField(toggleIsList)}
-                  onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
-                  onChangeEnumValues={this.updateField(updateEnumValues)}
-                  errors={errors}
-                  showErrors={showErrors}
-                  showNotification={this.props.showNotification}
-                />
-              ) : activeTabIndex === 1 ? (
-                  <AdvancedSettings
-                    isRequired={isRequired}
-                    onToggleIsRequired={this.updateField(toggleIsRequired)}
-                    defaultValue={defaultValue}
-                    migrationValue={migrationValue}
-                    onChangeDefaultValue={this.updateField(updateDefaultValue)}
-                    onChangeMigrationValue={this.updateField(updateMigrationValue)}
-                    showMigration={migrationUI.showMigration}
-                    migrationOptional={migrationUI.migrationOptional}
-                    showErrors={showErrors}
+            <FieldPopupHeader
+              tabs={tabs}
+              activeTabIndex={activeTabIndex}
+              onSelectTab={this.handleSelectTab}
+              onRequestClose={this.close}
+              errors={errors}
+              showErrors={showErrors}
+              create={create}
+            />
+            <div
+              className='popup-body'
+            >
+              {activeTabIndex === 0 ? (
+                  <BaseSettings
+                    name={name}
+                    enums={enums}
+                    enumId={enumId}
+                    isGlobalEnumsEnabled={isGlobalEnumsEnabled}
+                    typeIdentifier={typeIdentifier || ''}
+                    description={description || ''}
+                    isList={isList}
+                    enumValues={enumValues}
+                    onChangeName={this.updateField(updateName)}
+                    onChangeDescription={this.updateField(updateDescription)}
+                    onToggleIsList={this.updateField(toggleIsList)}
+                    onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
+                    onChangeEnumValues={this.updateField(updateEnumValues)}
+                    onChangeEnumId={this.updateField(updateEnumId)}
                     errors={errors}
-                    projectId={projectId}
-                    field={this.state.field}
+                    showErrors={showErrors}
+                    showNotification={this.props.showNotification}
                   />
-                ) : activeTabIndex === 2 && (
-                  <Constraints
-                    isUnique={isUnique}
-                    onToggleIsUnique={this.updateField(toggleIsUnique)}
-                    constraints={constraints || []}
-                    onRemoveConstraint={this.updateField(removeConstraint)}
-                    onAddConstraint={this.updateField(addConstraint)}
-                    onEditConstraint={this.updateField(editConstraint)}
-                  />
-                )}
+                ) : activeTabIndex === 1 ? (
+                    <AdvancedSettings
+                      isRequired={isRequired}
+                      onToggleIsRequired={this.updateField(toggleIsRequired)}
+                      defaultValue={defaultValue}
+                      migrationValue={migrationValue}
+                      onChangeDefaultValue={this.updateField(updateDefaultValue)}
+                      onChangeMigrationValue={this.updateField(updateMigrationValue)}
+                      showMigration={migrationUI.showMigration}
+                      migrationOptional={migrationUI.migrationOptional}
+                      showErrors={showErrors}
+                      errors={errors}
+                      projectId={projectId}
+                      field={this.state.field}
+                    />
+                  ) : activeTabIndex === 2 && (
+                    <Constraints
+                      isUnique={isUnique}
+                      onToggleIsUnique={this.updateField(toggleIsUnique)}
+                      constraints={constraints || []}
+                      onRemoveConstraint={this.updateField(removeConstraint)}
+                      onAddConstraint={this.updateField(addConstraint)}
+                      onEditConstraint={this.updateField(editConstraint)}
+                    />
+                  )}
+            </div>
+            <FieldPopupFooter
+              create={create}
+              valid={valid}
+              activeTabIndex={activeTabIndex}
+              tabs={tabs}
+              onSelectIndex={this.handleSelectTab}
+              onSubmit={this.handleSubmit}
+              changed={changed}
+              needsMigrationIndex={errors.migrationValueMissing ? 1 : -1}
+              breaking={breaking}
+              name={name}
+              onReset={this.handleReset}
+              onConfirmBreakingChanges={this.handleSubmit}
+              onDelete={this.handleDelete}
+              onDeletePopupVisibilityChange={this.handleDeletePopupVisibilityChange}
+              onCancel={this.close}
+              initialField={this.props.field}
+              mutatedField={this.state.field}
+              nodeCount={nodeCount}
+            />
           </div>
-          <FieldPopupFooter
-            create={create}
-            valid={valid}
-            activeTabIndex={activeTabIndex}
-            tabs={tabs}
-            onSelectIndex={this.handleSelectTab}
-            onSubmit={this.handleSubmit}
-            changed={changed}
-            needsMigrationIndex={errors.migrationValueMissing ? 1 : -1}
-            breaking={breaking}
-            name={name}
-            onReset={this.handleReset}
-            onConfirmBreakingChanges={this.handleSubmit}
-            onDelete={this.handleDelete}
-            onDeletePopupVisibilityChange={this.handleDeletePopupVisibilityChange}
-            onCancel={this.close}
-            initialField={this.props.field}
-            mutatedField={this.state.field}
-          />
-        </div>
+        </ModalDocs>
         {loading && (
           <div className='loading'>
             <Loading />
@@ -290,12 +328,9 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private onKeyDown = (e: any) => {
-    if (e.keyCode === 27 && (e.target instanceof HTMLInputElement)) {
-      this.close()
-    }
     // if it is an input, only if it has the enter-event class
     if (e.keyCode === 13 && (
-      e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
+        e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
     ) {
       this.handleSubmit()
     }
@@ -413,6 +448,8 @@ class FieldPopup extends React.Component<Props, State> {
       input = {
         ...input,
         modelId,
+        // enumId: 'cj26domcw0f0m0143gglbv0zy',
+        // enumValues: [],
       }
 
       Relay.Store.commitUpdate(
@@ -512,6 +549,8 @@ const MappedFieldPopup = mapProps({
   nodeCount: props => props.viewer.model.itemCount,
   modelId: props => props.viewer.model.id,
   projectId: props => props.viewer.project.id,
+  enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
+  isGlobalEnumsEnabled: props => true,
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedFieldPopup, {
@@ -532,19 +571,23 @@ export default Relay.createContainer(MappedFieldPopup, {
           itemCount
         }
         field: fieldByName(
-          projectName: $projectName
-          modelName: $modelName
-          fieldName: $fieldName
+        projectName: $projectName
+        modelName: $modelName
+        fieldName: $fieldName
         ) @include(if: $fieldExists) {
           id
           name
           typeIdentifier
+          description
           isRequired
           isList
           isUnique
           isSystem
           enumValues
           defaultValue
+          enum {
+            id
+          }
           relation {
             id
           }
@@ -554,6 +597,15 @@ export default Relay.createContainer(MappedFieldPopup, {
         }
         project: projectByName(projectName: $projectName) {
           id
+          isGlobalEnumsEnabled
+          enums(first: 100) {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
         }
       }
     `,

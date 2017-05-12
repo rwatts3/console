@@ -23,6 +23,7 @@ interface Props {
   onDeletePopupVisibilityChange: (visible: boolean) => void
   initialField?: Field
   mutatedField: Field
+  nodeCount: number
 }
 
 interface State {
@@ -56,6 +57,7 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
       onCancel,
       mutatedField,
       initialField,
+      nodeCount,
     } = this.props
     const {showDeletePopup} = this.state
 
@@ -236,8 +238,12 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
   }
 
   private handleShowDeletePopup = () => {
-    this.props.onDeletePopupVisibilityChange(true)
-    this.setState({showDeletePopup: true})
+    if (this.props.nodeCount === 0) {
+      this.props.onDelete()
+    } else {
+      this.props.onDeletePopupVisibilityChange(true)
+      this.setState({showDeletePopup: true})
+    }
   }
 }
 
