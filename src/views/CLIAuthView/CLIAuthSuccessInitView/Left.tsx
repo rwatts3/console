@@ -12,7 +12,7 @@ const quickstartLogos = [
   require('graphcool-styles/icons/fill/reactLogoCentered.svg'),
   require('graphcool-styles/icons/fill/angularLogoCentered.svg'),
   require('graphcool-styles/icons/fill/vueLogoCentered.svg'),
-  require('graphcool-styles/icons/fill/iOSLogoCentered.svg'),
+  require('graphcool-styles/icons/fill/iosLogoCentered.svg'),
   require('graphcool-styles/icons/fill/androidLogoCentered.svg'),
 ]
 
