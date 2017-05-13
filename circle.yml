@@ -6,7 +6,7 @@ dependencies:
   override:
     - npm install -g yarn
     - rm -rf node_modules
-    - yarn install --force
+    - npm install
 
 test:
   override:
