@@ -266,7 +266,6 @@ class TypeBox extends React.Component<Props,State> {
                   <Link
                     to={`/${projectName}/models/${model.name}/databrowser`}
                     className='simple-button'
-                    onClick={this.handleDatabrowserClick}
                   >
                     <Icon
                       src={require('assets/icons/databrowser.svg')}
@@ -279,7 +278,6 @@ class TypeBox extends React.Component<Props,State> {
               <Link
                 to={`/${projectName}/models/${model.name}/databrowser`}
                 className='simple-button'
-                onClick={this.handleDatabrowserClick}
               >
                 <Icon
                   src={require('assets/icons/databrowser.svg')}
@@ -407,14 +405,11 @@ class TypeBox extends React.Component<Props,State> {
     )
   }
 
-  private handleDatabrowserClick = () => {
-    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
-      this.props.nextStep()
-    }
-  }
-
   private handleCreateFieldClick = () => {
-    if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL')) {
+    if (
+      this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL') ||
+      this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_FIELD_DESCRIPTION')
+    ) {
       this.props.nextStep()
     }
   }

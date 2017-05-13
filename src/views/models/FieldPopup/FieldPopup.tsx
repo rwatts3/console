@@ -146,8 +146,15 @@ class FieldPopup extends React.Component<Props, State> {
       this.props.nextStep()
     }
 
-    if (this.state.field.typeIdentifier === 'String' &&
-      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_IMAGEURL')) {
+    if (this.state.field.name.toLowerCase() === 'description'.toLowerCase() &&
+      this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_DESCRIPTION')) {
+      this.props.nextStep()
+    }
+
+    if (this.state.field.typeIdentifier === 'String' && (
+      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_IMAGEURL') ||
+      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_DESCRIPTION')
+    )) {
       this.props.nextStep()
     }
   }
@@ -485,7 +492,7 @@ class FieldPopup extends React.Component<Props, State> {
         return
       }
     } else {
-      if (this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_FIELD_DESCRIPTION')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CONFIRM_DESCRIPTION')) {
         if (this.state.field.name === 'description' && this.state.field.typeIdentifier === 'String') {
           this.props.showDonePopup()
           this.props.nextStep()

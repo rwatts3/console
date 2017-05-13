@@ -261,7 +261,7 @@ class AddType extends React.Component<Props, State> {
                 }}
                 steps={[{
                   step: 'STEP1_CREATE_POST_MODEL',
-                  title: `Save the Model "Post"`,
+                  title: `Save the "Post" Type`,
                 }]}
                 offsetX={15}
                 offsetY={5}

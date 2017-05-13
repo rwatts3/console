@@ -14,7 +14,6 @@ import {validateProjectName} from '../../utils/nameValidator'
 import {retryUntilDone} from '../../utils/utils'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
-import OnboardSideNav from './OnboardSideNav'
 import LoginView from '../../views/LoginView/LoginView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
 import {update} from '../../actions/gettingStarted'
@@ -32,6 +31,8 @@ import {onFailureShowNotification} from '../../utils/relay'
 import {ShowNotificationCallback} from '../../types/utils'
 import ResizableBox from '../../components/ResizableBox'
 import * as Dropzone from 'react-dropzone'
+import OnboardingBar from './Onboarding/OnboardingBar'
+import IntroPopup from './Onboarding/IntroPopup'
 
 interface State {
   showCreateProjectModal: boolean
@@ -254,10 +255,8 @@ class ProjectRootView extends React.PureComponent<Props, State> {
               >
                 {this.props.children}
               </div>
-              {this.props.gettingStartedState.isActive() &&
-                <div className='onboarding-nav'>
-                  <OnboardSideNav params={this.props.params}/>
-                </div>
+              {(this.props.gettingStartedState.isActive() || true) &&
+                <OnboardingBar/>
               }
             </div>
           </div>
@@ -267,12 +266,11 @@ class ProjectRootView extends React.PureComponent<Props, State> {
             {popup.element}
           </PopupWrapper>,
         )}
+        {/*<OnboardingPopup firstName={this.props.user.crm.information.name}/>*/}
         {this.props.gettingStartedState.isCurrentStep('STEP0_OVERVIEW') &&
-          <PopupWrapper>
-            <OnboardingPopup firstName={this.props.user.crm.information.name}/>
-          </PopupWrapper>
+          <IntroPopup />
         }
-        {(this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5') ||
+        {(
         this.props.gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_DONE')) &&

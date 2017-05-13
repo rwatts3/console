@@ -105,7 +105,7 @@ class PlaygroundCPopup extends React.Component<Props, State> {
   render() {
     const {mouseOver} = this.state
     const {selectedExample} = this.props.gettingStartedState
-    const hovering = !this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')
+    const hovering = false //!this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')
     const downloadUrl = (example) => `${__EXAMPLE_ADDR__}/?repository=${examples[example].path}&project_id=${this.props.projectId}&user=graphcool-examples` // tslint:disable-line
     const videoUrl = this.getExampleVideoUrl(selectedExample)
     return (
@@ -143,9 +143,10 @@ class PlaygroundCPopup extends React.Component<Props, State> {
               this.setState({ mouseOver: true })
             }}
             onMouseOver={(e: any) => {
-              if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')) {
-                this.props.nextStep()
-              }
+              console.log('on mouse over')
+              // if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5')) {
+              //   this.props.nextStep()
+              // }
             }}
           >
             <div className='ma-16 tc pb-25'>

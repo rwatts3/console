@@ -59,7 +59,7 @@ class PlaygroundBPopup extends React.Component<Props, State> {
 
   render() {
     const {mouseOver} = this.state
-    const hovering = this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART2')
+    const hovering = false//this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_BEGIN_PART2')
     return (
       <div
         className='flex justify-center items-start h-100'
@@ -89,11 +89,6 @@ class PlaygroundBPopup extends React.Component<Props, State> {
             }}
             onMouseLeave={() => this.setState({ mouseOver: false } as State)}
             onMouseEnter={() => this.setState({ mouseOver: true } as State)}
-            onClick={(e: any) => {
-              if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_PART2')) {
-                this.next()
-              }
-            }}
           >
             <TopWrapper className={cx($p.flexRow, $p.justifyCenter, $p.w100, $p.pt25, $p.pb16)}>
               <Icon

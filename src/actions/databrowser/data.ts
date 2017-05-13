@@ -156,16 +156,16 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
         dispatch(addNodeSuccess(Immutable.Map<string,any>(node)))
         dispatch(mutationSuccess())
 
-        const {gettingStartedState} = getState().gettingStarted
-        if (model.name === 'Post' && (
-            gettingStartedState.isCurrentStep('STEP3_CLICK_ENTER_DESCRIPTION') ||
-            gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE1') ||
-            gettingStartedState.isCurrentStep('STEP3_CLICK_SAVE_NODE1') ||
-            gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE2')
-          )) {
-          dispatch(showDonePopup())
-          dispatch(nextStep())
-        }
+        // const {gettingStartedState} = getState().gettingStarted
+        // if (model.name === 'Post' && (
+        //     gettingStartedState.isCurrentStep('STEP3_CLICK_ENTER_DESCRIPTION') ||
+        //     gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE1') ||
+        //     gettingStartedState.isCurrentStep('STEP3_CLICK_SAVE_NODE1') ||
+        //     gettingStartedState.isCurrentStep('STEP3_CLICK_ADD_NODE2')
+        //   )) {
+        //   dispatch(showDonePopup())
+        //   dispatch(nextStep())
+        // }
       })
       .catch((err) => {
         console.error(err)

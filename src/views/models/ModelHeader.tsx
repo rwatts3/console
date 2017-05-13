@@ -164,7 +164,6 @@ class ModelHeader extends React.Component<Props, State> {
               {schemaActive ? (
                 <BlueSettingsLink
                   to={`/${this.props.params.projectName}/models/${this.props.params.modelName}/databrowser`}
-                  onClick={this.dataViewOnClick}
                 >
                   <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/check.svg')}/>
                   <Tether
@@ -309,13 +308,6 @@ class ModelHeader extends React.Component<Props, State> {
           },
         )
       })
-  }
-
-  private dataViewOnClick = () => {
-    tracker.track(ConsoleEvents.Schema.doneEditingClick())
-    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
-      this.props.nextStep()
-    }
   }
 
   private handleModelModalClose = () => {
