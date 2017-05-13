@@ -106,7 +106,7 @@
     "react-ga": "^2.1.2",
     "react-helmet": "^3.1.0",
     "react-input-enhancements": "git+https://github.com/timsuchanek/react-input-enhancements#build",
-    "react-modal": "^1.6.5",
+    "react-modal": "1.6.5",
     "react-notification-system": "^0.2.7",
     "react-redux": "5.0.3",
     "react-relay": "0.10.0",
