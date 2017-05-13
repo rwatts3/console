@@ -323,6 +323,7 @@ export interface ActionHandlerWebhook {
 
 export interface User {
   id: string
+  createdAt?: string
 }
 
 export interface Node {
