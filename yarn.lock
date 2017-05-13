@@ -123,11 +123,7 @@
     "@types/history" "^2"
     "@types/react" "*"
 
-"@types/react@*":
-  version "15.0.24"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.0.24.tgz#8a75299dc37906df327c18ca918bf97a55e7123b"
-
-"@types/react@git+https://github.com/timsuchanek/-types-react":
+"@types/react@*", "@types/react@git+https://github.com/timsuchanek/-types-react":
   version "15.0.0"
   resolved "git+https://github.com/timsuchanek/-types-react#be06267dcde0889dc06c618db9f5477223cac51e"
 
@@ -1761,13 +1757,9 @@ codemirror-graphql@^0.6.3:
     graphql-language-service-interface "0.0.10"
     graphql-language-service-parser "^0.0.9"
 
-codemirror@^5.13.4, codemirror@^5.15.2, codemirror@^5.22.2:
+codemirror@5.25.2, codemirror@^5.15.2, codemirror@^5.18.2, codemirror@^5.22.2:
   version "5.25.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.25.2.tgz#8c77677ca9c9248d757d3a07ed1e89a8404850b7"
-
-codemirror@asdasda:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-3.12.00.tgz#93c92a12fe445f50e724d47e871b63346df299f0"
 
 color-convert@^0.5.3:
   version "0.5.3"
@@ -4460,7 +4452,7 @@ lodash.curry@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.curry/-/lodash.curry-4.1.1.tgz#248e36072ede906501d75966200a86dab8b23170"
 
-lodash.debounce@^4.0.4, lodash.debounce@^4.0.8:
+lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
@@ -4851,13 +4843,9 @@ mumath@^3.0.0:
   dependencies:
     almost-equal "^1.1.0"
 
-mute-stream@0.0.5:
+mute-stream@0.0.5, mute-stream@~0.0.4:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.5.tgz#8fbfabb0a98a253d3184331f9e8deb7372fac6c0"
-
-mute-stream@~0.0.4:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
 nan@^2.0.7, nan@^2.3.0, nan@^2.3.2:
   version "2.6.2"
@@ -6286,13 +6274,13 @@ react-base16-styling@^0.4.6, react-base16-styling@^0.4.7:
   version "1.1.1"
   resolved "git+https://github.com/tj/react-click-outside#a4d8fb01e655bd37fadcf05678343902210a04a1"
 
-react-codemirror@au9dha9s8dasd:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/react-codemirror/-/react-codemirror-0.2.6.tgz#e71e35717ce6effae68df1dbf2b5a75b84a44f84"
+react-codemirror@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-codemirror/-/react-codemirror-0.3.0.tgz#cd6bd6ef458ec1e035cfd8b3fe7b30c8c7883c6c"
   dependencies:
-    classnames "^2.2.3"
-    codemirror "^5.13.4"
-    lodash.debounce "^4.0.4"
+    classnames "^2.2.5"
+    codemirror "^5.18.2"
+    lodash.debounce "^4.0.8"
 
 react-copy-to-clipboard@^4.2.1:
   version "4.3.1"
