@@ -34,7 +34,7 @@ class Right extends React.Component<Props, {}> {
           <Auth0LockWrapper
             renderInElement
             successCallback={successCallback}
-            initialScreen='login'
+            initialScreen='signUp'
           />
         </div>
       </div>
