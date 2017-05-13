@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {ProjectType} from './ExampleProject'
+import { ProjectType } from '../types'
 const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor').QueryEditor
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   // schema: string
 }
 
-export default class ExampleProjectRight extends React.Component<Props, {}> {
+export default class Right extends React.Component<Props, {}> {
 
   render() {
     // const decodedSchema = decodeURIComponent(this.props.schema)

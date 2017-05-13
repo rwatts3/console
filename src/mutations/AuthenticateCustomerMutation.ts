@@ -5,7 +5,7 @@ interface Props {
   auth0IdToken: string
 }
 
-interface Response {
+export interface Response {
   token: string
   user: User
 }

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import {A} from '../../../components/Links'
+import { A } from '../../../components/Links'
 
 interface Props {
   className?: string
 }
 
-export default class AuthenticateLeft extends React.Component<Props, {}> {
+export default class Left extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -47,4 +47,3 @@ export default class AuthenticateLeft extends React.Component<Props, {}> {
     )
   }
 }
-

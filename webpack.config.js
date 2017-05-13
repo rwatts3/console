@@ -126,6 +126,7 @@ module.exports = {
       __GA_CODE__: false,
       __INTERCOM_ID__: '"rqszgt2h"',
       __STRIPE_PUBLISHABLE_KEY__: '"pk_test_BpvAdppmXbqmkv8NQUqHRplE"',
+      __CLI_AUTH_TOKEN_ENDPOINT__: JSON.stringify(process.env.CLI_AUTH_TOKEN_ENDPOINT || "https://cli-auth-api.graph.cool"),
       'process.env': {
         'NODE_ENV': JSON.stringify('dev'),
       },

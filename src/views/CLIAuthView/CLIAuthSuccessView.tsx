@@ -1,8 +1,25 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
-import {Button} from '../../components/Links'
+import { Icon, $v } from 'graphcool-styles'
+import { Button } from '../../components/Links'
+import * as cookiestore from 'cookiestore'
 
-export default class AlreadyAuthenticated extends React.Component<{}, {}> {
+interface Props {
+  location: any
+}
+
+export default class CLIAuthSuccessView extends React.Component<Props, {}> {
+
+  async componentWillMount() {
+    const {cliToken} = this.props.location.query
+
+    await fetch(`${__CLI_AUTH_TOKEN_ENDPOINT__}/update`, {
+      method: 'POST',
+      body: JSON.stringify({
+        authToken: cookiestore.get('graphcool_auth_token'),
+        cliToken,
+      }),
+    })
+  }
 
   render() {
     return (
@@ -65,7 +82,7 @@ export default class AlreadyAuthenticated extends React.Component<{}, {}> {
               You're already logged into the Graphcool console. There's nothing more to do for you here.
             </div>
             <div className='close-now'>You can close this window now.</div>
-            <div className='line' />
+            <div className='line'/>
             <div className='info'>If you're stuck somewhere, you'll find all the answers in our Docs.</div>
             <Button
               target='https://www.graph.cool/docs'
