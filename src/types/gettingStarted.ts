@@ -22,7 +22,7 @@ export type Step =
   'STEP3_RUN_MUTATION2' |
   'STEP3_SELECT_QUERY_TAB' |
   'STEP3_RUN_QUERY2' |
-  'STEP3_OPEN_FINAL_POPUP' |
+  // 'STEP3_OPEN_FINAL_POPUP' |
   // 'STEP3_CLICK_DATA_BROWSER' |
   // 'STEP3_CLICK_ADD_NODE1' |
   // 'STEP3_CLICK_ENTER_IMAGEURL' |
@@ -79,7 +79,7 @@ export class GettingStartedState {
     'STEP3_RUN_MUTATION2',
     'STEP3_SELECT_QUERY_TAB',
     'STEP3_RUN_QUERY2',
-    'STEP3_OPEN_FINAL_POPUP',
+    // 'STEP3_OPEN_FINAL_POPUP',
     // 'STEP3_CLICK_DATA_BROWSER',
     // 'STEP3_CLICK_ADD_NODE1',
     // 'STEP3_CLICK_ENTER_IMAGEURL',
@@ -93,7 +93,7 @@ export class GettingStartedState {
     // 'STEP4_CLICK_BEGIN_PART2',
     // 'STEP4_WAITING_PART2',
     // 'STEP4_CLICK_TEASER_STEP5',
-    'STEP5_SELECT_EXAMPLE',
+    // 'STEP5_SELECT_EXAMPLE',
     'STEP5_WAITING',
     'STEP5_DONE',
     'STEP6_CLOSED',
@@ -155,8 +155,8 @@ export class GettingStartedState {
       'STEP3_ENTER_MUTATION2_VALUE': () => ({index: 3, total: 4, done: 2}),
       'STEP3_RUN_MUTATION2': () => ({index: 3, total: 4, done: 2}),
       'STEP3_SELECT_QUERY_TAB': () => ({index: 3, total: 4, done: 3}),
-      'STEP3_RUN_QUERY2': () => ({index: 3, total: 4, done: 3}),
-      'STEP3_OPEN_FINAL_POPUP': () => ({index: 3, total: 4, done: 4}),
+      'STEP3_RUN_QUERY2': () => ({index: 3, total: 4, done: 4}),
+      // 'STEP3_OPEN_FINAL_POPUP': () => ({index: 3, total: 4, done: 4}),
 
       // 'STEP3_CLICK_DATA_BROWSER': () => ({ index: 3, total: 2, done: 0 }),
       // 'STEP3_CLICK_ADD_NODE1': () => ({ index: 3, total: 2, done: 0 }),
@@ -173,11 +173,11 @@ export class GettingStartedState {
       // 'STEP4_WAITING_PART2': () => ({ index: 4, total:  2, done: 1 }),
       // 'STEP4_CLICK_TEASER_STEP5': () => ({ index: 4, total: 2, done: 2 }),
 
-      'STEP5_SELECT_EXAMPLE': () => ({ index: 4, total: 0, done: 0 }),
-      'STEP5_WAITING': () => ({ index: 4, total: 0, done: 0 }),
-      'STEP5_DONE': () => ({ index: 4, total: 0, done: 0 }),
+      'STEP5_SELECT_EXAMPLE': () => ({ index: 3, total: 0, done: 0 }),
+      'STEP5_WAITING': () => ({ index: 3, total: 0, done: 0 }),
+      'STEP5_DONE': () => ({ index: 3, total: 0, done: 0 }),
 
-      'STEP6_CLOSED': () => ({ index: 5, total: 0, done: 0 }),
+      'STEP6_CLOSED': () => ({ index: 3, total: 0, done: 0 }),
     }[step]()
   }
 }

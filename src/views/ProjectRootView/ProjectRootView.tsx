@@ -33,6 +33,7 @@ import ResizableBox from '../../components/ResizableBox'
 import * as Dropzone from 'react-dropzone'
 import OnboardingBar from './Onboarding/OnboardingBar'
 import IntroPopup from './Onboarding/IntroPopup'
+import FinalPopup from './Onboarding/FinalPopup'
 
 interface State {
   showCreateProjectModal: boolean
@@ -255,7 +256,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
               >
                 {this.props.children}
               </div>
-              {(this.props.gettingStartedState.isActive() || true) &&
+              {this.props.gettingStartedState.isActive() &&
                 <OnboardingBar/>
               }
             </div>
@@ -274,9 +275,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         this.props.gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_DONE')) &&
-          <PopupWrapper>
-            <PlaygroundCPopup projectId={this.props.project.id} />
-          </PopupWrapper>
+          <FinalPopup projectId={this.props.project.id} />
         }
         <Alert />
         {this.state.showCreateProjectModal && (

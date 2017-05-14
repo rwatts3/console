@@ -3,9 +3,10 @@ import * as cn from 'classnames'
 import {Icon, $v} from 'graphcool-styles'
 import {connect} from 'react-redux'
 import {showCurrentStep} from '../../../actions/gettingStarted'
+import {GettingStartedState} from '../../../types/gettingStarted'
 
 interface Props {
-
+  gettingStartedState: GettingStartedState
 }
 
 interface State {
@@ -23,6 +24,9 @@ class OnboardingBar extends React.Component<Props, State> {
   }
 
   render() {
+    const progressPercentage = 100 * this.props.gettingStartedState.progress.index / 3
+    const progress = this.props.gettingStartedState.progress
+
     return (
       <div className='onboarding-bar'>
         <style jsx>{`
@@ -48,26 +52,41 @@ class OnboardingBar extends React.Component<Props, State> {
           }
         `}</style>
         <div className='progress-bar'>
-          <div className='progress' style={{width: '20%'}} />
+          <div className='progress' style={{width: `${progressPercentage}%`}} />
         </div>
         <div className='steps'>
           <div className='flex itemsCenter'>
             <h2>Get Started</h2>
-            <Step active n={1}>
-              Define Schema
-            </Step>
-            <Step n={2}>
-              Get Started with the API
-            </Step>
-            <Step n={3}>
-              Run example
-            </Step>
+            {steps.map(step => (
+              <Step active={step.n === progress.index} done={step.n < progress.index} n={step.n}>
+                {step.text}
+              </Step>
+            ))}
           </div>
         </div>
       </div>
     )
   }
 }
+
+const steps = [
+  {
+    n: 1,
+    text: 'Define Schema',
+  },
+  {
+    n: 2,
+    text: 'Get Started with the API',
+  },
+  {
+    n: 3,
+    text: 'Run example',
+  },
+]
+
+// const isActive = progress.index === data.index
+// const isComplete = progress.index > data.index
+
 
 interface StepProps {
   children?: any

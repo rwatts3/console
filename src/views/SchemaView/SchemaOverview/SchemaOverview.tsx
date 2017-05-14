@@ -73,7 +73,7 @@ class SchemaOverview extends React.Component<Props,State> {
               steps={[{
                 step: 'STEP1_CREATE_POST_MODEL',
                 title: `Create a Type called "Post"`,
-                description: 'Types represent a certain type of data. To manage our Instagram posts, the "Post" type will have an image URL and a description.', // tslint:disable-line
+                description: 'To manage our Instagram posts, the "Post" type will have an image URL and a description. Create a type and call it "Post".', // tslint:disable-line
               }]}
               offsetX={14}
               offsetY={-22}

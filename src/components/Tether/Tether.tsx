@@ -121,6 +121,12 @@ class Tether extends React.Component<Props, {}> {
               p {
                 @p: .white80, .f14, .mt10;
               }
+
+              .btn {
+                @p: .buttonShadow, .bgWhite, .blue, .ttu, .f12, .br2, .mt16, .fw6, .dib, .pointer;
+                letter-spacing: 0.5px;
+                padding: 8px 11px;
+              }
             `}</style>
             <div className='tether-content'>
               <h2>
@@ -132,17 +138,8 @@ class Tether extends React.Component<Props, {}> {
                 </p>
               )}
               {step.buttonText && (
-                <div
-                  className='flex justify-center mb3 mt2'
-                  onClick={(e: any) => {
-                    if (typeof this.props.onClick === 'function') {
-                      this.props.onClick(e, step)
-                    }
-                  }}
-                >
-                  <div className='pa2 br2 bg-transparent tc ba b--white white pointer dim'>
-                    {step.buttonText}
-                  </div>
+                <div className='btn' onClick={(e) => this.props.onClick(e, step)}>
+                  {step.buttonText}
                 </div>
               )}
             </div>
