@@ -84,4 +84,5 @@ type User implements Node {
   createdAt: DateTime!
   id: ID! @isUnique
   updatedAt: DateTime!
+}
 `
