@@ -1,21 +1,21 @@
 import * as React from 'react'
 import Auth0LockWrapper from '../../components/Auth0LockWrapper/Auth0LockWrapper'
 import { Response } from '../../mutations/AuthenticateCustomerMutation'
-import { withRouter } from 'react-router'
 
 interface Props {
   initialScreen: 'login' | 'signUp'
-  router: any
 }
 
-class AuthView extends React.Component<Props, {}> {
+export default class AuthView extends React.Component<Props, {}> {
 
   render() {
     const successCallback = (response: Response) => {
       if (new Date().getTime() - new Date(response.user.createdAt).getTime() < 60000) {
-        this.props.router.push('/after-signup')
+        // this is a workaround instead of using the router to re-setup relay
+        window.location.pathname = '/after-signup'
       } else {
-        this.props.router.push('/')
+        // this is a workaround instead of using the router to re-setup relay
+        window.location.pathname = '/'
       }
     }
 
@@ -28,5 +28,3 @@ class AuthView extends React.Component<Props, {}> {
     )
   }
 }
-
-export default withRouter(AuthView)
