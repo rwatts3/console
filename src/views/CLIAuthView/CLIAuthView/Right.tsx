@@ -1,12 +1,10 @@
 import * as React from 'react'
 import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrapper'
 import { withRouter } from 'react-router'
-import { Response } from '../../../mutations/AuthenticateCustomerMutation'
-import { ProjectType } from '../types'
 
 interface Props {
-  className?: string
-  projectType: ProjectType
+  updateAuth: (cliToken: string) => Promise<void>
+  redirectUrl: string
   cliToken: string
   loading: boolean
   router: any
@@ -15,22 +13,26 @@ interface Props {
 class Right extends React.Component<Props, {}> {
 
   render() {
-    const successCallback = async (response: Response) => {
+    const successCallback = async () => {
+      await this.props.updateAuth(this.props.cliToken)
 
-      const redirect = this.redirectURL()
-      this.props.router.push(redirect)
+      if (this.props.redirectUrl.startsWith('http')) {
+        window.location.href = this.props.redirectUrl
+      } else {
+        this.props.router.push(this.props.redirectUrl)
+      }
     }
 
     return (
       <div
-        className={`authenticate-right ${this.props.className}`}
+        className={`authenticate-right ml60`}
       >
         <style jsx={true}>{`
         .authenticate-right :global(.auth0-lock-header) {
           @p: .dn;
         }
       `}</style>
-        <div style={{ display: this.props.loading ? 'none' : undefined }}>
+        <div style={{display: this.props.loading ? 'none' : undefined}}>
           <Auth0LockWrapper
             renderInElement
             successCallback={successCallback}
@@ -41,12 +43,6 @@ class Right extends React.Component<Props, {}> {
     )
   }
 
-  private redirectURL = (): string => {
-    if (this.props.projectType) {
-      return `/cli/auth/success-init?cliToken=${this.props.cliToken}&projectType=${this.props.projectType}`
-    }
-    return `/cli/auth/success?cliToken=${this.props.cliToken}`
-  }
 }
 
 export default withRouter(Right)

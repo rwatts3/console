@@ -1,28 +1,22 @@
 import * as React from 'react'
-import { ProjectType } from '../types'
+import { Link } from 'react-router'
+import { A } from '../../../components/Links'
 const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor').QueryEditor
 
-interface Props {
-  projectType: ProjectType
-  // schema: string
-}
-
-export default class Right extends React.Component<Props, {}> {
+export default class Right extends React.Component<{}, {}> {
 
   render() {
-    // const decodedSchema = decodeURIComponent(this.props.schema)
-    // console.log(`Decoded schema: ${decodedSchema}`)
     return (
       <div className='example-project-right'>
         <style jsx={true}>{`
           .example-project-right {
-            @p: .flex, .flexColumn, .pl38, .pr60, .flexFixed;
+            @p: .flex, .flexColumn, .justifyCenter, .pl38, .pr60, .pv60, .flexFixed;
             background-color: #0f202d;
             max-width: 536px;
           }
 
           .title {
-            @p: .pl10, .pt60, .white70, .f25, .fw6;
+            @p: .pl10, .white70, .f25, .fw6;
           }
 
           .subtitle {
@@ -49,23 +43,22 @@ export default class Right extends React.Component<Props, {}> {
             background: none;
           }
         `}</style>
-        <div className='title'>How to use our CLI</div>
+        <div className='title'>Local development workflow</div>
         <div className='subtitle'>
-          We created a file called <span className='project-file'>project.graphcool</span> in your current folder.
-          All you can do with your project is in there.
+          There is now a file called <span className='project-file'>project.graphcool</span> in your current folder.
+          Open it in your editor to update your schema. Learn more in the&nbsp;
+          <A target='https://www.graph.cool/docs/reference/cli/project-files-ow2yei7mew/'>docs</A>
         </div>
 
         <div className='editor'>
           <QueryEditor
-            value={this.props.projectType === 'instagram' ?
-              instagramExampleProjectFileContents : blankExampleProjectFileContents}
+            value={blankExampleProjectFileContents}
             readOnly={true}
           />
         </div>
 
         <div className='info'>
-          If you make changes to it, just push them to the console
-          with <span className='code'>$graphcool push</span>.
+          You can apply your local changes via <span className='code'>`graphcool push`</span>.
         </div>
       </div>
     )
@@ -85,35 +78,6 @@ type File implements Node {
   size: Int!
   updatedAt: DateTime!
   url: String! @isUnique
-}
-
-type User implements Node {
-  createdAt: DateTime!
-  id: ID! @isUnique
-  updatedAt: DateTime!
-`
-
-const instagramExampleProjectFileContents = `\
-# project: <your-project-id>
-# version: 1
-
-type File implements Node {
-  contentType: String!
-  createdAt: DateTime!
-  id: ID! @isUnique
-  name: String!
-  secret: String! @isUnique
-  size: Int!
-  updatedAt: DateTime!
-  url: String! @isUnique
-}
-
-type Post implements Node {
-  createdAt: DateTime!
-  description: String!
-  id: ID! @isUnique
-  imageUrl: String!
-  updatedAt: DateTime!
 }
 
 type User implements Node {

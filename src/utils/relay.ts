@@ -21,7 +21,6 @@ export function updateNetworkLayer (): void {
 
     injectNetworkLayer(layer)
   } catch (e) {
-    console.log('fu')
     console.error(e)
   }
 }

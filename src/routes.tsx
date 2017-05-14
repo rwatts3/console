@@ -149,10 +149,9 @@ export default (
   <Route path='/' component={RootView}>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render}/>
     <Route path='token' component={TokenRedirectView}/>
-    <Route path='cli/auth' component={CLIAuthView} render={render}
-           onEnter={CLIAuthView.routeRedirectWhenAuthenticated}/>
-    <Route path='cli/auth/success' component={CLIAuthSuccessView} render={render}/>
-    <Route path='cli/auth/success-init' component={CLIAuthSuccessInitView} render={render}/>
+    <Route path='cli/auth' component={CLIAuthView} onEnter={CLIAuthView.routeRedirectWhenAuthenticated}/>
+    <Route path='cli/auth/success' component={CLIAuthSuccessView}/>
+    <Route path='cli/auth/success-init' component={CLIAuthSuccessInitView}/>
     <Route path='reset-password' component={ResetPasswordView}/>
     <Route path='signup' component={() => <AuthView initialScreen='signUp'/>}/>
     <Route path='login' component={() => <AuthView initialScreen='login'/>}/>
