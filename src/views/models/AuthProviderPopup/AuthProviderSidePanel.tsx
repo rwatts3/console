@@ -626,7 +626,7 @@ const texts: {[key: string]: AuthText} = {
     },
   },
   'anonymous-auth-provider': {
-    title: 'Graphcoool Anonymous Auth',
+    title: 'Graphcool Anonymous Auth',
     description: 'The anonymous auth provider can be used if you need temporary sessions.',
     link: {
       href: 'https://graph.cool/docs/reference/platform/authentication-wejileech9',
