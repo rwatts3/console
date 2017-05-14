@@ -1,25 +1,11 @@
 import * as React from 'react'
 import { Icon, $v } from 'graphcool-styles'
 import { Button } from '../../components/Links'
-import * as cookiestore from 'cookiestore'
 
 interface Props {
-  location: any
 }
 
 export default class CLIAuthSuccessView extends React.Component<Props, {}> {
-
-  async componentWillMount() {
-    const {cliToken} = this.props.location.query
-
-    await fetch(`${__CLI_AUTH_TOKEN_ENDPOINT__}/update`, {
-      method: 'POST',
-      body: JSON.stringify({
-        authToken: cookiestore.get('graphcool_auth_token'),
-        cliToken,
-      }),
-    })
-  }
 
   render() {
     return (
@@ -40,21 +26,17 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
           }
 
           .title {
-            @p: .f38, .fw6, .white, .mb38;
+            @p: .f38, .fw6, .white;
           }
 
           .subtitle {
-            @p: .f20, .white50;
-          }
-
-          .close-now {
-            @p: .f20, .white50, .fw6;
+            @p: .f20, .white50, .mt20;
           }
 
           .line {
             @p: .o20, .w100, .mv38;
-            height: 2px;
-            border: solid 2px #ffffff;
+            height: 0px;
+            border: solid 1px #ffffff;
           }
 
           .call-to-action {
@@ -77,18 +59,15 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
         </div>
         <div className='content'>
           <div>
-            <div className='title'>You're authenticated!</div>
-            <div className='subtitle'>
-              You're already logged into the Graphcool console. There's nothing more to do for you here.
-            </div>
-            <div className='close-now'>You can close this window now.</div>
+            <div className='title'>Successfully authenticated ✅</div>
+            <div className='subtitle'>You can now close this tab.</div>
             <div className='line'/>
-            <div className='info'>If you're stuck somewhere, you'll find all the answers in our Docs.</div>
+            <div className='info'>You can also continue in the Console to see your projects.</div>
             <Button
-              target='https://www.graph.cool/docs'
+              target='/'
               green
               className='mt25'>
-              Read the docs
+              Open Console
             </Button>
           </div>
         </div>

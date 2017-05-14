@@ -1,1 +1,1 @@
-export type ProjectType = 'instagram' | 'blank'
+export type AuthTrigger = 'auth' | 'init' | 'quickstart'

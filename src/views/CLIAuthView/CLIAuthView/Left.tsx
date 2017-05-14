@@ -26,7 +26,6 @@ export default class Left extends React.Component<Props, {}> {
 
           .subtitle {
             @p: .f20, .white50, .mt38;
-            width: 540px;
           }
 
           .call-to-action {
@@ -38,11 +37,12 @@ export default class Left extends React.Component<Props, {}> {
           <img src={require('../../../assets/graphics/terminal.svg')}/>
           <div className='graphcool-cli-says'>graphcool-cli says...</div>
         </div>
-        <div className='title'>You need to authenticate first.</div>
+        <div className='title'>Authenticate to continue.</div>
         <div className='subtitle'>
-          We will create an account for you that handles your first project, and hopefully many more to come.
+          Sign in to your existing account or easily create a new one.<br />
+          It will only take a few seconds.
         </div>
-        <A className='mt38' target=''>Learn more on our website</A>
+        <A className='mt38' target='https://www.graph.cool'>Learn more on our website</A>
       </div>
     )
   }
