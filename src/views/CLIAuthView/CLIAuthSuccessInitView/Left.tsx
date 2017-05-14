@@ -71,7 +71,7 @@ export default class Left extends React.Component<{}, {}> {
               className='mv38'
               width='560'
               height='315'
-              src='https://www.youtube.com/embed/SooujCyMHe4'
+              src='https://www.youtube.com/embed/sf0ZkyalSTg'
               frameBorder='0'
               allowFullScreen
             />
