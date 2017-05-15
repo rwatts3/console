@@ -571,10 +571,10 @@ class DatabrowserView extends React.PureComponent<Props, State> {
 
   private documentKeyDown = (e: any): void => {
     // match on cmd+f/ctrl+f
-    if (e.keyCode === 70 && (e.metaKey || e.ctrlKey)) {
-      this.props.toggleSearch()
-      e.preventDefault()
-    }
+    // if (e.keyCode === 70 && (e.metaKey || e.ctrlKey)) {
+    //   this.props.toggleSearch()
+    //   e.preventDefault()
+    // }
   }
 
   private onKeyDown = (e: any): void => {
