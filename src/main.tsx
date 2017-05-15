@@ -77,7 +77,7 @@ const reducers = combineReducers({
 let middlewares = [thunk.default]
 
 if (process.env.NODE_ENV !== 'production') {
-  // middlewares.push(createLogger())
+  middlewares.push(createLogger())
 }
 
 const store = createStore(reducers, compose(

@@ -139,6 +139,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   private fieldColumnWidths: FieldWidths
   private mounted: boolean
   private ref: Element
+  private wrapperRef: any
 
   private setSearchQueryThrottled = throttle(
     (q: string) => {
@@ -305,6 +306,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         <div
           className={`${classes.table} ${this.props.loading ? classes.loading : ''}`}
           id='data-browser-view-wrapper'
+          ref={ref => this.wrapperRef = ref}
         >
           <div
             className={`${classes.tableContainer} w-100`}
@@ -575,6 +577,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     //   this.props.toggleSearch()
     //   e.preventDefault()
     // }
+    this.onKeyDown(e)
   }
 
   private onKeyDown = (e: any): void => {
