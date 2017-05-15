@@ -84,10 +84,6 @@ export default class Left extends React.Component<{}, {}> {
               hideArrow
               green
               className='mt25 mr10'>Open Console</Button>
-            <Button
-              target='https://www.graph.cool/docs/'
-              white
-              className='mt25'>Docs</Button>
           </div>
         </div>
       </div>
