@@ -73,12 +73,12 @@ class OnboardSideNav extends React.Component<Props, {}> {
               index: 5,
               text: 'Run example app',
             })}
-            {(this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1') ||
-              this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) &&
-              <div className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer' onClick={this.props.previousStep}>
-                Show task again
-              </div>
-            }
+            {/*{(this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART1') ||*/}
+              {/*this.props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')) &&*/}
+              {/*<div className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer' onClick={this.props.previousStep}>*/}
+                {/*Show task again*/}
+              {/*</div>*/}
+            {/*}*/}
             {!this.props.gettingStartedState.step.includes('STEP5') && (
               <div
                 className='bg-white br-2 dib f-16 mt-25 pv-10 ph-16 pointer'

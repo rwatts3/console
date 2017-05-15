@@ -35,7 +35,7 @@ export default class EnumEditor extends React.Component<Props, State> {
           @p: .flex, .itemsCenter, .flexWrap;
         }
         .value {
-          @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10, .pointer, .flex, .itemsCenter;
+          @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10, .pointer, .flex, .itemsCenter, .mb6;
         }
         .value:hover {
           @p: .bgBlack20, .black70;

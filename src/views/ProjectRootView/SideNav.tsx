@@ -211,7 +211,6 @@ export class SideNav extends React.PureComponent<Props, State> {
             text='Data'
             size={16}
             minimalHighlight
-            onClick={this.handleDatabrowserClick}
             small={!this.props.expanded}
           />
           {location.pathname.endsWith('databrowser') && (
@@ -273,16 +272,10 @@ export class SideNav extends React.PureComponent<Props, State> {
     )
   }
 
-  private handleDatabrowserClick = () => {
-    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
-      this.props.nextStep()
-    }
-  }
-
   private renderPlayground = () => {
     const playgroundPageActive = this.props.router.isActive(`/${this.props.params.projectName}/playground`)
     const showGettingStartedOnboardingPopup = () => {
-      if (this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_PLAYGROUND')) {
+      if (this.props.gettingStartedState.isCurrentStep('STEP3_OPEN_PLAYGROUND')) {
         this.props.nextStep()
       }
     }
@@ -330,9 +323,9 @@ export class SideNav extends React.PureComponent<Props, State> {
             <Tether
               side='top'
               steps={[{
-                step: 'STEP4_CLICK_PLAYGROUND',
+                step: 'STEP3_OPEN_PLAYGROUND',
                 title: 'Open the Playground',
-                description: 'Now that we have defined our data model and added example data it\'s time to send some queries to our backend!', // tslint:disable-line
+                description: 'Now that we have defined our Post type it\'s time to use the GraphQL API!', // tslint:disable-line
               }]}
               offsetY={-20}
               width={280}

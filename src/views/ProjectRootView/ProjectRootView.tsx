@@ -8,7 +8,6 @@ import * as cx from 'classnames'
 import mapProps from '../../components/MapProps/MapProps'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import OnboardingPopup from '../../components/onboarding/OnboardingPopup/OnboardingPopup'
-import PlaygroundCPopup from '../../components/onboarding/PlaygroundCPopup/PlaygroundCPopup'
 import {connect} from 'react-redux'
 import {validateProjectName} from '../../utils/nameValidator'
 import {retryUntilDone} from '../../utils/utils'
@@ -32,6 +31,9 @@ import {onFailureShowNotification} from '../../utils/relay'
 import {ShowNotificationCallback} from '../../types/utils'
 import ResizableBox from '../../components/ResizableBox'
 import * as Dropzone from 'react-dropzone'
+import OnboardingBar from './Onboarding/OnboardingBar'
+import IntroPopup from './Onboarding/IntroPopup'
+import FinalPopup from './Onboarding/FinalPopup'
 
 interface State {
   showCreateProjectModal: boolean
@@ -255,9 +257,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
                 {this.props.children}
               </div>
               {this.props.gettingStartedState.isActive() &&
-                <div className='onboarding-nav'>
-                  <OnboardSideNav params={this.props.params}/>
-                </div>
+                <OnboardingBar/>
               }
             </div>
           </div>
@@ -267,18 +267,15 @@ class ProjectRootView extends React.PureComponent<Props, State> {
             {popup.element}
           </PopupWrapper>,
         )}
+        {/*<OnboardingPopup firstName={this.props.user.crm.information.name}/>*/}
         {this.props.gettingStartedState.isCurrentStep('STEP0_OVERVIEW') &&
-          <PopupWrapper>
-            <OnboardingPopup firstName={this.props.user.crm.information.name}/>
-          </PopupWrapper>
+          <IntroPopup />
         }
-        {(this.props.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_STEP5') ||
+        {(
         this.props.gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_DONE')) &&
-          <PopupWrapper>
-            <PlaygroundCPopup projectId={this.props.project.id} />
-          </PopupWrapper>
+          <FinalPopup projectId={this.props.project.id} />
         }
         <Alert />
         {this.state.showCreateProjectModal && (

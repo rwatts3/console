@@ -7,7 +7,7 @@ import {Icon, $v} from 'graphcool-styles'
 // An example use of Resizable.
 export default class ResizableBox extends React.Component<any,any> {
   static propTypes = {
-    height: PropTypes.number,
+    height: PropTypes.any,
     width: PropTypes.number,
     hideArrow: PropTypes.bool,
   }

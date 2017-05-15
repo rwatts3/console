@@ -119,10 +119,16 @@ export default class BaseSettings extends React.Component<Props,State> {
           showErrors={showErrors}
         />
         <Tether
-          steps={[{
-            step: 'STEP2_SELECT_TYPE_IMAGEURL',
-            title: 'Select the type "String"',
-          }]}
+          steps={[
+            {
+              step: 'STEP2_SELECT_TYPE_IMAGEURL',
+              title: 'Select the type "String"',
+            },
+            {
+              step: 'STEP2_SELECT_TYPE_DESCRIPTION',
+              title: 'Select the type "String"',
+            },
+          ]}
           offsetX={5}
           offsetY={5}
           width={240}
@@ -222,6 +228,7 @@ export default class BaseSettings extends React.Component<Props,State> {
                 const enumId = this.props.enums.find(e => e.name === name).id
                 this.props.onChangeEnumId(enumId)
               }}
+              disabled={!active}
             >
               {({style, ...inputProps}) => {
                 const newStyle = {

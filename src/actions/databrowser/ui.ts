@@ -41,10 +41,6 @@ export function toggleNewRow(fields: Field[], modelNamePlural: string): ReduxThu
         row: -1,
         field: firstNonReadonlyField.name,
       }))
-
-      if (step === 'STEP3_CLICK_ADD_NODE1') {
-        dispatch(nextStep())
-      }
     }
 
     dispatch({

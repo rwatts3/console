@@ -30,7 +30,7 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
       <div className={cn('container', {'none-selected': selectedIndex === -1, small, readOnly, spread}, className)}>
         <style jsx>{`
           .container {
-            @inherit: .flex, .itemsCenter, .justifyCenter, .mv38, .relative, .ph16, .w100, .bbox;
+            @p: .flex, .itemsCenter, .justifyCenter, .mv38, .relative, .ph16, .w100, .bbox;
             height: 42px;
           }
           .container.spread {
@@ -122,7 +122,11 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
         {choices.map((choice, i) => {
           const disabled = disabledIndeces && disabledIndeces.includes(i)
           return (
-            <div className={cn('flex flexColumn justifyCenter outer-element', {disabled})}>
+            <div
+              className={cn('flex flexColumn justifyCenter outer-element', {disabled})}
+              tabIndex={0}
+              onFocus={() => onChange(i, choice)}
+            >
               <div
                 className={cn('element', {selected: selectedIndex === i})}
                 key={i}

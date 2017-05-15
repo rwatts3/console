@@ -88,39 +88,9 @@ class NewRow extends React.Component<Props, State> {
         onKeyDown={this.keyDown}
       >
         {fields.map((field, index) => {
-          if (
-            (step === 'STEP3_CLICK_ENTER_IMAGEURL' && field.name === 'imageUrl') ||
-            (step === 'STEP3_CLICK_ENTER_DESCRIPTION' && field.name === 'description')
-          ) {
-            return (
-              <Tether
-                steps={[{
-                    step: 'STEP3_CLICK_ENTER_IMAGEURL',
-                    title: 'Enter an image url such as this one.',
-                    buttonText: 'Use example value',
-                    copyText: 'http://i.imgur.com/5ACuqm4.jpg',
-                  }, {
-                    step: 'STEP3_CLICK_ENTER_DESCRIPTION',
-                    title: 'Now enter a cool description.',
-                    description: `Please put "#graphcool" in the description.`, // tslint:disable-line
-                    buttonText: 'Use example value',
-                    copyText: '#graphcool',
-                  },
-                ]}
-                width={300}
-                offsetX={5}
-                offsetY={0}
-                zIndex={2000}
-                onClick={this.handleTetherClick}
-              >
-                {this.renderCell(field, index, inputIndex, fields)}
-              </Tether>
-              )
-          } else {
-            return (
-              this.renderCell(field, index, inputIndex, fields)
-            )
-          }
+          return (
+            this.renderCell(field, index, inputIndex, fields)
+          )
         })}
         <div
           className={classnames(classes.buttons, {
@@ -202,38 +172,8 @@ class NewRow extends React.Component<Props, State> {
     }
   }
 
-  private handleTetherClick = (e: any, tether: TetherStep) => {
-    if (tether.step === 'STEP3_CLICK_ENTER_IMAGEURL') {
-      const fields = this.getFields()
-      const imageUrlField = fields.find(field => field.name === 'imageUrl')
-
-      this.update(tether.copyText as TypedValue, imageUrlField, () => {
-        this.props.nextCell(this.getFields())
-        this.props.nextStep()
-      })
-    }
-
-    if (tether.step === 'STEP3_CLICK_ENTER_DESCRIPTION') {
-      const fields = this.getFields()
-      const descriptionField = fields.find(field => field.name === 'description')
-
-      this.update(tether.copyText as TypedValue, descriptionField, () => {
-        setTimeout(
-          () => {
-            this.props.nextStep()
-          },
-          1000,
-        )
-      })
-    }
-  }
-
   private update = (value: TypedValue, field: Field, callback) => {
     this.props.updateCalled()
-    if (this.props.gettingStarted.isCurrentStep('STEP3_CLICK_ENTER_IMAGEURL') &&
-        field.name === 'imageUrl') {
-      this.props.nextStep()
-    }
 
     const {fieldValues} = this.state
     fieldValues[field.name].value = value

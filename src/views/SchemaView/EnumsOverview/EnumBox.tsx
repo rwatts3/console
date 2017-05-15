@@ -264,12 +264,6 @@ class EnumBox extends React.Component<Props,State> {
     this.setState({values} as State)
   }
 
-  private handleDatabrowserClick = () => {
-    if (this.props.gettingStartedState.isCurrentStep('STEP3_CLICK_DATA_BROWSER')) {
-      this.props.nextStep()
-    }
-  }
-
   private handleCreateFieldClick = () => {
     if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL')) {
       this.props.nextStep()

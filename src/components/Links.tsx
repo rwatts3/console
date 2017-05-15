@@ -15,10 +15,13 @@ interface Props {
   target?: string
   children?: any
   className?: string
+  onClick?: () => void
 }
 
 export function A(
-  {hideArrow, primary, button, green, white, gray, greenOnWhite, arrowToBottom, target, children, className}: Props,
+  {
+    hideArrow, primary, button, green, white, gray, greenOnWhite, arrowToBottom, target, children, className, onClick,
+  }: Props,
 ) {
   const isExternal = target && (target.startsWith('http') || target.startsWith('mailto'))
   return (
@@ -29,6 +32,7 @@ export function A(
           primary, button, green, 'green-on-white': greenOnWhite, white, arrowToBottom, gray,
         },
       )}
+      onClick={onClick}
     >
       <style jsx={true}>{`
         .link {
@@ -208,7 +212,7 @@ export function A(
 }
 
 export function Button(
-  {hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className}: Props,
+  {hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className, onClick}: Props,
 ) {
   return (
 
@@ -222,6 +226,7 @@ export function Button(
       arrowToBottom={arrowToBottom}
       target={target}
       className={className}
+      onClick={onClick}
     >
       {children || null}
     </A>
