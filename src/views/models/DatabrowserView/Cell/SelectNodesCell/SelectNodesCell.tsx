@@ -428,7 +428,6 @@ class SelectNodesCell extends React.Component<Props, State> {
           newState as State,
           () => {
             if (goingforAll) {
-              console.log('going for all, getting items from state')
               this.getItemsFromState()
             }
           },
