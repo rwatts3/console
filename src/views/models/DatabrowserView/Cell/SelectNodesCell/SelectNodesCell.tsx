@@ -307,7 +307,7 @@ class SelectNodesCell extends React.Component<Props, State> {
       filter = ' filter: {'
       if (query && query.length) {
         filter += 'OR: ['
-        const whiteList = ['GraphQLID', 'String', 'Enum']
+        const whiteList = ['GraphQLID', 'String']
 
         const filtered = fields.filter((field: Field) => {
           return whiteList.indexOf(field.typeIdentifier.toString()) > -1
@@ -403,8 +403,11 @@ class SelectNodesCell extends React.Component<Props, State> {
           count: meta.count,
         }
 
+        let goingforAll = false
         if (this.firstQuery && meta.count === 0) {
           newState['selectedTabIndex'] = 0
+          this.firstQuery = false
+          goingforAll = true
         }
 
         if (this.lastQuery !== this.state.query) {
@@ -421,7 +424,15 @@ class SelectNodesCell extends React.Component<Props, State> {
           )
         }
 
-        this.setState(newState as State)
+        this.setState(
+          newState as State,
+          () => {
+            if (goingforAll) {
+              console.log('going for all, getting items from state')
+              this.getItemsFromState()
+            }
+          },
+        )
 
         this.lastQuery = query
         this.firstQuery = false
