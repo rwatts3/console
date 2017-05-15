@@ -268,6 +268,7 @@ class SchemaEditor extends React.Component<Props, State> {
       new MigrateProject({
         newSchema,
         isDryRun,
+        force: true,
       }),
       {
         onSuccess: (res) => {
