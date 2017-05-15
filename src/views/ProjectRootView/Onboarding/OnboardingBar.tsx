@@ -26,7 +26,6 @@ class OnboardingBar extends React.Component<Props, State> {
   render() {
     const progressPercentage = (100 * (this.props.gettingStartedState.progress.index - 1)) / 3
     const progress = this.props.gettingStartedState.progress
-    console.log(progress, progressPercentage)
 
     return (
       <div className='onboarding-bar'>
