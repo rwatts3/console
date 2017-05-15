@@ -10,7 +10,8 @@ import PopupFooter from '../../../components/PopupFooter'
 import {Model, Project, ServerlessFunction} from '../../../types/types'
 import {
   didChange, getDefaultSSSQuery,
-  getEmptyFunction, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName, updateOperation,
+  getEmptyFunction, inlineCode, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName,
+  updateOperation,
   updateQuery,
   updateWebhookHeaders,
   updateWebhookUrl,
@@ -66,7 +67,7 @@ const customModalStyle = {
   overlay: modalStyle.overlay,
   content: {
     ...modalStyle.content,
-    width: 788,
+    width: 820,
   },
 }
 
@@ -98,7 +99,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       activeTabIndex: 0,
       editing: Boolean(props.node),
       showErrors: false,
-      fn: props.node || getEmptyFunction(props.models, props.functions),
+      fn: props.node || getEmptyFunction(props.models, props.functions, 'RP'),
       loading: false,
       eventType: getEventTypeFromFunction(props.node),
       isInline: getIsInline(props.node),
@@ -249,6 +250,11 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   onChangeQuery={this.update(updateQuery)}
                   eventType={eventType}
                   projectId={this.props.project.id}
+                  sssModelName={this.state.sssModelName}
+                  modelName={
+                    fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
+                  }
+                  operation={fn.operation}
                 />
               )}
             </div>
@@ -365,6 +371,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private handleEventTypeChange = (eventType: EventType) => {
     this.setState({eventType} as FunctionPopupState)
+    this.update(updateInlineCode)(inlineCode(eventType))
   }
 
   private update = (func: Function, done?: Function) => {
@@ -648,6 +655,7 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           binding
           model {
             id
+            name
           }
           operation
         }

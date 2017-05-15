@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {FunctionBinding} from '../../../types/types'
+import {FunctionBinding, Model, RequestPipelineMutationOperation} from '../../../types/types'
 import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
 import StepMarker from './StepMarker'
 import {getText} from './data'
@@ -24,6 +24,9 @@ interface Props {
   onChangeQuery: (query: string) => void
   eventType: EventType
   projectId: string
+  sssModelName: string
+  modelName?: string
+  operation?: RequestPipelineMutationOperation
 }
 
 interface State {
@@ -62,7 +65,11 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           }
           .pre {
             @p: .mono, .bgDarkBlue07, .br2, .ml4;
-            padding: 1px 2px;
+            padding: 1px 3px;
+          }
+          pre {
+            @p: .purple, .code, .br2, .bgDarkBlue04, .mh6, .dib, .f14;
+            padding: 2px 4px;
           }
         `}</style>
         <input
@@ -80,7 +87,10 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           <p>
             By creating a function at
             <span className='pre'>{binding}</span>
-            {getText(binding)}
+            {getText(binding)} <br/>
+            Your function will be called when a
+            <span className='pre'>{this.props.modelName}</span> is
+            <span className='pre'>{this.props.operation.toLowerCase()}d</span>
           </p>
         )}
         {eventType === 'SSS' && (
@@ -94,6 +104,15 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             write a function that get’s executed every time.
           </p>
         )}
+        <p>
+          The <pre>input</pre> argument represents the payload of the subscription. <br/>
+          <pre style={{marginLeft: 0}}>log()</pre> can be used to print data to the logs. <br/>
+          {eventType === 'RP' && (
+            <span>
+              You can either return a value or use the <pre>cb()</pre> function if you have an async flow.
+            </span>
+          )}
+        </p>
         <RequestPipelineFunctionInput
           schema={schema}
           onChange={onInlineCodeChange}
@@ -109,6 +128,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onChangeQuery={this.props.onChangeQuery}
           query={this.props.query}
           projectId={this.props.projectId}
+          sssModelName={this.props.sssModelName}
         />
       </div>
     )

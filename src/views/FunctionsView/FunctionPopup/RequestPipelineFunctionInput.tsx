@@ -1,5 +1,6 @@
 import * as React from 'react'
 const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor').QueryEditor
+const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
 import {Icon, $v} from 'graphcool-styles'
 import * as cn from 'classnames'
 import JsEditor from './JsEditor'
@@ -11,6 +12,7 @@ import StepMarker from './StepMarker'
 import {EventType} from './FunctionPopup'
 import { buildClientSchema, introspectionQuery } from 'graphql'
 import {CustomGraphiQL} from 'graphcool-graphiql'
+import {getEventInput} from './TestPopup'
 
 interface Props {
   schema: string
@@ -27,12 +29,14 @@ interface Props {
   onChangeQuery: (query: string) => void
   query: string
   projectId: string
+  sssModelName: string
 }
 
 interface State {
   inputWidth: number
   fullscreen: boolean
   ssschema: any
+  showExample: boolean
 }
 
 const modalStyling = {
@@ -54,6 +58,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       inputWidth: 200,
       fullscreen: false,
       ssschema: null,
+      showExample: false,
     }
   }
   render() {
@@ -108,9 +113,14 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       })
   }
   renderComponent() {
-    const {inputWidth, fullscreen} = this.state
-    const {schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl, eventType} = this.props
+    const {inputWidth, fullscreen, showExample} = this.state
+    const {
+      schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
+    } = this.props
     const {onChangeQuery} = this.props
+
+    const inputTitle = eventType === 'RP' ? 'Input Type' : 'Subscription Query'
+    const input = getEventInput(eventType, schema, sssModelName)
 
     return (
       <div className={cn('request-pipeline-function-input', {
@@ -128,11 +138,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           .request-pipeline-function-input.fullscreen {
             @p: .pa60, .center;
             height: 100vh;
-            max-width: 1400px;
           }
           .input {
-            @p: .pa20, .relative, .br2, .brLeft;
-            background: #F5F5F5;
+            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue;
           }
           .input.rp :global(.CodeMirror-cursor) {
             @p: .dn;
@@ -140,20 +148,17 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           .input.rp :global(.CodeMirror-selected) {
             background: rgba(255,255,255,.1);
           }
-          .input :global(.CodeMirror), .input.sss :global(.CodeMirror-gutters) {
+          .input :global(.CodeMirror), .input :global(.CodeMirror-gutters) {
             background: transparent;
           }
           .input.sss :global(.CodeMirror-gutters) {
             @p: .bgDarkBlue;
           }
-          .input.rp :global(.cm-punctuation) {
-            color: rgba(0,0,0,.4);
-          }
           .input.sss :global(.variable-editor) {
             @p: .dn;
           }
           .input.sss {
-            @p: .w50, .bgDarkBlue, .pl0, .pr0, .pb0, .flex, .flexColumn;
+            @p: .w50, .pl0, .pr0, .pb0, .flex, .flexColumn;
           }
           .input.sss :global(.graphiql-container) {
             @p: .flexAuto, .overflowAuto, .h100;
@@ -179,7 +184,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .mr10;
           }
           .sss-input {
-            @p: .f12, .ttu, .fw6, .white40, .mb10, .pl25, .flexFixed, .flex;
+            @p: .f12, .ttu, .fw6, .white40, .mb10, .flexFixed, .flex, .pl16;
             letter-spacing: 0.4px;
           }
           .sss-editor {
@@ -204,30 +209,32 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           }
         `}</style>
         <div className={cn('input', {sss: eventType === 'SSS', rp: eventType === 'RP'})}>
-          {eventType === 'RP' && (
-            <div className='event-input'>
-              <span>Event Input</span>
-              <Icon src={require('graphcool-styles/icons/fill/lock.svg')} color={$v.darkBlue30} />
+          <div className='sss-input'>
+            {eventType === 'SSS' && !this.props.editing && (
+              <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+            )}
+            <Toggle
+              choices={[inputTitle, 'Example Input']}
+              activeChoice={this.state.showExample ? 'Example Input' : inputTitle}
+              onChange={this.handleInputChange}
+            />
+          </div>
+          {showExample && (
+            <div className='sss-editor pl16'>
+              <ResultViewer
+                value={input}
+              />
             </div>
           )}
-          {eventType === 'SSS' && (
-            <div className='sss-input'>
-              {eventType === 'SSS' && !this.props.editing && (
-                <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
-              )}
-              Trigger + Event Input
-            </div>
-          )}
-          {eventType === 'RP' && (
+          {!showExample && eventType === 'RP' && (
             <QueryEditor
               value={schema}
               readOnly
               hideLineNumbers
               hideFold
-              editorTheme='mdn-like'
             />
           )}
-          {eventType === 'SSS' && (
+          {!showExample && eventType === 'SSS' && (
             <div className='sss-editor'>
               <CustomGraphiQL
                 rerenderQuery={true}
@@ -283,6 +290,11 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         </div>
       </div>
     )
+  }
+
+  private handleInputChange = (_, i: number) => {
+    const showExample = i === 1
+    this.setState({showExample} as State)
   }
 
   private handleResize = (inputWidth: number) => {

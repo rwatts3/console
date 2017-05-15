@@ -1,7 +1,8 @@
 import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
-import {FunctionPopupState} from './FunctionPopup'
+import {EventType, FunctionPopupState} from './FunctionPopup'
 import {keysChanged} from '../../../utils/change'
-export function getEmptyFunction(models: Model[], functions: ServerlessFunction[]): ServerlessFunction {
+export function getEmptyFunction(models: Model[], functions: ServerlessFunction[], eventType: EventType):
+ ServerlessFunction {
   const modelId = models[0].id
 
   const bindings: FunctionBinding[] = ['TRANSFORM_ARGUMENT', 'PRE_WRITE', 'TRANSFORM_PAYLOAD']
@@ -32,7 +33,7 @@ export function getEmptyFunction(models: Model[], functions: ServerlessFunction[
     _webhookHeaders: {
       'Content-Type': 'application/json',
     },
-    inlineCode,
+    inlineCode: inlineCode(eventType),
     auth0Id: '',
     logs: {
       edges: [],
@@ -64,10 +65,24 @@ export function bindingTaken(modelId: string, binding: FunctionBinding, function
   return functions.filter(fn => fn.model.id === modelId && fn.binding === binding)
 }
 
-const inlineCode = `module.exports = function (event) {
-  return {event: event}
+export const inlineCode = (eventType: EventType) => {
+  if (eventType === 'SSS') {
+    return `\
+// Click "EXAMPLE INPUT" to see whats in \`input\`
+module.exports = function (input, log) {
+  log('Received event')
+  log(input.data)
 }
 `
+  }
+  return `\
+// Click "EXAMPLE INPUT" to see whats in \`input\`
+module.exports = function (input, log, cb) {
+  log(input.data)  
+  return {data: input.data}
+}
+`
+}
 
 export function updateInlineCode(state: ServerlessFunction, inlineCode: string): ServerlessFunction {
   return {

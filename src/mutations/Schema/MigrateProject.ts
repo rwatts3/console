@@ -3,6 +3,7 @@ import * as Relay from 'react-relay'
 export interface MigrateProjectInput {
   newSchema: string
   isDryRun: boolean
+  force: boolean
 }
 
 export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, null> {
