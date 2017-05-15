@@ -403,6 +403,10 @@ class SelectNodesCell extends React.Component<Props, State> {
           count: meta.count,
         }
 
+        if (this.firstQuery && meta.count === 0) {
+          newState['selectedTabIndex'] = 0
+        }
+
         if (this.lastQuery !== this.state.query) {
 
           newState['scrollToIndex'] = 0

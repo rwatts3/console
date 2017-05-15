@@ -77,7 +77,7 @@ class SchemaEditor extends React.Component<Props, State> {
     this.state = {
       // schema: sortSchema(props.project.schema, props.project.models.edges.map(edge => edge.node)),
       enumSchema: props.project.enumSchema,
-      typeSchema: props.project.typeSchema,
+      typeSchema: this.addFrontmatter(props.project.typeSchema),
       beta: props.isBeta,
       isDryRun: true,
       messages: [],
@@ -106,7 +106,7 @@ class SchemaEditor extends React.Component<Props, State> {
       this.scrollToPercentage(nextProps.scroll)
     }
     if (this.props.project.typeSchema !== nextProps.project.typeSchema) {
-      this.setState({typeSchema: nextProps.project.typeSchema} as State)
+      this.setState({typeSchema: this.addFrontmatter(nextProps.project.typeSchema)} as State)
     }
     if (this.props.project.enumSchema !== nextProps.project.enumSchema) {
       this.setState({enumSchema: nextProps.project.enumSchema} as State)
@@ -134,7 +134,7 @@ class SchemaEditor extends React.Component<Props, State> {
     this.lastDidChangeEnum = didChangeEnum
   }
   didChangeType() {
-    return this.state.typeSchema !== this.props.project.typeSchema
+    return this.state.typeSchema !== this.addFrontmatter(this.props.project.typeSchema)
   }
   didChangeEnum() {
     return this.state.enumSchema !== this.props.project.enumSchema
@@ -261,8 +261,8 @@ class SchemaEditor extends React.Component<Props, State> {
   private updateSchema = () => {
     const {typeSchema, enumSchema, isDryRun} = this.state
     const schema = typeSchema + '\n' + enumSchema
-    const newSchema = this.addFrontmatter(schema)
-    console.log(newSchema)
+    // const newSchema = this.addFrontmatter(schema)
+    const newSchema = schema
     this.setState({loading: true} as State)
     Relay.Store.commitUpdate(
       new MigrateProject({
@@ -300,8 +300,8 @@ class SchemaEditor extends React.Component<Props, State> {
     } as State)
   }
 
-  private addFrontmatter(schema) {
-    const {version, id} = this.props.project
+  private addFrontmatter(schema, props?: Props) {
+    const {version, id} = props ? props.project : this.props.project
     return `# projectId: ${id}
 # version: ${version}\n` + schema
   }

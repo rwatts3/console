@@ -117,7 +117,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       operation: 'CREATE',
       selectedModelName: 'User',
       binding: 'PRE_WRITE',
-      includeFunctions: this.state.eventType === 'RP',
+      includeFunctions: this.state.eventType === 'RP' && !this.state.editing,
     })
     global['f'] = this
   }
