@@ -329,7 +329,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
     const {nodeId, field} = this.props
     const getRelated = firstQuery
-    const count = stopIndex - startIndex
+    const count = stopIndex - startIndex + 1
     const nodeSelector = getRelated ? `${field.model.name}(id: "${nodeId}") {` : ''
     const metaQuery = (!firstQuery || field.isList) ? `${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
           count
