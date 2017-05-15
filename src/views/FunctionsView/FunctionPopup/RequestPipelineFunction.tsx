@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {FunctionBinding} from '../../../types/types'
+import {FunctionBinding, Model, RequestPipelineMutationOperation} from '../../../types/types'
 import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
 import StepMarker from './StepMarker'
 import {getText} from './data'
@@ -25,6 +25,8 @@ interface Props {
   eventType: EventType
   projectId: string
   sssModelName: string
+  modelName?: string
+  operation?: RequestPipelineMutationOperation
 }
 
 interface State {
@@ -63,7 +65,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           }
           .pre {
             @p: .mono, .bgDarkBlue07, .br2, .ml4;
-            padding: 1px 2px;
+            padding: 1px 3px;
           }
           pre {
             @p: .purple, .code, .br2, .bgDarkBlue04, .mh6, .dib, .f14;
@@ -85,7 +87,10 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           <p>
             By creating a function at
             <span className='pre'>{binding}</span>
-            {getText(binding)}
+            {getText(binding)} <br/>
+            Your function will be called when a
+            <span className='pre'>{this.props.modelName}</span> is
+            <span className='pre'>{this.props.operation.toLowerCase()}d</span>
           </p>
         )}
         {eventType === 'SSS' && (

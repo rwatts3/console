@@ -251,6 +251,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   eventType={eventType}
                   projectId={this.props.project.id}
                   sssModelName={this.state.sssModelName}
+                  modelName={
+                    fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
+                  }
+                  operation={fn.operation}
                 />
               )}
             </div>
@@ -651,6 +655,7 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           binding
           model {
             id
+            name
           }
           operation
         }

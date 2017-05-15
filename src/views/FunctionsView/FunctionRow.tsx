@@ -80,7 +80,7 @@ class FunctionRow extends React.Component<Props, State> {
             padding: 2px 6px;
           }
           .event-type {
-            @p: .f12, .fw6, .darkBlue40, .ttu, .flex, .itemsCenter;
+            @p: .f12, .fw6, .darkBlue40, .flex, .itemsCenter;
             letter-spacing: 0.4px;
           }
           .event-type span {
@@ -160,7 +160,10 @@ class FunctionRow extends React.Component<Props, State> {
                   color={$v.darkBlue50}
                   width={55}
                 />
-                <span>Request Pipeline</span>
+                <span className='ttu'>Request Pipeline</span>
+                <div className='badge ml10'>{fn.model.name}</div>
+                <span className='darkBlue40 f14'>is</span>
+                <div className='badge ml6'>{fn.operation.toLowerCase()}d</div>
               </div>
             )}
             {eventType === 'SSS' && (
@@ -261,6 +264,10 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
         }
         ... on RequestPipelineMutationFunction {
           binding
+          model {
+            name
+          }
+          operation
         }
         ... on ServerSideSubscriptionFunction {
           query
