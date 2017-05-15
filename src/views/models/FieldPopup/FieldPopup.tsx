@@ -113,7 +113,7 @@ class FieldPopup extends React.Component<Props, State> {
       }
     } else {
       this.state = {
-        field: emptyField,
+        field: emptyField(props.nodeCount),
 
         activeTabIndex: 0,
         create: true,

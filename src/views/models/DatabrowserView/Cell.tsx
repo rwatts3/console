@@ -151,11 +151,13 @@ export class Cell extends React.PureComponent<Props, State> {
     this.saving = true
 
     if (this.props.isReadonly) {
+      this.saving = false
       return
     }
 
     if (this.escaped) {
       this.escaped = false
+      this.saving = false
       return
     }
 
@@ -170,6 +172,7 @@ export class Cell extends React.PureComponent<Props, State> {
       } else {
         this.props.stopEditCell()
       }
+      this.saving = false
       return
     }
 
@@ -179,6 +182,7 @@ export class Cell extends React.PureComponent<Props, State> {
       } else {
         this.props.stopEditCell()
       }
+      this.saving = false
       return
     }
 
