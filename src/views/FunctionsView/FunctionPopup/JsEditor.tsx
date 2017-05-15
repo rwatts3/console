@@ -14,7 +14,7 @@ export default function JsEditor({value, onChange}: Props) {
     <div className='js-editor'>
       <style jsx={true}>{`
         .js-editor {
-          @p: .flex, .flexAuto;
+          @p: .flex, .flexAuto, .overflowAuto;
         }
         .js-editor :global(.CodeMirror) {
           height: 100%;

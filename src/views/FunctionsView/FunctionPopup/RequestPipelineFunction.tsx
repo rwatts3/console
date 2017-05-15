@@ -24,6 +24,7 @@ interface Props {
   onChangeQuery: (query: string) => void
   eventType: EventType
   projectId: string
+  sssModelName: string
 }
 
 interface State {
@@ -64,6 +65,10 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             @p: .mono, .bgDarkBlue07, .br2, .ml4;
             padding: 1px 2px;
           }
+          pre {
+            @p: .purple, .code, .br2, .bgDarkBlue04, .mh6, .dib, .f14;
+            padding: 2px 4px;
+          }
         `}</style>
         <input
           type='text'
@@ -94,6 +99,15 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             write a function that get’s executed every time.
           </p>
         )}
+        <p>
+          The <pre>input</pre> argument represents the payload of the subscription. <br/>
+          <pre style={{marginLeft: 0}}>log()</pre> can be used to print data to the logs. <br/>
+          {eventType === 'RP' && (
+            <span>
+              You can either return a value or use the <pre>cb()</pre> function if you have an async flow.
+            </span>
+          )}
+        </p>
         <RequestPipelineFunctionInput
           schema={schema}
           onChange={onInlineCodeChange}
@@ -109,6 +123,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onChangeQuery={this.props.onChangeQuery}
           query={this.props.query}
           projectId={this.props.projectId}
+          sssModelName={this.props.sssModelName}
         />
       </div>
     )

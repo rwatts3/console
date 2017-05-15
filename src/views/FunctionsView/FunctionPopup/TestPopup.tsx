@@ -79,7 +79,7 @@ export default class TestPopup extends React.Component<Props, State> {
 
     this.state = {
       responses: [],
-      input: this.getEventInput(props),
+      input: getEventInput(props.eventType, props.schema, props.sssModelName),
       loading: false,
     }
   }
@@ -90,19 +90,8 @@ export default class TestPopup extends React.Component<Props, State> {
     }
 
     if (this.props.eventType !== nextProps.eventType) {
-      this.setState({input: this.getEventInput(nextProps)} as State)
+      this.setState({input: getEventInput(nextProps.eventType, nextProps.schema, nextProps.sssModelName)} as State)
     }
-  }
-
-  getEventInput(props: Props) {
-    let inputData
-    if (props.eventType === 'RP') {
-      inputData = generateTestEvent(props.schema)
-    } else if (props.eventType === 'SSS') {
-      inputData = generateSSSTestEvent(props.sssModelName)
-    }
-
-    return JSON.stringify(inputData, null, 2)
   }
 
   render() {
@@ -308,4 +297,15 @@ export default class TestPopup extends React.Component<Props, State> {
   private handleInputChange = (input: string) => {
     this.setState({input} as State)
   }
+}
+
+export function getEventInput(eventType: EventType, schema: string, sssModelName: string) {
+  let inputData
+  if (eventType === 'RP') {
+    inputData = generateTestEvent(schema)
+  } else if (eventType === 'SSS') {
+    inputData = generateSSSTestEvent(sssModelName)
+  }
+
+  return JSON.stringify(inputData, null, 2)
 }

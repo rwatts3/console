@@ -3,7 +3,7 @@ import * as cn from 'classnames'
 
 interface ToggleProps {
   choices: string[]
-  onChange: (choice: string) => void
+  onChange: (choice: string, i: number) => void
   activeChoice: string
 }
 
@@ -27,11 +27,11 @@ export default function Toggle({choices, onChange, activeChoice}: ToggleProps) {
           @p: .white70;
         }
       `}</style>
-      {choices.map(choice => (
+      {choices.map((choice, i) => (
         <div
           className={cn('choice', {active: choice === activeChoice})}
           key={choice}
-          onClick={() => onChange(choice)}
+          onClick={() => onChange(choice, i)}
         >
           {choice}
         </div>
