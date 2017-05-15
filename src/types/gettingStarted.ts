@@ -173,11 +173,11 @@ export class GettingStartedState {
       // 'STEP4_WAITING_PART2': () => ({ index: 4, total:  2, done: 1 }),
       // 'STEP4_CLICK_TEASER_STEP5': () => ({ index: 4, total: 2, done: 2 }),
 
-      'STEP5_SELECT_EXAMPLE': () => ({ index: 3, total: 0, done: 0 }),
-      'STEP5_WAITING': () => ({ index: 3, total: 0, done: 0 }),
-      'STEP5_DONE': () => ({ index: 3, total: 0, done: 0 }),
+      'STEP5_SELECT_EXAMPLE': () => ({ index: 4, total: 0, done: 0 }),
+      'STEP5_WAITING': () => ({ index: 4, total: 0, done: 0 }),
+      'STEP5_DONE': () => ({ index: 4, total: 0, done: 0 }),
 
-      'STEP6_CLOSED': () => ({ index: 3, total: 0, done: 0 }),
+      'STEP6_CLOSED': () => ({ index: 4, total: 0, done: 0 }),
     }[step]()
   }
 }

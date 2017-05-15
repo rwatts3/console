@@ -80,14 +80,14 @@ class SelectExample extends React.Component<Props, State> {
             @p: .flex, .justifyBetween, .itemsCenter, .mt60;
           }
         `}</style>
-        <div className="intro">
+        <div className='intro'>
           <h1>You did it! Time to run an example</h1>
           <p>
             Let’s get started by building a backend for a simple Instagram clone. To keep our example light, our
             Instagram posts only consist of a picture and some hashtags.
           </p>
         </div>
-        <div className="middle">
+        <div className='middle'>
           <h2>Select your preferred technology to download the example:</h2>
           <ExampleChooser
             examples={examples}
@@ -95,8 +95,8 @@ class SelectExample extends React.Component<Props, State> {
             onChangeExample={this.handleChangeExample}
           />
         </div>
-        <div className="last">
-          <div className="cta">
+        <div className='last'>
+          <div className='cta'>
            <p>
              To move on, you need to download the example and run
              <pre>npm install</pre>
@@ -107,8 +107,8 @@ class SelectExample extends React.Component<Props, State> {
               Download Example
             </Button>
           </div>
-          <div className="bottom">
-            <div className="waiting">
+          <div className='bottom'>
+            <div className='waiting'>
               <WaitingIndicator />
               <span>Waiting for you to initialize the app. Once you've done, come back here</span>
             </div>
@@ -120,7 +120,7 @@ class SelectExample extends React.Component<Props, State> {
   }
 
   private skip = () => {
-    this.props.nextStep(1)
+    this.props.nextStep()
   }
 
   private handleChangeExample = (i: number) => {

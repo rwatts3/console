@@ -40,7 +40,7 @@ export default function WaitingIndicator({}: Props) {
         }
       `}</style>
       <div className='inner' />
-      <div className="static" />
+      <div className='static' />
     </div>
   )
 }

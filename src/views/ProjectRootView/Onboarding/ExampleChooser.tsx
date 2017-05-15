@@ -10,7 +10,6 @@ export interface Example {
   logo2: string
 }
 
-
 interface Props {
   examples: Example[]
   activeIndex: number
@@ -53,7 +52,7 @@ export default function ExampleChooser({examples, activeIndex, onChangeExample}:
           className={cn('example', {active: index === activeIndex})}
           onClick={() => onChangeExample(index, example)}
         >
-          <div className="logos">
+          <div className='logos'>
             <Icon src={example.logo1} width={50} height={50} color={index === activeIndex ? $v.white : $v.blue} />
             <Icon src={example.logo2} width={50} height={50} color={index === activeIndex ? $v.white : $v.blue}/>
           </div>

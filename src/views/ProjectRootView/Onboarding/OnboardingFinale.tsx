@@ -3,7 +3,7 @@ import {Icon, $v} from 'graphcool-styles'
 import {A, Button} from '../../../components/Links'
 
 interface Props {
-
+  nextStep: () => void
 }
 
 interface State {
@@ -45,6 +45,9 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             @p: .pl60, .flex, .flexColumn, .itemsCenter, .justifyCenter;
             padding-right: 48px;
           }
+          .close {
+            @p: .absolute, .pointer, .pa38, .top0, .right0;
+          }
           p {
             @p: .f16, .darkBlue70;
           }
@@ -61,7 +64,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             @p: .f20, .darkBlue70, .fw6;
           }
           .twitter-btn {
-            @p: .buttonShadow, .white, .pv12, .ph16, .ttu, .f16, .fw6, .flex, .itemsCenter, .noUnderline;
+            @p: .buttonShadow, .white, .pv12, .ph16, .ttu, .f16, .fw6, .flex, .itemsCenter, .noUnderline, .br2;
             background: #1da1f2;
           }
           .twitter-btn span {
@@ -111,7 +114,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             @p: .pa38;
           }
         `}</style>
-        <div className="intro">
+        <div className='intro'>
           <h1>
             <span className='success'>🎉 </span>
             Congratulations
@@ -120,11 +123,24 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             You did dit! We prepared a lot of resources that you can read to learn more about Graphcool and GraphQL
             in general.
           </p>
+          <div
+            className='close'
+            onClick={this.props.nextStep}
+          >
+            <Icon
+              src={require('graphcool-styles/icons/stroke/cross.svg')}
+              stroke
+              strokeWidth={2}
+              color={$v.gray40}
+              width={26}
+              height={26}
+            />
+          </div>
         </div>
-        <div className="share">
+        <div className='share'>
           <h2>If you liked it, share it on twitter</h2>
           <a
-            className="twitter-btn"
+            className='twitter-btn'
             href={`https://twitter.com/home?status=%40graphcool's%20onboarding%20jus` +
             `t%20nailed%20it.%20Really%20impressed.`}
             target='_blank'
@@ -133,10 +149,10 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             <span>Tweet something</span>
           </a>
         </div>
-        <div className="resources">
-          <div className="left">
+        <div className='resources'>
+          <div className='left'>
             <h3>Interactive Guides</h3>
-            <a className="guide" href='https://www.learnrelay.org/'>
+            <a className='guide' href='https://www.learnrelay.org/'>
               <h2>
                 <Icon
                   src={require('graphcool-styles/icons/fill/relayLogo.svg')}
@@ -148,7 +164,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
               </h2>
               <p>Learn everything about Facebook's GraphQL Client Relay</p>
             </a>
-            <a className="guide" href='https://www.learnapollo.com/'>
+            <a className='guide' href='https://www.learnapollo.com/'>
               <h2>
                 <Icon
                   src={require('graphcool-styles/icons/fill/apolloLogo.svg')}
@@ -160,7 +176,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
               </h2>
               <p>Learn the Apollo Client basics in an interactive Tutorial</p>
             </a>
-            <a className="guide" href='https://www.graph.cool/freecom/'>
+            <a className='guide' href='https://www.graph.cool/freecom/'>
               <h2>
                 <img width={40} height={40} src={require('assets/graphics/freecom.svg')} alt=''/>
                 <span>Freecom</span>
@@ -168,7 +184,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
               <p>Learn how to build a free Intercom clone with modern technologies</p>
             </a>
           </div>
-          <div className="right">
+          <div className='right'>
             <h3>Next Steps</h3>
             <Step
               title='Advanced Query Parameters'

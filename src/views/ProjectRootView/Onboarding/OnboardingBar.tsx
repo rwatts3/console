@@ -24,14 +24,16 @@ class OnboardingBar extends React.Component<Props, State> {
   }
 
   render() {
-    const progressPercentage = 100 * this.props.gettingStartedState.progress.index / 3
+    const progressPercentage = (100 * (this.props.gettingStartedState.progress.index - 1)) / 3
     const progress = this.props.gettingStartedState.progress
+    console.log(progress, progressPercentage)
 
     return (
       <div className='onboarding-bar'>
         <style jsx>{`
           .onboarding-bar {
-            @p: .bgDarkBlue, .flex, .flexColumn, .absolute, .bottom0, .w100, .z3;
+            @p: .bgDarkBlue, .flex, .flexColumn, .absolute, .bottom0, .z3;
+            width: calc(100% - 290px);
             border-left: 6px solid $darkestBlue;
           }
           .progress-bar {
@@ -86,7 +88,6 @@ const steps = [
 
 // const isActive = progress.index === data.index
 // const isComplete = progress.index > data.index
-
 
 interface StepProps {
   children?: any

@@ -46,22 +46,30 @@ class FinalPopup extends React.Component<Props, State> {
         isOpen
         style={modalStyle}
         contentLabel='Onboarding Finale'
+        onRequestClose={this.close}
       >
         <div className='intro-popup'>
           <style jsx={true}>{`
             .intro-popup {
-              @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .bgWhite;
+              @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .bgWhite, .relative;
             }
           `}</style>
           {(step === 'STEP5_SELECT_EXAMPLE' || step === 'STEP5_WAITING') && (
             <SelectExample step={step} projectId={this.props.projectId} />
           )}
           {step === 'STEP5_DONE' && (
-            <OnboardingFinale />
+            <OnboardingFinale nextStep={this.props.nextStep} />
           )}
         </div>
       </Modal>
     )
+  }
+
+  private close = () => {
+    const step = this.props.gettingStartedState.skipped ? undefined : this.props.gettingStartedState.step
+    if (step === 'STEP5_DONE') {
+      this.props.nextStep()
+    }
   }
 }
 

@@ -68,12 +68,11 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
   })
 }
 
-export function nextStep(by?: number): ReduxThunk {
+export function nextStep(): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     const {step, skipped, onboardingStatusId, selectedExample} = getState().gettingStarted.gettingStartedState
     const currentStepIndex = GettingStartedState.steps.indexOf(step)
-    let delta = by || 1
-    const nextStep = GettingStartedState.steps[currentStepIndex + delta]
+    const nextStep = GettingStartedState.steps[currentStepIndex + 1]
 
     return updateReduxAndRelay(dispatch, nextStep, skipped, onboardingStatusId, selectedExample)
   }
