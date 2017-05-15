@@ -16,6 +16,7 @@ import RequestGraph from './RequestGraph'
 import * as cn from 'classnames'
 import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
+import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
 
 interface Props {
   fn: ServerlessFunction
@@ -229,20 +230,37 @@ class FunctionRow extends React.Component<Props, State> {
         isActive: !state.isActive,
       }
     })
-    Relay.Store.commitUpdate(
-      new ToggleActiveRequestPipelineMutationFunction({
-        functionId: this.props.fn.id,
-        isActive: !this.props.fn.isActive,
-      }),
-      {
-        onSuccess: () => {
-          console.log('success at toggling')
+    if (this.props.fn.binding) {
+      Relay.Store.commitUpdate(
+        new ToggleActiveRequestPipelineMutationFunction({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }),
+        {
+          onSuccess: () => {
+            console.log('success at toggling')
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
         },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
+      )
+    } else {
+      Relay.Store.commitUpdate(
+        new ToggleServerSideSubscriptionFunction({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }),
+        {
+          onSuccess: () => {
+            console.log('success at toggling')
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
         },
-      },
-    )
+      )
+    }
   }
 }
 
