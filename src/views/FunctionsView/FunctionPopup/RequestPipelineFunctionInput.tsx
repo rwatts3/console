@@ -119,7 +119,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     } = this.props
     const {onChangeQuery} = this.props
 
-    const inputTitle = eventType === 'RP' ? 'Input Type' : 'Subscription Query'
+    const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
     const input = getEventInput(eventType, schema, sssModelName)
 
     return (
@@ -214,8 +214,8 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
               <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
             )}
             <Toggle
-              choices={[inputTitle, 'Example Input']}
-              activeChoice={this.state.showExample ? 'Example Input' : inputTitle}
+              choices={[inputTitle, 'Example Event']}
+              activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
               onChange={this.handleInputChange}
             />
           </div>

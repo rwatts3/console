@@ -68,18 +68,18 @@ export function bindingTaken(modelId: string, binding: FunctionBinding, function
 export const inlineCode = (eventType: EventType) => {
   if (eventType === 'SSS') {
     return `\
-// Click "EXAMPLE INPUT" to see whats in \`input\`
-module.exports = function (input, log) {
+// Click "EXAMPLE EVENT" to see whats in \`event\`
+module.exports = function (event, log) {
   log('Received event')
-  log(input.data)
+  log(event.data)
 }
 `
   }
   return `\
-// Click "EXAMPLE INPUT" to see whats in \`input\`
-module.exports = function (input, log, cb) {
-  log(input.data)  
-  return {data: input.data}
+// Click "EXAMPLE EVENT" to see whats in \`event\`
+module.exports = function (event, log, cb) {
+  log(event.data)  
+  return {data: event.data}
 }
 `
 }
