@@ -5,6 +5,7 @@ import WaitingIndicator from './WaitingIndicator'
 import {Button} from '../../../components/Links'
 import {connect} from 'react-redux'
 import {nextStep} from '../../../actions/gettingStarted'
+import {pre} from 'graphcool-styles/dist/particles.css'
 
 interface Props {
   step: Step
@@ -101,11 +102,15 @@ class SelectExample extends React.Component<Props, State> {
              To move on, you need to download the example and run
              <pre>npm install</pre>
              and
-             <pre>npm start</pre>
+             {this.state.selectedExampleIndex === 2 ? (
+               <pre>react-native run-ios <span className='darkBlue30'># or react-native run-android</span></pre>
+             ) : (
+               <pre>npm start</pre>
+             )}
            </p>
-            <Button button green hideArrow target={downloadUrl}>
-              Download Example
-            </Button>
+          <Button button green hideArrow target={downloadUrl}>
+            Download Example
+          </Button>
           </div>
           <div className='bottom'>
             <div className='waiting'>
