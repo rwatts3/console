@@ -5,6 +5,8 @@ import {bindActionCreators} from 'redux'
 import {clearNotification} from '../../actions/notification'
 import {Notification} from '../../types/utils'
 import NotificationSystem from 'react-notification-system'
+import * as MediaQuery from 'react-responsive'
+import MobileScreen from './MobileScreen'
 
 interface Props {
   children: Element
@@ -42,7 +44,9 @@ class RootView extends React.Component<Props, {}> {
           }
         `}</style>
         <Helmet titleTemplate='%s | Graphcool'/>
-        {this.props.children}
+        <MediaQuery minWidth={800}>
+          {matches => matches ? (this.props.children) : (<MobileScreen />)}
+        </MediaQuery>
         <NotificationSystem ref='notificationSystem' />
       </div>
     )
