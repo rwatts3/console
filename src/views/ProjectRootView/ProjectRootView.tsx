@@ -14,7 +14,12 @@ import {validateProjectName} from '../../utils/nameValidator'
 import {retryUntilDone} from '../../utils/utils'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
+<<<<<<< HEAD
 import LoginView from '../../views/LoginView/LoginView'
+=======
+import OnboardSideNav from './OnboardSideNav'
+import AuthView from '../AuthView/AuthView'
+>>>>>>> 6d4ac43105d45753a7bd244592499c1306ae3330
 import AddProjectMutation from '../../mutations/AddProjectMutation'
 import {update} from '../../actions/gettingStarted'
 import {Viewer, Customer, Project} from '../../types/types'
@@ -174,7 +179,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   render() {
     if (!this.props.isLoggedin) {
       return (
-        <LoginView/>
+        <AuthView initialScreen='login'/>
       )
     }
 

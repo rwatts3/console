@@ -9,15 +9,15 @@ import { ShowNotificationCallback } from '../../types/utils'
 import { onFailureShowNotification } from '../../utils/relay'
 import Auth0Lock from 'auth0-lock'
 import * as cookiestore from 'cookiestore'
-import AuthenticateCustomerMutation from '../../mutations/AuthenticateCustomerMutation'
+import AuthenticateCustomerMutation, {Response} from '../../mutations/AuthenticateCustomerMutation'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 
 interface Props {
   showNotification: ShowNotificationCallback
   initialScreen: 'login' | 'signUp'
-  renderInElement?: boolean
-  successRedirect?: string
+  renderInElement: boolean
+  successCallback: (response: Response) => void
 }
 
 const ELEMENT_ID = 'auth0-lock'
@@ -61,11 +61,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
         await tracker.track(ConsoleEvents.Authentication.completed())
 
-        if (new Date().getTime() - new Date(response.authenticateCustomer.user.createdAt).getTime() < 60000) {
-          window.location.pathname = this.props.successRedirect || '/after-signup'
-        } else {
-          window.location.pathname = this.props.successRedirect || '/'
-        }
+        this.props.successCallback(response.authenticateCustomer)
 
       }
       const onFailure = (transaction: Transaction) => {

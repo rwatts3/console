@@ -1,20 +1,19 @@
 import * as cookiestore from 'cookiestore'
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {Route, IndexRoute, IndexRedirect, Redirect} from 'react-router'
+import { Route, IndexRoute, IndexRedirect, Redirect } from 'react-router'
 import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import ActionsView from './views/ActionsView/ActionsView'
-import LoginView from './views/LoginView/LoginView'
-import CLIAuthView from './views/CLIAuthView/Authenticate/CLIAuthView'
-import ExampleProject from './views/CLIAuthView/ExampleProject/ExampleProject'
-import AlreadyAuthenticated from './views/CLIAuthView/AlreadyAuthenticated'
+import AuthView from './views/AuthView/AuthView'
+import CLIAuthView from './views/CLIAuthView/CLIAuthView/CLIAuthView'
+import CLIAuthSuccessInitView from './views/CLIAuthView/CLIAuthSuccessInitView/CLIAuthSuccessInitView'
+import CLIAuthSuccessView from './views/CLIAuthView/CLIAuthSuccessView'
 import ProjectRootView from './views/ProjectRootView/ProjectRootView'
 import RootRedirectView from './views/ProjectRootView/RootRedirectView'
 import TokenRedirectView from './views/ProjectRootView/TokenRedirectView'
 import ProjectSettingsView from './views/ProjectSettingsView/ProjectSettingsView'
 import RootView from './views/RootView/RootView'
-import SignUpView from './views/SignUpView/SignUpView'
 import AfterSignUpView from './views/AfterSignUpView/AfterSignUpView'
 import AccountView from './views/account/AccountView/AccountView'
 import SettingsTab from './views/account/AccountView/SettingsTab'
@@ -31,7 +30,7 @@ import FieldPopup from './views/models/FieldPopup/FieldPopup'
 import AuthProviderPopup from './views/models/AuthProviderPopup/AuthProviderPopup'
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
-import {EditPermissionPopup, AddPermissionPopup} from './views/PermissionsView/PermissionPopup/PermissionPopup'
+import { EditPermissionPopup, AddPermissionPopup } from './views/PermissionsView/PermissionPopup/PermissionPopup'
 import {
   EditRelationPermissionPopup,
   AddRelationPermissionPopup,
@@ -41,7 +40,7 @@ import AlgoliaView from './views/Integrations/Algolia/AlgoliaView'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import RelationPopup from './views/RelationsPopup/RelationPopup'
 import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
 import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
@@ -51,8 +50,9 @@ import SchemaViewer from './views/SchemaView/SchemaViewer'
 import AllRelationPermissionsList from './views/PermissionsView/RelationPermissionsList/AllRelationPermissionsList'
 import PermissionsList from './views/PermissionsView/PermissionsList/PermissionsList'
 import FunctionsView from './views/FunctionsView/FunctionsView'
-import {CreateFunctionPopup, EditFunctionPopup} from './views/FunctionsView/FunctionPopup/FunctionPopup'
-import {FunctionLogs} from './views/FunctionsView/FunctionLogs/FunctionLogs'
+import { CreateFunctionPopup, EditFunctionPopup } from './views/FunctionsView/FunctionPopup/FunctionPopup'
+import { FunctionLogs } from './views/FunctionsView/FunctionLogs/FunctionLogs'
+
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
     query {
@@ -140,7 +140,7 @@ const render = ({error, props, routerProps, element, ...rest}) => {
           @p: .top0, .left0, .right0, .bottom0, .fixed, .flex, .justifyCenter, .itemsCenter, .z999;
         }
       `}</style>
-      <Loading color={color} />
+      <Loading color={color}/>
     </div>
   )
 }
@@ -149,29 +149,31 @@ export default (
   <Route path='/' component={RootView}>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render}/>
     <Route path='token' component={TokenRedirectView}/>
-    <Route path='login' component={LoginView} render={render}/>
-    <Route path='auth' component={CLIAuthView} render={render}/>
+    <Route path='cli/auth' component={CLIAuthView} onEnter={CLIAuthView.routeRedirectWhenAuthenticated}/>
+    <Route path='cli/auth/success' component={CLIAuthSuccessView}/>
+    <Route path='cli/auth/success-init' component={CLIAuthSuccessInitView}/>
     <Route path='reset-password' component={ResetPasswordView}/>
-    <Route path='signup' component={SignUpView}/>
-    <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render} />
+    <Route path='signup' component={() => <AuthView initialScreen='signUp'/>}/>
+    <Route path='login' component={() => <AuthView initialScreen='login'/>}/>
+    <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render}/>
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>
       <IndexRedirect to='schema'/>
-      <Redirect from='settings' to='settings/general' />
+      <Redirect from='settings' to='settings/general'/>
       <Route path='token' component={TokenRedirectView}/>
       <Route path='settings' component={Settings} render={render}>
-        <Route path='general' component={General} queries={ViewerQuery} render={render} />
-        <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render} />
-        <Route path='export' component={Export} queries={ViewerQuery} render={render} />
-        <Route path='billing' component={Billing} queries={ViewerQuery} render={render} >
-          <Route path='change-plan/:plan' component={ChangePricingPlan} render={render} />
-          <Route path='confirm-plan/:plan' component={ConfirmPricingPlan} queries={ViewerQuery} render={render} />
+        <Route path='general' component={General} queries={ViewerQuery} render={render}/>
+        <Route path='authentication' component={Authentication} queries={ViewerQuery} render={render}/>
+        <Route path='export' component={Export} queries={ViewerQuery} render={render}/>
+        <Route path='billing' component={Billing} queries={ViewerQuery} render={render}>
+          <Route path='change-plan/:plan' component={ChangePricingPlan} render={render}/>
+          <Route path='confirm-plan/:plan' component={ConfirmPricingPlan} queries={ViewerQuery} render={render}/>
         </Route>
-        <Route path='team' component={Team} queries={ViewerQuery} render={render} />
+        <Route path='team' component={Team} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='functions' component={FunctionsView} queries={ViewerQuery} render={render}>
-        <Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render} />
+        <Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render}/>
         <Route
           path=':id/logs'
           component={FunctionLogs}
@@ -190,30 +192,30 @@ export default (
         <IndexRedirect to='settings'/>
       </Route>
       <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>
-        <Route path='all' component={null} render={render} />
-        <Route path='types' component={null} render={render} />
-        <Route path='interfaces' component={null} render={render} />
+        <Route path='all' component={null} render={render}/>
+        <Route path='types' component={null} render={render}/>
+        <Route path='interfaces' component={null} render={render}/>
         <Route path='enums' component={null} render={render}>
-          <Route path='edit/:enumName' component={null} render={render} />
+          <Route path='edit/:enumName' component={null} render={render}/>
         </Route>
         <Route path='relations'>
-          <Route path='create' component={RelationPopup} queries={ViewerQuery}  render={render}/>
+          <Route path='create' component={RelationPopup} queries={ViewerQuery} render={render}/>
           <Route path='edit/:relationName' component={RelationPopup} queries={ViewerQuery} render={render}/>
         </Route>
         <Route path=':modelName'>
-          <Route path='edit' component={null} render={render} />
-          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render} />
+          <Route path='edit' component={null} render={render}/>
+          <Route path='edit/:fieldName' component={FieldPopup} queries={ViewerQuery} render={render}/>
           <Route path='create' component={FieldPopup} queries={ViewerQuery} render={render}/>
         </Route>
       </Route>
-      <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render} />
+      <Route path='graph-view' component={SchemaViewer} queries={ViewerQuery} render={render}/>
       <Route path='models'>
         <IndexRoute component={ModelRedirectView} queries={ViewerQuery} render={render}/>
         <Route path=':modelName/databrowser' component={DatabrowserView} queries={ViewerQuery} render={render}/>
         <Route path=':modelName' component={ModelRedirectView} queries={ViewerQuery} render={render}/>
       </Route>
       <Route path='permissions' component={PermissionsView} queries={ViewerQuery} render={render}>
-        <IndexRoute component={PermissionsList} />
+        <IndexRoute component={PermissionsList}/>
         <Route path='relations' component={AllRelationPermissionsList}>
           <Route
             path=':relationName/edit/:id'
@@ -243,7 +245,7 @@ export default (
       <Route path='settings' component={ProjectSettingsView} queries={ViewerQuery} render={render}/>
       <Route path='algolia' component={AlgoliaView} queries={ViewerQuery} render={render}/>
       <Route path='integrations' component={IntegrationsView} queries={ViewerQuery} render={render}>
-        <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render} />
+        <Route path='authentication/:provider' component={AuthProviderPopup} queries={ViewerQuery} render={render}/>
       </Route>
     </Route>
   </Route>

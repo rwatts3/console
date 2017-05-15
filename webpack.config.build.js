@@ -78,6 +78,7 @@ module.exports = {
       __GA_CODE__: process.env.GA_CODE ? JSON.stringify(process.env.GA_CODE.toString()) : false,
       __INTERCOM_ID__: '"mamayuvj"',
       __STRIPE_PUBLISHABLE_KEY__: '"pk_live_WeGxtEVBQ8j4R2PLzePTcn1l"',
+      __CLI_AUTH_TOKEN_ENDPOINT__: JSON.stringify(process.env.CLI_AUTH_TOKEN_ENDPOINT.toString()),
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
       },
