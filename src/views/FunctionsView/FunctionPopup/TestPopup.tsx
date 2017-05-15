@@ -9,6 +9,7 @@ import DummyTestLog from './DummyTestLog'
 import {generateSSSTestEvent, generateTestEvent} from '../../../utils/functionTest'
 import {EventType} from './FunctionPopup'
 import Loading from '../../../components/Loading/Loading'
+import {reverse} from 'lodash'
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
 
 interface Props {
@@ -92,6 +93,10 @@ export default class TestPopup extends React.Component<Props, State> {
     if (this.props.eventType !== nextProps.eventType) {
       this.setState({input: getEventInput(nextProps.eventType, nextProps.schema, nextProps.sssModelName)} as State)
     }
+
+    if (nextProps.isOpen && !this.props.isOpen) {
+      this.runTest()
+    }
   }
 
   render() {
@@ -140,7 +145,7 @@ export default class TestPopup extends React.Component<Props, State> {
             @p: .w100, .flex, .justifyEnd;
           }
           .header {
-            @p: .mb16;
+            @p: .mb16, .flex, .itemsCenter, .justifyBetween;
           }
           .logs {
             @p: .overflowAuto;
@@ -154,6 +159,15 @@ export default class TestPopup extends React.Component<Props, State> {
           }
           .loading {
             @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+          }
+          .clear {
+            @p: .f12, .ttu, .br2, .mr6, .fw6, .pointer, .darkerBlue;
+            letter-spacing: 0.2px;
+            padding: 4px 8px;
+            background: #b8bfc4;
+          }
+          .clear:hover {
+            @p: .o70;
           }
         `}</style>
         <div className='test-popup'>
@@ -219,6 +233,7 @@ export default class TestPopup extends React.Component<Props, State> {
                   Your Test Logs
                 </div>
               </div>
+              <div className='clear' onClick={this.clear}>Clear</div>
             </div>
             <div className='logs' ref={this.setRef}>
               {responses.length === 0 && (
@@ -226,7 +241,7 @@ export default class TestPopup extends React.Component<Props, State> {
                   The logs for your test function will appear here.
                 </div>
               )}
-              {responses.length > 0 ? responses.map(res => (
+              {responses.length > 0 ? reverse(responses).map(res => (
                 <TestLog response={res} key={res.timestamp} />
               )) : (
                 [0,1,2].map(i => (
@@ -243,6 +258,10 @@ export default class TestPopup extends React.Component<Props, State> {
         </div>
       </Modal>
     )
+  }
+
+  private clear = () => {
+    this.setState({responses: []} as State)
   }
 
   private setLoading(loading: boolean) {
