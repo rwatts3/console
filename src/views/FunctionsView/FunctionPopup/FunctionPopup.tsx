@@ -146,7 +146,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {models, schema, functions} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest, sssModelName} = this.state
 
-    const changed = didChange(this.state.fn, this.props.node)
+    const changed = didChange(this.state.fn, isInline, this.props.node)
     const valid = isValid(this.state)
 
     const tabs = this.getTabs()
@@ -170,7 +170,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
             {
               title: 'Overview over Functions',
               type: 'guide',
-              link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+              link: 'https://www.graph.cool/docs/reference/functions/overview-boo6uteemo/',
             },
           ]}
           videoId='l-0jGOxXKGY'
@@ -437,15 +437,17 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private updateFunction(webhookUrl?: string, auth0Id?: string) {
-    const {fn} = this.state
+    const {fn, isInline} = this.state
     const input = {
       ...fn,
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
       webhookHeaders: fn.webhookHeaders,
-      auth0Id: auth0Id || fn.auth0Id,
+      auth0Id: isInline ? (auth0Id || fn.auth0Id) : null,
       functionId: fn.id,
+      inlineCode: isInline ? fn.inlineCode : null,
     }
+    console.log('sending', input)
     if (this.state.eventType === 'RP') {
       return this.updateRPFunction(input)
     } else if (this.state.eventType === 'SSS') {

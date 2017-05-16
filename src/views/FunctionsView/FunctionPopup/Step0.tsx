@@ -90,7 +90,7 @@ export default class Step0 extends React.Component<Props, State> {
           }
         `}</style>
         <div className='intro'>
-          Choose the type of function, you want to define.
+          Choose the type of function, you want to define. <br/>
           <b>Server-Side Subscriptions</b> are asynchronous functions which can define powerful filter queries to limit
           the events they get triggered by. They can be used for logging, sending mails etc. <br/>
           The <b>Request Pipeline</b> allows you to define function that is synchronously invoked at a specific step

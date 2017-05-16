@@ -108,7 +108,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             <N>1</N>
             define a function name
             <N>2</N>
-            define a trigger with some input (usually one or more mutations), as well as
+            define a trigger with some input (usually one or more mutations for one type), as well as
             <N>3</N>
             write a function that get’s executed every time.
           </p>
