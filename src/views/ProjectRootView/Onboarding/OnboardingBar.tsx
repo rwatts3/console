@@ -2,11 +2,15 @@ import * as React from 'react'
 import * as cn from 'classnames'
 import {Icon, $v} from 'graphcool-styles'
 import {connect} from 'react-redux'
-import {showCurrentStep} from '../../../actions/gettingStarted'
+import {showCurrentStep, skip} from '../../../actions/gettingStarted'
 import {GettingStartedState} from '../../../types/gettingStarted'
+import {withRouter} from 'react-router'
 
 interface Props {
   gettingStartedState: GettingStartedState
+  skip: () => void
+  router: ReactRouter.InjectedRouter
+  params: any
 }
 
 interface State {
@@ -51,6 +55,16 @@ class OnboardingBar extends React.Component<Props, State> {
           h2 {
             @p: .fw6, .white, .f20;
           }
+          .help {
+            @p: .white, .f14, .o50, .flex, .itemsCenter, .nowrap;
+            margin-right: 68px;
+          }
+          .help span {
+            @p: .mr6;
+          }
+          .skip {
+            @p: .mr38, .underline, .pointer;
+          }
         `}</style>
         <div className='progress-bar'>
           <div className='progress' style={{width: `${progressPercentage}%`}} />
@@ -59,14 +73,46 @@ class OnboardingBar extends React.Component<Props, State> {
           <div className='flex itemsCenter'>
             <h2>Get Started</h2>
             {steps.map(step => (
-              <Step active={step.n === progress.index} done={step.n < progress.index} n={step.n}>
+              <Step
+                active={step.n === progress.index}
+                done={step.n < progress.index}
+                n={step.n}
+                onClick={() => this.gotoStep(step.n)}
+              >
                 {step.text}
               </Step>
             ))}
           </div>
+          <div className='help'>
+            <div className='skip' onClick={this.skip}>Skip</div>
+            <span>Need help?</span>
+            <img src={require('assets/graphics/onboarding-arrow.svg')} alt=''/>
+          </div>
         </div>
       </div>
     )
+  }
+
+  private skip = () => {
+    graphcoolConfirm(
+      'This skips the Onboarding. 73% of our users going through the onboarding built successful Graphcool projects.',
+      'Skip Onboarding',
+    )
+      .then(() => {
+        this.props.skip()
+      })
+  }
+
+  private gotoStep(n: number) {
+    const {router, params} = this.props
+    switch (n) {
+      case 1:
+        return router.push(`/${params.projectName}/schema`)
+      case 2:
+        return router.push(`/${params.projectName}/playground`)
+      case 3:
+        return router.push(`/${params.projectName}/playground`)
+    }
   }
 }
 
@@ -93,11 +139,12 @@ interface StepProps {
   n: number
   done?: boolean
   active?: boolean
+  onClick?: () => void
 }
 
-function Step({children, n, done, active}: StepProps) {
+function Step({children, n, done, active, onClick}: StepProps) {
   return (
-    <div className={cn('step', {done, active})}>
+    <div className={cn('step', {done, active})} onClick={onClick}>
       <style jsx={true}>{`
         .step {
           @p: .flex, .itemsCenter, .ml38;
@@ -117,7 +164,7 @@ function Step({children, n, done, active}: StepProps) {
           border: none;
         }
         .step.active {
-          @p: .blue;
+          @p: .blue, .pointer;
         }
         .step.active .circle {
           @p: .blue;
@@ -149,6 +196,6 @@ export default connect(
     gettingStartedState: state.gettingStarted.gettingStartedState,
   }),
   {
-    showCurrentStep,
+    showCurrentStep, skip,
   },
-)(OnboardingBar)
+)(withRouter(OnboardingBar))
