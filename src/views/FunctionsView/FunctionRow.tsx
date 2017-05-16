@@ -51,6 +51,8 @@ class FunctionRow extends React.Component<Props, State> {
     const isInline = getIsInline(fn)
     const eventType = getEventTypeFromFunction(fn)
 
+    const lastCall = fn.stats.lastRequest ? moment(fn.stats.lastRequest).fromNow() : 'no recent invocations'
+
     return (
       <tr key={fn.id} onClick={this.edit}>
         <style jsx={true}>{`
@@ -187,7 +189,7 @@ class FunctionRow extends React.Component<Props, State> {
                 <RequestGraph stats={fn.stats} />
               }
               <div className='good'>{fn.stats.requestCount}</div>
-              <div className='time'>{moment(fn.stats.lastRequest).fromNow()}</div>
+              <div className='time'>{lastCall}</div>
             </div>
           </Link>
         </td>

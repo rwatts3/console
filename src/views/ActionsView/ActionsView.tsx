@@ -48,35 +48,8 @@ class ActionsView extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <Helmet title='Mutation Callbacks' />
-        {!this.state.showAddRow &&
-          <Header
-              viewer={this.props.viewer}
-              params={this.props.params}
-              project={this.props.viewer.project}
-            >
-              <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>
-                <div className={`${classes.button} ${classes.green}`}>
-                  <Icon
-                    width={16}
-                    height={16}
-                    src={require('assets/icons/add.svg')}
-                  />
-                  <span>Create Mutation Callback</span>
-                </div>
-              </div>
-
-          </Header>
-        }
         <div className={classes.content}>
           <ScrollBox>
-            {this.state.showAddRow &&
-              <ActionBoxes
-                project={this.props.viewer.project}
-                action={null}
-                relay={this.props.relay}
-                close={() => this.setState({ showAddRow: false } as State)}
-              />
-            }
             {this.props.viewer.project.actions.edges.map((edge) => edge.node).map((action) => (
               <div key={action.id}>
                 <ActionRow
@@ -104,10 +77,10 @@ class ActionsView extends React.Component<Props, State> {
                   <div className={cx($p.flex, $p.flexRow)}>
                     <div className={cx($p.flexAuto)}>
                       <div className={cx($p.black50)}>
-                        Here you can define a custom http webhook that we call when specific mutations are performed.
-                      </div>
-                      <div className={$p.black50}>
-                        To learn more about mutation callbacks, please have a look in our docs.
+                        Mutation Callbacks are a <b>deprecated</b> feature of Graphcool that will be removed soon.
+                        It will be replaced by Server-Side Subscriptions. <br/>
+                        Click on "Functions" to come to the new Functions Page where you can define
+                        Server-Side Subscriptions, which are much more powerful than the old mutation callbacks.
                       </div>
                     </div>
                     <div className={$p.ml10}>
@@ -121,10 +94,10 @@ class ActionsView extends React.Component<Props, State> {
                           $p.pointer,
                           $p.db,
                         )}
-                        href='https://graph.cool/docs/reference/platform/mutation-callbacks-ahlohd8ohn'
+                        href={`/${this.props.params.projectName}/functions`}
                         target='_blank'
                       >
-                        Docs
+                        Functions
                       </a>
                     </div>
                   </div>

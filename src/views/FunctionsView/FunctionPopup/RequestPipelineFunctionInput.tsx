@@ -13,6 +13,7 @@ import {EventType} from './FunctionPopup'
 import { buildClientSchema, introspectionQuery } from 'graphql'
 import {CustomGraphiQL} from 'graphcool-graphiql'
 import {getEventInput} from './TestPopup'
+import TestButton from './TestButton'
 
 interface Props {
   schema: string
@@ -30,6 +31,7 @@ interface Props {
   query: string
   projectId: string
   sssModelName: string
+  onTestRun?: () => void
 }
 
 interface State {
@@ -247,6 +249,11 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 showDocs
                 onEditQuery={onChangeQuery}
               />
+            </div>
+          )}
+          {fullscreen && (
+            <div className='flex justifyEnd pa25'>
+              <TestButton onClick={this.props.onTestRun} className='o70' />
             </div>
           )}
         </div>
