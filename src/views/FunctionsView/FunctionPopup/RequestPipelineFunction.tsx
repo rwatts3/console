@@ -28,6 +28,7 @@ interface Props {
   modelName?: string
   operation?: RequestPipelineMutationOperation
   onTestRun?: () => void
+  showErrors: boolean
 }
 
 interface State {
@@ -47,6 +48,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
     const {
       name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onIsInlineChange,
       webhookUrl, onChangeUrl, schema, editing, eventType, onChangeQuery, query,
+      showErrors,
     } = this.props
     return (
       <div className='request-pipeline-function'>
@@ -72,6 +74,9 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             @p: .purple, .code, .br2, .bgDarkBlue04, .mh6, .dib, .f14;
             padding: 2px 4px;
           }
+          .error {
+            @p: .red, .pv16, .f16, .ml38;
+          }
         `}</style>
         <input
           type='text'
@@ -80,6 +85,9 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           placeholder='Set a function name...'
           autoFocus
         />
+        {showErrors && (!name || name.length === 0) && (
+          <div className='error'>Please give your function a name ⤴</div>
+        )}
         {!editing && (
           <StepMarker active style={{marginTop: -36, marginLeft: -4}}>1</StepMarker>
         )}

@@ -155,6 +155,9 @@ export function isValid(state: FunctionPopupState) {
   if (!state.fn.webhookUrl && !state.fn.inlineCode) {
     return false
   }
+  if (!state.fn.name || state.fn.name.length === 0) {
+    return false
+  }
   return true
 }
 

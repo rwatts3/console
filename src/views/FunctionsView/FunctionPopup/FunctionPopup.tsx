@@ -257,6 +257,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   }
                   operation={fn.operation}
                   onTestRun={this.showTestPopup}
+                  showErrors={this.state.showErrors}
                 />
               )}
             </div>
@@ -411,6 +412,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private submit = () => {
+    if (!isValid(this.state)) {
+      return this.setState({showErrors: true} as FunctionPopupState)
+    }
     this.setState({loading: true} as FunctionPopupState)
     if (this.state.isInline) {
       this.createExtendFunction()
