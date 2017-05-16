@@ -106,10 +106,13 @@ class SchemaEditor extends React.Component<Props, State> {
       this.scrollToPercentage(nextProps.scroll)
     }
     if (this.props.project.typeSchema !== nextProps.project.typeSchema) {
-      this.setState({typeSchema: this.addFrontmatter(nextProps.project.typeSchema)} as State)
+      this.setState({typeSchema: this.addFrontmatter(nextProps.project.typeSchema, nextProps)} as State)
     }
     if (this.props.project.enumSchema !== nextProps.project.enumSchema) {
       this.setState({enumSchema: nextProps.project.enumSchema} as State)
+    }
+    if (this.props.project.version !== nextProps.project.version) {
+      this.setState({typeSchema: this.addFrontmatter(nextProps.project.typeSchema, nextProps)} as State)
     }
   }
   scrollToPercentage(scroll) {
