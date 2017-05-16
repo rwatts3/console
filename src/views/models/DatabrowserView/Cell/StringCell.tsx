@@ -62,6 +62,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
             this.props.save(stringToValue(e.target.value, this.props.field))
           }}
           onChange={this.onChange}
+          placeholder='Enter a String...'
         />
       ) : (
         <input
@@ -79,6 +80,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
             this.props.save(stringToValue(e.target.value, this.props.field))
           }}
           onChange={this.onChange}
+          placeholder='Enter a String...'
         />
       )
     )

@@ -191,7 +191,6 @@ export function updateNodeAsync(lokka: any,
     if (field.isReadonly) {
       return Promise.reject({})
     }
-
     dispatch(mutationRequest())
 
     // if relation to self
@@ -228,7 +227,6 @@ export function updateNodeAsync(lokka: any,
       },
       value,
     }))
-
     return updateRelayNode(lokka, model.name, value, field, nodeId)
       .then((res) => {
         dispatch(mutationSuccess())

@@ -44,7 +44,7 @@ class RootView extends React.Component<Props, {}> {
           }
         `}</style>
         <Helmet titleTemplate='%s | Graphcool'/>
-        <MediaQuery minWidth={800}>
+        <MediaQuery minWidth={500}>
           {matches => matches ? (this.props.children) : (<MobileScreen />)}
         </MediaQuery>
         <NotificationSystem ref='notificationSystem' />

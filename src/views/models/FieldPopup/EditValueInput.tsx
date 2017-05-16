@@ -4,6 +4,7 @@ import {CellRequirements, getScalarEditCell, getEditCell} from '../DatabrowserVi
 import {TypedValue} from '../../../types/utils'
 import {Field} from '../../../types/types'
 import {valueToString} from '../../../utils/valueparser'
+import * as cn from 'classnames'
 
 interface State {
   isEnteringValue: boolean
@@ -35,14 +36,16 @@ export default class EditValueInput extends React.Component<Props, State> {
         <style jsx={true}>{`
 
           .container {
-            @p: .bgWhite;
+            @p: .bgWhite, .flex, .justifyCenter;
           }
           .edit-value {
-            @p: .flex, .justifyCenter;
-            height: 26px;
+            @p: .flex, .justifyCenter, .ph10;
+            width: auto;
+            height: auto;
+            min-height: 52px;
           }
-          .relative-box {
-            @p: .relative;
+          .edit-value.entering {
+            @p: .bBlue, .ba, .br2;
           }
         `}</style>
         <style jsx global>{`
@@ -52,11 +55,14 @@ export default class EditValueInput extends React.Component<Props, State> {
           .field-popup .edit-value > div > div > div:nth-of-type(2) {
             border: none !important;
           }
+          .field-popup .edit-value > div > div:nth-child(2) {
+            left: -56px;
+          }
         `}</style>
         {isEnteringValue ?
           (
-            <div className='edit-value'>
-              <div className='relative-box'>
+            <div className='relative'>
+              <div className={cn('edit-value', {entering: isEnteringValue})}>
                 {this.getInput()}
               </div>
             </div>
@@ -83,7 +89,7 @@ export default class EditValueInput extends React.Component<Props, State> {
             <div
               className='flex itemsCenter pointer bbox edit-value '
               onMouseEnter={() => this.setState({isHoveringValue: true} as State)}
-              onMouseLeave={() => this.setState({isHoveringValue: false} as State)}
+              onMouseLeave={() => this.setState({isHoveringValue: true} as State)}
               onClick={() => this.setState({
                 isEnteringValue: true,
                 isHoveringValue: false,

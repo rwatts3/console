@@ -123,11 +123,6 @@ export function editCell(position: GridPosition): ReduxAction {
 
 export function stopEditCell(): ReduxThunk {
   return (dispatch, getState) => {
-    const dataBrowserView = document.getElementById('data-browser-view')
-    if (dataBrowserView) {
-      dataBrowserView.focus()
-    }
-
     dispatch({
       type: Constants.STOP_EDIT_CELL,
     })

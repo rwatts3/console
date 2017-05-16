@@ -307,7 +307,7 @@ class SelectNodesCell extends React.Component<Props, State> {
       filter = ' filter: {'
       if (query && query.length) {
         filter += 'OR: ['
-        const whiteList = ['GraphQLID', 'String', 'Enum']
+        const whiteList = ['GraphQLID', 'String']
 
         const filtered = fields.filter((field: Field) => {
           return whiteList.indexOf(field.typeIdentifier.toString()) > -1
@@ -329,7 +329,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
     const {nodeId, field} = this.props
     const getRelated = firstQuery
-    const count = stopIndex - startIndex
+    const count = stopIndex - startIndex + 1
     const nodeSelector = getRelated ? `${field.model.name}(id: "${nodeId}") {` : ''
     const metaQuery = (!firstQuery || field.isList) ? `${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
           count
@@ -403,8 +403,11 @@ class SelectNodesCell extends React.Component<Props, State> {
           count: meta.count,
         }
 
+        let goingforAll = false
         if (this.firstQuery && meta.count === 0) {
           newState['selectedTabIndex'] = 0
+          this.firstQuery = false
+          goingforAll = true
         }
 
         if (this.lastQuery !== this.state.query) {
@@ -421,7 +424,14 @@ class SelectNodesCell extends React.Component<Props, State> {
           )
         }
 
-        this.setState(newState as State)
+        this.setState(
+          newState as State,
+          () => {
+            if (goingforAll) {
+              this.getItemsFromState()
+            }
+          },
+        )
 
         this.lastQuery = query
         this.firstQuery = false

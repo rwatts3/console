@@ -1,9 +1,9 @@
 exports[`test IntCell renders 1`] = `
 <input
   autoFocus={true}
-  onBlur={[Function]}
   onChange={[Function]}
   onKeyDown={[Function]}
+  placeholder="Enter an Integer..."
   type="text"
   value="1" />
 `;
