@@ -66,6 +66,7 @@ const modalStyling = {
   },
   overlay: {
     ...fieldModalStyle.overlay,
+    zIndex: 101,
     backgroundColor: 'rgba(23,42,58,.98)',
     // backgroundColor: 'rgba(36, 54, 66, 0.98)',
   },
@@ -161,7 +162,7 @@ export default class TestPopup extends React.Component<Props, State> {
             @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
           }
           .clear {
-            @p: .f12, .ttu, .br2, .mr6, .fw6, .pointer, .darkerBlue;
+            @p: .f12, .ttu, .br2, .mr38, .fw6, .pointer, .darkerBlue, .z999;
             letter-spacing: 0.2px;
             padding: 4px 8px;
             background: #b8bfc4;

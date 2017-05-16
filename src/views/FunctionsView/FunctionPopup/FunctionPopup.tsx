@@ -35,6 +35,7 @@ import TestPopup from './TestPopup'
 import AddServerSideSubscriptionFunction from '../../../mutations/Functions/AddServerSideSubscriptionFunction'
 import UpdateServerSideSubscriptionFunction from '../../../mutations/Functions/UpdateServerSideSubscriptionFunction'
 import {getEventTypeFromFunction} from '../../../utils/functions'
+import TestButton from './TestButton'
 
 export type EventType = 'SSS' | 'RP' | 'CRON'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
@@ -255,6 +256,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                     fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
                   }
                   operation={fn.operation}
+                  onTestRun={this.showTestPopup}
                 />
               )}
             </div>
@@ -304,27 +306,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {editing, eventType} = this.state
     if (editing || (this.state.eventType === 'RP' && index === 2) || (this.state.eventType === 'SSS' && index === 1)) {
       return (
-        <div className='btn' onClick={this.showTestPopup}>
-          <style jsx>{`
-            .btn {
-              @p: .bgWhite, .darkBlue70, .f16, .ph16, .br2, .flex, .itemsCenter, .buttonShadow, .pointer;
-              padding-top: 9px;
-              padding-bottom: 10px;
-            }
-            .btn span {
-              @p: .ml10;
-            }
-          `}</style>
-          <Icon
-            src={require('graphcool-styles/icons/fill/triangle.svg')}
-            color={$v.darkBlue40}
-            width={10}
-            height={10}
-          />
-          <span>
-            Test Run
-          </span>
-        </div>
+        <TestButton onClick={this.showTestPopup} />
       )
     }
 

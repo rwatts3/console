@@ -27,6 +27,7 @@ interface Props {
   sssModelName: string
   modelName?: string
   operation?: RequestPipelineMutationOperation
+  onTestRun?: () => void
 }
 
 interface State {
@@ -129,6 +130,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           query={this.props.query}
           projectId={this.props.projectId}
           sssModelName={this.props.sssModelName}
+          onTestRun={this.props.onTestRun}
         />
       </div>
     )
