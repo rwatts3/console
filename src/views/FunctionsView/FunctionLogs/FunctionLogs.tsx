@@ -125,7 +125,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
                 <tr>
                   <th>Timestamp</th>
                   <th>Duration</th>
-                  <th>Message</th>
+                  <th>Output</th>
                   <th>Time Ago</th>
                 </tr>
                 </thead>

@@ -173,7 +173,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
               link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
             },
           ]}
-          videoId='l1KEssmlhPA'
+          videoId='l-0jGOxXKGY'
         >
           <div
             className='function-popup'
