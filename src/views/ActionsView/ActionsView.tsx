@@ -48,8 +48,35 @@ class ActionsView extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <Helmet title='Mutation Callbacks' />
+        {!this.state.showAddRow &&
+          <Header
+              viewer={this.props.viewer}
+              params={this.props.params}
+              project={this.props.viewer.project}
+            >
+              <div onClick={() => this.setState({ showAddRow: true } as State)} className={classes.header}>
+                <div className={`${classes.button} ${classes.green}`}>
+                  <Icon
+                    width={16}
+                    height={16}
+                    src={require('assets/icons/add.svg')}
+                  />
+                  <span>Create Mutation Callback</span>
+                </div>
+              </div>
+
+          </Header>
+        }
         <div className={classes.content}>
           <ScrollBox>
+            {this.state.showAddRow &&
+              <ActionBoxes
+                project={this.props.viewer.project}
+                action={null}
+                relay={this.props.relay}
+                close={() => this.setState({ showAddRow: false } as State)}
+              />
+            }
             {this.props.viewer.project.actions.edges.map((edge) => edge.node).map((action) => (
               <div key={action.id}>
                 <ActionRow
