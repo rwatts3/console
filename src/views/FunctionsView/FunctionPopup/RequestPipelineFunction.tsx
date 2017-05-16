@@ -115,7 +115,6 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
         )}
         <p>
           The <pre>input</pre> argument represents the payload of the subscription. <br/>
-          <pre style={{marginLeft: 0}}>log()</pre> can be used to print data to the logs. <br/>
           {eventType === 'RP' && (
             <span>
               You can either return a value or use the <pre>cb()</pre> function if you have an async flow.
