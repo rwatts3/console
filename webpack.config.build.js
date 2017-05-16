@@ -121,7 +121,10 @@ module.exports = {
         },
       }
     }),
-    new OfflinePlugin(),
+    new OfflinePlugin({
+      autoUpdate: true,
+      updateStrategy: 'all',
+    }),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],

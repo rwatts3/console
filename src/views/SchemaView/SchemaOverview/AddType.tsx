@@ -41,7 +41,7 @@ interface Props {
   showDonePopup: () => void
   nextStep: () => Promise<any>
   gettingStartedState: GettingStartedState
-
+  params: any
 }
 
 const idField = {
@@ -215,6 +215,8 @@ class AddType extends React.Component<Props, State> {
                 field={field}
                 permissions={permissions}
                 hideBorder={index === 0}
+                projectName={this.props.params.projectName}
+                modelName={this.props.params.modelName}
               />
             ))
           ) : (
@@ -224,6 +226,8 @@ class AddType extends React.Component<Props, State> {
               permissions={[]}
               hideBorder={true}
               create
+              projectName={this.props.params.projectName}
+              modelName={this.props.params.modelName}
             />
           )}
         </div>

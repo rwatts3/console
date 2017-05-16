@@ -13,6 +13,7 @@ interface Props {
   editingModelName?: string
   blur: boolean
   setScroll: (n: number) => void
+  params: any
 }
 export type SchemaOverviewFilter = 'detail' | 'overview'
 
@@ -99,6 +100,7 @@ class SchemaOverview extends React.Component<Props,State> {
           selectedModel={selectedModel}
           editingModelName={editingModelName}
           setScroll={this.props.setScroll}
+          params={this.props.params}
         />
       </div>
     )

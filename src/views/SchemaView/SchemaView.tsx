@@ -104,6 +104,7 @@ class SchemaView extends React.Component<Props, State> {
               editingModelName={editingModelName}
               blur={isBeta ? this.state.blur : false}
               setScroll={this.scroll}
+              params={this.props.params}
             />
           )}
         </div>
