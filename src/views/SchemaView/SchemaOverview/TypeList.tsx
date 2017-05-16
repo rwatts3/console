@@ -14,6 +14,7 @@ interface Props {
   selectedModel?: string
   editingModelName?: string
   setScroll: (n: number) => void
+  params: any
 }
 
 class TypeList extends React.Component<Props,null> {
@@ -67,6 +68,7 @@ class TypeList extends React.Component<Props,null> {
                 key={model.id}
                 projectId={this.props.project.id}
                 model={model}
+                params={this.props.params}
               />
             ) : (
               <TypeBox
