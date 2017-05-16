@@ -226,8 +226,8 @@ class AddType extends React.Component<Props, State> {
               permissions={[]}
               hideBorder={true}
               create
-              projectName={this.props.params.projectName}
-              modelName={this.props.params.modelName}
+              projectName={this.props.params ? this.props.params.projectName : undefined}
+              modelName={this.props.params ? this.props.params.modelName : undefined}
             />
           )}
         </div>

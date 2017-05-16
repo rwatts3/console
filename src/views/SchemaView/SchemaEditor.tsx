@@ -23,7 +23,6 @@ interface Props {
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
   onEnumsChange: (enums: boolean) => void
-  isBeta: boolean
   setBlur: (active: boolean) => void
   scroll: number
   showEnums: boolean
@@ -78,7 +77,7 @@ class SchemaEditor extends React.Component<Props, State> {
       // schema: sortSchema(props.project.schema, props.project.models.edges.map(edge => edge.node)),
       enumSchema: props.project.enumSchema,
       typeSchema: this.addFrontmatter(props.project.typeSchema),
-      beta: props.isBeta,
+      beta: true,
       isDryRun: true,
       messages: [],
       errors: [],

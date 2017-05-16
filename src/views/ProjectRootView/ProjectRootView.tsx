@@ -257,7 +257,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
                 {this.props.children}
               </div>
               {this.props.gettingStartedState.isActive() &&
-                <OnboardingBar/>
+                <OnboardingBar params={this.props.params} />
               }
             </div>
           </div>
