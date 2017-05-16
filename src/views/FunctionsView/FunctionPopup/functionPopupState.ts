@@ -69,16 +69,16 @@ export const inlineCode = (eventType: EventType) => {
   if (eventType === 'SSS') {
     return `\
 // Click "EXAMPLE EVENT" to see whats in \`event\`
-module.exports = function (event, log) {
-  log('Received event')
-  log(event.data)
+module.exports = function (event) {
+  console.log('Received event')
+  console.log(event.data)
 }
 `
   }
   return `\
 // Click "EXAMPLE EVENT" to see whats in \`event\`
-module.exports = function (event, log, cb) {
-  log(event.data)  
+module.exports = function (event, cb) {
+  console.log(event.data)  
   return {data: event.data}
 }
 `
