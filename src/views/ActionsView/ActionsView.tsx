@@ -78,7 +78,7 @@ class ActionsView extends React.Component<Props, State> {
                     <div className={cx($p.flexAuto)}>
                       <div className={cx($p.black50)}>
                         Mutation Callbacks are a <b>deprecated</b> feature of Graphcool that will be removed soon.
-                        It will be replaces by Server-Side Subscriptions. <br/>
+                        It will be replaced by Server-Side Subscriptions. <br/>
                         Click on "Functions" to come to the new Functions Page where you can define
                         Server-Side Subscriptions, which are much more powerful than the old mutation callbacks.
                       </div>
