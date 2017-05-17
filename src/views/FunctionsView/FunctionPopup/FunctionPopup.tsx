@@ -447,7 +447,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       functionId: fn.id,
       inlineCode: isInline ? fn.inlineCode : null,
     }
-    console.log('sending', input)
     if (this.state.eventType === 'RP') {
       return this.updateRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
