@@ -120,7 +120,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             Congratulations
           </h1>
           <p>
-            You did dit! We prepared a lot of resources that you can read to learn more about Graphcool and GraphQL
+            You did it! We prepared a lot of resources that you can read to learn more about Graphcool and GraphQL
             in general.
           </p>
           <div
@@ -138,7 +138,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
           </div>
         </div>
         <div className='share'>
-          <h2>If you liked it, share it on twitter</h2>
+          <h2>If you liked it, share it on Twitter</h2>
           <a
             className='twitter-btn'
             href={`https://twitter.com/home?status=%40graphcool's%20onboarding%20jus` +
