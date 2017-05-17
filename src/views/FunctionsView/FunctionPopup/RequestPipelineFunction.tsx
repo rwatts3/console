@@ -108,14 +108,13 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             <N>1</N>
             define a function name
             <N>2</N>
-            define a trigger with some input (usually one or more mutations), as well as
+            define a trigger with some input (usually one or more mutations for one type), as well as
             <N>3</N>
             write a function that get’s executed every time.
           </p>
         )}
         <p>
           The <pre>input</pre> argument represents the payload of the subscription. <br/>
-          <pre style={{marginLeft: 0}}>log()</pre> can be used to print data to the logs. <br/>
           {eventType === 'RP' && (
             <span>
               You can either return a value or use the <pre>cb()</pre> function if you have an async flow.

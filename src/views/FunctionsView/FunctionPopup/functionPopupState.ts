@@ -161,12 +161,19 @@ export function isValid(state: FunctionPopupState) {
   return true
 }
 
-export function didChange(after: ServerlessFunction, before?: ServerlessFunction) {
+export function didChange(after: ServerlessFunction, isInline: boolean, before?: ServerlessFunction) {
   if (!before) {
     return true
   }
-  return keysChanged(before, after, [
+
+  let keys = [
     'name', 'isActive', 'binding', 'operation',
     'type', 'url', 'headers', 'inlineCode', 'auth0Id', 'query',
-  ]) || JSON.stringify(after._webhookHeaders) !== before.webhookHeaders
+  ]
+
+  if (!isInline) {
+    keys = keys.concat('webhookUrl')
+  }
+
+  return keysChanged(before, after, keys) || JSON.stringify(after._webhookHeaders) !== before.webhookHeaders
 }
