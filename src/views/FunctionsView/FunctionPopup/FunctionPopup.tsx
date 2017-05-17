@@ -12,7 +12,7 @@ import {
   didChange, getDefaultSSSQuery,
   getEmptyFunction, inlineCode, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName,
   updateOperation,
-  updateQuery,
+  updateQuery, updateType,
   updateWebhookHeaders,
   updateWebhookUrl,
 } from './functionPopupState'
@@ -59,7 +59,6 @@ export interface FunctionPopupState {
   fn: ServerlessFunction
   loading: boolean
   eventType: EventType
-  isInline: boolean
   showTest: boolean
   sssModelName: string
 }
@@ -103,7 +102,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       fn: props.node || getEmptyFunction(props.models, props.functions, 'RP'),
       loading: false,
       eventType: getEventTypeFromFunction(props.node),
-      isInline: getIsInline(props.node),
       showTest: false,
       sssModelName: props.models[0].name,
     }
@@ -144,8 +142,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   render() {
     const {models, schema, functions} = this.props
-    const {activeTabIndex, editing, showErrors, fn, eventType, isInline, loading, showTest, sssModelName} = this.state
+    const {activeTabIndex, editing, showErrors, fn, eventType, loading, showTest, sssModelName} = this.state
 
+    const isInline = fn.type === 'AUTH0'
     const changed = didChange(this.state.fn, isInline, this.props.node)
     const valid = isValid(this.state)
 
@@ -240,7 +239,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   onNameChange={this.update(updateName)}
                   binding={fn.binding}
                   isInline={isInline}
-                  onIsInlineChange={this.handleIsInlineChange}
+                  onTypeChange={this.update(updateType)}
                   onChangeUrl={this.update(updateWebhookUrl)}
                   webhookUrl={fn.webhookUrl}
                   schema={schema}
@@ -324,10 +323,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         this.setLoading(false)
         this.setState({showTest: true} as FunctionPopupState)
       })
-  }
-
-  private handleIsInlineChange = (isInline: boolean) => {
-    this.setState({isInline} as FunctionPopupState)
   }
 
   private getTabs = () => {
@@ -416,7 +411,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return this.setState({showErrors: true} as FunctionPopupState)
     }
     this.setState({loading: true} as FunctionPopupState)
-    if (this.state.isInline) {
+    if (this.state.fn.type === 'AUTH0') {
       this.createExtendFunction()
         .then((res: any) => {
           const {url, fn} = res
@@ -437,7 +432,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private updateFunction(webhookUrl?: string, auth0Id?: string) {
-    const {fn, isInline} = this.state
+    const {fn} = this.state
+    const isInline = fn.type === 'AUTH0'
     const input = {
       ...fn,
       projectId: this.props.project.id,
@@ -455,7 +451,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private createFunction(webhookUrl?: string, auth0Id?: string) {
-    const {fn, isInline} = this.state
+    const {fn} = this.state
+    const isInline = fn.type === 'AUTH0'
     const input = {
       ...fn,
       projectId: this.props.project.id,
@@ -464,6 +461,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       inlineCode: isInline ? fn.inlineCode : '',
     }
+    console.log('sending', input)
     if (this.state.eventType === 'RP') {
       return this.createRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
@@ -555,15 +553,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 }
 export function getIsInline(fn: ServerlessFunction| null): boolean {
-  if (fn) {
-    if (fn.inlineCode && fn.inlineCode.length > 0) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  return true
+  return fn.type === 'AUTH0'
 }
 
 const ConnectedFunctionPopup = connect(null, {showNotification})(FunctionPopup)

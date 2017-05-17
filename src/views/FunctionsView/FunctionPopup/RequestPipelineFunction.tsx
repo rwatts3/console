@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {FunctionBinding, Model, RequestPipelineMutationOperation} from '../../../types/types'
+import {FunctionBinding, FunctionType, Model, RequestPipelineMutationOperation} from '../../../types/types'
 import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
 import StepMarker from './StepMarker'
 import {getText} from './data'
@@ -13,7 +13,7 @@ interface Props {
   onNameChange: (name: string) => void
   binding: FunctionBinding
   isInline: boolean
-  onIsInlineChange: (isInline: boolean) => void
+  onTypeChange: (type: FunctionType) => void
   onChangeUrl: (url: string) => void
   webhookUrl: string
   schema: string
@@ -46,7 +46,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
 
   render() {
     const {
-      name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onIsInlineChange,
+      name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onTypeChange,
       webhookUrl, onChangeUrl, schema, editing, eventType, onChangeQuery, query,
       showErrors,
     } = this.props
@@ -126,7 +126,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onChange={onInlineCodeChange}
           value={inlineCode}
           isInline={isInline}
-          onIsInlineChange={onIsInlineChange}
+          onTypeChange={onTypeChange}
           webhookUrl={webhookUrl}
           onChangeUrl={onChangeUrl}
           headers={this.props.headers}

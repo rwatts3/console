@@ -14,13 +14,14 @@ import { buildClientSchema, introspectionQuery } from 'graphql'
 import {CustomGraphiQL} from 'graphcool-graphiql'
 import {getEventInput} from './TestPopup'
 import TestButton from './TestButton'
+import {FunctionType} from '../../../types/types'
 
 interface Props {
   schema: string
   onChange: (value: string) => void
   value: string
   isInline: boolean
-  onIsInlineChange: (value: boolean) => void
+  onTypeChange: (type: FunctionType) => void
   webhookUrl: string
   onChangeUrl: (url: string) => void
   headers: {[key: string]: string}
@@ -117,7 +118,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
   renderComponent() {
     const {inputWidth, fullscreen, showExample} = this.state
     const {
-      schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
+      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
     } = this.props
     const {onChangeQuery} = this.props
 
@@ -269,7 +270,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
               <Toggle
                 choices={['Inline Code', 'Webhook']}
                 activeChoice={isInline ? 'Inline Code' : 'Webhook'}
-                onChange={choice => choice === 'Inline Code' ? onIsInlineChange(true) : onIsInlineChange(false)}
+                onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
               />
             </div>
             <Icon
