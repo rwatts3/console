@@ -442,7 +442,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       ...fn,
       projectId: this.props.project.id,
       webhookUrl: webhookUrl || fn.webhookUrl,
-      webhookHeaders: fn.webhookHeaders,
+      webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       auth0Id: isInline ? (auth0Id || fn.auth0Id) : null,
       functionId: fn.id,
       inlineCode: isInline ? fn.inlineCode : null,

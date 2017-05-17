@@ -18,6 +18,7 @@ interface State {
 export default class WebhookEditor extends React.Component<Props, State> {
 
   private ref: any
+  private nameInput: any
 
   constructor(props) {
     super(props)
@@ -125,6 +126,7 @@ export default class WebhookEditor extends React.Component<Props, State> {
                   autoFocus
                   value={this.state.currentName}
                   onChange={this.onChangeName}
+                  ref={ref => this.nameInput = ref}
                 />
               </div>
               <div className='right'>
@@ -170,10 +172,15 @@ export default class WebhookEditor extends React.Component<Props, State> {
       ...this.props.headers,
       [currentName]: currentValue,
     })
-    this.setState({
-      currentName: '',
-      currentValue: '',
-    } as State)
+    this.setState(
+      {
+        currentName: '',
+        currentValue: '',
+      } as State,
+      () => {
+        this.nameInput.focus()
+      },
+    )
   }
 
   private toggleAddRow = e => {
