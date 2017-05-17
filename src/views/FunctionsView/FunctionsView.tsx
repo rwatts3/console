@@ -4,6 +4,7 @@ import {Project, ServerlessFunction} from '../../types/types'
 import mapProps from '../../components/MapProps/MapProps'
 import FunctionsList from './FunctionsList'
 import FunctionsHeader from './FunctionsHeader'
+import Helmet from 'react-helmet'
 
 interface Props {
   project: Project
@@ -34,6 +35,7 @@ class FunctionsView extends React.Component<Props, State> {
           .functions-view {
           }
         `}</style>
+        <Helmet title='Functions' />
         <FunctionsHeader params={this.props.params} />
         <FunctionsList project={this.props.project} params={this.props.params} />
         {this.props.children}
