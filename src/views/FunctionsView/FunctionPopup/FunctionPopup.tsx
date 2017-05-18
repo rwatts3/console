@@ -118,7 +118,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.props.relay.setVariables({
       modelSelected: true,
       operation: props.node && props.node.operation || 'CREATE',
-      selectedModelName: props.node && props.node.model.name || 'User',
+      selectedModelName: (props.node && props.node.model && props.node.model.name) || 'User',
       binding: props.node && props.node.binding || 'PRE_WRITE',
       includeFunctions: this.state.eventType === 'RP' && !this.state.editing,
     })
@@ -336,19 +336,19 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       if (this.state.editing) {
         return ['Update Function']
       } else {
-        return ['Set Event Type', 'Choose Trigger', 'Define Function']
+        return ['Choose Event Trigger', 'Configure Event Trigger', 'Define Function']
       }
     }
 
     if (eventType === 'SSS') {
       if (this.state.editing) {
-        return ['Set Event Type']
+        return ['Choose Event Trigger']
       } else {
-        return ['Set Event Type', 'Define Function']
+        return ['Choose Event Trigger', 'Define Function']
       }
     }
 
-    return ['Set Event Type']
+    return ['Choose Event Trigger']
   }
 
   private handleEventTypeChange = (eventType: EventType) => {
@@ -694,6 +694,8 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           }
         }
         model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          id
+          name
           requestPipelineFunctionSchema(binding: $binding operation: $operation)
         }
         user {

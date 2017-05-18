@@ -15,6 +15,8 @@ import {CustomGraphiQL} from 'graphcool-graphiql'
 import {getEventInput} from './TestPopup'
 import TestButton from './TestButton'
 import {FunctionType} from '../../../types/types'
+import {getExampleEvent, getFakeSchema} from '../../../utils/example-generation/index'
+import {throttle} from 'lodash'
 
 interface Props {
   schema: string
@@ -41,6 +43,8 @@ interface State {
   fullscreen: boolean
   ssschema: any
   showExample: boolean
+  exampleEvent: string
+  fakeSchema: any
 }
 
 const modalStyling = {
@@ -56,6 +60,21 @@ const modalStyling = {
 }
 
 export default class RequestPipelineFunctionInput extends React.Component<Props, State> {
+  private updateExampleEvent = throttle(
+    (fakeSchema: any, query?: string) => {
+      const schema = fakeSchema || this.state.fakeSchema
+      const subscriptionQuery = query || this.props.query
+      getExampleEvent(schema, subscriptionQuery).then(res => {
+        if (res) {
+          this.setState({exampleEvent: JSON.stringify(res, null, 2)} as State)
+        }
+      })
+    },
+    300,
+    {
+      trailing: true,
+    },
+  )
   constructor(props) {
     super(props)
     this.state = {
@@ -63,6 +82,8 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       fullscreen: false,
       ssschema: null,
       showExample: false,
+      exampleEvent: '',
+      fakeSchema: null,
     }
   }
   render() {
@@ -89,8 +110,12 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     }
   }
   componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.eventType === 'SSS') {
+    if (nextProps.eventType === 'SSS' && this.props.eventType !== 'SSS') {
       this.fetchSSSchema()
+    }
+
+    if (nextProps.query !== this.props.query) {
+      this.updateExampleEvent(this.state.fakeSchema, nextProps.query)
     }
   }
   fetchSSSchema() {
@@ -113,7 +138,10 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         // trim out mutationType and queryType
         ssschema['_mutationType']['_fields'] = {}
         ssschema['_queryType']['_fields'] = {}
-        this.setState({ssschema} as State)
+        const fullSchema = buildClientSchema(res.data)
+        const fakeSchema = getFakeSchema(fullSchema)
+        this.setState({ssschema, fakeSchema} as State)
+        this.updateExampleEvent(fakeSchema)
       })
   }
   renderComponent() {
@@ -124,7 +152,6 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     const {onChangeQuery} = this.props
 
     const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
-    const input = getEventInput(eventType, schema, sssModelName)
 
     return (
       <div className={cn('request-pipeline-function-input', {
@@ -206,6 +233,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           .body {
             @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight;
           }
+          .body :global(.ReactCodeMirror) {
+            width: 100%;
+          }
         `}</style>
         <style jsx global>{`
           .CodeMirror-hints {
@@ -226,7 +256,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           {showExample && (
             <div className='sss-editor pl16'>
               <ResultViewer
-                value={input}
+                value={this.state.exampleEvent}
+                editable
+                onChange={this.handleExampleChange}
               />
             </div>
           )}
@@ -303,6 +335,10 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         </div>
       </div>
     )
+  }
+
+  private handleExampleChange = (exampleEvent: string) => {
+    this.setState({exampleEvent} as State)
   }
 
   private handleInputChange = (_, i: number) => {
