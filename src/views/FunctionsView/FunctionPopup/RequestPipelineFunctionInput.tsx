@@ -33,6 +33,7 @@ interface Props {
   projectId: string
   sssModelName: string
   onTestRun?: () => void
+  showErrors?: boolean
 }
 
 interface State {
@@ -292,6 +293,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 url={webhookUrl}
                 headers={this.props.headers}
                 onChangeHeaders={this.props.onChangeHeaders}
+                showErrors={this.props.showErrors}
               />
             )}
           </div>

@@ -78,13 +78,17 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     // prepare node that comes from the server
 
+    console.log(props.node)
     if (props.node) {
       if (props.node.model) {
         props.node.modelId = props.node.model.id
       }
       if (props.node.auth0Id && props.node.auth0Id.length > 0) {
         props.node._webhookUrl = props.node.webhookUrl
-        props.node.webhookUrl = ''
+        // props.node.webhookUrl = ''
+      } else if (props.node.type !== 'WEBHOOK') {
+        // transition to the truth
+        props.node.type = 'WEBHOOK'
       }
       if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
         try {
@@ -408,6 +412,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private submit = () => {
     if (!isValid(this.state)) {
+      console.log('isnt valid')
       return this.setState({showErrors: true} as FunctionPopupState)
     }
     this.setState({loading: true} as FunctionPopupState)
@@ -461,7 +466,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       inlineCode: isInline ? fn.inlineCode : '',
     }
-    console.log('sending', input)
     if (this.state.eventType === 'RP') {
       return this.createRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
@@ -553,7 +557,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 }
 export function getIsInline(fn: ServerlessFunction| null): boolean {
-  return fn.type === 'AUTH0'
+  return !!fn.auth0Id
 }
 
 const ConnectedFunctionPopup = connect(null, {showNotification})(FunctionPopup)

@@ -276,6 +276,7 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
         name
         isActive
         type
+        auth0Id
         stats {
           errorCount
           lastRequest

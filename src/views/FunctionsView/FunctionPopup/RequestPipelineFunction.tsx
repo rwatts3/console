@@ -138,6 +138,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           projectId={this.props.projectId}
           sssModelName={this.props.sssModelName}
           onTestRun={this.props.onTestRun}
+          showErrors={this.props.showErrors}
         />
       </div>
     )

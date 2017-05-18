@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
+import * as cn from 'classnames'
 
 interface Props {
   onSelectIndex: (index: number) => void
@@ -143,7 +144,7 @@ export default class PopupFooter extends React.Component<Props, null> {
           </div>
           {typeof getButtonForTab === 'function' && getButtonForTab(activeTabIndex)}
           {((!create || (create && activeTabIndex === (tabs.length - 1) && tabs.length > 1))) && (
-            <div className={'button' + ((create ? true : (changed && valid)) ? ' active' : '')} onClick={onSubmit}>
+            <div className={cn('button', {active: create ? true : changed})} onClick={onSubmit}>
               {create ? 'Create' : 'Update'} {entityName}
             </div>
           )}
