@@ -117,9 +117,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     // TODO put in schema of selected fn
     this.props.relay.setVariables({
       modelSelected: true,
-      operation: 'CREATE',
-      selectedModelName: 'User',
-      binding: 'PRE_WRITE',
+      operation: props.node && props.node.operation || 'CREATE',
+      selectedModelName: props.node && props.node.model.name || 'User',
+      binding: props.node && props.node.binding || 'PRE_WRITE',
       includeFunctions: this.state.eventType === 'RP' && !this.state.editing,
     })
     global['f'] = this
