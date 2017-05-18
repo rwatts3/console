@@ -305,7 +305,7 @@ class SchemaEditor extends React.Component<Props, State> {
   private addFrontmatter(schema, props?: Props) {
     const {version, id} = props ? props.project : this.props.project
     return `# projectId: ${id}
-# version: ${version}\n` + schema
+# version: ${version}\n\n` + schema
   }
 
   private patchSchemaRemarks(schema) {

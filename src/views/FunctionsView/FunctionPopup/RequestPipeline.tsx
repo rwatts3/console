@@ -50,6 +50,10 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
           @p: .lightOrange;
           cursor: no-drop;
         }
+        ul {
+          list-style-position: outside;
+          padding-left: 1.5em;
+        }
       `}</style>
       <Arrow />
       <Info top customTip={
@@ -57,25 +61,53 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
           <Circle disabled />
           <div className='label disabled'>TRANSFORM _REQUEST</div>
         </div>
-      }>This hook includes the raw input without any GraphQL Type checking.</Info>
+      }>This step includes the raw input without any GraphQL Type checking.</Info>
       <div className='step'>
-        <Tip>Schema Validation</Tip>
+        <Info
+          top
+          cursorOffset={20}
+          offsetY={-30}
+          customTip={<Tip>Schema Validation</Tip>}
+        >
+          Graphcool executes the GraphQL Schema validation on the request payload at this point.
+        </Info>
         <Arrow />
       </div>
-      <Info top customTip={
-        <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}>
-          <Circle active={argActive}/>
-          <div className={cn('label', {active: argActive, taken: argTaken})}>TRANSFORM _ARGUMENT</div>
-        </div>
-      }>
+      <Info
+        top
+        customTip={
+          <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}>
+            <Circle active={argActive}/>
+            <div className={cn('label', {active: argActive, taken: argTaken})}>TRANSFORM _ARGUMENT</div>
+          </div>
+        }
+      >
         {argTaken ? (
           'This hook is already being used by another function.'
         ) : (
-          'In this hook you can transform the input data'
+          <div>
+            In this hook you can transform the input data. <br/>
+            You can for example <br/>
+            <ul>
+              <li>validating email address</li>
+              <li>normalizing phone number</li>
+              <li>remove spaces from credit card number</li>
+            </ul>
+          </div>
         )}
       </Info>
       <div className='step'>
-        <Tip>Data Validation</Tip>
+        <Info
+          top
+          cursorOffset={20}
+          offsetY={-30}
+          customTip={
+            <Tip>Graphcool Check</Tip>
+          }
+        >
+          In this step Graphcool checks for Constraints like Uniqueness
+          and checks if the permissions even allow this request.
+        </Info>
         <Arrow />
       </div>
       <Info top customTip={
@@ -87,7 +119,14 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
         {argTaken ? (
           'This hook is already being used by another function.'
         ) : (
-          'In this step you can perform validation or eg. charge a User on Stripe'
+          <div>
+            In this step the checks of Graphcool already have been executed. <br/>
+            It's useful for calling external services: <br/>
+            <ul>
+              <li>charge a customer on stripe</li>
+              <li>write a message on twilio</li>
+            </ul>
+          </div>
         )}
       </Info>
       <Arrow />
@@ -112,7 +151,13 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
         {argTaken ? (
           'This hook is already being used by another function.'
         ) : (
-          'This step allows you to transform the payload, eg. removing secret data'
+          <div>
+            This step allows you to transform the payload<br/>
+            You can for example
+            <ul>
+              <li>remove the content of secret fields</li>
+            </ul>
+          </div>
         )}
       </Info>
       <Arrow />

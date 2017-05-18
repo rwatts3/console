@@ -23,7 +23,8 @@ var CodeMirror = React.createClass({
     options: React.PropTypes.object,
     path: React.PropTypes.string,
     value: React.PropTypes.string,
-    preserveScrollPosition: React.PropTypes.bool
+    preserveScrollPosition: React.PropTypes.bool,
+    onKeyDown: React.PropTypes.func,
   },
   getDefaultProps: function getDefaultProps() {
     return {
@@ -49,6 +50,7 @@ var CodeMirror = React.createClass({
     this.codeMirror.on('focus', this.focusChanged.bind(this, true));
     this.codeMirror.on('blur', this.focusChanged.bind(this, false));
     this.codeMirror.on('scroll', this.scrollChanged);
+    this.codeMirror.on('keydown', this.keyDown);
     this.codeMirror.setValue(this.props.defaultValue || this.props.value || '');
   },
   componentWillUnmount: function componentWillUnmount() {
@@ -73,6 +75,14 @@ var CodeMirror = React.createClass({
           this.codeMirror.setOption(optionName, nextProps.options[optionName]);
         }
       }
+    }
+  },
+  keyDown: function keyDown(_, e) {
+    var _this = this
+    if (e.keyCode === 9) {
+      setTimeout(function() {
+        _this.codeMirror.focus();
+      }, 0)
     }
   },
   getCodeMirror: function getCodeMirror() {
@@ -110,7 +120,7 @@ var CodeMirror = React.createClass({
         },
         name: this.props.path,
         defaultValue: this.props.value,
-        autoComplete: 'off'
+        autoComplete: 'off',
       })
     );
   }

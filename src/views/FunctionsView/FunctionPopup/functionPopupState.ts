@@ -1,4 +1,7 @@
-import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
+import {
+  FunctionBinding, FunctionType, Model, RequestPipelineMutationOperation,
+  ServerlessFunction,
+} from '../../../types/types'
 import {EventType, FunctionPopupState} from './FunctionPopup'
 import {keysChanged} from '../../../utils/change'
 export function getEmptyFunction(models: Model[], functions: ServerlessFunction[], eventType: EventType):
@@ -151,8 +154,18 @@ export function updateQuery(state: ServerlessFunction, query: string): Serverles
   }
 }
 
+export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {
+  return {
+    ...state,
+    type,
+  }
+}
+
 export function isValid(state: FunctionPopupState) {
-  if (!state.fn.webhookUrl && !state.fn.inlineCode) {
+  if (state.fn.type === 'AUTH0' && (!state.fn.inlineCode || state.fn.inlineCode.length === 0)) {
+    return false
+  }
+  if (state.fn.type === 'WEBHOOK' && !webhookUrlValid(state.fn.webhookUrl)) {
     return false
   }
   if (!state.fn.name || state.fn.name.length === 0) {
@@ -176,4 +189,8 @@ export function didChange(after: ServerlessFunction, isInline: boolean, before?:
   }
 
   return keysChanged(before, after, keys) || JSON.stringify(after._webhookHeaders) !== before.webhookHeaders
+}
+
+export function webhookUrlValid(url: string) {
+  return url && url.length > 0 && url.includes('http') && url.includes('://') && url.includes('.')
 }

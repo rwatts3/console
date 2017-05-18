@@ -43,7 +43,7 @@ export default class UpdateServerSideSubscriptionFunction extends Relay.Mutation
   getVariables () {
     return pick(this.props, [
       'name', 'isActive', 'query',
-      'type', 'webhookUrl', 'headers', 'inlineCode', 'auth0Id', 'functionId',
+      'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
     ])
   }
 }

@@ -91,10 +91,6 @@ export default class Step0 extends React.Component<Props, State> {
         `}</style>
         <div className='intro'>
           Choose the type of function, you want to define. <br/>
-          <b>Server-Side Subscriptions</b> are asynchronous functions which can define powerful filter queries to limit
-          the events they get triggered by. They can be used for logging, sending mails etc. <br/>
-          The <b>Request Pipeline</b> allows you to define function that is synchronously invoked at a specific step
-          of a mutation. This allows you to transform the input to the database and write custom validation logic.
         </div>
         <FieldHorizontalSelect
           activeBackgroundColor={$v.blue}
@@ -133,13 +129,14 @@ export default class Step0 extends React.Component<Props, State> {
     const {eventType} = this.props
 
     if (eventType === 'RP') {
-      return `The Request Pipeline let’s you transform data at each step of  of the data processing process.
-      Read more about what you can do at each step.`
+      return `The Request Pipeline let’s you transform data at each step of the data processing process.
+      This allows you to transform what data comes into the database and comes out.
+      Here you can for example charge a Stripe payment or implement custom validation logic.`
     }
 
     if (eventType === 'SSS') {
       return `Server-side subscriptions give you the ability to react to events like mutations.
-      You could for example send emails everytime a user signs up.`
+      You could for example send emails everytime a user signs up or use it for logging`
     }
 
     return 'You can’t change the function type after you created the function.'

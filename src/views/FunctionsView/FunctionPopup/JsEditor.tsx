@@ -5,11 +5,12 @@ const Codemirror: any = require('../FunctionLogs/Codemirror').default
 interface Props {
   value: string
   onChange: (value: string) => void
+  onKeyDown?: (e: any) => void
 }
 
 require('codemirror/theme/base16-dark.css')
 
-export default function JsEditor({value, onChange}: Props) {
+export default function JsEditor({value, onChange, onKeyDown}: Props) {
   return (
     <div className='js-editor'>
       <style jsx={true}>{`
@@ -32,6 +33,7 @@ export default function JsEditor({value, onChange}: Props) {
         } as EditorConfiguration}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
       />
     </div>
   )

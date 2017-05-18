@@ -11,11 +11,19 @@ interface Props {
   cursorOffset?: number
   padding?: number
   top?: boolean
+  offsetY?: number
 }
 
 const Info = (props: Props) => {
+  const offsetX = props.offsetX ? (props.offsetX + 'px') : '0px'
+  let offsetY = props.offsetY ? (props.offsetY + 'px') : '0px'
+
+  if (props.top) {
+    offsetY = `calc(-100% - 40px + ${offsetY})`
+  }
+
   let tooltipStyle = {
-    transform: `translateX(${props.offsetX ? (props.offsetX + 'px') : 0})`,
+    transform: `translate(${offsetX},${offsetY})`,
   }
   if (props.width) {
     tooltipStyle['width'] = props.width
@@ -26,7 +34,7 @@ const Info = (props: Props) => {
     tooltipContentStyle['padding'] = props.padding
   }
 
-  const cursorOffset = -props.offsetX + (props.cursorOffset ? props.cursorOffset : 0)
+  const cursorOffset = -(props.offsetX || 0) + (props.cursorOffset ? props.cursorOffset : 0)
 
   return (
     <div
@@ -47,9 +55,6 @@ const Info = (props: Props) => {
         width: 250px;
         padding-top: 5px;
         left: -50px;
-      }
-      .tooltip.top {
-        transform: translateY(calc(-100% - 40px)) !important;
       }
       .tooltip.slim {
         width: 200px;

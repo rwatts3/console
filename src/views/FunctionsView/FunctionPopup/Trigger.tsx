@@ -110,7 +110,12 @@ export default function Trigger({
             <div>
               Choose a step within the data processing, you want to hook in.
             </div>
-            <a href='/'>More about what you can do in each step</a>
+            <a
+              href='https://www.graph.cool/docs/reference/functions/request-pipeline/overview-pa6guruhaf/'
+              target='_blank'
+            >
+              More about what you can do in each step
+            </a>
           </div>
         </div>
         <RequestPipeline

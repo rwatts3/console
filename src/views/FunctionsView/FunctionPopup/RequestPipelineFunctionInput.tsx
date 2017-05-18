@@ -14,13 +14,16 @@ import { buildClientSchema, introspectionQuery } from 'graphql'
 import {CustomGraphiQL} from 'graphcool-graphiql'
 import {getEventInput} from './TestPopup'
 import TestButton from './TestButton'
+import {FunctionType} from '../../../types/types'
+import {getExampleEvent, getFakeSchema} from '../../../utils/example-generation/index'
+import {throttle} from 'lodash'
 
 interface Props {
   schema: string
   onChange: (value: string) => void
   value: string
   isInline: boolean
-  onIsInlineChange: (value: boolean) => void
+  onTypeChange: (type: FunctionType) => void
   webhookUrl: string
   onChangeUrl: (url: string) => void
   headers: {[key: string]: string}
@@ -32,6 +35,7 @@ interface Props {
   projectId: string
   sssModelName: string
   onTestRun?: () => void
+  showErrors?: boolean
 }
 
 interface State {
@@ -39,6 +43,8 @@ interface State {
   fullscreen: boolean
   ssschema: any
   showExample: boolean
+  exampleEvent: string
+  fakeSchema: any
 }
 
 const modalStyling = {
@@ -54,6 +60,21 @@ const modalStyling = {
 }
 
 export default class RequestPipelineFunctionInput extends React.Component<Props, State> {
+  private updateExampleEvent = throttle(
+    (fakeSchema: any, query?: string) => {
+      const schema = fakeSchema || this.state.fakeSchema
+      const subscriptionQuery = query || this.props.query
+      getExampleEvent(schema, subscriptionQuery).then(res => {
+        if (res) {
+          this.setState({exampleEvent: JSON.stringify(res, null, 2)} as State)
+        }
+      })
+    },
+    300,
+    {
+      trailing: true,
+    },
+  )
   constructor(props) {
     super(props)
     this.state = {
@@ -61,6 +82,8 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       fullscreen: false,
       ssschema: null,
       showExample: false,
+      exampleEvent: '',
+      fakeSchema: null,
     }
   }
   render() {
@@ -87,8 +110,12 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     }
   }
   componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.eventType === 'SSS') {
+    if (nextProps.eventType === 'SSS' && this.props.eventType !== 'SSS') {
       this.fetchSSSchema()
+    }
+
+    if (nextProps.query !== this.props.query) {
+      this.updateExampleEvent(this.state.fakeSchema, nextProps.query)
     }
   }
   fetchSSSchema() {
@@ -111,18 +138,20 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         // trim out mutationType and queryType
         ssschema['_mutationType']['_fields'] = {}
         ssschema['_queryType']['_fields'] = {}
-        this.setState({ssschema} as State)
+        const fullSchema = buildClientSchema(res.data)
+        const fakeSchema = getFakeSchema(fullSchema)
+        this.setState({ssschema, fakeSchema} as State)
+        this.updateExampleEvent(fakeSchema)
       })
   }
   renderComponent() {
     const {inputWidth, fullscreen, showExample} = this.state
     const {
-      schema, value, onChange, onIsInlineChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
+      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
     } = this.props
     const {onChangeQuery} = this.props
 
     const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
-    const input = getEventInput(eventType, schema, sssModelName)
 
     return (
       <div className={cn('request-pipeline-function-input', {
@@ -204,6 +233,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           .body {
             @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight;
           }
+          .body :global(.ReactCodeMirror) {
+            width: 100%;
+          }
         `}</style>
         <style jsx global>{`
           .CodeMirror-hints {
@@ -224,7 +256,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           {showExample && (
             <div className='sss-editor pl16'>
               <ResultViewer
-                value={input}
+                value={this.state.exampleEvent}
+                editable
+                onChange={this.handleExampleChange}
               />
             </div>
           )}
@@ -269,7 +303,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
               <Toggle
                 choices={['Inline Code', 'Webhook']}
                 activeChoice={isInline ? 'Inline Code' : 'Webhook'}
-                onChange={choice => choice === 'Inline Code' ? onIsInlineChange(true) : onIsInlineChange(false)}
+                onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
               />
             </div>
             <Icon
@@ -284,19 +318,27 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           </div>
           <div className='body'>
             {isInline ? (
-              <JsEditor onChange={onChange} value={value} />
+              <JsEditor
+                onChange={onChange}
+                value={value}
+              />
             ) : (
               <WebhookEditor
                 onChangeUrl={this.props.onChangeUrl}
                 url={webhookUrl}
                 headers={this.props.headers}
                 onChangeHeaders={this.props.onChangeHeaders}
+                showErrors={this.props.showErrors}
               />
             )}
           </div>
         </div>
       </div>
     )
+  }
+
+  private handleExampleChange = (exampleEvent: string) => {
+    this.setState({exampleEvent} as State)
   }
 
   private handleInputChange = (_, i: number) => {

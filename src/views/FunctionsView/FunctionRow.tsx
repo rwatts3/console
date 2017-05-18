@@ -275,7 +275,8 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
         id
         name
         isActive
-        inlineCode
+        type
+        auth0Id
         stats {
           errorCount
           lastRequest
