@@ -286,7 +286,10 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           </div>
           <div className='body'>
             {isInline ? (
-              <JsEditor onChange={onChange} value={value} />
+              <JsEditor
+                onChange={onChange}
+                value={value}
+              />
             ) : (
               <WebhookEditor
                 onChangeUrl={this.props.onChangeUrl}
