@@ -32,5 +32,5 @@ export function getExampleEvent(schema, query: string) {
     // not empty
   }
 
-  return null
+  return Promise.reject(null)
 }

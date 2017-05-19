@@ -71,6 +71,8 @@ const customModalStyle = {
   },
 }
 
+let isSSS = false
+
 class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   constructor(props: Props) {
@@ -78,7 +80,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     // prepare node that comes from the server
 
-    console.log(props.node)
     if (props.node) {
       if (props.node.model) {
         props.node.modelId = props.node.model.id
@@ -120,8 +121,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       operation: props.node && props.node.operation || 'CREATE',
       selectedModelName: (props.node && props.node.model && props.node.model.name) || 'User',
       binding: props.node && props.node.binding || 'PRE_WRITE',
-      includeFunctions: this.state.eventType === 'RP' && !this.state.editing,
+      includeFunctions: this.state.eventType === 'RP',
     })
+    isSSS = this.state.eventType === 'SSS'
     global['f'] = this
   }
 
@@ -570,14 +572,14 @@ const MappedFunctionPopup = mapProps({
   functions: props => props.viewer.project.functions ? props.viewer.project.functions.edges.map(edge => edge.node) : [],
 })(withRouter(ConnectedFunctionPopup))
 
-export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-    includeFunctions: false,
+    includeFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -591,21 +593,6 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
               node {
                 id
                 name
-              }
-            }
-          }
-          functions(first: 1000) @include(if: $includeFunctions) {
-            edges {
-              node {
-                id
-                ... on RequestPipelineMutationFunction {
-                  id
-                  binding
-                  model {
-                    id
-                    name
-                  }
-                }
               }
             }
           }
@@ -624,14 +611,7 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     `,
     node: () => Relay.QL`
       fragment on Function {
-        id
-        name
-        inlineCode
-        isActive
-        type
-        auth0Id
-        webhookHeaders
-        webhookUrl
+        ${FunctionFragment}
         ... on RequestPipelineMutationFunction {
           binding
           model {
@@ -640,6 +620,51 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           }
           operation
         }
+      }
+    `,
+  },
+})
+
+export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+  initialVariables: {
+    projectName: null, // injected from router
+    selectedModelName: null,
+    modelSelected: false,
+    binding: null,
+    operation: null,
+    includeFunctions: true,
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        id
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 100) {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
+        }
+        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          requestPipelineFunctionSchema(binding: $binding operation: $operation)
+        }
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
+      }
+    `,
+    node: () => Relay.QL`
+      fragment on Function {
+        ${FunctionFragment}
         ... on ServerSideSubscriptionFunction {
           query
         }
@@ -648,11 +673,18 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   },
 })
 
-const bindings = [
-  'TRANSFORM_AGENT',
-  'PRE_WRITE',
-  'TRANSFORM_PAYLOAD',
-]
+const FunctionFragment = Relay.QL`
+  fragment on Function {
+    id
+    name
+    inlineCode
+    isActive
+    type
+    auth0Id
+    webhookHeaders
+    webhookUrl
+  }
+`
 
 export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
@@ -661,6 +693,7 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
+    includesFunctions: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -697,13 +730,6 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           id
           name
           requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
         }
       }
     `,
