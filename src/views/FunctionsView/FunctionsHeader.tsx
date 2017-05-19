@@ -66,15 +66,15 @@ export default function FunctionsHeader({params}: Props) {
       <div className='docs'>
         <ModalDocs
           title='How do functions work?'
-          id='functions-list'
+          id='functions-popup'
           resources={[
             {
               title: 'Overview over Functions',
               type: 'guide',
-              link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+              link: 'https://www.graph.cool/docs/reference/functions/overview-boo6uteemo/',
             },
           ]}
-          videoId='l1KEssmlhPA'
+          videoId='l-0jGOxXKGY'
           boring
         >
         </ModalDocs>
