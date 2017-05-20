@@ -99,7 +99,9 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
         )}
         <div className='line' />
         <div className='content'>
-          {eventType === 'RP' && (
+          {eventType === 'RP' && (editing ? (
+            <p>Request-Pipeline Step: <span className='pre'>{binding}</span></p>
+          ) : (
             <p>
               By creating a function at
               <span className='pre'>{binding}</span>
@@ -108,8 +110,8 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
               <span className='pre'>{this.props.modelName}</span> is
               <span className='pre'>{this.props.operation.toLowerCase()}d</span>
             </p>
-          )}
-          {eventType === 'SSS' && (
+          ))}
+          {eventType === 'SSS' && !editing && (
             <p>
               To create a server-side subscription, you need to
               <N>1</N>
@@ -121,10 +123,11 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             </p>
           )}
           <p>
-            The <pre>input</pre> argument represents the payload of the subscription. <br/>
+            The <pre>event</pre> argument represents the payload of the
+            {eventType === 'RP' ? 'mutation' : 'subscription'}. <br/>
             {eventType === 'RP' && (
               <span>
-                You can either return a value or use the <pre>cb()</pre> function if you have an async flow.
+                You can either <pre>return</pre> a value or use the <pre>cb()</pre> function if you have an async flow.
               </span>
             )}
           </p>
