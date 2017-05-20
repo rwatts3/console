@@ -284,6 +284,9 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
           .input.sss :global(.graphiql-container) {
             @p: .flexAuto, .overflowAuto, .h100;
           }
+          .fullscreen .input :global(.docExplorerWrap) {
+            height: calc(100vh - 56px) !important;
+          }
           .input.sss :global(.CodeMirror-lines) {
             @p: .pt0;
           }

@@ -8,12 +8,27 @@ import {
   execute,
   printSchema,
 } from 'graphql'
+import cuid from 'cuid'
 
 const fakerIDL = parse(fakeIDL)
 
 export function getFakeSchema(schema) {
-  const idl = parse(printSchema(schema))
-  const ast = concatAST([idl, fakerIDL])
+  let idl = printSchema(schema)
+  idl = idl.split('\n').map(line => {
+    if (line.includes('id: ID!')) {
+      line = line + ` @examples(values: ["${cuid()}", "${cuid()}"])`
+    }
+    if (line.includes(': DateTime')) {
+      line = line + ` @examples(values: ["2017-05-20T16:22:26.248Z", "2017-05-21T16:22:26.248Z"])`
+    }
+    if (line.includes('updatedFields')) {
+      line = line + ` @examples(values: [["updatedAt"]])`
+    }
+
+    return line
+  }).join('\n')
+  const graphcoolAst = parse(idl)
+  const ast = concatAST([graphcoolAst, fakerIDL])
 
   const newSchema = buildASTSchema(ast)
   fakeSchema(newSchema)

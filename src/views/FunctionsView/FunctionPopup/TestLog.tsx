@@ -227,7 +227,15 @@ export default function TestLog({response}: Props) {
           ))}
         </div>
       )}
-      {error && (
+      {error && (typeof error === 'string' ? (
+        <div className='error-response'>
+          <h2 className='mono'>Error</h2>
+          <div className='meta-entry'>
+            <div className='label'>message</div>
+            <div className='value'>{error}</div>
+          </div>
+        </div>
+      ) : (
         <div className='error-response'>
           <h2 className='mono'>Error</h2>
           <div className='meta-entry'>
@@ -248,7 +256,7 @@ export default function TestLog({response}: Props) {
             ))}
           </div>
         </div>
-      )}
+      ))}
     </div>
   )
 }
