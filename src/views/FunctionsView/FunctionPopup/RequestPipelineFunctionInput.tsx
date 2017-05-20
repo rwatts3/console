@@ -103,6 +103,7 @@ const modalStyling = {
 class RequestPipelineFunctionInput extends React.Component<Props, State> {
   private logsRef: any
   private lastQuery: string
+  private firstTest: boolean = true
   private updateSSSExampleEvent = throttle(
     (fakeSchema: any, query?: string) => {
       const schema = fakeSchema || this.state.fakeSchema
@@ -167,9 +168,23 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
     if (nextProps.query !== this.props.query) {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
+
+    if (
+      nextProps.location.pathname !== this.props.location.pathname
+      && nextProps.location.pathname.endsWith('/fullscreen')
+    ) {
+      if (this.firstTest) {
+        this.runTest()
+      }
+    }
+
+    if (nextProps.schema !== this.props.schema) {
+      this.updateRPExampleEvent(nextProps.schema)
+    }
   }
-  updateRPExampleEvent() {
-    const exampleEvent = JSON.stringify(generateTestEvent(this.props.schema), null, 2)
+  updateRPExampleEvent(schema?: string) {
+    const newSchema = schema || this.props.schema
+    const exampleEvent = JSON.stringify(generateTestEvent(newSchema), null, 2)
     this.setState({exampleEvent} as State)
   }
   fetchSSSchema() {
@@ -198,6 +213,26 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
         this.updateSSSExampleEvent(fakeSchema)
       })
   }
+  getDemoninator() {
+    const fullscreen = this.props.location.pathname.endsWith('fullscreen')
+
+    if (!fullscreen) {
+      return 2
+    }
+
+    if (window.innerWidth < 1300) {
+      return 3
+    }
+
+    return 4
+  }
+  getLogsDenominator() {
+    if (window.innerWidth < 1300) {
+      return 3
+    }
+
+    return 2
+  }
   renderComponent() {
     const {inputWidth, showExample, responses} = this.state
     const {
@@ -209,7 +244,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
     const fullscreen = location.pathname.endsWith('fullscreen')
 
     const baseWidth = fullscreen ? window.innerWidth : 820
-    const denominator = fullscreen ? 3 : 2
+    const denominator = this.getDemoninator()
     const eventWidth = baseWidth / denominator - 120
     const eventHeight = fullscreen ? window.innerHeight - 64 : 320
 
@@ -422,6 +457,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                 onChange={onChange}
                 value={value}
                 onFocusChange={this.handleEditorFocusChange}
+                onRun={this.runTest}
               />
             ) : (
               <WebhookEditor
@@ -443,7 +479,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
           <div className='output'>
             <ResizableBox
               id='function-logs'
-              width={window.innerWidth / 3 - 120}
+              width={window.innerWidth / this.getLogsDenominator() - 120}
               height={window.innerHeight - 64}
               hideArrow
               left
@@ -465,7 +501,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
               <div className='logs' ref={this.setRef}>
                 {responses.length === 0 && (
                   <div className='will-appear'>
-                    The logs for your test function will appear here.
+                    The logs for your function test will appear here.
                   </div>
                 )}
                 {responses.length > 0 ? responses.map(res => (
@@ -520,6 +556,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
   }
 
   private runTest = () => {
+    this.firstTest = false
     this.props.updateFunction()
       .then(() => {
         const {webhookUrl, isInline} = this.props

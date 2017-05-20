@@ -37,6 +37,7 @@ export interface TestResponse {
     errors: TestError[]
     event: string
     logs: string,
+    returnValue?: any,
   }
   webhook?: {
     request: {
