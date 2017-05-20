@@ -21,6 +21,8 @@ import {generateTestEvent} from '../../../utils/functionTest'
 import {smoothScrollTo} from '../../../utils/smooth'
 import TestLog from './TestLog'
 import DummyTestLog from './DummyTestLog'
+import ResizableBox from '../../../components/ResizableBox'
+import Loading from '../../../components/Loading/Loading'
 
 interface Props {
   schema: string
@@ -40,6 +42,7 @@ interface Props {
   sssModelName: string
   onTestRun?: () => void
   showErrors?: boolean
+  updateFunction: () => Promise<any>
 }
 
 interface State {
@@ -50,6 +53,7 @@ interface State {
   exampleEvent: string
   fakeSchema: any
   responses: TestResponse[]
+  loading: boolean
 }
 
 export interface TestResponse {
@@ -89,12 +93,13 @@ const modalStyling = {
   },
   overlay: {
     ...fieldModalStyle.overlay,
-    backgroundColor: 'rgba(15,32,46,.9)',
+    backgroundColor: 'rgba(23,42,58,.98)',
   },
 }
 
 export default class RequestPipelineFunctionInput extends React.Component<Props, State> {
   private logsRef: any
+  private lastQuery: string
   private updateSSSExampleEvent = throttle(
     (fakeSchema: any, query?: string) => {
       const schema = fakeSchema || this.state.fakeSchema
@@ -120,6 +125,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       exampleEvent: '',
       fakeSchema: null,
       responses: [],
+      loading: false,
     }
   }
   render() {
@@ -211,11 +217,14 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             margin-right: -4px;
           }
           .request-pipeline-function-input.fullscreen {
-            @p: .pa60, .center;
+            @p: .pa0, .center;
             height: 100vh;
           }
           .input {
-            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue;
+            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue, .flexFixed;
+          }
+          .fullscreen .input {
+            height: 100vh;
           }
           .input :global(.CodeMirror), .input :global(.CodeMirror-gutters) {
             background: transparent;
@@ -227,7 +236,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .dn;
           }
           .input.sss {
-            @p: .w50, .pl0, .pr0, .pb0, .flex, .flexColumn;
+            @p: .pl0, .pr0, .pb0, .flex, .flexColumn;
           }
           .input.sss :global(.graphiql-container) {
             @p: .flexAuto, .overflowAuto, .h100;
@@ -269,7 +278,10 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .pointer;
           }
           .body {
-            @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight;
+            @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight, .relative;
+          }
+          .test-button {
+            @p: .absolute, .bottom0, .right0, .mb25, .mr25;
           }
           .body :global(.ReactCodeMirror) {
             width: 100%;
@@ -277,7 +289,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
 
           /* Testing */
           .output {
-            @p: .flexFixed, .ml38;
+            @p: .flexFixed, .pa38;
           }
           h2 {
             @p: .white, .f20, .fw6;
@@ -295,7 +307,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .mb16, .flex, .itemsCenter, .justifyBetween;
           }
           .logs {
-            @p: .overflowAuto;
+            @p: .overflowAuto, .relative;
             max-height: calc(100vh - 120px);
           }
           .will-appear {
@@ -313,64 +325,70 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           .clear:hover {
             @p: .o70;
           }
+          .loading {
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+          }
         `}</style>
         <style jsx global>{`
           .CodeMirror-hints {
             @p: .z999;
           }
         `}</style>
-        <div className={cn('input', 'sss')}>
-          <div className='sss-input'>
-            {eventType === 'SSS' && !this.props.editing && (
-              <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+        <ResizableBox
+          id='function-event'
+          width={window.innerWidth / 3 - 120}
+          height={window.innerHeight - 64}
+          hideArrow
+          onResize={this.handleResize}
+        >
+          <div className={cn('input', 'sss')}>
+            <div className='sss-input'>
+              {eventType === 'SSS' && !this.props.editing && (
+                <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+              )}
+              <Toggle
+                choices={[inputTitle, 'Example Event']}
+                activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
+                onChange={this.handleInputChange}
+              />
+            </div>
+            {showExample && (
+              <div className='sss-editor pl16 flexAuto'>
+                <ResultViewer
+                  value={this.state.exampleEvent}
+                  editable
+                  onChange={this.handleExampleChange}
+                />
+              </div>
             )}
-            <Toggle
-              choices={[inputTitle, 'Example Event']}
-              activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
-              onChange={this.handleInputChange}
-            />
+            {!showExample && eventType === 'RP' && (
+              <div className='pl25 flexAuto'>
+                <QueryEditor
+                  value={schema}
+                  onChange={this.handleExampleChange}
+                  readOnly
+                  hideLineNumbers
+                  hideFold
+                />
+              </div>
+            )}
+            {!showExample && eventType === 'SSS' && (
+              <div className='sss-editor flexAuto'>
+                <CustomGraphiQL
+                  rerenderQuery={true}
+                  schema={this.state.ssschema}
+                  variables={''}
+                  query={this.props.query}
+                  fetcher={() => { return null }}
+                  disableQueryHeader
+                  queryOnly
+                  showDocs
+                  onEditQuery={onChangeQuery}
+                />
+              </div>
+            )}
           </div>
-          {showExample && (
-            <div className='sss-editor pl16'>
-              <ResultViewer
-                value={this.state.exampleEvent}
-                editable
-                onChange={this.handleExampleChange}
-              />
-            </div>
-          )}
-          {!showExample && eventType === 'RP' && (
-            <div className="pl25">
-              <QueryEditor
-                value={schema}
-                onChange={this.handleExampleChange}
-                readOnly
-                hideLineNumbers
-                hideFold
-              />
-            </div>
-          )}
-          {!showExample && eventType === 'SSS' && (
-            <div className='sss-editor'>
-              <CustomGraphiQL
-                rerenderQuery={true}
-                schema={this.state.ssschema}
-                variables={''}
-                query={this.props.query}
-                fetcher={() => { return null }}
-                disableQueryHeader
-                queryOnly
-                showDocs
-                onEditQuery={onChangeQuery}
-              />
-            </div>
-          )}
-          {fullscreen && (
-            <div className='flex justifyEnd pa25'>
-              <TestButton onClick={this.runTest} className='o70' />
-            </div>
-          )}
-        </div>
+        </ResizableBox>
         <div className='function'>
           <div className='head'>
             <div className='flex'>
@@ -411,38 +429,56 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 showErrors={this.props.showErrors}
               />
             )}
+            {fullscreen && (
+              <div className='test-button'>
+                <TestButton onClick={this.runTest} className='o70' />
+              </div>
+            )}
           </div>
         </div>
         {fullscreen && (
           <div className='output'>
-            <div className='header'>
-              <div className='flex itemsCenter'>
-                <Icon
-                  src={require('graphcool-styles/icons/fill/logs.svg')}
-                  color={$v.white40}
-                  width={24}
-                  height={24}
-                />
-                <div className='title'>
-                  Your Test Logs
+            <ResizableBox
+              id='function-logs'
+              width={window.innerWidth / 3 - 120}
+              height={window.innerHeight - 64}
+              hideArrow
+              left
+            >
+              <div className='header'>
+                <div className='flex itemsCenter'>
+                  <Icon
+                    src={require('graphcool-styles/icons/fill/logs.svg')}
+                    color={$v.white40}
+                    width={24}
+                    height={24}
+                  />
+                  <div className='title'>
+                    Your Test Logs
+                  </div>
                 </div>
+                <div className='clear' onClick={this.clear}>Clear</div>
               </div>
-              <div className='clear' onClick={this.clear}>Clear</div>
-            </div>
-            <div className='logs' ref={this.setRef}>
-              {responses.length === 0 && (
-                <div className='will-appear'>
-                  The logs for your test function will appear here.
-                </div>
-              )}
-              {responses.length > 0 ? responses.map(res => (
-                <TestLog response={res} key={res.timestamp} />
-              )) : (
-                [0,1,2].map(i => (
-                  <DummyTestLog key={i} />
-                ))
-              )}
-            </div>
+              <div className='logs' ref={this.setRef}>
+                {responses.length === 0 && (
+                  <div className='will-appear'>
+                    The logs for your test function will appear here.
+                  </div>
+                )}
+                {responses.length > 0 ? responses.map(res => (
+                  <TestLog response={res} key={res.timestamp} />
+                )) : (
+                  [0,1,2].map(i => (
+                    <DummyTestLog key={i} />
+                  ))
+                )}
+                {this.state.loading && (
+                  <div className='loading'>
+                    <Loading color={$v.white50} />
+                  </div>
+                )}
+              </div>
+            </ResizableBox>
           </div>
         )}
       </div>
@@ -467,30 +503,33 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
   }
 
   private runTest = () => {
-    const {webhookUrl, isInline} = this.props
-    const {exampleEvent} = this.state
-    this.setLoading(true)
-    return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
-      method: 'post',
-      body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
-    })
-      .then(res => res.json())
-      .then((res: any) => {
-        this.setState(
-          state => {
-            return {
-              ...state,
-              responses: [res].concat(state.responses),
-            }
-          },
-          this.scrollUp,
-        )
-        this.setLoading(false)
+    this.props.updateFunction()
+      .then(() => {
+        const {webhookUrl, isInline} = this.props
+        const {exampleEvent} = this.state
+        this.setLoading(true)
+        return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
+          method: 'post',
+          body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
+        })
+          .then(res => res.json())
+          .then((res: any) => {
+            this.setState(
+              state => {
+                return {
+                  ...state,
+                  responses: [res].concat(state.responses),
+                }
+              },
+              this.scrollUp,
+            )
+            this.setLoading(false)
+          })
       })
   }
 
   private setLoading(loading: boolean) {
-    // ignore for now
+    this.setState({loading} as State)
   }
 
   private setRef = logsRef => {

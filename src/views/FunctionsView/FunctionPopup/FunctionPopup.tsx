@@ -74,7 +74,7 @@ const customModalStyle = {
 let isSSS = false
 
 class FunctionPopup extends React.Component<Props, FunctionPopupState> {
-
+  private lastInlineCode: string
   constructor(props: Props) {
     super(props)
 
@@ -263,6 +263,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   operation={fn.operation}
                   onTestRun={this.showTestPopup}
                   showErrors={this.state.showErrors}
+                  updateFunction={this.updateExtendFunction}
                 />
               )}
             </div>
@@ -380,11 +381,45 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {fn: {inlineCode}} = this.state
     const authToken = cookiestore.get('graphcool_auth_token')
 
+    this.lastInlineCode = inlineCode
+
     return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/create/', {
       method: 'post',
       body: JSON.stringify({code: inlineCode, authToken}),
     })
     .then(res => res.json())
+  }
+
+  private updateExtendFunction = () => {
+    // first create the new function, set the state, then resolve the promise
+    return new Promise((resolve, reject) => {
+      if (this.lastInlineCode === this.state.fn.inlineCode) {
+        const {webhookUrl, auth0Id} = this.state.fn
+        return resolve({webhookUrl, auth0Id})
+      }
+      this.createExtendFunction()
+        .then((res: any) => {
+          const webhookUrl = res.url
+          const auth0Id = res.fn
+
+          this.setState(
+            state => {
+              return {
+                ...state,
+                fn: {
+                  ...state.fn,
+                  webhookUrl,
+                  auth0Id,
+                },
+              }
+            },
+            () => {
+              resolve({webhookUrl, auth0Id})
+            },
+          )
+        })
+        .catch(reject)
+    })
   }
 
   private cancel = () => {
@@ -414,7 +449,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private submit = () => {
     if (!isValid(this.state)) {
-      console.log('isnt valid')
       return this.setState({showErrors: true} as FunctionPopupState)
     }
     this.setState({loading: true} as FunctionPopupState)

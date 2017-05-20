@@ -29,6 +29,7 @@ interface Props {
   operation?: RequestPipelineMutationOperation
   onTestRun?: () => void
   showErrors: boolean
+  updateFunction: () => Promise<any>
 }
 
 interface State {
@@ -139,6 +140,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           sssModelName={this.props.sssModelName}
           onTestRun={this.props.onTestRun}
           showErrors={this.props.showErrors}
+          updateFunction={this.props.updateFunction}
         />
       </div>
     )

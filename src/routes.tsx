@@ -189,13 +189,23 @@ export default (
           component={EditSSSFunctionPopup}
           queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
           render={render}
-        />
+        >
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
         <Route
           path=':id/rp/edit'
           component={EditRPFunctionPopup}
           queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
           render={render}
-        />
+        >
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
       </Route>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>
