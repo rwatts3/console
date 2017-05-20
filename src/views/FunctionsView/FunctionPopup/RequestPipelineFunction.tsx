@@ -30,6 +30,8 @@ interface Props {
   onTestRun?: () => void
   showErrors: boolean
   updateFunction: () => Promise<any>
+  location: any
+  params: any
 }
 
 interface State {
@@ -49,7 +51,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
     const {
       name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onTypeChange,
       webhookUrl, onChangeUrl, schema, editing, eventType, onChangeQuery, query,
-      showErrors,
+      showErrors, location,
     } = this.props
     return (
       <div className='request-pipeline-function'>
@@ -78,6 +80,9 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           .error {
             @p: .red, .pv16, .f16, .ml38;
           }
+          .content {
+            @p: .overflowAuto;
+          }
         `}</style>
         <input
           type='text'
@@ -93,35 +98,37 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           <StepMarker active style={{marginTop: -36, marginLeft: -4}}>1</StepMarker>
         )}
         <div className='line' />
-        {eventType === 'RP' && (
-          <p>
-            By creating a function at
-            <span className='pre'>{binding}</span>
-            {getText(binding)} <br/>
-            Your function will be called when a
-            <span className='pre'>{this.props.modelName}</span> is
-            <span className='pre'>{this.props.operation.toLowerCase()}d</span>
-          </p>
-        )}
-        {eventType === 'SSS' && (
-          <p>
-            To create a server-side subscription, you need to
-            <N>1</N>
-            define a function name
-            <N>2</N>
-            define a trigger with some input (usually one or more mutations for one type), as well as
-            <N>3</N>
-            write a function that get’s executed every time.
-          </p>
-        )}
-        <p>
-          The <pre>input</pre> argument represents the payload of the subscription. <br/>
+        <div className='content'>
           {eventType === 'RP' && (
-            <span>
-              You can either return a value or use the <pre>cb()</pre> function if you have an async flow.
-            </span>
+            <p>
+              By creating a function at
+              <span className='pre'>{binding}</span>
+              {getText(binding)} <br/>
+              Your function will be called when a
+              <span className='pre'>{this.props.modelName}</span> is
+              <span className='pre'>{this.props.operation.toLowerCase()}d</span>
+            </p>
           )}
-        </p>
+          {eventType === 'SSS' && (
+            <p>
+              To create a server-side subscription, you need to
+              <N>1</N>
+              define a function name
+              <N>2</N>
+              define a trigger with some input (usually one or more mutations for one type), as well as
+              <N>3</N>
+              write a function that get’s executed every time.
+            </p>
+          )}
+          <p>
+            The <pre>input</pre> argument represents the payload of the subscription. <br/>
+            {eventType === 'RP' && (
+              <span>
+                You can either return a value or use the <pre>cb()</pre> function if you have an async flow.
+              </span>
+            )}
+          </p>
+        </div>
         <RequestPipelineFunctionInput
           schema={schema}
           onChange={onInlineCodeChange}
@@ -141,6 +148,8 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onTestRun={this.props.onTestRun}
           showErrors={this.props.showErrors}
           updateFunction={this.props.updateFunction}
+          location={this.props.location}
+          params={this.props.params}
         />
       </div>
     )

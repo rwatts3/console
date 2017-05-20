@@ -6,11 +6,12 @@ interface Props {
   value: string
   onChange: (value: string) => void
   onKeyDown?: (e: any) => void
+  onFocusChange?: (focused: boolean) => void
 }
 
 require('codemirror/theme/base16-dark.css')
 
-export default function JsEditor({value, onChange, onKeyDown}: Props) {
+export default function JsEditor({value, onChange, onKeyDown, onFocusChange}: Props) {
   return (
     <div className='js-editor'>
       <style jsx={true}>{`
@@ -34,6 +35,7 @@ export default function JsEditor({value, onChange, onKeyDown}: Props) {
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
+        onFocusChange={onFocusChange}
       />
     </div>
   )

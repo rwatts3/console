@@ -23,6 +23,7 @@ import TestLog from './TestLog'
 import DummyTestLog from './DummyTestLog'
 import ResizableBox from '../../../components/ResizableBox'
 import Loading from '../../../components/Loading/Loading'
+import {withRouter} from 'react-router'
 
 interface Props {
   schema: string
@@ -43,11 +44,13 @@ interface Props {
   onTestRun?: () => void
   showErrors?: boolean
   updateFunction: () => Promise<any>
+  location: any
+  params: any
+  router: ReactRouter.InjectedRouter
 }
 
 interface State {
   inputWidth?: number
-  fullscreen: boolean
   ssschema: any
   showExample: boolean
   exampleEvent: string
@@ -97,7 +100,7 @@ const modalStyling = {
   },
 }
 
-export default class RequestPipelineFunctionInput extends React.Component<Props, State> {
+class RequestPipelineFunctionInput extends React.Component<Props, State> {
   private logsRef: any
   private lastQuery: string
   private updateSSSExampleEvent = throttle(
@@ -119,7 +122,6 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     super(props)
     this.state = {
       inputWidth: 200,
-      fullscreen: false,
       ssschema: null,
       showExample: false,
       exampleEvent: '',
@@ -129,7 +131,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     }
   }
   render() {
-    const {fullscreen} = this.state
+    const fullscreen = this.props.location.pathname.endsWith('fullscreen')
 
     if (fullscreen) {
       return (
@@ -137,7 +139,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           isOpen
           style={modalStyling}
           contentLabel='Function Editor'
-          onRequestClose={this.toggleFullscreen}
+          onRequestClose={this.close}
         >
           {this.renderComponent()}
         </Modal>
@@ -197,13 +199,19 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       })
   }
   renderComponent() {
-    const {inputWidth, fullscreen, showExample, responses} = this.state
+    const {inputWidth, showExample, responses} = this.state
     const {
-      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
+      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName, location,
     } = this.props
     const {onChangeQuery} = this.props
 
     const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
+    const fullscreen = location.pathname.endsWith('fullscreen')
+
+    const baseWidth = fullscreen ? window.innerWidth : 820
+    const denominator = fullscreen ? 3 : 2
+    const eventWidth = baseWidth / denominator - 120
+    const eventHeight = fullscreen ? window.innerHeight - 64 : 320
 
     return (
       <div className={cn('request-pipeline-function-input', 'sss', {
@@ -211,7 +219,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       })}>
         <style jsx>{`
           .request-pipeline-function-input {
-            @p: .br2, .buttonShadow, .flex;
+            @p: .br2, .buttonShadow, .flex, .relative;
             height: 320px;
             margin-left: -4px;
             margin-right: -4px;
@@ -221,7 +229,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             height: 100vh;
           }
           .input {
-            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue, .flexFixed;
+            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue, .flexFixed, .h100;
           }
           .fullscreen .input {
             height: 100vh;
@@ -317,7 +325,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
           }
           .clear {
-            @p: .f12, .ttu, .br2, .mr38, .fw6, .pointer, .darkerBlue, .z999;
+            @p: .f12, .ttu, .br2, .mr38, .fw6, .pointer, .darkerBlue;
             letter-spacing: 0.2px;
             padding: 4px 8px;
             background: #b8bfc4;
@@ -328,6 +336,9 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           .loading {
             @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
           }
+          .close-icon {
+            @p: .absolute, .top25, .right25, .pointer;
+          }
         `}</style>
         <style jsx global>{`
           .CodeMirror-hints {
@@ -336,8 +347,8 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         `}</style>
         <ResizableBox
           id='function-event'
-          width={window.innerWidth / 3 - 120}
-          height={window.innerHeight - 64}
+          width={eventWidth}
+          height={eventHeight}
           hideArrow
           onResize={this.handleResize}
         >
@@ -404,21 +415,13 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
               />
             </div>
-            <Icon
-              src={
-                fullscreen ? require('assets/icons/compress.svg') : require('assets/icons/extend.svg')
-              }
-              stroke
-              strokeWidth={1.5}
-              color={$v.white50}
-              onClick={this.toggleFullscreen}
-            />
           </div>
           <div className='body'>
             {isInline ? (
               <JsEditor
                 onChange={onChange}
                 value={value}
+                onFocusChange={this.handleEditorFocusChange}
               />
             ) : (
               <WebhookEditor
@@ -479,6 +482,20 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 )}
               </div>
             </ResizableBox>
+          </div>
+        )}
+        {fullscreen && (
+          <div className='close-icon'>
+            <Icon
+              src={require('graphcool-styles/icons/stroke/cross.svg')}
+              stroke
+              strokeWidth={2.5}
+              color={$v.white}
+              width={32}
+              height={32}
+              onClick={this.close}
+              className='cross'
+            />
           </div>
         )}
       </div>
@@ -542,12 +559,37 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     }
   }
 
-  private toggleFullscreen = () => {
-    this.setState(state => {
-      return {
-        ...state,
-        fullscreen: !state.fullscreen,
-      }
-    })
+  private close = (e) => {
+    if (e.type === 'keydown' && e.keyCode === 27) {
+      return
+    }
+
+    this.toggleFullscreen()
+  }
+
+  private handleEditorFocusChange = (focused) => {
+    // const {pathname} = this.props.location
+    // only open fullscreen when focus is established, not other way around
+    // if (!pathname.endsWith('fullscreen')) {
+    //   this.toggleFullscreen(true)
+    // }
+  }
+
+  private toggleFullscreen = (open?: boolean) => {
+    const {pathname} = this.props.location
+    const willOpen = open || !pathname.endsWith('fullscreen')
+
+    if (willOpen && !pathname.endsWith('fullscreen')) {
+      const newUrl = pathname + '/fullscreen'
+      this.props.router.push(newUrl)
+    }
+
+    if (!willOpen && pathname.endsWith('fullscreen')) {
+      const index = pathname.indexOf('/fullscreen')
+      const newUrl = pathname.slice(0, index)
+      this.props.router.push(newUrl)
+    }
   }
 }
+
+export default withRouter(RequestPipelineFunctionInput)

@@ -50,6 +50,7 @@ interface Props {
   project: Project
   node: ServerlessFunction
   functions: ServerlessFunction[]
+  location: any
 }
 
 export interface FunctionPopupState {
@@ -147,7 +148,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   render() {
-    const {models, schema, functions} = this.props
+    const {models, schema, functions, location} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, loading, showTest, sssModelName} = this.state
 
     const isInline = fn.type === 'AUTH0'
@@ -188,6 +189,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 @p: .bgWhite, .relative;
               }
               .popup-body {
+                @p: .overflowAuto;
                 max-height: calc(100vh - 200px);
               }
               .loading {
@@ -264,6 +266,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   onTestRun={this.showTestPopup}
                   showErrors={this.state.showErrors}
                   updateFunction={this.updateExtendFunction}
+                  location={this.props.location}
+                  params={this.props.params}
                 />
               )}
             </div>
@@ -313,7 +317,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {editing, eventType} = this.state
     if (editing || (this.state.eventType === 'RP' && index === 2) || (this.state.eventType === 'SSS' && index === 1)) {
       return (
-        <TestButton onClick={this.showTestPopup} />
+        <TestButton onClick={this.openFullscreen}>Run &amp; Edit</TestButton>
       )
     }
 
@@ -321,15 +325,21 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private showTestPopup = () => {
-    this.setLoading(true)
-    this.createExtendFunction()
-      .then((res: any) => {
-        const {url, fn} = res
-        this.update(updateWebhookUrl)(url)
-        this.update(updateAuth0Id)(fn)
-        this.setLoading(false)
-        this.setState({showTest: true} as FunctionPopupState)
-      })
+    // this.setLoading(true)
+    // this.createExtendFunction()
+    //   .then((res: any) => {
+    //     const {url, fn} = res
+    //     this.update(updateWebhookUrl)(url)
+    //     this.update(updateAuth0Id)(fn)
+    //     this.setLoading(false)
+    //     this.setState({showTest: true} as FunctionPopupState)
+    //   })
+  }
+
+  private openFullscreen = () => {
+    const {pathname} = this.props.location
+    const newUrl = pathname + '/fullscreen'
+    this.props.router.push(newUrl)
   }
 
   private getTabs = () => {

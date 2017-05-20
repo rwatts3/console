@@ -5,9 +5,10 @@ import * as cn from 'classnames'
 interface Props {
   onClick?: (e: any) => void
   className?: string
+  children?: any
 }
 
-export default function TestButton({onClick, className}: Props) {
+export default function TestButton({onClick, className, children}: Props) {
   return (
     <div className={cn('btn', className)} onClick={onClick}>
       <style jsx>{`
@@ -26,7 +27,9 @@ export default function TestButton({onClick, className}: Props) {
         width={10}
         height={10}
       />
-      <span>Test Run</span>
+      <span>
+        {children || 'Test Run'}
+      </span>
     </div>
   )
 }
