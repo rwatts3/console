@@ -70,7 +70,8 @@ export function fakeSchema(schema) {
   const jsonType = schema.getTypeMap()['examples__JSON']
   jsonType.parseLiteral = astToJSON
 
-  for (let type of Object.values(schema.getTypeMap())) {
+  const typeMap = schema.getTypeMap()
+  for (let type of Object.values(typeMap)) {
     if (type instanceof GraphQLScalarType && !stdTypeNames.includes(type.name)) {
       type.serialize = (value => value)
     }
@@ -139,6 +140,9 @@ export function fakeSchema(schema) {
       return getResolver(type.ofType, field)
     }
     if (type instanceof GraphQLList) {
+      if (field.name === 'updatedFields') {
+        return () => ['updatedAt']
+      }
       return arrayResolver(getResolver(type.ofType, field))
     }
     if (isAbstractType(type)) {
