@@ -50,7 +50,11 @@ import SchemaViewer from './views/SchemaView/SchemaViewer'
 import AllRelationPermissionsList from './views/PermissionsView/RelationPermissionsList/AllRelationPermissionsList'
 import PermissionsList from './views/PermissionsView/PermissionsList/PermissionsList'
 import FunctionsView from './views/FunctionsView/FunctionsView'
-import { CreateFunctionPopup, EditFunctionPopup } from './views/FunctionsView/FunctionPopup/FunctionPopup'
+import {
+  CreateFunctionPopup,
+  EditRPFunctionPopup,
+  EditSSSFunctionPopup,
+} from './views/FunctionsView/FunctionPopup/FunctionPopup'
 import { FunctionLogs } from './views/FunctionsView/FunctionLogs/FunctionLogs'
 
 const ViewerQuery = {
@@ -181,11 +185,27 @@ export default (
           render={render}
         />
         <Route
-          path=':id/edit'
-          component={EditFunctionPopup}
+          path=':id/sss/edit'
+          component={EditSSSFunctionPopup}
           queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
           render={render}
-        />
+        >
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
+        <Route
+          path=':id/rp/edit'
+          component={EditRPFunctionPopup}
+          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+          render={render}
+        >
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
       </Route>
       <Route path='account' component={AccountView} queries={ViewerQuery} render={render}>
         <Route path='settings' component={SettingsTab} queries={ViewerQuery} render={render}/>

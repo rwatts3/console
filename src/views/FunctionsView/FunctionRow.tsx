@@ -47,9 +47,9 @@ class FunctionRow extends React.Component<Props, State> {
 
   render() {
     const {fn, params: {projectName}} = this.props
-    const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
-    const isInline = getIsInline(fn)
     const eventType = getEventTypeFromFunction(fn)
+    const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/${eventType.toLowerCase()}/edit`
+    const isInline = getIsInline(fn)
 
     const lastCall = fn.stats.lastRequest ? moment(fn.stats.lastRequest).fromNow() : 'no recent invocations'
 

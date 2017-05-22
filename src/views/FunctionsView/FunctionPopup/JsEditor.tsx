@@ -6,11 +6,13 @@ interface Props {
   value: string
   onChange: (value: string) => void
   onKeyDown?: (e: any) => void
+  onFocusChange?: (focused: boolean) => void
+  onRun?: () => void
 }
 
 require('codemirror/theme/base16-dark.css')
 
-export default function JsEditor({value, onChange, onKeyDown}: Props) {
+export default function JsEditor({value, onChange, onKeyDown, onFocusChange, onRun}: Props) {
   return (
     <div className='js-editor'>
       <style jsx={true}>{`
@@ -30,10 +32,29 @@ export default function JsEditor({value, onChange, onKeyDown}: Props) {
           theme: 'base16-dark',
           lineNumbers: true,
           keyMap: 'sublime',
+          extraKeys: {
+            'Cmd-Enter': () => {
+              if (onRun) {
+                onRun()
+              }
+            },
+            'Ctrl-Enter': () => {
+              if (onRun) {
+                onRun()
+              }
+            },
+
+            // Editor improvements
+            'Ctrl-Left': 'goSubwordLeft',
+            'Ctrl-Right': 'goSubwordRight',
+            'Alt-Left': 'goGroupLeft',
+            'Alt-Right': 'goGroupRight',
+          },
         } as EditorConfiguration}
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
+        onFocusChange={onFocusChange}
       />
     </div>
   )

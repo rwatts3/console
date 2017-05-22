@@ -17,6 +17,13 @@ import TestButton from './TestButton'
 import {FunctionType} from '../../../types/types'
 import {getExampleEvent, getFakeSchema} from '../../../utils/example-generation/index'
 import {throttle} from 'lodash'
+import {generateTestEvent} from '../../../utils/functionTest'
+import {smoothScrollTo} from '../../../utils/smooth'
+import TestLog from './TestLog'
+import DummyTestLog from './DummyTestLog'
+import ResizableBox from '../../../components/ResizableBox'
+import Loading from '../../../components/Loading/Loading'
+import {withRouter} from 'react-router'
 
 interface Props {
   schema: string
@@ -36,15 +43,49 @@ interface Props {
   sssModelName: string
   onTestRun?: () => void
   showErrors?: boolean
+  updateFunction: () => Promise<any>
+  location: any
+  params: any
+  router: ReactRouter.InjectedRouter
 }
 
 interface State {
-  inputWidth: number
-  fullscreen: boolean
+  inputWidth?: number
   ssschema: any
   showExample: boolean
   exampleEvent: string
   fakeSchema: any
+  responses: TestResponse[]
+  loading: boolean
+}
+
+export interface TestResponse {
+  duration: number
+  isError: boolean
+  timestamp: string
+  inline?: {
+    errors: TestError[]
+    event: string
+    logs: string,
+  }
+  webhook?: {
+    request: {
+      body: string
+      headers: any
+      url: string,
+    },
+    response: {
+      body: string
+      statusCode: number,
+    },
+  }
+}
+
+export interface TestError {
+  code: number
+  error: string
+  message: string
+  stack: string
 }
 
 const modalStyling = {
@@ -55,12 +96,15 @@ const modalStyling = {
   },
   overlay: {
     ...fieldModalStyle.overlay,
-    backgroundColor: 'rgba(15,32,46,.9)',
+    backgroundColor: 'rgba(23,42,58,.98)',
   },
 }
 
-export default class RequestPipelineFunctionInput extends React.Component<Props, State> {
-  private updateExampleEvent = throttle(
+class RequestPipelineFunctionInput extends React.Component<Props, State> {
+  private logsRef: any
+  private lastQuery: string
+  private firstTest: boolean = true
+  private updateSSSExampleEvent = throttle(
     (fakeSchema: any, query?: string) => {
       const schema = fakeSchema || this.state.fakeSchema
       const subscriptionQuery = query || this.props.query
@@ -79,15 +123,16 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     super(props)
     this.state = {
       inputWidth: 200,
-      fullscreen: false,
       ssschema: null,
       showExample: false,
       exampleEvent: '',
       fakeSchema: null,
+      responses: [],
+      loading: false,
     }
   }
   render() {
-    const {fullscreen} = this.state
+    const fullscreen = this.props.location.pathname.endsWith('fullscreen')
 
     if (fullscreen) {
       return (
@@ -95,7 +140,7 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
           isOpen
           style={modalStyling}
           contentLabel='Function Editor'
-          onRequestClose={this.toggleFullscreen}
+          onRequestClose={this.close}
         >
           {this.renderComponent()}
         </Modal>
@@ -107,6 +152,8 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
   componentDidMount() {
     if (this.props.eventType === 'SSS') {
       this.fetchSSSchema()
+    } else if (this.props.eventType === 'RP') {
+      this.updateRPExampleEvent()
     }
   }
   componentWillReceiveProps(nextProps: Props) {
@@ -114,9 +161,31 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
       this.fetchSSSchema()
     }
 
-    if (nextProps.query !== this.props.query) {
-      this.updateExampleEvent(this.state.fakeSchema, nextProps.query)
+    if (nextProps.eventType === 'RP' && this.props.eventType !== 'RP') {
+      this.updateRPExampleEvent()
     }
+
+    if (nextProps.query !== this.props.query) {
+      this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
+    }
+
+    if (
+      nextProps.location.pathname !== this.props.location.pathname
+      && nextProps.location.pathname.endsWith('/fullscreen')
+    ) {
+      if (this.firstTest) {
+        this.runTest()
+      }
+    }
+
+    if (nextProps.schema !== this.props.schema) {
+      this.updateRPExampleEvent(nextProps.schema)
+    }
+  }
+  updateRPExampleEvent(schema?: string) {
+    const newSchema = schema || this.props.schema
+    const exampleEvent = JSON.stringify(generateTestEvent(newSchema), null, 2)
+    this.setState({exampleEvent} as State)
   }
   fetchSSSchema() {
     const {projectId} = this.props
@@ -141,43 +210,64 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
         const fullSchema = buildClientSchema(res.data)
         const fakeSchema = getFakeSchema(fullSchema)
         this.setState({ssschema, fakeSchema} as State)
-        this.updateExampleEvent(fakeSchema)
+        this.updateSSSExampleEvent(fakeSchema)
       })
   }
+  getDemoninator() {
+    const fullscreen = this.props.location.pathname.endsWith('fullscreen')
+
+    if (!fullscreen) {
+      return 2
+    }
+
+    if (window.innerWidth < 1300) {
+      return 3
+    }
+
+    return 4
+  }
+  getLogsDenominator() {
+    if (window.innerWidth < 1300) {
+      return 3
+    }
+
+    return 2
+  }
   renderComponent() {
-    const {inputWidth, fullscreen, showExample} = this.state
+    const {inputWidth, showExample, responses} = this.state
     const {
-      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName,
+      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName, location,
     } = this.props
     const {onChangeQuery} = this.props
 
     const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
+    const fullscreen = location.pathname.endsWith('fullscreen')
+
+    const baseWidth = fullscreen ? window.innerWidth : 820
+    const denominator = this.getDemoninator()
+    const eventWidth = baseWidth / denominator - 120
+    const eventHeight = fullscreen ? window.innerHeight - 64 : 320
 
     return (
-      <div className={cn('request-pipeline-function-input', {
+      <div className={cn('request-pipeline-function-input', 'sss', {
         fullscreen,
-        rp: eventType === 'RP',
-        sss: eventType === 'SSS',
       })}>
         <style jsx>{`
           .request-pipeline-function-input {
-            @p: .br2, .buttonShadow, .flex;
+            @p: .br2, .buttonShadow, .flex, .relative;
             height: 320px;
             margin-left: -4px;
             margin-right: -4px;
           }
           .request-pipeline-function-input.fullscreen {
-            @p: .pa60, .center;
+            @p: .pa0, .center;
             height: 100vh;
           }
           .input {
-            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue;
+            @p: .pa20, .relative, .br2, .brLeft, .bgDarkBlue, .flexFixed, .h100;
           }
-          .input.rp :global(.CodeMirror-cursor) {
-            @p: .dn;
-          }
-          .input.rp :global(.CodeMirror-selected) {
-            background: rgba(255,255,255,.1);
+          .fullscreen .input {
+            height: 100vh;
           }
           .input :global(.CodeMirror), .input :global(.CodeMirror-gutters) {
             background: transparent;
@@ -189,10 +279,13 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .dn;
           }
           .input.sss {
-            @p: .w50, .pl0, .pr0, .pb0, .flex, .flexColumn;
+            @p: .pl0, .pr0, .pb0, .flex, .flexColumn;
           }
           .input.sss :global(.graphiql-container) {
             @p: .flexAuto, .overflowAuto, .h100;
+          }
+          .fullscreen .input :global(.docExplorerWrap) {
+            height: calc(100vh - 56px) !important;
           }
           .input.sss :global(.CodeMirror-lines) {
             @p: .pt0;
@@ -231,10 +324,58 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .pointer;
           }
           .body {
-            @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight;
+            @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight, .relative;
+          }
+          .test-button {
+            @p: .absolute, .bottom0, .right0, .mb25, .mr25;
           }
           .body :global(.ReactCodeMirror) {
             width: 100%;
+          }
+
+          /* Testing */
+          .output {
+            @p: .flexFixed, .pa38;
+          }
+          h2 {
+            @p: .white, .f20, .fw6;
+          }
+          p {
+            @p: .white50, .f16, .mt16;
+          }
+          .title {
+            @p: .white40, .f16, .fw6, .ttu, .ml16;
+          }
+          .buttons {
+            @p: .w100, .flex, .justifyEnd;
+          }
+          .header {
+            @p: .mb16, .flex, .itemsCenter, .justifyBetween;
+          }
+          .logs {
+            @p: .overflowAuto, .relative;
+            max-height: calc(100vh - 120px);
+          }
+          .will-appear {
+            @p: .mv20, .f16, .green;
+          }
+          .loading {
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+          }
+          .clear {
+            @p: .f12, .ttu, .br2, .mr38, .fw6, .pointer, .darkerBlue;
+            letter-spacing: 0.2px;
+            padding: 4px 8px;
+            background: #b8bfc4;
+          }
+          .clear:hover {
+            @p: .o70;
+          }
+          .loading {
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+          }
+          .close-icon {
+            @p: .absolute, .top25, .right25, .pointer;
           }
         `}</style>
         <style jsx global>{`
@@ -242,55 +383,61 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
             @p: .z999;
           }
         `}</style>
-        <div className={cn('input', {sss: eventType === 'SSS', rp: eventType === 'RP'})}>
-          <div className='sss-input'>
-            {eventType === 'SSS' && !this.props.editing && (
-              <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+        <ResizableBox
+          id='function-event'
+          width={eventWidth}
+          height={eventHeight}
+          hideArrow
+          onResize={this.handleResize}
+        >
+          <div className={cn('input', 'sss')}>
+            <div className='sss-input'>
+              {eventType === 'SSS' && !this.props.editing && (
+                <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+              )}
+              <Toggle
+                choices={[inputTitle, 'Example Event']}
+                activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
+                onChange={this.handleInputChange}
+              />
+            </div>
+            {showExample && (
+              <div className='sss-editor pl16 flexAuto'>
+                <ResultViewer
+                  value={this.state.exampleEvent}
+                  editable
+                  onChange={this.handleExampleChange}
+                />
+              </div>
             )}
-            <Toggle
-              choices={[inputTitle, 'Example Event']}
-              activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
-              onChange={this.handleInputChange}
-            />
+            {!showExample && eventType === 'RP' && (
+              <div className='pl25 flexAuto'>
+                <QueryEditor
+                  value={schema}
+                  onChange={this.handleExampleChange}
+                  readOnly
+                  hideLineNumbers
+                  hideFold
+                />
+              </div>
+            )}
+            {!showExample && eventType === 'SSS' && (
+              <div className='sss-editor flexAuto'>
+                <CustomGraphiQL
+                  rerenderQuery={true}
+                  schema={this.state.ssschema}
+                  variables={''}
+                  query={this.props.query}
+                  fetcher={() => { return null }}
+                  disableQueryHeader
+                  queryOnly
+                  showDocs
+                  onEditQuery={onChangeQuery}
+                />
+              </div>
+            )}
           </div>
-          {showExample && (
-            <div className='sss-editor pl16'>
-              <ResultViewer
-                value={this.state.exampleEvent}
-                editable
-                onChange={this.handleExampleChange}
-              />
-            </div>
-          )}
-          {!showExample && eventType === 'RP' && (
-            <QueryEditor
-              value={schema}
-              readOnly
-              hideLineNumbers
-              hideFold
-            />
-          )}
-          {!showExample && eventType === 'SSS' && (
-            <div className='sss-editor'>
-              <CustomGraphiQL
-                rerenderQuery={true}
-                schema={this.state.ssschema}
-                variables={''}
-                query={this.props.query}
-                fetcher={() => { return null }}
-                disableQueryHeader
-                queryOnly
-                showDocs
-                onEditQuery={onChangeQuery}
-              />
-            </div>
-          )}
-          {fullscreen && (
-            <div className='flex justifyEnd pa25'>
-              <TestButton onClick={this.props.onTestRun} className='o70' />
-            </div>
-          )}
-        </div>
+        </ResizableBox>
         <div className='function'>
           <div className='head'>
             <div className='flex'>
@@ -306,21 +453,14 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
               />
             </div>
-            <Icon
-              src={
-                fullscreen ? require('assets/icons/compress.svg') : require('assets/icons/extend.svg')
-              }
-              stroke
-              strokeWidth={1.5}
-              color={$v.white50}
-              onClick={this.toggleFullscreen}
-            />
           </div>
           <div className='body'>
             {isInline ? (
               <JsEditor
                 onChange={onChange}
                 value={value}
+                onFocusChange={this.handleEditorFocusChange}
+                onRun={this.runTest}
               />
             ) : (
               <WebhookEditor
@@ -331,10 +471,78 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
                 showErrors={this.props.showErrors}
               />
             )}
+            {fullscreen && (
+              <div className='test-button'>
+                <TestButton onClick={this.runTest} className='o70' />
+              </div>
+            )}
           </div>
         </div>
+        {fullscreen && (
+          <div className='output'>
+            <ResizableBox
+              id='function-logs'
+              width={window.innerWidth / this.getLogsDenominator() - 120}
+              height={window.innerHeight - 64}
+              hideArrow
+              left
+            >
+              <div className='header'>
+                <div className='flex itemsCenter'>
+                  <Icon
+                    src={require('graphcool-styles/icons/fill/logs.svg')}
+                    color={$v.white40}
+                    width={24}
+                    height={24}
+                  />
+                  <div className='title'>
+                    Your Test Logs
+                  </div>
+                </div>
+                <div className='clear' onClick={this.clear}>Clear</div>
+              </div>
+              <div className='logs' ref={this.setRef}>
+                {responses.length === 0 && (
+                  <div className='will-appear'>
+                    The logs for your function test will appear here.
+                  </div>
+                )}
+                {responses.length > 0 ? responses.map(res => (
+                  <TestLog response={res} key={res.timestamp} />
+                )) : (
+                  [0,1,2].map(i => (
+                    <DummyTestLog key={i} />
+                  ))
+                )}
+                {this.state.loading && (
+                  <div className='loading'>
+                    <Loading color={$v.white50} />
+                  </div>
+                )}
+              </div>
+            </ResizableBox>
+          </div>
+        )}
+        {fullscreen && (
+          <div className='close-icon'>
+            <Icon
+              src={require('graphcool-styles/icons/stroke/cross.svg')}
+              stroke
+              strokeWidth={2.5}
+              color={$v.white}
+              width={32}
+              height={32}
+              onClick={this.close}
+              className='cross'
+            />
+          </div>
+        )}
       </div>
     )
+  }
+
+  private clear = () => {
+    this.setState({responses: []} as State)
   }
 
   private handleExampleChange = (exampleEvent: string) => {
@@ -350,12 +558,78 @@ export default class RequestPipelineFunctionInput extends React.Component<Props,
     this.setState({inputWidth} as State)
   }
 
-  private toggleFullscreen = () => {
-    this.setState(state => {
-      return {
-        ...state,
-        fullscreen: !state.fullscreen,
-      }
-    })
+  private runTest = () => {
+    this.firstTest = false
+    this.props.updateFunction()
+      .then(() => {
+        const {webhookUrl, isInline} = this.props
+        const {exampleEvent} = this.state
+        this.setLoading(true)
+        return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
+          method: 'post',
+          body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
+        })
+          .then(res => res.json())
+          .then((res: any) => {
+            this.setState(
+              state => {
+                return {
+                  ...state,
+                  responses: [res].concat(state.responses),
+                }
+              },
+              this.scrollUp,
+            )
+            this.setLoading(false)
+          })
+      })
+  }
+
+  private setLoading(loading: boolean) {
+    this.setState({loading} as State)
+  }
+
+  private setRef = logsRef => {
+    this.logsRef = logsRef
+  }
+
+  private scrollUp = () => {
+    if (this.logsRef) {
+      smoothScrollTo(this.logsRef, 0, 20)
+    }
+  }
+
+  private close = (e) => {
+    if (e.type === 'keydown' && e.keyCode === 27) {
+      return
+    }
+
+    this.toggleFullscreen()
+  }
+
+  private handleEditorFocusChange = (focused) => {
+    // const {pathname} = this.props.location
+    // only open fullscreen when focus is established, not other way around
+    // if (!pathname.endsWith('fullscreen')) {
+    //   this.toggleFullscreen(true)
+    // }
+  }
+
+  private toggleFullscreen = (open?: boolean) => {
+    const {pathname} = this.props.location
+    const willOpen = open || !pathname.endsWith('fullscreen')
+
+    if (willOpen && !pathname.endsWith('fullscreen')) {
+      const newUrl = pathname + '/fullscreen'
+      this.props.router.push(newUrl)
+    }
+
+    if (!willOpen && pathname.endsWith('fullscreen')) {
+      const index = pathname.indexOf('/fullscreen')
+      const newUrl = pathname.slice(0, index)
+      this.props.router.push(newUrl)
+    }
   }
 }
+
+export default withRouter(RequestPipelineFunctionInput)

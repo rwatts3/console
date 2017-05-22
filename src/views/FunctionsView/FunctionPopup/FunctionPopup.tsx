@@ -50,6 +50,7 @@ interface Props {
   project: Project
   node: ServerlessFunction
   functions: ServerlessFunction[]
+  location: any
 }
 
 export interface FunctionPopupState {
@@ -71,14 +72,15 @@ const customModalStyle = {
   },
 }
 
-class FunctionPopup extends React.Component<Props, FunctionPopupState> {
+let isSSS = false
 
+class FunctionPopup extends React.Component<Props, FunctionPopupState> {
+  private lastInlineCode: string
   constructor(props: Props) {
     super(props)
 
     // prepare node that comes from the server
 
-    console.log(props.node)
     if (props.node) {
       if (props.node.model) {
         props.node.modelId = props.node.model.id
@@ -120,8 +122,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       operation: props.node && props.node.operation || 'CREATE',
       selectedModelName: (props.node && props.node.model && props.node.model.name) || 'User',
       binding: props.node && props.node.binding || 'PRE_WRITE',
-      includeFunctions: this.state.eventType === 'RP' && !this.state.editing,
+      includeFunctions: this.state.eventType === 'RP',
     })
+    isSSS = this.state.eventType === 'SSS'
     global['f'] = this
   }
 
@@ -145,7 +148,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   render() {
-    const {models, schema, functions} = this.props
+    const {models, schema, functions, location} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, loading, showTest, sssModelName} = this.state
 
     const isInline = fn.type === 'AUTH0'
@@ -186,6 +189,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 @p: .bgWhite, .relative;
               }
               .popup-body {
+                @p: .overflowAuto;
                 max-height: calc(100vh - 200px);
               }
               .loading {
@@ -261,6 +265,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   operation={fn.operation}
                   onTestRun={this.showTestPopup}
                   showErrors={this.state.showErrors}
+                  updateFunction={this.updateExtendFunction}
+                  location={this.props.location}
+                  params={this.props.params}
                 />
               )}
             </div>
@@ -310,7 +317,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {editing, eventType} = this.state
     if (editing || (this.state.eventType === 'RP' && index === 2) || (this.state.eventType === 'SSS' && index === 1)) {
       return (
-        <TestButton onClick={this.showTestPopup} />
+        <TestButton onClick={this.openFullscreen}>Run &amp; Edit</TestButton>
       )
     }
 
@@ -318,15 +325,21 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private showTestPopup = () => {
-    this.setLoading(true)
-    this.createExtendFunction()
-      .then((res: any) => {
-        const {url, fn} = res
-        this.update(updateWebhookUrl)(url)
-        this.update(updateAuth0Id)(fn)
-        this.setLoading(false)
-        this.setState({showTest: true} as FunctionPopupState)
-      })
+    // this.setLoading(true)
+    // this.createExtendFunction()
+    //   .then((res: any) => {
+    //     const {url, fn} = res
+    //     this.update(updateWebhookUrl)(url)
+    //     this.update(updateAuth0Id)(fn)
+    //     this.setLoading(false)
+    //     this.setState({showTest: true} as FunctionPopupState)
+    //   })
+  }
+
+  private openFullscreen = () => {
+    const {pathname} = this.props.location
+    const newUrl = pathname + '/fullscreen'
+    this.props.router.push(newUrl)
   }
 
   private getTabs = () => {
@@ -378,11 +391,45 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {fn: {inlineCode}} = this.state
     const authToken = cookiestore.get('graphcool_auth_token')
 
+    this.lastInlineCode = inlineCode
+
     return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/create/', {
       method: 'post',
       body: JSON.stringify({code: inlineCode, authToken}),
     })
     .then(res => res.json())
+  }
+
+  private updateExtendFunction = () => {
+    // first create the new function, set the state, then resolve the promise
+    return new Promise((resolve, reject) => {
+      if (this.lastInlineCode === this.state.fn.inlineCode) {
+        const {webhookUrl, auth0Id} = this.state.fn
+        return resolve({webhookUrl, auth0Id})
+      }
+      this.createExtendFunction()
+        .then((res: any) => {
+          const webhookUrl = res.url
+          const auth0Id = res.fn
+
+          this.setState(
+            state => {
+              return {
+                ...state,
+                fn: {
+                  ...state.fn,
+                  webhookUrl,
+                  auth0Id,
+                },
+              }
+            },
+            () => {
+              resolve({webhookUrl, auth0Id})
+            },
+          )
+        })
+        .catch(reject)
+    })
   }
 
   private cancel = () => {
@@ -412,7 +459,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private submit = () => {
     if (!isValid(this.state)) {
-      console.log('isnt valid')
       return this.setState({showErrors: true} as FunctionPopupState)
     }
     this.setState({loading: true} as FunctionPopupState)
@@ -570,14 +616,14 @@ const MappedFunctionPopup = mapProps({
   functions: props => props.viewer.project.functions ? props.viewer.project.functions.edges.map(edge => edge.node) : [],
 })(withRouter(ConnectedFunctionPopup))
 
-export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-    includeFunctions: false,
+    includeFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -591,21 +637,6 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
               node {
                 id
                 name
-              }
-            }
-          }
-          functions(first: 1000) @include(if: $includeFunctions) {
-            edges {
-              node {
-                id
-                ... on RequestPipelineMutationFunction {
-                  id
-                  binding
-                  model {
-                    id
-                    name
-                  }
-                }
               }
             }
           }
@@ -624,14 +655,7 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     `,
     node: () => Relay.QL`
       fragment on Function {
-        id
-        name
-        inlineCode
-        isActive
-        type
-        auth0Id
-        webhookHeaders
-        webhookUrl
+        ${FunctionFragment}
         ... on RequestPipelineMutationFunction {
           binding
           model {
@@ -640,6 +664,51 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           }
           operation
         }
+      }
+    `,
+  },
+})
+
+export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+  initialVariables: {
+    projectName: null, // injected from router
+    selectedModelName: null,
+    modelSelected: false,
+    binding: null,
+    operation: null,
+    includeFunctions: true,
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        id
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 100) {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
+        }
+        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          requestPipelineFunctionSchema(binding: $binding operation: $operation)
+        }
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
+      }
+    `,
+    node: () => Relay.QL`
+      fragment on Function {
+        ${FunctionFragment}
         ... on ServerSideSubscriptionFunction {
           query
         }
@@ -648,11 +717,18 @@ export const EditFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   },
 })
 
-const bindings = [
-  'TRANSFORM_AGENT',
-  'PRE_WRITE',
-  'TRANSFORM_PAYLOAD',
-]
+const FunctionFragment = Relay.QL`
+  fragment on Function {
+    id
+    name
+    inlineCode
+    isActive
+    type
+    auth0Id
+    webhookHeaders
+    webhookUrl
+  }
+`
 
 export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
@@ -661,6 +737,7 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
+    includesFunctions: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -697,13 +774,6 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
           id
           name
           requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
         }
       }
     `,

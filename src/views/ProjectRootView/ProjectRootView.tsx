@@ -189,14 +189,8 @@ class ProjectRootView extends React.PureComponent<Props, State> {
           .project-wrapper {
             @p: .flex, .w100;
           }
-          .project-wrapper :global(.react-resizable) {
+          :global(.react-resizable) {
             @p: .relative;
-          }
-          .project-wrapper :global(.react-resizable-handle) {
-            @p: .absolute, .top0, .bottom0, .z2;
-            right: -10px;
-            width: 20px;
-            cursor: col-resize;
           }
           .blur {
             filter: blur(5px);

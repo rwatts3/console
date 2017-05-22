@@ -155,9 +155,21 @@ export function updateQuery(state: ServerlessFunction, query: string): Serverles
 }
 
 export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {
+  let webhookUrl = state.webhookUrl
+  let _webhookUrl = state._webhookUrl
+  if (type === 'WEBHOOK' && webhookUrl && webhookUrl.includes('auth0')) {
+    _webhookUrl = webhookUrl
+    webhookUrl = ''
+  }
+  if (type === 'AUTH0' && _webhookUrl && _webhookUrl.length > 0) {
+    webhookUrl = _webhookUrl
+  }
+
   return {
     ...state,
     type,
+    webhookUrl,
+    _webhookUrl,
   }
 }
 
