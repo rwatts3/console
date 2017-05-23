@@ -109,8 +109,9 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       const schema = fakeSchema || this.state.fakeSchema
       const subscriptionQuery = query || this.props.query
       getExampleEvent(schema, subscriptionQuery).then(res => {
+        const exampleEvent = JSON.stringify(res, null, 2)
         if (res) {
-          this.setState({exampleEvent: JSON.stringify(res, null, 2)} as State)
+          this.setState({exampleEvent} as State)
         }
       })
     },
@@ -220,14 +221,14 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       return 2
     }
 
-    if (window.innerWidth < 1300) {
+    if (window.innerWidth < 1800) {
       return 3
     }
 
     return 4
   }
   getLogsDenominator() {
-    if (window.innerWidth < 1300) {
+    if (window.innerWidth < 1800) {
       return 3
     }
 
@@ -247,6 +248,8 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
     const denominator = this.getDemoninator()
     const eventWidth = baseWidth / denominator - 120
     const eventHeight = fullscreen ? window.innerHeight - 64 : 320
+    const logsDenominator = this.getLogsDenominator()
+    const logsWidth = window.innerWidth / logsDenominator - 120
 
     return (
       <div className={cn('request-pipeline-function-input', 'sss', {
@@ -482,7 +485,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
           <div className='output'>
             <ResizableBox
               id='function-logs'
-              width={window.innerWidth / this.getLogsDenominator() - 120}
+              width={logsWidth}
               height={window.innerHeight - 64}
               hideArrow
               left

@@ -80,16 +80,15 @@ export default class ResizableBox extends React.Component<any,any> {
             stroke: $white;
           }
           .box :global(.react-resizable-handle) {
-            @p: .absolute, .top0, .bottom0, .z2;
+            @p: .absolute, .top0, .bottom0;
+            z-index: 11;
             right: -10px;
             width: 20px;
             cursor: col-resize;
           }
           .box.left :global(.react-resizable-handle) {
-            @p: .absolute, .top0, .bottom0, .z2;
             left: -48px;
             width: 20px;
-            cursor: col-resize;
           }
         `}</style>
         <ResizableComponent

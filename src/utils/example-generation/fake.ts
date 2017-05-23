@@ -1,5 +1,6 @@
 // import * as faker from 'faker'
 const faker = require('faker')
+import cuid from 'cuid'
 
 export function getRandomInt(min: number, max: number) {
   return faker.random.number({min, max})
@@ -38,10 +39,13 @@ export const typeFakers = {
   'ID': {
     defaultOptions: {},
     generator: () => {
-      return () =>
-        new Buffer(
-          faker.random.number({max: 9999999999}).toString(),
-        ).toString('base64')
+      return () => cuid()
+    },
+  },
+  'DateTime': {
+    defaultOptions: {},
+    generator: () => {
+      return () => new Date().toISOString()
     },
   },
 }

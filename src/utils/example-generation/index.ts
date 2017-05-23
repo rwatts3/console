@@ -13,10 +13,11 @@ import cuid from 'cuid'
 const fakerIDL = parse(fakeIDL)
 
 export function getFakeSchema(schema) {
-  let idl = printSchema(schema)
-  idl = idl.split('\n').map(line => {
+  const idl = printSchema(schema)
+  const patchedIdl = idl.split('\n').map(line => {
     if (line.includes('id: ID!')) {
-      line = line + ` @examples(values: ["${cuid()}", "${cuid()}"])`
+      // line = line + ` @examples(values: ["${cuid()}", "${cuid()}"])`
+      line = line + ` @fake(type: uuid)`
     }
     if (line.includes(': DateTime')) {
       line = line + ` @examples(values: ["2017-05-20T16:22:26.248Z", "2017-05-21T16:22:26.248Z"])`
@@ -27,7 +28,7 @@ export function getFakeSchema(schema) {
 
     return line
   }).join('\n')
-  const graphcoolAst = parse(idl)
+  const graphcoolAst = parse(patchedIdl)
   const ast = concatAST([graphcoolAst, fakerIDL])
 
   const newSchema = buildASTSchema(ast)

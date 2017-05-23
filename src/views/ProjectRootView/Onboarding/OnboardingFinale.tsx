@@ -141,8 +141,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
           <h2>If you liked it, share it on Twitter</h2>
           <a
             className='twitter-btn'
-            href={`https://twitter.com/home?status=%40graphcool's%20onboarding%20jus` +
-            `t%20nailed%20it.%20Really%20impressed.`}
+            href={`https://twitter.com/home?status=%20`}
             target='_blank'
           >
             <Icon src={require('assets/icons/twitter.svg')} color={$v.white} width={32} height={32} />
