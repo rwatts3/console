@@ -177,7 +177,12 @@ export default (
       </Route>
       <Route path='clone' component={CloneProjectPopup} queries={ViewerQuery} render={render}/>
       <Route path='functions' component={FunctionsView} queries={ViewerQuery} render={render}>
-        <Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render}/>
+        <Route path='create' component={CreateFunctionPopup} queries={ViewerQuery} render={render}>
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
         <Route
           path=':id/logs'
           component={FunctionLogs}
