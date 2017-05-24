@@ -181,7 +181,8 @@ export default class CreditCardFront extends React.Component<Props, State> {
             }
 
             .creditCardFont {
-              font-family: 'OCR A Std';
+              /* as long as we don't have it, lets use our standard font Open Sans */
+              /* font-family: 'OCR A Std'; */
             }
 
             .inputField {

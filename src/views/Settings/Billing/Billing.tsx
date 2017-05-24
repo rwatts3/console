@@ -290,10 +290,10 @@ class Billing extends React.Component<Props, State> {
   private validateAddressDetails = () => {
     const addressLine1Valid = this.state.newAddressLine1.length > 0
     const zipcodeValid = this.state.newZipCode.length > 0
-    const stateValid = this.state.newState.length > 0
+    // const stateValid = this.state.newState.length > 0
     const cityValid = this.state.newCity.length > 0
     const countryValid = this.state.newCountry.length > 0
-    const addressValid = addressLine1Valid && zipcodeValid && stateValid && cityValid && countryValid
+    const addressValid = addressLine1Valid && zipcodeValid && cityValid && countryValid
     this.setState({addressDataValid: addressValid} as State)
 
   }
@@ -354,9 +354,8 @@ class Billing extends React.Component<Props, State> {
     const expirationMonth = expirationDateComponents[0]
     const expirationYear = expirationDateComponents[1]
 
-    this.setState({isLoading: true} as State)
-
     if (this.state.creditCardDetailsValid && this.state.addressDataValid) {
+      this.setState({isLoading: true} as State)
       Stripe.card.createToken(
         {
           number: this.state.newCreditCardNumber,
