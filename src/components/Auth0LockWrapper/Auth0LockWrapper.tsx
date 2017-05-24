@@ -43,6 +43,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
       },
       languageDictionary: {
         title: 'Graphcool',
+        emailInputPlaceholder: 'your@companymail.com',
       },
       auth: {
         params: {scope: 'openid email name user_metadata'},
