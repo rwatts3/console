@@ -3166,19 +3166,13 @@ graphql-tag@^1.2.4:
     reselect "^2.5.4"
     svg-pan-zoom "^3.5.0"
 
-"graphql@0.7.1 - 1.0.0", "graphql@github:apis-guru/graphql-js#directives-fork-dist":
-  version "0.9.1"
-  resolved "https://codeload.github.com/apis-guru/graphql-js/tar.gz/96b1ce3a0e578545dc3958f8b3457e9a535d73a9"
-  dependencies:
-    iterall "1.0.3"
-
-graphql@^0.6.0:
+graphql@0.6.2, graphql@^0.6.0:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.6.2.tgz#19cdcb17e5862d64396a0684f92f7be64e90e7af"
   dependencies:
     iterall "1.0.2"
 
-graphql@^0.8.2:
+"graphql@0.7.1 - 1.0.0", graphql@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.8.2.tgz#eb1bb524b38104bbf2c9157f9abc67db2feba7d2"
   dependencies:
@@ -3835,10 +3829,6 @@ istanbul@^0.4.5:
 iterall@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.0.2.tgz#41a2e96ce9eda5e61c767ee5dc312373bb046e91"
-
-iterall@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.0.3.tgz#e0b31958f835013c323ff0b10943829ac69aa4b7"
 
 jasmine-check@^0.1.4:
   version "0.1.5"
