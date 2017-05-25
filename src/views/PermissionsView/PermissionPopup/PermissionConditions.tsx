@@ -283,6 +283,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
     if (userType === 'EVERYONE') {
       args = permissionQueryArguments.filter(arg => arg.group !== 'Authenticated User')
     }
+
     const variables = groupBy(args, arg => arg.group)
     return variables
   }

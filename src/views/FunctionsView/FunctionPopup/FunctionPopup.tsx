@@ -433,7 +433,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private cancel = () => {
-    // boring
+    this.close()
   }
 
   private delete = () => {
