@@ -8,6 +8,8 @@ import {TypedValue} from '../../../types/utils'
 import {CellRequirements, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
 import {Enum, Field} from '../../../types/types'
 import {valueToString} from '../../../utils/valueparser'
+import InfoBox from '../../FunctionsView/FunctionPopup/InfoBox'
+import Info from '../../../components/Info'
 
 interface Props {
   style?: any
@@ -130,6 +132,10 @@ export default class AdvancedSettings extends React.Component<Props, null> {
           .migration-input {
             @p: .relative;
           }
+          pre {
+            @p: .purple, .code, .br2, .bgDarkBlue04, .mh4, .dib, .f10;
+            padding: 2px 4px 1px 4px;
+          }
         `}
         </style>
         <style jsx global>{`
@@ -165,7 +171,16 @@ export default class AdvancedSettings extends React.Component<Props, null> {
         {showMigration && (
           <div>
             <div className={`migration-title-wrapper ${mandatoryClass}`}>
-              <div className={`migration-title ${mandatoryClass}`}>Migration (optional)</div>
+              <div className={`migration-title ${mandatoryClass}`}>
+                Migration ({migrationOptional ? 'optional' : 'required'})
+                <Info
+                  width={300}
+                  offsetY={5}
+                >
+                  For scalar fields, the migration value is applied to all <pre>null</pre> values.
+                  For list fields, the migration value is applied to all values.
+                </Info>
+              </div>
             </div>
             <div className='migration-header'>
               <div className={`already-data ${mandatoryClass}`}>
