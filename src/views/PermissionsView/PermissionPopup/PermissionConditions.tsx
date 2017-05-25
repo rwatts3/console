@@ -278,10 +278,15 @@ export default class PermissionConditions extends React.Component<Props, State> 
   }
 
   private getVariables() {
-    const {permissionQueryArguments, userType} = this.props
+    const {permissionQueryArguments, userType, operation} = this.props
     let args = permissionQueryArguments
     if (userType === 'EVERYONE') {
-      args = permissionQueryArguments.filter(arg => arg.group !== 'Authenticated User')
+      args = args.filter(arg => arg.group !== 'Authenticated User')
+    }
+
+    if (operation === 'CREATE') {
+      console.log(args)
+      args = args.filter(arg => arg.name !== '$node_id')
     }
 
     const variables = groupBy(args, arg => arg.group)
@@ -338,22 +343,23 @@ export default class PermissionConditions extends React.Component<Props, State> 
             margin-right: 0;
           }
           .query {
-            @p: .flex1;
+            @p: .flexAuto;
           }
           .variable-category {
             @p: .pb38;
           }
           .variables {
-            @p: .bgDarkBlue, .br2, .brRight, .overflowYScroll;
-            flex: 0 0 220px;
+            @p: .bgDarkBlue, .br2, .brRight, .overflowYScroll, .flexFixed;
             padding: 20px;
             :global(.tag) {
               @p: .mb6, .mr6;
             }
           }
+          /*
           .variables.fullscreen {
             flex: 0 0 320px;
           }
+          */
           .variable-title {
             @p: .fw6, .f12, .white30, .ttu, .mb16, .flex, .itemsCenter;
           }
