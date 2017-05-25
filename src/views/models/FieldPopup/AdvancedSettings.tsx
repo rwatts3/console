@@ -64,7 +64,6 @@ export default class AdvancedSettings extends React.Component<Props, null> {
         }
       }
     }
-    console.log(field, enums)
 
     return (
       <div style={style} className='advanced-settings'>
@@ -160,7 +159,7 @@ export default class AdvancedSettings extends React.Component<Props, null> {
             onChangeValue={onChangeDefaultValue}
             field={field}
             projectId={projectId}
-            optional
+            optional={!isRequired}
           />
         </div>
         {showMigration && (
@@ -195,7 +194,7 @@ export default class AdvancedSettings extends React.Component<Props, null> {
                 onChangeValue={onChangeMigrationValue}
                 field={field}
                 projectId={projectId}
-                optional={false}
+                optional={!isRequired}
               />
             </div>
             {showErrors && errors.migrationValueMissing && (

@@ -143,7 +143,11 @@ export default class EditValueInput extends React.Component<Props, State> {
         cancel: () => {
           this.setState({isEnteringValue: false} as State)
         },
-        onKeyDown: () => {
+        onKeyDown: (e: any) => {
+          if (['String'].includes(this.props.field.typeIdentifier) && e.keyCode === 13) {
+            this.setState({isEnteringValue: false} as State)
+            this.props.onChangeValue(e.target.value)
+          }
           // on key down...
         },
       },
