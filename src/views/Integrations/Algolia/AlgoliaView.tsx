@@ -142,6 +142,7 @@ class AlgoliaView extends React.Component<Props, State> {
               algolia={algolia}
               project={project}
               onRequestClose={this.handleCloseNewIndex}
+              noIndeces={indexes.length === 0}
             />
           )}
         </div>
