@@ -114,7 +114,9 @@ export default class EnumEditor extends React.Component<Props, State> {
   }
 
   private submitCurrentValue() {
-    this.props.onChange(this.props.enums.concat(this.state.enumValue))
-    this.setState({enumValue: ''} as State)
+    if (this.state.enumValue.length > 0) {
+      this.props.onChange(this.props.enums.concat(this.state.enumValue))
+      this.setState({enumValue: ''} as State)
+    }
   }
 }

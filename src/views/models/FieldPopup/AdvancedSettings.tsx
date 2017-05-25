@@ -175,7 +175,6 @@ export default class AdvancedSettings extends React.Component<Props, null> {
                 Migration ({migrationOptional ? 'optional' : 'required'})
                 <Info
                   width={300}
-                  offsetY={5}
                 >
                   For scalar fields, the migration value is applied to all <pre>null</pre> values.
                   For list fields, the migration value is applied to all values.
