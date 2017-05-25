@@ -140,7 +140,7 @@ class AddEnum extends React.Component<Props, State> {
             @p: .red;
           }
           .error {
-            @p: .orange, .f14, .ml10;
+            @p: .orange, .f14, .mr10;
           }
           .loading {
             @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70, .flex, .itemsCenter, .justifyCenter;

@@ -6,7 +6,7 @@ import ErrorInfo from './ErrorInfo'
 import {FieldPopupErrors} from './FieldPopupState'
 import {TypedValue} from '../../../types/utils'
 import {CellRequirements, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
-import {Field} from '../../../types/types'
+import {Enum, Field} from '../../../types/types'
 import {valueToString} from '../../../utils/valueparser'
 
 interface Props {
@@ -23,25 +23,12 @@ interface Props {
   errors: FieldPopupErrors
   field: Field
   projectId: string
+  enums: Enum[]
 }
 
-interface State {
-  editingMigration: boolean
-  activeMigrationType: MigrationType
-}
+// export type MigrationType = 'VALUE' | 'FUNCTION'
 
-export type MigrationType = 'VALUE' | 'FUNCTION'
-
-export default class AdvancedSettings extends React.Component<Props, State> {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      editingMigration: false,
-      activeMigrationType: 'VALUE',
-    }
-  }
-
+export default class AdvancedSettings extends React.Component<Props, null> {
   render() {
     const {
       style,
@@ -53,14 +40,35 @@ export default class AdvancedSettings extends React.Component<Props, State> {
       migrationOptional,
       showErrors,
       errors,
-      field,
       projectId,
+      migrationValue,
+      onChangeMigrationValue,
+      enums,
     } = this.props
-    const {editingMigration, activeMigrationType} = this.state
     const mandatoryClass = migrationOptional ? '' : 'mandatory'
+
+    let field = {
+      ...this.props.field,
+    }
+
+    if (
+      field.typeIdentifier === 'Enum' &&
+      field.enumId && field.enumId.length > 0 &&
+      (!field.enumValues || field.enumValues.length === 0)
+    ) {
+      const enumType = enums.find(enu => enu.id === field.enumId)
+      if (enumType) {
+        field = {
+          ...field,
+          enumValues: enumType.values,
+        }
+      }
+    }
+    console.log(field, enums)
+
     return (
       <div style={style} className='advanced-settings'>
-        <style jsx={true}>{`
+        <style jsx>{`
           .advanced-settings {
             @p: .w100;
             margin-top: 14px;
@@ -132,9 +140,6 @@ export default class AdvancedSettings extends React.Component<Props, State> {
           .field-popup .migration-input input {
             background: none;
           }
-          .migration-input-wrapper .migration-input > div > div:nth-of-type(2) {
-            border: none !important;
-          }
         `}</style>
         <div className='is-required'>
           <div className='is-required-text'>This Field is</div>
@@ -155,6 +160,7 @@ export default class AdvancedSettings extends React.Component<Props, State> {
             onChangeValue={onChangeDefaultValue}
             field={field}
             projectId={projectId}
+            optional
           />
         </div>
         {showMigration && (
@@ -182,36 +188,16 @@ export default class AdvancedSettings extends React.Component<Props, State> {
                 </div>
               )*/}
             </div>
-            {editingMigration ? (
-              <div className='migration-input-wrapper'>
-                <div className='migration-input'>
-                  {this.getMigrationInput()}
-                </div>
-              </div>
-            ) : (
-              <div
-                className='edit-label-wrapper'
-                onClick={this.editMigration}
-              >
-                {typeof this.props.migrationValue === 'undefined' && (
-                  <Icon
-                    src={migrationOptional ?
-                    require('../../../assets/icons/edit_circle_gray.svg') :
-                    require('../../../assets/icons/edit_circle_light_orange.svg')
-                  }
-                    width={26}
-                    height={26}
-                  />
-                )}
-                {typeof this.props.migrationValue !== 'undefined' ? (
-                  <div className='f16 black50 pr6'>{valueToString(this.props.migrationValue, field, true)}</div>
-                ) : (
-                  <div className={`edit-label ${mandatoryClass}`}>
-                    add a migration value
-                  </div>
-                )}
-              </div>
-            )}
+            <div className='migration-input-wrapper'>
+              <EditValueInput
+                placeholder='add migration value'
+                value={migrationValue}
+                onChangeValue={onChangeMigrationValue}
+                field={field}
+                projectId={projectId}
+                optional={false}
+              />
+            </div>
             {showErrors && errors.migrationValueMissing && (
               <div className='migration-error'>
                 <ErrorInfo>
@@ -223,45 +209,5 @@ export default class AdvancedSettings extends React.Component<Props, State> {
         )}
       </div>
     )
-  }
-
-  private getMigrationInput() {
-    let value: any = this.props.migrationValue
-    if (this.props.field.isList) {
-      if (typeof this.props.migrationValue === 'undefined') {
-        value = []
-      } else if (!Array.isArray(this.props.migrationValue)) {
-        value = [this.props.migrationValue]
-      }
-    }
-
-    const requirements: CellRequirements = {
-      value,
-      field: this.props.field,
-      inList: true,
-      projectId: this.props.projectId,
-      methods: {
-        save: (value) => {
-          this.setState({editingMigration: false} as State)
-          this.props.onChangeMigrationValue(value)
-        },
-        cancel: () => {
-          this.setState({editingMigration: false} as State)
-        },
-        onKeyDown: () => {
-          // on key down...
-        },
-      },
-    }
-
-    return getEditCell(requirements)
-  }
-
-  private editMigration = () => {
-    this.setState({editingMigration: true} as State)
-  }
-
-  private setMigrationType = (type: MigrationType) => {
-    this.setState({activeMigrationType: type} as State)
   }
 }
