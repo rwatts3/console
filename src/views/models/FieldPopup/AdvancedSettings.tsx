@@ -127,7 +127,7 @@ export default class AdvancedSettings extends React.Component<Props, null> {
             right: 10px;
           }
           .migration-input-wrapper {
-            @p: .pa38, .flex, .justifyCenter;
+            @p: .ph38, .flex, .justifyCenter, .pb38, .pt16;
           }
           .migration-input {
             @p: .relative;
