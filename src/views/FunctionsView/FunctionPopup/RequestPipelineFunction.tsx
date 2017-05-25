@@ -127,7 +127,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             {eventType === 'RP' ? 'mutation' : 'subscription'}. <br/>
             {eventType === 'RP' && (
               <span>
-                You can either <pre>return</pre> a value or use the <pre>cb()</pre> function if you have an async flow.
+                You can either <pre>return</pre> a value or a <pre>Promise</pre> if you have an async flow.
               </span>
             )}
           </p>

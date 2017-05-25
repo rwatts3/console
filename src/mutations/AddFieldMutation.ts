@@ -4,7 +4,6 @@ interface Props {
   modelId: string
   name: string
   typeIdentifier: string
-  enumValues: string[]
   isRequired: boolean
   isUnique: boolean
   isList: boolean
@@ -48,7 +47,6 @@ export default class AddFieldMutation extends Relay.Mutation<Props, {}> {
       modelId: this.props.modelId,
       name: this.props.name,
       typeIdentifier: this.props.typeIdentifier,
-      enumValues: this.props.enumValues,
       isRequired: this.props.isRequired,
       isList: this.props.isList,
       isUnique: this.props.isUnique,

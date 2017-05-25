@@ -11,9 +11,12 @@ interface Props {
   errors: FieldPopupErrors
   showErrors: boolean
   create: boolean
+  modelName: string
 }
 
-const FieldPopupHeader = ({activeTabIndex, onSelectTab, tabs, onRequestClose, errors, showErrors, create}: Props) => (
+const FieldPopupHeader = ({
+  activeTabIndex, onSelectTab, tabs, onRequestClose, errors, showErrors, create, modelName,
+  }: Props) => (
   <div className='field-popup-header'>
     <style jsx>{`
       .field-popup-header {
@@ -46,6 +49,7 @@ const FieldPopupHeader = ({activeTabIndex, onSelectTab, tabs, onRequestClose, er
     <div className='border'>
       <div className={'badge' + (!create ? ' update' : '')}>
         {create ? 'New Field' : 'Update Field'}
+        &nbsp;<span className='ttl'>on</span> <b className='ttc'>{modelName}</b>
       </div>
       <div className='tabs'>
         {tabs.map((tab, index) => (

@@ -85,10 +85,6 @@ const Info = (props: Props) => {
           @p: .bgBlue, .white;
         }
       }
-      span {
-        @p: .relative;
-        left: 1px;
-      }
 
     `}</style>
       {props.customTip ? (

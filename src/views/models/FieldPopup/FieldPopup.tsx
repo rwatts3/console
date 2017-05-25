@@ -183,7 +183,7 @@ class FieldPopup extends React.Component<Props, State> {
       loading,
     } = this.state
 
-    const {nodeCount, projectId, enums, isGlobalEnumsEnabled} = this.props
+    const {nodeCount, projectId, enums, isGlobalEnumsEnabled, params} = this.props
 
     const migrationUI = getMigrationUI(nodeCount, this.state.field, this.props.field)
     const errors = isValid(nodeCount, this.state.field, this.props.field)
@@ -242,9 +242,7 @@ class FieldPopup extends React.Component<Props, State> {
           ]}
           videoId='e_sotn1uGqk'
         >
-          <div
-            className='field-popup'
-          >
+          <div className='field-popup'>
             <FieldPopupHeader
               tabs={tabs}
               activeTabIndex={activeTabIndex}
@@ -253,10 +251,9 @@ class FieldPopup extends React.Component<Props, State> {
               errors={errors}
               showErrors={showErrors}
               create={create}
+              modelName={params.modelName}
             />
-            <div
-              className='popup-body'
-            >
+            <div className='popup-body'>
               {activeTabIndex === 0 ? (
                   <BaseSettings
                     name={name}
@@ -291,6 +288,7 @@ class FieldPopup extends React.Component<Props, State> {
                       errors={errors}
                       projectId={projectId}
                       field={this.state.field}
+                      enums={this.props.enums}
                     />
                   ) : activeTabIndex === 2 && (
                     <Constraints
@@ -610,6 +608,7 @@ export default Relay.createContainer(MappedFieldPopup, {
               node {
                 id
                 name
+                values
               }
             }
           }

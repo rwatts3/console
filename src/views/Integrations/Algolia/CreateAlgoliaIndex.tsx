@@ -22,6 +22,7 @@ interface Props {
   models: Model[]
   onRequestClose: Function
   showNotification: ShowNotificationCallback
+  noIndeces: boolean
 }
 
 interface State {
@@ -35,8 +36,11 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
   constructor(props) {
     super(props)
 
-    this.state = {
-      selectedModel: this.props.models[0],
+    this.state = this.getInitialState(props)
+  }
+  getInitialState(props: Props): State {
+    return {
+      selectedModel: props.models[0],
       fragment: emptyAlgoliaFragment,
       fragmentValid: true,
       title: '',
@@ -57,7 +61,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             @p: .pa38, .f14, .white40, .ttu, .fw6;
           }
           .footer {
-            @p: .pa25, .flex, .itemsCenter, .justifyBetween;
+            @p: .pa25, .flex, .itemsCenter, .justifyBetween, .z2;
             margin-bottom: 80px;
           }
           .button {
@@ -70,8 +74,8 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
           .right {
             @p: .flex, .itemsCenter, .relative;
           }
-          .cancel {
-            @p: .white50, .f16;
+          .button.cancel {
+            @p: .f16, .white60;
           }
           .save {
             @p: .bgWhite10, .white30, .br2;
@@ -175,7 +179,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             />
           </div>
           <div className='footer'>
-            <div className='button cancel'>Cancel</div>
+            <div className='button cancel' onClick={this.cancel}>Cancel</div>
             <div className='right'>
               <div className={'button save' + (valid ? ' active' : '')} onClick={this.create}>Create Index</div>
               {valid && selectedModel.itemCount > 0 && (
@@ -192,6 +196,18 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private cancel = () => {
+    if (this.props.noIndeces) {
+      this.reset()
+    } else {
+      this.close()
+    }
+  }
+
+  private reset = () => {
+    this.setState(this.getInitialState(this.props))
   }
 
   private handleModelChange = (e: any) => {

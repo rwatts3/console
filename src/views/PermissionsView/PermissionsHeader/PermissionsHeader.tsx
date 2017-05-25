@@ -15,7 +15,7 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
     const activeTab = pathname.startsWith(`/${params.projectName}/permissions/relations`) ? 1 : 0
     return (
       <div className='permissions-header'>
-        <style jsx={true}>{`
+        <style jsx>{`
           .permissions-header {
             @p: .pt25, .br2, .flexColumn;
           }
@@ -29,6 +29,10 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
             @p: .fw3, .f25, .black30, .relative, .mr10, .pointer, .z2;
             bottom: -1px;
             padding: 10px 20px;
+          }
+          .tabs :global(.tab:first-of-type) {
+            border-left-width: 0 !important;
+            border-top-left-radius: 0 !important;
           }
           .tabs :global(.tab.active) {
             @p: .black50, .bgWhite, .bt, .bl, .br, .bBlack10, .br2;
