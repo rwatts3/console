@@ -12,7 +12,7 @@ interface Props {
 class CliInfoPopup extends React.Component<Props, null> {
   render() {
     return (
-      <Popup onRequestClose={this.props.router.goBack} width={600} closeInside>
+      <Popup onRequestClose={this.props.router.goBack} width={600} closeInside darkBg>
         <div className='cli-info-popup'>
           <style jsx={true}>{`
           .cli-info-popup {

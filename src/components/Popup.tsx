@@ -8,13 +8,17 @@ interface Props {
   onRequestClose: () => void
   width?: number
   closeInside?: boolean
+  darkBg?: boolean
 }
 
 export default class Popup extends React.Component<Props, null> {
   render() {
-    const {closeInside} = this.props
+    const {closeInside, darkBg} = this.props
     const modalStyle = {
-      overlay: fieldModalStyle.overlay,
+      overlay: {
+        ...fieldModalStyle.overlay,
+        background: darkBg ? 'rgba(23,42,58,.8)' : 'rgba(255,255,255,.9)',
+      },
       content: {
         ...fieldModalStyle.content,
         width: this.props.width || 560,
