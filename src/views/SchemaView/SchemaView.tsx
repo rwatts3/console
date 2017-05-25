@@ -108,7 +108,10 @@ class SchemaView extends React.Component<Props, State> {
             />
           )}
         </div>
-        {this.props.children}
+        {
+          this.props.children &&
+          React.cloneElement(this.props.children as any, {projectId: this.props.viewer.project.id})
+        }
       </div>
     )
   }

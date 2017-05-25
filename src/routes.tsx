@@ -56,6 +56,7 @@ import {
   EditSSSFunctionPopup,
 } from './views/FunctionsView/FunctionPopup/FunctionPopup'
 import { FunctionLogs } from './views/FunctionsView/FunctionLogs/FunctionLogs'
+import CliInfoPopup from './views/SchemaView/CliInfoPopup'
 
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
@@ -217,7 +218,7 @@ export default (
         <IndexRedirect to='settings'/>
       </Route>
       <Route path='schema' component={NewSchemaView} queries={ViewerQuery} render={render} loadingColor='white'>
-        <Route path='all' component={null} render={render}/>
+        <Route path='cli-guide' component={CliInfoPopup} render={render}/>
         <Route path='types' component={null} render={render}/>
         <Route path='interfaces' component={null} render={render}/>
         <Route path='enums' component={null} render={render}>
