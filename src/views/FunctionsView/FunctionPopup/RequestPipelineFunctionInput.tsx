@@ -218,7 +218,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
     const fullscreen = this.props.location.pathname.endsWith('fullscreen')
 
     if (!fullscreen) {
-      return 2
+      return 1.7
     }
 
     if (window.innerWidth < 1800) {
