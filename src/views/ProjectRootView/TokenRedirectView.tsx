@@ -12,11 +12,14 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
   componentWillMount () {
     const {query} = this.props.location
 
-    let {token, redirect} = query
+    let {token, redirect, cli} = query
     if (token) {
       tracker.reset()
       cookiestore.set('graphcool_auth_token', token)
       cookiestore.set('graphcool_customer_id', 'tmp')
+      if (typeof cli !== 'undefined') {
+        localStorage.setItem('graphcool_from_cli', 'true')
+      }
       updateNetworkLayer()
       redirect = redirect || ''
       window.location.href = window.location.origin + redirect

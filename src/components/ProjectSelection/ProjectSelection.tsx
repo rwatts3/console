@@ -308,7 +308,6 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                     key={project.name}
                     className={cx(
                         $p.relative,
-                        $p.db,
                         $p.f20,
                         $p.fw4,
                         $p.ph25,

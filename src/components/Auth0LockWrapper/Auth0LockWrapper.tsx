@@ -60,7 +60,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         cookiestore.set('graphcool_auth_token', response.authenticateCustomer.token)
         cookiestore.set('graphcool_customer_id', response.authenticateCustomer.user.id)
 
-        await tracker.track(ConsoleEvents.Authentication.completed())
+        tracker.track(ConsoleEvents.Authentication.completed())
 
         this.props.successCallback(response.authenticateCustomer)
 

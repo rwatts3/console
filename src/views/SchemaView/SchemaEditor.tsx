@@ -211,6 +211,9 @@ class SchemaEditor extends React.Component<Props, State> {
           .cancel {
             @p: .pa10, .white40, .f16, .pointer;
           }
+          .cli-button {
+            @p: .absolute, .top0, .right0, .mt25, .z5;
+          }
         `}</style>
         <div
           className='editor-wrapper'
@@ -233,6 +236,9 @@ class SchemaEditor extends React.Component<Props, State> {
               <Loading color='white' />
             </div>
           )}
+          <div className='cli-button'>
+            <Link className='button' to={`/${project.name}/schema/cli-guide`}>Edit Schema from CLI</Link>
+          </div>
         </div>
         {didChange ? (
           <div>

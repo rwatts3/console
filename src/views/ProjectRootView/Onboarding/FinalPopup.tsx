@@ -39,8 +39,6 @@ class FinalPopup extends React.Component<Props, State> {
   render() {
     const step = this.props.gettingStartedState.skipped ? undefined : this.props.gettingStartedState.step
 
-    console.log(step)
-
     return (
       <Modal
         isOpen

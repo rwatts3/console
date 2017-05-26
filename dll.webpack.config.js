@@ -2,14 +2,15 @@ const webpack = require('webpack')
 
 const vendor = [
   'auth0-lock',
-  'babel-plugin-transform-async-to-generator',
   'bluebird',
   'calculate-size',
   'classnames',
   'cookiestore',
+  'codemirror',
   'cuid',
   'drumstick',
   'graphiql',
+  'graphql-voyager',
   'immutable',
   'lodash',
   'lokka',

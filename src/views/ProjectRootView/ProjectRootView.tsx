@@ -16,7 +16,7 @@ import SideNav from '../../views/ProjectRootView/SideNav'
 import OnboardSideNav from './OnboardSideNav'
 import AuthView from '../AuthView/AuthView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-import {update} from '../../actions/gettingStarted'
+import {skip, update} from '../../actions/gettingStarted'
 import {Viewer, Customer, Project} from '../../types/types'
 import {PopupState} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
@@ -57,6 +57,7 @@ interface Props {
   pollGettingStartedOnboarding: boolean
   update: (step: string, skipped: boolean, customerId: string) => void
   showNotification: ShowNotificationCallback
+  skip: () => void
 }
 
 const MIN_SIDEBAR_WIDTH = 67
@@ -141,6 +142,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
           projectId: this.props.project.id,
         })
       }
+      this.checkCliOnboarding()
 
     } else {
       // TODO migrate to tracker
@@ -152,6 +154,18 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     clearInterval(this.refreshInterval)
+  }
+
+  checkCliOnboarding() {
+    const {gettingStartedState} = this.props
+
+    if (gettingStartedState.isActive) {
+      const fromCli = localStorage.getItem('graphcool_from_cli')
+      if (fromCli) {
+        localStorage.removeItem('graphcool_from')
+        this.props.skip()
+      }
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -363,7 +377,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({update, showNotification}, dispatch)
+  return bindActionCreators({update, showNotification, skip}, dispatch)
 }
 
 const ReduxContainer = connect(

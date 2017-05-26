@@ -456,17 +456,18 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as PermissionPopupState, () => {
+      const input = {
+        modelId: model.id,
+        operation: selectedOperation,
+        fieldIds,
+        userType,
+        applyToWholeModel,
+        rule,
+        ruleName,
+        ruleGraphQuery: extractSelection(ruleGraphQuery),
+      }
       Relay.Store.commitUpdate(
-        new AddPermissionMutation({
-          modelId: model.id,
-          operation: selectedOperation,
-          fieldIds,
-          userType,
-          applyToWholeModel,
-          rule,
-          ruleName,
-          ruleGraphQuery,
-        }),
+        new AddPermissionMutation(input),
         {
           onSuccess: () => this.closePopup(),
           onFailure: (transaction) => {
