@@ -285,7 +285,6 @@ export default class PermissionConditions extends React.Component<Props, State> 
     }
 
     if (operation === 'CREATE') {
-      console.log(args)
       args = args.filter(arg => arg.name !== '$node_id')
     }
 
