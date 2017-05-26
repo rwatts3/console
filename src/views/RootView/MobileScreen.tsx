@@ -10,55 +10,91 @@ export default function MobileScreen({}: Props) {
     <div className='mobile-loading-content'>
       <style jsx={true}>{`
         .mobile-loading-content {
-            font-family: 'Open Sans', sans-serif;
-            width: 100vw;
-            height: 100vh;
-            padding: 38px;
-            box-sizing: border-box;
+          font-family: 'Open Sans', sans-serif;
+          width: 100vw;
+          height: 100vh;
+          padding: 38px;
+          box-sizing: border-box;
+          background: radial-gradient(circle at 49% 49%, #172a3a, #0f202d);
         }
         .logos {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-        }
-        .mobile-loading-content {
-            background: radial-gradient(circle at 49% 49%, #172a3a, #0f202d);
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
         }
         .mobile-loading-content h1 {
-            font-size: 30px;
-            color: white;
-            font-weight: 600;
-            margin-top: 60px;
-            letter-spacing:
+          font-size: 30px;
+          color: white;
+          font-weight: 600;
+          margin-top: 60px;
+          max-width: 520px;
         }
         .mobile-loading-content p {
-            margin-top: 25px;
-            margin-bottom: 25px;
-            opacity: 0.7;
-            font-size: 16px;
-            text-align: left;
-            color: #ffffff;
-            font-weight: 400;
+          margin-top: 25px;
+          margin-bottom: 25px;
+          opacity: 0.7;
+          font-size: 16px;
+          text-align: left;
+          color: #ffffff;
+          font-weight: 400;
+          max-width: 520px;
         }
         .btn {
-            border-radius: 2px;
-            text-transform: uppercase;
-            font-size: 14px;
-            padding: 12px 16px;
-            letter-spacing: 0.5px;
-            color: #172a3a;
-            background: white;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
-            margin-top: 16px;
-            display: inline-block;
-            text-decoration: none;
+          border-radius: 2px;
+          text-transform: uppercase;
+          font-size: 14px;
+          padding: 12px 16px;
+          letter-spacing: 0.5px;
+          color: #172a3a;
+          background: white;
+          box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+          margin-top: 16px;
+          display: inline-block;
+          text-decoration: none;
         }
         .btn.green {
-            background: #27ae60;
-            color: white;
+          background: #27ae60;
+          color: white;
         }
-        .btn + .btn {
-          margin-left: 25px;
+        .btn:first-of-type {
+          margin-right: 25px;
+        }
+        @media (max-width: 520px) {
+          div.sad {
+            position: absolute;
+            top: 38px;
+            right: 38px;
+          }
+          div.sad svg {
+            width: 48.88px;
+            height: 38.87px;
+          }
+        }
+        @media (min-width: 521px) {
+          .sad {
+            margin-top: 60px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .sad svg {
+            width: 84.8px;
+            height: 68.2px;
+          }
+          .mobile-loading-content h1 {
+            font-size: 32px;
+            text-align: center;
+          }
+          .mobile-loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .mobile-loading-content p {
+            text-align: center;
+            font-size: 20px;
+          }
         }
       `}</style>
 
@@ -72,39 +108,43 @@ export default function MobileScreen({}: Props) {
                 L11.74,15.6c-1.43,0.83-2.31,2.35-2.31,4v12.68c0,1.65,0.88,3.18,2.3,4l10.96,6.35c1.43,0.82,3.18,0.82,4.61,0l10.96-6.35
                 c1.42-0.83,2.3-2.35,2.3-4v-9.22h0.01C40.63,20.91,40.05,19.47,38.87,18.81`} fill='#27ae60' />
         </svg>
-        <svg x='0px' y='0px' width='48.88px' height='38.87px' viewBox='0 0 48.88 38.87'>
-                    <style type='text/css'>{`
-                    .st0 {
-                      opacity: 0.5;
-                      fill: #FFFFFF;
-                    }
+      </div>
+      <div className='sad'>
+        <svg x='0px' y='0px' viewBox='0 0 48.88 38.87'>
+          <style type='text/css'>{`
+          .st0 {
+            opacity: 0.5;
+            fill: #FFFFFF;
+          }
 
-                      .st1 {
-                      fill: #FFFFFF;
-                    }
-                    `}
-                    </style>
-                    <g id='XMLID_15_'>
-                        <path id='XMLID_23_' className='st0' d={`M43.8,0H5.08C2.28,0,0,2.29,0,5.1v28.68c0,2.81,2.28,5.1,5.08,5.1H43.8
-                    c2.8,0,5.08-2.29,5.08-5.1V5.1C48.88,2.29,46.6,0,43.8,0z M5.08,2H43.8c1.7,0,3.08,1.39,3.08,3.1v3.92H2V5.1C2,3.39,3.38,2,5.08,2z
-                     M43.8,36.87H5.08c-1.7,0-3.08-1.39-3.08-3.1V11.01h44.88v22.76C46.88,35.48,45.5,36.87,43.8,36.87z`} />
-                        <circle id='XMLID_22_' className='st0' cx='6.43' cy='5.63' r='2.02' />
-                        <ellipse id='XMLID_21_' className='st0' cx='12.54' cy='5.63' rx='2.02' ry='2.02' />
-                        <circle id='XMLID_20_' className='st0' cx='18.66' cy='5.63' r='2.02' />
-                        <g id='XMLID_16_'>
-                            <circle id='XMLID_19_' className='st1' cx='30.33' cy='18.32' r='2.02' />
-                            <circle id='XMLID_18_' className='st1' cx='18.55' cy='18.32' r='2.02' />
-                            <path id='XMLID_17_' className='st1' d={`M32.35,30.71c-0.25,0-0.51-0.1-0.7-0.29c-1.75-1.73-4.37-2.73-7.2-2.73s-5.45,1-7.2,2.73
-                        c-0.39,0.39-1.03,0.39-1.41-0.01c-0.39-0.39-0.39-1.03,0.01-1.41c2.12-2.1,5.26-3.31,8.61-3.31s6.49,1.21,8.61,3.31
-                        c0.39,0.39,0.39,1.02,0.01,1.41C32.86,30.62,32.6,30.71,32.35,30.71z`} />
-                        </g>
-                    </g>
-                </svg>
+            .st1 {
+            fill: #FFFFFF;
+          }
+          `}
+          </style>
+          <g id='XMLID_15_'>
+            <path id='XMLID_23_' className='st0' d={`M43.8,0H5.08C2.28,0,0,2.29,0,5.1v28.68c0,2.81,2.28,5.1,5.08,5.1H43.8
+          c2.8,0,5.08-2.29,5.08-5.1V5.1C48.88,2.29,46.6,0,43.8,0z M5.08,2H43.8c1.7,0,3.08,1.39,3.08,3.1v3.92H2V5.1C2,3.39,3.38,2,5.08,2z
+           M43.8,36.87H5.08c-1.7,0-3.08-1.39-3.08-3.1V11.01h44.88v22.76C46.88,35.48,45.5,36.87,43.8,36.87z`} />
+            <circle id='XMLID_22_' className='st0' cx='6.43' cy='5.63' r='2.02' />
+            <ellipse id='XMLID_21_' className='st0' cx='12.54' cy='5.63' rx='2.02' ry='2.02' />
+            <circle id='XMLID_20_' className='st0' cx='18.66' cy='5.63' r='2.02' />
+            <g id='XMLID_16_'>
+              <circle id='XMLID_19_' className='st1' cx='30.33' cy='18.32' r='2.02' />
+              <circle id='XMLID_18_' className='st1' cx='18.55' cy='18.32' r='2.02' />
+              <path id='XMLID_17_' className='st1' d={`M32.35,30.71c-0.25,0-0.51-0.1-0.7-0.29c-1.75-1.73-4.37-2.73-7.2-2.73s-5.45,1-7.2,2.73
+              c-0.39,0.39-1.03,0.39-1.41-0.01c-0.39-0.39-0.39-1.03,0.01-1.41c2.12-2.1,5.26-3.31,8.61-3.31s6.49,1.21,8.61,3.31
+              c0.39,0.39,0.39,1.02,0.01,1.41C32.86,30.62,32.6,30.71,32.35,30.71z`} />
+            </g>
+          </g>
+        </svg>
       </div>
       <h1>Our Console is not optimized for mobile.</h1>
       <p>Please open the console on a desktop screen.</p>
-      <a className='btn green' href='https://www.graph.cool' target='_blank'>Visit our Homepage</a>
-      <a className='btn' href='https://www.graph.cool/docs/'>Read our Docs</a>
+      <div>
+        <a className='btn green' href='https://www.graph.cool' target='_blank'>Visit our Homepage</a>
+        <a className='btn' href='https://www.graph.cool/docs/'>Read our Docs</a>
+      </div>
     </div>
   )
 }
