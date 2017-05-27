@@ -36,6 +36,7 @@ export class LightCell extends React.PureComponent<Props, {}> {
             [$p.bgWhite]: (!rowHasCursor && !rowSelected),
             [$p.bgBlue]: rowSelected,
             [$p.white]: rowSelected,
+            [$p.mono]: field.typeIdentifier === 'Json',
           },
         )}
       >
