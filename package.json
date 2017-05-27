@@ -4,7 +4,7 @@
     "build": "rm -rf dist && NODE_ENV=production GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack --config webpack.config.build.js && cp -r static/* dist",
     "deploy": "npm run dll && npm run build && cp dll/vendor.bundle.js dist/vendor.bundle.js && cp dist/index.html dist/200.html && netlify deploy -p dist -s $NETLIFY_ID -t $NETLIFY_TOKEN",
     "lint": "tslint \"src/**/*.ts{,x}\"",
-    "start": "GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack-dev-server --hot --profile --inline --progress --history-api-fallback --host 0.0.0.0 --port 4000 --content-base dll/",
+    "start": "GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack-dev-server --hot --profile --history-api-fallback --host 0.0.0.0 --port 4000 --content-base dll/",
     "test": "npm run lint && jest",
     "test-quick": "jest",
     "test-watch": "jest --watch",
@@ -79,6 +79,7 @@
     "graphiql": "^0.8.0",
     "graphql": "0.8.2",
     "graphql-voyager": "git+https://github.com/timsuchanek/graphql-voyager#build3",
+    "happypack": "^3.1.0",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.2",
@@ -135,6 +136,7 @@
     "styled-jsx-postcss": "git+https://github.com/timsuchanek/styled-jsx-postcss#build3",
     "tachyons": "^4.5.2",
     "tracekit": "^0.4.4",
+    "ts-loader": "^2.1.0",
     "webpack-bundle-analyzer": "^2.3.1"
   },
   "devDependencies": {

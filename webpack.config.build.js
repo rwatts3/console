@@ -20,7 +20,6 @@ module.exports = {
       'graphcool-graphiql/graphiql_dark.css',
     ],
     styles: 'graphcool-styles/dist/styles.css',
-    vendor: config.entry.vendor,
   },
   output: {
     path: __dirname + '/dist',

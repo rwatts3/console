@@ -161,12 +161,12 @@ export default Relay.createContainer(SchemaView, {
 
 const mockEnums: Enum[] = [
   {
-    id: 'role',
+    id: 'role23',
     name: 'Role',
     values: ['Admin', 'User', 'Guest'],
   },
   {
-    id: 'wood',
+    id: 'wood2',
     name: 'Wood',
     values: ['Beech', 'Oak', 'Fir', 'Mahagony'],
   },

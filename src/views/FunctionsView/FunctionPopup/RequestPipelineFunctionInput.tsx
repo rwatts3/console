@@ -88,18 +88,6 @@ export interface TestError {
   stack: string
 }
 
-const modalStyling = {
-  ...fieldModalStyle,
-  content: {
-    ...fieldModalStyle.content,
-    width: window.innerWidth,
-  },
-  overlay: {
-    ...fieldModalStyle.overlay,
-    backgroundColor: 'rgba(23,42,58,.98)',
-  },
-}
-
 class RequestPipelineFunctionInput extends React.Component<Props, State> {
   private logsRef: any
   private lastQuery: string
@@ -131,9 +119,22 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       responses: [],
       loading: false,
     }
+    global['i'] = this
   }
   render() {
     const fullscreen = this.props.location.pathname.endsWith('fullscreen')
+
+    const modalStyling = {
+      ...fieldModalStyle,
+      content: {
+        ...fieldModalStyle.content,
+        width: window.innerWidth,
+      },
+      overlay: {
+        ...fieldModalStyle.overlay,
+        backgroundColor: 'rgba(23,42,58,.98)',
+      },
+    }
 
     if (fullscreen) {
       return (

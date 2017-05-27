@@ -7,6 +7,7 @@ import {Notification} from '../../types/utils'
 import NotificationSystem from 'react-notification-system'
 import * as MediaQuery from 'react-responsive'
 import MobileScreen from './MobileScreen'
+import {throttle} from 'lodash'
 
 interface Props {
   children: Element
@@ -15,6 +16,14 @@ interface Props {
 }
 
 class RootView extends React.Component<Props, {}> {
+
+  // rerender = throttle(
+  //   () => {
+  //     this.forceUpdate()
+  //     console.log('force update')
+  //   },
+  //   300,
+  // )
 
   refs: {
     [key: string]: any;
