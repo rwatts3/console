@@ -2340,11 +2340,7 @@ dom-converter@~0.1:
   dependencies:
     utila "~0.3"
 
-"dom-helpers@^2.4.0 || ^3.0.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-2.4.0.tgz#9bb4b245f637367b1fa670274272aa28fe06c367"
-
-dom-helpers@^3.2.0:
+"dom-helpers@^2.4.0 || ^3.0.0", dom-helpers@^3.2.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
 
@@ -3083,9 +3079,9 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphcool-graphiql@1.7.6:
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.7.6.tgz#43ebc1e90b6f76be7f9c727b0daa58e73933046a"
+graphcool-graphiql@1.7.7:
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/graphcool-graphiql/-/graphcool-graphiql-1.7.7.tgz#c0ea4ab54974d7f15bae2e5971bc181228e17765"
   dependencies:
     babel-cli "^6.22.2"
     babel-preset-stage-3 "^6.22.0"
