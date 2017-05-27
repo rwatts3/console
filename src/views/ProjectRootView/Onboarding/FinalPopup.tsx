@@ -49,7 +49,7 @@ class FinalPopup extends React.Component<Props, State> {
         <div className='intro-popup'>
           <style jsx={true}>{`
             .intro-popup {
-              @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .bgWhite, .relative;
+              @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .bgWhite, .relative, .overflowAuto;
             }
           `}</style>
           {(step === 'STEP5_SELECT_EXAMPLE' || step === 'STEP5_WAITING') && (
