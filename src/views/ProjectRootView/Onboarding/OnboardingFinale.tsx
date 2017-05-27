@@ -146,7 +146,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             target='_blank'
           >
             <Icon src={require('assets/icons/twitter.svg')} color={$v.white} width={32} height={32} />
-            <span>Tweet something</span>
+            <span>Tweet about it</span>
           </a>
         </div>
         <div className='resources'>
