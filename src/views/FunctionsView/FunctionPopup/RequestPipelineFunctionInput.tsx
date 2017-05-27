@@ -397,7 +397,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
           <div className={cn('input', 'sss')}>
             <div className='sss-input'>
               {eventType === 'SSS' && !this.props.editing && (
-                <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+                <StepMarker style={{left: -12, top: -1, position: 'relative'}}>2</StepMarker>
               )}
               <Toggle
                 choices={[inputTitle, 'Example Event']}
@@ -451,11 +451,13 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                   {eventType === 'SSS' && '3'}
                 </StepMarker>
               )}
-              <Toggle
-                choices={['Inline Code', 'Webhook']}
-                activeChoice={isInline ? 'Inline Code' : 'Webhook'}
-                onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
-              />
+              <div className='ml10'>
+                <Toggle
+                  choices={['Inline Code', 'Webhook']}
+                  activeChoice={isInline ? 'Inline Code' : 'Webhook'}
+                  onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
+                />
+              </div>
             </div>
           </div>
           <div className='body'>

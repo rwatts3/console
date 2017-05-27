@@ -95,7 +95,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           <div className='error'>Please give your function a name ⤴</div>
         )}
         {!editing && (
-          <StepMarker active style={{marginTop: -36, marginLeft: -4}}>1</StepMarker>
+          <StepMarker active style={{marginTop: -36, marginLeft: 0}}>1</StepMarker>
         )}
         <div className='line' />
         <div className='content'>
@@ -105,7 +105,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             <p>
               By creating a function at
               <span className='pre'>{binding}</span>
-              {getText(binding)} <br/>
+              {getText(binding)}&nbsp;
               Your function will be called when a
               <span className='pre'>{this.props.modelName}</span> is
               <span className='pre'>{this.props.operation.toLowerCase()}d</span>
