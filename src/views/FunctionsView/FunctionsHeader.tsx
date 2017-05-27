@@ -2,6 +2,7 @@ import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
 import ModalDocs from '../../components/ModalDocs/ModalDocs'
 import {Link} from 'react-router'
+import DocsPopup from '../../components/DocsPopup'
 
 interface Props {
   params: any
@@ -64,9 +65,9 @@ export default function FunctionsHeader({params}: Props) {
         </Link>
       </div>
       <div className='docs'>
-        <ModalDocs
-          title='How do functions work?'
-          id='functions-popup'
+        <DocsPopup
+          offsetX={16}
+          offsetY={16}
           resources={[
             {
               title: 'Overview over Functions',
@@ -75,9 +76,7 @@ export default function FunctionsHeader({params}: Props) {
             },
           ]}
           videoId='l-0jGOxXKGY'
-          boring
-        >
-        </ModalDocs>
+        />
       </div>
     </div>
   )
