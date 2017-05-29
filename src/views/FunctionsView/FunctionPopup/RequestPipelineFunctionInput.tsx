@@ -41,7 +41,6 @@ interface Props {
   query: string
   projectId: string
   sssModelName: string
-  onTestRun?: () => void
   showErrors?: boolean
   updateFunction: () => Promise<any>
   location: any
@@ -565,30 +564,36 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
   }
 
   private runTest = () => {
-    this.firstTest = false
-    this.props.updateFunction()
-      .then(() => {
-        const {webhookUrl, isInline} = this.props
-        const {exampleEvent} = this.state
-        this.setLoading(true)
-        return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
-          method: 'post',
-          body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
-        })
-          .then(res => res.json())
-          .then((res: any) => {
-            this.setState(
-              state => {
-                return {
-                  ...state,
-                  responses: [res].concat(state.responses),
-                }
-              },
-              this.scrollUp,
-            )
-            this.setLoading(false)
-          })
+    const _runTest = () => {
+      const {webhookUrl, isInline} = this.props
+      const {exampleEvent} = this.state
+      this.setLoading(true)
+      return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
+        method: 'post',
+        body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
       })
+        .then(res => res.json())
+        .then((res: any) => {
+          this.setState(
+            state => {
+              return {
+                ...state,
+                responses: [res].concat(state.responses),
+              }
+            },
+            this.scrollUp,
+          )
+          this.setLoading(false)
+        })
+    }
+
+    this.firstTest = false
+    if (this.props.isInline) {
+      this.props.updateFunction()
+        .then(_runTest)
+    } else {
+      _runTest()
+    }
   }
 
   private setLoading(loading: boolean) {

@@ -27,7 +27,6 @@ interface Props {
   sssModelName: string
   modelName?: string
   operation?: RequestPipelineMutationOperation
-  onTestRun?: () => void
   showErrors: boolean
   updateFunction: () => Promise<any>
   location: any
@@ -148,7 +147,6 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           query={this.props.query}
           projectId={this.props.projectId}
           sssModelName={this.props.sssModelName}
-          onTestRun={this.props.onTestRun}
           showErrors={this.props.showErrors}
           updateFunction={this.props.updateFunction}
           location={this.props.location}

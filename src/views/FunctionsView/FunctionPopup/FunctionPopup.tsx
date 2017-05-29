@@ -275,7 +275,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                     fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
                   }
                   operation={fn.operation}
-                  onTestRun={this.showTestPopup}
                   showErrors={this.state.showErrors}
                   updateFunction={this.updateExtendFunction}
                   location={this.props.location}
@@ -324,18 +323,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     }
 
     return null
-  }
-
-  private showTestPopup = () => {
-    // this.setLoading(true)
-    // this.createExtendFunction()
-    //   .then((res: any) => {
-    //     const {url, fn} = res
-    //     this.update(updateWebhookUrl)(url)
-    //     this.update(updateAuth0Id)(fn)
-    //     this.setLoading(false)
-    //     this.setState({showTest: true} as FunctionPopupState)
-    //   })
   }
 
   private openFullscreen = () => {
