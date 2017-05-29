@@ -42,6 +42,18 @@ class SchemaView extends React.Component<Props, State> {
       scroll: 0,
     }
   }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.rerender)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.rerender)
+  }
+
+  rerender = () => {
+    this.forceUpdate()
+  }
   render() {
     const {viewer, location, params} = this.props
     const {editorWidth, typesChanged, enumsChanged} = this.state
