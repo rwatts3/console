@@ -93,8 +93,8 @@ export class GettingStartedState {
     // 'STEP4_CLICK_BEGIN_PART2',
     // 'STEP4_WAITING_PART2',
     // 'STEP4_CLICK_TEASER_STEP5',
-    // 'STEP5_SELECT_EXAMPLE',
-    'STEP5_WAITING',
+    'STEP5_SELECT_EXAMPLE',
+    // 'STEP5_WAITING',
     'STEP5_DONE',
     'STEP6_CLOSED',
   ]
