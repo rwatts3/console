@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as cn from 'classnames'
 import * as Relay from 'react-relay'
 import {Project} from '../../types/types'
-import * as FileSaver from 'file-saver'
 import {sortSchema} from '../../../sortSchema'
 import {Link} from 'react-router'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
@@ -15,6 +14,7 @@ import {onFailureShowNotification} from '../../utils/relay'
 import Loading from '../../components/Loading/Loading'
 import {debounce} from 'lodash'
 import {smoothScrollTo} from '../../utils/smooth'
+import SchemaExport from './SchemaExport'
 
 interface Props {
   project: Project
@@ -193,7 +193,7 @@ class SchemaEditor extends React.Component<Props, State> {
           .footer.editing {
             @p: .bgBlack30, .pa16, .justifyBetween;
           }
-          .schema-editor :global(.button) {
+          .schema-editor :global(.schema-button) {
             @p: .bgWhite04, .fw6, .f14, .white50, .ttu, .br2, .pointer, .o50, .mr16;
             padding: 7px 9px 8px 11px;
             letter-spacing: 0.53px;
@@ -237,7 +237,7 @@ class SchemaEditor extends React.Component<Props, State> {
             </div>
           )}
           <div className='cli-button'>
-            <Link className='button' to={`/${project.name}/schema/cli-guide`}>Edit Schema from CLI</Link>
+            <Link className='schema-button' to={`/${project.name}/schema/cli-guide`}>Edit Schema from CLI</Link>
           </div>
         </div>
         {didChange ? (
@@ -255,8 +255,10 @@ class SchemaEditor extends React.Component<Props, State> {
           </div>
         ) : (
           <div className='footer'>
-            <div className='button' onClick={this.downloadSchema}>Export Schema</div>
-            <Link className='button' to={`/${project.name}/clone`}>Clone Project</Link>
+            <SchemaExport schema={project.schema} projectName={project.name} projectId={project.id}>
+              <div className='schema-button'>Export Schema</div>
+            </SchemaExport>
+            <Link className='schema-button' to={`/${project.name}/clone`}>Clone Project</Link>
           </div>
         )}
         {!beta && (
@@ -372,11 +374,6 @@ class SchemaEditor extends React.Component<Props, State> {
         }
       },
     )
-  }
-
-  private downloadSchema = () => {
-    const blob = new Blob([this.props.project.schema], {type: 'text/plain;charset=utf-8'})
-    FileSaver.saveAs(blob, `${this.props.project.name}.schema`)
   }
 }
 
