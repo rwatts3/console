@@ -149,7 +149,7 @@ const examples: Example[] = [
   },
   {
     name: 'React + Apollo',
-    path: 'react-apollo-instagram-quickstart',
+    path: 'react-graphql',
     subfolder: 'quickstart-with-apollo',
     logo1: require('graphcool-styles/icons/fill/reactLogo.svg'),
     logo2: require('graphcool-styles/icons/fill/apolloLogo.svg'),
