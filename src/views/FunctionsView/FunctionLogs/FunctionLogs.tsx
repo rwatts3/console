@@ -13,6 +13,7 @@ interface Props {
   logs: Log[]
   node: ServerlessFunction
   router: ReactRouter.InjectedRouter
+  relay: Relay.RelayProp
 }
 
 interface State {
@@ -82,8 +83,9 @@ class FunctionLogsComponent extends React.Component<Props, State> {
             width: 120px;
           }
           th:last-child {
-            @p: .pr25;
-            width: 120px;
+            @p: .relative;
+            width: 130px;
+            right: -11px;
           }
           .logs :global(tr:first-child) :global(td) {
             @p: .pt16;
@@ -126,7 +128,19 @@ class FunctionLogsComponent extends React.Component<Props, State> {
                   <th>Timestamp</th>
                   <th>Duration</th>
                   <th>Output</th>
-                  <th>Time Ago</th>
+                  <th>
+                    <div className='flex itemsCenter justifyBetween'>
+                      <span className='mr6'>Time Ago</span>
+                      <Icon
+                        src={require('graphcool-styles/icons/fill/reload.svg')}
+                        width={18}
+                        height={18}
+                        color={$v.white}
+                        onClick={this.reload}
+                        className='pointer'
+                      />
+                    </div>
+                  </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -146,6 +160,11 @@ class FunctionLogsComponent extends React.Component<Props, State> {
 
   private close = () => {
     this.props.router.goBack()
+  }
+
+  private reload = () => {
+    console.log('force fetch')
+    this.props.relay.forceFetch()
   }
 }
 

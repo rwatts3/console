@@ -425,6 +425,9 @@ class TypeBox extends React.Component<Props,State> {
   }
 
   private editModelName = e => {
+    if (this.props.model.isSystem) {
+      return
+    }
     if (this.props.model.itemCount === 0) {
       this.setState({editingModelName: true} as State)
     } else {

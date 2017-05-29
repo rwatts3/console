@@ -42,6 +42,18 @@ class SchemaView extends React.Component<Props, State> {
       scroll: 0,
     }
   }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.rerender)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.rerender)
+  }
+
+  rerender = () => {
+    this.forceUpdate()
+  }
   render() {
     const {viewer, location, params} = this.props
     const {editorWidth, typesChanged, enumsChanged} = this.state
@@ -161,12 +173,12 @@ export default Relay.createContainer(SchemaView, {
 
 const mockEnums: Enum[] = [
   {
-    id: 'role',
+    id: 'role23',
     name: 'Role',
     values: ['Admin', 'User', 'Guest'],
   },
   {
-    id: 'wood',
+    id: 'wood2',
     name: 'Wood',
     values: ['Beech', 'Oak', 'Fir', 'Mahagony'],
   },

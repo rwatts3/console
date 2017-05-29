@@ -26,7 +26,8 @@ class SelectExample extends React.Component<Props, State> {
     }
   }
   getDownloadUrl(example: Example) {
-    return `${__EXAMPLE_ADDR__}/?repository=${example.path}&project_id=${this.props.projectId}&user=graphcool-examples`
+    /* tslint:disable-line */
+    return `${__EXAMPLE_ADDR__}/?repository=${example.path}&project_id=${this.props.projectId}&user=graphcool-examples&subfolder=${example.subfolder}`
   }
   render() {
     const selectedExample = examples[this.state.selectedExampleIndex]
@@ -35,6 +36,9 @@ class SelectExample extends React.Component<Props, State> {
     return (
       <div className='select-example'>
         <style jsx={true}>{`
+          .select-example {
+            @p: .w100;
+          }
           .intro {
             @p: .pa38;
           }
@@ -75,21 +79,21 @@ class SelectExample extends React.Component<Props, State> {
             @p: .ml16;
           }
           .skip {
-            @p: .pointer, .underline, .darkBlue40, .dib, .mt25, .f16;
+            @p: .pointer, .underline, .darkBlue40, .dib, .f16;
           }
           .bottom {
-            @p: .flex, .justifyBetween, .itemsCenter, .mt60;
+            @p: .flex, .justifyBetween, .itemsCenter, .mt60, .w100;
           }
         `}</style>
         <div className='intro'>
-          <h1>You did it! Time to run an example</h1>
+          <h1>Time to run an example...</h1>
           <p>
-            Let’s get started by building a backend for a simple Instagram clone. To keep our example light, our
-            Instagram posts only consist of a picture and some hashtags.
+            You've successfully set up your GraphQL backend. It's now time to test it. <br/>
+            We've already prepared an Instagram example project for you.
           </p>
         </div>
         <div className='middle'>
-          <h2>Select your preferred technology to download the example:</h2>
+          <h2>Select your preferred technology:</h2>
           <ExampleChooser
             examples={examples}
             activeIndex={this.state.selectedExampleIndex}
@@ -99,7 +103,7 @@ class SelectExample extends React.Component<Props, State> {
         <div className='last'>
           <div className='cta'>
            <p>
-             To move on, you need to download the example and run
+             Download the example, open it in your terminal and run
              <pre>npm install</pre>
              and
              {this.state.selectedExampleIndex === 2 ? (
@@ -115,7 +119,7 @@ class SelectExample extends React.Component<Props, State> {
           <div className='bottom'>
             <div className='waiting'>
               <WaitingIndicator />
-              <span>Waiting for you to initialize the app. Once you've done, come back here</span>
+              <span>Waiting for you to initialize the app. Once you've done, come back here...</span>
             </div>
             <div className='skip' onClick={this.skip}>Skip</div>
           </div>
@@ -138,36 +142,36 @@ export default connect(null, {nextStep})(SelectExample)
 const examples: Example[] = [
   {
     name: 'React + Relay',
-    path: 'react-relay-instagram-quickstart',
-    description: 'React + Relay',
+    path: 'react-graphql',
+    subfolder: 'quickstart-with-relay',
     logo1: require('graphcool-styles/icons/fill/reactLogo.svg'),
     logo2: require('graphcool-styles/icons/fill/relayLogo.svg'),
   },
   {
     name: 'React + Apollo',
-    path: 'react-apollo-instagram-quickstart',
-    description: 'React + Apollo',
+    path: 'react-graphql',
+    subfolder: 'quickstart-with-apollo',
     logo1: require('graphcool-styles/icons/fill/reactLogo.svg'),
     logo2: require('graphcool-styles/icons/fill/apolloLogo.svg'),
   },
   {
     name: 'React Native + Apollo',
-    path: 'react-native-apollo-instagram-quickstart',
-    description: 'React Native + Apollo',
+    path: 'react-native-graphql',
+    subfolder: 'quickstart-with-apollo',
     logo1: require('graphcool-styles/icons/fill/reactLogo.svg'),
     logo2: require('graphcool-styles/icons/fill/apolloLogo.svg'),
   },
   {
     name: 'Angular + Apollo',
-    path: 'angular-apollo-instagram-quickstart',
-    description: 'Angular + Apollo',
+    path: 'angular-graphql',
+    subfolder: 'quickstart-with-apollo',
     logo1: require('graphcool-styles/icons/fill/angularLogo.svg'),
     logo2: require('graphcool-styles/icons/fill/apolloLogo.svg'),
   },
   {
     name: 'Vue + Apollo',
-    path: 'vue-apollo-instagram-quickstart',
-    description: 'Vue.js + Apollo',
+    path: 'vue-graphql',
+    subfolder: 'quickstart-with-apollo',
     logo1: require('graphcool-styles/icons/fill/vueLogo.svg'),
     logo2: require('graphcool-styles/icons/fill/apolloLogo.svg'),
   },

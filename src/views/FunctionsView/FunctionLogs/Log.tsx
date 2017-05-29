@@ -77,7 +77,7 @@ export default class LogComponent extends React.Component<Props, State> {
           }
           td:last-child {
             @p: .pr25;
-            width: 120px;
+            width: 140px;
           }
           .ago {
             @p: .green, .fw6, .f14, .tr;
@@ -124,7 +124,3 @@ export default class LogComponent extends React.Component<Props, State> {
     })
   }
 }
-
-// tslint:disable-line
-const msg = '{"data":{"allTarget2s":[{"id":"cirs28jtt16m10114amn0mim5","payload":"#prisma","active":false,"target":null},{"id":"cirs28qzh16md0114pw7pkcgk","payload":"art","active":false,"target":null},{"id":"cirs2dpot16w60114ye8srpfz","payload":"#art","active":true,"target":{"completedAt":"2016-08-31T09:51:10.271Z","result":"Successfully followed user https://twitter.com/VigilanteArtist","id":"cisiq2p5a4rrr0126ixlbyuzp","complete":true,"payloadUrl":"https://twitter.com/VigilanteArtist"}},{"id":"cirs2dvvk16wi0114dwtmzs93","payload":"deepstyle","active":false,"target":null},{"id":"ciucj6xw0bamt01915wqt7qlp","payload":"some playload","active":true,"target":{"completedAt":null,"result":"","id":"ciucj6xw0bamq0191xdgptmnc","complete":false,"payloadUrl":"http://twitter.com/user/name"}}]}}'
-const message = JSON.stringify(JSON.parse(msg), null, 2)

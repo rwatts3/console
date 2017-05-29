@@ -16,11 +16,13 @@ interface Props {
   children?: any
   className?: string
   onClick?: () => void
+  title?: string
 }
 
 export function A(
   {
-    hideArrow, primary, button, green, white, gray, greenOnWhite, arrowToBottom, target, children, className, onClick,
+    hideArrow, primary, button, green, white, gray, greenOnWhite, arrowToBottom,
+    target, children, className, onClick, title,
   }: Props,
 ) {
   const isExternal = target && (target.startsWith('http') || target.startsWith('mailto'))
@@ -33,6 +35,7 @@ export function A(
         },
       )}
       onClick={onClick}
+      title={title || ''}
     >
       <style jsx={true}>{`
         .link {
@@ -212,7 +215,7 @@ export function A(
 }
 
 export function Button(
-  {hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className, onClick}: Props,
+  {hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className, onClick, title}: Props,
 ) {
   return (
 
@@ -227,6 +230,7 @@ export function Button(
       target={target}
       className={className}
       onClick={onClick}
+      title={title}
     >
       {children || null}
     </A>

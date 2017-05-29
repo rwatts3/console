@@ -52,8 +52,6 @@ const vendor = [
 
 module.exports = {
   entry: {
-    // create two library bundles, one with jQuery and
-    // another with Angular and related libraries
     vendor
   },
 

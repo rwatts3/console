@@ -2,6 +2,7 @@ import * as React from 'react'
 import Info from '../../../components/Info'
 import * as cn from 'classnames'
 import {Link} from 'react-router'
+import DocsPopup from '../../../components/DocsPopup'
 
 interface Props {
   params: any
@@ -44,17 +45,35 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
             @p: .underline, .ml4;
           }
         `}</style>
-        <div className='flex itemsCenter'>
-          <h1>Permissions</h1>
-          <Info>
-            You can read more about Permissions
-            <a
-              href='https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/'
-              target='_blank'
-            >
-              in the docs
-            </a>
-          </Info>
+
+        <div className='flex justifyBetween'>
+          <div className='flex itemsCenter'>
+            <h1>Permissions</h1>
+          </div>
+          <div className='z999'>
+            <DocsPopup
+              offsetX={16}
+              offsetY={16}
+              resources={[
+                {
+                  title: 'Overview over Permissions',
+                  type: 'guide',
+                  link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+                },
+                {
+                  title: 'How to define Permission Queries',
+                  type: 'guide',
+                  link: 'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
+                },
+                {
+                  title: 'Design Patterns',
+                  type: 'article',
+                  link: 'https://www.graph.cool/docs/tutorials/authorization-content-management-system-miesho4goo/',
+                },
+              ]}
+              videoId='l1KEssmlhPA'
+            />
+          </div>
         </div>
         <div className='tabs'>
           <Link className={cn('tab', {active: activeTab === 0})} to={`/${params.projectName}/permissions`}>

@@ -5,9 +5,9 @@ import {Icon, $v} from 'graphcool-styles'
 export interface Example {
   name: string
   path: string
-  description: string
   logo1: string
   logo2: string
+  subfolder: string
 }
 
 interface Props {
@@ -40,6 +40,9 @@ export default function ExampleChooser({examples, activeIndex, onChangeExample}:
         .logos {
           @p: .flex, .justifyBetween, .w100, .itemsCenter;
         }
+        .label {
+          @p: .flexAuto, .flex, .itemsCenter, .justifyCenter;
+        }
         span {
           @p: .f16, .fw6, .blue, .tc;
         }
@@ -56,7 +59,9 @@ export default function ExampleChooser({examples, activeIndex, onChangeExample}:
             <Icon src={example.logo1} width={50} height={50} color={index === activeIndex ? $v.white : $v.blue} />
             <Icon src={example.logo2} width={50} height={50} color={index === activeIndex ? $v.white : $v.blue}/>
           </div>
-          <span>{example.description}</span>
+          <div className='label'>
+            <span>{example.name}</span>
+          </div>
         </div>
       ))}
     </div>

@@ -31,7 +31,8 @@ export default class OnboardingFinale extends React.Component<Props, State> {
       <div className='onboarding-finale'>
         <style jsx>{`
           .onboarding-finale {
-            @p: .w100, .pt60;
+            @p: .w100, .pt60, .overflowAuto;
+            max-height: calc(100vh - 50px);
           }
           h1 {
             @p: .hf32, .fw6, .darkBlue, .flex, .itemsCenter, .justifyCenter;
@@ -145,7 +146,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             target='_blank'
           >
             <Icon src={require('assets/icons/twitter.svg')} color={$v.white} width={32} height={32} />
-            <span>Tweet something</span>
+            <span>Tweet about it</span>
           </a>
         </div>
         <div className='resources'>

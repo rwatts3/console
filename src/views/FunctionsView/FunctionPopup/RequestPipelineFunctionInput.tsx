@@ -41,7 +41,6 @@ interface Props {
   query: string
   projectId: string
   sssModelName: string
-  onTestRun?: () => void
   showErrors?: boolean
   updateFunction: () => Promise<any>
   location: any
@@ -88,18 +87,6 @@ export interface TestError {
   stack: string
 }
 
-const modalStyling = {
-  ...fieldModalStyle,
-  content: {
-    ...fieldModalStyle.content,
-    width: window.innerWidth,
-  },
-  overlay: {
-    ...fieldModalStyle.overlay,
-    backgroundColor: 'rgba(23,42,58,.98)',
-  },
-}
-
 class RequestPipelineFunctionInput extends React.Component<Props, State> {
   private logsRef: any
   private lastQuery: string
@@ -131,9 +118,22 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       responses: [],
       loading: false,
     }
+    global['i'] = this
   }
   render() {
     const fullscreen = this.props.location.pathname.endsWith('fullscreen')
+
+    const modalStyling = {
+      ...fieldModalStyle,
+      content: {
+        ...fieldModalStyle.content,
+        width: window.innerWidth,
+      },
+      overlay: {
+        ...fieldModalStyle.overlay,
+        backgroundColor: 'rgba(23,42,58,.98)',
+      },
+    }
 
     if (fullscreen) {
       return (
@@ -396,7 +396,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
           <div className={cn('input', 'sss')}>
             <div className='sss-input'>
               {eventType === 'SSS' && !this.props.editing && (
-                <StepMarker style={{left: -29, top: -1, position: 'relative'}}>2</StepMarker>
+                <StepMarker style={{left: -12, top: -1, position: 'relative'}}>2</StepMarker>
               )}
               <Toggle
                 choices={[inputTitle, 'Example Event']}
@@ -450,11 +450,13 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                   {eventType === 'SSS' && '3'}
                 </StepMarker>
               )}
-              <Toggle
-                choices={['Inline Code', 'Webhook']}
-                activeChoice={isInline ? 'Inline Code' : 'Webhook'}
-                onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
-              />
+              <div className='ml10'>
+                <Toggle
+                  choices={['Inline Code', 'Webhook']}
+                  activeChoice={isInline ? 'Inline Code' : 'Webhook'}
+                  onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
+                />
+              </div>
             </div>
           </div>
           <div className='body'>
@@ -562,30 +564,36 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
   }
 
   private runTest = () => {
-    this.firstTest = false
-    this.props.updateFunction()
-      .then(() => {
-        const {webhookUrl, isInline} = this.props
-        const {exampleEvent} = this.state
-        this.setLoading(true)
-        return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
-          method: 'post',
-          body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
-        })
-          .then(res => res.json())
-          .then((res: any) => {
-            this.setState(
-              state => {
-                return {
-                  ...state,
-                  responses: [res].concat(state.responses),
-                }
-              },
-              this.scrollUp,
-            )
-            this.setLoading(false)
-          })
+    const _runTest = () => {
+      const {webhookUrl, isInline} = this.props
+      const {exampleEvent} = this.state
+      this.setLoading(true)
+      return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
+        method: 'post',
+        body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
       })
+        .then(res => res.json())
+        .then((res: any) => {
+          this.setState(
+            state => {
+              return {
+                ...state,
+                responses: [res].concat(state.responses),
+              }
+            },
+            this.scrollUp,
+          )
+          this.setLoading(false)
+        })
+    }
+
+    this.firstTest = false
+    if (this.props.isInline) {
+      this.props.updateFunction()
+        .then(_runTest)
+    } else {
+      _runTest()
+    }
   }
 
   private setLoading(loading: boolean) {

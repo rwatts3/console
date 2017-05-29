@@ -147,6 +147,18 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('resize', this.rerender)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.rerender)
+  }
+
+  rerender = () => {
+    this.forceUpdate()
+  }
+
   render() {
     const {models, schema, functions, location} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, loading, showTest, sssModelName} = this.state
@@ -263,7 +275,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                     fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
                   }
                   operation={fn.operation}
-                  onTestRun={this.showTestPopup}
                   showErrors={this.state.showErrors}
                   updateFunction={this.updateExtendFunction}
                   location={this.props.location}
@@ -289,16 +300,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 <Loading />
               </div>
             )}
-            <TestPopup
-              onRequestClose={this.closeTestPopup}
-              webhookUrl={((fn.webhookUrl && fn.webhookUrl.length > 0 && fn.webhookUrl) || fn._webhookUrl)}
-              isInline={isInline}
-              isOpen={showTest}
-              schema={schema}
-              eventType={eventType}
-              binding={fn.binding}
-              sssModelName={sssModelName}
-            />
           </div>
         </ModalDocs>
       </Modal>
@@ -317,23 +318,11 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const {editing, eventType} = this.state
     if (editing || (this.state.eventType === 'RP' && index === 2) || (this.state.eventType === 'SSS' && index === 1)) {
       return (
-        <TestButton onClick={this.openFullscreen}>Run &amp; Edit</TestButton>
+        <TestButton onClick={this.openFullscreen}>Fullscreen Mode</TestButton>
       )
     }
 
     return null
-  }
-
-  private showTestPopup = () => {
-    // this.setLoading(true)
-    // this.createExtendFunction()
-    //   .then((res: any) => {
-    //     const {url, fn} = res
-    //     this.update(updateWebhookUrl)(url)
-    //     this.update(updateAuth0Id)(fn)
-    //     this.setLoading(false)
-    //     this.setState({showTest: true} as FunctionPopupState)
-    //   })
   }
 
   private openFullscreen = () => {

@@ -319,7 +319,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
               )
             })
           },
-          1500,
+          5000,
         )
       }
     } else {
