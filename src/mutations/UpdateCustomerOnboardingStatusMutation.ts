@@ -27,7 +27,6 @@ export default class UpdateCustomerOnboardingStatusMutation extends Relay.Mutati
           systemBridge
           gettingStartedSkipped
           gettingStartedCompleted
-          
         }
       }
     `

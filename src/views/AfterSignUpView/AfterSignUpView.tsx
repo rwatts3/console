@@ -21,7 +21,7 @@ const CustomInput = styled.input`
   -webkit-text-fill-color: transparent;
   width: 620px;
   line-height: 1.5;
- 
+
   &::-webkit-input-placeholder {
     color: ${$v.gray30};
     text-shadow: none;

@@ -37,14 +37,14 @@ export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, 
             }
             migrationMessages {
               name
-              type 
+              type
               action
               description
               subDescriptions {
                 action
                 description
                 name
-                type 
+                type
               }
             }
             project {

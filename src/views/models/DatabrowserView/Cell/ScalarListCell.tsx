@@ -82,7 +82,7 @@ const Item = styled.div`
     opacity: 0;
     transition: .3s opacity;
   }
-  
+
   &:hover {
     i {
       opacity: 1;

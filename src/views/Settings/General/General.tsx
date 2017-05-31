@@ -42,7 +42,7 @@ export default Relay.createContainer(General, {
         ${DangerZone.getFragment('viewer')},
         project: projectByName(projectName: $projectName) {
           ${DangerZone.getFragment('project')},
-          ${ProjectInfo.getFragment('project')}  
+          ${ProjectInfo.getFragment('project')}
           name
         }
       }

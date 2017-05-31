@@ -148,7 +148,7 @@ export default Relay.createContainer(IntegrationsCardGrid, {
           edges {
             node {
               isEnabled
-              type 
+              type
             }
           }
         }

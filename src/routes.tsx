@@ -58,6 +58,8 @@ import {
 import { FunctionLogs } from './views/FunctionsView/FunctionLogs/FunctionLogs'
 import CliInfoPopup from './views/SchemaView/CliInfoPopup'
 
+import {route as testground} from 'testground'
+
 const ViewerQuery = {
   viewer: (Component, variables) => Relay.QL`
     query {
@@ -153,6 +155,7 @@ const render = ({error, props, routerProps, element, ...rest}) => {
 export default (
   <Route path='/' component={RootView}>
     <IndexRoute component={RootRedirectView} queries={ViewerQuery} render={render}/>
+    {testground}
     <Route path='token' component={TokenRedirectView}/>
     <Route path='cli/auth' component={CLIAuthView} onEnter={CLIAuthView.routeRedirectWhenAuthenticated}/>
     <Route path='cli/auth/success' component={CLIAuthSuccessView}/>
