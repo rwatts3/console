@@ -178,6 +178,7 @@ class AfterSignUpView extends React.Component<Props, State> {
                 onChange={this.onChange}
                 onKeyDown={this.onKeyDown}
                 type='text'
+                data-test='source'
               />
             </CustomInputWrapper>
           </div>
@@ -198,6 +199,7 @@ class AfterSignUpView extends React.Component<Props, State> {
                 },
               )}
               onClick={this.gotoConsole}
+              data-test='open-console'
             >
               Open Console
             </div>

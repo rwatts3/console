@@ -74,7 +74,7 @@
     "faker": "^4.1.0",
     "file-saver": "^1.3.3",
     "graphcool-graphiql": "1.7.7",
-    "graphcool-metrics": "0.2.3",
+    "graphcool-metrics": "0.2.5",
     "graphcool-styles": "0.1.22",
     "graphiql": "^0.8.0",
     "graphql": "0.8.2",

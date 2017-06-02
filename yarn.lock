@@ -3133,9 +3133,9 @@ graphcool-graphiql@1.7.7:
     svg-loader "^0.0.2"
     svgo-loader "^1.1.2"
 
-graphcool-metrics@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.2.3.tgz#12152d0d7a78b07593f402b4a97ca48c266f01ff"
+graphcool-metrics@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/graphcool-metrics/-/graphcool-metrics-0.2.5.tgz#4055581c5d3a109f3bcd18145893be17d31b26f3"
 
 graphcool-styles@0.1.22:
   version "0.1.22"
