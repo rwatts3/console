@@ -22,7 +22,7 @@ interface Props {
 export function A(
   {
     hideArrow, primary, button, green, white, gray, greenOnWhite, arrowToBottom,
-    target, children, className, onClick, title,
+    target, children, className, onClick, title, ...rest,
   }: Props,
 ) {
   const isExternal = target && (target.startsWith('http') || target.startsWith('mailto'))
@@ -36,6 +36,7 @@ export function A(
       )}
       onClick={onClick}
       title={title || ''}
+      {...rest}
     >
       <style jsx={true}>{`
         .link {
@@ -215,7 +216,9 @@ export function A(
 }
 
 export function Button(
-  {hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className, onClick, title}: Props,
+  {
+    hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className, onClick, title, ...rest,
+  }: Props,
 ) {
   return (
 
@@ -231,6 +234,7 @@ export function Button(
       className={className}
       onClick={onClick}
       title={title}
+      {...rest}
     >
       {children || null}
     </A>

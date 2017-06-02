@@ -37,7 +37,7 @@ const ToggleInput = styled.input`
   &:checked + div {
     background-color: ${variables.green};
   }
-  
+
   &:checked + div:before {
     transform: translateX(19px);
   }

@@ -63,7 +63,7 @@ class EditModelModal extends React.Component<Props, {}> {
 export default Relay.createContainer(EditModelModal, {
   fragments: {
     model: () => Relay.QL`
-      
+
       fragment on Model {
         id
         name

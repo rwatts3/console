@@ -63,7 +63,7 @@ class IntroPopup extends React.Component<Props, State> {
             Let’s get started by building a backend for a simple Instagram clone. To keep our example light,
             our Instagram posts only consist of a picture and some hashtags.
           </p>
-          <Button button onClick={this.props.nextStep}>
+          <Button button onClick={this.props.nextStep} data-test='start-onboarding'>
             Start Onboarding
           </Button>
           <div className='skip' onClick={this.props.skip}>Skip</div>

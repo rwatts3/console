@@ -24,7 +24,7 @@ export default class AddPermissionMutation extends Relay.Mutation<Props, Respons
   getFatQuery () {
     return Relay.QL`
       fragment on AddModelPermissionPayload {
-        modelPermissionEdge 
+        modelPermissionEdge
         model
       }
     `

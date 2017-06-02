@@ -70,7 +70,7 @@ const Arrow = styled.div`
     stroke: ${variables.white};
     stroke-width: 4px;
   }
-  
+
   border-radius: 100%;
   background-color: rgb(16,33,47);
   width: 26px;

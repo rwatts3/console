@@ -126,11 +126,12 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
               className={cn('flex flexColumn justifyCenter outer-element', {disabled})}
               tabIndex={0}
               onFocus={() => onChange(i, choice)}
+              onClick={() => !disabled && onChange(i, choice)}
+              data-test={choice === 'String' ? 'string-type' : ''}
             >
               <div
                 className={cn('element', {selected: selectedIndex === i})}
                 key={i}
-                onClick={() => !disabled && onChange(i, choice)}
                 style={{
                   backgroundColor: selectedIndex === i ? activeBackgroundColor : inactiveBackgroundColor,
                   color: selectedIndex === i ? 'white' : inactiveTextColor,

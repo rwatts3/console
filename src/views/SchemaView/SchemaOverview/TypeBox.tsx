@@ -328,7 +328,11 @@ class TypeBox extends React.Component<Props,State> {
                   horizontal='left'
                   zIndex={2}
                 >
-                  <Link to={`/${projectName}/schema/${model.name}/create`} onClick={this.handleCreateFieldClick}>
+                  <Link
+                    to={`/${projectName}/schema/${model.name}/create`}
+                    onClick={this.handleCreateFieldClick}
+                    data-test={model.name === 'Post' ? 'add-post-field' : ''}
+                  >
                     <div className='add-button'>
                       <Icon
                         src={require('assets/icons/addField.svg')}
