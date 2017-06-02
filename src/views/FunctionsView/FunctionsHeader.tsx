@@ -52,7 +52,7 @@ export default function FunctionsHeader({params}: Props) {
           />
           <span>Functions</span>
         </div>
-        <Link to={`/${params.projectName}/functions/create`}>
+        <Link to={`/${params.projectName}/functions/create`} data-test='create-function-button'>
           <div className='btn'>
             <Icon
               src={require('graphcool-styles/icons/stroke/addFull.svg')}

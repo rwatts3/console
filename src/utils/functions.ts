@@ -13,5 +13,5 @@ export function getEventTypeFromFunction(fn: ServerlessFunction | null): EventTy
     return 'SSS'
   }
 
-  return 'RP'
+  return 'SSS'
 }

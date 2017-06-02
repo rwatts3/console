@@ -13,13 +13,14 @@ interface Props {
   onClick?: () => void
   small?: boolean
   customIcon?: any
+  [key: string]: any
 }
 
 export default class SideNavElement extends React.Component<Props, null> {
   render() {
-    const {link, active, iconSrc, text, size, minimalHighlight, onClick, small, customIcon} = this.props
+    const {link, active, iconSrc, text, size, minimalHighlight, onClick, small, customIcon, ...rest} = this.props
     return (
-      <Link to={link} onClick={onClick} title={text}>
+      <Link to={link} onClick={onClick} title={text} {...rest}>
         <div
           className={cn(
             'side-nav-element', {

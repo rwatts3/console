@@ -198,7 +198,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
           )}
           <div className='setting'>
             <Checkbox checked={userType === 'AUTHENTICATED'} onToggle={toggleUserType}>
-              <div className='label'>Authentication required</div>
+              <div className='label' data-test='button-auth-required'>Authentication required</div>
               <Icon
                 src={require('graphcool-styles/icons/stroke/lock.svg')}
                 color={$v.gray40}

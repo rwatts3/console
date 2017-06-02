@@ -89,6 +89,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           onChange={this.nameChange}
           placeholder='Set a function name...'
           autoFocus
+          data-test='function-name-input'
         />
         {showErrors && (!name || name.length === 0) && (
           <div className='error'>Please give your function a name ⤴</div>

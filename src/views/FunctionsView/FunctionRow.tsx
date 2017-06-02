@@ -142,7 +142,7 @@ class FunctionRow extends React.Component<Props, State> {
           </div>
         </td>
         <td>
-          <Link to={link}>
+          <Link to={link} data-test={eventType === 'RP' ? 'edit-rp-function-button' : 'edit-sss-function-button'}>
             <span className='name'>{fn.name}</span>
             <span className='badge'>{isInline ? 'Inline' : 'Webhook'}</span>
           </Link>
@@ -289,9 +289,6 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
             name
           }
           operation
-        }
-        ... on ServerSideSubscriptionFunction {
-          query
         }
       },
     `,

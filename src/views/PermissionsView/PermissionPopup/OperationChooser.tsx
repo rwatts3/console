@@ -68,9 +68,6 @@ export default class OperationChooser extends React.Component<Props, {}> {
           .operation-button {
             @p: .nowrap, .flex, .itemsCenter, .relative, .mh16, .pointer, .pv6;
           }
-          .operation-button:not(.active):hover {
-            @p: .bgBlack04;
-          }
           .operation-button.active {
             @p: .bgBlue, .br2, .ph10, .pv8;
             top: 0;
@@ -102,6 +99,7 @@ export default class OperationChooser extends React.Component<Props, {}> {
               key={operation.operation}
               className={cx('operation-button', {active: operation.operation === selectedOperation})}
               onClick={() => setOperation(operation.operation as Operation)}
+              data-test={`choose-operation-${operation.operation}`}
             >
               <Icon
                 stroke={true}

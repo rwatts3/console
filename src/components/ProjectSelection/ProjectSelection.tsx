@@ -185,6 +185,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
           <div
             onClick={this.toggle}
             className={cx($p.h100, $p.w100, $p.f20, $p.flex, $p.itemsCenter)}
+            data-test='logo'
           >
             <div
             className={cx($p.bgGreen, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer, $p.flexFixed)}
@@ -334,17 +335,18 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 ))}
                 <AddProject
                   className={cx(
-                      $p.absolute,
-                      $p.top38,
-                      $p.right25,
-                      $p.lhSolid,
-                      $p.ba,
-                      $p.brPill,
-                      $p.bWhite,
-                      $p.pointer,
-                      $p.o80,
-                    )}
+                    $p.absolute,
+                    $p.top38,
+                    $p.right25,
+                    $p.lhSolid,
+                    $p.ba,
+                    $p.brPill,
+                    $p.bWhite,
+                    $p.pointer,
+                    $p.o80,
+                  )}
                   onClick={this.props.add}
+                  data-test='add-project-button'
                 >
                   <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
                 </AddProject>

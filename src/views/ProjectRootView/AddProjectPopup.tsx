@@ -176,6 +176,7 @@ class AddProjectPopup extends React.Component<Props, State> {
                 }
               }}
               autoFocus
+              data-test='project-name-input'
             />
             {showError && error && (
               <div className='error'>
@@ -199,7 +200,13 @@ class AddProjectPopup extends React.Component<Props, State> {
           )}
           <div className='footer'>
             <div className='button cancel' onClick={onRequestClose}>Cancel</div>
-            <div className={'button green' + (error ? ' disabled' : '')} onClick={this.addProject}>Ok</div>
+            <div
+              className={'button green' + (error ? ' disabled' : '')}
+              onClick={this.addProject}
+              data-test='submit-add-project-button'
+            >
+              Ok
+            </div>
           </div>
           {loading && (
             <div className='loading'>
