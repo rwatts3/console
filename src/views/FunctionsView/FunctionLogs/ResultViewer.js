@@ -24,7 +24,8 @@ export class ResultViewer extends React.Component {
     value: PropTypes.string,
     editorTheme: PropTypes.string,
     editable: PropTypes.bool,
-    onChange: PropTypes.function
+    onChange: PropTypes.func,
+    onClick: PropTypes.func
   }
 
   componentDidMount() {
@@ -91,6 +92,11 @@ export class ResultViewer extends React.Component {
       }
     }
   }
+  _onClick = (e) => {
+    if (this.props.onClick) {
+      this.props.onClick(e);
+    }
+  }
 
   shouldComponentUpdate(nextProps) {
     return this.props.value !== nextProps.value;
@@ -104,6 +110,7 @@ export class ResultViewer extends React.Component {
     return (
       <div
         className="result-window"
+        onClick={this._onClick}
         ref={node => { this._node = node; }}
       />
     );

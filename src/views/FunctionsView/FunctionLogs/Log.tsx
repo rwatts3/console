@@ -25,18 +25,29 @@ export default class LogComponent extends React.Component<Props, State> {
   }
   renderMessage(message) {
     return (
-      <div className='graphiql-container' onClick={this.ignoreClick}>
+      <div className='graphiql-container'>
         <style jsx>{`
           .graphiql-container :global(div.CodeMirror) {
             background: transparent;
+            padding-left: 0;
           }
           .graphiql-container :global(div.CodeMirror-lines) {
             @p: .pa0;
           }
         `}</style>
-        <ResultViewer
-          value={message}
-        />
+        <div className='flex itemsBaseline'>
+          <Icon
+            src={require('graphcool-styles/icons/fill/triangle.svg')}
+            color={$v.white80}
+            width={6}
+            height={6}
+            rotate={90}
+          />
+          <ResultViewer
+            value={message}
+            onClick={this.ignoreClick}
+          />
+        </div>
       </div>
     )
   }
