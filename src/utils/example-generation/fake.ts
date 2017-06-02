@@ -1,5 +1,5 @@
 // import * as faker from 'faker'
-const faker = require('faker')
+const faker = require('faker/locale/en_US')
 import cuid from 'cuid'
 
 export function getRandomInt(min: number, max: number) {
