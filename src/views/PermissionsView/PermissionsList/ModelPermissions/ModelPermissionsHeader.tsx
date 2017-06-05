@@ -59,7 +59,11 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
           </div>
         </div>
         <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
-          <Link className={cx($p.ml25)} to={`/${params.projectName}/permissions/${model.name}/create`}>
+          <Link
+            className={cx($p.ml25)}
+            to={`/${params.projectName}/permissions/${model.name}/create`}
+            data-test={`new-permission-${model.name}`}
+          >
             <div
               className={cx(
                 $p.f14,

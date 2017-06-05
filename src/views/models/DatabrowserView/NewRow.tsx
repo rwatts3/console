@@ -120,7 +120,7 @@ class NewRow extends React.Component<Props, State> {
             zIndex={2000}
             horizontal='right'
           >
-            <button onClick={this.add}>
+            <button onClick={this.add} data-test='add-node'>
               <Icon
                 width={24}
                 height={24}
@@ -138,6 +138,7 @@ class NewRow extends React.Component<Props, State> {
     <div
       key={field.id}
       style={{width: this.props.columnWidths[field.name]}}
+      data-test={`new-row-cell-${field.name}`}
     >
       <Cell
         needsFocus={this.state.shouldFocus ? index === inputIndex : false}

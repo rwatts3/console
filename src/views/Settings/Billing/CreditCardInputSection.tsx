@@ -49,21 +49,31 @@ interface Props {
 
 class CreditCardInputSection extends React.Component<Props, State> {
 
-  state = {
-    creditCardNumber: '',
-    cardHolderName: '',
-    expirationDate: '',
-    cpc: '',
-    creditCardDetailsValid: false,
-    displayAddressDataInput: false,
+  constructor(props) {
+    super(props)
 
-    addressLine1: '',
-    addressLine2: '',
-    zipCode: '',
-    state: '',
-    city: '',
-    country: '',
-    addressDataValid: false,
+    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
+      return edge.node.name === this.props.projectName
+    }).node
+
+    const creditCard = project.projectBillingInformation.creditCard
+
+    this.state = {
+      creditCardNumber: '',
+      cardHolderName: '',
+      expirationDate: '',
+      cpc: '',
+      displayAddressDataInput: false,
+
+      addressLine1: '',
+      addressLine2: '',
+      zipCode: '',
+      state: '',
+      city: '',
+      country: '',
+      creditCardDetailsValid: !!creditCard,
+      addressDataValid: !!creditCard,
+    }
   }
 
   render() {
@@ -422,6 +432,9 @@ class CreditCardInputSection extends React.Component<Props, State> {
           },
         )
       }
+    } else {
+      console.log('Not valid')
+      console.log(this.state.creditCardDetailsValid && this.state.addressDataValid)
     }
   }
 

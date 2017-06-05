@@ -102,6 +102,7 @@ module.exports = {
       template: 'src/index.html',
       templateContent: templateContent(),
     }),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
     new webpack.optimize.CommonsChunkPlugin('vendor'),
     new webpack.LoaderOptionsPlugin({

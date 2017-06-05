@@ -212,6 +212,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             size={16}
             minimalHighlight
             small={!this.props.expanded}
+            data-test='sidenav-databrowser'
           />
           {location.pathname.endsWith('databrowser') && (
             this.renderModels()
@@ -222,6 +223,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             text='Permissions'
             active={this.props.location.pathname.includes('/permissions')}
             small={!this.props.expanded}
+            data-test='sidenav-permissions'
           />
           <SideNavElement
             link={`/${project.name}/actions`}
@@ -243,6 +245,7 @@ export class SideNav extends React.PureComponent<Props, State> {
             text='Functions'
             active={this.props.location.pathname.includes('/functions')}
             small={!this.props.expanded}
+            data-test='sidenav-functions'
           />
         </div>
         {this.renderPlayground()}
@@ -419,6 +422,7 @@ export class SideNav extends React.PureComponent<Props, State> {
                     [$p.bgWhite07]: modelActive(model),
                   },
                 )}
+                data-test={`sidenav-databrowser-model-${model.name}`}
               >
                 <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
                   <div title={model.name}>

@@ -76,7 +76,11 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
       <Info
         top
         customTip={
-          <div className='step' onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}>
+          <div
+            className='step'
+            onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}
+            data-test='transform-argument-circle'
+          >
             <Circle active={argActive}/>
             <div className={cn('label', {active: argActive, taken: argTaken})}>TRANSFORM _ARGUMENT</div>
           </div>
@@ -111,7 +115,11 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
         <Arrow />
       </div>
       <Info top customTip={
-        <div className='step' onClick={() => onChange('PRE_WRITE')}>
+        <div
+          className='step'
+          onClick={() => onChange('PRE_WRITE')}
+          data-test='pre-write-circle'
+        >
           <Circle active={preActive}/>
           <div className={cn('label', {active: preActive, taken: preTaken})}>PRE_WRITE</div>
         </div>
@@ -143,7 +151,11 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
       }>Here the data is actually written to the database.</Info>
       <Arrow />
       <Info top customTip={
-        <div className='step' onClick={() => onChange('TRANSFORM_PAYLOAD')}>
+        <div
+          className='step'
+          onClick={() => onChange('TRANSFORM_PAYLOAD')}
+          data-test='transform-payload-circle'
+        >
           <Circle active={payloadActive}/>
           <div className={cn('label', {active: payloadActive, taken: payloadTaken})}>TRANSFORM _PAYLOAD</div>
         </div>

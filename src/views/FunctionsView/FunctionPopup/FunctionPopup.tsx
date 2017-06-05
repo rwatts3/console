@@ -747,7 +747,7 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
             edges {
               node {
                 id
-                ... on RequestPipelineMutationFunction {
+                ... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
                   id
                   binding
                   model {

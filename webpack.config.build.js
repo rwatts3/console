@@ -8,6 +8,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HappyPack = require('happypack')
 const UglifyJsParallelPlugin = require('webpack-uglify-parallel')
 const os = require('os')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 module.exports = {
   devtool: 'source-map',
@@ -111,6 +112,9 @@ module.exports = {
       },
       sourceMap: true,
     }),
+    // only load en locale for moment see https://github.com/moment/moment/issues/2517#issuecomment-185836313
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+    new LodashModuleReplacementPlugin,
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop'),
     new webpack.optimize.CommonsChunkPlugin('vendor'),
     new webpack.LoaderOptionsPlugin({

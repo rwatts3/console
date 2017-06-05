@@ -31,7 +31,7 @@ export default class Step0 extends React.Component<Props, State> {
   render() {
     const {eventType, onChangeEventType, sssModelName, onChangeSSSModel, models} = this.props
     const choices = [
-      <div className='flex itemsCenter'>
+      <div className='flex itemsCenter' data-test='choose-sss'>
         <Icon
           src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
           width={40}
@@ -42,7 +42,7 @@ export default class Step0 extends React.Component<Props, State> {
           Server-Side Subscription
         </div>
       </div>,
-      <div className='flex itemsCenter'>
+      <div className='flex itemsCenter' data-test='choose-rp'>
         <Icon
           src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
           width={40}
@@ -54,7 +54,7 @@ export default class Step0 extends React.Component<Props, State> {
         </div>
       </div>,
       <Info customTip={
-        <div className='flex itemsCenter'>
+        <div className='flex itemsCenter' data-test='choose-cron'>
           <Icon
             src={require('graphcool-styles/icons/fill/cron.svg')}
             width={20}
