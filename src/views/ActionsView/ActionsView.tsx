@@ -43,7 +43,8 @@ class ActionsView extends React.Component<Props, State> {
     })
     tracker.track(ConsoleEvents.MutationCallbacks.viewed())
     graphcoolAlert(
-      `Mutation callbacks are deprecated. Please use the new and more powerful server-side-subscriptions instead.`,
+      `Mutation callbacks are deprecated. Please use the new and more powerful server-side-subscriptions instead.
+      They're still working until the 6th August 2017.`,
       'Deprecation Warning',
     )
   }
