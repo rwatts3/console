@@ -114,6 +114,7 @@ export class Cell extends React.PureComponent<Props, State> {
           this.startEditing()
         }}
         ref='container'
+        data-test={'cell-' + field.name}
       >
         <div className={cx(classes.border, particles.flexAuto)}>
           {this.renderContent()}
