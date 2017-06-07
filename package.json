@@ -11,7 +11,7 @@
     "test": "npm run lint && jest",
     "test-quick": "jest",
     "test-watch": "jest --watch",
-    "test-integration": "cd integration-tests; tsc; ava dist/test.js",
+    "test-integration": "cd integration-tests; tsc; ava dist/test.js -s",
     "dll": "webpack --config dll.webpack.config.js",
     "analyze": "source-map-explorer dist/app.*"
   },
