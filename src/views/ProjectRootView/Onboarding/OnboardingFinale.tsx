@@ -127,6 +127,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
           <div
             className='close'
             onClick={this.props.nextStep}
+            data-test='close-popup'
           >
             <Icon
               src={require('graphcool-styles/icons/stroke/cross.svg')}
