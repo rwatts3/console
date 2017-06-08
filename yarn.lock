@@ -1896,7 +1896,7 @@ chrome-remote-interface@^0.23.0:
     commander "2.1.x"
     ws "2.0.x"
 
-chromeless@0.1.9:
+chromeless@^0.1.9:
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.1.9.tgz#abdd56790abdc9ed78f5d885305914c51ba277e9"
   dependencies:
