@@ -9,7 +9,7 @@ export default (): Promise<any> =>  {
 
   return chromeless
     .goto(CONSOLE_URL + '/signup')
-    .wait(3000)
+    .wait(1000)
     .wait('button[type="submit"]')
     .type(`tim.suchanek+${cuid()}@gmail.com`, 'input[type="email"]')
     .type(`asdfasdf`, 'input[type="password"]')
