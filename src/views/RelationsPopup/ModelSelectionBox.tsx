@@ -20,7 +20,6 @@ interface Props {
   forbiddenFieldNames: string[]
   isRequired: boolean
   didChangeIsRequired: (isRequired: boolean) => void
-  isBeta: boolean
   singleCardinality: boolean
   // messagesForBreakingChange: string[]
 }
@@ -128,19 +127,17 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
               didChangeFieldName={this.props.didChangeFieldName}
               forbiddenFieldNames={this.props.forbiddenFieldNames}
             />
-            {this.props.isBeta && (
-              this.props.singleCardinality && (
-                <FieldHorizontalSelect
-                  activeBackgroundColor={$v.blue}
-                  inactiveBackgroundColor='#F5F5F5'
-                  choices={['required', 'optional']}
-                  selectedIndex={this.props.isRequired ? 0 : 1}
-                  inactiveTextColor={$v.gray30}
-                  onChange={(index) => this.props.didChangeIsRequired([true, false][index])}
-                  small
-                  className='required-relation-chooser'
-                />
-              )
+            {this.props.singleCardinality && (
+              <FieldHorizontalSelect
+                activeBackgroundColor={$v.blue}
+                inactiveBackgroundColor='#F5F5F5'
+                choices={['required', 'optional']}
+                selectedIndex={this.props.isRequired ? 0 : 1}
+                inactiveTextColor={$v.gray30}
+                onChange={(index) => this.props.didChangeIsRequired([true, false][index])}
+                small
+                className='required-relation-chooser'
+              />
             )}
           </BreakingChangeIndicator>
         </div>

@@ -253,7 +253,6 @@ class RelationPopup extends React.Component<Props, State> {
                       rightModelIsBreakingChange={rightModelIsBreakingChange}
                       forbiddenFieldNamesForLeftModel={forbiddenFieldNamesForLeftModel}
                       forbiddenFieldNamesForRightModel={forbiddenFieldNamesForRightModel}
-                      isBeta={isBeta}
                     />
                     :
                     <SetMutation

@@ -31,7 +31,6 @@ interface Props {
   rightModelIsBreakingChange: boolean
   forbiddenFieldNamesForLeftModel: string[]
   forbiddenFieldNamesForRightModel: string[]
-  isBeta: boolean
 }
 
 export default class ModelSelection extends React.Component<Props, {}> {
@@ -75,7 +74,6 @@ export default class ModelSelection extends React.Component<Props, {}> {
             forbiddenFieldNames={this.props.forbiddenFieldNamesForLeftModel}
             isRequired={this.props.fieldOnLeftModelIsRequired}
             didChangeIsRequired={this.props.didChangeFieldOnLeftModelIsRequired}
-            isBeta={this.props.isBeta}
             singleCardinality={!this.props.selectedCardinality.endsWith('MANY')}
           />
           <div className='greenLine' />
@@ -110,7 +108,6 @@ export default class ModelSelection extends React.Component<Props, {}> {
             forbiddenFieldNames={this.props.forbiddenFieldNamesForRightModel}
             isRequired={this.props.fieldOnRightModelIsRequired}
             didChangeIsRequired={this.props.didChangeFieldOnRightModelIsRequired}
-            isBeta={this.props.isBeta}
             singleCardinality={!this.props.selectedCardinality.startsWith('MANY')}
           />
         </div>
