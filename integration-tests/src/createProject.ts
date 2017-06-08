@@ -12,6 +12,7 @@ export default async (cookies: any[]): Promise<any> =>  {
     .setCookies(cookies, CONSOLE_URL)
     .goto(CONSOLE_URL)
     .wait(3000)
+    .wait('div[data-test="logo"]')
     .click('div[data-test="logo"]')
     .wait('div[data-test="add-project-button"]')
     .click('div[data-test="add-project-button"]')

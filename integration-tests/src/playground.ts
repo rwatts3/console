@@ -12,6 +12,7 @@ export default async (cookies: any[]): Promise<any> => {
     .setCookies(cookies, CONSOLE_URL)
     .goto(CONSOLE_URL)
     .wait(3000)
+    .wait('.playground-button')
     .click('.playground-button')
     .wait(1000)
     .click('.tab.plus')

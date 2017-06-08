@@ -12,6 +12,7 @@ export default async (cookies: any[]): Promise<any> => {
     .setCookies(cookies, CONSOLE_URL)
     .goto(CONSOLE_URL)
     .wait(3000)
+    .wait('a[data-test="sidenav-databrowser"]')
     .click('a[data-test="sidenav-databrowser"]')
     .wait(1000)
     .wait('a[data-test="sidenav-databrowser-model-Post"]')
