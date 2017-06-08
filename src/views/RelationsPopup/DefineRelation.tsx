@@ -29,7 +29,6 @@ interface Props {
   rightModelIsBreakingChange: boolean
   forbiddenFieldNamesForLeftModel: string[]
   forbiddenFieldNamesForRightModel: string[]
-  isBeta: boolean
 }
 
 export default class DefineRelation extends React.Component<Props, {}> {
@@ -63,7 +62,6 @@ export default class DefineRelation extends React.Component<Props, {}> {
           fieldOnRightModelIsRequired={this.props.fieldOnRightModelIsRequired}
           didChangeFieldOnLeftModelIsRequired={this.props.didChangeFieldOnLeftModelIsRequired}
           didChangeFieldOnRightModelIsRequired={this.props.didChangeFieldOnRightModelIsRequired}
-          isBeta={this.props.isBeta}
         />
         <RelationInfo
           leftModel={this.props.leftSelectedModel}

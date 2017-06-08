@@ -36,7 +36,7 @@ export default class Alert extends React.Component<null, State> {
   }
 
   showAlert = (text: string, title?: string) => {
-    this.setState({isOpen: true, text, title: title || ''})
+    this.setState({isOpen: true, text, title: title || ''} as State)
   }
 
   showConfirm = (text: string, title?: string) => {
