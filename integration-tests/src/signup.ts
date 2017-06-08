@@ -15,7 +15,7 @@ export default (): Promise<any> =>  {
     .type(`asdfasdf`, 'input[type="password"]')
     .type(`Bob`, 'input[type="text"]')
     .click('button[type="submit"]')
-    .wait(13000)
+    .wait(3000)
     // done with signup
     .wait('input[data-test="source"]')
     .type('I am a Test', 'input[data-test="source"]')
