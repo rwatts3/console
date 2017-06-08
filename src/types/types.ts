@@ -21,6 +21,7 @@ export interface Customer {
   id: string
   name: string
   email: string
+  createdAt: string
   projects: RelayConnection<Project>
   crm: CrmSystemBridge
 }
