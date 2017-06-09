@@ -224,8 +224,20 @@ export function getMigrationUI(nodeCount: number, mutatedField: Field, initialFi
     }
   }
 
+  // if a field is changed from non-required to required and contains nodes,
+  // it depends on a node-by-node basis if a migration value is needed
+  // this is something the backend has to figure out, so we're accepting switching to required
+  // even without checking
   if (
-    (!initialField.isRequired && mutatedField.isRequired) ||
+    (!initialField.isRequired && mutatedField.isRequired)
+  ) {
+    return {
+      showMigration: true,
+      migrationOptional: true,
+    }
+  }
+
+  if (
     (initialField.typeIdentifier !== mutatedField.typeIdentifier) ||
     (initialField.isList !== mutatedField.isList)
   ) {
