@@ -129,9 +129,9 @@ export default class Step0 extends React.Component<Props, State> {
     const {eventType} = this.props
 
     if (eventType === 'RP') {
-      return `The Request Pipeline let’s you transform data at each step of the data processing process.
+      return `The Request Pipeline lets you transform data at each step of the data processing process.
       This allows you to transform what data comes into the database and comes out.
-      Here you can for example charge a Stripe payment or implement custom validation logic.`
+      Here you can, for example, charge a Stripe payment or implement custom validation logic.`
     }
 
     if (eventType === 'SSS') {

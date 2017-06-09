@@ -131,8 +131,8 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
             In this step the checks of Graphcool already have been executed. <br/>
             It's useful for calling external services: <br/>
             <ul>
-              <li>charge a customer on stripe</li>
-              <li>write a message on twilio</li>
+              <li>charge a customer on Stripe</li>
+              <li>write a message on Twilio</li>
             </ul>
           </div>
         )}
