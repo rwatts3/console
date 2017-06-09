@@ -1896,13 +1896,14 @@ chrome-remote-interface@^0.23.0:
     commander "2.1.x"
     ws "2.0.x"
 
-chromeless@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.1.6.tgz#7d03b1ecf37d9074a18bb16e3f364a08b68781c0"
+chromeless@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/chromeless/-/chromeless-0.1.9.tgz#abdd56790abdc9ed78f5d885305914c51ba277e9"
   dependencies:
     "@types/aws-sdk" "^2.7.0"
     aws-sdk "^2.65.0"
     chrome-remote-interface "^0.23.0"
+    form-data "^2.1.4"
     isomorphic-fetch "^2.2.1"
 
 ci-info@^1.0.0:
@@ -3329,6 +3330,14 @@ fork-ts-checker-webpack-plugin@^0.1.5:
 form-data@^2.1.1, form-data@~2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.1.2.tgz#89c3534008b97eada4cbb157d58f6f5df025eae4"
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.5"
+    mime-types "^2.1.12"
+
+form-data@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.1.4.tgz#33c183acf193276ecaa98143a69e94bfee1750d1"
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.5"
