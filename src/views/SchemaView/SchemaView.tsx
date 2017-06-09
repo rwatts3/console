@@ -70,7 +70,7 @@ class SchemaView extends React.Component<Props, State> {
             border-left: 6px solid #08131B;
           }
           .schema-wrapper {
-            @p: .flex, .h100, .pt6, .bgDarkBlue;
+            @p: .flex, .h100, .pt6, .bgDarkBlue, .flexAuto;
           }
         `}</style>
         <SchemaHeader
