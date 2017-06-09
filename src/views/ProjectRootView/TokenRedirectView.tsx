@@ -24,7 +24,7 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
       }
       updateNetworkLayer()
       redirect = redirect || ''
-      // window.location.href = window.location.origin + redirect
+      window.location.href = window.location.origin + redirect
     }
   }
 
