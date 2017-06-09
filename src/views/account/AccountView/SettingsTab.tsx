@@ -48,6 +48,14 @@ class SettingsTab extends React.Component<Props, State> {
       <div className={classes.root}>
         <div className={classes.category}>
           <div className={classes.title}>
+            Email
+          </div>
+          <div className='darkBlue80 mt10'>
+            {this.props.viewer.user.crm.information.email}
+          </div>
+        </div>
+        <div className={classes.category}>
+          <div className={classes.title}>
             Name
           </div>
           <input

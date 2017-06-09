@@ -11,7 +11,7 @@ export default (): Promise<any> =>  {
     .goto(CONSOLE_URL + '/signup')
     .wait(1000)
     .wait('button[type="submit"]')
-    .type(`tim.suchanek+${cuid()}@gmail.com`, 'input[type="email"]')
+    .type(`test-${cuid()}@graph.cool`, 'input[type="email"]')
     .type(`asdfasdf`, 'input[type="password"]')
     .type(`Bob`, 'input[type="text"]')
     .click('button[type="submit"]')
