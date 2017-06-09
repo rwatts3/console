@@ -3,11 +3,15 @@ import { Icon, $v } from 'graphcool-styles'
 import { Button } from '../../components/Links'
 
 interface Props {
+  location: any
 }
 
 export default class CLIAuthSuccessView extends React.Component<Props, {}> {
 
   render() {
+    const {query} = this.props.location
+    const redirectUrl = query.hasOwnProperty('afterSignup') ? '/after-signup' : '/'
+
     return (
       <div className='already-authenticated'>
         <style jsx={true}>{`
@@ -64,7 +68,7 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
             <div className='line'/>
             <div className='info'>You can also continue in the Console to see your projects.</div>
             <Button
-              target='/'
+              target={redirectUrl}
               green
               className='mt25'>
               Open Console

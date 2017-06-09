@@ -119,7 +119,7 @@ class SelectExample extends React.Component<Props, State> {
           <div className='bottom'>
             <div className='waiting'>
               <WaitingIndicator />
-              <span>Waiting for you to initialize the app. Once you've done, come back here...</span>
+              <span>Waiting for you to initialize the app. Once you're done, come back here...</span>
             </div>
             <div className='skip' onClick={this.skip}>Skip</div>
           </div>
