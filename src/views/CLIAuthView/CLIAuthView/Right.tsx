@@ -31,7 +31,6 @@ class Right extends React.Component<Props, {}> {
 
       const showAfterSignup = (new Date().getTime() - new Date(response.user.createdAt).getTime()) < 60000
 
-
       const redirectUrl = redirectURL(this.props.authTrigger, showAfterSignup)
 
       // window.location.href = redirectURL(this.props.authTrigger, showAfterSignup)

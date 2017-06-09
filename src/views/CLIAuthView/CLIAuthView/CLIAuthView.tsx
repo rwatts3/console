@@ -28,6 +28,7 @@ const updateAuth = async (cliToken: string) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
     },
     body: JSON.stringify({
       query: `mutation {

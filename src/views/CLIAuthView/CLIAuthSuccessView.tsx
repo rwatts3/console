@@ -79,4 +79,3 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
     )
   }
 }
-
