@@ -82,6 +82,7 @@ class SchemaView extends React.Component<Props, State> {
     const editingEnumName = location.pathname.endsWith(`edit/${params.enumName}`) ? params.enumName : undefined
     const isBeta = viewer.user.crm.information.isBeta
     const showEnums = location.pathname.includes('schema/enums')
+    // scroll={this.state.scroll}
     return (
       <div className='schema-view'>
         <style jsx>{`
@@ -115,7 +116,6 @@ class SchemaView extends React.Component<Props, State> {
               onEnumsChange={this.handleEnumsChange}
               isBeta={isBeta}
               setBlur={this.setBlur}
-              scroll={this.state.scroll}
               showEnums={showEnums}
             />
           </ResizableBox>
