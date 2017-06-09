@@ -246,7 +246,7 @@ class SchemaEditor extends React.Component<Props, State> {
               <MigrationMessages messages={this.state.messages} errors={this.state.errors} />
             )}
             <div className='footer editing'>
-              <div className='cancel' onClick={this.reset}>Cancel</div>
+              <div className='cancel' onClick={this.reset}>Reset Changes</div>
               <div className='apply-changes' onClick={this.updateSchema}>
                 {isDryRun ? 'Preview ' : 'Apply '}
                 Changes
@@ -303,10 +303,13 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private reset = () => {
+    const {project} = this.props
     this.setState({
       errors: [],
       messages: [],
       isDryRun: true,
+      enumSchema: project.enumSchema,
+      typeSchema: this.addFrontmatter(project.typeSchema, this.props),
     } as State)
   }
 
