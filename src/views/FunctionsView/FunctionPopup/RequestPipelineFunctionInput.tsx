@@ -321,7 +321,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
             @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight, .relative;
           }
           .test-button {
-            @p: .absolute, .bottom0, .right0, .mb25, .mr25;
+            @p: .absolute, .bottom0, .right0, .mb25, .mr25, .z999;
           }
           .body :global(.ReactCodeMirror) {
             width: 100%;
