@@ -170,15 +170,6 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
 
-    if (
-      nextProps.location.pathname !== this.props.location.pathname
-      && nextProps.location.pathname.endsWith('/fullscreen')
-    ) {
-      if (this.firstTest) {
-        this.runTest()
-      }
-    }
-
     if (nextProps.schema !== this.props.schema) {
       this.updateRPExampleEvent(nextProps.schema)
     }
