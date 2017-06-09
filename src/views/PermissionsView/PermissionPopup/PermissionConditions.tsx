@@ -342,6 +342,9 @@ export default class PermissionConditions extends React.Component<Props, State> 
             margin-right: 0;
           }
           .query {
+            @p: .flexAuto, .flex, .flexColumn;
+          }
+          .query :global(.graphiql-container) {
             @p: .flexAuto;
           }
           .variable-category {
