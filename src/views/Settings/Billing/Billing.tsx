@@ -127,8 +127,6 @@ class Billing extends React.Component<Props, State> {
     const ownerMail = this.props.viewer.project.seats.edges.find(seat => seat.node.isOwner).node.email
     const isOwner = ownerMail === this.props.viewer.crm.email
 
-    console.log(ownerMail, this.props.viewer.crm.email, isOwner, this.props)
-
     if (!crmProjectsAvailable) {
       if (isOwner) {
         return this.renderSyncNotice()

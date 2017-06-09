@@ -32,8 +32,8 @@ export const billingInfo: { [key: string]: PricingPlanInfo } = {
   '2017-02-growth': {
     name: 'Growth',
     price: 449,
-    maxStorage: 10000,
-    maxRequests: 50000000,
+    maxStorage: 30000,
+    maxRequests: 150000000,
     maxSeats: -1,
     pricePerAdditionalMB: 5,
     pricePerThousandAdditionalRequests: 10,
