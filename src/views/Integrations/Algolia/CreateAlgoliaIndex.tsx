@@ -16,6 +16,7 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import ConfirmOperartionsPopup from './ConfirmOperationsPopup'
 import ConfirmOperationsPopup from './ConfirmOperationsPopup'
+import Loading from '../../../components/Loading/Loading'
 
 interface Props {
   algolia: SearchProviderAlgolia
@@ -30,6 +31,7 @@ interface State {
   fragment: string
   fragmentValid: boolean
   title: string
+  loading: boolean
 }
 
 class CreateAlgoliaIndex extends React.Component<Props, State> {
@@ -44,17 +46,18 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
       fragment: emptyAlgoliaFragment,
       fragmentValid: true,
       title: '',
+      loading: false,
     }
   }
   render() {
     const {algolia, models} = this.props
-    const {selectedModel, fragment, title} = this.state
+    const {selectedModel, fragment, title, loading} = this.state
     const valid = this.valid()
     return (
       <div className='create-algolia-index'>
         <style jsx>{`
           .create-algolia-index {
-            @inherit: .overflowAuto, .bgDarkBlue, .flex, .flexColumn, .justifyBetween, .w100, .overflowVisible;
+            @p: .overflowAuto, .bgDarkBlue, .flex, .flexColumn, .justifyBetween, .w100, .overflowVisible, .relative;
             height: 100vh;
           }
           .header {
@@ -126,6 +129,9 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
               @p: .white50;
             }
           }
+          .loading {
+            @p: .flex, .top0, .right0, .bottom0, .left0, .z999, .itemsCenter, .justifyCenter;
+          }
         `}</style>
         <style jsx global>{`
           .create-algolia-index .CodeMirror {
@@ -194,6 +200,11 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             </div>
           </div>
         </div>
+        {loading && (
+          <div className='loading'>
+            <Loading color='white' />
+          </div>
+        )}
       </div>
     )
   }
@@ -232,26 +243,30 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
   }
 
   private create = () => {
-    const {fragment, fragmentValid, title, selectedModel} = this.state
+    const {fragment, fragmentValid, title, selectedModel, loading} = this.state
     const {algolia} = this.props
 
-    if (this.valid()) {
-      Relay.Store.commitUpdate(
-        new AddAlgoliaSyncQueryMutation({
-          modelId: selectedModel.id,
-          indexName: title,
-          fragment,
-          searchProviderAlgoliaId: algolia.id,
-        }),
-        {
-          onSuccess: (res) => {
-            this.close()
+    if (this.valid() && !loading) {
+      this.setState({loading: true} as State, () => {
+        Relay.Store.commitUpdate(
+          new AddAlgoliaSyncQueryMutation({
+            modelId: selectedModel.id,
+            indexName: title,
+            fragment,
+            searchProviderAlgoliaId: algolia.id,
+          }),
+          {
+            onSuccess: (res) => {
+              this.setState({loading: false} as State)
+              this.close()
+            },
+            onFailure: (res) => {
+              this.setState({loading: false} as State)
+              onFailureShowNotification(res, this.props.showNotification)
+            },
           },
-          onFailure: (res) => {
-            onFailureShowNotification(res, this.props.showNotification)
-          },
-        },
-      )
+        )
+      })
     }
 
   }
