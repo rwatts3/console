@@ -7,12 +7,15 @@ import {Viewer, Enum} from '../../types/types'
 import ResizableBox from '../../components/ResizableBox'
 import {throttle} from 'lodash'
 import EnumsOverview from './EnumsOverview/EnumsOverview'
+import {withRouter} from 'react-router'
 
 interface Props {
   viewer: Viewer
   location: any
   params: any
   relay: any
+  router: ReactRouter.InjectedRouter
+  route: ReactRouter.Route
 }
 
 interface State {
@@ -24,6 +27,7 @@ interface State {
 }
 
 class SchemaView extends React.Component<Props, State> {
+  private forceLeaveRoute: boolean = false
   private handleResize = throttle(
     (_, {size}) => {
       localStorage.setItem('schema-editor-width', size.width)
@@ -45,15 +49,32 @@ class SchemaView extends React.Component<Props, State> {
 
   componentDidMount() {
     window.addEventListener('resize', this.rerender)
+    this.addLeaveHook()
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.rerender)
   }
 
+  addLeaveHook() {
+    this.props.router.setRouteLeaveHook(this.props.route, (nextLocation) => {
+      if ((this.state.typesChanged || this.state.enumsChanged) && !this.forceLeaveRoute) {
+        graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
+          .then(() => {
+            this.forceLeaveRoute = true
+            this.props.router.push(nextLocation)
+          })
+        return false
+      } else {
+        return true
+      }
+    })
+  }
+
   rerender = () => {
     this.forceUpdate()
   }
+
   render() {
     const {viewer, location, params} = this.props
     const {editorWidth, typesChanged, enumsChanged} = this.state
@@ -144,7 +165,7 @@ class SchemaView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(SchemaView, {
+export default Relay.createContainer(withRouter(SchemaView), {
   initialVariables: {
     projectName: null, // injected from router
   },
