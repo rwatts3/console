@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Icon, $v } from 'graphcool-styles'
+import {Icon, $v} from 'graphcool-styles'
 import * as cookiestore from 'cookiestore'
 import Left from './Left'
 import Right from './Right'
 import Loading from '../../../components/Loading/Loading'
-import { AuthTrigger } from '../types'
-import { updateNetworkLayer } from '../../../utils/relay'
+import {AuthTrigger} from '../types'
+import {updateNetworkLayer} from '../../../utils/relay'
 
 interface State {
   loading: boolean
@@ -21,6 +21,23 @@ const updateAuth = async (cliToken: string) => {
     body: JSON.stringify({
       authToken: cookiestore.get('graphcool_auth_token'),
       cliToken,
+    }),
+  })
+
+  await fetch(`${__BACKEND_ADDR__}/system`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `mutation {
+        updateCrmCustomerInformation(input: {
+          clientMutationId: "asd"
+          signupSource: CLI
+        }) {
+          clientMutationId
+        }
+      }`,
     }),
   })
 
@@ -68,7 +85,6 @@ export default class CLIAuthView extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props)
     const {authTrigger, cliToken} = this.props.location.query
 
     return (
@@ -102,7 +118,7 @@ export default class CLIAuthView extends React.Component<Props, State> {
         <Right
           loading={this.state.loading}
           updateAuth={updateAuth}
-          redirectUrl={redirectURL(authTrigger)}
+          authTrigger={authTrigger}
           cliToken={cliToken}
         />
       </div>

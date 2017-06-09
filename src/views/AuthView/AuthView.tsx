@@ -10,7 +10,7 @@ export default class AuthView extends React.Component<Props, {}> {
 
   render() {
     const successCallback = (response: Response) => {
-      if (new Date().getTime() - new Date(response.user.createdAt).getTime() < 60000) {
+      if ((new Date().getTime() - new Date(response.user.createdAt).getTime()) < 60000) {
         // this is a workaround instead of using the router to re-setup relay
         window.location.pathname = '/after-signup'
       } else {
