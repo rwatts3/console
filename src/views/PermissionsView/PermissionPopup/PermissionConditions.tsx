@@ -68,6 +68,7 @@ interface State {
 
 export default class PermissionConditions extends React.Component<Props, State> {
 
+  private firstTyping: boolean = true
   private reflectQueryVariablesToUI = debounce(
     (query: string) => {
       const schema = buildClientSchema(JSON.parse(this.props.permissionSchema))
@@ -449,6 +450,9 @@ export default class PermissionConditions extends React.Component<Props, State> 
   }
 
   private handleEditQuery = (query: string) => {
+    if (this.props.rule !== 'GRAPH' && this.firstTyping) {
+      this.props.toggleRuleType()
+    }
     this.props.setRuleGraphQuery(query)
     this.reflectQueryVariablesToUI(query)
   }
