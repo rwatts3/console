@@ -64,7 +64,8 @@ export default class ResizableBox extends React.Component<any,any> {
             @p: .relative, .flexFixed;
           }
           .resizer {
-            @p: .br100, .bgDarkBlue, .absolute, .right0, .flex, .itemsCenter, .justifyCenter, .pointer, .z2, .o0;
+            @p: .br100, .bgDarkBlue, .absolute, .right0, .flex, .itemsCenter, .justifyCenter, .pointer, .o0;
+            z-index: 12;
             pointer-events: none;
             top: 50%;
             transform: translate(50%,-50%);
