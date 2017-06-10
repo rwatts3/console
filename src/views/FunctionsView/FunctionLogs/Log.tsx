@@ -27,6 +27,9 @@ export default class LogComponent extends React.Component<Props, State> {
     return (
       <div className='graphiql-container'>
         <style jsx>{`
+          .graphiql-container {
+            @p: .overflowAuto;
+          }
           .graphiql-container :global(div.CodeMirror) {
             background: transparent;
             padding-left: 0;

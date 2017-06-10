@@ -79,7 +79,8 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
             <div className='ml6 black50 f14'>{maxString}</div>
           </div>
           {this.props.additionalCosts > 0 &&
-          <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>}
+            <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>
+          }
         </div>
       </div>
     )
