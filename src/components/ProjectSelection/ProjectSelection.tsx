@@ -304,7 +304,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                   )}>
                   All Projects
                 </div>
-                {this.props.projects.map((project) => (
+                {this.props.projects.map((project, index) => (
                   <ListItem
                     key={project.name}
                     className={cx(
@@ -317,6 +317,9 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                         $p.flex,
                         $p.justifyBetween,
                         $p.itemsCenter,
+                        {
+                          [$p.mb60]: index === this.props.projects.length - 1,
+                        },
                       )}
                     onClick={() => this.onSelectProject(project.id)}
                     to={`/${project.name}`}
