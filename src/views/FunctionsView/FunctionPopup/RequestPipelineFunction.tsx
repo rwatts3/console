@@ -83,7 +83,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             @p: .overflowAuto;
           }
           .powered-by {
-            @p: .absolute, .right0, .bottom0, .ma16, .flexColumn, .itemsCenter, .f14, .darkBlue30;
+            @p: .absolute, .right0, .bottom0, .ma16, .flexColumn, .itemsCenter, .f14, .darkBlue30, .noUnderline;
           }
           .powered-by div {
             @p: .mb16;
@@ -140,10 +140,10 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
                 You can either <pre>return</pre> a value or a <pre>Promise</pre> if you have an async flow.
               </span>
             )}
-            <span className='powered-by'>
+            <a className='powered-by' href='https://auth0.com/Extend/developers' target='_blank'>
               <div>powered by</div>
               <img src={require('assets/graphics/auth0-extend.svg')} />
-            </span>
+            </a>
           </p>
         </div>
         <RequestPipelineFunctionInput
