@@ -32,6 +32,7 @@ interface State {
   fragmentValid: boolean
   title: string
   loading: boolean
+  saving: boolean
 }
 
 class CreateAlgoliaIndex extends React.Component<Props, State> {
@@ -47,6 +48,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
       fragmentValid: true,
       title: '',
       loading: false,
+      saving: false,
     }
   }
   render() {
@@ -188,7 +190,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             <div className='button cancel' onClick={this.cancel}>Cancel</div>
             <div className='right'>
               <div className={'button save' + (valid ? ' active' : '')} onClick={this.create}>Create Index</div>
-              {valid && selectedModel.itemCount > 0 && (
+              {valid && selectedModel.itemCount > 0 && this.state.saving && (
                 <ConfirmOperationsPopup
                   numOperations={selectedModel.itemCount}
                   onCancel={this.close}
@@ -247,6 +249,9 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
     const {algolia} = this.props
 
     if (this.valid() && !loading) {
+      if (!this.state.saving && selectedModel.itemCount > 0) {
+        return this.setState({saving: true} as State)
+      }
       this.setState({loading: true} as State, () => {
         Relay.Store.commitUpdate(
           new AddAlgoliaSyncQueryMutation({
