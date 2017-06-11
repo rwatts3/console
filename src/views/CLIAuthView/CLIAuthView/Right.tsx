@@ -52,9 +52,6 @@ class Right extends React.Component<Props, {}> {
         })
       }
 
-
-      const redirectUrl = redirectURL(this.props.authTrigger, justSignedUp)
-
       window.location.href = redirectURL(this.props.authTrigger, justSignedUp)
     }
 
