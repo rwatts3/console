@@ -372,23 +372,30 @@ class AddType extends React.Component<Props, State> {
 
   private addModel = (modelName: string, description: string) => {
     if (modelName) {
+      let newModelName = modelName
+      if (
+        this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL') &&
+        modelName.toLowerCase() === 'post'
+      ) {
+        newModelName = 'Post'
+      }
       Relay.Store.commitUpdate(
         new AddModelMutation({
           description,
-          modelName,
+          modelName: newModelName,
           projectId: this.props.projectId,
         }),
         {
           onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
+            tracker.track(ConsoleEvents.Schema.Model.created({modelName: newModelName}))
             if (
-              modelName === 'Post' &&
+              newModelName === 'Post' &&
               this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
             ) {
               this.props.showDonePopup()
               this.props.nextStep()
             }
-            tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: modelName}))
+            tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: newModelName}))
             this.close()
           },
           onFailure: (transaction) => {

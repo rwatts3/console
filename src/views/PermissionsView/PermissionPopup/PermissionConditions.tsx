@@ -68,6 +68,7 @@ interface State {
 
 export default class PermissionConditions extends React.Component<Props, State> {
 
+  private firstTyping: boolean = true
   private reflectQueryVariablesToUI = debounce(
     (query: string) => {
       const schema = buildClientSchema(JSON.parse(this.props.permissionSchema))
@@ -342,6 +343,9 @@ export default class PermissionConditions extends React.Component<Props, State> 
             margin-right: 0;
           }
           .query {
+            @p: .flexAuto, .flex, .flexColumn;
+          }
+          .query :global(.graphiql-container) {
             @p: .flexAuto;
           }
           .variable-category {
@@ -446,6 +450,9 @@ export default class PermissionConditions extends React.Component<Props, State> 
   }
 
   private handleEditQuery = (query: string) => {
+    if (this.props.rule !== 'GRAPH' && this.firstTyping) {
+      this.props.toggleRuleType()
+    }
     this.props.setRuleGraphQuery(query)
     this.reflectQueryVariablesToUI(query)
   }

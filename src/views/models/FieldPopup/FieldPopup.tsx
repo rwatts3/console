@@ -100,8 +100,7 @@ class FieldPopup extends React.Component<Props, State> {
       this.state = {
         field: {
           ...field,
-          // if null, put it to undefined
-          defaultValue: field.defaultValue === null ? undefined : stringToValue(field.defaultValue as string, field),
+          defaultValue: field.defaultValue === null ? null : stringToValue(field.defaultValue as string, field),
         },
 
         activeTabIndex: 0,

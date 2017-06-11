@@ -75,11 +75,12 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
             <div
               className={`ml6 f14 fw6`}
               style={{color: color}}
-            >{this.props.usedStoragePerDay[this.props.usedStoragePerDay.length - 1]} MB</div>
+            >{this.props.usedStoragePerDay[this.props.usedStoragePerDay.length - 1].toFixed(1)} MB</div>
             <div className='ml6 black50 f14'>{maxString}</div>
           </div>
           {this.props.additionalCosts > 0 &&
-          <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>}
+            <div className='f14 fw6 blue'>{'+ $' + this.props.additionalCosts.toFixed(2)}</div>
+          }
         </div>
       </div>
     )

@@ -24,24 +24,6 @@ const updateAuth = async (cliToken: string) => {
     }),
   })
 
-  await fetch(`${__BACKEND_ADDR__}/system`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
-    },
-    body: JSON.stringify({
-      query: `mutation {
-        updateCrmCustomerInformation(input: {
-          clientMutationId: "asd"
-          signupSource: CLI
-        }) {
-          clientMutationId
-        }
-      }`,
-    }),
-  })
-
   updateNetworkLayer()
 }
 

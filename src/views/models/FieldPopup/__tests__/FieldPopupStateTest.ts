@@ -38,7 +38,7 @@ describe('show proper migration ui state', () => {
     expect(migrationUI.showMigration).toBe(true)
     expect(migrationUI.migrationOptional).toBe(false)
   })
-  test('show migration and make it mandatory when field changed to required', () => {
+  test('show migration and but don\'t make it mandatory when field changed to required', () => {
     const migrationUI = getMigrationUI(
       5,
       {
@@ -48,7 +48,7 @@ describe('show proper migration ui state', () => {
       emptyField(),
     )
     expect(migrationUI.showMigration).toBe(true)
-    expect(migrationUI.migrationOptional).toBe(false)
+    expect(migrationUI.migrationOptional).toBe(true)
   })
   test('show migration and make it mandatory when type changed', () => {
     const migrationUI = getMigrationUI(

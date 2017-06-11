@@ -34,6 +34,7 @@ import * as Dropzone from 'react-dropzone'
 import OnboardingBar from './Onboarding/OnboardingBar'
 import IntroPopup from './Onboarding/IntroPopup'
 import FinalPopup from './Onboarding/FinalPopup'
+import {throttle} from 'lodash'
 
 interface State {
   showCreateProjectModal: boolean
@@ -67,6 +68,13 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   shouldComponentUpdate: any
 
   private refreshInterval: any
+
+  private persistResize = throttle(
+    (size) => {
+      localStorage.setItem('sidenav-width', size.width)
+    },
+    300,
+  )
 
   constructor(props: Props) {
     super(props)
@@ -233,7 +241,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         >
           <div className={cx('project-wrapper', {blur})}>
             <ResizableBox
-              width={290}
+              width={parseInt(localStorage.getItem('sidenav-width'), 10) || 290}
               height={window.innerHeight}
               minConstraints={[MIN_SIDEBAR_WIDTH, window.innerHeight]}
               maxConstraints={[290, window.innerHeight]}
@@ -303,6 +311,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
     } else {
       this.setState({sidebarExpanded: true} as State)
     }
+    this.persistResize(size)
   }
 
   private updateForceFetching() {

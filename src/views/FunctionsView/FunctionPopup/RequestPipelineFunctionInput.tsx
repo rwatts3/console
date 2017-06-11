@@ -170,15 +170,6 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
 
-    if (
-      nextProps.location.pathname !== this.props.location.pathname
-      && nextProps.location.pathname.endsWith('/fullscreen')
-    ) {
-      if (this.firstTest) {
-        this.runTest()
-      }
-    }
-
     if (nextProps.schema !== this.props.schema) {
       this.updateRPExampleEvent(nextProps.schema)
     }
@@ -330,7 +321,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
             @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight, .relative;
           }
           .test-button {
-            @p: .absolute, .bottom0, .right0, .mb25, .mr25;
+            @p: .absolute, .bottom0, .right0, .mb25, .mr25, .z999;
           }
           .body :global(.ReactCodeMirror) {
             width: 100%;

@@ -82,6 +82,16 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
           .content {
             @p: .overflowAuto;
           }
+          .powered-by {
+            @p: .absolute, .right0, .bottom0, .ma16, .flexColumn, .itemsCenter, .f14, .darkBlue30, .noUnderline;
+          }
+          .powered-by div {
+            @p: .mb16;
+          }
+          .powered-by img {
+            @p: .o50;
+            width: 120px;
+          }
         `}</style>
         <input
           type='text'
@@ -122,7 +132,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
               write a function that get’s executed every time.
             </p>
           )}
-          <p>
+          <p className='relative'>
             The <pre>event</pre> argument represents the payload of the
             {eventType === 'RP' ? 'mutation' : 'subscription'}. <br/>
             {eventType === 'RP' && (
@@ -130,6 +140,10 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
                 You can either <pre>return</pre> a value or a <pre>Promise</pre> if you have an async flow.
               </span>
             )}
+            <a className='powered-by' href='https://auth0.com/Extend/developers' target='_blank'>
+              <div>powered by</div>
+              <img src={require('assets/graphics/auth0-extend.svg')} />
+            </a>
           </p>
         </div>
         <RequestPipelineFunctionInput

@@ -250,6 +250,7 @@ class AlgoliaView extends React.Component<Props, State> {
     }
 
     if (this.indexValid() && node) {
+      console.log('updating index')
       Relay.Store.commitUpdate(
         new UpdateAlgoliaSyncQueryMutation({
           algoliaSyncQueryId: node.id,
@@ -257,6 +258,17 @@ class AlgoliaView extends React.Component<Props, State> {
           isEnabled: true,
           indexName: node.indexName,
         }),
+        {
+          onSuccess: (transaction) => {
+            this.props.showNotification({
+              message: 'Index updated',
+              level: 'success',
+            })
+          },
+          onFailure: (transaction) => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          },
+        },
       )
     }
   }
