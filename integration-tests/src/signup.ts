@@ -1,10 +1,11 @@
 import Chromeless from 'chromeless'
 const cuid = require('cuid')
-import {CONSOLE_URL, runRemote} from './config'
+import {CONSOLE_URL, runRemote, waitTimeout} from './config'
 
 export default (): Promise<any> =>  {
   const chromeless = new Chromeless({
     runRemote,
+    waitTimeout,
   })
 
   return chromeless
