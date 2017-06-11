@@ -3,6 +3,7 @@ import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrap
 import {withRouter} from 'react-router'
 import {AuthTrigger} from '../types'
 import {Response} from '../../../mutations/AuthenticateCustomerMutation'
+import * as cookiestore from 'cookiestore'
 
 interface Props {
   updateAuth: (cliToken: string) => Promise<void>
@@ -29,11 +30,32 @@ class Right extends React.Component<Props, {}> {
     const successCallback = async (response: Response) => {
       await this.props.updateAuth(this.props.cliToken)
 
-      const showAfterSignup = (new Date().getTime() - new Date(response.user.createdAt).getTime()) < 60000
+      const justSignedUp = (new Date().getTime() - new Date(response.user.createdAt).getTime()) < 60000
 
-      const redirectUrl = redirectURL(this.props.authTrigger, showAfterSignup)
+      if (justSignedUp) {
+        await fetch(`${__BACKEND_ADDR__}/system`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
+          },
+          body: JSON.stringify({
+            query: `mutation {
+              updateCrmCustomerInformation(input: {
+                clientMutationId: "asd"
+                signupSource: CLI
+              }) {
+                clientMutationId
+              }
+            }`,
+          }),
+        })
+      }
 
-      // window.location.href = redirectURL(this.props.authTrigger, showAfterSignup)
+
+      const redirectUrl = redirectURL(this.props.authTrigger, justSignedUp)
+
+      window.location.href = redirectURL(this.props.authTrigger, justSignedUp)
     }
 
     return (
