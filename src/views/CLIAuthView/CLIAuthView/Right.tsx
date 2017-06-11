@@ -14,11 +14,12 @@ interface Props {
 }
 
 const redirectURL = (authTrigger: AuthTrigger, showAfterSignup: boolean): string => {
+  const afterSignupAddition = showAfterSignup ? '?afterSignup=1' : ''
   switch (authTrigger) {
     case 'auth':
-      return `/cli/auth/success${showAfterSignup ? '?afterSignup=1' : ''}`
+      return `/cli/auth/success${afterSignupAddition}`
     case 'init':
-      return `/cli/auth/success-init`
+      return `/cli/auth/success-init${afterSignupAddition}`
     case 'quickstart':
       return `https://www.graph.cool/docs/quickstart`
   }
