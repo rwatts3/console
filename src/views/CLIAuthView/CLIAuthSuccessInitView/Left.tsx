@@ -2,7 +2,11 @@ import * as React from 'react'
 import { Icon, $v } from 'graphcool-styles'
 import { Button } from '../../../components/Links'
 
-export default class Left extends React.Component<{}, {}> {
+interface Props {
+  showAfterSignup: boolean
+}
+
+export default class Left extends React.Component<Props, {}> {
 
   render() {
     return (
@@ -80,7 +84,7 @@ export default class Left extends React.Component<{}, {}> {
               You can also continue in the Console to edit your project or read the docs to learn more.
             </div>
             <Button
-              target='/'
+              target={this.props.showAfterSignup ? '/after-signup' : '/'}
               hideArrow
               green
               className='mt25 mr10'>Open Console</Button>

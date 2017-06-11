@@ -27,6 +27,8 @@ const updateAuth = async (cliToken: string) => {
   updateNetworkLayer()
 }
 
+// no need of after-signup here, because we can be sure that the person is logged in as
+// the graphcool_auth_token cookie already exists
 const redirectURL = (authTrigger: AuthTrigger): string => {
   switch (authTrigger) {
     case 'auth':
