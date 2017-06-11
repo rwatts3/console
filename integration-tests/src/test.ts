@@ -31,11 +31,11 @@ test('create and update sss', async t => {
   t.pass()
 })
 
-test('create and update rp', async t => {
-  console.log('######### rp')
-  await rp(cookies)
-  t.pass()
-})
+// test('create and update rp', async t => {
+//   console.log('######### rp')
+//   await rp(cookies)
+//   t.pass()
+// })
 
 test('updatePermission', async t => {
   console.log('######### updatePermission')
@@ -43,13 +43,13 @@ test('updatePermission', async t => {
   t.is(permissionLabel, 'Authenticated')
   t.pass()
 })
-
-test('createPermission', async t => {
-  console.log('######### createPremission')
-  const permissionLabel = await createPermission(cookies)
-  t.is(permissionLabel, 'Authenticated')
-  t.pass()
-})
+//
+// test('createPermission', async t => {
+//   console.log('######### createPremission')
+//   const permissionLabel = await createPermission(cookies)
+//   t.is(permissionLabel, 'Authenticated')
+//   t.pass()
+// })
 
 test('databrowser', async t => {
   console.log('######### databrowser')
