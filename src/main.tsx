@@ -38,7 +38,7 @@ if (!cookiestore.has('graphcool_last_referral')) {
   cookiestore.set('graphcool_last_referral', document.referrer)
 }
 
-if (__GA_CODE__) {
+if (__GA_CODE__ && navigator.userAgent !== 'chromeless') {
   ReactGA.initialize(__GA_CODE__)
 
   browserHistory.listen(() => {
