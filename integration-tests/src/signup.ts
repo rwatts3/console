@@ -19,6 +19,7 @@ export default (): Promise<any> =>  {
     .wait(3000)
     // done with signup
     .wait('input[data-test="source"]')
+    // THIS IS CRITICAL AS IT IS USED IN NILANS SCRIPTS
     .type('I am a Test', 'input[data-test="source"]')
     .click('div[data-test="open-console"]')
     // done with giving signup data
