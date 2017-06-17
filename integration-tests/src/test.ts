@@ -8,6 +8,7 @@ import updatePermission from './updatePermission'
 import createPermission from './createPermission'
 import databrowser from './databrowser'
 import playground from './playground'
+import {deleteCustomer, extractCustomerInfo} from './deleteUser'
 
 let cookies: any[] = []
 
@@ -17,6 +18,13 @@ test.before('signup, get cookie and run onboarding', async t => {
   console.log('\n\nReceived Cookies\n\n', cookies, '\n\n')
   console.log('######### onboarding')
   await onboarding(cookies)
+})
+
+test.after.always('delete user', async () => {
+  console.log('Deleting User')
+  const customerInfo = extractCustomerInfo(cookies)
+  const deleteResult = await deleteCustomer(customerInfo)
+  console.log(deleteResult)
 })
 
 // test('create project', async t => {
