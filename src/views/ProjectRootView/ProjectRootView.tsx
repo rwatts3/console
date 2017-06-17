@@ -421,7 +421,11 @@ export default Relay.createContainer(MappedProjectRootView, {
           name
           ${SideNav.getFragment('project')}
           seats(first: 100) {
-            edges
+            edges {
+              node {
+                id
+              }
+            }
           }
         }
         user {
