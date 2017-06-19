@@ -23,6 +23,7 @@ export default class MemberRow extends React.Component<Props, State> {
   }
 
   render() {
+    console.log(this.props.seat.status)
     return (
       <div
         className={`container ${this.state.isHovering && 'bgBlack02 br2'}`}
@@ -76,11 +77,12 @@ export default class MemberRow extends React.Component<Props, State> {
         <div className={`flex justifyBetween itemsCenter w100 ph10`}>
           <div className='flex itemsCenter'>
             <div className={`seatIndicator ${this.randomColor()}`}>
-              {this.props.seat.name.charAt(0)}
+              {this.props.seat.name ? this.props.seat.name.charAt(0) : this.props.seat.email.charAt(0)}
             </div>
             <div className='pl16 black80 f20 fw3'>{this.props.seat.name}</div>
             <div className='pl16 black40 f16 fw6'>{this.props.seat.email}</div>
-            {this.isCurrentUser() && <div className='pl2 black50 f25 fw3'>(you)</div>}
+            {this.isCurrentUser() && <div className='pl2 black50 f20 fw3'>(you)</div>}
+            {this.props.seat.status === 'INVITED_TO_PROJECT' && <div className='pl2 black50 f20 fw3'>(invited)</div>}
           </div>
           {this.getRightPart()}
         </div>

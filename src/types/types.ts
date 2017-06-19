@@ -26,7 +26,7 @@ export interface Customer {
   crm: CrmSystemBridge
 }
 
-export type SeatStatus = 'JOINED' | 'INVITED_PROJECT' | 'INVITED_CUSTOMER'
+export type SeatStatus = 'JOINED' | 'INVITED_PROJECT' | 'INVITED_CUSTOMER' | 'INVITED_TO_PROJECT'
 
 export interface Seat {
   name: string | null

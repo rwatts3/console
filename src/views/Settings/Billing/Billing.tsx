@@ -152,7 +152,7 @@ class Billing extends React.Component<Props, State> {
       }
     }
 
-    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node.name)
+    const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
 
     const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
     const currentInvoice = invoices[invoices.length - 1]
