@@ -16,7 +16,7 @@ export default (): Promise<any> =>  {
     .type(`asdfasdf`, 'input[type="password"]')
     .type(`Bob`, 'input[type="text"]')
     .click('button[type="submit"]')
-    .wait(3000)
+    .wait(10000)
     // done with signup
     .wait('input[data-test="source"]')
     // THIS IS CRITICAL AS IT IS USED IN NILANS SCRIPTS

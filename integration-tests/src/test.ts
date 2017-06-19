@@ -23,8 +23,13 @@ test.before('signup, get cookie and run onboarding', async t => {
 test.after.always('delete user', async () => {
   console.log('Deleting User')
   const customerInfo = extractCustomerInfo(cookies)
-  const deleteResult = await deleteCustomer(customerInfo)
-  console.log(deleteResult)
+  try {
+    const deleteResult = await deleteCustomer(customerInfo)
+    console.log(deleteResult)
+  } catch (e) {
+    // it's not critical to delete the customer as we delete them every night
+  }
+
 })
 
 // test('create project', async t => {
