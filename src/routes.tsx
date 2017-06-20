@@ -158,8 +158,8 @@ export default (
     <Route path='cli/auth/success' component={CLIAuthSuccessView} />
     <Route path='cli/auth/success-init' component={CLIAuthSuccessInitView}/>
     <Route path='reset-password' component={ResetPasswordView}/>
-    <Route path='signup' component={() => <AuthView initialScreen='signUp'/>}/>
-    <Route path='login' component={() => <AuthView initialScreen='login'/>}/>
+    <Route path='signup' component={({location}) => <AuthView initialScreen='signUp' location={location} />}/>
+    <Route path='login' component={({location}) => <AuthView initialScreen='login' location={location} />}/>
     <Route path='after-signup' component={AfterSignUpView} queries={ViewerQuery} render={render}/>
     <Route path='showroom' component={ShowRoom}/>
     <Route path=':projectName' component={ProjectRootView} queries={ViewerQuery} render={render}>

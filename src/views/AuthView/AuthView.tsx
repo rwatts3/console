@@ -5,6 +5,7 @@ import * as cookiestore from 'cookiestore'
 
 interface Props {
   initialScreen: 'login' | 'signUp'
+  location: any
 }
 
 export default class AuthView extends React.Component<Props, {}> {
@@ -43,6 +44,7 @@ export default class AuthView extends React.Component<Props, {}> {
         initialScreen={this.props.initialScreen}
         successCallback={successCallback}
         renderInElement={false}
+        location={this.props.location}
       />
     )
   }
