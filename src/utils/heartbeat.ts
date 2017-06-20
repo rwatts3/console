@@ -20,6 +20,7 @@ export default function heartbeat(): () => void {
       lastInput = Date.now()
     },
     1000,
+    {trailing: true},
   )
 
   document.addEventListener('mousemove', eventHandler)
