@@ -1,40 +1,41 @@
 import * as React from 'react'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import * as fetch from 'isomorphic-fetch'
 import * as Relay from 'react-relay'
 import * as cookiestore from 'cookiestore'
-import {bindActionCreators} from 'redux'
+import { bindActionCreators } from 'redux'
 import * as cx from 'classnames'
 import mapProps from '../../components/MapProps/MapProps'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import OnboardingPopup from '../../components/onboarding/OnboardingPopup/OnboardingPopup'
-import {connect} from 'react-redux'
-import {validateProjectName} from '../../utils/nameValidator'
-import {retryUntilDone} from '../../utils/utils'
+import { connect } from 'react-redux'
+import { validateProjectName } from '../../utils/nameValidator'
+import { retryUntilDone } from '../../utils/utils'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
 import OnboardSideNav from './OnboardSideNav'
 import AuthView from '../AuthView/AuthView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-import {skip, update} from '../../actions/gettingStarted'
-import {Viewer, Customer, Project} from '../../types/types'
-import {PopupState} from '../../types/popup'
-import {GettingStartedState} from '../../types/gettingStarted'
+import { skip, update } from '../../actions/gettingStarted'
+import { Viewer, Customer, Project } from '../../types/types'
+import { PopupState } from '../../types/popup'
+import { GettingStartedState } from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import drumstick from 'drumstick'
 import Alert from '../../components/Window/Alert'
 require('../../styles/core.scss')
 import AddProjectPopup from './AddProjectPopup'
-import {showNotification} from '../../actions/notification'
-import {onFailureShowNotification} from '../../utils/relay'
-import {ShowNotificationCallback} from '../../types/utils'
+import { showNotification } from '../../actions/notification'
+import { onFailureShowNotification } from '../../utils/relay'
+import { ShowNotificationCallback } from '../../types/utils'
 import ResizableBox from '../../components/ResizableBox'
 import * as Dropzone from 'react-dropzone'
 import OnboardingBar from './Onboarding/OnboardingBar'
 import IntroPopup from './Onboarding/IntroPopup'
 import FinalPopup from './Onboarding/FinalPopup'
-import {throttle} from 'lodash'
+import { throttle } from 'lodash'
+import heartbeat from '../../utils/heartbeat'
 
 interface State {
   showCreateProjectModal: boolean
@@ -48,7 +49,7 @@ interface Props {
   children: Element
   isLoggedin: boolean
   viewer: Viewer
-  user: Customer & {gettingStartedState: string}
+  user: Customer & { gettingStartedState: string }
   project: Project
   allProjects: Project[]
   params: any
@@ -68,6 +69,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   shouldComponentUpdate: any
 
   private refreshInterval: any
+  private stopHeartbeat: () => void
 
   private persistResize = throttle(
     (size) => {
@@ -85,28 +87,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
-    let lastUsedProjectId = null
-    let authToken = null
-
-    if (cookiestore.has('graphcool_auth_token')) {
-      authToken = cookiestore.get('graphcool_auth_token')
-    }
-
-    if (cookiestore.has('graphcool_last_used_project_id')) {
-      lastUsedProjectId = cookiestore.get('graphcool_last_used_project_id')
-    }
-
-    if (__HEARTBEAT_ADDR__) {
-      drumstick.start({
-        endpoint: __HEARTBEAT_ADDR__,
-        payload: () => ({
-          resource: 'console',
-          token: authToken,
-          projectId: lastUsedProjectId,
-        }),
-        frequency: 60 * 1000,
-      })
-    }
+    this.stopHeartbeat = heartbeat()
 
     this.state = {
       showCreateProjectModal: false,
@@ -162,6 +143,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     clearInterval(this.refreshInterval)
+    this.stopHeartbeat()
   }
 
   checkCliOnboarding() {
@@ -245,7 +227,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
               height={window.innerHeight}
               minConstraints={[MIN_SIDEBAR_WIDTH, window.innerHeight]}
               maxConstraints={[290, window.innerHeight]}
-              draggableOpts={{grid: [226,226]}}
+              draggableOpts={{grid: [226, 226]}}
               onResize={this.handleResize}
             >
               <div className='sidebar'>
@@ -273,7 +255,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
                 {this.props.children}
               </div>
               {this.props.gettingStartedState.isActive() &&
-                <OnboardingBar params={this.props.params} />
+              <OnboardingBar params={this.props.params}/>
               }
             </div>
           </div>
@@ -285,13 +267,13 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         )}
         {/*<OnboardingPopup firstName={this.props.user.crm.information.name}/>*/}
         {this.props.gettingStartedState.isCurrentStep('STEP0_OVERVIEW') &&
-          <IntroPopup />
+        <IntroPopup />
         }
         {(
         this.props.gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_WAITING') ||
         this.props.gettingStartedState.isCurrentStep('STEP5_DONE')) &&
-          <FinalPopup projectId={this.props.project.id} />
+        <FinalPopup projectId={this.props.project.id}/>
         }
         <Alert />
         {this.state.showCreateProjectModal && (
@@ -355,24 +337,24 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         method: 'POST',
         body: data,
       })
-      .then(res => res.json())
-      .then(res => {
-        if (res.error) {
-          this.props.showNotification({
-            level: 'error',
-            message: res.error,
-          })
-        } else {
-          this.props.showNotification({
-            level: 'success',
-            message: `Successfuly uploaded the file ${res.name}. It's now available at ${res.url}.`,
-          })
-        }
+        .then(res => res.json())
+        .then(res => {
+          if (res.error) {
+            this.props.showNotification({
+              level: 'error',
+              message: res.error,
+            })
+          } else {
+            this.props.showNotification({
+              level: 'success',
+              message: `Successfuly uploaded the file ${res.name}. It's now available at ${res.url}.`,
+            })
+          }
 
-        this.props.relay.forceFetch({}, () => {
-          //
+          this.props.relay.forceFetch({}, () => {
+            //
+          })
         })
-      })
     }
   }
 }
