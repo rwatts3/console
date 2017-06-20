@@ -18,6 +18,7 @@ interface Props {
   initialScreen: 'login' | 'signUp'
   renderInElement: boolean
   successCallback: (response: Response) => void
+  location: any
 }
 
 const ELEMENT_ID = 'auth0-lock'
@@ -30,6 +31,14 @@ class Auth0LockWrapper extends React.Component<Props, State> {
   _lock: any
 
   componentDidMount() {
+    console.log(this.props.location)
+    let prefill = undefined
+    if (this.props.location.query && this.props.location.query.email) {
+      prefill = {
+        email: this.props.location.query.email,
+      }
+    }
+
     this._lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
       closable: false,
       additionalSignUpFields: [{
@@ -50,6 +59,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
       },
       initialScreen: this.props.initialScreen,
       container: this.props.renderInElement ? ELEMENT_ID : null,
+      prefill,
     })
 
     this._lock.on('authenticated', (authResult) => {

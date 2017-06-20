@@ -178,7 +178,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   render() {
     if (!this.props.isLoggedin) {
       return (
-        <AuthView initialScreen='login'/>
+        <AuthView initialScreen='login' location={this.props.location} />
       )
     }
 
