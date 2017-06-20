@@ -23,7 +23,6 @@ interface Props {
   customerId: string
   router: any
   showNotification: ShowNotificationCallback
-  isBeta: boolean
 }
 
 interface State {
@@ -58,39 +57,37 @@ class AddProjectPopup extends React.Component<Props, State> {
     }
   }
   componentDidMount() {
-    if (this.props.isBeta) {
-      let times = []
-      Bluebird.map(
-        regions,
-        (region, index) => {
-          const randomString1 = btoa(String(Math.random() * 10000000 | 0))
-          const randomString2 = btoa(String(Math.random() * 10000000 | 0))
-          // the first request is always slow, so send 2
-          return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
-            .then(() => {
-              const timer = performance.now()
-              return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
-                .then(() => {
-                  const time = performance.now() - timer
-                  return time
-                })
-            })
-        },
-        {
-          concurrency: 1,
-        },
-      )
-      .then(results => {
-        const minIndex = results.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
-        this.setState({
-          selectedIndex: minIndex,
-          times: results,
-        } as State)
-      })
-    }
+    let times = []
+    Bluebird.map(
+      regions,
+      (region, index) => {
+        const randomString1 = btoa(String(Math.random() * 10000000 | 0))
+        const randomString2 = btoa(String(Math.random() * 10000000 | 0))
+        // the first request is always slow, so send 2
+        return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
+          .then(() => {
+            const timer = performance.now()
+            return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
+              .then(() => {
+                const time = performance.now() - timer
+                return time
+              })
+          })
+      },
+      {
+        concurrency: 1,
+      },
+    )
+    .then(results => {
+      const minIndex = results.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
+      this.setState({
+        selectedIndex: minIndex,
+        times: results,
+      } as State)
+    })
   }
   render() {
-    const {onRequestClose, isBeta} = this.props
+    const {onRequestClose} = this.props
     const {showError, projectName, loading, times} = this.state
     const error = !validateProjectName(this.state.projectName)
 
@@ -184,20 +181,18 @@ class AddProjectPopup extends React.Component<Props, State> {
               </div>
             )}
           </div>
-          {isBeta && (
-            <div className='select-region'>
-              <h2>Choose a Region</h2>
-              <FieldHorizontalSelect
-                activeBackgroundColor={$v.blue}
-                inactiveBackgroundColor='#F5F5F5'
-                choices={choices}
-                infos={infos}
-                selectedIndex={this.state.selectedIndex}
-                inactiveTextColor={$v.gray30}
-                onChange={this.onSelectIndex}
-              />
-            </div>
-          )}
+          <div className='select-region'>
+            <h2>Choose a Region</h2>
+            <FieldHorizontalSelect
+              activeBackgroundColor={$v.blue}
+              inactiveBackgroundColor='#F5F5F5'
+              choices={choices}
+              infos={infos}
+              selectedIndex={this.state.selectedIndex}
+              inactiveTextColor={$v.gray30}
+              onChange={this.onSelectIndex}
+            />
+          </div>
           <div className='footer'>
             <div className='button cancel' onClick={onRequestClose}>Cancel</div>
             <div
