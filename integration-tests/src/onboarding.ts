@@ -4,11 +4,12 @@ import {CONSOLE_URL, runRemote, waitTimeout} from './config'
 export default (cookies: any[]): Promise<any> =>  {
   const chromeless = new Chromeless({
     useArtificialClick: true,
-    runRemote,
+    runRemote: true,
     waitTimeout,
   })
 
   return chromeless
+    .clearCookies()
     .setCookies(cookies, CONSOLE_URL)
     .goto(CONSOLE_URL)
     .wait(2500)
