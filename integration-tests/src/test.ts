@@ -15,7 +15,6 @@ let cookies: any[] = []
 test.before('signup, get cookie and run onboarding', async t => {
   console.log('######### signup')
   cookies = await signup()
-  console.log('\n\nReceived Cookies\n\n', cookies, '\n\n')
   console.log('######### onboarding')
   await onboarding(cookies)
 })

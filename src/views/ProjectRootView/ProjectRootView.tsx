@@ -280,7 +280,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
           <AddProjectPopup
             onRequestClose={this.handleCloseProjectModal}
             customerId={this.props.user.id}
-            isBeta={this.props.user.crm.information.isBeta}
           />
         )}
       </div>
