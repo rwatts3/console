@@ -31,7 +31,6 @@ class Auth0LockWrapper extends React.Component<Props, State> {
   _lock: any
 
   componentDidMount() {
-    console.log(this.props.location)
     let prefill = undefined
     if (this.props.location.query && this.props.location.query.email) {
       prefill = {

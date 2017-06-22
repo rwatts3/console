@@ -11,6 +11,7 @@ interface Props {
   loading: boolean
   router: any
   authTrigger: AuthTrigger
+  location: any
 }
 
 const redirectURL = (authTrigger: AuthTrigger, showAfterSignup: boolean): string => {
@@ -70,6 +71,7 @@ class Right extends React.Component<Props, {}> {
             renderInElement
             successCallback={successCallback}
             initialScreen='signUp'
+            location={this.props.location}
           />
         </div>
       </div>

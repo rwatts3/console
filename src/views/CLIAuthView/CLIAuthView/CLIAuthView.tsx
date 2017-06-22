@@ -105,6 +105,7 @@ export default class CLIAuthView extends React.Component<Props, State> {
           updateAuth={updateAuth}
           authTrigger={authTrigger}
           cliToken={cliToken}
+          location={this.props.location}
         />
       </div>
     )
