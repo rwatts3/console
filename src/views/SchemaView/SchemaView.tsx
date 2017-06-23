@@ -108,6 +108,7 @@ class SchemaView extends React.Component<Props, State> {
             height={window.innerHeight - 64}
             hideArrow
             onResize={this.handleResize}
+            axis='x'
           >
             <SchemaEditor
               project={viewer.project}
