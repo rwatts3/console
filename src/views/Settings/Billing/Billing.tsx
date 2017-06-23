@@ -136,7 +136,7 @@ class Billing extends React.Component<Props, State> {
     }
 
     const projectNode = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
-      return edge.node.name === this.props.projectName
+      return edge.node.systemProjectId === this.props.viewer.project.id
     })
 
     let project = null
@@ -464,7 +464,9 @@ export default Relay.createContainer(mappedBilling, {
               projects(first: 1000) {
                 edges {
                   node {
+                    id
                     name
+                    systemProjectId
                     projectBillingInformation {
                       plan
                       invoices(first: 1000)  {

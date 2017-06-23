@@ -103,7 +103,7 @@ export default class ResizableBox extends React.Component<any,any> {
           minConstraints={minConstraints}
           maxConstraints={maxConstraints}
           lockAspectRatio={lockAspectRatio}
-          axis={axis}
+          axis={axis || 'x'}
         >
           <div style={{width: this.state.width + 'px', height: this.state.height + 'px'}} {...props} />
         </ResizableComponent>
