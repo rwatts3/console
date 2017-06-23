@@ -81,6 +81,7 @@ export interface Project {
   region?: string
   packageDefinitions: RelayConnection<PackageDefinition>
   functions: RelayConnection<ServerlessFunction>
+  systemProjectId: string
 }
 
 export interface ServerlessFunction {
