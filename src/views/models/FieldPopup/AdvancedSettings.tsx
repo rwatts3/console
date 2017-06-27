@@ -46,26 +46,9 @@ export default class AdvancedSettings extends React.Component<Props, null> {
       migrationValue,
       onChangeMigrationValue,
       enums,
+      field,
     } = this.props
     const mandatoryClass = migrationOptional ? '' : 'mandatory'
-
-    let field = {
-      ...this.props.field,
-    }
-
-    if (
-      field.typeIdentifier === 'Enum' &&
-      field.enumId && field.enumId.length > 0 &&
-      (!field.enumValues || field.enumValues.length === 0)
-    ) {
-      const enumType = enums.find(enu => enu.id === field.enumId)
-      if (enumType) {
-        field = {
-          ...field,
-          enumValues: enumType.values,
-        }
-      }
-    }
 
     return (
       <div style={style} className='advanced-settings'>

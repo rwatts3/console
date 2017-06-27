@@ -1,29 +1,29 @@
 import * as React from 'react'
 import * as Relay from 'react-relay'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {nextStep} from '../../../actions/gettingStarted'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {StateTree, ReduxAction} from '../../../types/reducers'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { nextStep } from '../../../actions/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { StateTree, ReduxAction } from '../../../types/reducers'
 import Cell from './Cell'
-import {TypedValue} from '../../../types/utils'
+import { TypedValue } from '../../../types/utils'
 import { Model, Field, TetherStep, Project } from '../../../types/types'
-import {getFirstInputFieldIndex, getDefaultFieldValues} from '../utils'
-import {Icon} from 'graphcool-styles'
-import {classnames} from '../../../utils/classnames'
+import { getFirstInputFieldIndex, getDefaultFieldValues } from '../utils'
+import { Icon } from 'graphcool-styles'
+import { classnames } from '../../../utils/classnames'
 import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')
 import Tether from '../../../components/Tether/Tether'
-import {nextCell} from '../../../actions/databrowser/ui'
-import {GridPosition} from '../../../types/databrowser/ui'
+import { nextCell } from '../../../actions/databrowser/ui'
+import { GridPosition } from '../../../types/databrowser/ui'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
-import {idToBeginning} from '../../../utils/utils'
+import { ConsoleEvents } from 'graphcool-metrics'
+import { idToBeginning } from '../../../utils/utils'
 
 interface Props {
   model: Model
   projectId: string
-  columnWidths: {[key: string]: number}
+  columnWidths: { [key: string]: number }
   add: (fieldValues: { [key: string]: any }) => void
   cancel: (e: any) => void
   gettingStarted: GettingStartedState
@@ -44,11 +44,13 @@ interface State {
 }
 
 class NewRow extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
     this.state = {
-      fieldValues: getDefaultFieldValues(props.model.fields.edges.map((edge) => edge.node)),
+      fieldValues: getDefaultFieldValues(
+        props.model.fields.edges.map((edge) => edge.node),
+        props.project.enums.edges.map(edge => edge.node),
+      ),
       shouldFocus: true,
     }
   }
@@ -72,10 +74,12 @@ class NewRow extends React.Component<Props, State> {
   render() {
     const fields = this.getFields()
 
-      // .sort(compareFields) // TODO remove this once field ordering is implemented
+    // .sort(compareFields) // TODO remove this once field ordering is implemented
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
-    const { step } = this.props.gettingStarted
+    const {step} = this.props.gettingStarted
+
+    console.log(this.props.project)
 
     return (
       <div
@@ -194,7 +198,7 @@ const mapStateToProps = (state: StateTree) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ nextStep, nextCell }, dispatch)
+  return bindActionCreators({nextStep, nextCell}, dispatch)
 }
 
 const MappedNewRow = connect(mapStateToProps, mapDispatchToProps)(NewRow)
@@ -223,6 +227,7 @@ export default Relay.createContainer(MappedNewRow, {
     `,
     project: () => Relay.QL`
       fragment on Project {
+        id
         enums(first: 1000) {
           edges {
             node {

@@ -290,6 +290,7 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private renderExisting = (): JSX.Element => {
+    console.log(this.props.enums, this.props.field.enum)
     if (this.props.editing) {
       let enumValues: any = []
       const {field} = this.props

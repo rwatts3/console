@@ -200,7 +200,6 @@ export interface Field {
   isReadonly?: boolean
   typeIdentifier?: FieldType
   defaultValue?: TypedValue
-  enumValues: string[]
   reverseRelationField?: Field
   relatedModel?: Model
   relation?: Relation

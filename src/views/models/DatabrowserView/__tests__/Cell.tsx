@@ -105,7 +105,6 @@ test('Cell renders and runs selectCell', () => {
         relatedModel: null,
         isUnique: true,
         isRequired: false,
-        enumValues: [],
         model: null,
       }}
       enums={[]}
@@ -180,7 +179,6 @@ test('Cell renders in edit mode', () => {
         relatedModel: null,
         isUnique: true,
         isRequired: false,
-        enumValues: [],
         model: null,
       }}
       enums={[]}
