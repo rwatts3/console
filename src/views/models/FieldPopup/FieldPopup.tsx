@@ -26,7 +26,6 @@ import {
   editConstraint,
   getMigrationUI,
   isValid,
-  updateEnumValues,
   didChange,
   isBreaking, updateMigrationValue, updateEnumId,
 } from './FieldPopupState'
@@ -59,6 +58,7 @@ interface Props {
   gettingStartedState: GettingStartedState
   nextStep: any
   isGlobalEnumsEnabled: boolean
+  enumValues: string[]
 }
 
 export interface State {
@@ -166,7 +166,6 @@ class FieldPopup extends React.Component<Props, State> {
         typeIdentifier,
         isRequired,
         isList,
-        enumValues,
         defaultValue,
         migrationValue,
         isUnique,
@@ -262,12 +261,11 @@ class FieldPopup extends React.Component<Props, State> {
                     typeIdentifier={typeIdentifier || ''}
                     description={description || ''}
                     isList={isList}
-                    enumValues={enumValues}
+                    enumValues={this.props.enumValues}
                     onChangeName={this.updateField(updateName)}
                     onChangeDescription={this.updateField(updateDescription)}
                     onToggleIsList={this.updateField(toggleIsList)}
                     onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
-                    onChangeEnumValues={this.updateField(updateEnumValues)}
                     onChangeEnumId={this.updateField(updateEnumId)}
                     errors={errors}
                     showErrors={showErrors}
@@ -549,21 +547,15 @@ const ReduxContainer = connect(
 
 const MappedFieldPopup = mapProps({
   params: props => props.params,
-  field: props => {
-    const field: Field | null = props.viewer.field
-    if (field) {
-      let enumValues = []
-      if (field.typeIdentifier === 'Enum') {
-        const enums: Enum[] = props.viewer.project.enums.edges.map(edge => edge.node)
-        enumValues = enums.find(en => field.enum.id === en.id).values
-      }
-      return {
-        ...field,
-        enumValues,
-      }
-    } else {
-      return null
+  field: props => props.viewer.field,
+  enumValues: props => {
+    const {field} = props.viewer
+    let enumValues = []
+    if (field.typeIdentifier === 'Enum') {
+      const enums: Enum[] = props.viewer.project.enums.edges.map(edge => edge.node)
+      enumValues = enums.find(en => field.enum.id === en.id).values
     }
+    return enumValues
   },
   nodeCount: props => props.viewer.model.itemCount,
   modelId: props => props.viewer.model.id,

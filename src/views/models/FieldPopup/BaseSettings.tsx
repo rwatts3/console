@@ -25,7 +25,6 @@ interface Props {
   onChangeDescription: Function
   onChangeTypeIdentifier: (type: FieldType) => void
   onToggleIsList: () => void
-  onChangeEnumValues: (values: string[]) => void
   onChangeEnumId: (id: string) => void
   enumValues: string[]
   errors: FieldPopupErrors
@@ -62,7 +61,6 @@ export default class BaseSettings extends React.Component<Props,State> {
       onChangeDescription,
       onChangeName,
       onToggleIsList,
-      onChangeEnumValues,
       enumValues,
       errors,
       showErrors,
@@ -150,41 +148,6 @@ export default class BaseSettings extends React.Component<Props,State> {
             </ErrorInfo>
           </div>
         )}
-        {typeIdentifier === 'Enum' && !this.props.isGlobalEnumsEnabled && (
-          <div className='enum-values'>
-            {editingEnumValues || enumValues.length > 0 ? (
-              <TagsInput
-                onlyUnique
-                addOnBlur
-                addKeys={[9, 13, 32]}
-                value={enumValues}
-                onChange={this.handleChange}
-                renderInput={this.renderTagInputElement}
-              />
-            ) : (
-              <div className='enum-values-placeholder' onClick={this.editEnumValues}>
-                <div className='field-popup-plus'>
-                  <Icon
-                    src={require('graphcool-styles/icons/stroke/add.svg')}
-                    stroke
-                    strokeWidth={4}
-                    color={$v.blue}
-                    width={26}
-                    height={26}
-                  />
-                </div>
-                <div className='enum-values-placeholder-text'>add space-separated enum values</div>
-              </div>
-            )}
-            {showErrors && errors.enumValueMissing && (
-              <div className='enum-error'>
-                <ErrorInfo>
-                  You must specify enum values
-                </ErrorInfo>
-              </div>
-            )}
-          </div>
-        )}
         <div className='list-settings'>
           <OptionInput
             label='Store multiple values in this field'
@@ -248,25 +211,6 @@ export default class BaseSettings extends React.Component<Props,State> {
       }
       return type
     })
-  }
-
-  private handleChange = (enumValues: string[]) => {
-    if (enumValues.length > 0) {
-      const newEnum = enumValues[enumValues.length - 1]
-      const newFirstChar = newEnum[0]
-      const firstCharNumber = parseInt(newFirstChar, 10)
-      if (newFirstChar === newFirstChar.toLowerCase() || !isNaN(firstCharNumber)) {
-        const proposal1 = newEnum[0].toUpperCase() + newEnum.slice(1, newEnum.length)
-        const proposal2 = newEnum.toUpperCase()
-        this.props.showNotification({
-          message: `${newEnum} is no valid enum value, the first character must be an uppercase letter.`
-          + ` Try '${proposal1}' or '${proposal2}'.`,
-          level: 'error',
-        })
-        return
-      }
-    }
-    this.props.onChangeEnumValues(enumValues)
   }
 
   private renderTagInputElement = (props) => {

@@ -60,7 +60,6 @@ export function isBreaking(nodeCount: number, mutatedField: Field, initialField?
   if (
     initialField.isList !== mutatedField.isList ||
     (initialField.isUnique && !mutatedField.isUnique) ||
-    valuesMissing(initialField.enumValues, mutatedField.enumValues) || // only breaking, when values are missing
     initialField.name !== mutatedField.name ||
     initialField.typeIdentifier !== mutatedField.typeIdentifier
   ) {
@@ -134,13 +133,6 @@ export function updateDescription(state: Field, description: string): Field {
   return {
     ...state,
     description,
-  }
-}
-
-export function updateEnumValues(state: Field, enumValues: string[]): Field {
-  return {
-    ...state,
-    enumValues,
   }
 }
 

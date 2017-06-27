@@ -833,6 +833,7 @@ export default Relay.createContainer(MappedDatabrowserView, {
         project: projectByName(projectName: $projectName) {
           id
           ${ModelHeader.getFragment('project')}
+          ${NewRow.getFragment('project')}
           enums(first: 1000) {
             edges {
               node {
@@ -842,7 +843,6 @@ export default Relay.createContainer(MappedDatabrowserView, {
               }
             }
           }
-          ${NewRow.getFragment('project')}
         }
         ${ModelHeader.getFragment('viewer')}
       }
