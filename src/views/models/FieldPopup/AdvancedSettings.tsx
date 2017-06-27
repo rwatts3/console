@@ -166,6 +166,7 @@ export default class AdvancedSettings extends React.Component<Props, null> {
             field={field}
             projectId={projectId}
             optional={!isRequired}
+            enums={this.props.enums}
           />
         </div>
         {showMigration && (
@@ -209,6 +210,7 @@ export default class AdvancedSettings extends React.Component<Props, null> {
                 field={field}
                 projectId={projectId}
                 optional={!isRequired}
+                enums={this.props.enums}
               />
             </div>
             {showErrors && errors.migrationValueMissing && (

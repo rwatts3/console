@@ -549,7 +549,22 @@ const ReduxContainer = connect(
 
 const MappedFieldPopup = mapProps({
   params: props => props.params,
-  field: props => props.viewer.field,
+  field: props => {
+    const field: Field | null = props.viewer.field
+    if (field) {
+      let enumValues = []
+      if (field.typeIdentifier === 'Enum') {
+        const enums: Enum[] = props.viewer.project.enums.edges.map(edge => edge.node)
+        enumValues = enums.find(en => field.enum.id === en.id).values
+      }
+      return {
+        ...field,
+        enumValues,
+      }
+    } else {
+      return null
+    }
+  },
   nodeCount: props => props.viewer.model.itemCount,
   modelId: props => props.viewer.model.id,
   projectId: props => props.viewer.project.id,
@@ -587,7 +602,6 @@ export default Relay.createContainer(MappedFieldPopup, {
           isList
           isUnique
           isSystem
-          enumValues
           defaultValue
           enum {
             id
@@ -602,7 +616,7 @@ export default Relay.createContainer(MappedFieldPopup, {
         project: projectByName(projectName: $projectName) {
           id
           isGlobalEnumsEnabled
-          enums(first: 100) {
+          enums(first: 1000) {
             edges {
               node {
                 id

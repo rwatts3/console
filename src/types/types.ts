@@ -82,6 +82,7 @@ export interface Project {
   packageDefinitions: RelayConnection<PackageDefinition>
   functions: RelayConnection<ServerlessFunction>
   systemProjectId: string
+  enums: RelayConnection<Enum>
 }
 
 export interface ServerlessFunction {

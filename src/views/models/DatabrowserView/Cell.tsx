@@ -3,7 +3,7 @@ import * as Relay from 'react-relay'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
 import styled, { keyframes } from 'styled-components'
-import {Field} from '../../../types/types'
+import { Enum, Field } from '../../../types/types'
 import NodeSelector from '../../../components/NodeSelector/NodeSelector'
 import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
@@ -28,6 +28,7 @@ export type UpdateCallback = (success: boolean) => void
 
 interface Props {
   field: Field
+  enums: Enum[]
   projectId: string
   projectName: string
   nodeId: string
@@ -290,8 +291,16 @@ export class Cell extends React.PureComponent<Props, State> {
 
   private renderExisting = (): JSX.Element => {
     if (this.props.editing) {
+      let enumValues: any = []
+      const {field} = this.props
+      if (field && field.typeIdentifier === 'Enum') {
+        enumValues = this.props.enums.filter(en => field.enum.id === en.id).values
+      }
       const reqs: CellRequirements = {
-        field: this.props.field,
+        field: {
+          ...field,
+          enumValues,
+        },
         value: this.props.value,
         projectId: this.props.projectId,
         nodeId: this.props.nodeId,
@@ -300,6 +309,7 @@ export class Cell extends React.PureComponent<Props, State> {
           onKeyDown: this.onKeyDown,
           cancel: this.cancel,
         },
+        enums: this.props.enums,
       }
       return getEditCell(reqs)
     }
@@ -454,7 +464,9 @@ export default Relay.createContainer(MappedCell, {
         isRequired
         isReadonly
         typeIdentifier
-        enumValues
+        enum {
+          id
+        }
         model {
           id
           name

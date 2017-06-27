@@ -2,7 +2,7 @@ import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {CellRequirements, getScalarEditCell, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
 import {TypedValue} from '../../../types/utils'
-import {Field} from '../../../types/types'
+import { Enum, Field } from '../../../types/types'
 import {valueToString} from '../../../utils/valueparser'
 import * as cn from 'classnames'
 
@@ -18,6 +18,7 @@ interface Props {
   field: Field
   placeholder?: string
   optional: boolean
+  enums: Enum[]
 }
 
 export default class EditValueInput extends React.Component<Props, State> {
@@ -151,6 +152,7 @@ export default class EditValueInput extends React.Component<Props, State> {
           // on key down...
         },
       },
+      enums: this.props.enums,
     }
 
     return getEditCell(requirements)

@@ -127,6 +127,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
         cancel: () => null,
         onKeyDown: this.onKeyDown,
       },
+      enums: this.props.enums,
     }
   }
 
@@ -142,6 +143,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
         cancel: () => null,
         onKeyDown: this.onKeyDown,
       },
+      enums: this.props.enums,
     }
     return (
       <Modal
