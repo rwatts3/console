@@ -24,7 +24,7 @@ import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
 import {calculateFieldColumnWidths} from '../utils'
-import {Field, Model, Viewer, Project, OrderBy, FieldWidths} from '../../../types/types'
+import { Field, Model, Viewer, Project, OrderBy, FieldWidths, Enum } from '../../../types/types'
 import ModelHeader from '../ModelHeader'
 import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
 import {GettingStartedState} from '../../../types/gettingStarted'
@@ -125,6 +125,7 @@ interface Props {
                   skip: number,
                   searchQuery?: string) => ReduxThunk
   searchQuery: string
+  enums: Enum[]
 }
 
 interface State {
@@ -558,6 +559,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           rowIndex={rowIndex}
           fields={this.props.fields}
           modelNamePlural={this.props.model.namePlural}
+          enums={this.props.enums}
         />
       )
     }
@@ -784,6 +786,7 @@ const MappedDatabrowserView = mapProps({
   model: (props) => props.viewer.model,
   project: (props) => props.viewer.project,
   viewer: (props) => props.viewer,
+  enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
 })(ReduxContainer)
 
 export default Relay.createContainer(MappedDatabrowserView, {
@@ -830,6 +833,16 @@ export default Relay.createContainer(MappedDatabrowserView, {
         project: projectByName(projectName: $projectName) {
           id
           ${ModelHeader.getFragment('project')}
+          enums(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                values
+              }
+            }
+          }
+          ${NewRow.getFragment('project')}
         }
         ${ModelHeader.getFragment('viewer')}
       }

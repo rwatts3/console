@@ -27,6 +27,7 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
   }
 
   render() {
+    const enumValues = this.props.enums.find(en => this.props.field.enum.id === en.id).values
     return (
       <ClickOutside
         onClickOutside={this.props.cancel}
@@ -38,7 +39,7 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
             ref={ref => this.ref = ref}
             value={this.state.value}
             onKeyDown={this.onKeyDown.bind(this)}
-            options={this.props.field.enumValues}
+            options={enumValues}
             onSelect={(value: string) => {
               this.setState({value})
               this.props.save(stringToValue(value, this.props.field))

@@ -122,7 +122,6 @@ export default Relay.createContainer(ConnectedHeaderCell, {
             typeIdentifier
             isSystem
             isRequired
-            enumValues
             relatedModel {
               name
             }

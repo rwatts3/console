@@ -108,6 +108,7 @@ test('Cell renders and runs selectCell', () => {
         enumValues: [],
         model: null,
       }}
+      enums={[]}
       addnew={false}
       backgroundColor='#fff'
       rowSelected={false}
@@ -182,6 +183,7 @@ test('Cell renders in edit mode', () => {
         enumValues: [],
         model: null,
       }}
+      enums={[]}
       addnew={false}
       backgroundColor='#fff'
       rowSelected={false}

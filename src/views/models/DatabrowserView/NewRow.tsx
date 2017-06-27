@@ -7,7 +7,7 @@ import {GettingStartedState} from '../../../types/gettingStarted'
 import {StateTree, ReduxAction} from '../../../types/reducers'
 import Cell from './Cell'
 import {TypedValue} from '../../../types/utils'
-import {Model, Field, TetherStep} from '../../../types/types'
+import { Model, Field, TetherStep, Project } from '../../../types/types'
 import {getFirstInputFieldIndex, getDefaultFieldValues} from '../utils'
 import {Icon} from 'graphcool-styles'
 import {classnames} from '../../../utils/classnames'
@@ -35,6 +35,7 @@ interface Props {
   loaded: Immutable.List<boolean>
   writing: boolean
   updateCalled: () => void
+  project: Project
 }
 
 interface State {
@@ -155,6 +156,7 @@ class NewRow extends React.Component<Props, State> {
         reload={() => null}
         rowIndex={-1}
         onChange={this.props.updateCalled}
+        enums={this.props.project.enums.edges.map(edge => edge.node)}
       />
     </div>
   )
@@ -207,11 +209,26 @@ export default Relay.createContainer(MappedNewRow, {
               id
               name
               defaultValue
-              enumValues
               typeIdentifier
               isList
               isReadonly
+              enum {
+                id
+              }
               ${Cell.getFragment('field')}
+            }
+          }
+        }
+      }
+    `,
+    project: () => Relay.QL`
+      fragment on Project {
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
             }
           }
         }

@@ -1,4 +1,4 @@
-import {Field} from '../../../../types/types'
+import { Enum, Field } from '../../../../types/types'
 import * as React from 'react'
 import IntCell from './IntCell'
 import FloatCell from './FloatCell'
@@ -26,6 +26,7 @@ export interface CellRequirements {
     cancel: (reload?: boolean) => void
     onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void,
   }
+  enums: Enum[]
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
@@ -137,6 +138,7 @@ export function getScalarEditCell(reqs: CellRequirements): JSX.Element {
           onKeyDown={reqs.methods.onKeyDown}
           field={reqs.field}
           cancel={reqs.methods.cancel}
+          enums={reqs.enums}
         />
       )
     case 'String':
