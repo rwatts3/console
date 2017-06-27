@@ -551,7 +551,7 @@ const MappedFieldPopup = mapProps({
   enumValues: props => {
     const {field} = props.viewer
     let enumValues = []
-    if (field.typeIdentifier === 'Enum') {
+    if (field && field.typeIdentifier === 'Enum') {
       const enums: Enum[] = props.viewer.project.enums.edges.map(edge => edge.node)
       enumValues = enums.find(en => field.enum.id === en.id).values
     }
