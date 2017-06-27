@@ -27,7 +27,8 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
   }
 
   render() {
-    const enumValues = this.props.enums.find(en => this.props.field.enum.id === en.id).values
+    const selectedEnum = this.props.enums.find(en => this.props.field.enum.id === en.id)
+    const enumValues = selectedEnum ? selectedEnum.values : []
     return (
       <ClickOutside
         onClickOutside={this.props.cancel}
