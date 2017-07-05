@@ -51,7 +51,7 @@ import AllRelationPermissionsList from './views/PermissionsView/RelationPermissi
 import PermissionsList from './views/PermissionsView/PermissionsList/PermissionsList'
 import FunctionsView from './views/FunctionsView/FunctionsView'
 import {
-  CreateFunctionPopup,
+  CreateFunctionPopup, EditCustomMutationFunctionPopup, EditCustomQueryFunctionPopup,
   EditRPFunctionPopup,
   EditSSSFunctionPopup,
 } from './views/FunctionsView/FunctionPopup/FunctionPopup'
@@ -204,6 +204,28 @@ export default (
         <Route
           path=':id/rp/edit'
           component={EditRPFunctionPopup}
+          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+          render={render}
+        >
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
+        <Route
+          path=':id/custom_mutation/edit'
+          component={EditCustomMutationFunctionPopup}
+          queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+          render={render}
+        >
+          <Route
+            path='fullscreen'
+            component={null}
+          />
+        </Route>
+        <Route
+          path=':id/custom_query/edit'
+          component={EditCustomQueryFunctionPopup}
           queries={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
           render={render}
         >

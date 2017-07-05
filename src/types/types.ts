@@ -86,6 +86,7 @@ export interface Project {
 }
 
 export interface ServerlessFunction {
+  __typename?: string
   id: string
   name: string
   type?: FunctionType
@@ -103,6 +104,9 @@ export interface ServerlessFunction {
   operation?: RequestPipelineMutationOperation
   isActive: boolean
   query?: string
+  schema?: string
+  customQuerySchema?: string
+  customMutationSchema?: string
 }
 
 export interface FunctionStats {

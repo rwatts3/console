@@ -47,8 +47,26 @@ export function getEmptyFunction(models: Model[], functions: ServerlessFunction[
     isActive: true,
     modelId,
     query: getDefaultSSSQuery(models[0].name),
+    customMutationSchema,
+    customQuerySchema,
   }
 }
+
+const customMutationSchema = `type DoStuffPayload {
+  bool: Boolean!
+}
+
+extend type Mutation {
+  doStuff(what: String!): DoStuffPayload!
+}`
+
+const customQuerySchema = `type GetStuffPayload {
+  bool: Boolean!
+}
+
+extend type Query {
+  getStuff(what: String!): GetStuffPayload!
+}`
 
 export function getDefaultSSSQuery(modelName: string) {
   return `\
@@ -77,6 +95,17 @@ module.exports = function (event) {
   console.log(event.data)
 }
 `
+  }
+  if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType)) {
+    return `module.exports = function (event) {
+  var data = event.data
+
+  if (data.what === "clean the dishes") {
+    return {data: {bool: false}}
+  }
+
+  return {data: {bool: true}}
+}`
   }
   return `\
 // Click "EXAMPLE EVENT" to see whats in \`event\`
@@ -147,11 +176,31 @@ ServerlessFunction {
   }
 }
 
-export function updateQuery(state: ServerlessFunction, query: string): ServerlessFunction {
-  return {
-    ...state,
-    query,
+export function updateQuery(eventType: EventType, state: ServerlessFunction, query: string): ServerlessFunction {
+  if (eventType === 'SSS') {
+    return {
+      ...state,
+      query,
+    }
   }
+
+  if (eventType === 'CUSTOM_MUTATION') {
+    return {
+      ...state,
+      customMutationSchema: query,
+    }
+  }
+
+  if (eventType === 'CUSTOM_QUERY') {
+    return {
+      ...state,
+      customQuerySchema: query,
+    }
+  }
+
+  throw new Error('invalid event type for updateQuery function')
+
+  // return state
 }
 
 export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {

@@ -3,11 +3,11 @@ import mapProps from '../../../components/MapProps/MapProps'
 import * as Relay from 'react-relay'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 import PopupHeader from '../../../components/PopupHeader'
 import PopupFooter from '../../../components/PopupFooter'
-import {Model, Project, ServerlessFunction} from '../../../types/types'
+import { Model, Project, ServerlessFunction } from '../../../types/types'
 import {
   didChange, getDefaultSSSQuery,
   getEmptyFunction, inlineCode, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName,
@@ -21,24 +21,28 @@ import Step0 from './Step0'
 import * as cookiestore from 'cookiestore'
 import Trigger from './Trigger'
 import RequestPipelineFunction from './RequestPipelineFunction'
-import {RelayProp} from 'react-relay'
-import {showNotification} from '../../../actions/notification'
-import {connect} from 'react-redux'
+import { RelayProp } from 'react-relay'
+import { showNotification } from '../../../actions/notification'
+import { connect } from 'react-redux'
 import AddRequestPipelineMutationFunction from '../../../mutations/Functions/AddRequestPipelineMutationFunction'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {ShowNotificationCallback} from '../../../types/utils'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import Loading from '../../../components/Loading/Loading'
 import UpdateRequestPipelineMutationFunction from '../../../mutations/Functions/UpdateRequestPipelineMutationFunction'
 import DeleteFunction from '../../../mutations/Functions/DeleteFunction'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import TestPopup from './TestPopup'
 import AddServerSideSubscriptionFunction from '../../../mutations/Functions/AddServerSideSubscriptionFunction'
 import UpdateServerSideSubscriptionFunction from '../../../mutations/Functions/UpdateServerSideSubscriptionFunction'
-import {getEventTypeFromFunction} from '../../../utils/functions'
+import { getEventTypeFromFunction } from '../../../utils/functions'
 import TestButton from './TestButton'
+import AddCustomMutationFunction from '../../../mutations/Functions/AddCustomMutationFunction'
+import AddCustomQueryFunction from '../../../mutations/Functions/AddCustomQueryFunction'
+import UpdateCustomMutationFunction from '../../../mutations/Functions/UpdateCustomMutationFunction'
+import UpdateCustomQueryFunction from '../../../mutations/Functions/UpdateCustomQueryFunction'
 
-export type EventType = 'SSS' | 'RP' | 'CRON'
-export const eventTypes: EventType[] = ['SSS', 'RP', 'CRON']
+export type EventType = 'SSS' | 'RP' | 'CUSTOM_MUTATION' | 'CUSTOM_QUERY'
+export const eventTypes: EventType[] = ['SSS', 'RP', 'CUSTOM_MUTATION', 'CUSTOM_QUERY']
 
 interface Props {
   params: any
@@ -51,6 +55,7 @@ interface Props {
   node: ServerlessFunction
   functions: ServerlessFunction[]
   location: any
+  isBeta: boolean
 }
 
 export interface FunctionPopupState {
@@ -76,10 +81,13 @@ let isSSS = false
 
 class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   private lastInlineCode: string
+
   constructor(props: Props) {
     super(props)
 
     // prepare node that comes from the server
+
+    const eventType = getEventTypeFromFunction(props.node)
 
     if (props.node) {
       if (props.node.model) {
@@ -99,6 +107,14 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
           //
         }
       }
+
+      if (eventType === 'CUSTOM_MUTATION') {
+        props.node.customMutationSchema = props.node.schema
+      }
+
+      if (eventType === 'CUSTOM_QUERY') {
+        props.node.customQuerySchema = props.node.schema
+      }
     }
 
     this.state = {
@@ -107,7 +123,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       showErrors: false,
       fn: props.node || getEmptyFunction(props.models, props.functions, 'RP'),
       loading: false,
-      eventType: getEventTypeFromFunction(props.node),
+      eventType,
       showTest: false,
       sssModelName: props.models[0].name,
     }
@@ -130,8 +146,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   componentDidUpdate(prevProps: Props, prevState: FunctionPopupState) {
     if (prevState.fn.modelId !== this.state.fn.modelId ||
-        prevState.fn.operation !== this.state.fn.operation ||
-        prevState.fn.binding !== this.state.fn.binding
+      prevState.fn.operation !== this.state.fn.operation ||
+      prevState.fn.binding !== this.state.fn.binding
     ) {
       this.props.relay.setVariables({
         modelSelected: true,
@@ -159,8 +175,26 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.forceUpdate()
   }
 
+  getFunctionQuery(): string {
+    const {fn, eventType} = this.state
+
+    if (eventType === 'SSS') {
+      return fn.query
+    }
+
+    if (eventType === 'CUSTOM_MUTATION') {
+      return fn.customMutationSchema
+    }
+
+    if (eventType === 'CUSTOM_QUERY') {
+      return fn.customQuerySchema
+    }
+
+    return ''
+  }
+
   render() {
-    const {models, schema, functions, location} = this.props
+    const {models, schema, functions, location, isBeta} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, loading, showTest, sssModelName} = this.state
 
     const isInline = fn.type === 'AUTH0'
@@ -233,6 +267,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   sssModelName={sssModelName}
                   onChangeSSSModel={this.handleChangeSSSModel}
                   models={models}
+                  isBeta={isBeta}
                 />
               )}
               {activeTabIndex === 1 && !editing && eventType === 'RP' && (
@@ -250,37 +285,38 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
               {
                 (
                   eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) ||
-                  eventType === 'SSS' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 1))
+                  ['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType) && (editing ? (activeTabIndex === 0)
+                    : (activeTabIndex === 1))
                 ) && (
-                <RequestPipelineFunction
-                  name={fn.name}
-                  inlineCode={fn.inlineCode}
-                  onInlineCodeChange={this.update(updateInlineCode)}
-                  onNameChange={this.update(updateName)}
-                  binding={fn.binding}
-                  isInline={isInline}
-                  onTypeChange={this.update(updateType)}
-                  onChangeUrl={this.update(updateWebhookUrl)}
-                  webhookUrl={fn.webhookUrl}
-                  schema={schema}
-                  headers={fn._webhookHeaders}
-                  onChangeHeaders={this.update(updateWebhookHeaders)}
-                  editing={editing}
-                  query={fn.query}
-                  onChangeQuery={this.update(updateQuery)}
-                  eventType={eventType}
-                  projectId={this.props.project.id}
-                  sssModelName={this.state.sssModelName}
-                  modelName={
-                    fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
-                  }
-                  operation={fn.operation}
-                  showErrors={this.state.showErrors}
-                  updateFunction={this.updateExtendFunction}
-                  location={this.props.location}
-                  params={this.props.params}
-                />
-              )}
+                  <RequestPipelineFunction
+                    name={fn.name}
+                    inlineCode={fn.inlineCode}
+                    onInlineCodeChange={this.update(updateInlineCode)}
+                    onNameChange={this.update(updateName)}
+                    binding={fn.binding}
+                    isInline={isInline}
+                    onTypeChange={this.update(updateType)}
+                    onChangeUrl={this.update(updateWebhookUrl)}
+                    webhookUrl={fn.webhookUrl}
+                    schema={schema}
+                    headers={fn._webhookHeaders}
+                    onChangeHeaders={this.update(updateWebhookHeaders)}
+                    editing={editing}
+                    query={this.getFunctionQuery()}
+                    onChangeQuery={this.update(updateQuery.bind(this, eventType))}
+                    eventType={eventType}
+                    projectId={this.props.project.id}
+                    sssModelName={this.state.sssModelName}
+                    modelName={
+                      fn.model ? fn.model.name : fn.modelId ? models.find(m => m.id === fn.modelId).name : undefined
+                    }
+                    operation={fn.operation}
+                    showErrors={this.state.showErrors}
+                    updateFunction={this.updateExtendFunction}
+                    location={this.props.location}
+                    params={this.props.params}
+                  />
+                )}
             </div>
             <PopupFooter
               entityName='Function'
@@ -316,7 +352,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private footerButtonForTab = (index: number) => {
     const {editing, eventType} = this.state
-    if (editing || (this.state.eventType === 'RP' && index === 2) || (this.state.eventType === 'SSS' && index === 1)) {
+    if (editing || (this.state.eventType === 'RP' && index === 2) ||
+      (['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(this.state.eventType) && index === 1)) {
       return (
         <TestButton onClick={this.openFullscreen}>Fullscreen Mode</TestButton>
       )
@@ -342,9 +379,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       }
     }
 
-    if (eventType === 'SSS') {
+    if (['CUSTOM_MUTATION', 'CUSTOM_QUERY', 'SSS'].includes(eventType)) {
       if (this.state.editing) {
-        return ['Choose Event Trigger']
+        return ['Update Function']
       } else {
         return ['Choose Event Trigger', 'Define Function']
       }
@@ -386,7 +423,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       method: 'post',
       body: JSON.stringify({code: inlineCode, authToken}),
     })
-    .then(res => res.json())
+      .then(res => res.json())
   }
 
   private updateExtendFunction = () => {
@@ -487,6 +524,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return this.updateRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
       return this.updateSSSFunction(input)
+    } else if (this.state.eventType === 'CUSTOM_MUTATION') {
+      return this.updateCustomMutation(input)
+    } else if (this.state.eventType === 'CUSTOM_QUERY') {
+      return this.updateCustomQuery(input)
     }
   }
 
@@ -505,6 +546,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return this.createRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
       return this.createSSSFunction(input)
+    } else if (this.state.eventType === 'CUSTOM_MUTATION') {
+      return this.createCustomMutation(input)
+    } else if (this.state.eventType === 'CUSTOM_QUERY') {
+      return this.createCustomQuery(input)
     }
   }
 
@@ -529,6 +574,46 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.setLoading(true)
     Relay.Store.commitUpdate(
       new AddRequestPipelineMutationFunction(input),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
+  private createCustomQuery(input) {
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new AddCustomQueryFunction({
+        ...input,
+        schema: input.customQuerySchema,
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
+  private createCustomMutation(input) {
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new AddCustomMutationFunction({
+        ...input,
+        schema: input.customMutationSchema,
+      }),
       {
         onSuccess: () => {
           this.close()
@@ -576,6 +661,46 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     )
   }
 
+  private updateCustomMutation(input) {
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new UpdateCustomMutationFunction({
+        ...input,
+        schema: input.customMutationSchema,
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
+  private updateCustomQuery(input) {
+    this.setLoading(true)
+    Relay.Store.commitUpdate(
+      new UpdateCustomQueryFunction({
+        ...input,
+        schema: input.customQuerySchema,
+      }),
+      {
+        onSuccess: () => {
+          this.close()
+          this.setLoading(false)
+        },
+        onFailure: (transaction) => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setLoading(false)
+        },
+      },
+    )
+  }
+
   private close = () => {
     const {router, params} = this.props
     router.push(`/${params.projectName}/functions`)
@@ -591,7 +716,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.setState({loading} as FunctionPopupState)
   }
 }
-export function getIsInline(fn: ServerlessFunction| null): boolean {
+export function getIsInline(fn: ServerlessFunction | null): boolean {
   return !!fn.auth0Id
 }
 
@@ -603,6 +728,7 @@ const MappedFunctionPopup = mapProps({
   schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
   node: props => props.node,
   functions: props => props.viewer.project.functions ? props.viewer.project.functions.edges.map(edge => edge.node) : [],
+  isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(ConnectedFunctionPopup))
 
 export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
@@ -706,8 +832,105 @@ export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   },
 })
 
+export const EditCustomMutationFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+  initialVariables: {
+    projectName: null, // injected from router
+    selectedModelName: null,
+    modelSelected: false,
+    binding: null,
+    operation: null,
+    includeFunctions: true,
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        id
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 100) {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
+        }
+        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          requestPipelineFunctionSchema(binding: $binding operation: $operation)
+        }
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
+      }
+    `,
+    node: () => Relay.QL`
+      fragment on Function {
+        ${FunctionFragment}
+        ... on CustomMutationFunction {
+          schema
+        }
+      }
+    `,
+  },
+})
+
+export const EditCustomQueryFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+  initialVariables: {
+    projectName: null, // injected from router
+    selectedModelName: null,
+    modelSelected: false,
+    binding: null,
+    operation: null,
+    includeFunctions: true,
+  },
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        id
+        project: projectByName(projectName: $projectName) {
+          id
+          name
+          models(first: 100) {
+            edges {
+              node {
+                id
+                name
+              }
+            }
+          }
+        }
+        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+          requestPipelineFunctionSchema(binding: $binding operation: $operation)
+        }
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
+      }
+    `,
+    node: () => Relay.QL`
+      fragment on Function {
+        ${FunctionFragment}
+        ... on CustomQueryFunction {
+          schema
+        }
+      }
+    `,
+  },
+})
+
 const FunctionFragment = Relay.QL`
   fragment on Function {
+    __typename
     id
     name
     inlineCode
@@ -732,6 +955,13 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         id
+        user {
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
         project: projectByName(projectName: $projectName) {
           id
           name
@@ -747,6 +977,7 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
             edges {
               node {
                 id
+                __typename
                 ... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
                   id
                   binding

@@ -225,6 +225,17 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
 
     return 2
   }
+  getLeftTabs(): string[] {
+    const {eventType} = this.props
+    if (['RP', 'SSS'].includes(eventType)) {
+      const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
+      return [inputTitle, 'Example Event']
+    } else if (eventType === 'CUSTOM_MUTATION') {
+      return ['Mutation SDL']
+    } else if (eventType === 'CUSTOM_QUERY') {
+      return ['Query SDL']
+    }
+  }
   renderComponent() {
     const {inputWidth, showExample, responses} = this.state
     const {
@@ -321,7 +332,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
             @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight, .relative;
           }
           .test-button {
-            @p: .absolute, .bottom0, .right0, .mb25, .mr25, .z999;
+            @p: .absolute, .bottom0, .right0, .mb25, .mr25, .z999, .flex, .itemsEnd;
           }
           .body :global(.ReactCodeMirror) {
             width: 100%;
@@ -371,6 +382,16 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
           .close-icon {
             @p: .absolute, .top25, .right25, .pointer;
           }
+          .powered-by {
+            @p: .flexColumn, .itemsCenter, .ma16, .f14, .white30, .noUnderline, .dib, .absolute, .bottom0, .left0, .z3;
+          }
+          .powered-by div {
+            @p: .mb16;
+          }
+          .powered-by img {
+            @p: .o50;
+            width: 120px;
+          }
         `}</style>
         <style jsx global>{`
           .CodeMirror-hints {
@@ -390,7 +411,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                 <StepMarker style={{left: -12, top: -1, position: 'relative'}}>2</StepMarker>
               )}
               <Toggle
-                choices={[inputTitle, 'Example Event']}
+                choices={this.getLeftTabs()}
                 activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
                 onChange={this.handleInputChange}
               />
@@ -415,7 +436,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                 />
               </div>
             )}
-            {!showExample && eventType === 'SSS' && (
+            {!showExample && (['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType)) && (
               <div className='sss-editor flexAuto'>
                 <CustomGraphiQL
                   rerenderQuery={true}
@@ -430,6 +451,12 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                 />
               </div>
             )}
+            {fullscreen && (
+              <a className='powered-by' href='https://auth0.com/Extend/developers' target='_blank'>
+                <div>powered by</div>
+                <img src={require('assets/graphics/auth0-extend.svg')} />
+              </a>
+            )}
           </div>
         </ResizableBox>
         <div className='function'>
@@ -438,7 +465,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
               {!this.props.editing && (
                 <StepMarker style={{left: -20, top: -1, position: 'relative'}}>
                   {eventType === 'RP' && '2'}
-                  {eventType === 'SSS' && '3'}
+                  {['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType) && '3'}
                 </StepMarker>
               )}
               <div className='ml10'>
