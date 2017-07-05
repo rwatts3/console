@@ -13,24 +13,14 @@ interface Props {
   sssModelName: string
   onChangeSSSModel: (e: any) => void
   models: Model[]
+  isBeta: boolean
 }
 
-interface State {
-}
-
-export default class Step0 extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      eventType: null,
-    }
-  }
+export default class Step0 extends React.Component<Props, {}> {
 
   render() {
-    const {eventType, onChangeEventType, sssModelName, onChangeSSSModel, models} = this.props
-    const choices = [
+    const {eventType, onChangeEventType, sssModelName, onChangeSSSModel, models, isBeta} = this.props
+    let choices: Array<JSX.Element | string> = [
       <div className='flex itemsCenter' data-test='choose-sss'>
         <Icon
           src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
@@ -53,6 +43,7 @@ export default class Step0 extends React.Component<Props, State> {
           Request Pipeline
         </div>
       </div>,
+      /*
       <Info customTip={
         <div className='flex itemsCenter' data-test='choose-cron'>
           <Icon
@@ -75,7 +66,12 @@ export default class Step0 extends React.Component<Props, State> {
           Cron Jobs will soon be available
         </span>
       </Info>,
+      */
     ]
+    if (isBeta) {
+      choices.push('Custom Mutation')
+      choices.push('Custom Query')
+    }
     return (
       <div className='step0'>
         <style jsx>{`
@@ -100,7 +96,6 @@ export default class Step0 extends React.Component<Props, State> {
           inactiveTextColor={$v.gray30}
           onChange={(index) => onChangeEventType(eventTypes[index])}
           spread
-          disabledIndeces={[2]}
         />
         {eventType === 'SSS' && (
           <div className='flex itemsCenter ml38 mb38'>
@@ -137,6 +132,15 @@ export default class Step0 extends React.Component<Props, State> {
     if (eventType === 'SSS') {
       return `Server-side subscriptions give you the ability to react to events like mutations.
       You could for example send emails everytime a user signs up or use it for logging`
+    }
+
+    if (eventType === 'CUSTOM_MUTATION') {
+      return `Extend the schema by creating a custom mutation which is powered by a function that you provide`
+    }
+
+    if (eventType === 'CUSTOM_QUERY') {
+      return `Extend the schema by creating a custom query on the root level which is powered
+      by a function that you provide`
     }
 
     return 'You can’t change the function type after you created the function.'

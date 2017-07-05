@@ -17,6 +17,8 @@ import * as cn from 'classnames'
 import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
 import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
+import ToggleCustomMutationFunction from '../../mutations/Functions/ToggleCustomMutationFunction'
+import ToggleCustomQueryFunction from '../../mutations/Functions/ToggleCustomQueryFunction'
 
 interface Props {
   fn: ServerlessFunction
@@ -180,6 +182,16 @@ class FunctionRow extends React.Component<Props, State> {
                 <span>Server-side Subscription</span>
               </div>
             )}
+            {eventType === 'CUSTOM_MUTATION' && (
+              <div className='event-type'>
+                <span>Custom Mutation</span>
+              </div>
+            )}
+            {eventType === 'CUSTOM_QUERY' && (
+              <div className='event-type'>
+                <span>Custom Query</span>
+              </div>
+            )}
           </Link>
         </td>
         <td className='less-padding'>
@@ -232,36 +244,68 @@ class FunctionRow extends React.Component<Props, State> {
         isActive: !state.isActive,
       }
     })
-    if (this.props.fn.binding) {
-      Relay.Store.commitUpdate(
-        new ToggleActiveRequestPipelineMutationFunction({
-          functionId: this.props.fn.id,
-          isActive: !this.props.fn.isActive,
-        }),
-        {
-          onSuccess: () => {
-            console.log('success at toggling')
+    const eventType = getEventTypeFromFunction(this.props.fn)
+    switch (eventType) {
+      case 'RP':
+        return Relay.Store.commitUpdate(
+          new ToggleActiveRequestPipelineMutationFunction({
+            functionId: this.props.fn.id,
+            isActive: !this.props.fn.isActive,
+          }),
+          {
+            onSuccess: () => {
+              console.log('success at toggling')
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
+        )
+      case 'SSS':
+        return Relay.Store.commitUpdate(
+          new ToggleServerSideSubscriptionFunction({
+            functionId: this.props.fn.id,
+            isActive: !this.props.fn.isActive,
+          }),
+          {
+            onSuccess: () => {
+              console.log('success at toggling')
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-        },
-      )
-    } else {
-      Relay.Store.commitUpdate(
-        new ToggleServerSideSubscriptionFunction({
-          functionId: this.props.fn.id,
-          isActive: !this.props.fn.isActive,
-        }),
-        {
-          onSuccess: () => {
-            console.log('success at toggling')
+        )
+      case 'CUSTOM_MUTATION':
+        return Relay.Store.commitUpdate(
+          new ToggleCustomMutationFunction({
+            functionId: this.props.fn.id,
+            isActive: !this.props.fn.isActive,
+          }),
+          {
+            onSuccess: () => {
+              console.log('success at toggling')
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
+        )
+      case 'CUSTOM_QUERY':
+        return Relay.Store.commitUpdate(
+          new ToggleCustomQueryFunction({
+            functionId: this.props.fn.id,
+            isActive: !this.props.fn.isActive,
+          }),
+          {
+            onSuccess: () => {
+              console.log('success at toggling')
+            },
+            onFailure: (transaction) => {
+              onFailureShowNotification(transaction, this.props.showNotification)
+            },
           },
-        },
-      )
+        )
     }
   }
 }
@@ -272,6 +316,7 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
   fragments: {
     fn: () => Relay.QL`
       fragment on Function {
+        __typename
         id
         name
         isActive
