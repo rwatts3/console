@@ -244,15 +244,17 @@ class FunctionInput extends React.Component<Props, State> {
 
     return 2
   }
-  getLeftTabs(): string[] {
-    const {eventType} = this.props
-    if (['RP', 'SSS'].includes(eventType)) {
-      const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
-      return [inputTitle, 'Example Event']
-    } else if (eventType === 'CUSTOM_MUTATION') {
-      return ['Mutation SDL', 'Example Event']
-    } else if (eventType === 'CUSTOM_QUERY') {
-      return ['Query SDL', 'Example Event']
+
+  getInputTitle(): string {
+    switch (this.props.eventType) {
+      case 'RP':
+        return 'Event Type'
+      case 'SSS':
+        return 'Subscription Query'
+      case 'CUSTOM_MUTATION':
+        return 'Mutation SDL'
+      case 'CUSTOM_QUERY':
+        return 'Query SDL'
     }
   }
   renderComponent() {
@@ -262,7 +264,7 @@ class FunctionInput extends React.Component<Props, State> {
     } = this.props
     const {onChangeQuery} = this.props
 
-    const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
+    const inputTitle = this.getInputTitle()
     const fullscreen = location.pathname.endsWith('fullscreen')
 
     const baseWidth = fullscreen ? window.innerWidth : 820
@@ -430,7 +432,7 @@ class FunctionInput extends React.Component<Props, State> {
                 <StepMarker style={{left: -12, top: -1, position: 'relative'}}>2</StepMarker>
               )}
               <Toggle
-                choices={this.getLeftTabs()}
+                choices={[inputTitle, 'Example Event']}
                 activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
                 onChange={this.handleInputChange}
               />

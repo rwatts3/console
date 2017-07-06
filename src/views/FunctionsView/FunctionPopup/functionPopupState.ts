@@ -99,9 +99,9 @@ module.exports = function (event) {
   if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType)) {
     return `module.exports = function sum(event) {
   const data = event.data
- 
+
   const sum = data.a + data.b
- 
+
   return {data: {sum: sum}}
 }`
   }
