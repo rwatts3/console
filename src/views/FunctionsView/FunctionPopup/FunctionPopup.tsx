@@ -20,7 +20,7 @@ import * as Codemirror from 'react-codemirror'
 import Step0 from './Step0'
 import * as cookiestore from 'cookiestore'
 import Trigger from './Trigger'
-import RequestPipelineFunction from './RequestPipelineFunction'
+import FunctionEditor from './FunctionEditor'
 import { RelayProp } from 'react-relay'
 import { showNotification } from '../../../actions/notification'
 import { connect } from 'react-redux'
@@ -288,7 +288,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   ['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType) && (editing ? (activeTabIndex === 0)
                     : (activeTabIndex === 1))
                 ) && (
-                  <RequestPipelineFunction
+                  <FunctionEditor
                     name={fn.name}
                     inlineCode={fn.inlineCode}
                     onInlineCodeChange={this.update(updateInlineCode)}

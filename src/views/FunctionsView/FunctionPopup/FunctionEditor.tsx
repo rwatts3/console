@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {FunctionBinding, FunctionType, Model, RequestPipelineMutationOperation} from '../../../types/types'
-import RequestPipelineFunctionInput from './RequestPipelineFunctionInput'
+import FunctionInput from './FunctionInput'
 import StepMarker from './StepMarker'
 import {getText} from './data'
 import {EventType} from './FunctionPopup'
@@ -37,7 +37,7 @@ interface State {
 
 }
 
-export default class RequestPipelineFunction extends React.Component<Props, State> {
+export default class FunctionEditor extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -143,7 +143,7 @@ export default class RequestPipelineFunction extends React.Component<Props, Stat
             )}
           </p>
         </div>
-        <RequestPipelineFunctionInput
+        <FunctionInput
           schema={schema}
           onChange={onInlineCodeChange}
           value={inlineCode}

@@ -87,7 +87,7 @@ export interface TestError {
   stack: string
 }
 
-class RequestPipelineFunctionInput extends React.Component<Props, State> {
+class FunctionInput extends React.Component<Props, State> {
   private logsRef: any
   private lastQuery: string
   private firstTest: boolean = true
@@ -102,7 +102,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
         }
       })
     },
-    300,
+    600,
     {
       trailing: true,
     },
@@ -661,4 +661,4 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(RequestPipelineFunctionInput)
+export default withRouter(FunctionInput)
