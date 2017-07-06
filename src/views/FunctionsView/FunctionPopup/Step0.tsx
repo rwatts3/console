@@ -131,16 +131,17 @@ export default class Step0 extends React.Component<Props, {}> {
 
     if (eventType === 'SSS') {
       return `Server-side subscriptions give you the ability to react to events like mutations.
-      You could for example send emails everytime a user signs up or use it for logging`
+      You could for example send emails everytime a user signs up or use it for logging.`
     }
 
     if (eventType === 'CUSTOM_MUTATION') {
-      return `Extend the schema by creating a custom mutation which is powered by a function that you provide`
+      return `With a custom mutation you can extend the schema by adding a mutation which is
+      powered by a function that you provide.`
     }
 
     if (eventType === 'CUSTOM_QUERY') {
-      return `Extend the schema by creating a custom query on the root level which is powered
-      by a function that you provide`
+      return `With a custom query you can extend the schema by adding a query which is powered
+      by a function that you provide.`
     }
 
     return 'You can’t change the function type after you created the function.'

@@ -52,20 +52,20 @@ export function getEmptyFunction(models: Model[], functions: ServerlessFunction[
   }
 }
 
-const customMutationSchema = `type DoStuffPayload {
-  bool: Boolean!
+const customMutationSchema = `type AdditionPayload {
+  sum: Int!
 }
 
 extend type Mutation {
-  doStuff(what: String!): DoStuffPayload!
+  add(a: Int! b: Int!): AdditionPayload
 }`
 
-const customQuerySchema = `type GetStuffPayload {
-  bool: Boolean!
+const customQuerySchema = `type AdditionPayload {
+  sum: Int!
 }
 
 extend type Query {
-  getStuff(what: String!): GetStuffPayload!
+  add(a: Int! b: Int!): AdditionPayload
 }`
 
 export function getDefaultSSSQuery(modelName: string) {
@@ -97,14 +97,12 @@ module.exports = function (event) {
 `
   }
   if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType)) {
-    return `module.exports = function (event) {
-  var data = event.data
+    return `module.exports = function sum(event) {
+  const data = event.data
 
-  if (data.what === "clean the dishes") {
-    return {data: {bool: false}}
-  }
+  const sum = data.a + data.b
 
-  return {data: {bool: true}}
+  return {data: {sum: sum}}
 }`
   }
   return `\
@@ -199,8 +197,6 @@ export function updateQuery(eventType: EventType, state: ServerlessFunction, que
   }
 
   throw new Error('invalid event type for updateQuery function')
-
-  // return state
 }
 
 export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {

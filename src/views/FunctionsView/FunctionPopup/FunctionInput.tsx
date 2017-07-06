@@ -15,9 +15,12 @@ import {CustomGraphiQL} from 'graphcool-graphiql'
 import {getEventInput} from './TestPopup'
 import TestButton from './TestButton'
 import {FunctionType} from '../../../types/types'
-import {getExampleEvent, getFakeSchema} from '../../../utils/example-generation/index'
+import {
+  getSSSExampleEvent, getFakeSchema,
+  getCustomMutationExampleEvent,
+} from '../../../utils/example-generation/index'
 import {throttle} from 'lodash'
-import {generateTestEvent} from '../../../utils/functionTest'
+import {generateRPTestEvent} from '../../../utils/functionTest'
 import {smoothScrollTo} from '../../../utils/smooth'
 import TestLog from './TestLog'
 import DummyTestLog from './DummyTestLog'
@@ -87,7 +90,7 @@ export interface TestError {
   stack: string
 }
 
-class RequestPipelineFunctionInput extends React.Component<Props, State> {
+class FunctionInput extends React.Component<Props, State> {
   private logsRef: any
   private lastQuery: string
   private firstTest: boolean = true
@@ -95,14 +98,24 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
     (fakeSchema: any, query?: string) => {
       const schema = fakeSchema || this.state.fakeSchema
       const subscriptionQuery = query || this.props.query
-      getExampleEvent(schema, subscriptionQuery).then(res => {
+      getSSSExampleEvent(schema, subscriptionQuery).then(res => {
         const exampleEvent = JSON.stringify(res, null, 2)
         if (res) {
           this.setState({exampleEvent} as State)
         }
       })
     },
-    300,
+    1000,
+    {
+      trailing: true,
+    },
+  )
+  private updateCustomMutationExampleEvent = throttle(
+    (query: string) => {
+      const exampleEvent = getCustomMutationExampleEvent(query)
+      this.setState(state => ({...state, exampleEvent: JSON.stringify(exampleEvent, null, 2)}))
+    },
+    1000,
     {
       trailing: true,
     },
@@ -155,6 +168,8 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       this.fetchSSSchema()
     } else if (this.props.eventType === 'RP') {
       this.updateRPExampleEvent()
+    } else if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(this.props.eventType)) {
+      this.updateCustomMutationExampleEvent(this.props.query)
     }
   }
   componentWillReceiveProps(nextProps: Props) {
@@ -166,8 +181,12 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       this.updateRPExampleEvent()
     }
 
-    if (nextProps.query !== this.props.query) {
+    if (nextProps.query !== this.props.query && nextProps.eventType === 'SSS') {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
+    }
+
+    if (nextProps.query !== this.props.query && ['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(nextProps.eventType)) {
+      this.updateCustomMutationExampleEvent(nextProps.query)
     }
 
     if (nextProps.schema !== this.props.schema) {
@@ -176,7 +195,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
   }
   updateRPExampleEvent(schema?: string) {
     const newSchema = schema || this.props.schema
-    const exampleEvent = JSON.stringify(generateTestEvent(newSchema), null, 2)
+    const exampleEvent = JSON.stringify(generateRPTestEvent(newSchema), null, 2)
     this.setState({exampleEvent} as State)
   }
   fetchSSSchema() {
@@ -225,15 +244,17 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
 
     return 2
   }
-  getLeftTabs(): string[] {
-    const {eventType} = this.props
-    if (['RP', 'SSS'].includes(eventType)) {
-      const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
-      return [inputTitle, 'Example Event']
-    } else if (eventType === 'CUSTOM_MUTATION') {
-      return ['Mutation SDL']
-    } else if (eventType === 'CUSTOM_QUERY') {
-      return ['Query SDL']
+
+  getInputTitle(): string {
+    switch (this.props.eventType) {
+      case 'RP':
+        return 'Event Type'
+      case 'SSS':
+        return 'Subscription Query'
+      case 'CUSTOM_MUTATION':
+        return 'Mutation SDL'
+      case 'CUSTOM_QUERY':
+        return 'Query SDL'
     }
   }
   renderComponent() {
@@ -243,7 +264,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
     } = this.props
     const {onChangeQuery} = this.props
 
-    const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
+    const inputTitle = this.getInputTitle()
     const fullscreen = location.pathname.endsWith('fullscreen')
 
     const baseWidth = fullscreen ? window.innerWidth : 820
@@ -411,7 +432,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                 <StepMarker style={{left: -12, top: -1, position: 'relative'}}>2</StepMarker>
               )}
               <Toggle
-                choices={this.getLeftTabs()}
+                choices={[inputTitle, 'Example Event']}
                 activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
                 onChange={this.handleInputChange}
               />
@@ -443,7 +464,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                   schema={this.state.ssschema}
                   variables={''}
                   query={this.props.query}
-                  fetcher={() => { return null }}
+                  fetcher={() => { return Promise.resolve() }}
                   disableQueryHeader
                   queryOnly
                   showDocs
@@ -661,4 +682,4 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
   }
 }
 
-export default withRouter(RequestPipelineFunctionInput)
+export default withRouter(FunctionInput)
