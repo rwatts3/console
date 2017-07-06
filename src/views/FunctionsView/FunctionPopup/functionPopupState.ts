@@ -199,8 +199,6 @@ export function updateQuery(eventType: EventType, state: ServerlessFunction, que
   }
 
   throw new Error('invalid event type for updateQuery function')
-
-  // return state
 }
 
 export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {

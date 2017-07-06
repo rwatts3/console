@@ -166,7 +166,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
       this.updateRPExampleEvent()
     }
 
-    if (nextProps.query !== this.props.query) {
+    if (nextProps.query !== this.props.query && nextProps.eventType === 'SSS') {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
 
@@ -443,7 +443,7 @@ class RequestPipelineFunctionInput extends React.Component<Props, State> {
                   schema={this.state.ssschema}
                   variables={''}
                   query={this.props.query}
-                  fetcher={() => { return null }}
+                  fetcher={() => { return Promise.resolve() }}
                   disableQueryHeader
                   queryOnly
                   showDocs
