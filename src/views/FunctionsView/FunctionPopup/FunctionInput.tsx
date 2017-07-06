@@ -15,9 +15,12 @@ import {CustomGraphiQL} from 'graphcool-graphiql'
 import {getEventInput} from './TestPopup'
 import TestButton from './TestButton'
 import {FunctionType} from '../../../types/types'
-import {getExampleEvent, getFakeSchema} from '../../../utils/example-generation/index'
+import {
+  getSSSExampleEvent, getFakeSchema,
+  getCustomMutationExampleEvent,
+} from '../../../utils/example-generation/index'
 import {throttle} from 'lodash'
-import {generateTestEvent} from '../../../utils/functionTest'
+import {generateRPTestEvent} from '../../../utils/functionTest'
 import {smoothScrollTo} from '../../../utils/smooth'
 import TestLog from './TestLog'
 import DummyTestLog from './DummyTestLog'
@@ -95,14 +98,24 @@ class FunctionInput extends React.Component<Props, State> {
     (fakeSchema: any, query?: string) => {
       const schema = fakeSchema || this.state.fakeSchema
       const subscriptionQuery = query || this.props.query
-      getExampleEvent(schema, subscriptionQuery).then(res => {
+      getSSSExampleEvent(schema, subscriptionQuery).then(res => {
         const exampleEvent = JSON.stringify(res, null, 2)
         if (res) {
           this.setState({exampleEvent} as State)
         }
       })
     },
-    600,
+    1000,
+    {
+      trailing: true,
+    },
+  )
+  private updateCustomMutationExampleEvent = throttle(
+    (query: string) => {
+      const exampleEvent = getCustomMutationExampleEvent(query)
+      this.setState(state => ({...state, exampleEvent: JSON.stringify(exampleEvent, null, 2)}))
+    },
+    1000,
     {
       trailing: true,
     },
@@ -155,6 +168,8 @@ class FunctionInput extends React.Component<Props, State> {
       this.fetchSSSchema()
     } else if (this.props.eventType === 'RP') {
       this.updateRPExampleEvent()
+    } else if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(this.props.eventType)) {
+      this.updateCustomMutationExampleEvent(this.props.query)
     }
   }
   componentWillReceiveProps(nextProps: Props) {
@@ -170,13 +185,17 @@ class FunctionInput extends React.Component<Props, State> {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
 
+    if (nextProps.query !== this.props.query && ['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(nextProps.eventType)) {
+      this.updateCustomMutationExampleEvent(nextProps.query)
+    }
+
     if (nextProps.schema !== this.props.schema) {
       this.updateRPExampleEvent(nextProps.schema)
     }
   }
   updateRPExampleEvent(schema?: string) {
     const newSchema = schema || this.props.schema
-    const exampleEvent = JSON.stringify(generateTestEvent(newSchema), null, 2)
+    const exampleEvent = JSON.stringify(generateRPTestEvent(newSchema), null, 2)
     this.setState({exampleEvent} as State)
   }
   fetchSSSchema() {
@@ -231,9 +250,9 @@ class FunctionInput extends React.Component<Props, State> {
       const inputTitle = eventType === 'RP' ? 'Event Type' : 'Subscription Query'
       return [inputTitle, 'Example Event']
     } else if (eventType === 'CUSTOM_MUTATION') {
-      return ['Mutation SDL']
+      return ['Mutation SDL', 'Example Event']
     } else if (eventType === 'CUSTOM_QUERY') {
-      return ['Query SDL']
+      return ['Query SDL', 'Example Event']
     }
   }
   renderComponent() {
