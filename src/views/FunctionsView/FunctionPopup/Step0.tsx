@@ -135,12 +135,12 @@ export default class Step0 extends React.Component<Props, {}> {
     }
 
     if (eventType === 'CUSTOM_MUTATION') {
-      return `With a custom mutation you can extend the schema by adding a mutation to the schema which is
+      return `With a custom mutation you can extend the schema by adding a mutation which is
       powered by a function that you provide.`
     }
 
     if (eventType === 'CUSTOM_QUERY') {
-      return `With a custom query you can extend the schema by adding a query to the schema which is powered
+      return `With a custom query you can extend the schema by adding a query which is powered
       by a function that you provide.`
     }
 
