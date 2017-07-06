@@ -159,7 +159,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     }
 
     if (prevState.sssModelName !== this.state.sssModelName) {
-      this.update(updateQuery)(getDefaultSSSQuery(this.state.sssModelName))
+      this.update(updateQuery.bind(this, this.state.eventType))(getDefaultSSSQuery(this.state.sssModelName))
     }
   }
 
