@@ -10,7 +10,6 @@ import {
 } from 'graphql'
 import cuid from 'cuid'
 import { typeFakers } from './fake'
-global['parse'] = parse
 
 const fakerIDL = parse(fakeIDL)
 
