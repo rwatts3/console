@@ -38,7 +38,7 @@ function getApiUrl(query) {
 }
 
 extend type Query {
-  cuid(): CuidPayload
+  cuid: CuidPayload
 }
 `,
     code: `const cuid = require('cuid')
