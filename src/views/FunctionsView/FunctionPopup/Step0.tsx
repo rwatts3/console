@@ -44,6 +44,25 @@ export default class Step0 extends React.Component<Props, {}> {
         </div>
       </div>,
       /*
+      */
+    ]
+    if (isBeta) {
+      choices.push(
+        <div className='flex itemsCenter' data-test='choose-rp'>
+          <Icon
+            src={require('assets/icons/schema.svg')}
+            width={16}
+            height={16}
+            color={$v.darkBlue30}
+          />
+          <div className='ml10'>
+            Schema Extension
+          </div>
+        </div>,
+)
+    }
+
+    choices.push(
       <Info customTip={
         <div className='flex itemsCenter' data-test='choose-cron'>
           <Icon
@@ -66,12 +85,7 @@ export default class Step0 extends React.Component<Props, {}> {
           Cron Jobs will soon be available
         </span>
       </Info>,
-      */
-    ]
-    if (isBeta) {
-      choices.push('Custom Mutation')
-      choices.push('Custom Query')
-    }
+    )
     return (
       <div className='step0'>
         <style jsx>{`
@@ -96,6 +110,7 @@ export default class Step0 extends React.Component<Props, {}> {
           inactiveTextColor={$v.gray30}
           onChange={(index) => onChangeEventType(eventTypes[index])}
           spread
+          disabledIndeces={[choices.length - 1]}
         />
         {eventType === 'SSS' && (
           <div className='flex itemsCenter ml38 mb38'>
@@ -134,14 +149,9 @@ export default class Step0 extends React.Component<Props, {}> {
       You could for example send emails everytime a user signs up or use it for logging.`
     }
 
-    if (eventType === 'CUSTOM_MUTATION') {
-      return `With a custom mutation you can extend the schema by adding a mutation which is
-      powered by a function that you provide.`
-    }
-
-    if (eventType === 'CUSTOM_QUERY') {
-      return `With a custom query you can extend the schema by adding a query which is powered
-      by a function that you provide.`
+    if (eventType === 'SCHEMA_EXTENSION') {
+      return `With a Schema Extension you can provide custom queries and mutations that are powered by a function
+      that you provide.`
     }
 
     return 'You can’t change the function type after you created the function.'

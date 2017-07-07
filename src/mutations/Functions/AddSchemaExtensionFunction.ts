@@ -14,15 +14,15 @@ interface Props {
   schema: string
 }
 
-export default class AddCustomQueryFunction extends Relay.Mutation<Props, {}> {
+export default class AddSchemaExtensionFunction extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{addCustomQueryFunction}`
+    return Relay.QL`mutation{addSchemaExtensionFunction}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on AddCustomQueryFunctionPayload {
+      fragment on AddSchemaExtensionFunctionPayload {
         function
         project
       }

@@ -36,13 +36,11 @@ import AddServerSideSubscriptionFunction from '../../../mutations/Functions/AddS
 import UpdateServerSideSubscriptionFunction from '../../../mutations/Functions/UpdateServerSideSubscriptionFunction'
 import { getEventTypeFromFunction } from '../../../utils/functions'
 import TestButton from './TestButton'
-import AddCustomMutationFunction from '../../../mutations/Functions/AddCustomMutationFunction'
-import AddCustomQueryFunction from '../../../mutations/Functions/AddCustomQueryFunction'
-import UpdateCustomMutationFunction from '../../../mutations/Functions/UpdateCustomMutationFunction'
-import UpdateCustomQueryFunction from '../../../mutations/Functions/UpdateCustomQueryFunction'
+import AddSchemaExtensionFunction from '../../../mutations/Functions/AddSchemaExtensionFunction'
+import UpdateSchemaExtensionFunction from '../../../mutations/Functions/UpdateSchemaExtensionFunction'
 
-export type EventType = 'SSS' | 'RP' | 'CUSTOM_MUTATION' | 'CUSTOM_QUERY'
-export const eventTypes: EventType[] = ['SSS', 'RP', 'CUSTOM_MUTATION', 'CUSTOM_QUERY']
+export type EventType = 'SSS' | 'RP' | 'SCHEMA_EXTENSION'
+export const eventTypes: EventType[] = ['SSS', 'RP', 'SCHEMA_EXTENSION']
 
 interface Props {
   params: any
@@ -108,12 +106,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         }
       }
 
-      if (eventType === 'CUSTOM_MUTATION') {
-        props.node.customMutationSchema = props.node.schema
-      }
-
-      if (eventType === 'CUSTOM_QUERY') {
-        props.node.customQuerySchema = props.node.schema
+      if (eventType === 'SCHEMA_EXTENSION') {
+        props.node.schemaExtension = props.node.schema
       }
     }
 
@@ -182,12 +176,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return fn.query
     }
 
-    if (eventType === 'CUSTOM_MUTATION') {
-      return fn.customMutationSchema
-    }
-
-    if (eventType === 'CUSTOM_QUERY') {
-      return fn.customQuerySchema
+    if (eventType === 'SCHEMA_EXTENSION') {
+      return fn.schemaExtension
     }
 
     return ''
@@ -285,7 +275,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
               {
                 (
                   eventType === 'RP' && (editing ? (activeTabIndex === 0) : (activeTabIndex === 2)) ||
-                  ['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType) && (editing ? (activeTabIndex === 0)
+                  ['SSS', 'SCHEMA_EXTENSION'].includes(eventType) && (editing ? (activeTabIndex === 0)
                     : (activeTabIndex === 1))
                 ) && (
                   <FunctionEditor
@@ -353,7 +343,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   private footerButtonForTab = (index: number) => {
     const {editing, eventType} = this.state
     if (editing || (this.state.eventType === 'RP' && index === 2) ||
-      (['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(this.state.eventType) && index === 1)) {
+      (['SSS', 'SCHEMA_EXTENSION'].includes(this.state.eventType) && index === 1)) {
       return (
         <TestButton onClick={this.openFullscreen}>Fullscreen Mode</TestButton>
       )
@@ -379,11 +369,19 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       }
     }
 
-    if (['CUSTOM_MUTATION', 'CUSTOM_QUERY', 'SSS'].includes(eventType)) {
+    if ('SSS' === eventType) {
       if (this.state.editing) {
         return ['Update Function']
       } else {
         return ['Choose Event Trigger', 'Define Function']
+      }
+    }
+
+    if ('SCHEMA_EXTENSION' === eventType) {
+      if (this.state.editing) {
+        return ['Update Schema Extension']
+      } else {
+        return ['Choose Event Trigger', 'Define Schema Extension']
       }
     }
 
@@ -524,10 +522,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return this.updateRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
       return this.updateSSSFunction(input)
-    } else if (this.state.eventType === 'CUSTOM_MUTATION') {
-      return this.updateCustomMutation(input)
-    } else if (this.state.eventType === 'CUSTOM_QUERY') {
-      return this.updateCustomQuery(input)
+    } else if (this.state.eventType === 'SCHEMA_EXTENSION') {
+      return this.updateSchemaExtension(input)
     }
   }
 
@@ -546,10 +542,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       return this.createRPFunction(input)
     } else if (this.state.eventType === 'SSS') {
       return this.createSSSFunction(input)
-    } else if (this.state.eventType === 'CUSTOM_MUTATION') {
-      return this.createCustomMutation(input)
-    } else if (this.state.eventType === 'CUSTOM_QUERY') {
-      return this.createCustomQuery(input)
+    } else if (this.state.eventType === 'SCHEMA_EXTENSION') {
+      return this.createSchemaExtension(input)
     }
   }
 
@@ -587,32 +581,12 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     )
   }
 
-  private createCustomQuery(input) {
+  private createSchemaExtension(input) {
     this.setLoading(true)
     Relay.Store.commitUpdate(
-      new AddCustomQueryFunction({
+      new AddSchemaExtensionFunction({
         ...input,
-        schema: input.customQuerySchema,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
-  }
-
-  private createCustomMutation(input) {
-    this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddCustomMutationFunction({
-        ...input,
-        schema: input.customMutationSchema,
+        schema: input.schemaExtension,
       }),
       {
         onSuccess: () => {
@@ -661,32 +635,12 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     )
   }
 
-  private updateCustomMutation(input) {
+  private updateSchemaExtension(input) {
     this.setLoading(true)
     Relay.Store.commitUpdate(
-      new UpdateCustomMutationFunction({
+      new UpdateSchemaExtensionFunction({
         ...input,
-        schema: input.customMutationSchema,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
-  }
-
-  private updateCustomQuery(input) {
-    this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateCustomQueryFunction({
-        ...input,
-        schema: input.customQuerySchema,
+        schema: input.schemaExtension,
       }),
       {
         onSuccess: () => {
@@ -832,7 +786,7 @@ export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   },
 })
 
-export const EditCustomMutationFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditSchemaExtensionFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
@@ -872,7 +826,7 @@ export const EditCustomMutationFunctionPopup = Relay.createContainer(MappedFunct
     node: () => Relay.QL`
       fragment on Function {
         ${FunctionFragment}
-        ... on CustomMutationFunction {
+        ... on SchemaExtensionFunction {
           schema
         }
       }

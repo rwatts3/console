@@ -105,8 +105,7 @@ export interface ServerlessFunction {
   isActive: boolean
   query?: string
   schema?: string
-  customQuerySchema?: string
-  customMutationSchema?: string
+  schemaExtension?: string
 }
 
 export interface FunctionStats {

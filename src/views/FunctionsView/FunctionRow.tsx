@@ -17,8 +17,7 @@ import * as cn from 'classnames'
 import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
 import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
-import ToggleCustomMutationFunction from '../../mutations/Functions/ToggleCustomMutationFunction'
-import ToggleCustomQueryFunction from '../../mutations/Functions/ToggleCustomQueryFunction'
+import ToggleSchemaExtensionFunction from '../../mutations/Functions/ToggleSchemaExtensionFunction'
 
 interface Props {
   fn: ServerlessFunction
@@ -182,14 +181,15 @@ class FunctionRow extends React.Component<Props, State> {
                 <span>Server-side Subscription</span>
               </div>
             )}
-            {eventType === 'CUSTOM_MUTATION' && (
+            {eventType === 'SCHEMA_EXTENSION' && (
               <div className='event-type'>
-                <span>Custom Mutation</span>
-              </div>
-            )}
-            {eventType === 'CUSTOM_QUERY' && (
-              <div className='event-type'>
-                <span>Custom Query</span>
+                <Icon
+                  src={require('assets/icons/schema.svg')}
+                  color={$v.darkBlue50}
+                  width={18}
+                  height={18}
+                />
+                <span>Schema Extension</span>
               </div>
             )}
           </Link>
@@ -276,24 +276,9 @@ class FunctionRow extends React.Component<Props, State> {
             },
           },
         )
-      case 'CUSTOM_MUTATION':
+      case 'SCHEMA_EXTENSION':
         return Relay.Store.commitUpdate(
-          new ToggleCustomMutationFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
-      case 'CUSTOM_QUERY':
-        return Relay.Store.commitUpdate(
-          new ToggleCustomQueryFunction({
+          new ToggleSchemaExtensionFunction({
             functionId: this.props.fn.id,
             isActive: !this.props.fn.isActive,
           }),
