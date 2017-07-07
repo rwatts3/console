@@ -8,9 +8,11 @@ export function getEventTypeFromFunction(fn: ServerlessFunction | null): EventTy
 
   switch (fn.__typename) {
     case 'CustomMutationFunction':
-      return 'CUSTOM_MUTATION'
+      return 'SCHEMA_EXTENSION'
     case 'CustomQueryFunction':
-      return 'CUSTOM_QUERY'
+      return 'SCHEMA_EXTENSION'
+    case 'SchemaExtensionFunction':
+      return 'SCHEMA_EXTENSION'
     case 'ServerSideSubscriptionFunction':
       return 'SSS'
     case 'RequestPipelineMutationFunction':

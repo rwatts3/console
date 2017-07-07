@@ -47,26 +47,26 @@ export function getEmptyFunction(models: Model[], functions: ServerlessFunction[
     isActive: true,
     modelId,
     query: getDefaultSSSQuery(models[0].name),
-    customMutationSchema,
-    customQuerySchema,
+    schemaExtension,
   }
 }
 
-const customMutationSchema = `type AdditionPayload {
-  sum: Int!
-}
-
-extend type Mutation {
-  add(a: Int! b: Int!): AdditionPayload
-}`
-
-const customQuerySchema = `type AdditionPayload {
+const schemaExtension = `type AdditionPayload {
   sum: Int!
 }
 
 extend type Query {
   add(a: Int! b: Int!): AdditionPayload
-}`
+}
+
+# type AdditionPayload {
+#   sum: Int!
+# }
+#
+# extend type Mutation {
+#   add(a: Int! b: Int!): AdditionPayload
+#}
+`
 
 export function getDefaultSSSQuery(modelName: string) {
   return `\
@@ -96,7 +96,7 @@ module.exports = function (event) {
 }
 `
   }
-  if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType)) {
+  if ('SCHEMA_EXTENSION' === eventType) {
     return `module.exports = function sum(event) {
   const data = event.data
 
@@ -182,17 +182,10 @@ export function updateQuery(eventType: EventType, state: ServerlessFunction, que
     }
   }
 
-  if (eventType === 'CUSTOM_MUTATION') {
+  if (eventType === 'SCHEMA_EXTENSION') {
     return {
       ...state,
-      customMutationSchema: query,
-    }
-  }
-
-  if (eventType === 'CUSTOM_QUERY') {
-    return {
-      ...state,
-      customQuerySchema: query,
+      schemaExtension: query,
     }
   }
 

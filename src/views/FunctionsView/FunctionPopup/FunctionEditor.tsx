@@ -5,6 +5,8 @@ import StepMarker from './StepMarker'
 import {getText} from './data'
 import {EventType} from './FunctionPopup'
 import N from './N'
+import { Button } from '../../../components/Links'
+import { examples } from './examples'
 
 interface Props {
   name: string
@@ -82,6 +84,15 @@ export default class FunctionEditor extends React.Component<Props, State> {
           .content {
             @p: .overflowAuto;
           }
+          .examples {
+            @p: .pl38, .pb25;
+          }
+          h3 {
+            @p: .darkBlue50, .mb25, .f25, .fw6;
+          }
+          .examples :global(.button) {
+            @p: .mr25;
+          }
         `}</style>
         <input
           type='text'
@@ -122,26 +133,40 @@ export default class FunctionEditor extends React.Component<Props, State> {
               write a function that get’s executed every time.
             </p>
           )}
-          {['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType) && !editing && (
+          {'SCHEMA_EXTENSION' === eventType && !editing && (
             <p>
-              To create a server-side subscription, you need to
+              To create a schema extension, you need to
               <N>1</N>
               define a function name
               <N>2</N>
-              define the idl that describes the GraphQL API
+              define the schema sdl that describes the GraphQL API
               <N>3</N>
               write a function that get’s executed every time.
             </p>
           )}
-          <p className='relative'>
-            The <pre>event</pre> argument represents the payload of the
-            {eventType === 'RP' ? 'mutation' : 'subscription'}. <br/>
-            {eventType === 'RP' && (
-              <span>
-                You can either <pre>return</pre> a value or a <pre>Promise</pre> if you have an async flow.
-              </span>
-            )}
-          </p>
+          {(eventType === 'RP' || eventType === 'SSS') && (
+            <p className='relative'>
+              The <pre>event</pre> argument represents the payload of the
+              {eventType === 'RP' ? ' mutation' : ' subscription'}. <br/>
+              {eventType === 'RP' && (
+                <span>
+                  You can either <pre>return</pre> a value or a <pre>Promise</pre> if you have an async flow.
+                </span>
+              )}
+            </p>
+          )}
+          {eventType === 'SCHEMA_EXTENSION' && (
+            <div className='examples'>
+              <h3>Examples</h3>
+              <Button white hideArrow onClick={this.selectExample.bind(this, 'weather')}>Weather API</Button>
+              <Button white hideArrow onClick={this.selectExample.bind(this, 'cuid')}>CUID Generator</Button>
+              <Button
+                white
+                hideArrow
+                onClick={this.selectExample.bind(this, 'sendgrid')}
+              >Send Mail with Sendgrid</Button>
+            </div>
+          )}
         </div>
         <FunctionInput
           schema={schema}
@@ -166,6 +191,12 @@ export default class FunctionEditor extends React.Component<Props, State> {
         />
       </div>
     )
+  }
+
+  private selectExample = (exampleName: string) => {
+    const example = examples[exampleName]
+    this.props.onChangeQuery(example.sdl)
+    this.props.onInlineCodeChange(example.code)
   }
 
   private nameChange = e => {

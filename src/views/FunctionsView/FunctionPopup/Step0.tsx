@@ -44,34 +44,24 @@ export default class Step0 extends React.Component<Props, {}> {
         </div>
       </div>,
       /*
-      <Info customTip={
-        <div className='flex itemsCenter' data-test='choose-cron'>
-          <Icon
-            src={require('graphcool-styles/icons/fill/cron.svg')}
-            width={20}
-            height={20}
-            color={$v.darkBlue50}
-          />
-          <div className='ml16'>
-            Cron Job
-          </div>
-        </div>
-      }>
-        <span>
-          <style jsx={true}>{`
-            span {
-              @p: .wsNormal;
-            }
-          `}</style>
-          Cron Jobs will soon be available
-        </span>
-      </Info>,
       */
     ]
     if (isBeta) {
-      choices.push('Custom Mutation')
-      choices.push('Custom Query')
+      choices.push(
+        <div className='flex itemsCenter' data-test='choose-rp'>
+          <Icon
+            src={require('assets/icons/schema.svg')}
+            width={16}
+            height={16}
+            color={$v.darkBlue30}
+          />
+          <div className='ml10'>
+            Schema Extension
+          </div>
+        </div>,
+)
     }
+
     return (
       <div className='step0'>
         <style jsx>{`
@@ -134,14 +124,9 @@ export default class Step0 extends React.Component<Props, {}> {
       You could for example send emails everytime a user signs up or use it for logging.`
     }
 
-    if (eventType === 'CUSTOM_MUTATION') {
-      return `With a custom mutation you can extend the schema by adding a mutation which is
-      powered by a function that you provide.`
-    }
-
-    if (eventType === 'CUSTOM_QUERY') {
-      return `With a custom query you can extend the schema by adding a query which is powered
-      by a function that you provide.`
+    if (eventType === 'SCHEMA_EXTENSION') {
+      return `With a Schema Extension you can provide custom queries and mutations that are powered by a function
+      that you provide.`
     }
 
     return 'You can’t change the function type after you created the function.'

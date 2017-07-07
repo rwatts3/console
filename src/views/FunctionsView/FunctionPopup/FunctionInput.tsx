@@ -168,7 +168,7 @@ class FunctionInput extends React.Component<Props, State> {
       this.fetchSSSchema()
     } else if (this.props.eventType === 'RP') {
       this.updateRPExampleEvent()
-    } else if (['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(this.props.eventType)) {
+    } else if (this.props.eventType === 'SCHEMA_EXTENSION') {
       this.updateCustomMutationExampleEvent(this.props.query)
     }
   }
@@ -185,7 +185,7 @@ class FunctionInput extends React.Component<Props, State> {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
 
-    if (nextProps.query !== this.props.query && ['CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(nextProps.eventType)) {
+    if (nextProps.query !== this.props.query && nextProps.eventType === 'SCHEMA_EXTENSION') {
       this.updateCustomMutationExampleEvent(nextProps.query)
     }
 
@@ -251,10 +251,8 @@ class FunctionInput extends React.Component<Props, State> {
         return 'Event Type'
       case 'SSS':
         return 'Subscription Query'
-      case 'CUSTOM_MUTATION':
-        return 'Mutation SDL'
-      case 'CUSTOM_QUERY':
-        return 'Query SDL'
+      case 'SCHEMA_EXTENSION':
+        return 'Schema Extension SDL'
     }
   }
   renderComponent() {
@@ -457,7 +455,7 @@ class FunctionInput extends React.Component<Props, State> {
                 />
               </div>
             )}
-            {!showExample && (['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType)) && (
+            {!showExample && (['SSS', 'SCHEMA_EXTENSION'].includes(eventType)) && (
               <div className='sss-editor flexAuto'>
                 <CustomGraphiQL
                   rerenderQuery={true}
@@ -486,7 +484,7 @@ class FunctionInput extends React.Component<Props, State> {
               {!this.props.editing && (
                 <StepMarker style={{left: -20, top: -1, position: 'relative'}}>
                   {eventType === 'RP' && '2'}
-                  {['SSS', 'CUSTOM_MUTATION', 'CUSTOM_QUERY'].includes(eventType) && '3'}
+                  {['SSS', 'SCHEMA_EXTENSION'].includes(eventType) && '3'}
                 </StepMarker>
               )}
               <div className='ml10'>

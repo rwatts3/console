@@ -7,15 +7,15 @@ interface Props {
   functionId?: string
 }
 
-export default class ToggleCustomMutationFunction extends Relay.Mutation<Props, {}> {
+export default class ToggleSchemaExtensionFunction extends Relay.Mutation<Props, {}> {
 
   getMutation () {
-    return Relay.QL`mutation{updateCustomMutationFunction}`
+    return Relay.QL`mutation{updateSchemaExtensionFunction}`
   }
 
   getFatQuery () {
     return Relay.QL`
-      fragment on UpdateCustomMutationFunctionPayload {
+      fragment on UpdateSchemaExtensionFunctionPayload {
         function
         project
       }
