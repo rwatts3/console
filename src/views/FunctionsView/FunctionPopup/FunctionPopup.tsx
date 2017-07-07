@@ -108,6 +108,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
       if (eventType === 'SCHEMA_EXTENSION') {
         props.node.schemaExtension = props.node.schema
+        props.node.query = props.node.schema
       }
     }
 
@@ -827,6 +828,12 @@ export const EditSchemaExtensionFunctionPopup = Relay.createContainer(MappedFunc
       fragment on Function {
         ${FunctionFragment}
         ... on SchemaExtensionFunction {
+          schema
+        }
+        ... on CustomMutationFunction {
+          schema
+        }
+        ... on CustomQueryFunction {
           schema
         }
       }
