@@ -62,30 +62,6 @@ export default class Step0 extends React.Component<Props, {}> {
 )
     }
 
-    choices.push(
-      <Info customTip={
-        <div className='flex itemsCenter' data-test='choose-cron'>
-          <Icon
-            src={require('graphcool-styles/icons/fill/cron.svg')}
-            width={20}
-            height={20}
-            color={$v.darkBlue50}
-          />
-          <div className='ml16'>
-            Cron Job
-          </div>
-        </div>
-      }>
-        <span>
-          <style jsx={true}>{`
-            span {
-              @p: .wsNormal;
-            }
-          `}</style>
-          Cron Jobs will soon be available
-        </span>
-      </Info>,
-    )
     return (
       <div className='step0'>
         <style jsx>{`
@@ -110,7 +86,6 @@ export default class Step0 extends React.Component<Props, {}> {
           inactiveTextColor={$v.gray30}
           onChange={(index) => onChangeEventType(eventTypes[index])}
           spread
-          disabledIndeces={[choices.length - 1]}
         />
         {eventType === 'SSS' && (
           <div className='flex itemsCenter ml38 mb38'>

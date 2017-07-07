@@ -51,4 +51,49 @@ module.exports = function (event) {
   }
 }`,
   },
+  'sendgrid': {
+    sdl: `type EmailPayload {
+  success: Boolean!
+}
+
+extend type Mutation {
+  sendMail(
+    email: String!
+    subject: String!
+    body: String
+  ): EmailPayload
+}
+`,
+    code: `const SendGrid = require('sendgrid')
+const helper = SendGrid.mail
+const sg = SendGrid('SENDGRID_API_KEY')
+
+module.exports = function (event) {
+  const mail = generateMail(event.data)
+
+  const request = sg.emptyRequest({
+  	method: 'POST',
+    path: '/v3/mail/send',
+    body: mail.toJSON(),
+  })
+
+  return sg.API(request).then(result => {
+    return {
+      data: {
+      	success: true,
+      },
+    }
+  })
+  .catch(err => ({data: {success: false}))
+}
+
+function generateMail(data) {
+  const from = new helper.Email('test@test.com')
+  const to = new helper.Email(data.email)
+  const subject = data.subject
+  const body = new helper.Content('text/plain', data.body)
+
+  return new helper.Mail(from, subject, to, body)
+}`,
+  },
 }

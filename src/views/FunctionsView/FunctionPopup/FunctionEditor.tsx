@@ -160,6 +160,7 @@ export default class FunctionEditor extends React.Component<Props, State> {
               <h3>Examples</h3>
               <Button hideArrow onClick={this.selectExample.bind(this, 'weather')}>Weather API</Button>
               <Button hideArrow onClick={this.selectExample.bind(this, 'cuid')}>CUID Generator</Button>
+              <Button hideArrow onClick={this.selectExample.bind(this, 'sendgrid')}>Send Mail with Sendgrid</Button>
             </div>
           )}
         </div>
