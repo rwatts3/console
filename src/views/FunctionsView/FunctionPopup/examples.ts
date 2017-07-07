@@ -84,7 +84,7 @@ module.exports = function (event) {
       },
     }
   })
-  .catch(err => ({data: {success: false}))
+  .catch(err => ({data: {success: false}}))
 }
 
 function generateMail(data) {

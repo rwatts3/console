@@ -158,9 +158,13 @@ export default class FunctionEditor extends React.Component<Props, State> {
           {eventType === 'SCHEMA_EXTENSION' && (
             <div className='examples'>
               <h3>Examples</h3>
-              <Button hideArrow onClick={this.selectExample.bind(this, 'weather')}>Weather API</Button>
-              <Button hideArrow onClick={this.selectExample.bind(this, 'cuid')}>CUID Generator</Button>
-              <Button hideArrow onClick={this.selectExample.bind(this, 'sendgrid')}>Send Mail with Sendgrid</Button>
+              <Button white hideArrow onClick={this.selectExample.bind(this, 'weather')}>Weather API</Button>
+              <Button white hideArrow onClick={this.selectExample.bind(this, 'cuid')}>CUID Generator</Button>
+              <Button
+                white
+                hideArrow
+                onClick={this.selectExample.bind(this, 'sendgrid')}
+              >Send Mail with Sendgrid</Button>
             </div>
           )}
         </div>
