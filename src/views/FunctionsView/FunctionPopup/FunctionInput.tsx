@@ -467,6 +467,7 @@ class FunctionInput extends React.Component<Props, State> {
                   queryOnly
                   showDocs
                   onEditQuery={onChangeQuery}
+
                 />
               </div>
             )}
