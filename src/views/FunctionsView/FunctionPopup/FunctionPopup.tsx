@@ -10,7 +10,8 @@ import PopupFooter from '../../../components/PopupFooter'
 import { Model, Project, ServerlessFunction } from '../../../types/types'
 import {
   didChange, getDefaultSSSQuery,
-  getEmptyFunction, inlineCode, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel, updateName,
+  getEmptyFunction, getWebhookUrl, inlineCode, isValid, updateAuth0Id, updateBinding, updateInlineCode, updateModel,
+  updateName,
   updateOperation,
   updateQuery, updateType,
   updateWebhookHeaders,
@@ -185,13 +186,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     return ''
   }
 
-  getWebhookUrl() {
-    if (this.state.fn.type === 'WEBHOOK') {
-      return this.state.fn._webhookUrl
-    }
-    return this.state.fn._inlineWebhookUrl
-  }
-
   render() {
     const {models, schema, functions, location, isBeta} = this.props
     const {activeTabIndex, editing, showErrors, fn, eventType, loading, showTest, sssModelName} = this.state
@@ -296,7 +290,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                     isInline={isInline}
                     onTypeChange={this.update(updateType)}
                     onChangeUrl={this.update(updateWebhookUrl)}
-                    webhookUrl={this.getWebhookUrl()}
+                    webhookUrl={getWebhookUrl(this.state)}
                     schema={schema}
                     headers={fn._webhookHeaders}
                     onChangeHeaders={this.update(updateWebhookHeaders)}
@@ -522,7 +516,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const input = {
       ...fn,
       projectId: this.props.project.id,
-      webhookUrl: webhookUrl || this.getWebhookUrl(),
+      webhookUrl: webhookUrl || getWebhookUrl(this.state),
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       auth0Id: isInline ? (auth0Id || fn.auth0Id) : null,
       functionId: fn.id,
@@ -543,7 +537,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const input = {
       ...fn,
       projectId: this.props.project.id,
-      webhookUrl: webhookUrl || this.getWebhookUrl(),
+      webhookUrl: webhookUrl || getWebhookUrl(this.state),
       auth0Id: auth0Id || fn.auth0Id,
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       inlineCode: isInline ? fn.inlineCode : '',
