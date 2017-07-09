@@ -92,11 +92,12 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         props.node.modelId = props.node.model.id
       }
       if (props.node.auth0Id && props.node.auth0Id.length > 0) {
-        props.node._webhookUrl = props.node.webhookUrl
+        props.node._inlineWebhookUrl = props.node.webhookUrl
         // props.node.webhookUrl = ''
       } else if (props.node.type !== 'WEBHOOK') {
         // transition to the truth
         props.node.type = 'WEBHOOK'
+        props.node._webhookUrl = props.node.webhookUrl
       }
       if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
         try {
@@ -182,6 +183,13 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     }
 
     return ''
+  }
+
+  getWebhookUrl() {
+    if (this.state.fn.type === 'WEBHOOK') {
+      return this.state.fn._webhookUrl
+    }
+    return this.state.fn._inlineWebhookUrl
   }
 
   render() {
@@ -288,7 +296,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                     isInline={isInline}
                     onTypeChange={this.update(updateType)}
                     onChangeUrl={this.update(updateWebhookUrl)}
-                    webhookUrl={fn.webhookUrl}
+                    webhookUrl={this.getWebhookUrl()}
                     schema={schema}
                     headers={fn._webhookHeaders}
                     onChangeHeaders={this.update(updateWebhookHeaders)}
@@ -443,6 +451,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                 ...state,
                 fn: {
                   ...state.fn,
+                  _inlineWebhookUrl: webhookUrl,
                   webhookUrl,
                   auth0Id,
                 },
@@ -513,7 +522,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const input = {
       ...fn,
       projectId: this.props.project.id,
-      webhookUrl: webhookUrl || fn.webhookUrl,
+      webhookUrl: webhookUrl || this.getWebhookUrl(),
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       auth0Id: isInline ? (auth0Id || fn.auth0Id) : null,
       functionId: fn.id,
@@ -534,7 +543,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     const input = {
       ...fn,
       projectId: this.props.project.id,
-      webhookUrl: webhookUrl || fn.webhookUrl,
+      webhookUrl: webhookUrl || this.getWebhookUrl(),
       auth0Id: auth0Id || fn.auth0Id,
       webhookHeaders: fn._webhookHeaders ? JSON.stringify(fn._webhookHeaders) : '',
       inlineCode: isInline ? fn.inlineCode : '',
