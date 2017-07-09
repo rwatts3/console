@@ -133,7 +133,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       operation: props.node && props.node.operation || 'CREATE',
       selectedModelName: (props.node && props.node.model && props.node.model.name) || 'User',
       binding: props.node && props.node.binding || 'PRE_WRITE',
-      includeFunctions: this.state.eventType === 'RP',
+      includesFunctions: this.state.eventType === 'RP',
     })
     isSSS = this.state.eventType === 'SSS'
     global['f'] = this
@@ -149,7 +149,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         operation: this.state.fn.operation,
         selectedModelName: this.props.models.find(model => model.id === this.state.fn.modelId).name,
         binding: this.state.fn.binding,
-        includeFunctions: this.state.eventType === 'RP',
+        includesFunctions: this.state.eventType === 'RP',
       })
     }
 

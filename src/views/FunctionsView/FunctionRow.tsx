@@ -18,12 +18,14 @@ import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
 import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
 import ToggleSchemaExtensionFunction from '../../mutations/Functions/ToggleSchemaExtensionFunction'
+import { RelayProp } from 'react-relay'
 
 interface Props {
   fn: ServerlessFunction
   params: any
   router: ReactRouter.InjectedRouter
   showNotification: ShowNotificationCallback
+  relay: RelayProp
 }
 
 interface State {
@@ -153,11 +155,11 @@ class FunctionRow extends React.Component<Props, State> {
             {eventType === 'RP' && (
               <div className={cn(
                 'event-type',
-                {
-                  'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
-                  'rp2': fn.binding === 'PRE_WRITE',
-                  'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
-                },
+                // {
+                //   'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
+                //   'rp2': fn.binding === 'PRE_WRITE',
+                //   'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
+                // },
               )}>
                 <Icon
                   src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
@@ -165,9 +167,13 @@ class FunctionRow extends React.Component<Props, State> {
                   width={55}
                 />
                 <span className='ttu'>Request Pipeline</span>
-                <div className='badge ml10'>{fn.model.name}</div>
-                <span className='darkBlue40 f14'>is</span>
-                <div className='badge ml6'>{fn.operation.toLowerCase()}d</div>
+                {fn.model && (
+                  <div className='flex'>
+                    <div className='badge ml10'>{fn.model.name}</div>
+                    <span className='darkBlue40 f14'>is</span>
+                    <div className='badge ml6'>{fn.operation.toLowerCase()}d</div>
+                  </div>
+                )}
               </div>
             )}
             {eventType === 'SSS' && (
@@ -313,14 +319,15 @@ export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
           requestCount
           requestHistogram
         }
-        ... on RequestPipelineMutationFunction {
-          binding
-          model {
-            name
-          }
-          operation
-        }
       },
     `,
   },
 })
+// TODO add later when we use relay-modern
+// ... on RequestPipelineMutationFunction @include(if: $includeRP) {
+//   binding
+//   model {
+//     name
+//   }
+//   operation
+// }
