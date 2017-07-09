@@ -160,9 +160,10 @@ export function updateOperation(
 }
 
 export function updateWebhookUrl(state: ServerlessFunction, webhookUrl: string): ServerlessFunction {
+  const key = state.type === 'WEBHOOK' ? '_webhookUrl' : '_inlineWebhookUrl'
   return {
     ...state,
-    webhookUrl,
+    [key]: webhookUrl,
   }
 }
 
@@ -193,29 +194,24 @@ export function updateQuery(eventType: EventType, state: ServerlessFunction, que
 }
 
 export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {
-  let webhookUrl = state.webhookUrl
-  let _webhookUrl = state._webhookUrl
-  if (type === 'WEBHOOK' && webhookUrl && webhookUrl.includes('auth0')) {
-    _webhookUrl = webhookUrl
-    webhookUrl = ''
-  }
-  if (type === 'AUTH0' && _webhookUrl && _webhookUrl.length > 0) {
-    webhookUrl = _webhookUrl
-  }
-
   return {
     ...state,
     type,
-    webhookUrl,
-    _webhookUrl,
   }
+}
+
+export function getWebhookUrl(state: FunctionPopupState) {
+  if (state.fn.type === 'WEBHOOK') {
+    return state.fn._webhookUrl
+  }
+  return state.fn._inlineWebhookUrl
 }
 
 export function isValid(state: FunctionPopupState) {
   if (state.fn.type === 'AUTH0' && (!state.fn.inlineCode || state.fn.inlineCode.length === 0)) {
     return false
   }
-  if (state.fn.type === 'WEBHOOK' && !webhookUrlValid(state.fn.webhookUrl)) {
+  if (state.fn.type === 'WEBHOOK' && !webhookUrlValid(getWebhookUrl(state))) {
     return false
   }
   if (!state.fn.name || state.fn.name.length === 0) {
