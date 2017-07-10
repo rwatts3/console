@@ -98,6 +98,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       } else if (props.node.type !== 'WEBHOOK') {
         // transition to the truth
         props.node.type = 'WEBHOOK'
+      }
+      if (props.node.type === 'WEBHOOK') {
         props.node._webhookUrl = props.node.webhookUrl
       }
       if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
