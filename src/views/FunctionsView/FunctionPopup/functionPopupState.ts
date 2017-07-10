@@ -192,7 +192,6 @@ export function updateQuery(eventType: EventType, state: ServerlessFunction, que
 
   throw new Error('invalid event type for updateQuery function')
 }
-
 export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {
   return {
     ...state,
@@ -231,7 +230,7 @@ export function didChange(after: ServerlessFunction, isInline: boolean, before?:
   ]
 
   if (!isInline) {
-    keys = keys.concat('webhookUrl')
+    keys = keys.concat('_webhookUrl')
   }
 
   return keysChanged(before, after, keys) || JSON.stringify(after._webhookHeaders) !== before.webhookHeaders

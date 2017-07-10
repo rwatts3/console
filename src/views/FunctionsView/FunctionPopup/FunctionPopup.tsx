@@ -698,7 +698,7 @@ export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
-    includeFunctions: true,
+    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -751,7 +751,7 @@ export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
-    includeFunctions: true,
+    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -799,7 +799,7 @@ export const EditSchemaExtensionFunctionPopup = Relay.createContainer(MappedFunc
     modelSelected: false,
     binding: null,
     operation: null,
-    includeFunctions: true,
+    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -853,7 +853,7 @@ export const EditCustomQueryFunctionPopup = Relay.createContainer(MappedFunction
     modelSelected: false,
     binding: null,
     operation: null,
-    includeFunctions: true,
+    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
