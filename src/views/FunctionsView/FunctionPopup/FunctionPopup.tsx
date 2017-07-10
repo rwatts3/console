@@ -503,7 +503,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
           }
         })
     } else {
-      const {webhookUrl} = this.state.fn
+      const webhookUrl = getWebhookUrl(this.state)
       if (this.state.editing) {
         this.updateFunction(webhookUrl)
       } else {
