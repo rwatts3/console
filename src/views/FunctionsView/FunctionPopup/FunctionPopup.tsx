@@ -137,7 +137,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       operation: props.node && props.node.operation || 'CREATE',
       selectedModelName: (props.node && props.node.model && props.node.model.name) || 'User',
       binding: props.node && props.node.binding || 'PRE_WRITE',
-      includesFunctions: this.state.eventType === 'RP',
     })
     isSSS = this.state.eventType === 'SSS'
     global['f'] = this
@@ -153,7 +152,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         operation: this.state.fn.operation,
         selectedModelName: this.props.models.find(model => model.id === this.state.fn.modelId).name,
         binding: this.state.fn.binding,
-        includesFunctions: this.state.eventType === 'RP',
       })
     }
 
@@ -698,7 +696,6 @@ export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
-    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -751,7 +748,6 @@ export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
-    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -799,7 +795,6 @@ export const EditSchemaExtensionFunctionPopup = Relay.createContainer(MappedFunc
     modelSelected: false,
     binding: null,
     operation: null,
-    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -853,7 +848,6 @@ export const EditCustomQueryFunctionPopup = Relay.createContainer(MappedFunction
     modelSelected: false,
     binding: null,
     operation: null,
-    includesFunctions: true,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -915,7 +909,6 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     modelSelected: false,
     binding: null,
     operation: null,
-    includesFunctions: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -944,14 +937,6 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
               node {
                 id
                 __typename
-                ... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
-                  id
-                  binding
-                  model {
-                    id
-                    name
-                  }
-                }
               }
             }
           }
@@ -965,3 +950,15 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
     `,
   },
 })
+
+/*
+TODO: add this again when we use relay modern
+... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
+  id
+  binding
+  model {
+    id
+    name
+  }
+}
+*/
