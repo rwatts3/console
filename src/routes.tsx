@@ -115,20 +115,20 @@ const render = ({error, props, routerProps, element, ...rest}) => {
       tracker.reset()
 
       return (
-        <RedirectOnMount to='/login'/>
+        <RedirectOnMount to={`/login${routerProps.location.search}`} />
       )
     }
 
     if (routerProps && routerProps.params.projectName && routerProps.params.modelName) {
       // if we have a model and a project, there might be only a problem with the model, so redirect to project
       return (
-        <RedirectOnMount to={`/${routerProps.params.projectName}`}/>
+        <RedirectOnMount to={`/${routerProps.params.projectName}`} />
       )
     }
 
     return (
       // TODO https://github.com/relay-tools/react-router-relay/issues/156
-      <RedirectOnMount to='/'/>
+      <RedirectOnMount to={`/${routerProps.params.projectName}`} />
     )
   }
 
