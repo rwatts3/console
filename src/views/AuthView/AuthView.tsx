@@ -32,10 +32,10 @@ export default class AuthView extends React.Component<Props, {}> {
           }),
         })
 
-        window.location.pathname = '/after-signup'
+        window.location.pathname = `/after-signup${this.props.location.search}`
       } else {
         // this is a workaround instead of using the router to re-setup relay
-        window.location.pathname = '/'
+        window.location.pathname = `/${this.props.location.search}`
       }
     }
 
