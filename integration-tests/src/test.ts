@@ -57,12 +57,12 @@ test.after('delete user', async () => {
 //   t.pass()
 // })
 //
-test('databrowser', async t => {
-  console.log('######### databrowser')
-  await databrowser(cookies)
-  t.pass()
-})
-//
+// test('databrowser', async t => {
+//   console.log('######### databrowser')
+//   await databrowser(cookies)
+//   t.pass()
+// })
+
 // test('playground', async t => {
 //   console.log('######### playground')
 //   await playground(cookies)

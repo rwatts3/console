@@ -128,7 +128,6 @@ const render = ({error, props, routerProps, element, ...rest}) => {
       )
     }
 
-
     if (routerProps && routerProps.params.projectName && routerProps.params.modelName) {
       // if we have a model and a project, there might be only a problem with the model, so redirect to project
       return (
