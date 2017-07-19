@@ -1,5 +1,5 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from './config'
+import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
@@ -10,27 +10,26 @@ export default async (cookies: any[]): Promise<any> => {
   })
 
   return chromeless
-    .goto(CONSOLE_URL)
     .cookies.set(cookies)
     .goto(CONSOLE_URL)
-    .wait(3000)
+    .wait(3200)
     .wait('a[data-test="sidenav-permissions"]')
     .click('a[data-test="sidenav-permissions"]')
-    .wait(1000)
+    .wait(1200)
     .click('a[data-test="edit-permission-button-Post"]')
-    .wait(1000)
+    .wait(1200)
     // click apply to whole type
     .wait('.next .next-name')
     .click('.next .next-name')
-    .wait(200)
+    .wait(400)
     .wait('.permission-query-wrapper .after')
     .click('.permission-query-wrapper .after')
-    .wait(200)
+    .wait(400)
     .click('div[data-test="button-auth-required"]')
-    .wait(500)
+    .wait(700)
     .wait('.buttons .button.active')
     .click('.buttons .button.active')
-    .wait(1000)
+    .wait(1200)
     .eval.code(() => document.querySelector('.z5:last-child h3[data-test="permission-row-label"]').innerHTML)
 
 }

@@ -1,5 +1,5 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from './config'
+import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
 
 export default async (cookies: any[]): Promise<any> =>  {
 
@@ -11,40 +11,41 @@ export default async (cookies: any[]): Promise<any> =>  {
 
   await chromeless
     .goto(CONSOLE_URL)
-    // .cookies.set(cookies)
-    .wait(3000)
+    .cookies.set(cookies)
+    .wait(3200)
     .wait('a[data-test="sidenav-functions"]')
     .click('a[data-test="sidenav-functions"]')
-    .wait(1000)
+    .wait(1200)
     .wait('a[data-test="create-function-button"]')
     .click('a[data-test="create-function-button"]')
     .wait('div[data-test="choose-sss"]')
     .click('div[data-test="choose-sss"]')
     .wait('.next .next-name')
     .click('.next .next-name')
-    .wait(500)
+    .wait(700)
     .eval.code(() => document.querySelector('input[data-test="function-name-input"]').focus())
 
   return chromeless
     .type('Test SSS Function', 'input[data-test="function-name-input"]')
     .wait('.buttons .button.active')
     .click('.buttons .button.active')
+    .wait(2200)
+    .wait('a[data-test="edit-sss-function-button"]')
+    .click('a[data-test="edit-sss-function-button"]')
+    .wait(1200)
+    .wait('pre.CodeMirror-line')
+    .click('pre.CodeMirror-line')
+    .type('  ')
+    .wait(600)
+    .wait('.buttons .button.active')
+    .click('.buttons .button.active')
+    .wait(2200)
+    .wait('a[data-test="edit-sss-function-button"]')
+    .click('a[data-test="edit-sss-function-button"]')
+    .wait(1600)
+    .wait('.popup-footer .delete')
+    .click('.popup-footer .delete')
     .wait(2000)
-    // .wait('a[data-test="edit-sss-function-button"]')
-    // .click('a[data-test="edit-sss-function-button"]')
-    // .wait(1000)
-    // .wait('pre.CodeMirror-line')
-    // .click('pre.CodeMirror-line')
-    // .type('  ')
-    // .wait(200)
-    // .wait('.buttons .button.active')
-    // .click('.buttons .button.active')
-    // .wait(2000)
-    // .wait('a[data-test="edit-sss-function-button"]')
-    // .click('a[data-test="edit-sss-function-button"]')
-    // .wait(1000)
-    // .wait('.popup-footer .delete')
-    // .click('.popup-footer .delete')
     .end()
 
 }

@@ -1,5 +1,5 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from './config'
+import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 

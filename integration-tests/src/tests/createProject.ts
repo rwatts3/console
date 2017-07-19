@@ -1,5 +1,5 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from './config'
+import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
 
 export default async (cookies: any[]): Promise<any> =>  {
 
@@ -13,7 +13,7 @@ export default async (cookies: any[]): Promise<any> =>  {
     .goto(CONSOLE_URL)
     .cookies.set(cookies)
     .goto(CONSOLE_URL)
-    .wait(3000)
+    .wait(3200)
     .wait('div[data-test="logo"]')
     .click('div[data-test="logo"]')
     .wait('div[data-test="add-project-button"]')
@@ -21,7 +21,7 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('input[data-test="project-name-input"]')
     .type('Very Long Test Project Name')
     .click('div[data-test="submit-add-project-button"]')
-    .wait(5000)
+    .wait(5200)
     .eval.code(() => document.querySelector('.project-name').innerHTML)
 
 }
