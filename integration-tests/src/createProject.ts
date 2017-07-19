@@ -10,7 +10,8 @@ export default async (cookies: any[]): Promise<any> =>  {
   })
 
   return chromeless
-    .setCookies(cookies, CONSOLE_URL)
+    .goto(CONSOLE_URL)
+    .cookies.set(cookies)
     .goto(CONSOLE_URL)
     .wait(3000)
     .wait('div[data-test="logo"]')
@@ -21,7 +22,6 @@ export default async (cookies: any[]): Promise<any> =>  {
     .type('Very Long Test Project Name')
     .click('div[data-test="submit-add-project-button"]')
     .wait(5000)
-    .evaluate(() => document.querySelector('.project-name').innerHTML)
-    .end()
+    .eval.code(() => document.querySelector('.project-name').innerHTML)
 
 }

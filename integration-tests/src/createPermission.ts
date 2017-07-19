@@ -10,22 +10,27 @@ export default async (cookies: any[]): Promise<any> => {
   })
 
   return chromeless
-    .setCookies(cookies, CONSOLE_URL)
+    .goto(CONSOLE_URL)
+    .cookies.set(cookies)
     .goto(CONSOLE_URL)
     .wait(3000)
 
     .wait('a[data-test="sidenav-permissions"]')
     .click('a[data-test="sidenav-permissions"]')
     .wait(1000)
-    .click('a[data-test="new-permission-User"]')
+    .click('a[data-test="new-permission-Post"]')
     .wait(1000)
     .wait('div[data-test="choose-operation-CREATE"]')
     .click('div[data-test="choose-operation-CREATE"]')
     // skip affected fields
-    .wait(200)
+    .wait(500)
     .wait('.next .next-name')
     .click('.next .next-name')
 
+    .wait(500)
+    // click apply to whole type
+    .click('.intro + .info > div')
+    .wait(200)
     // set permission conditions
     .wait(200)
     .wait('.next .next-name')
@@ -39,11 +44,10 @@ export default async (cookies: any[]): Promise<any> => {
     .wait('.buttons .button.active')
     .click('.buttons .button.active')
     .wait(1000)
-    .evaluate(() => {
-      const rows = document.querySelectorAll('a[data-test="edit-permission-button-User"]')
+    .eval.code(() => {
+      const rows = document.querySelectorAll('a[data-test="edit-permission-button-Post"]')
       const lastRow = rows[rows.length - 1]
       return lastRow.firstElementChild.firstElementChild.innerHTML
     })
-    .end()
 
 }

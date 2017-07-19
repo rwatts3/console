@@ -1,16 +1,16 @@
 import Chromeless from 'chromeless'
 import {CONSOLE_URL, runRemote, waitTimeout} from './config'
 
-export default (cookies: any[]): Promise<any> =>  {
+export default async (cookies: any[]): Promise<any> =>  {
   const chromeless = new Chromeless({
-    useArtificialClick: true,
-    runRemote: true,
+    runRemote: false,
     waitTimeout,
   })
 
-  return chromeless
-    .clearCookies()
-    .setCookies(cookies, CONSOLE_URL)
+  console.log(cookies)
+
+  await chromeless
+    .cookies.set(cookies)
     .goto(CONSOLE_URL)
     .wait(2500)
     .wait('div[data-test="start-onboarding"]')
@@ -22,9 +22,14 @@ export default (cookies: any[]): Promise<any> =>  {
     .wait(200)
     .wait('.button.save')
     .click('.button.save')
+    .wait(2000)
+
+    .click('a[data-test="add-post-field"]')
+    .eval.code(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
+
+
+  await chromeless
     .wait(1000)
-    .wait('a[data-test="add-post-field"] .add-button')
-    .click('a[data-test="add-post-field"] .add-button')
     .wait('input.fieldNameInputField')
     .type('imageUrl', 'input.fieldNameInputField')
     .wait(500)
@@ -32,7 +37,6 @@ export default (cookies: any[]): Promise<any> =>  {
     .wait(500)
     .click('.buttons div.button.active')
     .wait(1800)
-    .wait('a[data-test="add-post-field"]')
     .click('a[data-test="add-post-field"]')
     .wait('input.fieldNameInputField')
     .type('description', 'input.fieldNameInputField')
@@ -45,7 +49,7 @@ export default (cookies: any[]): Promise<any> =>  {
     .wait(2000)
     .wait('.CodeMirror')
     .wait(200)
-    .backspace(2)
+    .press(8, 2)
     .wait(1000)
     .click('.graphcool-execute-button')
     .wait(1000)
@@ -53,12 +57,12 @@ export default (cookies: any[]): Promise<any> =>  {
     // execute mutation
     .wait(1000)
     .click('.tether-content .btn')
-    .wait(500)
-    .click('.graphcool-execute-button')
-    .wait(1000)
+    .wait(1500)
+    .click('.graphiql-wrapper:last-child .graphcool-execute-button svg')
+    .wait('.tether-content .btn')
     .click('.tether-content .btn')
-    .wait(500)
-    .click('.graphcool-execute-button')
+    .wait(1000)
+    .click('.graphiql-wrapper:last-child .graphcool-execute-button')
     .wait(1000)
     .click('.tabs .tab')
     // execute query again

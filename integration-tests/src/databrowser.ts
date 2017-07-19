@@ -9,8 +9,9 @@ export default async (cookies: any[]): Promise<any> => {
     waitTimeout,
   })
 
-  return chromeless
-    .setCookies(cookies, CONSOLE_URL)
+  await chromeless
+    .goto(CONSOLE_URL)
+    .cookies.set(cookies)
     .goto(CONSOLE_URL)
     .wait(3000)
     .wait('a[data-test="sidenav-databrowser"]')
@@ -20,18 +21,23 @@ export default async (cookies: any[]): Promise<any> => {
     .click('a[data-test="sidenav-databrowser-model-Post"]')
     .wait(2000)
     .type('test url')
-    .evaluate(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
+    .eval.code(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
+
+  await chromeless
     .click('div[data-test="new-row-cell-description"] > div > div')
     .wait(200)
     .wait('div[data-test="new-row-cell-description"] input')
     .type('some description', 'div[data-test="new-row-cell-description"] input')
-    .evaluate(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
+    .eval.code(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
+
+  return await chromeless
     .click('button[data-test="add-node"]')
     .wait(500)
     .click('div[data-test="edit-field-imageUrl"]')
     .click('div[data-test="cell-imageUrl"]')
     .type('123')
-    .sendKeyCode(13, 'input')
+    .focus('input')
+    .press(13)
     .wait(200)
     .click('div[data-test="checkbox-row-0"]')
     .wait(200)
@@ -39,5 +45,4 @@ export default async (cookies: any[]): Promise<any> => {
     .wait(200)
     .click('div.button.warning')
     .end()
-
 }
