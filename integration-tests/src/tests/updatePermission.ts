@@ -1,12 +1,13 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
+import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
   const chromeless = new Chromeless({
-    useArtificialClick: false,
     runRemote,
     waitTimeout,
+    closeTab,
+    viewport,
   })
 
   return chromeless

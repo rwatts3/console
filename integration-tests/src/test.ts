@@ -8,7 +8,7 @@ import updatePermission from './tests/updatePermission'
 import createPermission from './tests/createPermission'
 import databrowser from './tests/databrowser'
 import playground from './tests/playground'
-import {deleteCustomer, extractCustomerInfo} from './tests/deleteUser'
+import {deleteCustomer, extractCustomerInfo} from './deleteUser'
 
 let cookies: any[] = []
 

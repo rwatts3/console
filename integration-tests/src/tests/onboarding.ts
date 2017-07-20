@@ -1,10 +1,13 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
+import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import * as fs from 'fs'
 
 export default async (cookies: any[]): Promise<any> =>  {
   const chromeless = new Chromeless({
-    runRemote: false,
+    runRemote,
     waitTimeout,
+    closeTab,
+    viewport,
   })
 
   console.log(cookies)
@@ -27,8 +30,7 @@ export default async (cookies: any[]): Promise<any> =>  {
     .click('a[data-test="add-post-field"]')
     .eval.code(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
 
-
-  await chromeless
+  const screenshot = await chromeless
     .wait(1100)
     .wait('input.fieldNameInputField')
     .type('imageUrl', 'input.fieldNameInputField')
@@ -66,15 +68,18 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait(1100)
     .click('.tabs .tab')
     // execute query again
-    .wait(600)
+    .wait(900)
     .click('.graphcool-execute-button')
-    .wait(2100)
+    .wait(3100)
     .wait('.bottom .skip')
     .click('.bottom .skip')
-    .wait(1100)
+    .wait(1000)
     .wait('div[data-test="close-popup"]')
     .click('div[data-test="close-popup"]')
+    .wait(2000)
+    .eval.screenshot()
 
-    .end()
-
+  console.log('\n\n')
+  console.log(screenshot)
+  console.log('\n\n')
 }
