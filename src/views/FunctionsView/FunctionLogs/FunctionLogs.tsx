@@ -1,6 +1,6 @@
 import * as React from 'react'
 import mapProps from '../../../components/MapProps/MapProps'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
 import {Log, ServerlessFunction} from '../../../types/types'

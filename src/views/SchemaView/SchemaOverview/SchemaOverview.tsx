@@ -1,7 +1,7 @@
 import * as React from 'react'
 import SchemaOverviewHeader from './SchemaOverviewHeader'
 import TypeList from './TypeList'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Project, Model} from '../../../types/types'
 import AddType from './AddType'
 import Tether from '../../../components/Tether/Tether'

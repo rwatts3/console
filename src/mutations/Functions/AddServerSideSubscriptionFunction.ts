@@ -1,4 +1,4 @@
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {FunctionBinding, FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 

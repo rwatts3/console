@@ -3,7 +3,7 @@ import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Viewer, Invoice} from '../../../types/types'
 import {
   creditCardNumberValid, expirationDateValid, cpcValid,

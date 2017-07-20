@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { withRouter } from 'react-router'
 import * as fetch from 'isomorphic-fetch'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import * as cookiestore from 'cookiestore'
 import { bindActionCreators } from 'redux'
 import * as cx from 'classnames'

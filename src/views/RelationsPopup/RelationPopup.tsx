@@ -1,6 +1,6 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
-import {Transaction} from 'react-relay'
+import * as Relay from 'react-relay/classic'
+import {Transaction} from 'react-relay/classic'
 import {RelationPopupDisplayState, Cardinality, Model, Relation} from '../../types/types'
 import RelationHeader from './RelationHeader'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'

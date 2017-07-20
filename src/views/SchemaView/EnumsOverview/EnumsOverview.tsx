@@ -1,7 +1,7 @@
 import * as React from 'react'
 import EnumsOverviewHeader from './EnumsOverviewHeader'
 import EnumList from './EnumList'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Project, Enum} from '../../../types/types'
 import AddEnum from './AddEnum'
 import Tether from '../../../components/Tether/Tether'

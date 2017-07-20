@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {fieldModalStyle} from '../../../utils/modalStyle'
 import {SearchProviderAlgolia} from '../../../types/types'
 import UpdateSearchProviderAlgolia from '../../../mutations/UpdateSearchProviderAlgolia'

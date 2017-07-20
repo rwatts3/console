@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {showNotification} from '../../actions/notification'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {connect} from 'react-redux'
 import {nextStep} from '../../actions/gettingStarted'
 import {Link, withRouter} from 'react-router'

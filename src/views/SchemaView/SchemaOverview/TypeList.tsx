@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Project, Model} from '../../../types/types'
 import {SchemaOverviewFilter} from './SchemaOverview'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import TypeBox from './TypeBox'
 import AddType from './AddType'
 import {debounce} from 'lodash'

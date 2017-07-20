@@ -64,7 +64,7 @@ declare module 'cuid' {
   export default function cuid(): string
 }
 
-declare module 'react-relay' {
+declare module 'react-relay/classic' {
 
   // fragments are a hash of functions
   interface Fragments {

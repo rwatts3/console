@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {Model, ModelPermission} from '../../../../types/types'
 import {Icon, $p, variables} from 'graphcool-styles'

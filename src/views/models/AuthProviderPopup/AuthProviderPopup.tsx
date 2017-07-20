@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import AuthProviderSidePanel from './AuthProviderSidePanel'
 import {Icon} from 'graphcool-styles'
 import { $p } from 'graphcool-styles'

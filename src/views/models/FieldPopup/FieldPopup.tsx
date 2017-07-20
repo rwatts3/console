@@ -11,7 +11,7 @@ import Constraints from './Constraints'
 import {emptyField, mockConstraints} from './constants'
 import mapProps from 'map-props'
 import {connect} from 'react-redux'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {withRouter} from 'react-router'
 import {
   toggleIsList,

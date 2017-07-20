@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as cx from 'classnames'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import styled from 'styled-components'
 import {Project} from '../../types/types'
 import {$p} from 'graphcool-styles'

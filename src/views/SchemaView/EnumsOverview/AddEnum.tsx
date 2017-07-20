@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Field, Project, Model, Enum} from '../../../types/types'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {connect} from 'react-redux'
 import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
 import {showNotification} from '../../../actions/notification'

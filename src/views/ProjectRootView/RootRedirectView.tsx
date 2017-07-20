@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {withRouter} from 'react-router'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import * as cookiestore from 'cookiestore'
 import {default as mapProps} from 'map-props'
 import AddProjectMutation from '../../mutations/AddProjectMutation'

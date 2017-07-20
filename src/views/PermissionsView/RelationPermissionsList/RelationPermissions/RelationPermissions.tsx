@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Model, Relation} from '../../../../types/types'
 import RelationPermissionHeader from './RelationPermissionHeader'
 import RelationPermissionList from './RelationPermissionList'

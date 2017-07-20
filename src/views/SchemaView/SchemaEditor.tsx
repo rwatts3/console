@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Project} from '../../types/types'
 import {sortSchema} from '../../../sortSchema'
 import {Link} from 'react-router'
@@ -267,7 +267,6 @@ class SchemaEditor extends React.Component<Props, State> {
       </div>
     )
   }
-
   private updateSchema = () => {
     const {typeSchema, enumSchema, isDryRun} = this.state
     const schema = typeSchema + '\n' + enumSchema

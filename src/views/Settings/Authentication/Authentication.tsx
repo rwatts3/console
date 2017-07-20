@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Viewer} from '../../../types/types'
 import Tokens from './Tokens'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import * as cookiestore from 'cookiestore' import Copy from '../../../components/Copy'
 
 interface Props {

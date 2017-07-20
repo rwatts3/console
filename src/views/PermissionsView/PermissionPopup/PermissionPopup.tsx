@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {buildClientSchema} from 'graphql'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import { Project, Operation, UserType, Model, ModelPermission, PermissionRuleType } from '../../../types/types'

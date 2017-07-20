@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {$p, variables, Icon, $g} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {Operation, Field} from '../../../types/types'

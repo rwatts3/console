@@ -1,6 +1,6 @@
 import * as cookiestore from 'cookiestore'
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import { Route, IndexRoute, IndexRedirect, Redirect } from 'react-router'
 import Loading from './components/Loading/Loading'
 import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'

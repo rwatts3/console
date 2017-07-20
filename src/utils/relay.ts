@@ -1,4 +1,4 @@
-import {injectNetworkLayer, DefaultNetworkLayer, Transaction} from 'react-relay'
+import {injectNetworkLayer, DefaultNetworkLayer, Transaction} from 'react-relay/classic'
 import {ShowNotificationCallback} from '../types/utils'
 import * as cookiestore from 'cookiestore'
 import {Lokka} from 'lokka'

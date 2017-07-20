@@ -1,4 +1,4 @@
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 
 export interface MigrateProjectInput {
   newSchema: string
@@ -6,7 +6,7 @@ export interface MigrateProjectInput {
   force: boolean
 }
 
-export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, null> {
+export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, any> {
 
   getMutation () {
     return Relay.QL`mutation{migrateProject}`

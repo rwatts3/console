@@ -8,7 +8,7 @@ import {creditCardNumberValid, expirationDateValid, cpcValid,
   minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits} from '../../../utils/creditCardValidator'
 import {Icon} from 'graphcool-styles'
 import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'

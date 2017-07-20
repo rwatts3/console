@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {withRouter, Link} from 'react-router'
 import {connect} from 'react-redux'
 import cuid from 'cuid'

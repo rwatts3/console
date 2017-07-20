@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {withRouter, Link} from 'react-router'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'

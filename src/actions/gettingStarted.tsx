@@ -1,5 +1,5 @@
 import * as React from 'react' // tslint:disable-line
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Example} from '../types/types'
 import {Dispatch, StateTree, ReduxThunk, ReduxAction} from '../types/reducers'
 import {GettingStartedState, Step} from './../types/gettingStarted'

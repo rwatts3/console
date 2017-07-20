@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
 import {Icon} from 'graphcool-styles'
 const QueryEditor: any = require('../SchemaView/Editor/QueryEditor').QueryEditor

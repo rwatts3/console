@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import Helmet from 'react-helmet'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { Lokka } from 'lokka'

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {Link} from 'react-router'
 import {ServerlessFunction} from '../../types/types'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
@@ -18,7 +18,7 @@ import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
 import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
 import ToggleSchemaExtensionFunction from '../../mutations/Functions/ToggleSchemaExtensionFunction'
-import { RelayProp } from 'react-relay'
+import { RelayProp } from 'react-relay/classic'
 
 interface Props {
   fn: ServerlessFunction
