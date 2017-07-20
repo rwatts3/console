@@ -23,7 +23,6 @@ export default async (cookies: any[]): Promise<any> => {
     .type('test url')
     .eval.code(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
 
-
   await chromeless
     .click('div[data-test="new-row-cell-description"] > div > div')
     .wait(400)
