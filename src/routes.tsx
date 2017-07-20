@@ -119,6 +119,15 @@ const render = ({error, props, routerProps, element, ...rest}) => {
       )
     }
 
+    // if the project doesn't exist on this account
+    if (err.code === 4033) {
+      graphcoolAlert('The requested project doesn\'t exist on your account.')
+
+      return (
+        <RedirectOnMount to={`/`} />
+      )
+    }
+
     if (routerProps && routerProps.params.projectName && routerProps.params.modelName) {
       // if we have a model and a project, there might be only a problem with the model, so redirect to project
       return (
