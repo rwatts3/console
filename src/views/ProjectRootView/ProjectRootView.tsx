@@ -279,7 +279,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         this.props.gettingStartedState.isCurrentStep('STEP5_DONE')) &&
         <FinalPopup projectId={this.props.project.id}/>
         }
-        <Alert />
         {this.state.showCreateProjectModal && (
           <AddProjectPopup
             onRequestClose={this.handleCloseProjectModal}
