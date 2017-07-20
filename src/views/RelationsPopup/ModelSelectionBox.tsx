@@ -10,7 +10,7 @@ import Info from '../../components/Info'
 interface Props {
   relatedFieldName: string | null
   relatedFieldType: string | null
-  many: boolean
+  many: booleanF
   models: Model[]
   selectedModel?: Model
   didSelectedModel: Function
@@ -116,7 +116,7 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
                     {...inputProps}
                     type='text'
                     className={`w100 ph16 f25 fw6 bgTransparent ${this.props.selectedModel ? 'white' : 'blue'}`}
-                    placeholder='Select Model'
+                    placeholder='Select Type'
                   />
                 )}
               </Combobox>
