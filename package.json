@@ -71,7 +71,7 @@
     "bluebird": "^3.4.6",
     "calculate-size": "^0.2.0",
     "cheerio": "^0.22.0",
-    "chromeless": "^0.1.31",
+    "chromeless": "^0.1.33",
     "classnames": "^2.2.5",
     "codemirror": "5.25.2",
     "codemirror-graphql": "^0.6.3",

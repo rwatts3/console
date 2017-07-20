@@ -10,8 +10,6 @@ export default async (cookies: any[]): Promise<any> =>  {
     viewport,
   })
 
-  console.log(cookies)
-
   await chromeless
     .cookies.set(cookies)
     .goto(CONSOLE_URL)
