@@ -4,7 +4,7 @@ import {Icon, $v} from 'graphcool-styles'
 import {connect} from 'react-redux'
 import {showCurrentStep, skip} from '../../../actions/gettingStarted'
 import {GettingStartedState} from '../../../types/gettingStarted'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   gettingStartedState: GettingStartedState

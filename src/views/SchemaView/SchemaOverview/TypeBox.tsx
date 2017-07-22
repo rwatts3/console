@@ -2,7 +2,7 @@ import * as React from 'react'
 import {Model} from '../../../types/types'
 import * as Relay from 'react-relay/classic'
 import FieldItem from './FieldItem'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import {Icon, $v} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
 import TypeBoxSettings from './TypeBoxSettings'
@@ -16,7 +16,7 @@ import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {showNotification} from '../../../actions/notification'
 import {ShowNotificationCallback} from '../../../types/utils'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   projectName: string

@@ -1,9 +1,13 @@
 import * as React from 'react'
 import mapProps from '../../../components/MapProps/MapProps'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import Relay from 'react-relay/classic'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 import PopupHeader from '../../../components/PopupHeader'
 import PopupFooter from '../../../components/PopupFooter'
@@ -132,6 +136,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     //   binding: null,
     //   operation: null,
     // TODO put in schema of selected fn
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
     this.props.relay.setVariables({
       modelSelected: true,
       operation: props.node && props.node.operation || 'CREATE',
@@ -147,6 +153,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       prevState.fn.operation !== this.state.fn.operation ||
       prevState.fn.binding !== this.state.fn.binding
     ) {
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
       this.props.relay.setVariables({
         modelSelected: true,
         operation: this.state.fn.operation,
@@ -689,203 +697,203 @@ const MappedFunctionPopup = mapProps({
   isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(ConnectedFunctionPopup))
 
-export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditRPFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment FunctionPopup_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
+        name
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+        requestPipelineFunctionSchema(binding: $binding operation: $operation)
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+    }
+  `,
+  node: graphql`
+    fragment FunctionPopup_node on Function {
+      ...FunctionFragment
+      ... on RequestPipelineMutationFunction {
+        binding
+        model {
           id
           name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
         }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
+        operation
       }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on RequestPipelineMutationFunction {
-          binding
-          model {
-            id
-            name
-          }
-          operation
-        }
-      }
-    `,
-  },
+    }
+  `,
 })
 
-export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditSSSFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment FunctionPopup_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
+        name
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
             }
           }
         }
       }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on ServerSideSubscriptionFunction {
-          query
+      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+        requestPipelineFunctionSchema(binding: $binding operation: $operation)
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
         }
       }
-    `,
-  },
+    }
+  `,
+  node: graphql`
+    fragment FunctionPopup_node on Function {
+      ...FunctionFragment
+      ... on ServerSideSubscriptionFunction {
+        query
+      }
+    }
+  `,
 })
 
-export const EditSchemaExtensionFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditSchemaExtensionFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment FunctionPopup_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
+        name
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
             }
           }
         }
       }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on SchemaExtensionFunction {
-          schema
-        }
-        ... on CustomMutationFunction {
-          schema
-        }
-        ... on CustomQueryFunction {
-          schema
+      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+        requestPipelineFunctionSchema(binding: $binding operation: $operation)
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
         }
       }
-    `,
-  },
+    }
+  `,
+  node: graphql`
+    fragment FunctionPopup_node on Function {
+      ...FunctionFragment
+      ... on SchemaExtensionFunction {
+        schema
+      }
+      ... on CustomMutationFunction {
+        schema
+      }
+      ... on CustomQueryFunction {
+        schema
+      }
+    }
+  `,
 })
 
-export const EditCustomQueryFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const EditCustomQueryFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment FunctionPopup_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
+        name
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
             }
           }
         }
       }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on CustomQueryFunction {
-          schema
+      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+        requestPipelineFunctionSchema(binding: $binding operation: $operation)
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
         }
       }
-    `,
-  },
+    }
+  `,
+  node: graphql`
+    fragment FunctionPopup_node on Function {
+      ...FunctionFragment
+      ... on CustomQueryFunction {
+        schema
+      }
+    }
+  `,
 })
 
 const FunctionFragment = Relay.QL`
@@ -902,53 +910,53 @@ const FunctionFragment = Relay.QL`
   }
 `
 
-export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
+export const CreateFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     selectedModelName: null,
     modelSelected: false,
     binding: null,
     operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        id
-        user {
-          crm {
-            information {
-              isBeta
-            }
+  }
+  */
+  viewer: graphql`
+    fragment FunctionPopup_viewer on Viewer {
+      id
+      user {
+        crm {
+          information {
+            isBeta
           }
-        }
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 1000) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-          functions(first: 1000) {
-            edges {
-              node {
-                id
-                __typename
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          id
-          name
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
         }
       }
-    `,
-  },
+      project: projectByName(projectName: $projectName) {
+        id
+        name
+        models(first: 1000) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+        functions(first: 1000) {
+          edges {
+            node {
+              id
+              __typename
+            }
+          }
+        }
+      }
+      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
+        id
+        name
+        requestPipelineFunctionSchema(binding: $binding operation: $operation)
+      }
+    }
+  `,
 })
 
 /*

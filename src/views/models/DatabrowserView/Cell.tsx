@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
 import styled, { keyframes } from 'styled-components'
@@ -9,7 +12,7 @@ import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
 import {isNonScalarList, isScalar} from '../../../utils/graphql'
-import { Link } from 'react-router'
+import { Link } from 'found'
 import {connect} from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
@@ -455,45 +458,43 @@ const MappedCell = connect(
   },
 )(Cell)
 
-export default Relay.createContainer(MappedCell, {
-  fragments: {
-    field: () => Relay.QL`
-      fragment on Field {
+export default createFragmentContainer(MappedCell, {
+  field: graphql`
+    fragment Cell_field on Field {
+      id
+      name
+      isList
+      isRequired
+      isReadonly
+      typeIdentifier
+      enum {
+        id
+      }
+      model {
         id
         name
-        isList
-        isRequired
-        isReadonly
-        typeIdentifier
-        enum {
-          id
-        }
-        model {
-          id
-          name
-        }
-        relatedModel {
-          ${SelectNodesCell.getFragment('model')}
-          id
-          name
-        }
-        reverseRelationField {
-          isList
-          name
-        }
-        relationSide
-        relation {
-          fieldOnLeftModel {
-            id
-            name
-          }
-          fieldOnRightModel {
-            id
-            name
-          }
-        }
-        ${RelationsPopup.getFragment('originField')}
       }
-    `,
-  },
+      relatedModel {
+        ...SelectNodesCell_model
+        id
+        name
+      }
+      reverseRelationField {
+        isList
+        name
+      }
+      relationSide
+      relation {
+        fieldOnLeftModel {
+          id
+          name
+        }
+        fieldOnRightModel {
+          id
+          name
+        }
+      }
+      ...RelationsPopup_originField
+    }
+  `,
 })

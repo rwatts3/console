@@ -1,10 +1,13 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Project, Model, SearchProviderAlgolia, AlgoliaSyncQuery} from '../../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import mapProps from '../../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
 import AlgoliaIndexPopupHeader from './AlgoliaIndexPopupHeader'
@@ -214,86 +217,86 @@ const MappedAlgoliaIndexPopup = mapProps({
   },
 })(withRouter(AlgoliaIndexPopup))
 
-export const AlgoliaEditIndexPopup = Relay.createContainer(MappedAlgoliaIndexPopup, {
+export const AlgoliaEditIndexPopup = createFragmentContainer(MappedAlgoliaIndexPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Node {
-        id
-        ... on AlgoliaSyncQuery {
-          fragment
-          indexName
-          isEnabled
-          model {
-            name
-            id
-          }
+  }
+  */
+  node: graphql`
+    fragment AlgoliaIndexPopup_node on Node {
+      id
+      ... on AlgoliaSyncQuery {
+        fragment
+        indexName
+        isEnabled
+        model {
+          name
+          id
         }
       }
-    `,
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${AlgoliaIndexPopupModels.getFragment('project')}
-          models(first: 100) {
-            edges {
-              node {
-                id
-              }
-            }
-          }
-          integrations(first: 100) {
-            edges {
-              node {
-                id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  id
-                  ${AlgoliaIndexPopupQuery.getFragment('algolia')}
-                }
-              }
+    }
+  `,
+  viewer: graphql`
+    fragment AlgoliaIndexPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...AlgoliaIndexPopupModels_project
+        models(first: 100) {
+          edges {
+            node {
+              id
             }
           }
         }
+        integrations(first: 100) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
+                id
+                ...AlgoliaIndexPopupQuery_algolia
+              }
+            }
+          }
+        }
       }
-    `,
-  },
+    }
+  `,
 })
 
-export const AlgoliaCreateIndexPopup = Relay.createContainer(withRouter(MappedAlgoliaIndexPopup), {
+export const AlgoliaCreateIndexPopup = createFragmentContainer(withRouter(MappedAlgoliaIndexPopup), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${AlgoliaIndexPopupModels.getFragment('project')}
-          models(first: 100) {
-            edges {
-              node {
-                id
-              }
+  }
+  */
+  viewer: graphql`
+    fragment AlgoliaIndexPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...AlgoliaIndexPopupModels_project
+        models(first: 100) {
+          edges {
+            node {
+              id
             }
           }
-          integrations(first: 100) {
-            edges {
-              node {
+        }
+        integrations(first: 100) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
                 id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  id
-                  ${AlgoliaIndexPopupQuery.getFragment('algolia')}
-                }
+                ...AlgoliaIndexPopupQuery_algolia
               }
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

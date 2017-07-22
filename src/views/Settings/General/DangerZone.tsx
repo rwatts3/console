@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import ResetProjectDataMutation from '../../../mutations/ResetProjectDataMutation'
 import ResetProjectSchemaMutation from '../../../mutations/ResetProjectSchemaMutation'
 import DeleteProjectMutation from '../../../mutations/DeleteProjectMutation'
@@ -233,23 +236,25 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedDangerZone = connect(null, mapDispatchToProps)(withRouter(DangerZone))
 
-export default Relay.createContainer(MappedDangerZone, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          projects(first: 10) {
-            edges
+export default createFragmentContainer(MappedDangerZone, {
+  viewer: graphql`
+    fragment DangerZone_viewer on Viewer {
+      user {
+        id
+        projects(first: 10) {
+          edges {
+            node {
+              id
+            }
           }
         }
       }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        name
-      }
-    `,
-  },
+    }
+  `,
+  project: graphql`
+    fragment DangerZone_project on Project {
+      id
+      name
+    }
+  `,
 })

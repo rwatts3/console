@@ -7,7 +7,7 @@ import {classnames} from '../../../utils/classnames'
 import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 import Tether from '../../../components/Tether/Tether'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import {idToBeginning} from '../../../utils/utils'
 
 interface Props {

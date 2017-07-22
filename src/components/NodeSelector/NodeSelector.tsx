@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { Model } from '../../types/types'
 import { isScalar } from '../../utils/graphql'
 import {NonScalarValue} from '../../types/utils'
@@ -127,22 +130,20 @@ class NodeSelector extends React.Component<Props, State> {
 
 }
 
-export default Relay.createContainer(NodeSelector, {
-  fragments: {
-    relatedModel: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        namePlural
-        fields(first: 1000) {
-          edges {
-            node {
-              typeIdentifier
-              name
-            }
+export default createFragmentContainer(NodeSelector, {
+  relatedModel: graphql`
+    fragment NodeSelector_relatedModel on Model {
+      id
+      name
+      namePlural
+      fields(first: 1000) {
+        edges {
+          node {
+            typeIdentifier
+            name
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

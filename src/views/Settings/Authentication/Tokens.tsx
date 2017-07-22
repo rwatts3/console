@@ -2,7 +2,10 @@ import * as React from 'react'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import AddPermanentAuthTokenMutation from '../../../mutations/AddPermanentAuthTokenMutation'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import TokenRow from './TokenRow'
 import DeletePermanentAuthTokenMutation from '../../../mutations/DeletePermanentAuthTokenMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
@@ -184,21 +187,19 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedTokens = connect(null, mapDispatchToProps)(Tokens)
 
-export default Relay.createContainer(mappedTokens, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        permanentAuthTokens (first: 1000) {
-          edges {
-            node {
-              id
-              name
-              token
-            }
+export default createFragmentContainer(mappedTokens, {
+  project: graphql`
+    fragment Tokens_project on Project {
+      id
+      permanentAuthTokens (first: 1000) {
+        edges {
+          node {
+            id
+            name
+            token
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import styled from 'styled-components'
 import {
   Action,
@@ -89,6 +92,8 @@ class ActionBoxes extends React.Component<Props, State> {
       changesMade: false,
     }
 
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
     props.relay.setVariables({
       selectedModelMutationType: triggerMutationModelMutationType,
       selectedModelId: triggerMutationModelModelId,
@@ -97,6 +102,7 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   componentWillMount () {
+// TODO props.relay.* APIs do not exist on compat containers
     this.props.relay.forceFetch()
   }
 
@@ -213,10 +219,14 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState(partialState)
 
     if (payload.triggerMutationModelModelId) {
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
       this.props.relay.setVariables({ selectedModelId: payload.triggerMutationModelModelId })
     }
 
     if (payload.triggerMutationModelMutationType) {
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
       this.props.relay.setVariables({
         selectedModelMutationType: payload.triggerMutationModelMutationType,
         hasSelectedModelId: true,
@@ -342,49 +352,49 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(ActionBoxes, {
+export default createFragmentContainer(ActionBoxes, {
+  /* TODO manually deal with:
   initialVariables: {
     selectedModelId: null,
     selectedModelMutationType: null,
     hasSelectedModelId: false,
-  },
-  fragments: {
-    action: () => Relay.QL`
-      fragment on Action {
-        id
-        description
-        triggerType
-        handlerType
-        triggerMutationModel {
-          model {
+  }
+  */
+  action: graphql`
+    fragment ActionBoxes_action on Action {
+      id
+      description
+      triggerType
+      handlerType
+      triggerMutationModel {
+        model {
+          id
+          name
+        }
+        mutationType
+        fragment
+      }
+      handlerWebhook {
+        url
+      }
+    }
+  `,
+  project: graphql`
+    fragment ActionBoxes_project on Project {
+      id
+      actionSchema(
+        modelId: $selectedModelId
+        modelMutationType: $selectedModelMutationType
+      ) @include(if: $hasSelectedModelId)
+      ...ActionTriggerBox_project
+      models(first: 1000) {
+        edges {
+          node {
             id
             name
           }
-          mutationType
-          fragment
-        }
-        handlerWebhook {
-          url
         }
       }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        actionSchema(
-          modelId: $selectedModelId
-          modelMutationType: $selectedModelMutationType
-        ) @include(if: $hasSelectedModelId)
-        ${ActionTriggerBox.getFragment('project')}
-        models(first: 1000) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-      }
-    `,
-  },
+    }
+  `,
 })

@@ -8,7 +8,10 @@ import {creditCardNumberValid, expirationDateValid, cpcValid,
   minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits} from '../../../utils/creditCardValidator'
 import {Icon} from 'graphcool-styles'
 import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
@@ -526,32 +529,30 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedCreditCardInputSection = connect(null, mapDispatchToProps)(CreditCardInputSection)
 
-export default Relay.createContainer(mappedCreditCardInputSection, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        crm: user {
-          name
-          crm {
-            customer {
-              id
-              projects(first: 1000) {
-                edges {
-                  node {
-                    name
-                    projectBillingInformation {
-                      creditCard {
-                        addressCity
-                        addressCountry
-                        addressLine1
-                        addressLine2
-                        addressState
-                        addressZip
-                        expMonth
-                        expYear
-                        last4
-                        name
-                      }
+export default createFragmentContainer(mappedCreditCardInputSection, {
+  viewer: graphql`
+    fragment CreditCardInputSection_viewer on Viewer {
+      crm: user {
+        name
+        crm {
+          customer {
+            id
+            projects(first: 1000) {
+              edges {
+                node {
+                  name
+                  projectBillingInformation {
+                    creditCard {
+                      addressCity
+                      addressCountry
+                      addressLine1
+                      addressLine2
+                      addressState
+                      addressZip
+                      expMonth
+                      expYear
+                      last4
+                      name
                     }
                   }
                 }
@@ -559,6 +560,6 @@ export default Relay.createContainer(mappedCreditCardInputSection, {
             }
           }
         }
-      }`,
-  },
+      }
+    }`,
 })

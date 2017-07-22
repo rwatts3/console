@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer, Seat} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
@@ -113,38 +116,38 @@ class Team extends React.Component<Props, {}> {
 
 const mappedTeam = connect(null, {showNotification})(Team)
 
-export default Relay.createContainer(mappedTeam, {
+export default createFragmentContainer(mappedTeam, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          seats(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                email
-                isOwner
-                status
-              }
+  }
+  */
+  viewer: graphql`
+    fragment Team_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        seats(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              email
+              isOwner
+              status
             }
           }
         }
-        user {
-          crm {
-            customer {
-              projects(first: 100) {
-                edges {
-                  node {
-                    id
-                    name
-                    projectBillingInformation {
-                      plan
-                    }
+      }
+      user {
+        crm {
+          customer {
+            projects(first: 100) {
+              edges {
+                node {
+                  id
+                  name
+                  projectBillingInformation {
+                    plan
                   }
                 }
               }
@@ -152,6 +155,6 @@ export default Relay.createContainer(mappedTeam, {
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

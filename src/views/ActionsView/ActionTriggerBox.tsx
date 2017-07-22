@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
 import {Icon} from 'graphcool-styles'
 const QueryEditor: any = require('../SchemaView/Editor/QueryEditor').QueryEditor
@@ -111,13 +114,11 @@ class ActionTriggerBox extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(ActionTriggerBox, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        ${ActionTrigger.getFragment('project')}
-      }
-    `,
-  },
+export default createFragmentContainer(ActionTriggerBox, {
+  project: graphql`
+    fragment ActionTriggerBox_project on Project {
+      id
+      ...ActionTrigger_project
+    }
+  `,
 })

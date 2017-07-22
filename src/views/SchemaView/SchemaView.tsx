@@ -2,12 +2,15 @@ import * as React from 'react'
 import SchemaOverview from './SchemaOverview/SchemaOverview'
 import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer, Enum} from '../../types/types'
 import ResizableBox from '../../components/ResizableBox'
 import {throttle} from 'lodash'
 import EnumsOverview from './EnumsOverview/EnumsOverview'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   viewer: Viewer
@@ -112,6 +115,7 @@ class SchemaView extends React.Component<Props, State> {
           >
             <SchemaEditor
               project={viewer.project}
+// TODO props.relay.* APIs do not exist on compat containers
               forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
               onEnumsChange={this.handleEnumsChange}
@@ -166,31 +170,31 @@ class SchemaView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(withRouter(SchemaView), {
+export default createFragmentContainer(withRouter(SchemaView), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment SchemaView_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          ${SchemaEditor.getFragment('project')}
-          ${SchemaOverview.getFragment('project')}
-          ${EnumsOverview.getFragment('project')}
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
+        name
+        ...SchemaEditor_project
+        ...SchemaOverview_project
+        ...EnumsOverview_project
+      }
+      user {
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })
 
 const mockEnums: Enum[] = [

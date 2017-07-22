@@ -3,7 +3,10 @@ import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer, Invoice} from '../../../types/types'
 import {
   creditCardNumberValid, expirationDateValid, cpcValid,
@@ -416,6 +419,7 @@ class Billing extends React.Component<Props, State> {
             isEditingCreditCardInfo: false,
             isLoading: false,
           } as State)
+// TODO props.relay.* APIs do not exist on compat containers
           this.props.relay.forceFetch()
         },
         onFailure: (transaction) => {
@@ -434,65 +438,65 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedBilling = connect(null, mapDispatchToProps)(Billing)
 
-export default Relay.createContainer(mappedBilling, {
+export default createFragmentContainer(mappedBilling, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          seats(first: 1000) {
-            edges {
-              node {
-                id
-                isOwner
-                email
-                name
-              }
+  }
+  */
+  viewer: graphql`
+    fragment Billing_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        name
+        seats(first: 1000) {
+          edges {
+            node {
+              id
+              isOwner
+              email
+              name
             }
           }
-        },
-        crm: user {
-          name
-          email
-          crm {
-            customer {
-              id
-              projects(first: 1000) {
-                edges {
-                  node {
-                    id
-                    name
-                    systemProjectId
-                    projectBillingInformation {
-                      plan
-                      invoices(first: 1000)  {
-                        edges {
-                          node {
-                            overageRequests
-                            usageRequests
-                            usageStorage
-                            usedSeats
-                            timestamp
-                            total
-                          }
+        }
+      },
+      crm: user {
+        name
+        email
+        crm {
+          customer {
+            id
+            projects(first: 1000) {
+              edges {
+                node {
+                  id
+                  name
+                  systemProjectId
+                  projectBillingInformation {
+                    plan
+                    invoices(first: 1000)  {
+                      edges {
+                        node {
+                          overageRequests
+                          usageRequests
+                          usageStorage
+                          usedSeats
+                          timestamp
+                          total
                         }
                       }
-                      creditCard {
-                        addressCity
-                        addressCountry
-                        addressLine1
-                        addressLine2
-                        addressState
-                        addressZip
-                        expMonth
-                        expYear
-                        last4
-                        name
-                      }
+                    }
+                    creditCard {
+                      addressCity
+                      addressCountry
+                      addressLine1
+                      addressLine2
+                      addressState
+                      addressZip
+                      expMonth
+                      expYear
+                      last4
+                      name
                     }
                   }
                 }
@@ -501,5 +505,5 @@ export default Relay.createContainer(mappedBilling, {
           }
         }
       }
-    `},
-})
+    }
+  `})

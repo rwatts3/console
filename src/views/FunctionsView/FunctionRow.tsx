@@ -1,9 +1,12 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {Link} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {Link} from 'found'
 import {ServerlessFunction} from '../../types/types'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {Icon, $v} from 'graphcool-styles'
 import ToggleActiveRequestPipelineMutationFunction
   from '../../mutations/Functions/ToggleActiveRequestPipelineMutationFunction'
@@ -303,25 +306,23 @@ class FunctionRow extends React.Component<Props, State> {
 
 const ConnectedFunctionRow = connect(null, {showNotification})(FunctionRow)
 
-export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
-  fragments: {
-    fn: () => Relay.QL`
-      fragment on Function {
-        __typename
-        id
-        name
-        isActive
-        type
-        auth0Id
-        stats {
-          errorCount
-          lastRequest
-          requestCount
-          requestHistogram
-        }
-      },
-    `,
-  },
+export default createFragmentContainer(withRouter(ConnectedFunctionRow), {
+  fn: graphql`
+    fragment FunctionRow_fn on Function {
+      __typename
+      id
+      name
+      isActive
+      type
+      auth0Id
+      stats {
+        errorCount
+        lastRequest
+        requestCount
+        requestHistogram
+      }
+    },
+  `,
 })
 // TODO add later when we use relay-modern
 // ... on RequestPipelineMutationFunction @include(if: $includeRP) {

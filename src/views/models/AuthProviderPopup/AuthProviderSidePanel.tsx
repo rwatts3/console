@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as Immutable from 'immutable'
 import FloatingInput from '../../../components/FloatingInput/FloatingInput'
 import UpdateAuthProviderMutation from '../../../mutations/UpdateAuthProviderMutation'
@@ -546,49 +549,47 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({showNotification}, dispatch)
 }
 
-export default Relay.createContainer(connect(null, mapDispatchToProps)(MappedAuthProviderSidePanel), {
-    fragments: {
-        project: () => Relay.QL`
-          fragment on Project {
-            id
-            models(first: 100) {
-              edges {
-                node {
-                  id
-                  name
-                }
-              }
+export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedAuthProviderSidePanel), {
+    project: graphql`
+      fragment AuthProviderSidePanel_project on Project {
+        id
+        models(first: 100) {
+          edges {
+            node {
+              id
+              name
             }
-            packageDefinitions(first: 100) {
-              edges {
-                node {
-                  id
-                  definition
-                  name
-                }
-              }
+          }
+        }
+        packageDefinitions(first: 100) {
+          edges {
+            node {
+              id
+              definition
+              name
             }
-            authProviders(first: 100) {
-              edges {
-                node {
-                  id
-                  type
-                  isEnabled
-                  digits {
-                    consumerKey
-                    consumerSecret
-                  }
-                  auth0 {
-                    clientId
-                    clientSecret
-                    domain
-                  }
-                }
+          }
+        }
+        authProviders(first: 100) {
+          edges {
+            node {
+              id
+              type
+              isEnabled
+              digits {
+                consumerKey
+                consumerSecret
+              }
+              auth0 {
+                clientId
+                clientSecret
+                domain
               }
             }
           }
-        `,
-    },
+        }
+      }
+    `,
 })
 
 interface AuthText {

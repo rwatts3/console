@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Loading from '../../components/Loading/Loading'
 import { onFailureShowNotification } from '../../utils/relay'
 import UpdateModelDescriptionMutation from '../../mutations/UpdateModelDescriptionMutation'
@@ -103,13 +106,11 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedModelDescription = connect(null, mapDispatchToProps)(ModelDescription)
 
-export default Relay.createContainer(MappedModelDescription, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        description
-      }
-    `,
-  },
+export default createFragmentContainer(MappedModelDescription, {
+  model: graphql`
+    fragment ModelDescription_model on Model {
+      id
+      description
+    }
+  `,
 })

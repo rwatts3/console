@@ -4,7 +4,7 @@ import {connect}             from 'react-redux'
 import {ConsoleEvents}       from 'graphcool-metrics'
 import * as cx               from 'classnames'
 import styled                from 'styled-components'
-import {withRouter}          from 'react-router'
+import {withRouter}          from 'found'
 import {
   $p,
   variables,

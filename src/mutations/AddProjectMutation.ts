@@ -1,5 +1,6 @@
 import * as Relay from 'react-relay/classic'
 import {Region} from '../types/types'
+import {commitMutation, graphql} from 'react-relay'
 
 interface Props {
   projectName: string
@@ -7,7 +8,7 @@ interface Props {
   region: Region
 }
 
-export default class AddProjectMutation extends Relay.Mutation<Props, {}> {
+class AddProjectMutation extends Relay.Mutation<Props, {}> {
 
   getMutation () {
     return Relay.QL`mutation{addProject}`
@@ -41,4 +42,9 @@ export default class AddProjectMutation extends Relay.Mutation<Props, {}> {
       region: this.props.region,
     }
   }
+}
+
+
+function commit(props: Props) {
+  return
 }

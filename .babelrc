@@ -12,8 +12,10 @@
   "plugins": [
     "styled-jsx-postcss/babel",
     "transform-runtime",
-    "./build/babelRelayPlugin",
-    "transform-async-to-generator"
+    "transform-async-to-generator",
+    [
+      "relay", {"compat": true, "schema": "./build/schema.graphql"}
+    ]
   ],
   "env": {
     "development": {

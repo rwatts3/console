@@ -1,6 +1,9 @@
 import * as React from 'react'
 import * as cx from 'classnames'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import styled from 'styled-components'
 import {Project} from '../../types/types'
 import {$p} from 'graphcool-styles'
@@ -132,34 +135,32 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(IntegrationsCardGrid, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        integrations(first: 100) {
-          edges {
-            node {
-              id
-              isEnabled
-            }
-          }
-        }
-        authProviders(first: 100) {
-          edges {
-            node {
-              isEnabled
-              type
-            }
-          }
-        }
-        packageDefinitions(first: 100) {
-          edges {
-            node {
-              name
-            }
+export default createFragmentContainer(IntegrationsCardGrid, {
+  project: graphql`
+    fragment IntegrationsCardGrid_project on Project {
+      integrations(first: 100) {
+        edges {
+          node {
+            id
+            isEnabled
           }
         }
       }
-    `,
-  },
+      authProviders(first: 100) {
+        edges {
+          node {
+            isEnabled
+            type
+          }
+        }
+      }
+      packageDefinitions(first: 100) {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  `,
 })

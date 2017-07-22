@@ -1,7 +1,10 @@
 import * as React from 'react'
 import {Project, Model} from '../../../types/types'
 import {SchemaOverviewFilter} from './SchemaOverview'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import TypeBox from './TypeBox'
 import AddType from './AddType'
 import {debounce} from 'lodash'
@@ -87,47 +90,45 @@ class TypeList extends React.Component<Props,null> {
   }
 }
 
-export default Relay.createContainer(TypeList, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        name
-        models(first: 100) {
-          edges {
-            node {
-              itemCount
-              id
-              name
-              isSystem
-              description
-              permissions(first: 100) {
-                edges {
-                  node {
-                    isActive
-                    operation
-                    applyToWholeModel
-                    fieldIds
-                  }
+export default createFragmentContainer(TypeList, {
+  project: graphql`
+    fragment TypeList_project on Project {
+      name
+      models(first: 100) {
+        edges {
+          node {
+            itemCount
+            id
+            name
+            isSystem
+            description
+            permissions(first: 100) {
+              edges {
+                node {
+                  isActive
+                  operation
+                  applyToWholeModel
+                  fieldIds
                 }
               }
-              fields(first: 100) {
-                edges {
-                  node {
+            }
+            fields(first: 100) {
+              edges {
+                node {
+                  id
+                  name
+                  typeIdentifier
+                  isList
+                  isRequired
+                  isSystem
+                  isUnique
+                  isReadonly
+                  relation {
+                    name
+                  }
+                  relatedModel {
                     id
                     name
-                    typeIdentifier
-                    isList
-                    isRequired
-                    isSystem
-                    isUnique
-                    isReadonly
-                    relation {
-                      name
-                    }
-                    relatedModel {
-                      id
-                      name
-                    }
                   }
                 }
               }
@@ -135,6 +136,6 @@ export default Relay.createContainer(TypeList, {
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

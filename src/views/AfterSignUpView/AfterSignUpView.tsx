@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import { withRouter } from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import { withRouter } from 'found'
 import {$p, $v, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled, { keyframes } from 'styled-components'
@@ -206,7 +209,7 @@ class AfterSignUpView extends React.Component<Props, State> {
           </div>
         </Container>
       </div>
-    )
+    );
 
   }
 
@@ -260,23 +263,21 @@ class AfterSignUpView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(withRouter(AfterSignUpView), {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          name
-          crm {
-            information {
-              id
-              name
-              email
-              source
-            }
+export default createFragmentContainer(withRouter(AfterSignUpView), {
+  viewer: graphql`
+    fragment AfterSignUpView_viewer on Viewer {
+      user {
+        id
+        name
+        crm {
+          information {
+            id
+            name
+            email
+            source
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

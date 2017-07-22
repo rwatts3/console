@@ -1,12 +1,15 @@
 import * as React from 'react'
 import {buildClientSchema} from 'graphql'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import { Project, Operation, UserType, Model, ModelPermission, PermissionRuleType } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import styled from 'styled-components'
 import PermissionPopupHeader from './PermissionPopupHeader'
 import PermissionPopupFooter from './PermissionPopupFooter'
@@ -120,6 +123,8 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
   updateRelayVariables() {
     if (this.state.selectedOperation) {
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
       this.props.relay.setVariables({
         operation: this.state.selectedOperation,
       })
@@ -514,79 +519,25 @@ const MappedPermissionPopup = mapProps({
   isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
 })(ReduxContainer)
 
-export const EditPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
+export const EditPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+  /* TODO manually deal with:
   initialVariables: {
     operation: 'CREATE',
-  },
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Node {
-        id
-        ... on ModelPermission {
-          applyToWholeModel
-          fieldIds
-          operation
-          isActive
-          rule
-          ruleGraphQuery
-          ruleName
-          userType
-          model {
-            name
-            namePlural
-            permissionSchema(operation: $operation)
-            permissionQueryArguments(operation: $operation) {
-              group
-              name
-              typeName
-            }
-            fields(first: 100) {
-              edges {
-                node {
-                  id
-                  name
-                  isList
-                  typeIdentifier
-                }
-              }
-            }
-            ${AffectedFields.getFragment('model')}
-          }
-        }
-      }
-    `,
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-  },
-})
-
-export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-    modelName: null, // injected from router
-    operation: 'CREATE',
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          id
+  }
+  */
+  node: graphql`
+    fragment PermissionPopup_node on Node {
+      id
+      ... on ModelPermission {
+        applyToWholeModel
+        fieldIds
+        operation
+        isActive
+        rule
+        ruleGraphQuery
+        ruleName
+        userType
+        model {
           name
           namePlural
           permissionSchema(operation: $operation)
@@ -605,11 +556,65 @@ export const AddPermissionPopup = Relay.createContainer(withRouter(MappedPermiss
               }
             }
           }
-          ${AffectedFields.getFragment('model')}
+          ...AffectedFields_model
         }
       }
-    `,
-  },
+    }
+  `,
+  viewer: graphql`
+    fragment PermissionPopup_viewer on Viewer {
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+    }
+  `,
+})
+
+export const AddPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+  /* TODO manually deal with:
+  initialVariables: {
+    projectName: null, // injected from router
+    modelName: null, // injected from router
+    operation: 'CREATE',
+  }
+  */
+  viewer: graphql`
+    fragment PermissionPopup_viewer on Viewer {
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+      model: modelByName(projectName: $projectName, modelName: $modelName) {
+        id
+        name
+        namePlural
+        permissionSchema(operation: $operation)
+        permissionQueryArguments(operation: $operation) {
+          group
+          name
+          typeName
+        }
+        fields(first: 100) {
+          edges {
+            node {
+              id
+              name
+              isList
+              typeIdentifier
+            }
+          }
+        }
+        ...AffectedFields_model
+      }
+    }
+  `,
 })
 
 function getEmptyPermissionQuery(modelName: string, operation: Operation, userType: UserType) {

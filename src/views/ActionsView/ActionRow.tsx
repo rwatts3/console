@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Toggle from 'react-toggle-button'
 import { Action } from '../../types/types'
 import {Icon} from 'graphcool-styles'
@@ -145,22 +148,20 @@ class ActionRow extends React.Component<Props, State> {
 
 }
 
-export default Relay.createContainer(ActionRow, {
-  fragments: {
-    action: () => Relay.QL`
-      fragment on Action {
-        id
-        triggerType
-        handlerType
-        description
-        isActive
-        triggerMutationModel {
-          model {
-            name
-          }
-          mutationType
+export default createFragmentContainer(ActionRow, {
+  action: graphql`
+    fragment ActionRow_action on Action {
+      id
+      triggerType
+      handlerType
+      description
+      isActive
+      triggerMutationModel {
+        model {
+          name
         }
+        mutationType
       }
-    `,
-  },
+    }
+  `,
 })

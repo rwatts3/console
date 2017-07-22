@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {GettingStartedState} from '../../../types/gettingStarted'

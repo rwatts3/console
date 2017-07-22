@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Viewer} from '../../../types/types'
@@ -143,21 +146,19 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedSettingsTab = connect(null, mapDispatchToProps)(SettingsTab)
 
-export default Relay.createContainer(MappedSettingsTab, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          crm {
-            information {
-              id
-              name
-              email
-            }
+export default createFragmentContainer(MappedSettingsTab, {
+  viewer: graphql`
+    fragment SettingsTab_viewer on Viewer {
+      user {
+        id
+        crm {
+          information {
+            id
+            name
+            email
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

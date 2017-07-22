@@ -1,8 +1,11 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {
   toggleNodeSelection, clearNodeSelection, setNodeSelection, setScrollTop, setLoading,
   hideNewRow, toggleSearch, selectCell,
@@ -227,6 +230,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   }
 
   forceFetch = () => {
+// TODO props.relay.* APIs do not exist on compat containers
     this.props.relay.forceFetch({}, () => {
       // console.log('force fetched', this.props.model.namePlural, this.props.fields)
       // this.reloadData()
@@ -789,63 +793,63 @@ const MappedDatabrowserView = mapProps({
   enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedDatabrowserView, {
+export default createFragmentContainer(MappedDatabrowserView, {
+  /* TODO manually deal with:
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          id
-          name
-          namePlural
-          itemCount
-          isSystem
-          fields(first: 1000) {
-            edges {
-              node {
+  }
+  */
+  viewer: graphql`
+    fragment DatabrowserView_viewer on Viewer {
+      model: modelByName(projectName: $projectName, modelName: $modelName) {
+        id
+        name
+        namePlural
+        itemCount
+        isSystem
+        fields(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              typeIdentifier
+              isList
+              isReadonly
+              isSystem
+              defaultValue
+              relatedModel {
                 id
                 name
-                typeIdentifier
+              }
+              reverseRelationField {
+                id
                 isList
-                isReadonly
-                isSystem
-                defaultValue
-                relatedModel {
-                  id
-                  name
-                }
-                reverseRelationField {
-                  id
-                  isList
-                  name
-                }
-                ${HeaderCell.getFragment('field')}
-                ${Cell.getFragment('field')}
-              }
-            }
-          }
-          ${NewRow.getFragment('model')}
-          ${ModelHeader.getFragment('model')}
-        }
-        project: projectByName(projectName: $projectName) {
-          id
-          ${ModelHeader.getFragment('project')}
-          ${NewRow.getFragment('project')}
-          enums(first: 1000) {
-            edges {
-              node {
-                id
                 name
-                values
               }
+              ...HeaderCell_field
+              ...Cell_field
             }
           }
         }
-        ${ModelHeader.getFragment('viewer')}
+        ...NewRow_model
+        ...ModelHeader_model
       }
-    `,
-  },
+      project: projectByName(projectName: $projectName) {
+        id
+        ...ModelHeader_project
+        ...NewRow_project
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
+            }
+          }
+        }
+      }
+      ...ModelHeader_viewer
+    }
+  `,
 })

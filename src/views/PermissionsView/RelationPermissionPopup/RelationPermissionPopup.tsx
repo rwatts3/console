@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {buildClientSchema} from 'graphql'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -9,7 +12,7 @@ import {
 } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
 import {connect} from 'react-redux'
@@ -66,7 +69,7 @@ const modalStyling = {
   },
 }
 
-class PermissionPopup extends React.Component<Props, RelationPermissionPopupState> {
+class RelationPermissionPopup extends React.Component<Props, RelationPermissionPopupState> {
   private mutationType: MutationType
 
   constructor(props) {
@@ -429,68 +432,19 @@ const MappedPermissionPopup = mapProps({
   isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
 })(ReduxContainer)
 
-export const EditRelationPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Node {
-        id
-        ... on RelationPermission {
-          connect
-          disconnect
-          isActive
-          rule
-          ruleGraphQuery
-          ruleName
-          userType
-          relation {
-            name
-            permissionSchema
-            permissionQueryArguments {
-              group
-              name
-              typeName
-            }
-            leftModel {
-              name
-            }
-            rightModel {
-              name
-            }
-          }
-        }
-      }
-    `,
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-  },
-})
-
-export const AddRelationPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-    relationName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-        relation: relationByName(projectName: $projectName, relationName: $relationName) {
-          id
+export const EditRelationPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+  node: graphql`
+    fragment RelationPermissionPopup_node on Node {
+      id
+      ... on RelationPermission {
+        connect
+        disconnect
+        isActive
+        rule
+        ruleGraphQuery
+        ruleName
+        userType
+        relation {
           name
           permissionSchema
           permissionQueryArguments {
@@ -506,8 +460,55 @@ export const AddRelationPermissionPopup = Relay.createContainer(withRouter(Mappe
           }
         }
       }
-    `,
-  },
+    }
+  `,
+  viewer: graphql`
+    fragment RelationPermissionPopup_viewer on Viewer {
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+    }
+  `,
+})
+
+export const AddRelationPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+  /* TODO manually deal with:
+  initialVariables: {
+    projectName: null, // injected from router
+    relationName: null, // injected from router
+  }
+  */
+  viewer: graphql`
+    fragment RelationPermissionPopup_viewer on Viewer {
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+      relation: relationByName(projectName: $projectName, relationName: $relationName) {
+        id
+        name
+        permissionSchema
+        permissionQueryArguments {
+          group
+          name
+          typeName
+        }
+        leftModel {
+          name
+        }
+        rightModel {
+          name
+        }
+      }
+    }
+  `,
 })
 
 function getEmptyRelationPermissionQuery(relation: Relation) {

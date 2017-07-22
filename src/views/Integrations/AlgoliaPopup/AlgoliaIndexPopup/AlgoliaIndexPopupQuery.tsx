@@ -1,11 +1,14 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p, $v } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import {Project, Model, SearchProviderAlgolia} from '../../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import mapProps from '../../../../components/MapProps/MapProps'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
@@ -124,18 +127,18 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(AlgoliaIndexPopupQuery, {
+export default createFragmentContainer(AlgoliaIndexPopupQuery, {
+  /* TODO manually deal with:
   initialVariables: {
     // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
     // modelIdExists: true,
     selectedModelId: null,
     modelIdExists: false,
-  },
-  fragments: {
-    algolia: (props) => Relay.QL`
-      fragment on SearchProviderAlgolia {
-        algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
-      }
-    `,
-  },
+  }
+  */
+  algolia: graphql`
+    fragment AlgoliaIndexPopupQuery_algolia on SearchProviderAlgolia {
+      algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
+    }
+  `,
 })

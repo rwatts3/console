@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {ModelPermission, Model} from '../../../../types/types'
 import {$p, variables, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -7,7 +10,7 @@ import NewToggleButton from '../../../../components/NewToggleButton/NewToggleBut
 import PermissionLabel from './PermissionLabel'
 import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
-import {Link, withRouter} from 'react-router'
+import {Link, withRouter} from 'found'
 import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
@@ -108,24 +111,22 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(withRouter(ModelPermissionComponent), {
-  fragments: {
-    permission: () => Relay.QL`
-      fragment on ModelPermission {
-        id
-        operation
-        userType
-        fieldIds
-        isActive
-        ${ModelPermissionFields.getFragment('permission')}
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        ${ModelPermissionFields.getFragment('model')}
-      }
-    `,
-  },
+export default createFragmentContainer(withRouter(ModelPermissionComponent), {
+  permission: graphql`
+    fragment ModelPermission_permission on ModelPermission {
+      id
+      operation
+      userType
+      fieldIds
+      isActive
+      ...ModelPermissionFields_permission
+    }
+  `,
+  model: graphql`
+    fragment ModelPermission_model on Model {
+      id
+      name
+      ...ModelPermissionFields_model
+    }
+  `,
 })

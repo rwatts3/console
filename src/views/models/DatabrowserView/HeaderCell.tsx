@@ -1,7 +1,10 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Icon} from 'graphcool-styles'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import {getFieldTypeName} from '../../../utils/valueparser'
 import {isScalar} from '../../../utils/graphql'
 import {Field} from '../../../types/types'
@@ -112,23 +115,21 @@ const ConnectedHeaderCell = connect(null, {
   setFieldPopupSource,
 })(HeaderCell)
 
-export default Relay.createContainer(ConnectedHeaderCell, {
-    fragments: {
-        field: () => Relay.QL`
-          fragment on Field {
-            id
-            name
-            isList
-            typeIdentifier
-            isSystem
-            isRequired
-            relatedModel {
-              name
-            }
-            relation {
-              name
-            }
-          }
-        `,
-    },
+export default createFragmentContainer(ConnectedHeaderCell, {
+    field: graphql`
+      fragment HeaderCell_field on Field {
+        id
+        name
+        isList
+        typeIdentifier
+        isSystem
+        isRequired
+        relatedModel {
+          name
+        }
+        relation {
+          name
+        }
+      }
+    `,
 })

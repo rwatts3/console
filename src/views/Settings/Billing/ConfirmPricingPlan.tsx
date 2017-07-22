@@ -1,10 +1,13 @@
 import * as React from 'react'
 import {Viewer} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {Icon} from 'graphcool-styles'
 import CreditCardInputSection from './CreditCardInputSection'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Loading from '../../../components/Loading/Loading'
 
 interface State {
@@ -115,38 +118,38 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
 
 }
 
-export default Relay.createContainer(withRouter(ConfirmPricingPlan), {
+export default createFragmentContainer(withRouter(ConfirmPricingPlan), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-        },
-        crm: user {
-          name
-          crm {
-            customer {
-              id
-              projects(first: 1000) {
-                edges {
-                  node {
-                    name
-                    projectBillingInformation {
-                      creditCard {
-                        last4
-                        name
-                      }
+  }
+  */
+  viewer: graphql`
+    fragment ConfirmPricingPlan_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+      },
+      crm: user {
+        name
+        crm {
+          customer {
+            id
+            projects(first: 1000) {
+              edges {
+                node {
+                  name
+                  projectBillingInformation {
+                    creditCard {
+                      last4
+                      name
                     }
                   }
                 }
               }
             }
           }
-        },
-        ${CreditCardInputSection.getFragment('viewer')}
-      }
-    `},
-})
+        }
+      },
+      ...CreditCardInputSection_viewer
+    }
+  `})

@@ -1,7 +1,10 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import * as Relay from 'react-relay/classic'
-import {withRouter, Link} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter, Link} from 'found'
 import {connect} from 'react-redux'
 import cuid from 'cuid'
 import mapProps from '../../components/MapProps/MapProps'
@@ -278,7 +281,7 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   private renderPlayground = () => {
-    const playgroundPageActive = this.props.router.isActive(`/${this.props.params.projectName}/playground`)
+    const playgroundPageActive = `/${this.props.params.projectName}/playground` === this.props.location.pathname
     const showGettingStartedOnboardingPopup = () => {
       if (this.props.gettingStartedState.isCurrentStep('STEP3_OPEN_PLAYGROUND')) {
         this.props.nextStep()
@@ -458,6 +461,7 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private fetch = () => {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
+// TODO props.relay.* APIs do not exist on compat containers
     this.props.relay.forceFetch()
   }
 
@@ -542,6 +546,7 @@ const ReduxContainer = connect(
 const MappedSideNav = mapProps({
   params: (props) => props.params,
   project: (props) => props.project,
+// TODO props.relay.* APIs do not exist on compat containers
   relay: (props) => props.relay,
   models: (props) => props.project.models.edges
     .map((edge) => edge.node)
@@ -554,39 +559,37 @@ const MappedSideNav = mapProps({
     props.viewer.user.crm.information.isBeta || false,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedSideNav, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          createdAt
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
+export default createFragmentContainer(MappedSideNav, {
+  viewer: graphql`
+    fragment SideNav_viewer on Viewer {
+      user {
         id
-        name
-        alias
-        webhookUrl
-        region
-        models(first: 100) {
-          edges {
-            node {
-              id
-              name
-              itemCount
-              isSystem
-            }
+        createdAt
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
+  project: graphql`
+    fragment SideNav_project on Project {
+      id
+      name
+      alias
+      webhookUrl
+      region
+      models(first: 100) {
+        edges {
+          node {
+            id
+            name
+            itemCount
+            isSystem
+          }
+        }
+      }
+    }
+  `,
 })

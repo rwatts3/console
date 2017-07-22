@@ -1,13 +1,16 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import ReactElement = React.ReactElement
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Viewer, SearchProviderAlgolia} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import AlgoliaPopupHeader from './AlgoliaPopupHeader'
 import AlgoliaPopupIndexes from './AlgoliaPopupIndexes'
 import AlgoliaPopupFooter from './AlgoliaPopupFooter'
@@ -167,33 +170,33 @@ const MappedAlgoliaPopup = mapProps({
   },
 })(ReduxContainer)
 
-export default Relay.createContainer(withRouter(MappedAlgoliaPopup), {
+export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          integrations(first: 100) {
-            edges {
-              node {
+  }
+  */
+  viewer: graphql`
+    fragment AlgoliaPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        integrations(first: 100) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
                 id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  id
-                  isEnabled
-                  apiKey
-                  applicationId
-                  ${AlgoliaPopupIndexes.getFragment('algolia')}
-                }
+                isEnabled
+                apiKey
+                applicationId
+                ...AlgoliaPopupIndexes_algolia
               }
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

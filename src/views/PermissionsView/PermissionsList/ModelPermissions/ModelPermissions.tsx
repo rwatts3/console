@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Model} from '../../../../types/types'
 import ModelPermissionsHeader from './ModelPermissionsHeader'
 import ModelPermissionsList from './ModelPermissionList'
@@ -39,13 +42,11 @@ class PermissionsList extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(PermissionsList, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        ${ModelPermissionsHeader.getFragment('model')}
-        ${ModelPermissionsList.getFragment('model')}
-      }
-    `,
-  },
+export default createFragmentContainer(PermissionsList, {
+  model: graphql`
+    fragment ModelPermissions_model on Model {
+      ...ModelPermissionsHeader_model
+      ...ModelPermissionsList_model
+    }
+  `,
 })

@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import AuthProviderSidePanel from './AuthProviderSidePanel'
 import {Icon} from 'graphcool-styles'
 import { $p } from 'graphcool-styles'
@@ -9,7 +12,7 @@ import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import mapProps from '../../../components/MapProps/MapProps'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   project: Project
@@ -183,32 +186,32 @@ const MappedAuthProviderPopup = mapProps({
   isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(AuthProviderPopup))
 
-export default Relay.createContainer(MappedAuthProviderPopup, {
+export default createFragmentContainer(MappedAuthProviderPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          authProviders(first: 100) {
-            edges {
-              node {
-                type
-                isEnabled
-              }
+  }
+  */
+  viewer: graphql`
+    fragment AuthProviderPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        authProviders(first: 100) {
+          edges {
+            node {
+              type
+              isEnabled
             }
           }
-          ${AuthProviderSidePanel.getFragment('project')}
         }
-        user {
-          crm {
-            information {
-              isBeta
-            }
+        ...AuthProviderSidePanel_project
+      }
+      user {
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

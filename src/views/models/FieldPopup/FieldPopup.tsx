@@ -11,8 +11,11 @@ import Constraints from './Constraints'
 import {emptyField, mockConstraints} from './constants'
 import mapProps from 'map-props'
 import {connect} from 'react-redux'
-import * as Relay from 'react-relay/classic'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import {
   toggleIsList,
   updateName,
@@ -564,61 +567,63 @@ const MappedFieldPopup = mapProps({
   isGlobalEnumsEnabled: props => true,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedFieldPopup, {
+export default createFragmentContainer(MappedFieldPopup, {
+  /* TODO manually deal with:
   initialVariables: {
     modelName: null, // injected from router
     projectName: null, // injected from router
     fieldName: null, // injected from router
     fieldExists: false,
-  },
+  }
+  */
+  /* TODO manually deal with:
   prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
     fieldExists: !!prevVariables.fieldName,
-  })),
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
+  }))
+  */
+  viewer: graphql`
+    fragment FieldPopup_viewer on Viewer {
+      model: modelByName(projectName: $projectName, modelName: $modelName) {
+        id
+        itemCount
+      }
+      field: fieldByName(
+      projectName: $projectName
+      modelName: $modelName
+      fieldName: $fieldName
+      ) @include(if: $fieldExists) {
+        id
+        name
+        typeIdentifier
+        description
+        isRequired
+        isList
+        isUnique
+        isSystem
+        defaultValue
+        enum {
           id
-          itemCount
         }
-        field: fieldByName(
-        projectName: $projectName
-        modelName: $modelName
-        fieldName: $fieldName
-        ) @include(if: $fieldExists) {
+        relation {
           id
+        }
+        reverseRelationField {
           name
-          typeIdentifier
-          description
-          isRequired
-          isList
-          isUnique
-          isSystem
-          defaultValue
-          enum {
-            id
-          }
-          relation {
-            id
-          }
-          reverseRelationField {
-            name
-          }
         }
-        project: projectByName(projectName: $projectName) {
-          id
-          isGlobalEnumsEnabled
-          enums(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                values
-              }
+      }
+      project: projectByName(projectName: $projectName) {
+        id
+        isGlobalEnumsEnabled
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

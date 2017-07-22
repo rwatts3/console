@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { Viewer, Project } from '../../../types/types'
 import Header from '../../../components/Header/Header'
 const classes: any = require('./AccountView.scss')
@@ -28,18 +31,18 @@ class AccountView extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(AccountView, {
+export default createFragmentContainer(AccountView, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${Header.getFragment('project')}
-        }
-        ${Header.getFragment('viewer')}
+  }
+  */
+  viewer: graphql`
+    fragment AccountView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...Header_project
       }
-    `,
-  },
+      ...Header_viewer
+    }
+  `,
 })

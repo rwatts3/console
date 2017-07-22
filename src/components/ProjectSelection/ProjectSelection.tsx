@@ -1,7 +1,7 @@
 const classes: any = require('./ProjectSelection.scss')
 
 import * as React                   from 'react'
-import { Link }                     from 'react-router'
+import { Link }                     from 'found'
 import { connect }                  from 'react-redux'
 import ClickOutside                 from 'react-click-outside'
 import * as cx                      from 'classnames'

@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {Viewer, Project} from '../../types/types'
 import {ShowNotificationCallback} from '../../types/utils'
@@ -229,35 +232,37 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedProjectSettingsView = connect(null, mapDispatchToProps)(withRouter(ProjectSettingsView))
 
-export default Relay.createContainer(MappedProjectSettingsView, {
+export default createFragmentContainer(MappedProjectSettingsView, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          name
-          id
-          permanentAuthTokens (first: 1000) {
-            edges {
-              node {
-                ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
-                id
-                name
-                token
-              }
-            }
-          }
-        }
-        user {
-          projects(first: 1000) {
-            edges {
-              node
+  }
+  */
+  viewer: graphql`
+    fragment ProjectSettingsView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        name
+        id
+        permanentAuthTokens (first: 1000) {
+          edges {
+            node {
+              ...PermanentAuthTokenRow_permanentAuthToken
+              id
+              name
+              token
             }
           }
         }
       }
-    `,
-  },
+      user {
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
+  `,
 })

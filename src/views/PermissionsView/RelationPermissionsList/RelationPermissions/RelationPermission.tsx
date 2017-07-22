@@ -1,12 +1,15 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {ModelPermission, Model, Relation, RelationPermission} from '../../../../types/types'
 import {$p, variables, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import NewToggleButton from '../../../../components/NewToggleButton/NewToggleButton'
 import RelationPermissionLabel from './RelationPermissionLabel'
 import styled from 'styled-components'
-import {Link, withRouter} from 'react-router'
+import {Link, withRouter} from 'found'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import ToggleRelationPermissionMutation from '../../../../mutations/RelationPermission/ToggleRelationPermission'
@@ -118,23 +121,21 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(withRouter(ModelPermissionComponent), {
-  fragments: {
-    permission: () => Relay.QL`
-      fragment on RelationPermission {
-        id
-        userType
-        connect
-        disconnect
-        ruleName
-        isActive
-      }
-    `,
-    relation: () => Relay.QL`
-      fragment on Relation {
-        id
-        name
-      }
-    `,
-  },
+export default createFragmentContainer(withRouter(ModelPermissionComponent), {
+  permission: graphql`
+    fragment RelationPermission_permission on RelationPermission {
+      id
+      userType
+      connect
+      disconnect
+      ruleName
+      isActive
+    }
+  `,
+  relation: graphql`
+    fragment RelationPermission_relation on Relation {
+      id
+      name
+    }
+  `,
 })

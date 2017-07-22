@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import Helmet from 'react-helmet'
 import mapProps from '../../components/MapProps/MapProps'
 import {Model} from '../../types/types'
@@ -48,25 +51,25 @@ const MappedModelRedirectView = mapProps({
   ),
 })(withRouter(ModelRedirectView))
 
-export default Relay.createContainer(MappedModelRedirectView, {
+export default createFragmentContainer(MappedModelRedirectView, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          models(first: 100) {
-            edges {
-              node {
-                name
-                isSystem
-                itemCount
-              }
+  }
+  */
+  viewer: graphql`
+    fragment ModelRedirectView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        models(first: 100) {
+          edges {
+            node {
+              name
+              isSystem
+              itemCount
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

@@ -1,6 +1,9 @@
 import * as React from 'react'
 import Modal from '../../components/Modal'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Model} from '../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$v} from 'graphcool-styles'
@@ -20,7 +23,7 @@ interface State {
   modelDescription: string
 }
 
-class EditModelModal extends React.Component<Props, {}> {
+class ModelModal extends React.Component<Props, {}> {
 
   constructor(props) {
     super(props)
@@ -60,14 +63,11 @@ class EditModelModal extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(EditModelModal, {
-  fragments: {
-    model: () => Relay.QL`
-
-      fragment on Model {
-        id
-        name
-      }
-    `,
-  },
+export default createFragmentContainer(ModelModal, {
+  model: graphql`
+    fragment ModelModal_model on Model {
+      id
+      name
+    }
+  `,
 })

@@ -1,9 +1,12 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Project} from '../../types/types'
 import {sortSchema} from '../../../sortSchema'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
 import MigrationMessages from './MigrationMessages'
 const QueryEditor: any = require('./Editor/QueryEditor').QueryEditor
@@ -349,7 +352,7 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private isField(line) {
-    return /.+?:.+?/.test(line)
+    return /.+?:.+?/.test(line);
   }
 
   private getFieldName(line) {
@@ -381,27 +384,25 @@ class SchemaEditor extends React.Component<Props, State> {
 
 const SchemaEditorRedux = connect(null, {showNotification})(SchemaEditor)
 
-export default Relay.createContainer(SchemaEditorRedux, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        schema
-        typeSchema
-        enumSchema
-        name
-        version
-        models(first: 100) {
-          edges {
-            node {
-              id
-              name
-            }
+export default createFragmentContainer(SchemaEditorRedux, {
+  project: graphql`
+    fragment SchemaEditor_project on Project {
+      id
+      schema
+      typeSchema
+      enumSchema
+      name
+      version
+      models(first: 100) {
+        edges {
+          node {
+            id
+            name
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })
 
 const enumIdl = `enum Role {

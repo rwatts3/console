@@ -1,7 +1,10 @@
 import * as React from 'react'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import * as fetch from 'isomorphic-fetch'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import { bindActionCreators } from 'redux'
 import * as cx from 'classnames'
@@ -304,6 +307,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         this.refreshInterval = setInterval(
           () => {
             // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
+// TODO props.relay.* APIs do not exist on compat containers
             this.props.relay.forceFetch({}, () => {
               this.props.update(
                 this.props.user.crm.onboardingStatus.gettingStarted,
@@ -353,6 +357,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
             })
           }
 
+// TODO props.relay.* APIs do not exist on compat containers
           this.props.relay.forceFetch({}, () => {
             //
           })
@@ -380,6 +385,7 @@ const ReduxContainer = connect(
 
 const MappedProjectRootView = mapProps({
   params: (props) => props.params,
+// TODO props.relay.* APIs do not exist on compat containers
   relay: (props) => props.relay,
   project: (props) => props.viewer.user ? props.viewer.project : null,
   allProjects: (props) => (
@@ -392,50 +398,50 @@ const MappedProjectRootView = mapProps({
   isLoggedin: (props) => props.viewer.user !== null,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedProjectRootView, {
+export default createFragmentContainer(MappedProjectRootView, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment ProjectRootView_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          ${SideNav.getFragment('project')}
-          seats(first: 100) {
-            edges {
-              node {
-                id
-              }
+        name
+        ...SideNav_project
+        seats(first: 100) {
+          edges {
+            node {
+              id
             }
           }
         }
-        user {
-          id
-          crm {
-            onboardingStatus {
-              gettingStarted
-              gettingStartedSkipped
-            }
-            information {
-              name
-              email
-              isBeta
-            }
-          }
-          projects(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        ${SideNav.getFragment('viewer')}
       }
-    `,
-  },
+      user {
+        id
+        crm {
+          onboardingStatus {
+            gettingStarted
+            gettingStartedSkipped
+          }
+          information {
+            name
+            email
+            isBeta
+          }
+        }
+        projects(first: 100) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+      ...SideNav_viewer
+    }
+  `,
 })

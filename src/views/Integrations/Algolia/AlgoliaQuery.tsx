@@ -1,8 +1,11 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import {Model, SearchProviderAlgolia} from '../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
@@ -99,18 +102,18 @@ class AlgoliaQuery extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(AlgoliaQuery, {
+export default createFragmentContainer(AlgoliaQuery, {
+  /* TODO manually deal with:
   initialVariables: {
     // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
     // modelIdExists: true,
     selectedModelId: null,
     modelIdExists: false,
-  },
-  fragments: {
-    algolia: (props) => Relay.QL`
-      fragment on SearchProviderAlgolia {
-        algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
-      }
-    `,
-  },
+  }
+  */
+  algolia: graphql`
+    fragment AlgoliaQuery_algolia on SearchProviderAlgolia {
+      algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
+    }
+  `,
 })

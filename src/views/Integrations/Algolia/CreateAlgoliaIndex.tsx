@@ -1,8 +1,11 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import {SearchProviderAlgolia, Model} from '../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
@@ -294,33 +297,33 @@ const Container = mapProps({
   },
 })(ReduxContainer)
 
-export default Relay.createContainer(Container, {
+export default createFragmentContainer(Container, {
+  /* TODO manually deal with:
   initialVariables: {
     // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
     // modelIdExists: true,
     selectedModelId: null,
     modelIdExists: false,
-  },
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        models(first: 100) {
-          edges {
-            node {
-              id
-              name
-              itemCount
-            }
+  }
+  */
+  project: graphql`
+    fragment CreateAlgoliaIndex_project on Project {
+      models(first: 100) {
+        edges {
+          node {
+            id
+            name
+            itemCount
           }
         }
       }
-    `,
-    algolia: (props) => Relay.QL`
-      fragment on SearchProviderAlgolia {
-        ${AlgoliaQuery.getFragment('algolia')}
-      }
-    `,
-  },
+    }
+  `,
+  algolia: graphql`
+    fragment CreateAlgoliaIndex_algolia on SearchProviderAlgolia {
+      ...AlgoliaQuery_algolia
+    }
+  `,
 })
 
 const emptyAlgoliaFragment = `

@@ -1,10 +1,13 @@
 import * as React from 'react'
 import mapProps from '../../../components/MapProps/MapProps'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
 import {Log, ServerlessFunction} from '../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {range} from 'lodash'
 import {Icon, $v} from 'graphcool-styles'
 import LogComponent from './Log'
@@ -164,6 +167,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
 
   private reload = () => {
     console.log('force fetch')
+// TODO props.relay.* APIs do not exist on compat containers
     this.props.relay.forceFetch()
   }
 }
@@ -173,46 +177,46 @@ const MappedFunctionLogs = mapProps({
   logs: props => props.node.logs.edges.map(edge => edge.node),
 })(withRouter(FunctionLogsComponent))
 
-export const FunctionLogs = Relay.createContainer(MappedFunctionLogs, {
+export const FunctionLogs = createFragmentContainer(MappedFunctionLogs, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+  }
+  */
+  viewer: graphql`
+    fragment FunctionLogs_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
+        name
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
         }
-        user {
-          crm {
-            information {
-              isBeta
+      }
+    }
+  `,
+  node: graphql`
+    fragment FunctionLogs_node on Node {
+      id
+      ... on Function {
+        name
+        logs(last: 500) {
+          edges {
+            node {
+              id
+              duration
+              message
+              requestId
+              timestamp
+              status
             }
           }
         }
       }
-    `,
-    node: () => Relay.QL`
-      fragment on Node {
-        id
-        ... on Function {
-          name
-          logs(last: 500) {
-            edges {
-              node {
-                id
-                duration
-                message
-                requestId
-                timestamp
-                status
-              }
-            }
-          }
-        }
-      }
-    `,
-  },
+    }
+  `,
 })

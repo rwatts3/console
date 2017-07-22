@@ -1,12 +1,15 @@
 import * as React from 'react'
 import {Voyager} from 'graphql-voyager'
 import fetch from 'isomorphic-fetch'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer} from '../../types/types'
 import modalStyle from '../../utils/modalStyle'
 import {Icon} from 'graphcool-styles'
 import * as Modal from 'react-modal'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   viewer: Viewer
@@ -106,17 +109,17 @@ class SchemaViewer extends React.Component<Props, null> {
   }
 }
 
-export default Relay.createContainer(withRouter(SchemaViewer), {
+export default createFragmentContainer(withRouter(SchemaViewer), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-        }
+  }
+  */
+  viewer: graphql`
+    fragment SchemaViewer_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
       }
-    `,
-  },
+    }
+  `,
 })

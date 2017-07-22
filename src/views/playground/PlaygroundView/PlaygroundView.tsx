@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Helmet from 'react-helmet'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { Lokka } from 'lokka'
@@ -226,23 +229,23 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
 
-export default Relay.createContainer(MappedPlaygroundView, {
+export default createFragmentContainer(MappedPlaygroundView, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          region
-        }
-        userModel: modelByName(projectName: $projectName, modelName: "User"){
-          id
-        }
+  }
+  */
+  viewer: graphql`
+    fragment PlaygroundView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        region
       }
-    `,
-  },
+      userModel: modelByName(projectName: $projectName, modelName: "User"){
+        id
+      }
+    }
+  `,
 })
 
 // httpApiPrefix={__BACKEND_ADDR__}

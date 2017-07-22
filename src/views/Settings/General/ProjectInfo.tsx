@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter, Link} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter, Link} from 'found'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$p} from 'graphcool-styles'
@@ -367,14 +370,12 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedProjectInfo = connect(null, mapDispatchToProps)(ProjectInfo)
 
-export default Relay.createContainer(withRouter(mappedProjectInfo), {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        name
-        alias
-      }
-    `,
-  },
+export default createFragmentContainer(withRouter(mappedProjectInfo), {
+  project: graphql`
+    fragment ProjectInfo_project on Project {
+      id
+      name
+      alias
+    }
+  `,
 })

@@ -1,10 +1,13 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Transaction} from 'react-relay/classic'
 import {RelationPopupDisplayState, Cardinality, Model, Relation} from '../../types/types'
 import RelationHeader from './RelationHeader'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import RelationFooter from './RelationFooter'
 import DefineRelation from './DefineRelation'
 import SetMutation from './SetMutation'
@@ -692,6 +695,7 @@ class RelationPopup extends React.Component<Props, State> {
       {
         onSuccess: () => {
           // The force fetching because relations are too complicated to selective choose the config
+// TODO props.relay.* APIs do not exist on compat containers
           this.props.relay.forceFetch()
           this.close()
         },
@@ -731,78 +735,80 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedCreateRelationPopup = connect(null, mapDispatchToProps)(RelationPopup)
 
-export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
+export default createFragmentContainer(withRouter(mappedCreateRelationPopup), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     relationName: null, // injected from router
     relationExists: false,
-  },
+  }
+  */
+  /* TODO manually deal with:
   prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
     relationExists: !!prevVariables.relationName,
-  })),
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        relation: relationByName(
-        projectName: $projectName
-        relationName: $relationName
-        ) @include(if: $relationExists) {
+  }))
+  */
+  viewer: graphql`
+    fragment RelationPopup_viewer on Viewer {
+      relation: relationByName(
+      projectName: $projectName
+      relationName: $relationName
+      ) @include(if: $relationExists) {
+        id
+        name
+        description
+        fieldOnLeftModel {
           id
           name
-          description
-          fieldOnLeftModel {
-            id
-            name
-            isList
-            isRequired
-          }
-          fieldOnRightModel {
-            id
-            name
-            isList
-            isRequired
-          }
-          leftModel {
-            id
-            name
-            namePlural
-            itemCount
-          }
-          rightModel {
-            id
-            name
-            namePlural
-            itemCount
-          }
+          isList
+          isRequired
         }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-        project: projectByName(projectName: $projectName) {
+        fieldOnRightModel {
           id
-          relations(first: 1000) {
-            edges {
-              node {
-                name
-              }
+          name
+          isList
+          isRequired
+        }
+        leftModel {
+          id
+          name
+          namePlural
+          itemCount
+        }
+        rightModel {
+          id
+          name
+          namePlural
+          itemCount
+        }
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+      project: projectByName(projectName: $projectName) {
+        id
+        relations(first: 1000) {
+          edges {
+            node {
+              name
             }
           }
-          models(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                namePlural
-                fields(first: 1000) {
-                  edges {
-                    node {
-                      id
-                      name
-                    }
+        }
+        models(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              namePlural
+              fields(first: 1000) {
+                edges {
+                  node {
+                    id
+                    name
                   }
                 }
               }
@@ -810,6 +816,6 @@ export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

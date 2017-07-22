@@ -1,9 +1,12 @@
 import * as React from 'react'
 import {showNotification} from '../../actions/notification'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {connect} from 'react-redux'
 import {nextStep} from '../../actions/gettingStarted'
-import {Link, withRouter} from 'react-router'
+import {Link, withRouter} from 'found'
 import ModelDescription from './ModelDescription'
 import Tether from '../../components/Tether/Tether'
 import Header from '../../components/Header/Header'
@@ -328,45 +331,45 @@ const ReduxContainer = connect(
   },
 )(withRouter(ModelHeader))
 
-export default Relay.createContainer(ReduxContainer, {
+export default createFragmentContainer(ReduxContainer, {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        ${Header.getFragment('viewer')}
-      }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        ${Header.getFragment('project')}
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        itemCount
-        isSystem
-        fields(first: 100) {
-          edges {
-            node {
+  }
+  */
+  viewer: graphql`
+    fragment ModelHeader_viewer on Viewer {
+      ...Header_viewer
+    }
+  `,
+  project: graphql`
+    fragment ModelHeader_project on Project {
+      ...Header_project
+    }
+  `,
+  model: graphql`
+    fragment ModelHeader_model on Model {
+      id
+      name
+      itemCount
+      isSystem
+      fields(first: 100) {
+        edges {
+          node {
+            id
+            name
+            typeIdentifier
+            relatedModel {
               id
+            }
+            reverseRelationField {
               name
-              typeIdentifier
-              relatedModel {
-                id
-              }
-              reverseRelationField {
-                name
-                id
-              }
+              id
             }
           }
         }
-        ${ModelDescription.getFragment('model')}
       }
-    `,
-  },
+      ...ModelDescription_model
+    }
+  `,
 })
