@@ -45,7 +45,7 @@ export default createFragmentContainer(withRouter(AlgoliaPopupIndexes), {
   algolia: graphql`
     fragment AlgoliaPopupIndexes_algolia on SearchProviderAlgolia {
       ...AlgoliaPopupIndex_algolia
-      algoliaSyncQueries(first: 100) {
+      algoliaSyncQueries(first: 1000) {
         edges {
           node {
             id

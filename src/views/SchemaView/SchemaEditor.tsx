@@ -393,7 +393,7 @@ export default createFragmentContainer(SchemaEditorRedux, {
       enumSchema
       name
       version
-      models(first: 100) {
+      models(first: 1000) {
         edges {
           node {
             id

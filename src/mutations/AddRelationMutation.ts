@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
@@ -14,49 +15,58 @@ interface Props {
   fieldOnRightModelIsRequired: boolean
 }
 
-export default class AddRelationMutation extends Relay.Mutation<Props, {}> {
-
-    getMutation () {
-        return Relay.QL`mutation{addRelation}`
-    }
-
-    getFatQuery () {
-        return Relay.QL`
-            fragment on AddRelationPayload {
-                relation
-                leftModel
-                rightModel
-                project
+const mutation = graphql`
+  mutation AddRelationMutation($input: AddRelationInput!) {
+    addRelation(input: $input) {
+      relation {
+        id
+      }
+      leftModel {
+        id
+      }
+      rightModel {
+        id
+      }
+      project {
+        relations(first: 1000) {
+          edges {
+            node {
+              id
             }
-        `
+          }
+        }
+      }
     }
+  }
+`
 
-  getConfigs() {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: props.projectId,
       connectionName: 'relations',
       edgeName: 'relationEdge',
       rangeBehaviors: {'': 'append'},
     }, {
       type: 'RANGE_ADD',
       parentName: 'leftModel',
-      parentID: this.props.leftModelId,
+      parentID: props.leftModelId,
       connectionName: 'fields',
       edgeName: 'fieldOnLeftModelEdge',
       rangeBehaviors: {'': 'append'},
     }, {
       type: 'RANGE_ADD',
       parentName: 'rightModel',
-      parentID: this.props.rightModelId,
+      parentID: props.rightModelId,
       connectionName: 'fields',
       edgeName: 'fieldOnRightModelEdge',
       rangeBehaviors: {'': 'append'},
     }]
-  }
-
-  getVariables() {
-    return this.props
-  }
+  })
 }
+
+export default { commit }

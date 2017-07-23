@@ -180,7 +180,7 @@ export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
     fragment AlgoliaPopup_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
         id
-        integrations(first: 100) {
+        integrations(first: 1000) {
           edges {
             node {
               id

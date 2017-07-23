@@ -36,15 +36,15 @@ function fetchQuery(
   })
 }
 
-export default function createRelayEnvironment() {
-  // Create a network layer from the fetch function
-  const network = Network.create(fetchQuery)
+// Create a network layer from the fetch function
+const network = Network.create(fetchQuery)
 
-  const source = new RecordSource()
-  const store = new Store(source)
+const source = new RecordSource()
+const store = new Store(source)
 
-  return new Environment({
-    network,
-    store,
-  })
-}
+const environment = new Environment({
+  network,
+  store,
+})
+
+export default environment

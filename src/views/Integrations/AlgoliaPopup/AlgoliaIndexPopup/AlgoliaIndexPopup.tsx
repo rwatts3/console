@@ -241,14 +241,14 @@ export const AlgoliaEditIndexPopup = createFragmentContainer(MappedAlgoliaIndexP
     fragment AlgoliaIndexPopup_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
         ...AlgoliaIndexPopupModels_project
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
             }
           }
         }
-        integrations(first: 100) {
+        integrations(first: 1000) {
           edges {
             node {
               id
@@ -276,14 +276,14 @@ export const AlgoliaCreateIndexPopup = createFragmentContainer(withRouter(Mapped
     fragment AlgoliaIndexPopup_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
         ...AlgoliaIndexPopupModels_project
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
             }
           }
         }
-        integrations(first: 100) {
+        integrations(first: 1000) {
           edges {
             node {
               id

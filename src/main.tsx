@@ -25,7 +25,7 @@ import 'graphcool-graphiql/graphiql_dark.css'
 import './styles/voyager.css'
 import './styles/mdn-like.css'
 import './utils/polyfils'
-import createRelayEnvironment from './createRelayEnvironment'
+import relayEnvironment from './relayEnvironment'
 import createStore from './createStore'
 require('offline-plugin/runtime').install()
 
@@ -47,7 +47,7 @@ if (typeof Raven !== 'undefined' && process.env.NODE_ENV === 'production') {
   Raven.config('https://f4b2d5e7865742e290a3bf77849d5e4a@sentry.io/135786').install()
 }
 
-const environment = createRelayEnvironment()
+const environment = relayEnvironment
 
 const store = createStore()
 

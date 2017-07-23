@@ -553,7 +553,7 @@ export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedA
     project: graphql`
       fragment AuthProviderSidePanel_project on Project {
         id
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
@@ -561,7 +561,7 @@ export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedA
             }
           }
         }
-        packageDefinitions(first: 100) {
+        packageDefinitions(first: 1000) {
           edges {
             node {
               id
@@ -570,7 +570,7 @@ export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedA
             }
           }
         }
-        authProviders(first: 100) {
+        authProviders(first: 1000) {
           edges {
             node {
               id

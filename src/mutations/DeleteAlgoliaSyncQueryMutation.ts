@@ -1,40 +1,36 @@
-import * as Relay from 'react-relay/classic'
-import {Field, RelayConnection} from '../types/types'
-import {isScalar} from '../utils/graphql'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   algoliaSyncQueryId: string
   searchProviderAlgoliaId: string
 }
 
-export default class DeleteAlgoliaSyncQueryMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{deleteAlgoliaSyncQuery}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on DeleteAlgoliaSyncQueryPayload {
-        searchProviderAlgolia
-        deletedId
+const mutation = graphql`
+  mutation DeleteAlgoliaSyncQueryMutation($input: DeleteAlgoliaSyncQueryInput!) {
+    deleteAlgoliaSyncQuery(input: $input) {
+      searchProviderAlgolia {
+        id
       }
-    `
+      deletedId
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      algoliaSyncQueryId: props.algoliaSyncQueryId,
+    },
+    configs: [{
       type: 'NODE_DELETE',
       parentName: 'searchProviderAlgolia',
-      parentID: this.props.searchProviderAlgoliaId,
+      parentID: props.searchProviderAlgoliaId,
       connectionName: 'algoliaSyncQueries',
       deletedIDFieldName: 'deletedId',
     }]
-  }
-
-  getVariables () {
-    return {
-      algoliaSyncQueryId: this.props.algoliaSyncQueryId,
-    }
-  }
+  })
 }
+
+export default { commit }

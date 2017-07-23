@@ -1,30 +1,23 @@
-
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
   plan: string
 }
 
-export default class SetPlanMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{setPlan}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on SetPlanPayload {
-        viewer {
-          user {
-            crm {
-              customer {
-                projects(first: 1000) {
-                  edges {
-                    node {
-                      projectBillingInformation {
-                        plan
-                      }
+const mutation = graphql`
+  mutation SetPlanMutation($input: SetPlanInput!) {
+    setPlan(input: $input) {
+      viewer {
+        user {
+          crm {
+            customer {
+              projects(first: 1000) {
+                edges {
+                  node {
+                    projectBillingInformation {
+                      plan
                     }
                   }
                 }
@@ -33,23 +26,19 @@ export default class SetPlanMutation extends Relay.Mutation<Props, {}> {
           }
         }
       }
-    `
-  }
-
-  getConfigs () {
-    return []
-    // return [{
-    //   type: 'FIELDS_CHANGE',
-    //   fieldIDs: {
-    //     project: this.props.projectId,
-    //   },
-    // }]
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-      plan: this.props.plan,
     }
   }
+`
+
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      projectId: props.projectId,
+      plan: props.plan,
+    },
+    configs: [],
+  })
 }
+
+export default { commit }

@@ -98,7 +98,7 @@ export default createFragmentContainer(MappedModelPermissionFields, {
   `,
   model: graphql`
     fragment ModelPermissionFields_model on Model {
-      fields(first: 100) {
+      fields(first: 1000) {
         edges {
           node {
             id

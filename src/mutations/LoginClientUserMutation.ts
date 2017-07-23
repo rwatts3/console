@@ -1,43 +1,35 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   clientUserId: string
   projectId: string
 }
 
-interface Response {
-  token: string
-}
-
-export default class LoginMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{signinClientUser}`
+const mutation = graphql`
+  mutation SigninClientUserMutation($input: SigninClientUserInput!) {
+    signinClientUser(input: $input) {
+      token
+    }
   }
+`
 
-  getFatQuery () {
-    return Relay.QL`
-      fragment on SigninClientUserPayload {
-        token
-      }
-    `
-  }
-
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      clientUserId: props.clientUserId,
+      projectId: props.projectId,
+    },
+    configs: [{
       type: 'REQUIRED_CHILDREN',
-      children: [Relay.QL`
-        fragment on SigninClientUserPayload {
+      children: [graphql`
+        fragment LoginClientUser on SigninClientUserPayload {
           token
         }
       `],
-    }]
-  }
-
-  getVariables () {
-    return {
-      clientUserId: this.props.clientUserId,
-      projectId: this.props.projectId,
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

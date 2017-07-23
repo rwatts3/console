@@ -1,5 +1,7 @@
 import * as Relay from 'react-relay/classic'
 import {Project} from '../types/types'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   relationId: string
@@ -13,40 +15,31 @@ interface DeleteRelationPayload {
   deletedId: string
 }
 
-export default class DeleteRelationMutation extends Relay.Mutation<Props, {}> {
-
-    getMutation () {
-        return Relay.QL`mutation{deleteRelation}`
+const mutation = graphql`
+  mutation DeleteRelationMutation($input: DeleteRelationInput!) {
+    deleteRelation(input: $input) {
+      project {
+        id
+      }
+      deletedId
     }
+  }
+`
 
-    getFatQuery () {
-        return Relay.QL`
-            fragment on DeleteRelationPayload {
-                project
-                deletedId
-            }
-        `
-    }
-
-  getConfigs() {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      relationId: props.relationId,
+    },
+    configs: [{
       type: 'NODE_DELETE',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: props.projectId,
       connectionName: 'relations',
       deletedIDFieldName: 'deletedId',
-    }]
-  }
-
-  getVariables() {
-    return {
-      relationId: this.props.relationId,
-    }
-  }
-
-  getOptimisticResponse() {
-    return {
-      deletedId: this.props.relationId,
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

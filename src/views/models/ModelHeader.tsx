@@ -353,7 +353,7 @@ export default createFragmentContainer(ReduxContainer, {
       name
       itemCount
       isSystem
-      fields(first: 100) {
+      fields(first: 1000) {
         edges {
           node {
             id

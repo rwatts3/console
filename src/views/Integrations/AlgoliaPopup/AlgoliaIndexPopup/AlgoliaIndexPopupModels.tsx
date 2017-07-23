@@ -99,7 +99,7 @@ const MappedAlgoliaIndexPopupModels = mapProps({
 export default createFragmentContainer(MappedAlgoliaIndexPopupModels, {
   project: graphql`
     fragment AlgoliaIndexPopupModels_project on Project {
-      models(first: 100) {
+      models(first: 1000) {
         edges {
           node {
             id

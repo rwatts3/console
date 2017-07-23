@@ -141,7 +141,7 @@ export default createFragmentContainer(mappedTeam, {
       user {
         crm {
           customer {
-            projects(first: 100) {
+            projects(first: 1000) {
               edges {
                 node {
                   id

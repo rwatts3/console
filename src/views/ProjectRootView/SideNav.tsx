@@ -29,6 +29,7 @@ import { ExcludeProps } from '../../utils/components'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import SideNavElement from './SideNavElement'
+import { RelayProp } from 'react-relay'
 
 interface Props {
   params: any
@@ -36,7 +37,7 @@ interface Props {
   project: Project
   projectCount: number
   viewer: Viewer
-  relay: Relay.RelayProp
+  relay: RelayProp
   models: Model[]
   gettingStartedState: GettingStartedState
   nextStep: () => Promise<any>
@@ -465,42 +466,6 @@ export class SideNav extends React.PureComponent<Props, State> {
     this.props.relay.forceFetch()
   }
 
-  private addModel = (modelName: string) => {
-    const redirect = () => {
-      this.props.router.push(`/${this.props.params.projectName}/models/${modelName}`)
-      this.setState({
-        addingNewModel: false,
-        newModelIsValid: true,
-      } as State)
-    }
-
-    if (modelName) {
-      Relay.Store.commitUpdate(
-        new AddModelMutation({
-          modelName,
-          projectId: this.props.project.id,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
-            if (
-              modelName === 'Post' &&
-              this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
-            ) {
-              this.props.showDonePopup()
-              this.props.nextStep().then(redirect)
-            } else {
-              redirect()
-            }
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    }
-  }
-
   private showEndpointPopup = () => {
     const id = cuid()
     this.props.showPopup({
@@ -514,18 +479,6 @@ export class SideNav extends React.PureComponent<Props, State> {
       ),
       id,
     })
-  }
-
-  private showAddModelPopup = () => {
-    const id = cuid()
-    this.props.showPopup({
-      element: <AddModelPopup id={id} saveModel={this.saveModel} />,
-      id,
-    })
-  }
-
-  private saveModel = (modelName: string) => {
-    this.addModel(modelName)
   }
 }
 
@@ -580,7 +533,7 @@ export default createFragmentContainer(MappedSideNav, {
       alias
       webhookUrl
       region
-      models(first: 100) {
+      models(first: 1000) {
         edges {
           node {
             id

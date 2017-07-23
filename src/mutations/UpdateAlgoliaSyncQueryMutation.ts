@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import {pick} from 'lodash'
 
 interface Props {
@@ -8,43 +9,39 @@ interface Props {
   fragment: string
 }
 
-export default class UpdateAlgoliaSyncQueryMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateAlgoliaSyncQuery}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateAlgoliaSyncQueryPayload {
-        searchProviderAlgolia
-        algoliaSyncQuery
+const mutation = graphql`
+  mutation UpdateAlgoliaSyncQueryMutation($input: UpdateAlgoliaSyncQueryInput!) {
+    updateAlgoliaSyncQuery(input: $input) {
+      searchProviderAlgolia {
+        id
       }
-    `
+      algoliaSyncQuery {
+        id
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  const {algoliaSyncQueryId, isEnabled, indexName, fragment} = props
+  return makeMutation({
+    mutation,
+    variables: pick(props, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled']),
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        algoliaSyncQuery: this.props.algoliaSyncQueryId,
+        algoliaSyncQuery: props.algoliaSyncQueryId,
       },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled'])
-  }
-
-  getOptimisticResponse () {
-    const {algoliaSyncQueryId, isEnabled, indexName, fragment} = this.props
-    return {
+    }],
+    optimisticResponse: {
       algoliaSyncQuery: {
         id: algoliaSyncQueryId,
         isEnabled,
         indexName,
         fragment,
       },
-    }
-  }
+    },
+  })
 }
+
+export default { commit }

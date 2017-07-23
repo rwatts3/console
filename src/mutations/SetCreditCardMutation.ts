@@ -1,40 +1,33 @@
-
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
   token: string
 }
 
-export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{setCreditCard}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on SetCreditCardPayload {
-        viewer {
-          user {
-            crm {
-              customer {
-                projects(first: 1000) {
-                  edges {
-                    node {
-                      projectBillingInformation {
-                        creditCard {
-                          expMonth
-                          expYear
-                          last4
-                          name
-                          addressLine1
-                          addressLine2
-                          addressCity
-                          addressZip
-                          addressState
-                          addressCountry
-                        }
+const mutation = graphql`
+  mutation SetCreditCardMutation($input: SetCreditCardInput!) {
+    setCreditCard(input: $input) {
+      viewer {
+        user {
+          crm {
+            customer {
+              projects(first: 1000) {
+                edges {
+                  node {
+                    projectBillingInformation {
+                      creditCard {
+                        expMonth
+                        expYear
+                        last4
+                        name
+                        addressLine1
+                        addressLine2
+                        addressCity
+                        addressZip
+                        addressState
+                        addressCountry
                       }
                     }
                   }
@@ -44,17 +37,19 @@ export default class SetCreditCardMutation extends Relay.Mutation<Props, {}> {
           }
         }
       }
-    `
-  }
-
-  getConfigs () {
-    return []
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-      token: this.props.token,
     }
   }
+`
+
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      projectId: props.projectId,
+      token: props.token,
+    },
+    configs: [],
+  })
 }
+
+export default { commit }

@@ -20,7 +20,7 @@ interface Props {
 //   DELETE: 3,
 // }
 
-class ModelPermissionsList extends React.Component<Props, {}> {
+class ModelPermissionList extends React.Component<Props, {}> {
   render() {
     const {permissions, model, params} = this.props
     return (
@@ -41,12 +41,12 @@ class ModelPermissionsList extends React.Component<Props, {}> {
 const MappedPermissionsList = mapProps({
   permissions: props => props.model.permissions.edges.map(edge => edge.node),
   model: props => props.model,
-})(ModelPermissionsList)
+})(ModelPermissionList)
 
 export default createFragmentContainer(MappedPermissionsList, {
   model: graphql`
     fragment ModelPermissionList_model on Model {
-      permissions(first: 100) {
+      permissions(first: 1000) {
         edges {
           node {
             id

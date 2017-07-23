@@ -411,7 +411,7 @@ export default createFragmentContainer(MappedProjectRootView, {
         id
         name
         ...SideNav_project
-        seats(first: 100) {
+        seats(first: 1000) {
           edges {
             node {
               id
@@ -432,7 +432,7 @@ export default createFragmentContainer(MappedProjectRootView, {
             isBeta
           }
         }
-        projects(first: 100) {
+        projects(first: 1000) {
           edges {
             node {
               id

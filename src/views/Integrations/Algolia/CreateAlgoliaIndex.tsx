@@ -308,7 +308,7 @@ export default createFragmentContainer(Container, {
   */
   project: graphql`
     fragment CreateAlgoliaIndex_project on Project {
-      models(first: 100) {
+      models(first: 1000) {
         edges {
           node {
             id

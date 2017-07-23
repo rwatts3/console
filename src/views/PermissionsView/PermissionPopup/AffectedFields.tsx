@@ -147,7 +147,7 @@ const MappedAffectedFields = mapProps({
 export default createFragmentContainer(MappedAffectedFields, {
   model: graphql`
     fragment AffectedFields_model on Model {
-      fields(first: 100) {
+      fields(first: 1000) {
         edges {
           node {
             id

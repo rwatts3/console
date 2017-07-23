@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import { ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType } from '../types/types'
 
 interface Props {
@@ -21,55 +22,35 @@ interface HandlerWebhookProps {
   url: string
 }
 
-interface Response {
-}
-
-export default class UpdateActionMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateAction}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateActionPayload {
-        action
+const mutation = graphql`
+  mutation UpdateActionMutation($input: UpdateActionInput!) {
+    updateAction(input: $input) {
+      action {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      actionId: props.actionId,
+      isActive: props.isActive,
+      description: props.description,
+      triggerType: props.triggerType,
+      handlerType: props.handlerType,
+      triggerMutationModel: props.triggerMutationModel,
+      handlerWebhook: props.handlerWebhook,
+    },
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        action: this.props.actionId,
+        action: props.actionId,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      actionId: this.props.actionId,
-      isActive: this.props.isActive,
-      description: this.props.description,
-      triggerType: this.props.triggerType,
-      handlerType: this.props.handlerType,
-      triggerMutationModel: this.props.triggerMutationModel,
-      handlerWebhook: this.props.handlerWebhook,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      action: {
-        id: this.props.actionId,
-        isActive: this.props.isActive,
-        description: this.props.description,
-        triggerType: this.props.triggerType,
-        handlerType: this.props.handlerType,
-        triggerMutationModel: this.props.triggerMutationModel,
-        handlerWebhook: this.props.handlerWebhook,
-      }.filterNullAndUndefined(),
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

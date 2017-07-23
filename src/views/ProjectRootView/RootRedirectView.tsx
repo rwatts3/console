@@ -106,7 +106,7 @@ export default createFragmentContainer(MappedRootRedirectView, {
       id
       user {
         id
-        projects(first: 100) {
+        projects(first: 1000) {
           edges {
             node {
               id

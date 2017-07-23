@@ -195,7 +195,7 @@ export default createFragmentContainer(MappedAuthProviderPopup, {
   viewer: graphql`
     fragment AuthProviderPopup_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
-        authProviders(first: 100) {
+        authProviders(first: 1000) {
           edges {
             node {
               type

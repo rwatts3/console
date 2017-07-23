@@ -5,7 +5,7 @@ import {
 } from 'react-relay'
 import {Model} from '../../../../types/types'
 import ModelPermissionsHeader from './ModelPermissionsHeader'
-import ModelPermissionsList from './ModelPermissionList'
+import ModelPermissionList from './ModelPermissionList'
 import {$p, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
@@ -35,7 +35,7 @@ class PermissionsList extends React.Component<Props, {}> {
       <Container className={cx($p.mt38, $p.mb16, $p.relative, $p.z5)} style={style}>
         <div className={$p.ph16}>
           <ModelPermissionsHeader params={params} model={model} />
-          <ModelPermissionsList params={params} model={model} />
+          <ModelPermissionList params={params} model={model} />
         </div>
       </Container>
     )
@@ -46,7 +46,7 @@ export default createFragmentContainer(PermissionsList, {
   model: graphql`
     fragment ModelPermissions_model on Model {
       ...ModelPermissionsHeader_model
-      ...ModelPermissionsList_model
+      ...ModelPermissionList_model
     }
   `,
 })

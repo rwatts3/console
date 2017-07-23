@@ -60,7 +60,7 @@ export default createFragmentContainer(MappedModelRedirectView, {
   viewer: graphql`
     fragment ModelRedirectView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               name

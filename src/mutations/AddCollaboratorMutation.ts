@@ -1,29 +1,32 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
   email: string
 }
 
-export default class AddCollaboratorMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{inviteCollaborator}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on InviteCollaboratorPayload {
-        project
-        seat {
-          email
-        }
+const mutation = graphql`
+  mutation AddCollaboratorMutation($input: InviteCollaboratorInput!) {
+    inviteCollaborator(input: $input) {
+      project {
+        id
       }
-    `
+      seat {
+        email
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      projectId: props.projectId,
+      email: props.email,
+    },
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
       parentID: this.props.projectId,
@@ -32,13 +35,8 @@ export default class AddCollaboratorMutation extends Relay.Mutation<Props, {}> {
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-      email: this.props.email,
-    }
-  }
+    }],
+  })
 }
+
+export default {commit}

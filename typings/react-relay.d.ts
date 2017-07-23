@@ -503,7 +503,7 @@ declare module "react-relay" {
     experimentalQuery: any
   ): React.ComponentClass<T>
 
-  type Environment = any
+  export type Environment = any
   type StoreUpdater = any
 
   export type Disposable = {
@@ -535,4 +535,9 @@ declare module "react-relay" {
     experimental: (strings: Array<string>) => GraphQLTaggedNode
   }
   function requestSubscription(environment: Environment, config: GraphQLSubscriptionConfig): Disposable
+
+  export interface RelayProp {
+    environment: any
+    store: any
+  }
 }

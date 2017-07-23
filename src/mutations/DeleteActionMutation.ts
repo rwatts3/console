@@ -1,44 +1,42 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   actionId: string
   projectId: string
 }
 
-export default class DeleteActionMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{deleteAction}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on DeleteActionPayload {
-        project
-        deletedId
+const mutation = graphql`
+  mutation DeleteActionMutation($input: DeleteActionInput!) {
+    deleteAction(input: $input) {
+      project {
+        actions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
-    `
+      deletedId
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      actionId: props.actionId,
+    },
+    configs: [{
       type: 'NODE_DELETE',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: props.projectId,
       connectionName: 'actions',
       deletedIDFieldName: 'deletedId',
-    }]
-  }
-
-  getVariables () {
-    return {
-      actionId: this.props.actionId,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      deletedId: this.props.actionId,
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

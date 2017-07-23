@@ -1,5 +1,4 @@
 import * as React            from 'react'
-import * as Relay            from 'react-relay/classic'
 import {connect}             from 'react-redux'
 import {ConsoleEvents}       from 'graphcool-metrics'
 import * as cx               from 'classnames'
@@ -24,6 +23,10 @@ import {onFailureShowNotification} from '../../utils/relay'
 import {ShowNotificationCallback} from '../../types/utils'
 import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../utils/modalStyle'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 
 interface Props {
   router: ReactRouter.InjectedRouter
@@ -277,18 +280,13 @@ const ReduxContainer = connect(null, {showNotification})(CloneProjectPopup)
 const MappedCloneProjectPopup = mapProps({
   projectId: props => props.viewer.project.id,
   customerId: props => props.viewer.user.id,
-})(ReduxContainer)
+})(withRouter(ReduxContainer))
 
-export default Relay.createContainer(withRouter(MappedCloneProjectPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user { id }
-        project: projectByName(projectName: $projectName) { id }
-      }
-    `,
-  },
+export default createFragmentContainer(MappedCloneProjectPopup, {
+  viewer: graphql`
+    fragment CloneProjectPopup_viewer on Viewer {
+      user { id }
+      project: projectByName(projectName: $projectName) { id }
+    }
+  `,
 })

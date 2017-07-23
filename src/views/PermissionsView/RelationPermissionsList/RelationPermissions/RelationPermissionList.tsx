@@ -47,7 +47,7 @@ const MappedPermissionsList = mapProps({
 export default createFragmentContainer(MappedPermissionsList, {
   relation: graphql`
     fragment RelationPermissionList_relation on Relation {
-      permissions(first: 100) {
+      permissions(first: 1000) {
         edges {
           node {
             id

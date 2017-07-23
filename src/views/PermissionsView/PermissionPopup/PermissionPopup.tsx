@@ -546,7 +546,7 @@ export const EditPermissionPopup = createFragmentContainer(withRouter(MappedPerm
             name
             typeName
           }
-          fields(first: 100) {
+          fields(first: 1000) {
             edges {
               node {
                 id
@@ -601,7 +601,7 @@ export const AddPermissionPopup = createFragmentContainer(withRouter(MappedPermi
           name
           typeName
         }
-        fields(first: 100) {
+        fields(first: 1000) {
           edges {
             node {
               id

@@ -147,14 +147,14 @@ declare module "react-relay/classic" {
     }): void
   }
 
-  interface RelayProp {
-    readonly route: { name: string; }; // incomplete, also has params and queries
-    readonly variables: any;
-    readonly pendingVariables?: any | null;
-    setVariables(variables: any, onReadyStateChange?: OnReadyStateChange): void;
-    forceFetch(variables: any, onReadyStateChange?: OnReadyStateChange): void;
-    hasOptimisticUpdate(record: any): boolean;
-    getPendingTransactions(record: any): RelayMutationTransaction[];
-    commitUpdate: (mutation: Mutation<any,any>, callbacks?: StoreUpdateCallbacks<any>) => any;
-  }
+  // interface RelayProp {
+  //   readonly route: { name: string; }; // incomplete, also has params and queries
+  //   readonly variables: any;
+  //   readonly pendingVariables?: any | null;
+  //   setVariables(variables: any, onReadyStateChange?: OnReadyStateChange): void;
+  //   forceFetch(variables: any, onReadyStateChange?: OnReadyStateChange): void;
+  //   hasOptimisticUpdate(record: any): boolean;
+  //   getPendingTransactions(record: any): RelayMutationTransaction[];
+  //   commitUpdate: (mutation: Mutation<any,any>, callbacks?: StoreUpdateCallbacks<any>) => any;
+  // }
 }

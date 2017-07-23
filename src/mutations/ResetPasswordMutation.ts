@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   resetPasswordToken: string
@@ -9,34 +10,31 @@ interface Response {
   token: string
 }
 
-export default class ResetPasswordMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{resetPassword}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on ResetPasswordPayload {
-        token
-        user { id }
+const mutation = graphql`
+  mutation ResetPasswordMutation($input: ResetPasswordInput!) {
+    resetPassword(input: $input) {
+      token
+      user {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
       type: 'REQUIRED_CHILDREN',
-      children: [Relay.QL`
-        fragment on ResetPasswordPayload {
+      children: [graphql`
+        fragment ResetPasswordMutationChildren on ResetPasswordPayload {
           token
           user { id }
         }
       `],
-    }]
-  }
-
-  getVariables () {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default { commit }

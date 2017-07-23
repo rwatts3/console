@@ -45,7 +45,7 @@ export default createFragmentContainer(MappedAllPermissionsList, {
   project: graphql`
     fragment AllRelationPermissionsList_project on Project {
       name
-      relations(first: 100) {
+      relations(first: 1000) {
         edges {
           node {
             id

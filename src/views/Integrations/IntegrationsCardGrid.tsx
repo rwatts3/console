@@ -138,7 +138,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
 export default createFragmentContainer(IntegrationsCardGrid, {
   project: graphql`
     fragment IntegrationsCardGrid_project on Project {
-      integrations(first: 100) {
+      integrations(first: 1000) {
         edges {
           node {
             id
@@ -146,7 +146,7 @@ export default createFragmentContainer(IntegrationsCardGrid, {
           }
         }
       }
-      authProviders(first: 100) {
+      authProviders(first: 1000) {
         edges {
           node {
             isEnabled
@@ -154,7 +154,7 @@ export default createFragmentContainer(IntegrationsCardGrid, {
           }
         }
       }
-      packageDefinitions(first: 100) {
+      packageDefinitions(first: 1000) {
         edges {
           node {
             name

@@ -47,7 +47,7 @@ export default createFragmentContainer(MappedPermissionsList, {
   project: graphql`
     fragment PermissionsList_project on Project {
       name
-      models(first: 100) {
+      models(first: 1000) {
         edges {
           node {
             id

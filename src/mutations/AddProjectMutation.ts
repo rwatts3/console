@@ -1,6 +1,6 @@
-import * as Relay from 'react-relay/classic'
-import {Region} from '../types/types'
-import {commitMutation, graphql} from 'react-relay'
+import { Region } from '../types/types'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectName: string
@@ -8,43 +8,45 @@ interface Props {
   region: Region
 }
 
-class AddProjectMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addProject}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddProjectPayload {
-        projectEdge
-        user
+const mutation = graphql`
+  mutation AddProjectMutation($input: AddProjectInput!) {
+    addProject(input: $input) {
+      projectEdge {
+        node {
+          id
+        }
       }
-    `
+      user {
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      name: props.projectName,
+      region: props.region,
+    },
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'user',
-      parentID: this.props.customerId,
+      parentID: props.customerId,
       connectionName: 'projects',
       edgeName: 'projectEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      name: this.props.projectName,
-      region: this.props.region,
-    }
-  }
+    }],
+  })
 }
 
-
-function commit(props: Props) {
-  return
-}
+export default {commit}

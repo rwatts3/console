@@ -713,7 +713,7 @@ export const EditRPFunctionPopup = createFragmentContainer(MappedFunctionPopup, 
       project: projectByName(projectName: $projectName) {
         id
         name
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
@@ -765,7 +765,7 @@ export const EditSSSFunctionPopup = createFragmentContainer(MappedFunctionPopup,
       project: projectByName(projectName: $projectName) {
         id
         name
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
@@ -812,7 +812,7 @@ export const EditSchemaExtensionFunctionPopup = createFragmentContainer(MappedFu
       project: projectByName(projectName: $projectName) {
         id
         name
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
@@ -865,7 +865,7 @@ export const EditCustomQueryFunctionPopup = createFragmentContainer(MappedFuncti
       project: projectByName(projectName: $projectName) {
         id
         name
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id

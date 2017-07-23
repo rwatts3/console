@@ -364,7 +364,7 @@ export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
       project: projectByName(projectName: $projectName) {
         id
         ...CreateAlgoliaIndex_project
-        integrations(first: 100) {
+        integrations(first: 1000) {
           edges {
             node {
               id
@@ -377,7 +377,7 @@ export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
                 isEnabled
                 apiKey
                 applicationId
-                algoliaSyncQueries(first: 100) {
+                algoliaSyncQueries(first: 1000) {
                   edges {
                     node {
                       id

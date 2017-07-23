@@ -94,7 +94,7 @@ export default createFragmentContainer(TypeList, {
   project: graphql`
     fragment TypeList_project on Project {
       name
-      models(first: 100) {
+      models(first: 1000) {
         edges {
           node {
             itemCount
@@ -102,7 +102,7 @@ export default createFragmentContainer(TypeList, {
             name
             isSystem
             description
-            permissions(first: 100) {
+            permissions(first: 1000) {
               edges {
                 node {
                   isActive
@@ -112,7 +112,7 @@ export default createFragmentContainer(TypeList, {
                 }
               }
             }
-            fields(first: 100) {
+            fields(first: 1000) {
               edges {
                 node {
                   id

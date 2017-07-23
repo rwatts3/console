@@ -3,20 +3,21 @@ import {
   createFragmentContainer,
   graphql,
 } from 'react-relay'
-import {ModelPermission, Model, Relation, RelationPermission} from '../../../../types/types'
+import {ModelPermission, Model} from '../../../../types/types'
 import {$p, variables, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import NewToggleButton from '../../../../components/NewToggleButton/NewToggleButton'
-import RelationPermissionLabel from './RelationPermissionLabel'
+import PermissionLabel from './PermissionLabel'
+import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
 import {Link, withRouter} from 'found'
+import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-import ToggleRelationPermissionMutation from '../../../../mutations/RelationPermission/ToggleRelationPermission'
 
 interface Props {
-  permission: RelationPermission
-  relation: Relation
+  permission: ModelPermission
+  model: Model
   params: any
 }
 
@@ -46,7 +47,7 @@ const Arrow = styled.div`
 
 class ModelPermissionComponent extends React.Component<Props, {}> {
   render() {
-    const {permission, relation, params: {projectName}} = this.props
+    const {permission, model, params: {projectName}} = this.props
     return (
       <Container
         className={cx(
@@ -58,7 +59,8 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
       >
         <Link
           className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1, $p.itemsCenter)}
-          to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
+          to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
+          data-test={`edit-permission-button-${model.name}`}
         >
           <PermissionType className={cx(
             $p.flex,
@@ -67,10 +69,8 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
             $p.justifyBetween,
             $p.relative,
           )}>
-            <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
-              {permission.ruleName ?
-                permission.ruleName : permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'
-              }
+            <h3 className={cx($p.black50, $p.f16, $p.fw6)} data-test='permission-row-label'>
+              {permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'}
             </h3>
             <Arrow className={cx(
               $p.justifyEnd,
@@ -87,19 +87,9 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
               />
             </Arrow>
           </PermissionType>
-          {permission.connect && (
-            <RelationPermissionLabel
-              isActive={permission.isActive}
-              operation='connect'
-              className={$p.ml10}
-            />
-          )}
-          {permission.disconnect && (
-            <RelationPermissionLabel
-              isActive={permission.isActive}
-              operation='disconnect'
-              className={$p.ml10}
-            />
+          <PermissionLabel isActive={permission.isActive} operation={permission.operation} className={$p.ml10} />
+          {['READ', 'CREATE', 'UPDATE'].includes(permission.operation) && (
+            <ModelPermissionFields permission={permission} model={model} />
           )}
         </Link>
         <div>
@@ -112,7 +102,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   private toggleActiveState = () => {
     const {permission} = this.props
     Relay.Store.commitUpdate(
-      new ToggleRelationPermissionMutation({id: permission.id, isActive: !permission.isActive}),
+      new ToggleActivePermissionMutation({id: permission.id, isActive: !permission.isActive}),
       {
         onFailure: (transaction) => console.log(transaction),
       },
@@ -123,19 +113,20 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
 
 export default createFragmentContainer(withRouter(ModelPermissionComponent), {
   permission: graphql`
-    fragment RelationPermission_permission on RelationPermission {
+    fragment ModelPermissionComponent_permission on ModelPermission {
       id
+      operation
       userType
-      connect
-      disconnect
-      ruleName
+      fieldIds
       isActive
+      ...ModelPermissionFields_permission
     }
   `,
-  relation: graphql`
-    fragment RelationPermission_relation on Relation {
+  model: graphql`
+    fragment ModelPermissionComponent_model on Model {
       id
       name
+      ...ModelPermissionFields_model
     }
   `,
 })
