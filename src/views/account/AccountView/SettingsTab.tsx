@@ -7,7 +7,6 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Viewer} from '../../../types/types'
 import UpdateCustomerInformationMutation from '../../../mutations/UpdateCustomerInformationMutation'
-import UpdatePasswordMutation from '../../../mutations/UpdatePasswordMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {showNotification} from '../../../actions/notification'
@@ -46,7 +45,6 @@ class SettingsTab extends React.Component<Props, State> {
   }
 
   render () {
-    const {showPassword} = this.state
     return (
       <div className={classes.root}>
         <div className={classes.category}>
@@ -88,55 +86,19 @@ class SettingsTab extends React.Component<Props, State> {
     if (nameWasChanged || emailWasChanged) {
       this.handleCustomerChange()
     }
-
-    if (passwordWasChanged) {
-      this.handlePasswordChange()
-    }
   }
 
   private handleCustomerChange () {
-    Relay.Store.commitUpdate(
-      new UpdateCustomerInformationMutation({
+      UpdateCustomerInformationMutation.commit({
         customerInformationId: this.props.viewer.user.crm.information.id,
         email: this.state.email,
         name: this.state.name,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           this.props.showNotification({message: 'Changes to email and name were saved.', level: 'success'})
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
-  }
-
-  private handlePasswordChange () {
-    if (this.state.newPasswordOne !== '' && this.state.newPasswordOne === this.state.newPasswordTwo) {
-      Relay.Store.commitUpdate(
-        new UpdatePasswordMutation({
-          customerId: this.props.viewer.user.id,
-          oldPassword: this.state.oldPassword,
-          newPassword: this.state.newPasswordOne,
-        }),
-        {
-          onSuccess: () => {
-            this.props.showNotification({message: 'Changes to password successful.', level: 'success'})
-            this.setState({
-              oldPassword: '',
-              newPasswordOne: '',
-              newPasswordTwo: '',
-            } as State)
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    } else {
-      this.props.showNotification({message: 'Please enter the same new password twice.', level: 'error'})
-    }
+        })
   }
 }
 

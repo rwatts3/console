@@ -12,7 +12,10 @@ const mutation = graphql`
     addModel(input: $input) {
       modelEdge {
         node {
-          id
+          ...NewRow_model
+          ...ModelHeader_model
+          ...SideNav_model
+          ...TypeList_model
         }
       }
       project {
@@ -32,9 +35,11 @@ function commit(props: Props) {
   return makeMutation({
     mutation,
     variables: {
-      projectId: props.projectId,
-      modelName: props.modelName,
-      description: props.description,
+      input: {
+        projectId: props.projectId,
+        modelName: props.modelName,
+        description: props.description,
+      },
     },
     configs: [{
       type: 'RANGE_ADD',

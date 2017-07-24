@@ -546,3 +546,14 @@ export default createFragmentContainer(MappedSideNav, {
     }
   `,
 })
+
+// TODO put in seperate component
+/* tslint:disable */
+const mutationFragments = graphql`
+  fragment SideNav_model on Model {
+    id
+    name
+    itemCount
+    isSystem
+  }
+`

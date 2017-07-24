@@ -12,7 +12,7 @@ import styled from 'styled-components'
 import {Link, withRouter} from 'found'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
-import ToggleRelationPermissionMutation from '../../../../mutations/RelationPermission/ToggleRelationPermission'
+import UpdateRelationPermission from '../../../../mutations/RelationPermission/UpdateRelationPermission'
 
 interface Props {
   permission: RelationPermission
@@ -111,12 +111,8 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
 
   private toggleActiveState = () => {
     const {permission} = this.props
-    Relay.Store.commitUpdate(
-      new ToggleRelationPermissionMutation({id: permission.id, isActive: !permission.isActive}),
-      {
-        onFailure: (transaction) => console.log(transaction),
-      },
-    )
+      UpdateRelationPermission.commit({id: permission.id, isActive: !permission.isActive})
+        .then((transaction) => console.log(transaction))
     tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
   }
 }

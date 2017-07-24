@@ -419,21 +419,16 @@ class CreditCardInputSection extends React.Component<Props, State> {
             this.stripeResponseHandler,
           )
       } else {
-        Relay.Store.commitUpdate(
-          new SetPlanMutation({
+          SetPlanMutation.commit({
             projectId: this.props.projectId,
             plan: this.props.plan,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.close()
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
               this.props.setLoading(false)
-            },
-          },
-        )
+            })
       }
     } else {
       console.log('Not valid')
@@ -451,35 +446,24 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
     const token = response.id
 
-    Relay.Store.commitUpdate(
-      new SetCreditCardMutation({
+      SetCreditCardMutation.commit({
         projectId: this.props.projectId,
         token: token,
-      }),
-      {
-        onSuccess: () => {
-          Relay.Store.commitUpdate(
-            new SetPlanMutation({
-              projectId: this.props.projectId,
-              plan: this.props.plan,
-            }),
-            {
-              onSuccess: () => {
-                this.props.close()
-              },
-              onFailure: (transaction) => {
-                onFailureShowNotification(transaction, this.props.showNotification)
-                this.props.setLoading(false)
-              },
-            },
-          )
-        },
-        onFailure: (transaction) => {
+      }).then(() => {
+        SetPlanMutation.commit({
+          projectId: this.props.projectId,
+          plan: this.props.plan,
+        })
+        .then(() => this.props.close())
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.props.setLoading(false)
-        },
-      },
-    )
+        })
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.props.setLoading(false)
+      })
 
   }
 

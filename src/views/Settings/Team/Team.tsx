@@ -96,20 +96,15 @@ class Team extends React.Component<Props, {}> {
     graphcoolConfirm('This will remove the user with email ' +
         seat.email + ' as a collaborator from this project')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeleteCollaboratorMutation({
+          DeleteCollaboratorMutation.commit({
             projectId: this.props.viewer.project.id,
             email: seat.email,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.showNotification({message: 'Removed collaborator with email: ' + seat.email, level: 'success'})
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+            })
       })
   }
 }

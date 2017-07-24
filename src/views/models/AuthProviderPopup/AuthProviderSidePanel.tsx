@@ -449,49 +449,40 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     if (authProvider.type === 'anonymous-auth-provider') {
       return this.updateAnonymousAuthProvider()
     }
-    Relay.Store.commitUpdate(
-      new UpdateAuthProviderMutation({
+      UpdateAuthProviderMutation.commit({
         authProviderId: authProvider.id,
         isEnabled: authProvider.isEnabled,
         digits: authProvider.digits,
         auth0: authProvider.auth0,
-      }),
-      {
-        onSuccess: () => {
-          // The force fetching because authproviders are too complicated to selective choose the config
-          // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-          // which is needed to reflect all affected data
-          this.props.forceFetchRoot()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+      }).then(() => {
+        // TODO refetch the whole schema
+        // The force fetching because authproviders are too complicated to selective choose the config
+        // forceFetchRoot gets passed down from StuctureView/DatabrowserView
+        // which is needed to reflect all affected data
+        this.props.forceFetchRoot()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+      })
   }
 
   private uninstallAnonymousAuthProvider() {
     return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(
-        new UninstallPackage({
-          projectId: this.props.project.id,
-          name: 'anonymous-auth-provider',
-        }),
-        {
-          onSuccess: (res) => {
-            // The force fetching because authproviders are too complicated to selective choose the config
-            // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-            // which is needed to reflect all affected data
-            console.log('Uninstalled Package', res)
-            // this.props.forceFetchRoot()
-            resolve(res)
-          },
-          onFailure: (transaction) => {
-            reject(transaction)
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+      UninstallPackage.commit({
+        projectId: this.props.project.id,
+        name: 'anonymous-auth-provider',
+      }).then((res) => {
+        // The force fetching because authproviders are too complicated to selective choose the config
+        // forceFetchRoot gets passed down from StuctureView/DatabrowserView
+        // which is needed to reflect all affected data
+        console.log('Uninstalled Package', res)
+        // this.props.forceFetchRoot()
+        resolve(res)
+      })
+      .catch(transaction => {
+        reject(transaction)
+        onFailureShowNotification(transaction, this.props.showNotification)
+      })
     })
   }
 
@@ -503,24 +494,19 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       if (isEnabled) {
         const definition = getAnonymousPackage(this.state.selectedAnonymousModel)
 
-        Relay.Store.commitUpdate(
-          new InstallPackage({
+          InstallPackage.commit({
             projectId: this.props.project.id,
             definition,
-          }),
-          {
-            onSuccess: (res) => {
+          }).then(res => {
               // The force fetching because authproviders are too complicated to selective choose the config
               // forceFetchRoot gets passed down from StuctureView/DatabrowserView
               // which is needed to reflect all affected data
               console.log('Installed Package', res)
               this.props.forceFetchRoot()
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+            })
       } else {
         this.uninstallAnonymousAuthProvider()
           .then(() => {

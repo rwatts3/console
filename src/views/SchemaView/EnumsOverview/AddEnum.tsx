@@ -303,64 +303,51 @@ class AddEnum extends React.Component<Props, State> {
 
   private delete = () => {
     this.setState({loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new DeleteEnumMutation({
+        DeleteEnumMutation.commit({
           enumId: this.props.enumValue.id,
           projectId: this.props.projectId,
-        }),
-        {
-          onSuccess: () => {
+        })
+          .then(() => {
             this.close()
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as State)
-          },
-        },
-      )
-    })
-  }
+          })
+        })
+    }
 
   private addEnum = () => {
     const {name, values} = this.state
     if (name && values.length > 0) {
-      Relay.Store.commitUpdate(
-        new AddEnumMutation({
+        AddEnumMutation.commit({
           name,
           values,
           projectId: this.props.projectId,
-        }),
-        {
-          onSuccess: () => {
+        }).then(() => {
             this.close()
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as State)
-          },
-        },
-      )
-    }
+          })
+      }
   }
 
   private editEnum = () => {
     const {name, values} = this.state
-    Relay.Store.commitUpdate(
-      new UpdateEnumMutation({
+      UpdateEnumMutation.commit({
         name,
         values,
         enumId: this.props.enumValue.id,
-      }),
-      {
-        onSuccess: () => {
+      })
+        .then(() => {
           this.close()
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
-        },
-      },
-    )
+        })
   }
 
   private close = () => {

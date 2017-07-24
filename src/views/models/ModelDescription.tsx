@@ -5,7 +5,7 @@ import {
 } from 'react-relay'
 import Loading from '../../components/Loading/Loading'
 import { onFailureShowNotification } from '../../utils/relay'
-import UpdateModelDescriptionMutation from '../../mutations/UpdateModelDescriptionMutation'
+import UpdateModelMutation from '../../mutations/UpdateModelMutation'
 import { Model } from '../../types/types'
 import { ShowNotificationCallback } from '../../types/utils'
 import {connect} from 'react-redux'
@@ -76,27 +76,22 @@ class ModelDescription extends React.Component<Props, State> {
     this.setState({ editDescriptionPending: true } as State)
     tracker.track(ConsoleEvents.Schema.Model.Description.blurred({type: 'Save'}))
 
-    Relay.Store.commitUpdate(
-      new UpdateModelDescriptionMutation({
-        modelId: this.props.model.id,
+      UpdateModelMutation.commit({
+        id: this.props.model.id,
         description,
-      }),
-      {
-        onSuccess: () => {
+      })
+        .then(() => {
           this.setState({
             editDescription: false,
             editDescriptionPending: false,
           })
-        },
-        onFailure: (transaction) => {
+        }).catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({
             editDescription: false,
             editDescriptionPending: false,
           })
-        },
-      },
-    )
+        })
   }
 }
 

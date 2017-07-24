@@ -401,7 +401,7 @@ class AddType extends React.Component<Props, State> {
     UpdateModelMutation.commit({
       name: modelName,
       description,
-      modelId: this.props.model.id,
+      id: this.props.model.id,
     })
       .then(() => {
         tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))

@@ -357,16 +357,12 @@ class RelationPermissionPopup extends React.Component<Props, RelationPermissionP
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
 
     this.setState({loading: true} as RelationPermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new UpdateRelationPermissionMutation(updatedNode),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as RelationPermissionPopupState)
-          },
-        },
-      )
+      UpdateRelationPermissionMutation.commit(updatedNode)
+        .then(() => this.closePopup())
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as RelationPermissionPopupState)
+        })
     })
   }
 
@@ -376,8 +372,7 @@ class RelationPermissionPopup extends React.Component<Props, RelationPermissionP
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as RelationPermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new AddRelationPermissionMutation({
+        AddRelationPermissionMutation.commit({
           relationId: relation.id,
           connect,
           disconnect,
@@ -385,15 +380,11 @@ class RelationPermissionPopup extends React.Component<Props, RelationPermissionP
           rule,
           ruleName,
           ruleGraphQuery,
-        }),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
+        }).then(() => this.closePopup())
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as RelationPermissionPopupState)
-          },
-        },
-      )
+          })
     })
   }
 
@@ -402,19 +393,15 @@ class RelationPermissionPopup extends React.Component<Props, RelationPermissionP
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as RelationPermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new DeleteRelationPermissionMutation({
+        DeleteRelationPermissionMutation.commit({
           relationPermissionId: id,
           relationId: relation.id,
-        }),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
+        })
+          .then(() => this.closePopup())
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as RelationPermissionPopupState)
-          },
-        },
-      )
+          })
     })
   }
 
@@ -424,15 +411,15 @@ class RelationPermissionPopup extends React.Component<Props, RelationPermissionP
   }
 }
 
-const ReduxContainer = connect(null, {showNotification})(PermissionPopup)
+const ReduxContainer = connect(null, {showNotification})(RelationPermissionPopup)
 
-const MappedPermissionPopup = mapProps({
+const MappedRelationPermissionPopup = mapProps({
   permission: props => props.node || null,
   relation: props => (props.viewer && props.viewer.relation) || (props.node && props.node.relation),
   isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
 })(ReduxContainer)
 
-export const EditRelationPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+export const EditRelationPermissionPopup = createFragmentContainer(withRouter(MappedRelationPermissionPopup), {
   node: graphql`
     fragment RelationPermissionPopup_node on Node {
       id

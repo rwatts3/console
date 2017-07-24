@@ -139,14 +139,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
   private onClickResetProjectData = (): void => {
     graphcoolConfirm('This will reset the project data.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectDataMutation({
+          ResetProjectDataMutation.commit({
             projectId: this.props.viewer.project.id,
-          }),
-          {
-            onSuccess: () => {
-              this.props.router.replace(`/${this.props.params.projectName}/playground`)
-            },
+          }).then(() => {
+            this.props.router.replace(`/${this.props.params.projectName}/playground`)
           })
       })
   }
@@ -154,14 +150,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
   private onClickResetCompleteProject = (): void => {
     graphcoolConfirm('This will reset the projects data and schema.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectSchemaMutation({
+          ResetProjectSchemaMutation.commit({
             projectId: this.props.viewer.project.id,
-          }),
-          {
-            onSuccess: () => {
-              this.props.router.replace(`/${this.props.params.projectName}/playground`)
-            },
+          }).then(() => {
+            this.props.router.replace(`/${this.props.params.projectName}/playground`)
           })
       })
   }
@@ -175,37 +167,29 @@ class ProjectSettingsView extends React.Component<Props, State> {
     }
     graphcoolConfirm('This action will delete this project.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeleteProjectMutation({
+          DeleteProjectMutation.commit({
             projectId: this.props.viewer.project.id,
             customerId: this.props.viewer.user.id,
-          }),
-          {
-            onSuccess: () => {
-              // TODO replace hard reload
-              // was added because deleting the last project caused
-              // a relay issue
-              window.location.pathname = '/'
-            },
+          }).then(() => {
+            // TODO replace hard reload
+            // was added because deleting the last project caused
+            // a relay issue
+            window.location.pathname = '/'
           })
       })
   }
 
   private saveSettings = (): void => {
-    Relay.Store.commitUpdate(
-      new UpdateProjectMutation(
+      UpdateProjectMutation.commit(
         {
-          project: this.props.viewer.project,
+          id: this.props.viewer.project.id,
           name: this.state.projectName,
-        }),
-      {
-        onSuccess: () => {
+        }).then(() => {
           this.props.router.replace(`/${this.state.projectName}/`)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      })
+        })
   }
 
   private updateProjectName = (name: string): void => {

@@ -276,32 +276,27 @@ class SchemaEditor extends React.Component<Props, State> {
     // const newSchema = this.addFrontmatter(schema)
     const newSchema = schema
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new MigrateProject({
+      MigrateProject.commit({
         newSchema,
         isDryRun,
         force: true,
-      }),
-      {
-        onSuccess: (res) => {
-          if (isDryRun) {
-            this.setState({
-              messages: res.migrateProject.migrationMessages,
-              isDryRun: false,
-              errors: res.migrateProject.errors,
-              loading: false,
-            } as State)
-          } else {
-            this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
-            this.props.forceFetchSchemaView()
-          }
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+      }).then(res => {
+        if (isDryRun) {
+          this.setState({
+            messages: res.migrateProject.migrationMessages,
+            isDryRun: false,
+            errors: res.migrateProject.errors,
+            loading: false,
+          } as State)
+        } else {
+          this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
+          this.props.forceFetchSchemaView()
+        }
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private reset = () => {

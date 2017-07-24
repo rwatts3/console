@@ -139,3 +139,44 @@ export default createFragmentContainer(TypeList, {
     }
   `,
 })
+
+const mutationFragments = graphql`
+  fragment TypeList_model on Model {
+    itemCount
+    id
+    name
+    isSystem
+    description
+    permissions(first: 1000) {
+      edges {
+        node {
+          isActive
+          operation
+          applyToWholeModel
+          fieldIds
+        }
+      }
+    }
+    fields(first: 1000) {
+      edges {
+        node {
+          id
+          name
+          typeIdentifier
+          isList
+          isRequired
+          isSystem
+          isUnique
+          isReadonly
+          relation {
+            name
+          }
+          relatedModel {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`

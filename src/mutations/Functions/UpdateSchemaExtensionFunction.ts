@@ -4,8 +4,7 @@ import {FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
 interface Props {
-  id: string
-  projectId: string
+  projectId?: string
   name?: string
   type?: FunctionType
   webhookUrl?: string
@@ -13,7 +12,7 @@ interface Props {
   inlineCode?: string
   auth0Id?: string
   isActive?: boolean
-  functionId?: string
+  functionId: string
   schema?: string
 }
 
@@ -40,7 +39,7 @@ function commit(props: Props) {
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        function: props.id,
+        function: props.functionId,
       },
     }],
   })

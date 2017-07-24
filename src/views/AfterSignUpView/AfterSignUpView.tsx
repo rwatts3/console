@@ -226,21 +226,16 @@ class AfterSignUpView extends React.Component<Props, State> {
       return
     }
 
-    Relay.Store.commitUpdate(
-      new UpdateCustomerSourceMutation({
-        customerInformationId: this.props.viewer.user.crm.information.id,
-        source: source,
-        referral: cookiestore.get('graphcool_last_referral'),
-      }),
-      {
-        onSuccess: () => {
-          this.props.router.push('/')
-        },
-        onFailure: () => {
-          this.props.router.push('/')
-        },
-      },
-    )
+    UpdateCustomerSourceMutation.commit({
+      customerInformationId: this.props.viewer.user.crm.information.id,
+      source: source,
+      referral: cookiestore.get('graphcool_last_referral'),
+    }).then(() => {
+        this.props.router.push('/')
+      })
+      .catch(() => {
+        this.props.router.push('/')
+      })
 
   }
 

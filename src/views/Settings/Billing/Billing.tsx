@@ -408,26 +408,21 @@ class Billing extends React.Component<Props, State> {
 
     const token = response.id
 
-    Relay.Store.commitUpdate(
-      new SetCreditCardMutation({
+      SetCreditCardMutation.commit({
         projectId: this.props.viewer.project.id,
         token: token,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           this.setState({
             isEditingCreditCardInfo: false,
             isLoading: false,
           } as State)
 // TODO props.relay.* APIs do not exist on compat containers
           this.props.relay.forceFetch()
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({isLoading: false} as State)
-        },
-      },
-    )
+        })
   }
 
 }

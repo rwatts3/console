@@ -646,8 +646,7 @@ class RelationPopup extends React.Component<Props, State> {
     const rightField = this.state.fieldOnRightModelName
 
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new AddRelationMutation({
+      AddRelationMutation.commit({
         projectId: this.props.viewer.project.id,
         name: this.state.relationName,
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
@@ -659,17 +658,12 @@ class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
         fieldOnLeftModelIsRequired: this.state.fieldOnLeftModelIsRequired,
         fieldOnRightModelIsRequired: this.state.fieldOnRightModelIsRequired,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction: Transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+      }).then(() => {
+        this.close()
+      }).catch((transaction: Transaction) => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private editRelation = () => {
@@ -678,9 +672,8 @@ class RelationPopup extends React.Component<Props, State> {
     const rightField = this.state.fieldOnRightModelName
 
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new UpdateRelationMutation({
-        relationId: this.props.viewer.relation.id,
+      UpdateRelationMutation.commit({
+        id: this.props.viewer.relation.id,
         name: this.state.relationName,
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
         leftModelId: this.state.leftSelectedModel.id,
@@ -691,41 +684,33 @@ class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
         fieldOnLeftModelIsRequired: this.state.fieldOnLeftModelIsRequired,
         fieldOnRightModelIsRequired: this.state.fieldOnRightModelIsRequired,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           // The force fetching because relations are too complicated to selective choose the config
-// TODO props.relay.* APIs do not exist on compat containers
+          // TODO props.relay.* APIs do not exist on compat containers
           this.props.relay.forceFetch()
           this.close()
-        },
-        onFailure: (transaction: Transaction) => {
+        })
+        .catch((transaction: Transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
-        },
-      },
-    )
+        })
   }
 
   private deleteRelation = () => {
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new DeleteRelationMutation({
-        relationId: this.props.viewer.relation.id,
-        projectId: this.props.viewer.project.id,
-        leftModelId: this.props.viewer.relation.leftModel.id,
-        rightModelId: this.props.viewer.relation.leftModel.id,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction: Transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+    DeleteRelationMutation.commit({
+      relationId: this.props.viewer.relation.id,
+      projectId: this.props.viewer.project.id,
+      leftModelId: this.props.viewer.relation.leftModel.id,
+      rightModelId: this.props.viewer.relation.leftModel.id,
+    })
+    .then(() => {
+      this.close()
+    })
+    .catch((transaction: Transaction) => {
+      onFailureShowNotification(transaction, this.props.showNotification)
+      this.setState({loading: false} as State)
+    })
   }
 }
 

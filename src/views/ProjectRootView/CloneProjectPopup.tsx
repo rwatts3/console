@@ -250,27 +250,22 @@ class CloneProjectPopup extends React.Component<Props, State> {
     }))
 
     this.setState({loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new CloneProjectMutation({
+        CloneProjectMutation.commit({
           projectId,
           name: projectName,
           customerId,
           includeData,
           includeMutationCallbacks,
-        }),
-        {
-          onSuccess: () => {
+        }).then(() => {
             tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
 
             const {router} = this.props
 
             router.push(`/${projectName}`)
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     })
   }
 }

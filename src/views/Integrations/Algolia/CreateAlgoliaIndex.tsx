@@ -256,24 +256,20 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
         return this.setState({saving: true} as State)
       }
       this.setState({loading: true} as State, () => {
-        Relay.Store.commitUpdate(
-          new AddAlgoliaSyncQueryMutation({
-            modelId: selectedModel.id,
-            indexName: title,
-            fragment,
-            searchProviderAlgoliaId: algolia.id,
-          }),
-          {
-            onSuccess: (res) => {
-              this.setState({loading: false} as State)
-              this.close()
-            },
-            onFailure: (res) => {
-              this.setState({loading: false} as State)
-              onFailureShowNotification(res, this.props.showNotification)
-            },
-          },
-        )
+        AddAlgoliaSyncQueryMutation.commit({
+          modelId: selectedModel.id,
+          indexName: title,
+          fragment,
+          searchProviderAlgoliaId: algolia.id,
+        })
+          .then(res => {
+            this.setState({loading: false} as State)
+            this.close()
+          })
+          .catch(res => {
+            this.setState({loading: false} as State)
+            onFailureShowNotification(res, this.props.showNotification)
+          })
       })
     }
 

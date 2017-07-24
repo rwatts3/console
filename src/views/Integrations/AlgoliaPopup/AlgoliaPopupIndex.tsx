@@ -62,14 +62,12 @@ class AlgoliaPopupIndexes extends React.Component<Props, State> {
   toggle = (e) => {
     const {index: {id, fragment, indexName, isEnabled}} = this.props
 
-    Relay.Store.commitUpdate(
-      new UpdateAlgoliaSyncQueryMutation({
+      UpdateAlgoliaSyncQueryMutation.commit({
         algoliaSyncQueryId: id,
         indexName,
         fragment,
         isEnabled: !isEnabled,
-      }),
-    )
+      })
   }
 }
 

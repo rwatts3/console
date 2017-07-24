@@ -28,16 +28,14 @@ class RootRedirectView extends React.Component<Props, {}> {
   componentWillMount(): void {
     if (this.props.projectName) {
       const url = `/${this.props.projectName}${this.props.location.search}`
-      console.log(`would redirect now swm`, url)
-      // this.props.router.replace(url)
+      this.props.router.replace(url)
     }
   }
 
   shouldComponentUpdate(nextProps: Props): boolean {
     if (nextProps.projectName) {
       const url = `/${nextProps.projectName}${this.props.location.search}`
-      // this.props.router.replace(url)
-      console.log(`wou,d redirect now scu`, url)
+      this.props.router.replace(url)
       return false
     }
 

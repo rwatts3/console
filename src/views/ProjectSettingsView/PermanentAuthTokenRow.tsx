@@ -79,14 +79,11 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
   }
 
   private deleteSystemToken = (): void => {
-    Relay.Store.commitUpdate(
-      new DeletePermanentAuthTokenMutation({
-        projectId: this.props.projectId,
-        tokenId: this.props.permanentAuthToken.id,
-      }),
-      {
-        onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-      })
+    DeletePermanentAuthTokenMutation.commit({
+      projectId: this.props.projectId,
+      tokenId: this.props.permanentAuthToken.id,
+    })
+      .catch(transaction => onFailureShowNotification(transaction, this.props.showNotification))
   }
 }
 

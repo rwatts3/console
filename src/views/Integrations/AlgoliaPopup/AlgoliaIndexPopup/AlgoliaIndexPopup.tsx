@@ -161,13 +161,12 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     if (this.validate()) {
       this.close()
-      Relay.Store.commitUpdate(
-        new AddAlgoliaSyncQueryMutation({
+        AddAlgoliaSyncQueryMutation.commit({
           modelId: selectedModel.id,
           indexName: title,
           fragment,
           searchProviderAlgoliaId: algolia.id,
-        }))
+        })
     }
 
   }
@@ -178,13 +177,12 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     if (this.validate() && node) {
       this.close()
-      Relay.Store.commitUpdate(
-        new UpdateAlgoliaSyncQueryMutation({
+        UpdateAlgoliaSyncQueryMutation.commit({
           algoliaSyncQueryId: node.id,
           indexName: title,
           fragment,
           isEnabled,
-        }),
+        })
       )
     }
   }
@@ -194,12 +192,10 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     if (node) {
       this.close()
-      Relay.Store.commitUpdate(
-        new DeleteAlgoliaSyncQueryMutation({
-          algoliaSyncQueryId: node.id,
-          searchProviderAlgoliaId: algolia.id,
-        }),
-      )
+      DeleteAlgoliaSyncQueryMutation.commit({
+        algoliaSyncQueryId: node.id,
+        searchProviderAlgoliaId: algolia.id,
+      })
     }
   }
 }

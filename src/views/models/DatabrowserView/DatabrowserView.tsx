@@ -59,7 +59,7 @@ const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts
 interface Props {
   relay: Relay.RelayProp
   viewer: Viewer & { model: Model }
-  router: ReactRouter.InjectedRouter
+  router: any
   route: any
   params: any
   location: any
@@ -179,7 +179,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.mounted = true
-    this.props.router.setRouteLeaveHook(this.props.route, (nextLocation) => {
+    this.props.router.addTransitionHook((nextLocation) => {
       if (this.props.newRowActive) {
         // TODO with custom dialogs use "return false" and display custom dialog
         if (this.state.shouldLeaveRoute) {

@@ -274,8 +274,7 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   private createAction = () => {
-    Relay.Store.commitUpdate(
-      new AddActionMutation({
+      AddActionMutation.commit({
         projectId: this.props.project.id,
         isActive: true,
         description: this.state.description,
@@ -289,38 +288,29 @@ class ActionBoxes extends React.Component<Props, State> {
         handlerWebhook: {
           url: this.state.handlerWebhookUrl,
         },
-      }),
-      {
-        onSuccess: () => {
-          this.props.close()
-        },
-      },
-    )
+      }).then(() => {
+        this.props.close()
+      })
   }
 
   private updateAction = () => {
-    Relay.Store.commitUpdate(
-      new UpdateActionMutation({
-        actionId: this.props.action.id,
-        isActive: this.props.action.isActive,
-        description: this.state.description,
-        triggerType: 'MUTATION_MODEL' as ActionTriggerType,
-        handlerType: 'WEBHOOK' as ActionHandlerType,
-        triggerMutationModel: {
-          fragment: this.state.triggerMutationModelFragment,
-          mutationType: this.state.triggerMutationModelMutationType,
-          modelId: this.state.triggerMutationModelModelId,
-        },
-        handlerWebhook: {
-          url: this.state.handlerWebhookUrl,
-        },
-      }),
-      {
-        onSuccess: () => {
-          this.props.close()
-        },
+    UpdateActionMutation.commit({
+      actionId: this.props.action.id,
+      isActive: this.props.action.isActive,
+      description: this.state.description,
+      triggerType: 'MUTATION_MODEL' as ActionTriggerType,
+      handlerType: 'WEBHOOK' as ActionHandlerType,
+      triggerMutationModel: {
+        fragment: this.state.triggerMutationModelFragment,
+        mutationType: this.state.triggerMutationModelMutationType,
+        modelId: this.state.triggerMutationModelModelId,
       },
-    )
+      handlerWebhook: {
+        url: this.state.handlerWebhookUrl,
+      },
+    }).then(() => {
+      this.props.close()
+    })
   }
 
   private renderConfirm = () => {

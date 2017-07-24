@@ -169,38 +169,30 @@ class DangerZone extends React.Component<Props, State> {
   private onClickResetProjectData = (): void => {
     graphcoolConfirm('You are reseting the project data.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectDataMutation({
+          ResetProjectDataMutation.commit({
             projectId: this.props.project.id,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.showNotification({message: 'All nodes were deleted', level: 'success'})
               this.props.router.replace(`/${this.props.project.name}/settings/general`)
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          })
+            })
       })
   }
 
   private onClickResetCompleteProject = (): void => {
     graphcoolConfirm('Your are resetting the projects schema and data.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectSchemaMutation({
+          ResetProjectSchemaMutation.commit({
             projectId: this.props.project.id,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.showNotification({message: 'All nodes and models were deleted', level: 'success'})
               this.props.router.replace(`/${this.props.project.name}/settings/general`)
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          })
+            })
       })
   }
 
@@ -213,18 +205,13 @@ class DangerZone extends React.Component<Props, State> {
     }
     graphcoolConfirm('You are deleting this project. All data and the schema will be lost.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeleteProjectMutation({
-            projectId: this.props.project.id,
-            customerId: this.props.viewer.user.id,
-          }),
-          {
-            onSuccess: () => {
-              this.props.router.replace(`/`)
-              this.props.showNotification({message: 'Your project was deleted', level: 'success'})
-            },
-
-          })
+        DeleteProjectMutation.commit({
+          projectId: this.props.project.id,
+          customerId: this.props.viewer.user.id,
+        }).then(() => {
+          this.props.router.replace(`/`)
+          this.props.showNotification({message: 'Your project was deleted', level: 'success'})
+        })
       })
   }
 

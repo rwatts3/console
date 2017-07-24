@@ -23,7 +23,6 @@ import RootView from './views/RootView/RootView'
 import AfterSignUpView from './views/AfterSignUpView/AfterSignUpView'
 import AccountView from './views/account/AccountView/AccountView'
 import SettingsTab from './views/account/AccountView/SettingsTab'
-import ResetPasswordView from './views/account/ResetPasswordView/ResetPasswordView'
 import DatabrowserView from './views/models/DatabrowserView/DatabrowserView'
 import Settings from './views/Settings/Settings'
 import General from './views/Settings/General/General'
@@ -239,7 +238,6 @@ export default (
       <Route path='cli/auth' Component={CLIAuthView} onEnter={CLIAuthView.routeRedirectWhenAuthenticated}/>
       <Route path='cli/auth/success' Component={CLIAuthSuccessView} />
       <Route path='cli/auth/success-init' Component={CLIAuthSuccessInitView}/>
-      <Route path='reset-password' Component={ResetPasswordView}/>
       <Route path='after-signup' Component={AfterSignUpView} query={graphql`
         query routes_AfterSignUpView_Query {
           viewer {
@@ -248,11 +246,9 @@ export default (
         }
       `} render={render}/>
       <Route path='showroom' Component={ShowRoom}/>
+      <Redirect from=':projectName' to=':projectName/schema'/>
       <Route path=':projectName' Component={ProjectRootView} query={ProjectViewerQuery} render={render}>
-          {/*
-           <Redirect to='functions'/>
-
-           */}
+        <Redirect from='settings' to='settings/general' />
         <Route path='functions' Component={FunctionsView} query={FunctionsViewerQuery} render={render}>
           {/*
           <Route path='create' Component={CreateFunctionPopup} query={ViewerQuery} render={render}>
@@ -323,7 +319,6 @@ export default (
               }
             }
           `} render={render}/>
-          {/*<IndexRedirect to='settings'/>*/}
         </Route>
         <Route path='schema' Component={SchemaView} query={graphql`
           query routes_SchemaView_Query($projectName: String!) {

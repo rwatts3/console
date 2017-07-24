@@ -12,12 +12,10 @@ import Tether from '../../components/Tether/Tether'
 import Header from '../../components/Header/Header'
 import {Model, Viewer, Project} from '../../types/types'
 import {GettingStartedState} from '../../types/gettingStarted'
-import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
-import AuthProviderPopup from './AuthProviderPopup/AuthProviderPopup'
 import {Icon, particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import UpdateModelNameMutation from '../../mutations/UpdateModelNameMutation'
+import UpdateModelMutation from '../../mutations/UpdateModelMutation'
 import DeleteModelMutation from '../../mutations/DeleteModelMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
@@ -271,52 +269,34 @@ class ModelHeader extends React.Component<Props, State> {
     }
 
     if (modelName) {
-      Relay.Store.commitUpdate(
-        new UpdateModelNameMutation({
+        UpdateModelMutation.commit({
           name: modelName,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
+          id: this.props.model.id,
+        }).then(() => {
             tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
             redirect()
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     }
   }
 
   private deleteModel = () => {
-
     graphcoolConfirm('You are deleting this model.')
       .then(() => {
         this.props.router.replace(`/${this.props.params.projectName}/models`)
-
-        Relay.Store.commitUpdate(
-          new DeleteModelMutation({
+          DeleteModelMutation.commit({
             projectId: this.props.project.id,
             modelId: this.props.model.id,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
               this.props.forceFetchRoot()
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+            })
       })
-  }
-
-  private handleModelModalClose = () => {
-    this.setState({
-      editModelModalOpen: false,
-    } as State)
   }
 }
 

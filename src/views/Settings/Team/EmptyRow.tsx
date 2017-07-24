@@ -165,21 +165,16 @@ class EmptyRow extends React.Component<Props, State> {
   }
 
   private addCollaborator(email: string): void {
-    Relay.Store.commitUpdate(
-      new InviteCollaboratorMutation({
-        projectId: this.props.projectId,
-        email: email,
-      }),
-      {
-        onSuccess: () => {
-          this.setState({isEnteringEmail: false} as State)
-          this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+    InviteCollaboratorMutation.commit({
+      projectId: this.props.projectId,
+      email: email,
+    }).then(() => {
+      this.setState({isEnteringEmail: false} as State)
+      this.props.showNotification({message: 'Added new collaborator: ' + email, level: 'success'})
+    })
+    .catch(transaction => {
+      onFailureShowNotification(transaction, this.props.showNotification)
+    })
   }
 
 }

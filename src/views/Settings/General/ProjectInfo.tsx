@@ -317,23 +317,20 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   private saveSettings = (): void => {
-    Relay.Store.commitUpdate(
-      new UpdateProjectMutation(
+      UpdateProjectMutation.commit(
         {
-          project: this.props.project,
+          id: this.props.project.id,
           name: this.state.newProjectName,
           alias: this.state.newAlias,
-        }),
-      {
-        onSuccess: () => {
+        })
+        .then(() => {
           const message = 'Successfully updated project.'
           this.props.showNotification({message: message, level: 'success'})
           this.props.router.replace(`/${this.state.newProjectName}/settings/general`)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      })
+        })
   }
 
   private handleKeyDown = (e) => {

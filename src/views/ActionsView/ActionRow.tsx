@@ -123,12 +123,10 @@ class ActionRow extends React.Component<Props, State> {
 
   private toggleIsActive = (e: any) => {
     tracker.track(ConsoleEvents.MutationCallbacks.toggled())
-    Relay.Store.commitUpdate(
-      new UpdateActionMutation({
-        actionId: this.props.action.id,
-        isActive: !this.props.action.isActive,
-      }),
-    )
+    UpdateActionMutation.commit({
+      actionId: this.props.action.id,
+      isActive: !this.props.action.isActive,
+    })
   }
 
   private deleteAction = (e: React.MouseEvent<any>) => {
@@ -137,12 +135,10 @@ class ActionRow extends React.Component<Props, State> {
     graphcoolConfirm('You\'re deleting this Mutation Callback')
       .then(() => {
         tracker.track(ConsoleEvents.MutationCallbacks.deleted())
-        Relay.Store.commitUpdate(
-          new DeleteActionMutation({
-            actionId: this.props.action.id,
-            projectId: this.props.projectId,
-          }),
-        )
+        DeleteActionMutation.commit({
+          actionId: this.props.action.id,
+          projectId: this.props.projectId,
+        })
       })
   }
 

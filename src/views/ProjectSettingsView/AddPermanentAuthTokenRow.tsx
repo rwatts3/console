@@ -65,15 +65,11 @@ class AddPermanentAuthTokenRow extends React.Component<Props, State> {
     if (!this.state.newTokenName) {
       return
     }
-    Relay.Store.commitUpdate(
-      new AddPermanentAuthTokenMutation({
+      AddPermanentAuthTokenMutation.commit({
         projectId: this.props.projectId,
         tokenName: this.state.newTokenName,
-      }),
-      {
-        onSuccess: () => this.setState({newTokenName: ''}),
-        onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-      })
+      }).then(() => this.setState({newTokenName: ''}))
+        .catch(transaction => onFailureShowNotification(transaction, this.props.showNotification))
   }
 }
 

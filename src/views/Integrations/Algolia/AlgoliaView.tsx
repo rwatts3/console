@@ -255,25 +255,20 @@ class AlgoliaView extends React.Component<Props, State> {
 
     if (this.indexValid() && node) {
       console.log('updating index')
-      Relay.Store.commitUpdate(
-        new UpdateAlgoliaSyncQueryMutation({
+        UpdateAlgoliaSyncQueryMutation.commit({
           algoliaSyncQueryId: node.id,
           fragment: currentFragment,
           isEnabled: true,
           indexName: node.indexName,
-        }),
-        {
-          onSuccess: (transaction) => {
+        }).then(transaction => {
             this.props.showNotification({
               message: 'Index updated',
               level: 'success',
             })
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     }
   }
 
@@ -282,25 +277,20 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private update = () => {
-    const {valid, apiKey, applicationId, isEnabled} = this.state
+    const {apiKey, applicationId, isEnabled} = this.state
     const {algolia, projectId} = this.props
-    Relay.Store.commitUpdate(
-      new UpdateSearchProviderAlgolia({
-        searchProviderAlgoliaId: algolia.id,
+      UpdateSearchProviderAlgolia.commit({
+        id: algolia.id,
         isEnabled: true,
         apiKey,
         applicationId,
         projectId,
-      }),
-      {
-        onSuccess: (transaction) => {
+      }).then(transaction => {
           this.handleCloseModal()
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+        })
   }
 
   private delete = () => {
@@ -310,12 +300,10 @@ class AlgoliaView extends React.Component<Props, State> {
     const node = indexes[selectedIndexIndex]
 
     if (node) {
-      Relay.Store.commitUpdate(
-        new DeleteAlgoliaSyncQueryMutation({
-          algoliaSyncQueryId: node.id,
-          searchProviderAlgoliaId: algolia.id,
-        }),
-      )
+      DeleteAlgoliaSyncQueryMutation.commit({
+        algoliaSyncQueryId: node.id,
+        searchProviderAlgoliaId: algolia.id,
+      })
     }
 
     if (selectedIndexIndex > 0) {

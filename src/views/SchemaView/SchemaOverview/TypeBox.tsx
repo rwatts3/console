@@ -456,21 +456,16 @@ class TypeBox extends React.Component<Props,State> {
   }
 
   private editModel = (modelName: string) => {
-    Relay.Store.commitUpdate(
-      new UpdateModelNameMutation({
-        name: modelName,
-        modelId: this.props.model.id,
-      }),
-      {
-        onSuccess: () => {
-          this.stopEditModelName()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.stopEditModelName()
-        },
-      },
-    )
+    UpdateModelNameMutation.commit({
+      name: modelName,
+      id: this.props.model.id,
+    }).then(() => {
+        this.stopEditModelName()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.stopEditModelName()
+      })
   }
 
   private onChangeModelName = e => {

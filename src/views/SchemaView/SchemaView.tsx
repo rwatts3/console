@@ -17,7 +17,7 @@ interface Props {
   location: any
   params: any
   relay: any
-  router: ReactRouter.InjectedRouter
+  router: any
   route: ReactRouter.Route
 }
 
@@ -60,7 +60,7 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   addLeaveHook() {
-    this.props.router.setRouteLeaveHook(this.props.route, (nextLocation) => {
+    this.props.router.addTransitionHook((nextLocation) => {
       if ((this.state.typesChanged || this.state.enumsChanged) && !this.forceLeaveRoute) {
         graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
           .then(() => {

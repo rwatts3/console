@@ -38,12 +38,6 @@ class ActionsView extends React.Component<Props, State> {
   }
 
   componentDidMount = () => {
-    this.props.router.setRouteLeaveHook(this.props.route, () => {
-      if (this.state.showAddRow) {
-        // TODO with custom dialogs use "return false" and display custom dialog
-        return 'Are you sure you want to discard unsaved changes?'
-      }
-    })
     tracker.track(ConsoleEvents.MutationCallbacks.viewed())
     graphcoolConfirm(
       `Mutation callbacks are deprecated. Please use the new and more powerful server-side-subscriptions instead.

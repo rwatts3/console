@@ -4,8 +4,7 @@ import {FunctionBinding, FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
 interface Props {
-  id: string
-  projectId: string
+  functionId: string
   name?: string
   binding?: FunctionBinding
   modelId?: string
@@ -16,7 +15,6 @@ interface Props {
   auth0Id?: string
   operation?: string
   isActive?: boolean
-  functionId?: string
 }
 
 const mutation = graphql`
@@ -39,7 +37,7 @@ function commit(props: Props) {
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        function: props.id,
+        function: props.functionId,
       },
     }],
   })

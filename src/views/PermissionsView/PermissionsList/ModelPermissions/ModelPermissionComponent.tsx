@@ -11,7 +11,7 @@ import PermissionLabel from './PermissionLabel'
 import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
 import {Link, withRouter} from 'found'
-import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
+import UpdateModelPermissionMutation from '../../../../mutations/ModelPermission/UpdateModelPermissionMutation'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 
@@ -101,12 +101,8 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
 
   private toggleActiveState = () => {
     const {permission} = this.props
-    Relay.Store.commitUpdate(
-      new ToggleActivePermissionMutation({id: permission.id, isActive: !permission.isActive}),
-      {
-        onFailure: (transaction) => console.log(transaction),
-      },
-    )
+    UpdateModelPermissionMutation.commit({id: permission.id, isActive: !permission.isActive})
+      .catch(transaction => console.log(transaction))
     tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
   }
 }

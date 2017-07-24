@@ -8,8 +8,8 @@ import {ServerlessFunction} from '../../types/types'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
 import {withRouter} from 'found'
 import {Icon, $v} from 'graphcool-styles'
-import ToggleActiveRequestPipelineMutationFunction
-  from '../../mutations/Functions/ToggleActiveRequestPipelineMutationFunction'
+import UpdateRequestPipelineMutationFunction
+  from '../../mutations/Functions/UpdateRequestPipelineMutationFunction'
 import {onFailureShowNotification} from '../../utils/relay'
 import {showNotification} from '../../actions/notification'
 import {ShowNotificationCallback} from '../../types/utils'
@@ -19,8 +19,8 @@ import RequestGraph from './RequestGraph'
 import * as cn from 'classnames'
 import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
-import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
-import ToggleSchemaExtensionFunction from '../../mutations/Functions/ToggleSchemaExtensionFunction'
+import UpdateServerSideSubscriptionFunction from '../../mutations/Functions/UpdateServerSideSubscriptionFunction'
+import UpdateSchemaExtensionFunction from '../../mutations/Functions/UpdateSchemaExtensionFunction'
 import { RelayProp } from 'react-relay/classic'
 
 interface Props {
@@ -256,50 +256,35 @@ class FunctionRow extends React.Component<Props, State> {
     const eventType = getEventTypeFromFunction(this.props.fn)
     switch (eventType) {
       case 'RP':
-        return Relay.Store.commitUpdate(
-          new ToggleActiveRequestPipelineMutationFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+        return UpdateRequestPipelineMutationFunction.commit({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }).then(() => {
+            console.log('success at toggling')
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
       case 'SSS':
-        return Relay.Store.commitUpdate(
-          new ToggleServerSideSubscriptionFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+        return UpdateServerSideSubscriptionFunction.commit({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }).then(() => {
+            console.log('success at toggling')
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
       case 'SCHEMA_EXTENSION':
-        return Relay.Store.commitUpdate(
-          new ToggleSchemaExtensionFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+        return UpdateSchemaExtensionFunction.commit({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }).then(() => {
+            console.log('success at toggling')
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
     }
   }
 }

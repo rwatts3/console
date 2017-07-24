@@ -475,22 +475,17 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   private delete = () => {
     // smepty
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new DeleteFunction({
+      DeleteFunction.commit({
         functionId: this.props.node.id,
         projectId: this.props.project.id,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           this.close()
           this.setLoading(false)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setLoading(false)
-        },
-      },
-    )
+        })
   }
 
   private submit = () => {
@@ -561,110 +556,86 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private createSSSFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddServerSideSubscriptionFunction(input),
-      {
-        onSuccess: () => {
+      AddServerSideSubscriptionFunction.commit(input)
+        .then(() => {
           this.close()
           this.setLoading(false)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setLoading(false)
-        },
-      },
-    )
+        })
   }
 
   private createRPFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddRequestPipelineMutationFunction(input),
-      {
-        onSuccess: () => {
+      AddRequestPipelineMutationFunction.commit(input)
+        .then(() => {
           this.close()
           this.setLoading(false)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setLoading(false)
-        },
-      },
-    )
+        })
   }
 
   private createSchemaExtension(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddSchemaExtensionFunction({
+      AddSchemaExtensionFunction.commit({
         ...input,
         schema: input.schemaExtension,
-      }),
-      {
-        onSuccess: () => {
+      })
+        .then(() => {
           this.close()
           this.setLoading(false)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setLoading(false)
-        },
-      },
-    )
+        })
   }
 
   private updateSSSFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateServerSideSubscriptionFunction(input),
-      {
-        onSuccess: () => {
+      UpdateServerSideSubscriptionFunction.commit(input)
+        .then(() => {
           this.close()
           this.setLoading(false)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setLoading(false)
-        },
-      },
-    )
+        })
   }
 
   private updateRPFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateRequestPipelineMutationFunction(input),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    UpdateRequestPipelineMutationFunction.commit(input)
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private updateSchemaExtension(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateSchemaExtensionFunction({
+      UpdateSchemaExtensionFunction.commit({
         ...input,
         schema: input.schemaExtension,
-      }),
-      {
-        onSuccess: () => {
+      })
+        .then(() => {
           this.close()
           this.setLoading(false)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setLoading(false)
-        },
-      },
-    )
+        })
   }
 
   private close = () => {

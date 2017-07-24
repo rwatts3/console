@@ -442,16 +442,12 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
 
     this.setState({loading: true} as PermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new UpdatePermissionMutation(updatedNode),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
+        UpdatePermissionMutation.commit(updatedNode)
+          .then(() => this.closePopup())
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as PermissionPopupState)
-          },
-        },
-      )
+          })
     })
   }
 
@@ -471,16 +467,11 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         ruleName,
         ruleGraphQuery: extractSelection(ruleGraphQuery),
       }
-      Relay.Store.commitUpdate(
-        new AddPermissionMutation(input),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
+        AddPermissionMutation.commit(input).then(() => this.closePopup())
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as PermissionPopupState)
-          },
-        },
-      )
+          })
     })
   }
 
@@ -489,19 +480,14 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as PermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new DeleteModelPermissionMutation({
+        DeleteModelPermissionMutation.commit({
           modelPermissionId: id,
           modelId: model.id,
-        }),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as PermissionPopupState)
-          },
-        },
-      )
+        }).then(() => this.closePopup())
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as PermissionPopupState)
+        })
     })
   }
 

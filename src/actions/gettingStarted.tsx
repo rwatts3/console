@@ -1,5 +1,4 @@
 import * as React from 'react' // tslint:disable-line
-import * as Relay from 'react-relay/classic'
 import {Example} from '../types/types'
 import {Dispatch, StateTree, ReduxThunk, ReduxAction} from '../types/reducers'
 import {GettingStartedState, Step} from './../types/gettingStarted'
@@ -30,8 +29,7 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
                              onboardingStatusId: string,
                              gettingStartedExample: Example = null): Promise<{}> {
   return new Promise((resolve, reject) => {
-    Relay.Store.commitUpdate(
-      new UpdateCustomerOnboardingStatusMutation(
+      UpdateCustomerOnboardingStatusMutation.commit(
         {
           onboardingStatusId,
           gettingStarted,
@@ -39,9 +37,8 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
             false : gettingStartedSkipped,
           gettingStartedCompleted: ['STEP5_DONE', 'STEP6_CLOSED'].includes(gettingStarted),
           gettingStartedExample,
-        }),
-      {
-        onSuccess: () => {
+        })
+        .then(() => {
           dispatch(update(gettingStarted, gettingStartedSkipped, onboardingStatusId, gettingStartedExample))
 
           // refresh intercom messages once onboarding done/skipped
@@ -50,14 +47,13 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
           }
 
           resolve()
-        },
-        onFailure: (err) => {
+        })
+        .catch((err) => {
           // Error
           console.error(err)
           reject()
-        },
+        })
     })
-  })
 }
 
 export function nextStep(): ReduxThunk {
@@ -90,37 +86,40 @@ export function skip(): (dispatch: (action: ReduxAction) => any, getState: any) 
 
 export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => any) => Promise<{}> {
   return (dispatch: (action: ReduxAction) => any): Promise<{}> => {
-    const query = Relay.createQuery(
-      Relay.QL`
-        query {
-          viewer {
-            user {
-              crm {
-                onboardingStatus {
-                  id
-                  gettingStarted
-                  gettingStartedSkipped
-                  gettingStartedExample
-                }
-              }
-            }
-          }
-        }`,
-      {},
-    )
-
-    return new Promise((resolve: () => any, reject: (error: Error) => any) => {
-      Relay.Store.primeCache({ query }, ({done, error}) => {
-        if (done) {
-          const data = Relay.Store.readQuery(query)[0]
-          const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.user.crm.onboardingStatus
-          dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
-          resolve()
-        } else if (error) {
-          reject(Error('Error when fetching gettingStartedState'))
-        }
-      })
-    })
+    console.warn('TODO: fix gettingStarted black magic')
+    return Promise.resolve({})
+    // TODO fix this black magic / implement it with the new api
+    // const query = Relay.createQuery(
+    //   Relay.QL`
+    //     query {
+    //       viewer {
+    //         user {
+    //           crm {
+    //             onboardingStatus {
+    //               id
+    //               gettingStarted
+    //               gettingStartedSkipped
+    //               gettingStartedExample
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }`,
+    //   {},
+    // )
+    //
+    // return new Promise((resolve: () => any, reject: (error: Error) => any) => {
+    //   Relay.Store.primeCache({ query }, ({done, error}) => {
+    //     if (done) {
+    //       const data = Relay.Store.readQuery(query)[0]
+    //       const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.user.crm.onboardingStatus
+    //       dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
+    //       resolve()
+    //     } else if (error) {
+    //       reject(Error('Error when fetching gettingStartedState'))
+    //     }
+    //   })
+    // })
   }
 }
 // dependencies so that the steps' tethers are shown

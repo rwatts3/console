@@ -134,23 +134,15 @@ class AlgoliaPopup extends React.Component<Props, State> {
   private update = () => {
     const {valid, apiKey, applicationId, isEnabled} = this.state
     const {algolia, projectId} = this.props
-    Relay.Store.commitUpdate(
-      new UpdateSearchProviderAlgolia({
-        searchProviderAlgoliaId: algolia.id,
-        isEnabled,
-        apiKey,
-        applicationId,
-        projectId,
-      }),
-      {
-        onSuccess: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+    UpdateSearchProviderAlgolia.commit({
+      id: algolia.id,
+      isEnabled,
+      apiKey,
+      applicationId,
+      projectId,
+    }).then(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+    })
   }
 }
 

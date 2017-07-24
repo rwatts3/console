@@ -2,8 +2,8 @@ import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
-  modelId: string
-  name: string
+  id: string
+  name?: string
   description?: string
 }
 
@@ -20,23 +20,15 @@ const mutation = graphql`
 function commit(props: Props) {
   return makeMutation({
     mutation,
-    variables: {
-      id: props.modelId,
-      name: props.name,
-      description: props.description,
-    },
+    variables: props.filterNullAndUndefined(),
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        model: props.modelId,
+        model: props.id,
       },
     }],
     optimisticResponse: {
-      model: {
-        id: props.modelId,
-        name: props.name,
-        description: props.description,
-      },
+      model: props.filterNullAndUndefined(),
     },
   })
 }

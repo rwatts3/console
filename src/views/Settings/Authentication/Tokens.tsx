@@ -150,33 +150,24 @@ class Tokens extends React.Component<Props, State> {
     if (!this.state.newTokenName) {
       return
     }
-    Relay.Store.commitUpdate(
-      new AddPermanentAuthTokenMutation({
+      AddPermanentAuthTokenMutation.commit({
         projectId: this.props.project.id,
         tokenName: this.state.newTokenName,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           this.setState({
             newTokenName: '',
             isEnteringTokenName: false} as State)
-        },
-        onFailure: (transaction) => console.error('could not submit token, an error occured'),
-      },
-    )
+        })
+        .catch(transaction => console.error('could not submit token, an error occured'))
   }
 
   private deleteSystemToken = (token): void => {
     graphcoolConfirm(`This will delete token \'${token.name}\'`)
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeletePermanentAuthTokenMutation({
-            projectId: this.props.project.id,
-            tokenId: token.id,
-          }),
-          {
-            onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-          })
+        DeletePermanentAuthTokenMutation.commit({
+          projectId: this.props.project.id,
+          tokenId: token.id,
+        }).catch(transaction => onFailureShowNotification(transaction, this.props.showNotification))
     })
   }
 }
