@@ -7,7 +7,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation DeleteRelationPermission($input: DeleteRelationPermissionInput!) {
+  mutation DeleteRelationPermissionMutation($input: DeleteRelationPermissionInput!) {
     deleteRelationPermission(input: $input) {
       relation {
         id

@@ -20,7 +20,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateRequestPipelineMutationFunction($input: UpdateRequestPipelineMutationFunctionInput!) {
+  mutation UpdateRequestPipelineMutationFunctionMutation($input: UpdateRequestPipelineMutationFunctionInput!) {
     updateRequestPipelineMutationFunction(input: $input) {
       function {
         id

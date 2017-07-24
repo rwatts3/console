@@ -7,7 +7,7 @@ export interface InstallPackageInput {
 }
 
 const mutation = graphql`
-  mutation InstallPackage($input: InstallPackageInput!) {
+  mutation InstallPackageMutation($input: InstallPackageInput!) {
     installPackage(input: $input) {
       project {
         schema

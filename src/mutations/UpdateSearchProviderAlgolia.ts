@@ -11,7 +11,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateSearchProviderAlgolia($input: UpdateSearchProviderAlgoliaInput!) {
+  mutation UpdateSearchProviderAlgoliaMutation($input: UpdateSearchProviderAlgoliaInput!) {
     updateSearchProviderAlgolia(input: $input) {
       searchProviderAlgolia {
         id

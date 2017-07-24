@@ -8,10 +8,25 @@ export interface MigrateProjectInput {
 }
 
 const mutation = graphql`
-  mutation MigrateProject($input: MigrateProjectMutation!) {
+  mutation MigrateProjectMutation($input: MigrateProjectInput!) {
     migrateProject(input: $input) {
-      migrationMessages
-      errors
+      errors {
+        description
+        field
+        type
+      }
+      migrationMessages {
+        name
+        type
+        action
+        description
+        subDescriptions {
+          action
+          description
+          name
+          type
+        }
+      }
       project {
         schema
       }
@@ -23,35 +38,7 @@ function commit(props: MigrateProjectInput) {
   return makeMutation({
     mutation,
     variables: props,
-    configs: [{
-      type: 'REQUIRED_CHILDREN',
-      children: [
-        graphql`
-          fragment MigrateProjectChildren on MigrateProjectPayload {
-            errors {
-              description
-              field
-              type
-            }
-            migrationMessages {
-              name
-              type
-              action
-              description
-              subDescriptions {
-                action
-                description
-                name
-                type
-              }
-            }
-            project {
-              schema
-            }
-          }
-        `,
-      ],
-    }],
+    configs: [],
   })
 }
 

@@ -7,7 +7,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation DeleteFunction($input: DeleteFunctionInput!) {
+  mutation DeleteFunctionMutation($input: DeleteFunctionInput!) {
     deleteFunction(input: $input) {
       deletedId
     }

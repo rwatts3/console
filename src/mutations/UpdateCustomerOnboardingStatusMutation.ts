@@ -12,7 +12,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateCustomerOnoboardingStatusMutation($input: UpdateCrmOnboardingStatusInput!) {
+  mutation UpdateCustomerOnboardingStatusMutation($input: UpdateCrmOnboardingStatusInput!) {
     updateCrmOnboardingStatus(input: $input) {
       onboardingStatus {
         id

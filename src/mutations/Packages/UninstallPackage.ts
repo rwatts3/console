@@ -7,7 +7,7 @@ export interface UninstallPackageInput {
 }
 
 const mutation = graphql`
-  mutation UninstallPackage($input: UninstallPackageInput!) {
+  mutation UninstallPackageMutation($input: UninstallPackageInput!) {
     uninstallPackage(input: $input) {
       project {
         schema

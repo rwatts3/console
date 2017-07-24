@@ -21,14 +21,7 @@ function commit(props: Props) {
       clientUserId: props.clientUserId,
       projectId: props.projectId,
     },
-    configs: [{
-      type: 'REQUIRED_CHILDREN',
-      children: [graphql`
-        fragment LoginClientUser on SigninClientUserPayload {
-          token
-        }
-      `],
-    }],
+    configs: [],
   })
 }
 

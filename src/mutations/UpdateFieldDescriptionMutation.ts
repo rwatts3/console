@@ -12,6 +12,7 @@ const mutation = graphql`
     updateField(input: $input) {
       field {
         id
+      }
     }
   }
 `

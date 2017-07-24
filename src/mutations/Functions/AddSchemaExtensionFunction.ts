@@ -16,7 +16,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation AddSchemaExtensionFunction($input: AddSchemaExtensionFunctionInput!) {
+  mutation AddSchemaExtensionFunctionMutation($input: AddSchemaExtensionFunctionInput!) {
     addSchemaExtensionFunction(input: $input) {
       function {
         id

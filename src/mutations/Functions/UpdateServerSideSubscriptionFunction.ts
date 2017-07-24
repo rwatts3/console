@@ -18,7 +18,7 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateServerSideSubscriptionFunction($input: UpdateServerSideSubscriptionFunctionInput!) {
+  mutation UpdateServerSideSubscriptionFunctionMutation($input: UpdateServerSideSubscriptionFunctionInput!) {
     updateServerSideSubscriptionFunction(input: $input) {
       function {
         id

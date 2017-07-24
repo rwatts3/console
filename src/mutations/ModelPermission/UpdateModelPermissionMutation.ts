@@ -3,7 +3,7 @@ import { makeMutation } from '../../utils/makeMutation'
 import {ModelPermission} from '../../types/types'
 
 const mutation = graphql`
-  mutation UpdatePermissionMutation($input: UpdateModelPermissionInput!) {
+  mutation UpdateModelPermissionMutation($input: UpdateModelPermissionInput!) {
     updateModelPermission(input: $input) {
       modelPermission {
         id
