@@ -349,21 +349,16 @@ class FieldPopup extends React.Component<Props, State> {
 
   private handleDelete = () => {
     this.setState({deleting: true, loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new DeleteFieldMutation({
-          fieldId: this.state.field.id,
-          modelId: this.props.modelId,
-        }),
-        {
-          onSuccess: () => {
-            this.close()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            // this.setState({loading: false} as State)
-          },
-        },
-      )
+      DeleteFieldMutation.commit({
+        fieldId: this.state.field.id,
+        modelId: this.props.modelId,
+      })
+        .then(() => {
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        })
     })
   }
 
@@ -448,27 +443,20 @@ class FieldPopup extends React.Component<Props, State> {
       const {field} = this.state
 
       let input: any = this.patchDefaultAndMigrationValue(field)
-      // let input = field
 
       input = {
         ...input,
         modelId,
-        // enumId: 'cj26domcw0f0m0143gglbv0zy',
-        // enumValues: [],
       }
 
-      Relay.Store.commitUpdate(
-        new AddFieldMutation(input),
-        {
-          onSuccess: () => {
-            this.close()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as State)
-          },
-        },
-      )
+      AddFieldMutation.commit(input)
+        .then(() => {
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
+        })
     }
 
     if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CONFIRM_IMAGEURL')) {
@@ -513,18 +501,14 @@ class FieldPopup extends React.Component<Props, State> {
     // TODO: proper typing
     this.setState({loading: true} as State)
 
-    Relay.Store.commitUpdate(
-      new UpdateFieldMutation(updatedField),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+    UpdateFieldMutation.commit(updatedField)
+      .then(() => {
+        this.close()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private close = () => {

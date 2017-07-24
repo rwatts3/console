@@ -1,7 +1,5 @@
 import * as React from 'react'
 import { $p, $v } from 'graphcool-styles'
-import * as Relay from 'react-relay/classic'
-import { Transaction } from 'react-relay/classic'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { showNotification } from '../../actions/notification'
@@ -9,9 +7,9 @@ import { ShowNotificationCallback } from '../../types/utils'
 import { onFailureShowNotification } from '../../utils/relay'
 import Auth0Lock from 'auth0-lock'
 import * as cookiestore from 'cookiestore'
-import AuthenticateCustomerMutation, {Response} from '../../mutations/AuthenticateCustomerMutation'
+import AuthenticateCustomerMutation, { Response } from '../../mutations/AuthenticateCustomerMutation'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   showNotification: ShowNotificationCallback
@@ -65,26 +63,26 @@ class Auth0LockWrapper extends React.Component<Props, State> {
       this._lock.hide()
 
       window.localStorage.setItem('graphcool_auth_provider', authResult.idTokenPayload.sub)
-      const onSuccess = async (response) => {
-        cookiestore.set('graphcool_auth_token', response.authenticateCustomer.token)
-        cookiestore.set('graphcool_customer_id', response.authenticateCustomer.user.id)
 
-        tracker.track(ConsoleEvents.Authentication.completed())
+      AuthenticateCustomerMutation.commit({auth0IdToken: authResult.idToken})
+        .then(async (response) => {
 
-        this.props.successCallback(response.authenticateCustomer)
+          cookiestore.set('graphcool_auth_token', response.authenticateCustomer.token)
+          cookiestore.set('graphcool_customer_id', response.authenticateCustomer.user.id)
 
-      }
-      const onFailure = (transaction: Transaction) => {
-        this._lock.show()
+          tracker.track(ConsoleEvents.Authentication.completed())
 
-        onFailureShowNotification(transaction, this.props.showNotification)
+          this.props.successCallback(response.authenticateCustomer)
 
-        tracker.track(ConsoleEvents.Authentication.failed({idToken: authResult.idToken}))
-      }
-      Relay.Store.commitUpdate(new AuthenticateCustomerMutation({auth0IdToken: authResult.idToken}), {
-        onSuccess,
-        onFailure,
-      })
+        })
+        .catch(transaction => {
+          this._lock.show()
+
+          onFailureShowNotification(transaction, this.props.showNotification)
+
+          tracker.track(ConsoleEvents.Authentication.failed({idToken: authResult.idToken}))
+        })
+
     })
 
     this._lock.show()
@@ -96,10 +94,10 @@ class Auth0LockWrapper extends React.Component<Props, State> {
 
   render() {
     return this.props.renderInElement ? (
-        <div id={ELEMENT_ID} className='' />
-      ) : (
-        <div className={$p.dn}/>
-      )
+      <div id={ELEMENT_ID} className=''/>
+    ) : (
+      <div className={$p.dn}/>
+    )
   }
 }
 
