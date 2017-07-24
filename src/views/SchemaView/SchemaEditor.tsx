@@ -22,7 +22,6 @@ import SchemaExport from './SchemaExport'
 interface Props {
   project: Project
   relay: any
-  forceFetchSchemaView: () => void
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
   onEnumsChange: (enums: boolean) => void
@@ -280,6 +279,7 @@ class SchemaEditor extends React.Component<Props, State> {
         newSchema,
         isDryRun,
         force: true,
+        projectId: this.props.project.id,
       }).then(res => {
         if (isDryRun) {
           this.setState({
@@ -290,7 +290,6 @@ class SchemaEditor extends React.Component<Props, State> {
           } as State)
         } else {
           this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
-          this.props.forceFetchSchemaView()
         }
       })
       .catch(transaction => {

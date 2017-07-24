@@ -91,7 +91,7 @@ class FieldPopup extends React.Component<Props, State> {
     if (field) {
       // if there's a field, just passthrough the field to the stateG
       if (field.isSystem) {
-        this.props.router.goBack()
+        this.props.router.go(-1)
         this.props.showNotification({
           message: 'You cannot edit system fields',
           level: 'warning',
@@ -512,7 +512,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 }
 

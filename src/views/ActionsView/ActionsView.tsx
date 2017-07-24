@@ -45,7 +45,7 @@ class ActionsView extends React.Component<Props, State> {
       'Deprecation Warning',
     )
       .catch(() => {
-        this.props.router.goBack()
+        this.props.router.go(-1)
       })
   }
 

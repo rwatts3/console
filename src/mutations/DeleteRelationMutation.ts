@@ -26,16 +26,18 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      relationId: props.relationId,
+      input: {
+        relationId: input.relationId,
+      },
     },
     configs: [{
       type: 'NODE_DELETE',
       parentName: 'project',
-      parentID: props.projectId,
+      parentID: input.projectId,
       connectionName: 'relations',
       deletedIDFieldName: 'deletedId',
     }],

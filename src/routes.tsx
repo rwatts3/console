@@ -199,7 +199,7 @@ const FunctionsViewerQuery = graphql`
 `
 
 const RelationPopupQuery = graphql`
-  query routes_RelationPopup_Query($projectName: String!) {
+  query routes_RelationPopup_Query($projectName: String!, $relationName: String!, $relationExists: Boolean!) {
     viewer {
       ...RelationPopup_viewer
     }
@@ -207,7 +207,7 @@ const RelationPopupQuery = graphql`
 `
 
 const FieldPopupQuery = graphql`
-  query routes_FieldPopup_Query($projectName: String!) {
+  query routes_FieldPopup_Query($projectName: String!, $modelName: String!, $fieldName: String!, $fieldExists: Boolean!) {
     viewer {
       ...FieldPopup_viewer
     }
@@ -334,13 +334,37 @@ export default (
             <Route path='edit/:enumName' Component={null} render={render}/>
           </Route>
           <Route path='relations'>
-            <Route path='create' Component={RelationPopup} query={RelationPopup} render={render}/>
-            <Route path='edit/:relationName' Component={RelationPopup} query={RelationPopup} render={render}/>
+            <Route
+              path='create'
+              Component={RelationPopup}
+              query={RelationPopupQuery}
+              render={render}
+              prepareVariables={params => ({...params, relationExists: false, relationName: ''})}
+            />
+            <Route
+              path='edit/:relationName'
+              Component={RelationPopup}
+              query={RelationPopupQuery}
+              render={render}
+              prepareVariables={params => ({...params, relationExists: true})}
+            />
           </Route>
           <Route path=':modelName'>
             <Route path='edit' Component={null} render={render}/>
-            <Route path='edit/:fieldName' Component={FieldPopup} query={FieldPopupQuery} render={render}/>
-            <Route path='create' Component={FieldPopup} query={FieldPopupQuery} render={render}/>
+            <Route
+              path='edit/:fieldName'
+              Component={FieldPopup}
+              query={FieldPopupQuery}
+              render={render}
+              prepareVariables={params => ({...params, fieldExists: true})}
+            />
+            <Route
+              path='create'
+              Component={FieldPopup}
+              query={FieldPopupQuery}
+              render={render}
+              prepareVariables={params => ({...params, fieldExists: false, fieldName: ''})}
+            />
           </Route>
         </Route>
         <Route path='graph-view' Component={SchemaViewer} query={graphql`
@@ -369,7 +393,6 @@ export default (
           }
         `} render={render}>
           <Route Component={PermissionsList}/>
-          {/*
           <Route path='relations' Component={AllRelationPermissionsList}>
             <Route
               path=':relationName/edit/:id'
@@ -393,7 +416,6 @@ export default (
             />
             <Route path=':modelName/create' Component={AddPermissionPopup} query={ViewerQuery} render={render}/>
           </Route>
-           */}
         </Route>
         <Route path='actions' Component={ActionsView} query={graphql`
             query routes_ActionsView_Query($projectName: String!) {

@@ -25,17 +25,17 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: pick(this.props, [
+    variables: {input: pick(input, [
       'name', 'isActive', 'query',
       'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
-    ]).filterNullAndUndefined(),
+    ]).filterNullAndUndefined()},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        function: props.functionId,
+        function: input.functionId,
       },
     }],
   })

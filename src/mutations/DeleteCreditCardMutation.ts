@@ -16,10 +16,10 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: props,
+    variables: {input},
     configs: [], // TODO look into this, a mutation without effects doesn't make sense
   })
 }

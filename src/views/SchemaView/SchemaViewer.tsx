@@ -96,7 +96,7 @@ class SchemaViewer extends React.Component<Props, null> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private introspectionProvider = (query) => {

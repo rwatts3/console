@@ -67,7 +67,7 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private selectPlan = (plan: PricingPlan) => {

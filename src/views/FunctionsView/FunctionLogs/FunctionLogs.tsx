@@ -162,7 +162,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private reload = () => {

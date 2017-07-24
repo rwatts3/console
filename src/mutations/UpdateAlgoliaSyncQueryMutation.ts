@@ -17,29 +17,34 @@ const mutation = graphql`
       }
       algoliaSyncQuery {
         id
+        isEnabled
+        indexName
+        fragment
       }
     }
   }
 `
 
-function commit(props: Props) {
-  const {algoliaSyncQueryId, isEnabled, indexName, fragment} = props
+function commit(input: Props) {
+  const {algoliaSyncQueryId, isEnabled, indexName, fragment} = input
   return makeMutation({
     mutation,
-    variables: pick(props, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled']),
+    variables: {input: pick(input, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled'])},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        algoliaSyncQuery: props.algoliaSyncQueryId,
+        algoliaSyncQuery: input.algoliaSyncQueryId,
       },
     }],
     optimisticResponse: {
-      algoliaSyncQuery: {
-        id: algoliaSyncQueryId,
-        isEnabled,
-        indexName,
-        fragment,
-      },
+      updateAlgoliaSyncQuery: {
+        algoliaSyncQuery: {
+          id: algoliaSyncQueryId,
+          isEnabled,
+          indexName,
+          fragment,
+        },
+      }
     },
   })
 }

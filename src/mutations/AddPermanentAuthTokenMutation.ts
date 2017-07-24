@@ -27,17 +27,19 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      projectId: props.projectId,
-      name: props.tokenName,
+      input: {
+        projectId: input.projectId,
+        name: input.tokenName,
+      },
     },
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: props.projectId,
+      parentID: input.projectId,
       connectionName: 'permanentAuthTokens',
       edgeName: 'permanentAuthTokenEdge',
       rangeBehaviors: {

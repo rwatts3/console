@@ -30,14 +30,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: UpdateRelationPermissionInput) {
+function commit(input: UpdateRelationPermissionInput) {
   return makeMutation({
     mutation,
-    variables: props.filterNullAndUndefined(),
+    variables: {input: input.filterNullAndUndefined()},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        relationPermission: props.id,
+        relationPermission: input.id,
       },
     }],
   })

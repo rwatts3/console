@@ -12,14 +12,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: ModelPermission) {
+function commit(input: ModelPermission) {
   return makeMutation({
     mutation,
-    variables: props,
+    variables: {input},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        modelPermission: props.id,
+        modelPermission: input.id,
       },
     }],
   })

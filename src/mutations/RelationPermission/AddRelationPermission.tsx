@@ -28,13 +28,13 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {
-      ...props,
+    variables: {input: {
+      ...input,
       isActive: true,
-    },
+    }},
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'relation',

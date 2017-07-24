@@ -19,14 +19,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: props,
+    variables: {input},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        enum: props.enumId,
+        enum: input.enumId,
       },
     }],
   })

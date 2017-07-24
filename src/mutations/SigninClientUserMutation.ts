@@ -14,13 +14,10 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {
-      clientUserId: props.clientUserId,
-      projectId: props.projectId,
-    },
+    variables: {input},
     configs: [],
   })
 }

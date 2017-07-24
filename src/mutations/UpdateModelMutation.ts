@@ -17,19 +17,16 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: props.filterNullAndUndefined(),
+    variables: {input: input.filterNullAndUndefined()},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        model: props.id,
+        model: input.id,
       },
     }],
-    optimisticResponse: {
-      model: props.filterNullAndUndefined(),
-    },
   })
 }
 

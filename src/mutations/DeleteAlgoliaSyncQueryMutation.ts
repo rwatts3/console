@@ -17,16 +17,18 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      algoliaSyncQueryId: props.algoliaSyncQueryId,
+      input: {
+        algoliaSyncQueryId: input.algoliaSyncQueryId,
+      }
     },
     configs: [{
       type: 'NODE_DELETE',
       parentName: 'searchProviderAlgolia',
-      parentID: props.searchProviderAlgoliaId,
+      parentID: input.searchProviderAlgoliaId,
       connectionName: 'algoliaSyncQueries',
       deletedIDFieldName: 'deletedId',
     }]

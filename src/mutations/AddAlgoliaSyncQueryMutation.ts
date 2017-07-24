@@ -31,14 +31,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: pick(props, ['modelId', 'indexName', 'fragment']),
+    variables: {input: pick(input, ['modelId', 'indexName', 'fragment'])},
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'searchProviderAlgolia',
-      parentID: props.searchProviderAlgoliaId,
+      parentID: input.searchProviderAlgoliaId,
       connectionName: 'algoliaSyncQueries',
       edgeName: 'algoliaSyncQueryEdge',
       rangeBehaviors: {

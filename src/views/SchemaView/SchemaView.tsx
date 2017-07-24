@@ -3,14 +3,14 @@ import SchemaOverview from './SchemaOverview/SchemaOverview'
 import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay'
-import {Viewer, Enum} from '../../types/types'
+import { Viewer, Enum } from '../../types/types'
 import ResizableBox from '../../components/ResizableBox'
-import {throttle} from 'lodash'
+import { throttle } from 'lodash'
 import EnumsOverview from './EnumsOverview/EnumsOverview'
-import {withRouter} from 'found'
+import { withRouter } from 'found'
 
 interface Props {
   viewer: Viewer
@@ -48,6 +48,7 @@ class SchemaView extends React.Component<Props, State> {
       blur: false,
       scroll: 0,
     }
+    global['relayProps'] = props.relay
   }
 
   componentDidMount() {
@@ -115,8 +116,6 @@ class SchemaView extends React.Component<Props, State> {
           >
             <SchemaEditor
               project={viewer.project}
-// TODO props.relay.* APIs do not exist on compat containers
-              forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
               onEnumsChange={this.handleEnumsChange}
               isBeta={isBeta}
@@ -170,12 +169,12 @@ class SchemaView extends React.Component<Props, State> {
   }
 }
 
-export default createFragmentContainer(withRouter(SchemaView), {
+export default createRefetchContainer(withRouter(SchemaView), {
   /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
+   initialVariables: {
+   projectName: null, // injected from router
+   }
+   */
   viewer: graphql`
     fragment SchemaView_viewer on Viewer {
       id

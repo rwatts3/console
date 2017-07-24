@@ -18,17 +18,19 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      name: props.name,
-      email: props.email,
+      input: {
+        name: input.name,
+        email: input.email,
+      },
     },
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        customerInformation: props.customerInformationId,
+        customerInformation: input.customerInformationId,
       },
     }],
   })

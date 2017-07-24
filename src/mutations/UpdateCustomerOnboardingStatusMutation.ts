@@ -28,19 +28,21 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      gettingStarted: props.gettingStarted,
-      gettingStartedSkipped: props.gettingStartedSkipped,
-      gettingStartedCompleted: props.gettingStartedCompleted,
-      gettingStartedExample: props.gettingStartedExample,
+      input: {
+        gettingStarted: input.gettingStarted,
+        gettingStartedSkipped: input.gettingStartedSkipped,
+        gettingStartedCompleted: input.gettingStartedCompleted,
+        gettingStartedExample: input.gettingStartedExample,
+      },
     },
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        onboardingStatus: props.onboardingStatusId,
+        onboardingStatus: input.onboardingStatusId,
       },
     }],
   })

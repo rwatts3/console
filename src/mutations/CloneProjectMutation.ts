@@ -30,14 +30,16 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      projectId: props.projectId,
-      name: props.name,
-      includeData: props.includeData,
-      includeMutationCallbacks: props.includeMutationCallbacks,
+      input: {
+        projectId: input.projectId,
+        name: input.name,
+        includeData: input.includeData,
+        includeMutationCallbacks: input.includeMutationCallbacks,
+      }
     },
     configs: [
       {

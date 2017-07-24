@@ -44,14 +44,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: props,
+    variables: {input},
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'actions',
       edgeName: 'actionEdge',
       rangeBehaviors: {

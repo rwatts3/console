@@ -24,38 +24,35 @@ const mutation = graphql`
         }
       }
       model {
-        fields(first: 1000) {
-          edges {
-            node {
-              id
-            }
-          }
-        }
+        ...NewRow_model
+        ...TypeList_model
       }
     }
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      modelId: props.modelId,
-      name: props.name,
-      typeIdentifier: props.typeIdentifier,
-      isRequired: props.isRequired,
-      isList: props.isList,
-      isUnique: props.isUnique,
-      defaultValue: props.defaultValue,
-      relationId: props.relationId,
-      migrationValue: props.migrationValue,
-      description: props.description || null,
-      enumId: props.enumId || null,
+      input: {
+        modelId: input.modelId,
+        name: input.name,
+        typeIdentifier: input.typeIdentifier,
+        isRequired: input.isRequired,
+        isList: input.isList,
+        isUnique: input.isUnique,
+        defaultValue: input.defaultValue,
+        relationId: input.relationId,
+        migrationValue: input.migrationValue,
+        description: input.description || null,
+        enumId: input.enumId || null,
+      },
     },
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'model',
-      parentID: props.modelId,
+      parentID: input.modelId,
       connectionName: 'fields',
       edgeName: 'fieldEdge',
       rangeBehaviors: {

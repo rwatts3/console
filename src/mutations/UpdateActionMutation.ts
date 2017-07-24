@@ -32,22 +32,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {
-      actionId: props.actionId,
-      isActive: props.isActive,
-      description: props.description,
-      triggerType: props.triggerType,
-      handlerType: props.handlerType,
-      triggerMutationModel: props.triggerMutationModel,
-      handlerWebhook: props.handlerWebhook,
-    },
+    variables: {input: input.filterNullAndUndefined()},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        action: props.actionId,
+        action: input.actionId,
       },
     }],
   })

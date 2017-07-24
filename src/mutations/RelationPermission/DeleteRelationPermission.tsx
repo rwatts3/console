@@ -17,16 +17,16 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {
-      relationPermissionId: props.relationPermissionId,
-    },
+    variables: {input: {
+      relationPermissionId: input.relationPermissionId,
+    }},
     configs: [{
       type: 'NODE_DELETE',
       parentName: 'relation',
-      parentID: props.relationId,
+      parentID: input.relationId,
       connectionName: 'permissions',
       deletedIDFieldName: 'deletedId',
     }],

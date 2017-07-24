@@ -22,16 +22,44 @@ const mutation = graphql`
         id
       }
       leftModel {
-        id
+        ...NewRow_model
+        ...TypeList_model
       }
       rightModel {
-        id
+        ...NewRow_model
+        ...TypeList_model
       }
       project {
         relations(first: 1000) {
           edges {
             node {
               id
+              name
+              description
+              fieldOnLeftModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              fieldOnRightModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              leftModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
+              rightModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
             }
           }
         }
@@ -40,28 +68,28 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: props,
+    variables: {input},
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: props.projectId,
+      parentID: input.projectId,
       connectionName: 'relations',
       edgeName: 'relationEdge',
       rangeBehaviors: {'': 'append'},
     }, {
       type: 'RANGE_ADD',
       parentName: 'leftModel',
-      parentID: props.leftModelId,
+      parentID: input.leftModelId,
       connectionName: 'fields',
       edgeName: 'fieldOnLeftModelEdge',
       rangeBehaviors: {'': 'append'},
     }, {
       type: 'RANGE_ADD',
       parentName: 'rightModel',
-      parentID: props.rightModelId,
+      parentID: input.rightModelId,
       connectionName: 'fields',
       edgeName: 'fieldOnRightModelEdge',
       rangeBehaviors: {'': 'append'},
@@ -69,4 +97,4 @@ function commit(props: Props) {
   })
 }
 
-export default { commit }
+export default {commit}

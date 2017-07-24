@@ -1,10 +1,12 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
+import {omit} from 'lodash'
 
 export interface MigrateProjectInput {
   newSchema: string
   isDryRun: boolean
   force: boolean
+  projectId: string
 }
 
 const mutation = graphql`
@@ -29,16 +31,67 @@ const mutation = graphql`
       }
       project {
         schema
+        typeSchema
+        enumSchema
+        version
+        models(first: 1000) {
+          edges {
+            node {
+              ...NewRow_model
+              ...ModelHeader_model
+              ...SideNav_model
+              ...TypeList_model
+            }
+          }
+        }
+        relations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              description
+              fieldOnLeftModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              fieldOnRightModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              leftModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
+              rightModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
+            }
+          }
+        }
       }
     }
   }
 `
 
-function commit(props: MigrateProjectInput) {
+function commit(input: MigrateProjectInput) {
   return makeMutation({
     mutation,
-    variables: props,
-    configs: [],
+    variables: {input: omit(input, ['projectId'])},
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        project: input.projectId,
+      },
+    }],
   })
 }
 

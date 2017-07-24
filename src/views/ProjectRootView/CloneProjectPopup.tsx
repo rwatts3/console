@@ -203,7 +203,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private onCancelClick = () => {
@@ -225,7 +225,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   private closePopup = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private cloneProject = () => {

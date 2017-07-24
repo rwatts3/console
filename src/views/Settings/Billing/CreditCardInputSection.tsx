@@ -284,7 +284,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
       <div className='flex justifyEnd itemsEnd w100'>
         <div
           className='black50 mb25 mr38 pv10 pointer'
-          onClick={() => this.props.goBack()}
+          onClick={() => this.props.go(-1)}
         >Cancel</div>
         <div
           className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer ${!this.state.creditCardDetailsValid && 'o50'}`}

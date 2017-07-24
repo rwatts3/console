@@ -421,7 +421,7 @@ class AddType extends React.Component<Props, State> {
 
     // if we're editing, go back to the schema page of the project
     if (this.props.model) {
-      router.goBack()
+      router.go(-1)
     }
   }
 }

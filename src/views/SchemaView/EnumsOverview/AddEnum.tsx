@@ -358,7 +358,7 @@ class AddEnum extends React.Component<Props, State> {
 
     // if we're editing, go back to the schema page of the project
     if (this.props.enumValue) {
-      router.goBack()
+      router.go(-1)
     }
   }
 }

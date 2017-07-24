@@ -23,14 +23,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: pick(props, ['isEnabled', 'apiKey', 'applicationId', 'projectId']),
+    variables: {input: pick(input, ['isEnabled', 'apiKey', 'applicationId', 'projectId'])},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        searchProviderAlgolia: props.id,
+        searchProviderAlgolia: input.id,
       },
     }],
   })

@@ -19,11 +19,13 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      auth0IdToken: props.auth0IdToken,
+      input: {
+        auth0IdToken: input.auth0IdToken,
+      }
     },
     configs: [{
       type: 'REQUIRED_CHILDREN',

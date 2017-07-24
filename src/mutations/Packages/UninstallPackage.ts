@@ -23,10 +23,10 @@ const mutation = graphql`
   }
 `
 
-function commit(props: UninstallPackageInput) {
+function commit(input: UninstallPackageInput) {
   return makeMutation({
     mutation,
-    variables: props,
+    variables: {input},
     configs: [{
       type: 'REQUIRED_CHILDREN',
       children: [

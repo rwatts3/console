@@ -25,17 +25,17 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: pick(props, [
+    variables: {input: pick(input, [
       'projectId', 'name', 'isActive', 'schema',
       'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
-    ]),
+    ])},
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: props.projectId,
+      parentID: input.projectId,
       connectionName: 'functions',
       edgeName: 'functionEdge',
       rangeBehaviors: {

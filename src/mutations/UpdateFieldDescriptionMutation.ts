@@ -3,7 +3,7 @@ import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
-  fieldId: string
+  id: string
   description: string
 }
 
@@ -17,17 +17,14 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {
-      id: props.fieldId,
-      description: props.description,
-    },
+    variables: {input},
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        field: this.props.fieldId,
+        field: input.id,
       },
     }],
   })

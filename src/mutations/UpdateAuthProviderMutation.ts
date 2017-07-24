@@ -9,9 +9,6 @@ interface Props {
   auth0: AuthProviderAuth0 | null
 }
 
-interface Response {
-}
-
 const mutation = graphql`
   mutation UpdateAuthProviderMutation($input: UpdateAuthProviderInput!) {
     updateAuthProvider(input: $input) {
@@ -22,28 +19,30 @@ const mutation = graphql`
   }
 `
 
-function commit(props: Props) {
+function commit(input: Props) {
   return makeMutation({
     mutation,
     variables: {
-      id: props.authProviderId,
-      isEnabled: props.isEnabled,
-      // this explicitness is needed because otherwise relay passes `__dataID__` along
-      digits: !props.digits ? null : {
-        consumerKey: props.digits.consumerKey,
-        consumerSecret: props.digits.consumerSecret,
-      },
-      // this explicitness is needed because otherwise relay passes `__dataID__` along
-      auth0: !props.auth0 ? null : {
-        domain: props.auth0.domain,
-        clientId: props.auth0.clientId,
-        clientSecret: props.auth0.clientSecret,
+      input: {
+        id: input.authProviderId,
+        isEnabled: input.isEnabled,
+        // this explicitness is needed because otherwise relay passes `__dataID__` along
+        digits: !input.digits ? null : {
+          consumerKey: input.digits.consumerKey,
+          consumerSecret: input.digits.consumerSecret,
+        },
+        // this explicitness is needed because otherwise relay passes `__dataID__` along
+        auth0: !input.auth0 ? null : {
+          domain: input.auth0.domain,
+          clientId: input.auth0.clientId,
+          clientSecret: input.auth0.clientSecret,
+        },
       },
     },
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        authProvider: props.authProviderId,
+        authProvider: input.authProviderId,
       },
     }],
   })
