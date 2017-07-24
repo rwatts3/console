@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import {} from '../types/gettingStarted'
 
 interface Props {
@@ -7,43 +8,30 @@ interface Props {
   referral: string
 }
 
-export default class UpdateCustomerSourceMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateCrmCustomerInformation}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateCrmCustomerInformationPayload {
-        customerInformation
+const mutation = graphql`
+  mutation UpdateCustomerSourceMutation($input: UpdateCrmCustomerInformationInput!) {
+    updateCrmCustomerInformation(input: $input) {
+      customerInformation {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      source: props.source,
+      referral: props.referral,
+    },
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        customerInformation: this.props.customerInformationId,
+        customerInformation: props.customerInformationId,
       },
     }]
-  }
-
-  getVariables () {
-    return {
-      source: this.props.source,
-      referral: this.props.referral,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      customerInformation: {
-        id: this.props.customerInformationId,
-        source: this.props.source,
-        referral: this.props.referral,
-      },
-    }
-  }
+  })
 }
+
+export default { commit }

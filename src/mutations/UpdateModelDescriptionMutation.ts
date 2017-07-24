@@ -1,46 +1,38 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
-  modelId: string
+  id: string
   description: string
 }
 
-export default class UpdateModelDescriptionMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateModel}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateModelPayload {
-        model
+const mutation = graphql`
+  mutation UpdateModelDescriptionMutation($input: UpdateModelInput!) {
+    updateModel(input: $input) {
+      model {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        model: this.props.modelId,
+        model: props.id,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      id: this.props.modelId,
-      description: this.props.description,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
+    }],
+    optimisticResponse: {
       model: {
-        id: this.props.modelId,
-        description: this.props.description,
+        id: props.id,
+        description: props.description,
       },
     }
-  }
+  })
 }
+
+export default { commit }

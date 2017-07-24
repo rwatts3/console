@@ -1,50 +1,39 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import {pick} from 'lodash'
 
 interface Props {
-  searchProviderAlgoliaId: string
+  id: string
   isEnabled: boolean
   apiKey: string
   applicationId: string
   projectId: string
 }
 
-export default class UpdateSearchProviderAlgolia extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateSearchProviderAlgolia}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateSearchProviderAlgoliaPayload {
-        searchProviderAlgolia
+const mutation = graphql`
+  mutation UpdateSearchProviderAlgolia($input: UpdateSearchProviderAlgoliaInput!) {
+    updateSearchProviderAlgolia(input: $input) {
+      searchProviderAlgolia {
+        id
+        applicationId
+        apiKey
+        isEnabled
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        searchProviderAlgolia: this.props.searchProviderAlgoliaId,
-      },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, ['isEnabled', 'apiKey', 'applicationId', 'projectId'])
-  }
-
-  getOptimisticResponse () {
-    const {searchProviderAlgoliaId, isEnabled, apiKey, applicationId} = this.props
-    return {
-      searchProviderAlgolia: {
-        id: searchProviderAlgoliaId,
-        isEnabled,
-        apiKey,
-        applicationId,
-      },
     }
   }
+`
+
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: pick(props, ['isEnabled', 'apiKey', 'applicationId', 'projectId']),
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        searchProviderAlgolia: props.id,
+      },
+    }],
+  })
 }
+
+export default { commit }

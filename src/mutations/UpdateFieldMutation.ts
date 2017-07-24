@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 export interface UpdateFieldProps {
   id: string
@@ -15,60 +16,41 @@ export interface UpdateFieldProps {
   enumId?: string
 }
 
-export default class UpdateFieldMutation extends Relay.Mutation<UpdateFieldProps, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateField}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateFieldPayload {
-        field
+const mutation = graphql`
+  mutation UpdateFieldMutation($input: UpdateFieldInput!) {
+    updateField(input: $input) {
+      field {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: UpdateFieldProps) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        field: this.props.id,
+        field: props.id,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      id: this.props.id,
-      name: this.props.name,
-      typeIdentifier: this.props.typeIdentifier,
-      enumValues: this.props.enumValues,
-      isRequired: this.props.isRequired,
-      isList: this.props.isList,
-      isUnique: this.props.isUnique,
-      defaultValue: this.props.defaultValue,
-      relationId: this.props.relationId,
-      migrationValue: this.props.migrationValue,
-      description: this.props.description,
-      enumId: this.props.enumId,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
+    }],
+    optimisticResponse: {
       field: {
-        id: this.props.id,
-        name: this.props.name,
-        typeIdentifier: this.props.typeIdentifier,
-        enumValues: this.props.enumValues,
-        isRequired: this.props.isRequired,
-        isList: this.props.isList,
-        isUnique: this.props.isUnique,
-        defaultValue: this.props.defaultValue,
-        description: this.props.description || null,
-        enumId: this.props.enumId,
+        id: props.id,
+        name: props.name,
+        typeIdentifier: props.typeIdentifier,
+        enumValues: props.enumValues,
+        isRequired: props.isRequired,
+        isList: props.isList,
+        isUnique: props.isUnique,
+        defaultValue: props.defaultValue,
+        description: props.description || null,
+        enumId: props.enumId,
       },
-    }
-  }
+    },
+  })
 }
+
+export default { commit }

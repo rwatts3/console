@@ -1,46 +1,35 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   fieldId: string
   isUnique: boolean
 }
 
-export default class UpdateFieldIsUniqueMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateField}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateFieldPayload {
-        field
+const mutation = graphql`
+  mutation UpdateFieldIsUniqueMutation($input: UpdateFieldInput!) {
+    updateField(input: $input) {
+      field {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      id: props.fieldId,
+      isUnique: props.isUnique,
+    },
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        field: this.props.fieldId,
+        field: props.fieldId,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      id: this.props.fieldId,
-      isUnique: this.props.isUnique,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      field: {
-        id: this.props.fieldId,
-        isUnique: this.props.isUnique,
-      },
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }
