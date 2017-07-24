@@ -1,47 +1,36 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 
 interface Props {
   modelPermissionId: string
   modelId: string
 }
 
-interface Response {
-}
-
-export default class DeleteModelPermissionMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{deleteModelPermission}`
+const mutation = graphql`
+  mutation DeleteModelPermissionMutation($input: DeleteModelPermissionInput!) {
+    deleteModelPermission(input: $input) {
+      deletedId
+    }
   }
+`
 
-  getFatQuery () {
-    return Relay.QL`
-      fragment on DeleteModelPermissionPayload {
-        model
-        deletedId
-      }
-    `
-  }
-
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      modelPermissionId: props.modelPermissionId,
+    },
+    configs: [{
       type: 'NODE_DELETE',
       parentName: 'model',
-      parentID: this.props.modelId,
+      parentID: props.modelId,
       connectionName: 'permissions',
       deletedIDFieldName: 'deletedId',
-    }]
-  }
-
-  getVariables () {
-    return {
-      modelPermissionId: this.props.modelPermissionId,
+    }],
+    optimisticResponse: {
+      deletedId: props.modelPermissionId,
     }
-  }
-
-  getOptimisticResponse () {
-    return {
-      deletedId: this.props.modelPermissionId,
-    }
-  }
+  })
 }
+
+export default { commit }

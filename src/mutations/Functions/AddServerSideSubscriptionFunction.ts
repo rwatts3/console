@@ -1,5 +1,6 @@
-import * as Relay from 'react-relay/classic'
-import {FunctionBinding, FunctionType} from '../../types/types'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
+import {FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
 interface Props {
@@ -14,38 +15,34 @@ interface Props {
   query: string
 }
 
-export default class AddServerSideSubscriptionFunction extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addServerSideSubscriptionFunction}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddServerSideSubscriptionFunctionPayload {
-        function
-        project
+const mutation = graphql`
+  mutation AddServerSideSubscriptionFunction($input: AddServerSideSubscriptionFunctionInput!) {
+    addServerSideSubscriptionFunction(input: $input) {
+      function {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: pick(props, [
+      'projectId', 'name', 'isActive', 'query',
+      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
+    ]),
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: props.projectId,
       connectionName: 'functions',
       edgeName: 'functionEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, [
-      'projectId', 'name', 'isActive', 'query',
-      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
-    ])
-  }
+    }],
+  })
 }
+
+export default { commit }

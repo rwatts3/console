@@ -1,33 +1,37 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 
 export interface UninstallPackageInput {
   projectId: string
   name: string
 }
 
-export default class UninstallPackage extends Relay.Mutation<UninstallPackageInput, null> {
-
-  getMutation () {
-    return Relay.QL`mutation{uninstallPackage}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UninstallPackagePayload {
-        project {
-          schema
-          packageDefinitions
+const mutation = graphql`
+  mutation UninstallPackage($input: UninstallPackageInput!) {
+    uninstallPackage(input: $input) {
+      project {
+        schema
+        packageDefinitions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
         }
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: UninstallPackageInput) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
       type: 'REQUIRED_CHILDREN',
       children: [
-          Relay.QL`
-          fragment  on UninstallPackagePayload {
+        graphql`
+          fragment UninstallPackageChildren on UninstallPackagePayload {
             project {
               schema
               packageDefinitions(first: 100) {
@@ -43,10 +47,8 @@ export default class UninstallPackage extends Relay.Mutation<UninstallPackageInp
           }
         `,
       ],
-    }]
-  }
-
-  getVariables () {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default { commit }

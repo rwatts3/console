@@ -1,39 +1,28 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 import {RelationPermission} from '../../types/types'
 
-interface Response {
-}
-
-export default class UpdateRelationPermissionMutation extends Relay.Mutation<RelationPermission, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateRelationPermission}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateRelationPermissionPayload {
-        relationPermission
+const mutation = graphql`
+  mutation UpdateRelationPermissionMutation($input: UpdateRelationPermissionInput!) {
+    updateRelationPermission(input: $input) {
+      relationPermission {
+        id
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        relationPermission: this.props.id,
-      },
-    }]
-  }
-
-  getOptimisticResponse () {
-    return {
-      relationPermission: this.props,
     }
   }
+`
 
-  getVariables () {
-    return this.props
-  }
+function commit(props: RelationPermission) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        relationPermission: props.id,
+      },
+    }],
+  })
 }
+
+export default { commit }

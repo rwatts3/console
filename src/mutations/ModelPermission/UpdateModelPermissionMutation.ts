@@ -1,32 +1,25 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-
-interface Props {
-  enumId: string
-  name: string
-  values: string[]
-}
+import {ModelPermission} from '../../types/types'
 
 const mutation = graphql`
-  mutation UpdateEnumMutation($input: UpdateEnumInput!) {
-    updateEnum(input: $input) {
-      enum {
+  mutation UpdatePermissionMutation($input: UpdateModelPermissionInput!) {
+    updateModelPermission(input: $input) {
+      modelPermission {
         id
-        name
-        values
       }
     }
   }
 `
 
-function commit(props: Props) {
+function commit(props: ModelPermission) {
   return makeMutation({
     mutation,
     variables: props,
     configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        enum: props.enumId,
+        modelPermission: props.id,
       },
     }],
   })

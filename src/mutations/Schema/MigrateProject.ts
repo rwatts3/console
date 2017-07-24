@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 
 export interface MigrateProjectInput {
   newSchema: string
@@ -6,30 +7,27 @@ export interface MigrateProjectInput {
   force: boolean
 }
 
-export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, any> {
-
-  getMutation () {
-    return Relay.QL`mutation{migrateProject}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on MigrateProjectPayload {
-        migrationMessages
-        errors
-        project {
-          schema
-        }
+const mutation = graphql`
+  mutation MigrateProject($input: MigrateProjectMutation!) {
+    migrateProject(input: $input) {
+      migrationMessages
+      errors
+      project {
+        schema
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: MigrateProjectInput) {
+  return makeMutation({
+    mutation,
+    variables: props,
+    configs: [{
       type: 'REQUIRED_CHILDREN',
       children: [
-        Relay.QL`
-          fragment  on MigrateProjectPayload {
+        graphql`
+          fragment MigrateProjectChildren on MigrateProjectPayload {
             errors {
               description
               field
@@ -53,10 +51,8 @@ export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, 
           }
         `,
       ],
-    }]
-  }
-
-  getVariables () {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default { commit }

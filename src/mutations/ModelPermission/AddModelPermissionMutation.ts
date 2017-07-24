@@ -1,28 +1,25 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import {UserType, PermissionRuleType} from '../../types/types'
+import {UserType, Operation, Rule} from '../../types/types'
 
 interface Props {
-  relationId: string
-  connect: boolean
-  disconnect: boolean
+  modelId: string
+  operation: Operation
   userType: UserType
-  rule: PermissionRuleType
-  ruleName: string
+  fieldIds: string[]
+  applyToWholeModel: boolean
+  rule: Rule
+  ruleName?: string
   ruleGraphQuery?: string
-  ruleWebhookUrl?: string
 }
 
 const mutation = graphql`
-  mutation AddRelationPermissionMutation($input: AddRelationPermissionInput!) {
-    addRelationPermission(input: $input) {
-      relationPermissionEdge {
+  mutation AddModelPermissionMutation($input: AddModelPermissionInput!) {
+    addModelPermission(input: $input) {
+      modelPermissionEdge {
         node {
           id
         }
-      }
-      relation {
-        id
       }
     }
   }
@@ -37,14 +34,18 @@ function commit(props: Props) {
     },
     configs: [{
       type: 'RANGE_ADD',
-      parentName: 'relation',
-      parentID: this.props.relationId,
+      parentName: 'model',
+      parentID: props.modelId,
       connectionName: 'permissions',
-      edgeName: 'relationPermissionEdge',
+      edgeName: 'modelPermissionEdge',
       rangeBehaviors: {
         '': 'append',
       },
     }],
+    optimisticResponse: {
+      ...props,
+      isActive: true,
+    },
   })
 }
 

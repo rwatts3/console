@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 import {FunctionBinding, FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
@@ -14,38 +15,34 @@ interface Props {
   schema: string
 }
 
-export default class AddSchemaExtensionFunction extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addSchemaExtensionFunction}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddSchemaExtensionFunctionPayload {
-        function
-        project
+const mutation = graphql`
+  mutation AddSchemaExtensionFunction($input: AddSchemaExtensionFunctionInput!) {
+    addSchemaExtensionFunction(input: $input) {
+      function {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: pick(props, [
+      'projectId', 'name', 'isActive', 'schema',
+      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
+    ]),
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: props.projectId,
       connectionName: 'functions',
       edgeName: 'functionEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, [
-      'projectId', 'name', 'isActive', 'schema',
-      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
-    ])
-  }
+    }],
+  })
 }
+
+export default { commit }

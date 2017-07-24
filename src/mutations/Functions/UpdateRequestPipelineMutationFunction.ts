@@ -1,51 +1,48 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 import {FunctionBinding, FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
 interface Props {
   id: string
   projectId: string
-  name: string
+  name?: string
   binding?: FunctionBinding
   modelId?: string
   type?: FunctionType
-  webhookUrl: string
+  webhookUrl?: string
   webhookHeaders?: string
   inlineCode?: string
   auth0Id?: string
   operation?: string
-  isActive: boolean
+  isActive?: boolean
   functionId?: string
 }
 
-export default class UpdateRequestPipelineMutationFunction extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateRequestPipelineMutationFunction}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateRequestPipelineMutationFunctionPayload {
-        function
-        project
+const mutation = graphql`
+  mutation UpdateRequestPipelineMutationFunction($input: UpdateRequestPipelineMutationFunctionInput!) {
+    updateRequestPipelineMutationFunction(input: $input) {
+      function {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        function: this.props.id,
-      },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, [
+function commit(props: Props) {
+  return makeMutation({
+    mutation,
+    variables: pick(props, [
       'name', 'isActive', 'binding', 'modelId', 'operation',
       'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
-    ])
-  }
+    ]).filterNullAndUndefined(),
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        function: props.id,
+      },
+    }],
+  })
 }
+
+export default { commit }
