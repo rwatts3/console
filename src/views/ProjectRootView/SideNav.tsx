@@ -1,18 +1,15 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay'
 import {withRouter, Link} from 'found'
 import {connect} from 'react-redux'
 import cuid from 'cuid'
 import mapProps from '../../components/MapProps/MapProps'
-import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Tether from '../../components/Tether/Tether'
-import AddModelMutation from '../../mutations/AddModelMutation'
 import {sideNavSyncer} from '../../utils/sideNavSyncer'
-import {onFailureShowNotification} from '../../utils/relay'
 import {nextStep, showDonePopup} from '../../actions/gettingStarted'
 import {showPopup} from '../../actions/popup'
 import {Project, Viewer, Model} from '../../types/types'
@@ -21,7 +18,6 @@ import {showNotification} from '../../actions/notification'
 import {Popup} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
 import EndpointPopup from './EndpointPopup'
-import AddModelPopup from './AddModelPopup'
 import styled from 'styled-components'
 import * as cx from 'classnames'
 import {$p, $v, Icon} from 'graphcool-styles'
@@ -349,8 +345,8 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private renderModels = () => {
     const modelActive = (model) => (
-      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/schema`) ||
-      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/databrowser`)
+      this.props.location.pathname === `/${this.props.params.projectName}/models/${model.name}/schema` ||
+      this.props.location.pathname === `/${this.props.params.projectName}/models/${model.name}/databrowser`
     )
 
     const turnedToggleMore = `
@@ -462,8 +458,10 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private fetch = () => {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
-// TODO props.relay.* APIs do not exist on compat containers
-    this.props.relay.forceFetch()
+    const {projectName} = this.props.params
+    this.props.relay.refetch({
+      projectName,
+    })
   }
 
   private showEndpointPopup = () => {
@@ -512,7 +510,7 @@ const MappedSideNav = mapProps({
     props.viewer.user.crm.information.isBeta || false,
 })(ReduxContainer)
 
-export default createFragmentContainer(MappedSideNav, {
+export default createRefetchContainer(MappedSideNav, {
   viewer: graphql`
     fragment SideNav_viewer on Viewer {
       user {
@@ -526,7 +524,7 @@ export default createFragmentContainer(MappedSideNav, {
       }
     }
   `,
-  project: graphql`
+  project: graphql.experimental`
     fragment SideNav_project on Project {
       id
       name
@@ -545,7 +543,17 @@ export default createFragmentContainer(MappedSideNav, {
       }
     }
   `,
-})
+},
+  graphql.experimental`
+    query SideNavRefetchQuery($projectName: String!) {
+      viewer {
+        projectByName(projectName: $projectName) {
+          ...SideNav_project
+        }
+      }
+    }
+  `,
+)
 
 // TODO put in seperate component
 /* tslint:disable */

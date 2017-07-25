@@ -396,7 +396,7 @@ export default (
         <Route path='models'>
           <Route Component={ModelRedirectView} query={ModelRedirectViewQuery} render={render}/>
           <Route path=':modelName/databrowser' Component={DatabrowserView} query={graphql`
-            query routes_DatabrowserView_Query($projectName: String!) {
+            query routes_DatabrowserView_Query($projectName: String!, $modelName: String!) {
               viewer {
                 ...DatabrowserView_viewer
               }
