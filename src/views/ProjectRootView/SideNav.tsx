@@ -169,8 +169,6 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   render() {
     const {isBetaCustomer, project, expanded, viewer} = this.props
-    const lastMutationCallbackUsers = new Date('2017-06-09T00:00:00.000Z').getTime()
-    const showMutationCallbacks = new Date(viewer.user.createdAt).getTime() < lastMutationCallbackUsers
     return (
       <div
         className='side-nav'
@@ -227,15 +225,6 @@ export class SideNav extends React.PureComponent<Props, State> {
             small={!this.props.expanded}
             data-test='sidenav-permissions'
           />
-          {showMutationCallbacks && (
-            <SideNavElement
-              link={`/${project.name}/actions`}
-              iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
-              text='Mutation Callbacks'
-              active={this.props.location.pathname.endsWith('/actions')}
-              small={!this.props.expanded}
-            />
-          )}
           <SideNavElement
             link={`/${project.name}/integrations`}
             iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}

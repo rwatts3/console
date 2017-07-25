@@ -46,7 +46,14 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     const digitsIntegration = {
       isEnabled: Boolean(providers.find(prov => prov.type === 'AUTH_PROVIDER_DIGITS' && prov.isEnabled)),
       logoURI: require('assets/graphics/digits.png'),
-      description: 'No more passwords. Powerful login that grows your mobile graph',
+      description: <div>
+        <div>
+          The Digits integration is <b>deprecated</b> and will be removed on the 09/30/17
+        </div>
+        <a href='http://get.digits.com/blog/introducing-firebase-phone-authentication' target='_blank'>
+          <b>Read more</b>
+        </a>
+      </div>,
       link: `/${projectName}/integrations/authentication/digits`,
     }
 
