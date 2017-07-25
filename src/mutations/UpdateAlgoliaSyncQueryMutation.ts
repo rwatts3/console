@@ -14,6 +14,13 @@ const mutation = graphql`
     updateAlgoliaSyncQuery(input: $input) {
       searchProviderAlgolia {
         id
+        algoliaSyncQueries(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
       algoliaSyncQuery {
         id

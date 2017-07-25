@@ -11,6 +11,13 @@ const mutation = graphql`
     deleteAlgoliaSyncQuery(input: $input) {
       searchProviderAlgolia {
         id
+        algoliaSyncQueries(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
       deletedId
     }
@@ -23,7 +30,7 @@ function commit(input: Props) {
     variables: {
       input: {
         algoliaSyncQueryId: input.algoliaSyncQueryId,
-      }
+      },
     },
     configs: [{
       type: 'NODE_DELETE',
@@ -31,7 +38,7 @@ function commit(input: Props) {
       parentID: input.searchProviderAlgoliaId,
       connectionName: 'algoliaSyncQueries',
       deletedIDFieldName: 'deletedId',
-    }]
+    }],
   })
 }
 

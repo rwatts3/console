@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
@@ -53,20 +53,24 @@ class AlgoliaQuery extends React.Component<Props, State> {
   }
   componentDidMount() {
     const {relay, selectedModel} = this.props
-    relay.forceFetch(
-      {
+    relay.refetch(
+      fragmentVariables => ({
+        ...fragmentVariables,
         selectedModelId: selectedModel.id,
         modelIdExists: true,
-      },
+      }),
     )
   }
   componentWillReceiveProps(nextProps) {
     const {relay} = this.props
     if (nextProps.selectedModel !== this.props.selectedModel) {
-      relay.forceFetch({
-        selectedModelId: nextProps.selectedModel.id,
-        modelIdExists: true,
-      })
+      relay.refetch(
+        fragmentVariables => ({
+          ...fragmentVariables,
+          selectedModelId: nextProps.selectedModel.id,
+          modelIdExists: true,
+        }),
+      )
     }
 
     if (nextProps.algolia.algoliaSchema !== this.props.algolia.algoliaSchema) {
@@ -102,7 +106,7 @@ class AlgoliaQuery extends React.Component<Props, State> {
   }
 }
 
-export default createFragmentContainer(AlgoliaQuery, {
+export default createRefetchContainer(AlgoliaQuery, {
   /* TODO manually deal with:
   initialVariables: {
     // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
@@ -111,9 +115,35 @@ export default createFragmentContainer(AlgoliaQuery, {
     modelIdExists: false,
   }
   */
-  algolia: graphql`
-    fragment AlgoliaQuery_algolia on SearchProviderAlgolia {
+  algolia: graphql.experimental`
+    fragment AlgoliaQuery_algolia on SearchProviderAlgolia
+    @argumentDefinitions(
+      selectedModelId: {type: "ID!", defaultValue: ""}
+      modelIdExists: {type: "Boolean!", defaultValue: false}
+    ) {
       algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
     }
   `,
-})
+},
+  graphql.experimental`
+    query AlgoliaQueryRefetchQuery($selectedModelId: ID!, $modelIdExists: Boolean!, $projectName: String!) {
+      viewer {
+        projectByName(projectName: $projectName) {
+          id
+          integrations(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                type
+                ... on SearchProviderAlgolia {
+                  ...AlgoliaQuery_algolia @arguments(selectedModelId: $selectedModelId, modelIdExists: $modelIdExists)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `
+)

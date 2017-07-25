@@ -459,6 +459,13 @@ export default (
               }
             }
         `} render={render}/>
+        <Route path='algolia' Component={AlgoliaView} query={graphql`
+            query routes_AlgoliaView_Query($projectName: String!) {
+              viewer {
+                ...AlgoliaView_viewer
+              }
+            }
+          `} render={render}/>
         <Route path='integrations' Component={IntegrationsView} query={graphql`
             query routes_IntegrationsView_Query($projectName: String!) {
               viewer {
@@ -466,13 +473,6 @@ export default (
               }
             }
         `} render={render}>
-          <Route path='algolia' Component={AlgoliaView} query={graphql`
-            query routes_AlgoliaView_Query($projectName: String!) {
-              viewer {
-                ...AlgoliaView_viewer
-              }
-            }
-          `} render={render}/>
           <Route path='authentication/:provider' Component={AuthProviderPopup} query={graphql`
             query routes_AuthProviderPopup_Query($projectName: String!) {
               viewer {

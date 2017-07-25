@@ -14,6 +14,21 @@ const mutation = graphql`
     addAlgoliaSyncQuery(input: $input) {
       searchProviderAlgolia {
         id
+        algoliaSyncQueries(first: 1000) {
+          edges {
+            node {
+              id
+              indexName
+              isEnabled
+              fragment
+              model {
+                itemCount
+                id
+                name
+              }
+            }
+          }
+        }
       }
       algoliaSyncQueryEdge {
         node {
