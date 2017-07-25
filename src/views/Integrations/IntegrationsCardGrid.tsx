@@ -53,6 +53,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
         <a
           href='http://get.digits.com/blog/introducing-firebase-phone-authentication'
           target='_blank'
+          onClick={e => e.stopPropagation()}
         >
           <b>Read more</b>
         </a>

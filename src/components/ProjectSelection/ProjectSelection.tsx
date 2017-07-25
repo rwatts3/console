@@ -275,6 +275,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 )}
                 onClick={this.openUserDropdown}
                 small={!sidebarExpanded}
+                to=''
               >
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/user.svg')}/>
                 {sidebarExpanded && (

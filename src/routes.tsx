@@ -265,9 +265,9 @@ export default (
         }
       `} render={render}/>
       <Route path='showroom' Component={ShowRoom}/>
-      <Redirect from=':projectName' to=':projectName/schema'/>
       <Route path=':projectName' Component={ProjectRootView} query={ProjectViewerQuery} render={render}>
-        <Redirect from='settings' to='settings/general' />
+        <Redirect to='/:projectName/schema'/>
+        <Redirect from='settings' to='/:projectName/settings/general' />
         <Route path='functions' Component={FunctionsView} query={FunctionsViewerQuery} render={render}>
           {/*
           <Route path='create' Component={CreateFunctionPopup} query={ViewerQuery} render={render}>
@@ -483,6 +483,13 @@ export default (
         </Route>
         <Route path='settings' Component={Settings} render={render}>
           <Redirect from='settings' to='settings/general'/>
+          <Route path='team' Component={Team} query={graphql`
+              query routes_Team_Query($projectName: String!) {
+                viewer {
+                  ...Team_viewer
+                }
+              }
+           `} render={render}/>
           <Route path='token' Component={TokenRedirectView}/>
           <Route path='general' Component={General} query={graphql`
             query routes_General_Query($projectName: String!) {
@@ -521,14 +528,7 @@ export default (
               }
             `} render={render}/>
           </Route>
-           <Route path='team' Component={Team} query={graphql`
-              query routes_Team_Query($projectName: String!) {
-                viewer {
-                  ...Team_viewer
-                }
-              }
-           `} render={render}/>
-           </Route>
+        </Route>
            <Route path='clone' Component={CloneProjectPopup} query={graphql`
               query routes_CloneProjectPopup_Query($projectName: String!) {
                 viewer {
