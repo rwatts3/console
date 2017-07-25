@@ -462,7 +462,7 @@ export const EditRelationPermissionPopup = createFragmentContainer(withRouter(Ma
   `,
 })
 
-export const AddRelationPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+export const AddRelationPermissionPopup = createFragmentContainer(withRouter(MappedRelationPermissionPopup), {
   /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router

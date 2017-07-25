@@ -44,7 +44,7 @@ const Arrow = styled.div`
   }
 `
 
-class ModelPermissionComponent extends React.Component<Props, {}> {
+class RelationPermissionComponent extends React.Component<Props, {}> {
   render() {
     const {permission, relation, params: {projectName}} = this.props
     return (
@@ -117,7 +117,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
   }
 }
 
-export default createFragmentContainer(withRouter(ModelPermissionComponent), {
+export default createFragmentContainer(withRouter(RelationPermissionComponent), {
   permission: graphql`
     fragment RelationPermissionComponent_permission on RelationPermission {
       id

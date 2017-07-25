@@ -10,6 +10,15 @@ const mutation = graphql`
   mutation DeleteModelPermissionMutation($input: DeleteModelPermissionInput!) {
     deleteModelPermission(input: $input) {
       deletedId
+      model {
+        permissions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
     }
   }
 `
@@ -20,7 +29,7 @@ function commit(input: Props) {
     variables: {
       input: {
         modelPermissionId: input.modelPermissionId,
-      }
+      },
     },
     configs: [{
       type: 'NODE_DELETE',

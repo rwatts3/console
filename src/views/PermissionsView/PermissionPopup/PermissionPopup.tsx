@@ -1,23 +1,20 @@
 import * as React from 'react'
 import {buildClientSchema} from 'graphql'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
-import { $p } from 'graphcool-styles'
-import * as cx from 'classnames'
 import { Project, Operation, UserType, Model, ModelPermission, PermissionRuleType } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
-import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { withRouter } from 'found'
-import styled from 'styled-components'
 import PermissionPopupHeader from './PermissionPopupHeader'
 import PermissionPopupFooter from './PermissionPopupFooter'
 import OperationChooser from './OperationChooser'
 import PermissionConditions from './PermissionConditions'
 import AffectedFields from './AffectedFields'
-import AddPermissionMutation from '../../../mutations/ModelPermission/AddPermissionMutation'
-import UpdatePermissionMutation from '../../../mutations/ModelPermission/UpdatePermissionMutation'
+import AddModelPermissionMutation from '../../../mutations/ModelPermission/AddModelPermissionMutation'
+import UpdateModelPermissionMutation from '../../../mutations/ModelPermission/UpdateModelPermissionMutation'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
 import DeleteModelPermissionMutation from '../../../mutations/ModelPermission/DeleteModelPermissionMutation'
@@ -31,6 +28,7 @@ import {showNotification} from '../../../actions/notification'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
+import { getEmptyPermissionQuery } from './data'
 
 interface Props {
   params: any
@@ -39,9 +37,8 @@ interface Props {
   router: ReactRouter.InjectedRouter
   model?: Model
   permission?: ModelPermission
-  isBetaCustomer: boolean
   showNotification: ShowNotificationCallback
-  relay: Relay.RelayProp
+  relay: RelayProp
 }
 
 export interface PermissionPopupState {
@@ -125,9 +122,13 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     if (this.state.selectedOperation) {
 // TODO props.relay.* APIs do not exist on compat containers
 // TODO needs manual handling
-      this.props.relay.setVariables({
-        operation: this.state.selectedOperation,
-      })
+      this.props.relay.refetch(fragmentVariables => {
+        console.log(`fragmentVariables`, fragmentVariables)
+        return {
+          ...fragmentVariables,
+          operation: this.state.selectedOperation,
+        }
+      }, null)
     }
   }
 
@@ -442,7 +443,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
 
     this.setState({loading: true} as PermissionPopupState, () => {
-        UpdatePermissionMutation.commit(updatedNode)
+        UpdateModelPermissionMutation.commit(updatedNode)
           .then(() => this.closePopup())
           .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -467,7 +468,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         ruleName,
         ruleGraphQuery: extractSelection(ruleGraphQuery),
       }
-        AddPermissionMutation.commit(input).then(() => this.closePopup())
+        AddModelPermissionMutation.commit(input).then(() => this.closePopup())
           .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as PermissionPopupState)
@@ -501,11 +502,10 @@ const ReduxContainer = connect(null, {showNotification})(PermissionPopup)
 
 const MappedPermissionPopup = mapProps({
   permission: props => props.node || null,
-  model: props => (props.viewer && props.viewer.model) || (props.node && props.node.model),
-  isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
+  model: props => (props.viewer && props.viewer.model),
 })(ReduxContainer)
 
-export const EditPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
+export default createRefetchContainer(withRouter(MappedPermissionPopup), {
   /* TODO manually deal with:
   initialVariables: {
     operation: 'CREATE',
@@ -523,60 +523,13 @@ export const EditPermissionPopup = createFragmentContainer(withRouter(MappedPerm
         ruleGraphQuery
         ruleName
         userType
-        model {
-          name
-          namePlural
-          permissionSchema(operation: $operation)
-          permissionQueryArguments(operation: $operation) {
-            group
-            name
-            typeName
-          }
-          fields(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                isList
-                typeIdentifier
-              }
-            }
-          }
-          ...AffectedFields_model
-        }
       }
     }
   `,
-  viewer: graphql`
-    fragment PermissionPopup_viewer on Viewer {
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
-    }
-  `,
-})
-
-export const AddPermissionPopup = createFragmentContainer(withRouter(MappedPermissionPopup), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    modelName: null, // injected from router
-    operation: 'CREATE',
-  }
-  */
-  viewer: graphql`
-    fragment PermissionPopup_viewer on Viewer {
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
+  viewer: graphql.experimental`
+    fragment PermissionPopup_viewer on Viewer @argumentDefinitions(
+      operation: {type: "Operation!", defaultValue: READ}
+    ) {
       model: modelByName(projectName: $projectName, modelName: $modelName) {
         id
         name
@@ -601,30 +554,12 @@ export const AddPermissionPopup = createFragmentContainer(withRouter(MappedPermi
       }
     }
   `,
-})
-
-function getEmptyPermissionQuery(modelName: string, operation: Operation, userType: UserType) {
-  if (operation === 'CREATE') {
-    if (userType === 'EVERYONE') {
-      return `query {
-  SomeUserExists
-}
-`
+},
+  graphql.experimental`
+    query PermissionPopupRefetchQuery($operation: Operation!, $projectName: String!, $modelName: String!) {
+      viewer {
+        ...PermissionPopup_viewer @arguments(operation: $operation)
+      }
     }
-    return `query ($user_id: ID!) {
-  SomeUserExists(
-    filter: {
-      id: $user_id
-    }
-  )
-}
-`
-  }
-  return `query ($node_id: ID!) {
-  Some${modelName}Exists(
-    filter: {
-      id: $node_id
-    }
-  )
-}`
-}
+  `
+)

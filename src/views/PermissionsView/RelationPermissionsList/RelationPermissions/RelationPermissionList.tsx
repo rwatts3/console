@@ -5,7 +5,7 @@ import {
 } from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {ModelPermission, Model, Relation} from '../../../../types/types'
-import RelationPermissionComponent from './RelationPermission'
+import RelationPermissionComponent from './RelationPermissionComponent'
 import {$p} from 'graphcool-styles'
 
 interface Props {

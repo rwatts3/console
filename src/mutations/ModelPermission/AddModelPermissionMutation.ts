@@ -19,6 +19,16 @@ const mutation = graphql`
       modelPermissionEdge {
         node {
           id
+          ...ModelPermissionComponent_permission
+        }
+      }
+      model {
+        permissions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
         }
       }
     }
