@@ -7,7 +7,7 @@ import {$p, Icon} from 'graphcool-styles'
 interface Integration {
   isEnabled: boolean,
   logoURI?: string,
-  description: string
+  description: string | JSX.Element
   link: string
   logo?: any
 }

@@ -50,7 +50,10 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
         <div>
           The Digits integration is <b>deprecated</b> and will be removed on the 09/30/17
         </div>
-        <a href='http://get.digits.com/blog/introducing-firebase-phone-authentication' target='_blank'>
+        <a
+          href='http://get.digits.com/blog/introducing-firebase-phone-authentication'
+          target='_blank'
+        >
           <b>Read more</b>
         </a>
       </div>,
