@@ -162,7 +162,7 @@ const oldRender = ({error, props, routerProps, element, ...rest}) => {
 }
 
 function render({Component, props}) {
-  if (!Component || !props) {
+  if (Component === null || !props) {
     return (
       <div className='loader'>
         <style jsx>{`
@@ -347,10 +347,10 @@ export default (
           }
         `} render={render} loadingColor='white'>
           <Route path='cli-guide' Component={CliInfoPopup} render={render}/>
-          <Route path='types' Component={null} render={render}/>
-          <Route path='interfaces' Component={null} render={render}/>
-          <Route path='enums' Component={null} render={render}>
-            <Route path='edit/:enumName' Component={null} render={render}/>
+          <Route path='types' Component={() => null} render={render}/>
+          <Route path='interfaces' Component={() => null} render={render}/>
+          <Route path='enums' Component={() => null} render={render}>
+            <Route path='edit/:enumName' Component={() => null} render={render}/>
           </Route>
           <Route path='relations'>
             <Route
@@ -369,7 +369,7 @@ export default (
             />
           </Route>
           <Route path=':modelName'>
-            <Route path='edit' Component={null} render={render}/>
+            <Route path='edit' Component={() => null} render={render}/>
             <Route
               path='edit/:fieldName'
               Component={FieldPopup}
