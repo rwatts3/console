@@ -25,6 +25,7 @@ const mutation = graphql`
     updateRelationPermission(input: $input) {
       relationPermission {
         id
+        ...RelationPermissionComponent_permission
       }
     }
   }

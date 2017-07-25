@@ -32,6 +32,7 @@ import UpdateRelationPermissionMutation from '../../../mutations/RelationPermiss
 import DeleteRelationPermissionMutation from '../../../mutations/RelationPermission/DeleteRelationPermission'
 import AddRelationPermissionMutation from '../../../mutations/RelationPermission/AddRelationPermission'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
+import { getEmptyRelationPermissionQuery } from './data'
 
 interface Props {
   params: any
@@ -40,7 +41,6 @@ interface Props {
   router: ReactRouter.InjectedRouter
   relation?: Relation
   permission?: RelationPermission
-  isBetaCustomer: boolean
   showNotification: ShowNotificationCallback
 }
 
@@ -115,7 +115,6 @@ class RelationPermissionPopup extends React.Component<Props, RelationPermissionP
       connect: true,
       disconnect: true,
     }
-    global['p'] = this
   }
 
   componentDidMount() {
@@ -415,11 +414,10 @@ const ReduxContainer = connect(null, {showNotification})(RelationPermissionPopup
 
 const MappedRelationPermissionPopup = mapProps({
   permission: props => props.node || null,
-  relation: props => (props.viewer && props.viewer.relation) || (props.node && props.node.relation),
-  isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
+  relation: props => (props.viewer && props.viewer.relation),
 })(ReduxContainer)
 
-export const EditRelationPermissionPopup = createFragmentContainer(withRouter(MappedRelationPermissionPopup), {
+export default createFragmentContainer(withRouter(MappedRelationPermissionPopup), {
   node: graphql`
     fragment RelationPermissionPopup_node on Node {
       id
@@ -431,53 +429,11 @@ export const EditRelationPermissionPopup = createFragmentContainer(withRouter(Ma
         ruleGraphQuery
         ruleName
         userType
-        relation {
-          name
-          permissionSchema
-          permissionQueryArguments {
-            group
-            name
-            typeName
-          }
-          leftModel {
-            name
-          }
-          rightModel {
-            name
-          }
-        }
       }
     }
   `,
   viewer: graphql`
     fragment RelationPermissionPopup_viewer on Viewer {
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
-    }
-  `,
-})
-
-export const AddRelationPermissionPopup = createFragmentContainer(withRouter(MappedRelationPermissionPopup), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    relationName: null, // injected from router
-  }
-  */
-  viewer: graphql`
-    fragment RelationPermissionPopup_viewer on Viewer {
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
       relation: relationByName(projectName: $projectName, relationName: $relationName) {
         id
         name
@@ -497,14 +453,3 @@ export const AddRelationPermissionPopup = createFragmentContainer(withRouter(Map
     }
   `,
 })
-
-function getEmptyRelationPermissionQuery(relation: Relation) {
-  return `query {
-  Some${relation.leftModel.name}Exists(filter: {
-    # ...
-  })
-  Some${relation.rightModel.name}Exists(filter: {
-    # ...
-  })
-}`
-}

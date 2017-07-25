@@ -36,10 +36,7 @@ import AuthProviderPopup from './views/models/AuthProviderPopup/AuthProviderPopu
 import PlaygroundView from './views/playground/PlaygroundView/PlaygroundView'
 import PermissionsView from './views/PermissionsView/PermissionsView'
 import PermissionPopup from './views/PermissionsView/PermissionPopup/PermissionPopup'
-import {
-  EditRelationPermissionPopup,
-  AddRelationPermissionPopup,
-} from './views/PermissionsView/RelationPermissionPopup/RelationPermissionPopup'
+import RelationPermissionPopup from './views/PermissionsView/RelationPermissionPopup/RelationPermissionPopup'
 import CloneProjectPopup from './views/ProjectRootView/CloneProjectPopup'
 import AlgoliaView from './views/Integrations/Algolia/AlgoliaView'
 import ShowRoom from './views/ShowRoom/ShowRoom'
@@ -233,6 +230,17 @@ const PermissionPopupQuery = graphql`
   }
 `
 
+const RelationPermissionPopupQuery = graphql`
+  query routes_RelationPermissionPopup_Query($projectName: String!, $relationName: String!, $id: ID!, $includeNode: Boolean!) {
+    viewer {
+      ...RelationPermissionPopup_viewer
+    }
+    node(id: $id) @include(if: $includeNode) {
+      ...RelationPermissionPopup_node
+    }
+  }
+`
+
 export default (
   makeRouteConfig(
     <Route path='/' Component={RootView}>
@@ -404,23 +412,22 @@ export default (
           }
         `} render={render}>
           <Route Component={PermissionsList}/>
-          {/*
           <Route path='relations' Component={AllRelationPermissionsList}>
             <Route
               path=':relationName/edit/:id'
-              Component={EditRelationPermissionPopup}
-              query={graphql`
-              `}
+              Component={RelationPermissionPopup}
+              query={RelationPermissionPopupQuery}
               render={render}
+              prepareVariables={params => ({...params, includeNode: true})}
             />
             <Route
               path=':relationName/create'
-              Component={AddRelationPermissionPopup}
-              query={ViewerQuery}
+              Component={RelationPermissionPopup}
+              query={RelationPermissionPopupQuery}
               render={render}
+              prepareVariables={params => ({...params, includeNode: false, id: ''})}
             />
           </Route>
-           */}
           <Route Component={PermissionsList}>
             <Route
               path=':modelName/edit/:id'

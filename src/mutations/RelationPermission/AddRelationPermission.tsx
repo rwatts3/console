@@ -18,11 +18,18 @@ const mutation = graphql`
     addRelationPermission(input: $input) {
       relationPermissionEdge {
         node {
-          id
+          ...RelationPermissionComponent_permission
         }
       }
       relation {
         id
+        permissions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
     }
   }
@@ -38,7 +45,7 @@ function commit(input: Props) {
     configs: [{
       type: 'RANGE_ADD',
       parentName: 'relation',
-      parentID: this.props.relationId,
+      parentID: input.relationId,
       connectionName: 'permissions',
       edgeName: 'relationPermissionEdge',
       rangeBehaviors: {

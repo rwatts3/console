@@ -11,6 +11,13 @@ const mutation = graphql`
     deleteRelationPermission(input: $input) {
       relation {
         id
+        permissions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
       deletedId
     }
