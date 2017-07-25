@@ -27,6 +27,7 @@ const mutation = graphql`
     updateAction(input: $input) {
       action {
         id
+        ...ActionBoxes_action
       }
     }
   }

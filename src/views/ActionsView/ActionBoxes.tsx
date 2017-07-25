@@ -220,16 +220,18 @@ class ActionBoxes extends React.Component<Props, State> {
         selectedModelId: payload.triggerMutationModelModelId,
         hasSelectedModelId: true,
       }))
+    } else {
+      if (payload.triggerMutationModelMutationType) {
+        this.props.relay.refetch(fragmentVariables => ({
+          ...fragmentVariables,
+          projectName: this.props.project.name,
+          selectedModelId: this.state.triggerMutationModelModelId,
+          selectedModelMutationType: payload.triggerMutationModelMutationType,
+          hasSelectedModelId: true,
+        }))
+      }
     }
 
-    if (payload.triggerMutationModelMutationType) {
-      this.props.relay.refetch(fragmentVariables => ({
-        ...fragmentVariables,
-        projectName: this.props.project.name,
-        selectedModelMutationType: payload.triggerMutationModelMutationType,
-        hasSelectedModelId: true,
-      }))
-    }
   }
 
   private onUpdateHandler = (payload: UpdateHandlerPayload) => {

@@ -29,6 +29,7 @@ const mutation = graphql`
       actionEdge {
         node {
           id
+          ...ActionBoxes_action
         }
       }
       project {
