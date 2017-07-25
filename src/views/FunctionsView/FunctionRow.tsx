@@ -306,14 +306,30 @@ export default createFragmentContainer(withRouter(ConnectedFunctionRow), {
         requestCount
         requestHistogram
       }
+      ... on RequestPipelineMutationFunction {
+        binding
+        model {
+          name
+        }
+        operation
+      }
     },
   `,
 })
-// TODO add later when we use relay-modern
-// ... on RequestPipelineMutationFunction @include(if: $includeRP) {
-//   binding
-//   model {
-//     name
-//   }
-//   operation
-// }
+
+const mutationFragments = graphql`
+  fragment FunctionRow_function on Function {
+    __typename
+    id
+    name
+    isActive
+    type
+    auth0Id
+    stats {
+      errorCount
+      lastRequest
+      requestCount
+      requestHistogram
+    }
+  }
+`

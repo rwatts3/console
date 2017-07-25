@@ -19,7 +19,18 @@ const mutation = graphql`
   mutation AddServerSideSubscriptionFunctionMutation($input: AddServerSideSubscriptionFunctionInput!) {
     addServerSideSubscriptionFunction(input: $input) {
       function {
+        ...FunctionPopup_function
+        ...FunctionRow_function
+      }
+      project {
         id
+        functions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
     }
   }

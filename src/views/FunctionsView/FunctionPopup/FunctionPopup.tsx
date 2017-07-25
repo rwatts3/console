@@ -668,220 +668,7 @@ const MappedFunctionPopup = mapProps({
   isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(ConnectedFunctionPopup))
 
-export const EditRPFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  }
-  */
-  viewer: graphql`
-    fragment FunctionPopup_viewer on Viewer {
-      id
-      project: projectByName(projectName: $projectName) {
-        id
-        name
-        models(first: 1000) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-      }
-      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-        requestPipelineFunctionSchema(binding: $binding operation: $operation)
-      }
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
-    }
-  `,
-  node: graphql`
-    fragment FunctionPopup_node on Function {
-      ...FunctionFragment
-      ... on RequestPipelineMutationFunction {
-        binding
-        model {
-          id
-          name
-        }
-        operation
-      }
-    }
-  `,
-})
-
-export const EditSSSFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  }
-  */
-  viewer: graphql`
-    fragment FunctionPopup_viewer on Viewer {
-      id
-      project: projectByName(projectName: $projectName) {
-        id
-        name
-        models(first: 1000) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-      }
-      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-        requestPipelineFunctionSchema(binding: $binding operation: $operation)
-      }
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
-    }
-  `,
-  node: graphql`
-    fragment FunctionPopup_node on Function {
-      ...FunctionFragment
-      ... on ServerSideSubscriptionFunction {
-        query
-      }
-    }
-  `,
-})
-
-export const EditSchemaExtensionFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  }
-  */
-  viewer: graphql`
-    fragment FunctionPopup_viewer on Viewer {
-      id
-      project: projectByName(projectName: $projectName) {
-        id
-        name
-        models(first: 1000) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-      }
-      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-        requestPipelineFunctionSchema(binding: $binding operation: $operation)
-      }
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
-    }
-  `,
-  node: graphql`
-    fragment FunctionPopup_node on Function {
-      ...FunctionFragment
-      ... on SchemaExtensionFunction {
-        schema
-      }
-      ... on CustomMutationFunction {
-        schema
-      }
-      ... on CustomQueryFunction {
-        schema
-      }
-    }
-  `,
-})
-
-export const EditCustomQueryFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  }
-  */
-  viewer: graphql`
-    fragment FunctionPopup_viewer on Viewer {
-      id
-      project: projectByName(projectName: $projectName) {
-        id
-        name
-        models(first: 1000) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-      }
-      model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-        requestPipelineFunctionSchema(binding: $binding operation: $operation)
-      }
-      user {
-        crm {
-          information {
-            isBeta
-          }
-        }
-      }
-    }
-  `,
-  node: graphql`
-    fragment FunctionPopup_node on Function {
-      ...FunctionFragment
-      ... on CustomQueryFunction {
-        schema
-      }
-    }
-  `,
-})
-
-const FunctionFragment = Relay.QL`
-  fragment on Function {
-    __typename
-    id
-    name
-    inlineCode
-    isActive
-    type
-    auth0Id
-    webhookHeaders
-    webhookUrl
-  }
-`
-
-export const CreateFunctionPopup = createFragmentContainer(MappedFunctionPopup, {
+export default createFragmentContainer(MappedFunctionPopup, {
   /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
@@ -928,7 +715,54 @@ export const CreateFunctionPopup = createFragmentContainer(MappedFunctionPopup, 
       }
     }
   `,
+  node: graphql`
+    fragment FunctionPopup_node on Function {
+      __typename
+      id
+      name
+      inlineCode
+      isActive
+      type
+      auth0Id
+      webhookHeaders
+      webhookUrl
+      ... on SchemaExtensionFunction {
+        schema
+      }
+      ... on CustomMutationFunction {
+        schema
+      }
+      ... on CustomQueryFunction {
+        schema
+      }
+      ... on ServerSideSubscriptionFunction {
+        query
+      }
+      ... on RequestPipelineMutationFunction {
+        binding
+        model {
+          id
+          name
+        }
+        operation
+      }
+    }
+  `,
 })
+
+const mutationFragments = graphql`
+  fragment FunctionPopup_function on Function {
+    __typename
+    id
+    name
+    inlineCode
+    isActive
+    type
+    auth0Id
+    webhookHeaders
+    webhookUrl
+  }
+`
 
 /*
 TODO: add this again when we use relay modern

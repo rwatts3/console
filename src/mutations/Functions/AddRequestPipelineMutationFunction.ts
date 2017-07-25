@@ -21,10 +21,26 @@ const mutation = graphql`
   mutation AddRequestPipelineMutationFunctionMutation($input: AddRequestPipelineMutationFunctionInput!) {
     addRequestPipelineMutationFunction(input: $input) {
       function {
-        id
+        ...FunctionPopup_function
+        ...FunctionRow_fn
+        ... on RequestPipelineMutationFunction {
+          binding
+          model {
+            id
+            name
+          }
+          operation
+        }
       }
       project {
         id
+        functions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
     }
   }

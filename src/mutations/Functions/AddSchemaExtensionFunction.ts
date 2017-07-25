@@ -19,7 +19,18 @@ const mutation = graphql`
   mutation AddSchemaExtensionFunctionMutation($input: AddSchemaExtensionFunctionInput!) {
     addSchemaExtensionFunction(input: $input) {
       function {
+        ...FunctionPopup_function
+        ...FunctionRow_function
+      }
+      project {
         id
+        functions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
     }
   }
