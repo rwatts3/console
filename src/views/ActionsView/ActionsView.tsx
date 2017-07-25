@@ -78,7 +78,6 @@ class ActionsView extends React.Component<Props, State> {
               <ActionBoxes
                 project={this.props.viewer.project}
                 action={null}
-// TODO props.relay.* APIs do not exist on compat containers
                 relay={this.props.relay}
                 close={() => this.setState({ showAddRow: false } as State)}
               />
@@ -94,7 +93,6 @@ class ActionsView extends React.Component<Props, State> {
                 <ActionBoxes
                   project={this.props.viewer.project}
                   action={action}
-// TODO props.relay.* APIs do not exist on compat containers
                   relay={this.props.relay}
                   close={() => this.closeEdit()}
                 />

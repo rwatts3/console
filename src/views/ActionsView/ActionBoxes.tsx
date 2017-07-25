@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay'
 import styled from 'styled-components'
@@ -72,7 +72,7 @@ class ActionBoxes extends React.Component<Props, State> {
 
     const triggerMutationModelModelId = action ? action.triggerMutationModel.model.id : ''
     const triggerMutationModelFragment = action ? action.triggerMutationModel.fragment : ''
-    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : ''
+    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : 'CREATE'
     const handlerWebhookUrl = action && action.handlerWebhook ? action.handlerWebhook.url : ''
 
     const { schema, valid } = extractSchema({
@@ -92,18 +92,13 @@ class ActionBoxes extends React.Component<Props, State> {
       changesMade: false,
     }
 
-// TODO props.relay.* APIs do not exist on compat containers
-// TODO needs manual handling
-    props.relay.setVariables({
+    props.relay.refetch(fragmentVariables => ({
+      ...fragmentVariables,
+      projectName: this.props.project.name,
       selectedModelMutationType: triggerMutationModelMutationType,
       selectedModelId: triggerMutationModelModelId,
       hasSelectedModelId: !!action,
-    })
-  }
-
-  componentWillMount () {
-// TODO props.relay.* APIs do not exist on compat containers
-    this.props.relay.forceFetch()
+    }))
   }
 
   componentWillReceiveProps (props: Props) {
@@ -219,18 +214,21 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState(partialState)
 
     if (payload.triggerMutationModelModelId) {
-// TODO props.relay.* APIs do not exist on compat containers
-// TODO needs manual handling
-      this.props.relay.setVariables({ selectedModelId: payload.triggerMutationModelModelId })
+      this.props.relay.refetch(fragmentVariables => ({
+        ...fragmentVariables,
+        projectName: this.props.project.name,
+        selectedModelId: payload.triggerMutationModelModelId,
+        hasSelectedModelId: true,
+      }))
     }
 
     if (payload.triggerMutationModelMutationType) {
-// TODO props.relay.* APIs do not exist on compat containers
-// TODO needs manual handling
-      this.props.relay.setVariables({
+      this.props.relay.refetch(fragmentVariables => ({
+        ...fragmentVariables,
+        projectName: this.props.project.name,
         selectedModelMutationType: payload.triggerMutationModelMutationType,
         hasSelectedModelId: true,
-      })
+      }))
     }
   }
 
@@ -342,14 +340,7 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 }
 
-export default createFragmentContainer(ActionBoxes, {
-  /* TODO manually deal with:
-  initialVariables: {
-    selectedModelId: null,
-    selectedModelMutationType: null,
-    hasSelectedModelId: false,
-  }
-  */
+export default createRefetchContainer(ActionBoxes, {
   action: graphql`
     fragment ActionBoxes_action on Action {
       id
@@ -369,9 +360,15 @@ export default createFragmentContainer(ActionBoxes, {
       }
     }
   `,
-  project: graphql`
-    fragment ActionBoxes_project on Project {
+  project: graphql.experimental`
+    fragment ActionBoxes_project on Project
+    @argumentDefinitions(
+      selectedModelId: {type: "ID!", defaultValue: ""}
+      selectedModelMutationType: {type: "ActionTriggerMutationModelMutationType!", defaultValue: CREATE}
+      hasSelectedModelId: {type: "Boolean!", defaultValue: false}
+    ) {
       id
+      name
       actionSchema(
         modelId: $selectedModelId
         modelMutationType: $selectedModelMutationType
@@ -387,4 +384,23 @@ export default createFragmentContainer(ActionBoxes, {
       }
     }
   `,
-})
+},
+  graphql.experimental`
+    query ActionBoxesRefetchQuery(
+      $selectedModelId: ID!,
+      $selectedModelMutationType: ActionTriggerMutationModelMutationType!,
+      $hasSelectedModelId: Boolean!
+      $projectName: String!
+    ) {
+      viewer {
+        projectByName(projectName: $projectName) {
+          ...ActionBoxes_project @arguments(
+            selectedModelId: $selectedModelId,
+            selectedModelMutationType: $selectedModelMutationType,
+            hasSelectedModelId: $hasSelectedModelId,
+          )
+        }
+      }
+    }
+  `,
+)
