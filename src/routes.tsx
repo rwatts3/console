@@ -52,11 +52,7 @@ import SchemaViewer from './views/SchemaView/SchemaViewer'
 import AllRelationPermissionsList from './views/PermissionsView/RelationPermissionsList/AllRelationPermissionsList'
 import PermissionsList from './views/PermissionsView/PermissionsList/PermissionsList'
 import FunctionsView from './views/FunctionsView/FunctionsView'
-import {
-  CreateFunctionPopup, EditCustomQueryFunctionPopup,
-  EditRPFunctionPopup, EditSchemaExtensionFunctionPopup,
-  EditSSSFunctionPopup,
-} from './views/FunctionsView/FunctionPopup/FunctionPopup'
+import FunctionPopup from './views/FunctionsView/FunctionPopup/FunctionPopup'
 import { FunctionLogs } from './views/FunctionsView/FunctionLogs/FunctionLogs'
 import CliInfoPopup from './views/SchemaView/CliInfoPopup'
 
@@ -241,6 +237,28 @@ const RelationPermissionPopupQuery = graphql`
   }
 `
 
+const FunctionLogsQuery = graphql`
+  query routes_FunctionLogs_Query($projectName: String!, $id: ID!) {
+    viewer {
+      ...FunctionLogs_viewer
+    }
+    node(id: $id) {
+      ...FunctionLogs_node
+    }
+  }
+`
+
+const FunctionPopupQuery = graphql`
+  query routes_FunctionPopup_Query($projectName: String!, $id: ID!, $includeNode: Boolean!) {
+    viewer {
+      ...FunctionPopup_viewer
+    }
+    node(id: $id) @include(if: $includeNode) {
+      ...FunctionPopup_node
+    }
+  }
+`
+
 export default (
   makeRouteConfig(
     <Route path='/' Component={RootView}>
@@ -269,8 +287,13 @@ export default (
         <Redirect to='/:projectName/schema'/>
         <Redirect from='settings' to='/:projectName/settings/general' />
         <Route path='functions' Component={FunctionsView} query={FunctionsViewerQuery} render={render}>
-          {/*
-          <Route path='create' Component={CreateFunctionPopup} query={ViewerQuery} render={render}>
+          <Route
+            path='create'
+            Component={FunctionPopup}
+            query={FunctionPopupQuery}
+            render={render}
+            prepareVariables={params => ({...params, includeNode: false, id: ''})}
+            >
             <Route
               path='fullscreen'
               Component={null}
@@ -279,43 +302,21 @@ export default (
           <Route
             path=':id/logs'
             Component={FunctionLogs}
-            query={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+            query={FunctionLogsQuery}
             render={render}
           />
           <Route
-            path=':id/sss/edit'
-            Component={EditSSSFunctionPopup}
-            query={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
+            path=':id/edit'
+            Component={FunctionPopup}
+            query={FunctionPopupQuery}
             render={render}
+            prepareVariables={params => ({...params, includeNode: true})}
           >
             <Route
               path='fullscreen'
-              Component={null}
+              Component={() => null}
             />
           </Route>
-          <Route
-            path=':id/rp/edit'
-            Component={EditRPFunctionPopup}
-            query={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-            render={render}
-          >
-            <Route
-              path='fullscreen'
-              Component={null}
-            />
-          </Route>
-          <Route
-            path=':id/schema_extension/edit'
-            Component={EditSchemaExtensionFunctionPopup}
-            query={{node: NodeQuery.node, viewer: ViewerQuery.viewer}}
-            render={render}
-          >
-            <Route
-              path='fullscreen'
-              Component={null}
-            />
-          </Route>
-           */}
         </Route>
         <Route path='playground' Component={PlaygroundView} render={render} query={graphql`
           query routes_PlaygroundView_Query($projectName: String!) {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import mapProps from '../../../components/MapProps/MapProps'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay'
 import * as Modal from 'react-modal'
@@ -168,7 +168,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
   private reload = () => {
     console.log('force fetch')
 // TODO props.relay.* APIs do not exist on compat containers
-    this.props.relay.forceFetch()
+    this.props.relay.refetch(fragmentVariables => fragmentVariables)
   }
 }
 
@@ -177,12 +177,7 @@ const MappedFunctionLogs = mapProps({
   logs: props => props.node.logs.edges.map(edge => edge.node),
 })(withRouter(FunctionLogsComponent))
 
-export const FunctionLogs = createFragmentContainer(MappedFunctionLogs, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
+export const FunctionLogs = createRefetchContainer(MappedFunctionLogs, {
   viewer: graphql`
     fragment FunctionLogs_viewer on Viewer {
       id
@@ -199,7 +194,7 @@ export const FunctionLogs = createFragmentContainer(MappedFunctionLogs, {
       }
     }
   `,
-  node: graphql`
+  node: graphql.experimental`
     fragment FunctionLogs_node on Node {
       id
       ... on Function {
@@ -219,4 +214,12 @@ export const FunctionLogs = createFragmentContainer(MappedFunctionLogs, {
       }
     }
   `,
-})
+},
+  graphql.experimental`
+    query FunctionLogsRefetchQuery($id: ID!) {
+      node(id: $id) {
+        ...FunctionLogs_node
+      }
+    }
+  `,
+)

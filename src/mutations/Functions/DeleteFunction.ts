@@ -10,6 +10,15 @@ const mutation = graphql`
   mutation DeleteFunctionMutation($input: DeleteFunctionInput!) {
     deleteFunction(input: $input) {
       deletedId
+      project {
+        functions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
     }
   }
 `
