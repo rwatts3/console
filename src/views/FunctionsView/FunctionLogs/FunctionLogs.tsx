@@ -3,6 +3,7 @@ import mapProps from '../../../components/MapProps/MapProps'
 import {
   createRefetchContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
@@ -16,7 +17,7 @@ interface Props {
   logs: Log[]
   node: ServerlessFunction
   router: ReactRouter.InjectedRouter
-  relay: Relay.RelayProp
+  relay: RelayProp
 }
 
 interface State {
