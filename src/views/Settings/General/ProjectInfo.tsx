@@ -58,6 +58,7 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   render() {
+
     return (
 
       <div className='flex flexColumn pt38 pl60'>

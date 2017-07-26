@@ -36,16 +36,16 @@ class DangerZone extends React.Component<Props, State> {
       <div className='container'>
         <style jsx={true}>{`
           .container {
-            @inherit: .mt38, .bt, .pt38, .ph60, .bgBlack04;
+            @p: .mt38, .bt, .pt38, .ph60, .bgBlack04;
             border-color: rgba(208,2,27,1);
           }
 
           .actionRow {
-            @inherit: .flex, .justifyBetween, .itemsCenter, .pv25, .ph16;
+            @p: .flex, .justifyBetween, .itemsCenter, .pv25, .ph16;
           }
 
           .bottomBorderForActionRow {
-            @inherit: .bb;
+            @p: .bb;
             border-color: rgba( 229, 229, 229, 1);
           }
 
@@ -72,21 +72,21 @@ class DangerZone extends React.Component<Props, State> {
           }
 
           .actionButton {
-            @inherit: .pv10, .ph16, .f16, .nowrap, .br2, .pointer;
+            @p: .pv10, .ph16, .f16, .nowrap, .br2, .pointer;
           }
 
           .dangerZoneTitle {
-            @inherit: .ttu, .f14, .fw6, .pl16, .pt25, .pb10;
+            @p: .ttu, .f14, .fw6, .pl16, .pt25, .pb10;
             color: rgba(242,92,84,1);
           }
 
           .hoveredOrangeActionButton {
-            @inherit: .white;
+            @p: .white;
             background-color: rgba(241,143,1,1);
           }
 
           .hoveredRedActionButton {
-            @inherit: .white;
+            @p: .white;
             background-color: rgba(242,92,84,1);
           }
 
@@ -167,7 +167,7 @@ class DangerZone extends React.Component<Props, State> {
 }
 
   private onClickResetProjectData = (): void => {
-    graphcoolConfirm('You are reseting the project data.')
+    graphcoolConfirm('You are resetting the project data.')
       .then(() => {
           ResetProjectDataMutation.commit({
             projectId: this.props.project.id,
@@ -205,13 +205,18 @@ class DangerZone extends React.Component<Props, State> {
     }
     graphcoolConfirm('You are deleting this project. All data and the schema will be lost.')
       .then(() => {
+      console.log('DangerZone: delete Project')
         DeleteProjectMutation.commit({
           projectId: this.props.project.id,
           customerId: this.props.viewer.user.id,
         }).then(() => {
-          this.props.router.replace(`/`)
-          this.props.showNotification({message: 'Your project was deleted', level: 'success'})
+          window.location.pathname = '/'
+          console.log('trying to redirect')
         })
+          .catch(e => {
+            window.location.pathname = '/'
+            console.error(e)
+          })
       })
   }
 
@@ -228,7 +233,7 @@ export default createFragmentContainer(MappedDangerZone, {
     fragment DangerZone_viewer on Viewer {
       user {
         id
-        projects(first: 10) {
+        projects(first: 1000) {
           edges {
             node {
               id

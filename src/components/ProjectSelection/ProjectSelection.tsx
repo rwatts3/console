@@ -261,7 +261,11 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 },
               )}
             >
-              <SettingsLink to={`/${this.props.params.projectName}/settings`} small={!sidebarExpanded}>
+              <SettingsLink
+                to={`/${this.props.params.projectName}/settings`}
+                small={!sidebarExpanded}
+                onClick={this.closeProjectsList}
+              >
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
                 {sidebarExpanded && (
                   <div>Settings</div>
@@ -350,14 +354,17 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                       ['inlineFlex ml25 mt16 mb10']: !sidebarExpanded,
                     },
                   )}
-                  onClick={this.props.add}
+                  onClick={() => {
+                    this.closeProjectsList()
+                    this.props.add()
+                  }}
                   data-test='add-project-button'
                 >
                   <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
                 </AddProject>
                 {this.props.projects.map((project, index) => (
                   <ListItem
-                    key={project.name}
+                    key={project.id}
                     className={cx(
                         $p.relative,
                         $p.f20,
@@ -413,6 +420,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
 
   private onSelectProject = (id: string) => {
     this.toggle()
+    this.closeProjectsList()
 
     tracker.track(ConsoleEvents.Project.selected({id}))
   }
@@ -452,6 +460,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
         <Link
           to={`/${this.props.selectedProject.name}/settings/team`}
           onClick={(e) => {
+            this.closeProjectsList()
             e.stopPropagation() // don't toggle
           }}
         >

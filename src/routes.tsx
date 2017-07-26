@@ -157,7 +157,28 @@ const oldRender = ({error, props, routerProps, element, ...rest}) => {
   )
 }
 
-function render({Component, props}) {
+function render({Component, props, error}) {
+  if (error) {
+    if (error.response) {
+      const {code} = error.response.errors[0]
+
+      // project doesnt exist
+      if (code === 4033) {
+        graphcoolAlert('The requested project doesn\'t exist on your account.')
+        return <RedirectOnMount to={`/`} />
+
+      // not authorized
+      } else if (code === 2001) {
+        cookiestore.remove('graphcool_auth_token')
+        cookiestore.remove('graphcool_customer_id')
+        tracker.reset()
+        return <RedirectOnMount to={`/login${props.location.search}`} />
+      }
+    } else {
+      debugger
+    }
+  }
+
   if (Component === null || !props) {
     return (
       <div className='loader'>

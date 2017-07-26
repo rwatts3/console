@@ -12,6 +12,8 @@ const mutation = graphql`
       permanentAuthTokenEdge {
         node {
           id
+          name
+          token
         }
       }
       project {

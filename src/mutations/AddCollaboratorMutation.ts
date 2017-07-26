@@ -11,9 +11,22 @@ const mutation = graphql`
     inviteCollaborator(input: $input) {
       project {
         id
+        seats(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
-      seat {
-        email
+      seatEdge {
+        node {
+          id
+          isOwner
+          email
+          name
+          status
+        }
       }
     }
   }

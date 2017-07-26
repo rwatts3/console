@@ -45,7 +45,7 @@ function commit(input: Props) {
       {
         type: 'RANGE_ADD',
         parentName: 'user',
-        parentID: this.props.customerId,
+        parentID: input.customerId,
         connectionName: 'projects',
         edgeName: 'projectEdge',
         rangeBehaviors: {
