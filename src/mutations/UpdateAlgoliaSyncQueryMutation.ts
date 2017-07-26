@@ -51,7 +51,7 @@ function commit(input: Props) {
           indexName,
           fragment,
         },
-      }
+      },
     },
   })
 }

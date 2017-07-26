@@ -29,7 +29,7 @@ function commit(input: Props) {
     variables: {
       input: {
         actionId: input.actionId,
-      }
+      },
     },
     configs: [{
       type: 'NODE_DELETE',

@@ -17,7 +17,6 @@ import {Icon} from 'graphcool-styles'
 import * as cookiestore from 'cookiestore'
 import endpoints from '../../../utils/endpoints'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
-import LoginClientUserMutation from '../../../mutations/LoginClientUserMutation'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import {nextStep, previousStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')

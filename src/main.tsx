@@ -6,14 +6,9 @@ import * as ReactDOM from 'react-dom'
 // import { default as useRelay } from 'found-relay'
 // import { Router, browserHistory, applyRouterMiddleware } from 'found'
 import { Provider } from 'react-redux'
-import routes from './routes'
-import { updateNetworkLayer } from './utils/relay'
-import createFarceRouter from 'found/lib/createFarceRouter';
 
 /* Found / Relay Imports */
-import BrowserProtocol from 'farce/lib/BrowserProtocol'
-import queryMiddleware from 'farce/lib/queryMiddleware'
-import createConnectedRouter from 'found/lib/createConnectedRouter';
+import createConnectedRouter from 'found/lib/createConnectedRouter'
 import createRender from 'found/lib/createRender'
 import { Resolver } from 'found-relay'
 

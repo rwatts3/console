@@ -53,7 +53,7 @@ function commit(input: Props) {
       input: pick(input, [
         'name', 'isActive', 'binding', 'modelId', 'operation',
         'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
-      ]).filterNullAndUndefined()
+      ]).filterNullAndUndefined(),
     },
     configs: [{
       type: 'FIELDS_CHANGE',

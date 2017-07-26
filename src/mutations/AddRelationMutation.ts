@@ -93,7 +93,7 @@ function commit(input: Props) {
       connectionName: 'fields',
       edgeName: 'fieldOnRightModelEdge',
       rangeBehaviors: {'': 'append'},
-    }]
+    }],
   })
 }
 

@@ -39,7 +39,7 @@ function commit(input: Props) {
         name: input.name,
         includeData: input.includeData,
         includeMutationCallbacks: input.includeMutationCallbacks,
-      }
+      },
     },
     configs: [
       {
@@ -51,8 +51,8 @@ function commit(input: Props) {
         rangeBehaviors: {
           '': 'append',
         },
-      }
-    ]
+      },
+    ],
   })
 }
 

@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   createRefetchContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
 import styled from 'styled-components'
 import {
@@ -30,7 +31,7 @@ import {ConsoleEvents} from 'graphcool-metrics'
 interface Props {
   action?: Action
   project: Project
-  relay: Relay.RelayProp
+  relay: RelayProp
   close: () => void
 }
 
@@ -342,51 +343,53 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 }
 
-export default createRefetchContainer(ActionBoxes, {
-  action: graphql`
-    fragment ActionBoxes_action on Action {
-      id
-      description
-      triggerType
-      handlerType
-      triggerMutationModel {
-        model {
-          id
-          name
-        }
-        mutationType
-        fragment
-      }
-      handlerWebhook {
-        url
-      }
-    }
-  `,
-  project: graphql.experimental`
-    fragment ActionBoxes_project on Project
-    @argumentDefinitions(
-      selectedModelId: {type: "ID!", defaultValue: ""}
-      selectedModelMutationType: {type: "ActionTriggerMutationModelMutationType!", defaultValue: CREATE}
-      hasSelectedModelId: {type: "Boolean!", defaultValue: false}
-    ) {
-      id
-      name
-      actionSchema(
-        modelId: $selectedModelId
-        modelMutationType: $selectedModelMutationType
-      ) @include(if: $hasSelectedModelId)
-      ...ActionTriggerBox_project
-      models(first: 1000) {
-        edges {
-          node {
+export default createRefetchContainer(
+  ActionBoxes,
+  {
+    action: graphql`
+      fragment ActionBoxes_action on Action {
+        id
+        description
+        triggerType
+        handlerType
+        triggerMutationModel {
+          model {
             id
             name
           }
+          mutationType
+          fragment
+        }
+        handlerWebhook {
+          url
         }
       }
-    }
-  `,
-},
+    `,
+    project: graphql.experimental`
+      fragment ActionBoxes_project on Project
+      @argumentDefinitions(
+        selectedModelId: {type: "ID!", defaultValue: ""}
+        selectedModelMutationType: {type: "ActionTriggerMutationModelMutationType!", defaultValue: CREATE}
+        hasSelectedModelId: {type: "Boolean!", defaultValue: false}
+      ) {
+        id
+        name
+        actionSchema(
+          modelId: $selectedModelId
+          modelMutationType: $selectedModelMutationType
+        ) @include(if: $hasSelectedModelId)
+        ...ActionTriggerBox_project
+        models(first: 1000) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    `,
+  },
   graphql.experimental`
     query ActionBoxesRefetchQuery(
       $selectedModelId: ID!,

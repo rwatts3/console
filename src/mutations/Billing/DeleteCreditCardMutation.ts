@@ -1,6 +1,6 @@
 import * as Relay from 'react-relay/classic'
 import { graphql } from 'react-relay'
-import { makeMutation } from '../utils/makeMutation'
+import { makeMutation } from '../../utils/makeMutation'
 
 interface Props {
   projectId: string

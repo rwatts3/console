@@ -54,7 +54,7 @@ function commit(input: Props) {
           '': 'append',
         },
       }],
-    }
+    },
   )
 }
 

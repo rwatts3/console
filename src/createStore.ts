@@ -12,9 +12,9 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux'
 import { Provider } from 'react-redux'
 import * as thunk from 'redux-thunk'
 import {createLogger} from 'redux-logger'
-import createHistoryEnhancer from 'farce/lib/createHistoryEnhancer';
-import createMatchEnhancer from 'found/lib/createMatchEnhancer';
-import foundReducer from 'found/lib/foundReducer';
+import createHistoryEnhancer from 'farce/lib/createHistoryEnhancer'
+import createMatchEnhancer from 'found/lib/createMatchEnhancer'
+import foundReducer from 'found/lib/foundReducer'
 
 import BrowserProtocol from 'farce/lib/BrowserProtocol'
 import queryMiddleware from 'farce/lib/queryMiddleware'
@@ -24,7 +24,6 @@ import { Resolver } from 'found-relay'
 import Matcher from 'found/lib/Matcher'
 import routes from './routes'
 import FarceActions from 'farce/lib/Actions'
-
 
 export default function () {
   const reducers = combineReducers({

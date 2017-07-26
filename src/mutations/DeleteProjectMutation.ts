@@ -42,4 +42,3 @@ function commit(input: Props) {
 }
 
 export default { commit }
-

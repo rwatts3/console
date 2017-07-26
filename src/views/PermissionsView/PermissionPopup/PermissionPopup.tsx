@@ -128,7 +128,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
           ...fragmentVariables,
           operation: this.state.selectedOperation,
         }
-      }, null)
+      })
     }
   }
 
@@ -505,61 +505,63 @@ const MappedPermissionPopup = mapProps({
   model: props => (props.viewer && props.viewer.model),
 })(ReduxContainer)
 
-export default createRefetchContainer(withRouter(MappedPermissionPopup), {
-  /* TODO manually deal with:
-  initialVariables: {
-    operation: 'CREATE',
-  }
-  */
-  node: graphql`
-    fragment PermissionPopup_node on Node {
-      id
-      ... on ModelPermission {
-        applyToWholeModel
-        fieldIds
-        operation
-        isActive
-        rule
-        ruleGraphQuery
-        ruleName
-        userType
-      }
+export default createRefetchContainer(
+  withRouter(MappedPermissionPopup),
+  {
+    /* TODO manually deal with:
+    initialVariables: {
+      operation: 'CREATE',
     }
-  `,
-  viewer: graphql.experimental`
-    fragment PermissionPopup_viewer on Viewer @argumentDefinitions(
-      operation: {type: "Operation!", defaultValue: READ}
-    ) {
-      model: modelByName(projectName: $projectName, modelName: $modelName) {
+    */
+    node: graphql`
+      fragment PermissionPopup_node on Node {
         id
-        name
-        namePlural
-        permissionSchema(operation: $operation)
-        permissionQueryArguments(operation: $operation) {
-          group
-          name
-          typeName
+        ... on ModelPermission {
+          applyToWholeModel
+          fieldIds
+          operation
+          isActive
+          rule
+          ruleGraphQuery
+          ruleName
+          userType
         }
-        fields(first: 1000) {
-          edges {
-            node {
-              id
-              name
-              isList
-              typeIdentifier
+      }
+    `,
+    viewer: graphql.experimental`
+      fragment PermissionPopup_viewer on Viewer @argumentDefinitions(
+        operation: {type: "Operation!", defaultValue: READ}
+      ) {
+        model: modelByName(projectName: $projectName, modelName: $modelName) {
+          id
+          name
+          namePlural
+          permissionSchema(operation: $operation)
+          permissionQueryArguments(operation: $operation) {
+            group
+            name
+            typeName
+          }
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                isList
+                typeIdentifier
+              }
             }
           }
+          ...AffectedFields_model
         }
-        ...AffectedFields_model
       }
-    }
-  `,
-},
+    `,
+  },
   graphql.experimental`
     query PermissionPopupRefetchQuery($operation: Operation!, $projectName: String!, $modelName: String!) {
       viewer {
         ...PermissionPopup_viewer @arguments(operation: $operation)
       }
     }
-  `
+  `,
 )

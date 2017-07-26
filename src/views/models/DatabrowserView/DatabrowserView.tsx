@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   createFragmentContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -57,7 +58,7 @@ const classes: any = require('./DatabrowserView.scss')
 const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
 
 interface Props {
-  relay: Relay.RelayProp
+  relay: RelayProp
   viewer: Viewer & { model: Model }
   router: any
   route: any

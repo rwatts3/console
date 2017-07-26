@@ -51,7 +51,7 @@ function commit(input: UpdateFieldProps) {
           description: input.description || null,
           enumId: input.enumId,
         },
-      }
+      },
     },
   })
 }

@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   createRefetchContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import {Model, SearchProviderAlgolia} from '../../../types/types'
@@ -14,7 +15,7 @@ interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
   onFragmentChange: (fragment: String, valid: boolean) => void
-  relay: Relay.RelayProp
+  relay: RelayProp
   selectedModel: Model
 }
 
@@ -106,25 +107,27 @@ class AlgoliaQuery extends React.Component<Props, State> {
   }
 }
 
-export default createRefetchContainer(AlgoliaQuery, {
-  /* TODO manually deal with:
-  initialVariables: {
-    // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-    // modelIdExists: true,
-    selectedModelId: null,
-    modelIdExists: false,
-  }
-  */
-  algolia: graphql.experimental`
-    fragment AlgoliaQuery_algolia on SearchProviderAlgolia
-    @argumentDefinitions(
-      selectedModelId: {type: "ID!", defaultValue: ""}
-      modelIdExists: {type: "Boolean!", defaultValue: false}
-    ) {
-      algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
+export default createRefetchContainer(
+  AlgoliaQuery,
+  {
+    /* TODO manually deal with:
+    initialVariables: {
+      // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
+      // modelIdExists: true,
+      selectedModelId: null,
+      modelIdExists: false,
     }
-  `,
-},
+    */
+    algolia: graphql.experimental`
+      fragment AlgoliaQuery_algolia on SearchProviderAlgolia
+      @argumentDefinitions(
+        selectedModelId: {type: "ID!", defaultValue: ""}
+        modelIdExists: {type: "Boolean!", defaultValue: false}
+      ) {
+        algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
+      }
+    `,
+  },
   graphql.experimental`
     query AlgoliaQueryRefetchQuery($selectedModelId: ID!, $modelIdExists: Boolean!, $projectName: String!) {
       viewer {
@@ -145,5 +148,5 @@ export default createRefetchContainer(AlgoliaQuery, {
         }
       }
     }
-  `
+  `,
 )

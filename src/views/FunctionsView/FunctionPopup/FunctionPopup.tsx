@@ -121,7 +121,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         try {
           newNode = {
             ...newNode,
-            _webhookHeaders: JSON.parse(newNode.webhookHeaders)
+            _webhookHeaders: JSON.parse(newNode.webhookHeaders),
           }
         } catch (e) {
           //
@@ -687,7 +687,9 @@ const MappedFunctionPopup = mapProps({
   isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(ConnectedFunctionPopup))
 
-export default createRefetchContainer(MappedFunctionPopup, {
+export default createRefetchContainer(
+  MappedFunctionPopup,
+  {
     /* TODO manually deal with:
      initialVariables: {
      projectName: null, // injected from router
@@ -790,7 +792,7 @@ export default createRefetchContainer(MappedFunctionPopup, {
         )
       }
     }
-  `
+  `,
 )
 
 const mutationFragments = graphql`

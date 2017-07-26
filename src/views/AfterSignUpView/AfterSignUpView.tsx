@@ -209,8 +209,7 @@ class AfterSignUpView extends React.Component<Props, State> {
           </div>
         </Container>
       </div>
-    );
-
+    )
   }
 
   private openIntercom = () => {

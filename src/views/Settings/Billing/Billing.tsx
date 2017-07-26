@@ -12,7 +12,7 @@ import {
   creditCardNumberValid, expirationDateValid, cpcValid,
   minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits,
 } from '../../../utils/creditCardValidator'
-import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
+import SetCreditCardMutation from '../../../mutations/Billing/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
@@ -466,17 +466,17 @@ export default createFragmentContainer(mappedBilling, {
                 node {
                   id
                   name
-                  systemProjectId
+#                  systemProjectId
                   projectBillingInformation {
                     plan
                     invoices(first: 1000)  {
                       edges {
                         node {
-                          overageRequests
-                          usageRequests
-                          usageStorage
-                          usedSeats
-                          timestamp
+#                          overageRequests
+#                          usageRequests
+#                          usageStorage
+#                          usedSeats
+#                          timestamp
                           total
                         }
                       }

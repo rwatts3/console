@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   createFragmentContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
 import {Transaction} from 'react-relay/classic'
 import {RelationPopupDisplayState, Cardinality, Model, Relation} from '../../types/types'
@@ -60,7 +61,7 @@ interface State {
 interface Props {
   router: ReactRouter.InjectedRouter
   viewer: any
-  relay: Relay.RelayProp
+  relay: RelayProp
   showNotification: ShowNotificationCallback
   location: any
 }

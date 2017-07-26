@@ -25,7 +25,7 @@ function commit(input: Props) {
     variables: {
       input: {
         auth0IdToken: input.auth0IdToken,
-      }
+      },
     },
     configs: [{
       type: 'REQUIRED_CHILDREN',

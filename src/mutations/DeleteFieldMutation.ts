@@ -1,4 +1,3 @@
-import * as Relay from 'react-relay/classic'
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
@@ -24,7 +23,7 @@ function commit(input: Props) {
     variables: {
       input: {
         deletedId: input.fieldId,
-      }
+      },
     },
     configs: [{
       type: 'NODE_DELETE',
@@ -37,4 +36,3 @@ function commit(input: Props) {
 }
 
 export default { commit }
-

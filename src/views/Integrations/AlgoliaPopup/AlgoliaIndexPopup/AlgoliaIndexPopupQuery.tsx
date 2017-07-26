@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   createFragmentContainer,
   graphql,
+  RelayProp,
 } from 'react-relay'
 import { $p, $v } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -18,7 +19,7 @@ interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
   onFragmentChange: (fragment: String, valid: boolean) => void
-  relay: Relay.RelayProp
+  relay: RelayProp
   selectedModel: Model
 }
 

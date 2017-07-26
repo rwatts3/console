@@ -346,7 +346,7 @@ class SchemaEditor extends React.Component<Props, State> {
   }
 
   private isField(line) {
-    return /.+?:.+?/.test(line);
+    return /.+?:.+?/.test(line)
   }
 
   private getFieldName(line) {

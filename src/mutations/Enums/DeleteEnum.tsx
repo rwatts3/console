@@ -22,7 +22,7 @@ function commit(input: Props) {
     variables: {
       input: {
         enumId: input.enumId,
-      }
+      },
     },
     configs: [{
       type: 'NODE_DELETE',

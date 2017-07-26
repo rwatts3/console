@@ -602,600 +602,107 @@ type CloneProjectPayload {
   clientMutationId: String
 }
 
-input CreditCardFilter {
-  # Logical AND on all given filters.
-  AND: [CreditCardFilter!]
-
-  # Logical OR on all given filters.
-  OR: [CreditCardFilter!]
+type CrmCreditCard {
   addressCity: String
-
-  # All values that are not equal to given value.
-  addressCity_not: String
-
-  # All values that are contained in given list.
-  addressCity_in: [String!]
-
-  # All values that are not contained in given list.
-  addressCity_not_in: [String!]
-
-  # All values less than the given value.
-  addressCity_lt: String
-
-  # All values less than or equal the given value.
-  addressCity_lte: String
-
-  # All values greater than the given value.
-  addressCity_gt: String
-
-  # All values greater than or equal the given value.
-  addressCity_gte: String
-
-  # All values containing the given string.
-  addressCity_contains: String
-
-  # All values not containing the given string.
-  addressCity_not_contains: String
-
-  # All values starting with the given string.
-  addressCity_starts_with: String
-
-  # All values not starting with the given string.
-  addressCity_not_starts_with: String
-
-  # All values ending with the given string.
-  addressCity_ends_with: String
-
-  # All values not ending with the given string.
-  addressCity_not_ends_with: String
   addressCountry: String
-
-  # All values that are not equal to given value.
-  addressCountry_not: String
-
-  # All values that are contained in given list.
-  addressCountry_in: [String!]
-
-  # All values that are not contained in given list.
-  addressCountry_not_in: [String!]
-
-  # All values less than the given value.
-  addressCountry_lt: String
-
-  # All values less than or equal the given value.
-  addressCountry_lte: String
-
-  # All values greater than the given value.
-  addressCountry_gt: String
-
-  # All values greater than or equal the given value.
-  addressCountry_gte: String
-
-  # All values containing the given string.
-  addressCountry_contains: String
-
-  # All values not containing the given string.
-  addressCountry_not_contains: String
-
-  # All values starting with the given string.
-  addressCountry_starts_with: String
-
-  # All values not starting with the given string.
-  addressCountry_not_starts_with: String
-
-  # All values ending with the given string.
-  addressCountry_ends_with: String
-
-  # All values not ending with the given string.
-  addressCountry_not_ends_with: String
   addressLine1: String
-
-  # All values that are not equal to given value.
-  addressLine1_not: String
-
-  # All values that are contained in given list.
-  addressLine1_in: [String!]
-
-  # All values that are not contained in given list.
-  addressLine1_not_in: [String!]
-
-  # All values less than the given value.
-  addressLine1_lt: String
-
-  # All values less than or equal the given value.
-  addressLine1_lte: String
-
-  # All values greater than the given value.
-  addressLine1_gt: String
-
-  # All values greater than or equal the given value.
-  addressLine1_gte: String
-
-  # All values containing the given string.
-  addressLine1_contains: String
-
-  # All values not containing the given string.
-  addressLine1_not_contains: String
-
-  # All values starting with the given string.
-  addressLine1_starts_with: String
-
-  # All values not starting with the given string.
-  addressLine1_not_starts_with: String
-
-  # All values ending with the given string.
-  addressLine1_ends_with: String
-
-  # All values not ending with the given string.
-  addressLine1_not_ends_with: String
   addressLine2: String
-
-  # All values that are not equal to given value.
-  addressLine2_not: String
-
-  # All values that are contained in given list.
-  addressLine2_in: [String!]
-
-  # All values that are not contained in given list.
-  addressLine2_not_in: [String!]
-
-  # All values less than the given value.
-  addressLine2_lt: String
-
-  # All values less than or equal the given value.
-  addressLine2_lte: String
-
-  # All values greater than the given value.
-  addressLine2_gt: String
-
-  # All values greater than or equal the given value.
-  addressLine2_gte: String
-
-  # All values containing the given string.
-  addressLine2_contains: String
-
-  # All values not containing the given string.
-  addressLine2_not_contains: String
-
-  # All values starting with the given string.
-  addressLine2_starts_with: String
-
-  # All values not starting with the given string.
-  addressLine2_not_starts_with: String
-
-  # All values ending with the given string.
-  addressLine2_ends_with: String
-
-  # All values not ending with the given string.
-  addressLine2_not_ends_with: String
   addressState: String
-
-  # All values that are not equal to given value.
-  addressState_not: String
-
-  # All values that are contained in given list.
-  addressState_in: [String!]
-
-  # All values that are not contained in given list.
-  addressState_not_in: [String!]
-
-  # All values less than the given value.
-  addressState_lt: String
-
-  # All values less than or equal the given value.
-  addressState_lte: String
-
-  # All values greater than the given value.
-  addressState_gt: String
-
-  # All values greater than or equal the given value.
-  addressState_gte: String
-
-  # All values containing the given string.
-  addressState_contains: String
-
-  # All values not containing the given string.
-  addressState_not_contains: String
-
-  # All values starting with the given string.
-  addressState_starts_with: String
-
-  # All values not starting with the given string.
-  addressState_not_starts_with: String
-
-  # All values ending with the given string.
-  addressState_ends_with: String
-
-  # All values not ending with the given string.
-  addressState_not_ends_with: String
   addressZip: String
-
-  # All values that are not equal to given value.
-  addressZip_not: String
-
-  # All values that are contained in given list.
-  addressZip_in: [String!]
-
-  # All values that are not contained in given list.
-  addressZip_not_in: [String!]
-
-  # All values less than the given value.
-  addressZip_lt: String
-
-  # All values less than or equal the given value.
-  addressZip_lte: String
-
-  # All values greater than the given value.
-  addressZip_gt: String
-
-  # All values greater than or equal the given value.
-  addressZip_gte: String
-
-  # All values containing the given string.
-  addressZip_contains: String
-
-  # All values not containing the given string.
-  addressZip_not_contains: String
-
-  # All values starting with the given string.
-  addressZip_starts_with: String
-
-  # All values not starting with the given string.
-  addressZip_not_starts_with: String
-
-  # All values ending with the given string.
-  addressZip_ends_with: String
-
-  # All values not ending with the given string.
-  addressZip_not_ends_with: String
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
   expMonth: Int
-
-  # All values that are not equal to given value.
-  expMonth_not: Int
-
-  # All values that are contained in given list.
-  expMonth_in: [Int!]
-
-  # All values that are not contained in given list.
-  expMonth_not_in: [Int!]
-
-  # All values less than the given value.
-  expMonth_lt: Int
-
-  # All values less than or equal the given value.
-  expMonth_lte: Int
-
-  # All values greater than the given value.
-  expMonth_gt: Int
-
-  # All values greater than or equal the given value.
-  expMonth_gte: Int
   expYear: Int
-
-  # All values that are not equal to given value.
-  expYear_not: Int
-
-  # All values that are contained in given list.
-  expYear_in: [Int!]
-
-  # All values that are not contained in given list.
-  expYear_not_in: [Int!]
-
-  # All values less than the given value.
-  expYear_lt: Int
-
-  # All values less than or equal the given value.
-  expYear_lte: Int
-
-  # All values greater than the given value.
-  expYear_gt: Int
-
-  # All values greater than or equal the given value.
-  expYear_gte: Int
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
   last4: Int
-
-  # All values that are not equal to given value.
-  last4_not: Int
-
-  # All values that are contained in given list.
-  last4_in: [Int!]
-
-  # All values that are not contained in given list.
-  last4_not_in: [Int!]
-
-  # All values less than the given value.
-  last4_lt: Int
-
-  # All values less than or equal the given value.
-  last4_lte: Int
-
-  # All values greater than the given value.
-  last4_gt: Int
-
-  # All values greater than or equal the given value.
-  last4_gte: Int
   name: String
-
-  # All values that are not equal to given value.
-  name_not: String
-
-  # All values that are contained in given list.
-  name_in: [String!]
-
-  # All values that are not contained in given list.
-  name_not_in: [String!]
-
-  # All values less than the given value.
-  name_lt: String
-
-  # All values less than or equal the given value.
-  name_lte: String
-
-  # All values greater than the given value.
-  name_gt: String
-
-  # All values greater than or equal the given value.
-  name_gte: String
-
-  # All values containing the given string.
-  name_contains: String
-
-  # All values not containing the given string.
-  name_not_contains: String
-
-  # All values starting with the given string.
-  name_starts_with: String
-
-  # All values not starting with the given string.
-  name_not_starts_with: String
-
-  # All values ending with the given string.
-  name_ends_with: String
-
-  # All values not ending with the given string.
-  name_not_ends_with: String
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  projectBillingInformation: ProjectBillingInformationFilter
+  id: String
 }
 
-type crm_CreditCard implements Node {
-  addressCity: String!
-  addressCountry: String!
-  addressLine1: String!
-  addressLine2: String
-  addressState: String
-  addressZip: String!
-  createdAt: DateTime
-  expMonth: Int!
-  expYear: Int!
-  id: ID!
-  last4: Int!
-  name: String!
-  projectBillingInformation(filter: ProjectBillingInformationFilter): crm_ProjectBillingInformation
-  updatedAt: DateTime
+type CrmCustomer {
+  id: String
+  projects(before: String, after: String, first: Int, last: Int): ProjectConnection!
 }
 
-type crm_Customer implements Node {
-  id: ID!
-  projects(filter: ProjectFilter, orderBy: ProjectOrderBy, skip: Int, after: String, before: String, first: Int, last: Int): crm_ProjectConnection
-  systemBridge(filter: SystemBridgeFilter): crm_SystemBridge
-}
-
-# with default value
-type crm_CustomerInformation implements Node {
-  createdAt: DateTime!
-  email: String!
-  id: ID!
-  isBeta: Boolean!
-  name: String!
-  referral: String!
+type CrmCustomerInformation {
+  email: String
+  isBeta: Boolean
+  name: String
+  referral: String
   signupPath: String
-  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE!
+  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE
   source: String
-  systemBridge(filter: SystemBridgeFilter): crm_SystemBridge
-  updatedAt: DateTime!
+  id: String
 }
 
-type crm_GuideStatus implements Node {
-  createdAt: DateTime
-  guide1: Boolean!
-  id: ID!
-  systemBridge(filter: SystemBridgeFilter): crm_SystemBridge
-  updatedAt: DateTime
+input CrmCustomerInformationInput {
+  email: String
+  isBeta: Boolean
+  name: String
+  referral: String
+  signupPath: String
+  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE
+  source: String
+  clientMutationId: String
 }
 
-# test
-type crm_Invoice implements Node {
-  createdAt: DateTime
-  id: ID!
+type CrmGuideStatus {
+  guide1: Boolean
+  id: String
+}
 
-  # Will need to be generated somehow and will be used on invoice documents
+input CrmGuideStatusInput {
+  guide1: Boolean
+  clientMutationId: String
+}
+
+type CrmInvoice {
   invoiceNumber: String
-  overageOperations: Float
-  overageRequests: Float!
-  overageStorage: Float!
-  projectBillingInformation(filter: ProjectBillingInformationFilter): crm_ProjectBillingInformation
-  stripeChargeDate: DateTime
-  stripeChargeId: String
-  timestamp: DateTime!
-  total: Float!
-  updatedAt: DateTime
-  usageRequests: [Int!]!
-  usageStorage: [Float!]!
-  usedSeats: Int!
+  total: Float
+  id: String
 }
 
-# A connection to a list of items.
-type crm_InvoiceConnection {
-  # Information to aid in pagination.
-  pageInfo: PageInfo!
-
-  # A list of edges.
-  edges: [crm_InvoiceEdge]
-
-  # Count of filtered result set without considering pagination arguments
-  count: Int!
-}
-
-# An edge in a connection.
-type crm_InvoiceEdge {
-  # The item at the end of the edge.
-  node: crm_Invoice!
-
-  # A cursor for use in pagination.
-  cursor: String!
-}
-
-type crm_OnboardingStatus implements Node {
-  createdAt: DateTime
-  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED!
-  gettingStartedCompleted: Boolean!
+type CrmOnboardingStatus {
+  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
+  gettingStartedCompleted: Boolean
   gettingStartedExample: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
-  gettingStartedSkipped: Boolean!
-  id: ID!
-  systemBridge(filter: SystemBridgeFilter): crm_SystemBridge
-  updatedAt: DateTime
+  gettingStartedSkipped: Boolean
+  id: String
 }
 
-type crm_Project implements Node {
-  createdAt: DateTime
-  customer(filter: CustomerFilter): crm_Customer
-  id: ID!
-  isDeleted: Boolean!
-  name: String!
-  projectBillingInformation(filter: ProjectBillingInformationFilter): crm_ProjectBillingInformation
-  systemProjectId: String!
-  updatedAt: DateTime
+input CrmOnboardingStatusInput {
+  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
+  gettingStartedCompleted: Boolean
+  gettingStartedExample: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
+  gettingStartedSkipped: Boolean
+  clientMutationId: String
 }
 
-type crm_ProjectBillingInformation implements Node {
-  createdAt: DateTime
-  creditCard(filter: CreditCardFilter): crm_CreditCard
-  id: ID!
-  invoices(filter: InvoiceFilter, orderBy: InvoiceOrderBy, skip: Int, after: String, before: String, first: Int, last: Int): crm_InvoiceConnection
-  plan: String!
-  project(filter: ProjectFilter): crm_Project
-  stripeCustomerId: String
-  updatedAt: DateTime
+type CrmProject {
+  id: String
+  projectBillingInformation: CrmProjectBillingInformation!
+  isActive: Boolean
+  isDeleted: Boolean
+  lastActive: String
+  name: String
 }
 
-# A connection to a list of items.
-type crm_ProjectConnection {
-  # Information to aid in pagination.
-  pageInfo: PageInfo!
-
-  # A list of edges.
-  edges: [crm_ProjectEdge]
-
-  # Count of filtered result set without considering pagination arguments
-  count: Int!
+type CrmProjectBillingInformation {
+  id: String
+  plan: String
+  invoices(before: String, after: String, first: Int, last: Int): InvoiceConnection!
+  creditCard: CrmCreditCard
 }
 
-# An edge in a connection.
-type crm_ProjectEdge {
-  # The item at the end of the edge.
-  node: crm_Project!
-
-  # A cursor for use in pagination.
-  cursor: String!
-}
-
-type crm_SystemBridge implements Node {
-  customer(filter: CustomerFilter): crm_Customer
-  guideStatus(filter: GuideStatusFilter): crm_GuideStatus
-  id: ID!
-  information(filter: CustomerInformationFilter): crm_CustomerInformation
-  onboardingStatus(filter: OnboardingStatusFilter): crm_OnboardingStatus
-  systemCustomerId: String!
+type CrmSystemBridge {
+  id: String!
+  information: CrmCustomerInformation!
+  onboardingStatus: CrmOnboardingStatus!
+  guideStatus: CrmGuideStatus!
+  customer: CrmCustomer!
 }
 
 # This is a Customer
 type Customer implements Node {
   id: ID!
-  crm: crm_SystemBridge
+  crm: CrmSystemBridge
   name: String!
   email: String!
   source: CustomerSourceType!
@@ -1206,368 +713,11 @@ type Customer implements Node {
 
 enum CUSTOMER_INFORMATION_SIGNUP_SOURCE {
   HOMEPAGE
-  CLI
   DOCS
-  NOT_DEFINED
-}
-
-input CustomerFilter {
-  # Logical AND on all given filters.
-  AND: [CustomerFilter!]
-
-  # Logical OR on all given filters.
-  OR: [CustomerFilter!]
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  projects_every: ProjectFilter
-  projects_some: ProjectFilter
-  projects_none: ProjectFilter
-  systemBridge: SystemBridgeFilter
-}
-
-input CustomerInformationFilter {
-  # Logical AND on all given filters.
-  AND: [CustomerInformationFilter!]
-
-  # Logical OR on all given filters.
-  OR: [CustomerInformationFilter!]
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
-  email: String
-
-  # All values that are not equal to given value.
-  email_not: String
-
-  # All values that are contained in given list.
-  email_in: [String!]
-
-  # All values that are not contained in given list.
-  email_not_in: [String!]
-
-  # All values less than the given value.
-  email_lt: String
-
-  # All values less than or equal the given value.
-  email_lte: String
-
-  # All values greater than the given value.
-  email_gt: String
-
-  # All values greater than or equal the given value.
-  email_gte: String
-
-  # All values containing the given string.
-  email_contains: String
-
-  # All values not containing the given string.
-  email_not_contains: String
-
-  # All values starting with the given string.
-  email_starts_with: String
-
-  # All values not starting with the given string.
-  email_not_starts_with: String
-
-  # All values ending with the given string.
-  email_ends_with: String
-
-  # All values not ending with the given string.
-  email_not_ends_with: String
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  isBeta: Boolean
-
-  # All values that are not equal to given value.
-  isBeta_not: Boolean
-  name: String
-
-  # All values that are not equal to given value.
-  name_not: String
-
-  # All values that are contained in given list.
-  name_in: [String!]
-
-  # All values that are not contained in given list.
-  name_not_in: [String!]
-
-  # All values less than the given value.
-  name_lt: String
-
-  # All values less than or equal the given value.
-  name_lte: String
-
-  # All values greater than the given value.
-  name_gt: String
-
-  # All values greater than or equal the given value.
-  name_gte: String
-
-  # All values containing the given string.
-  name_contains: String
-
-  # All values not containing the given string.
-  name_not_contains: String
-
-  # All values starting with the given string.
-  name_starts_with: String
-
-  # All values not starting with the given string.
-  name_not_starts_with: String
-
-  # All values ending with the given string.
-  name_ends_with: String
-
-  # All values not ending with the given string.
-  name_not_ends_with: String
-  referral: String
-
-  # All values that are not equal to given value.
-  referral_not: String
-
-  # All values that are contained in given list.
-  referral_in: [String!]
-
-  # All values that are not contained in given list.
-  referral_not_in: [String!]
-
-  # All values less than the given value.
-  referral_lt: String
-
-  # All values less than or equal the given value.
-  referral_lte: String
-
-  # All values greater than the given value.
-  referral_gt: String
-
-  # All values greater than or equal the given value.
-  referral_gte: String
-
-  # All values containing the given string.
-  referral_contains: String
-
-  # All values not containing the given string.
-  referral_not_contains: String
-
-  # All values starting with the given string.
-  referral_starts_with: String
-
-  # All values not starting with the given string.
-  referral_not_starts_with: String
-
-  # All values ending with the given string.
-  referral_ends_with: String
-
-  # All values not ending with the given string.
-  referral_not_ends_with: String
-  signupPath: String
-
-  # All values that are not equal to given value.
-  signupPath_not: String
-
-  # All values that are contained in given list.
-  signupPath_in: [String!]
-
-  # All values that are not contained in given list.
-  signupPath_not_in: [String!]
-
-  # All values less than the given value.
-  signupPath_lt: String
-
-  # All values less than or equal the given value.
-  signupPath_lte: String
-
-  # All values greater than the given value.
-  signupPath_gt: String
-
-  # All values greater than or equal the given value.
-  signupPath_gte: String
-
-  # All values containing the given string.
-  signupPath_contains: String
-
-  # All values not containing the given string.
-  signupPath_not_contains: String
-
-  # All values starting with the given string.
-  signupPath_starts_with: String
-
-  # All values not starting with the given string.
-  signupPath_not_starts_with: String
-
-  # All values ending with the given string.
-  signupPath_ends_with: String
-
-  # All values not ending with the given string.
-  signupPath_not_ends_with: String
-  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE
-
-  # All values that are not equal to given value.
-  signupSource_not: CUSTOMER_INFORMATION_SIGNUP_SOURCE
-
-  # All values that are contained in given list.
-  signupSource_in: [CUSTOMER_INFORMATION_SIGNUP_SOURCE!]
-
-  # All values that are not contained in given list.
-  signupSource_not_in: [CUSTOMER_INFORMATION_SIGNUP_SOURCE!]
-  source: String
-
-  # All values that are not equal to given value.
-  source_not: String
-
-  # All values that are contained in given list.
-  source_in: [String!]
-
-  # All values that are not contained in given list.
-  source_not_in: [String!]
-
-  # All values less than the given value.
-  source_lt: String
-
-  # All values less than or equal the given value.
-  source_lte: String
-
-  # All values greater than the given value.
-  source_gt: String
-
-  # All values greater than or equal the given value.
-  source_gte: String
-
-  # All values containing the given string.
-  source_contains: String
-
-  # All values not containing the given string.
-  source_not_contains: String
-
-  # All values starting with the given string.
-  source_starts_with: String
-
-  # All values not starting with the given string.
-  source_not_starts_with: String
-
-  # All values ending with the given string.
-  source_ends_with: String
-
-  # All values not ending with the given string.
-  source_not_ends_with: String
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  systemBridge: SystemBridgeFilter
+  LEARN_RELAY
+  WAIT_LIST
+  LEARN_APOLLO
+  CLI
 }
 
 enum CustomerSourceType {
@@ -2005,103 +1155,6 @@ type GenerateUserTokenPayload {
   clientMutationId: String
 }
 
-input GuideStatusFilter {
-  # Logical AND on all given filters.
-  AND: [GuideStatusFilter!]
-
-  # Logical OR on all given filters.
-  OR: [GuideStatusFilter!]
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
-  guide1: Boolean
-
-  # All values that are not equal to given value.
-  guide1_not: Boolean
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  systemBridge: SystemBridgeFilter
-}
-
 enum HistogramPeriod {
   MONTH
   WEEK
@@ -2181,358 +1234,22 @@ type InviteCollaboratorPayload {
   clientMutationId: String
 }
 
-input InvoiceFilter {
-  # Logical AND on all given filters.
-  AND: [InvoiceFilter!]
-
-  # Logical OR on all given filters.
-  OR: [InvoiceFilter!]
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  invoiceNumber: String
-
-  # All values that are not equal to given value.
-  invoiceNumber_not: String
-
-  # All values that are contained in given list.
-  invoiceNumber_in: [String!]
-
-  # All values that are not contained in given list.
-  invoiceNumber_not_in: [String!]
-
-  # All values less than the given value.
-  invoiceNumber_lt: String
-
-  # All values less than or equal the given value.
-  invoiceNumber_lte: String
-
-  # All values greater than the given value.
-  invoiceNumber_gt: String
-
-  # All values greater than or equal the given value.
-  invoiceNumber_gte: String
-
-  # All values containing the given string.
-  invoiceNumber_contains: String
-
-  # All values not containing the given string.
-  invoiceNumber_not_contains: String
-
-  # All values starting with the given string.
-  invoiceNumber_starts_with: String
-
-  # All values not starting with the given string.
-  invoiceNumber_not_starts_with: String
-
-  # All values ending with the given string.
-  invoiceNumber_ends_with: String
-
-  # All values not ending with the given string.
-  invoiceNumber_not_ends_with: String
-  overageOperations: Float
-
-  # All values that are not equal to given value.
-  overageOperations_not: Float
-
-  # All values that are contained in given list.
-  overageOperations_in: [Float!]
-
-  # All values that are not contained in given list.
-  overageOperations_not_in: [Float!]
-
-  # All values less than the given value.
-  overageOperations_lt: Float
-
-  # All values less than or equal the given value.
-  overageOperations_lte: Float
-
-  # All values greater than the given value.
-  overageOperations_gt: Float
-
-  # All values greater than or equal the given value.
-  overageOperations_gte: Float
-  overageRequests: Float
-
-  # All values that are not equal to given value.
-  overageRequests_not: Float
-
-  # All values that are contained in given list.
-  overageRequests_in: [Float!]
-
-  # All values that are not contained in given list.
-  overageRequests_not_in: [Float!]
-
-  # All values less than the given value.
-  overageRequests_lt: Float
-
-  # All values less than or equal the given value.
-  overageRequests_lte: Float
-
-  # All values greater than the given value.
-  overageRequests_gt: Float
-
-  # All values greater than or equal the given value.
-  overageRequests_gte: Float
-  overageStorage: Float
-
-  # All values that are not equal to given value.
-  overageStorage_not: Float
-
-  # All values that are contained in given list.
-  overageStorage_in: [Float!]
-
-  # All values that are not contained in given list.
-  overageStorage_not_in: [Float!]
-
-  # All values less than the given value.
-  overageStorage_lt: Float
-
-  # All values less than or equal the given value.
-  overageStorage_lte: Float
-
-  # All values greater than the given value.
-  overageStorage_gt: Float
-
-  # All values greater than or equal the given value.
-  overageStorage_gte: Float
-  stripeChargeDate: DateTime
-
-  # All values that are not equal to given value.
-  stripeChargeDate_not: DateTime
-
-  # All values that are contained in given list.
-  stripeChargeDate_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  stripeChargeDate_not_in: [DateTime!]
-
-  # All values less than the given value.
-  stripeChargeDate_lt: DateTime
-
-  # All values less than or equal the given value.
-  stripeChargeDate_lte: DateTime
-
-  # All values greater than the given value.
-  stripeChargeDate_gt: DateTime
-
-  # All values greater than or equal the given value.
-  stripeChargeDate_gte: DateTime
-  stripeChargeId: String
-
-  # All values that are not equal to given value.
-  stripeChargeId_not: String
-
-  # All values that are contained in given list.
-  stripeChargeId_in: [String!]
-
-  # All values that are not contained in given list.
-  stripeChargeId_not_in: [String!]
-
-  # All values less than the given value.
-  stripeChargeId_lt: String
-
-  # All values less than or equal the given value.
-  stripeChargeId_lte: String
-
-  # All values greater than the given value.
-  stripeChargeId_gt: String
-
-  # All values greater than or equal the given value.
-  stripeChargeId_gte: String
-
-  # All values containing the given string.
-  stripeChargeId_contains: String
-
-  # All values not containing the given string.
-  stripeChargeId_not_contains: String
-
-  # All values starting with the given string.
-  stripeChargeId_starts_with: String
-
-  # All values not starting with the given string.
-  stripeChargeId_not_starts_with: String
-
-  # All values ending with the given string.
-  stripeChargeId_ends_with: String
-
-  # All values not ending with the given string.
-  stripeChargeId_not_ends_with: String
-  timestamp: DateTime
-
-  # All values that are not equal to given value.
-  timestamp_not: DateTime
-
-  # All values that are contained in given list.
-  timestamp_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  timestamp_not_in: [DateTime!]
-
-  # All values less than the given value.
-  timestamp_lt: DateTime
-
-  # All values less than or equal the given value.
-  timestamp_lte: DateTime
-
-  # All values greater than the given value.
-  timestamp_gt: DateTime
-
-  # All values greater than or equal the given value.
-  timestamp_gte: DateTime
-  total: Float
-
-  # All values that are not equal to given value.
-  total_not: Float
-
-  # All values that are contained in given list.
-  total_in: [Float!]
-
-  # All values that are not contained in given list.
-  total_not_in: [Float!]
-
-  # All values less than the given value.
-  total_lt: Float
-
-  # All values less than or equal the given value.
-  total_lte: Float
-
-  # All values greater than the given value.
-  total_gt: Float
-
-  # All values greater than or equal the given value.
-  total_gte: Float
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  usedSeats: Int
-
-  # All values that are not equal to given value.
-  usedSeats_not: Int
-
-  # All values that are contained in given list.
-  usedSeats_in: [Int!]
-
-  # All values that are not contained in given list.
-  usedSeats_not_in: [Int!]
-
-  # All values less than the given value.
-  usedSeats_lt: Int
-
-  # All values less than or equal the given value.
-  usedSeats_lte: Int
-
-  # All values greater than the given value.
-  usedSeats_gt: Int
-
-  # All values greater than or equal the given value.
-  usedSeats_gte: Int
-  projectBillingInformation: ProjectBillingInformationFilter
+# A connection to a list of items.
+type InvoiceConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [InvoiceEdge]
 }
 
-enum InvoiceOrderBy {
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  invoiceNumber_ASC
-  invoiceNumber_DESC
-  overageOperations_ASC
-  overageOperations_DESC
-  overageRequests_ASC
-  overageRequests_DESC
-  overageStorage_ASC
-  overageStorage_DESC
-  stripeChargeDate_ASC
-  stripeChargeDate_DESC
-  stripeChargeId_ASC
-  stripeChargeId_DESC
-  timestamp_ASC
-  timestamp_DESC
-  total_ASC
-  total_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  usedSeats_ASC
-  usedSeats_DESC
+# An edge in a connection.
+type InvoiceEdge {
+  # The item at the end of the edge.
+  node: CrmInvoice!
+
+  # A cursor for use in pagination.
+  cursor: String!
 }
 
 # This is a ListConstraint
@@ -2687,9 +1404,7 @@ type ModelPermissionEdge {
 }
 
 type Mutation {
-  signinCustomer(input: SigninCustomerInput!): SigninCustomerPayload
   authenticateCustomer(input: AuthenticateCustomerInput!): AuthenticateCustomerPayload
-  signupCustomer(input: SignupCustomerInput!): SignupCustomerPayload
   trustedSignupCustomer(input: TrustedSignupCustomerInput!): TrustedSignupCustomerPayload
   signinClientUser(input: SigninClientUserInput!): SigninClientUserPayload
   trustedSigninCustomer(input: TrustedSigninCustomerInput!): TrustedSigninCustomerPayload
@@ -2760,9 +1475,9 @@ type Mutation {
   updateCustomQueryFunction(input: UpdateCustomQueryFunctionInput!): UpdateCustomQueryFunctionPayload
   addSchemaExtensionFunction(input: AddSchemaExtensionFunctionInput!): AddSchemaExtensionFunctionPayload
   updateSchemaExtensionFunction(input: UpdateSchemaExtensionFunctionInput!): UpdateSchemaExtensionFunctionPayload
-  updateCrmCustomerInformation(input: UpdateCrmCustomerInformationInput!): UpdateCrmCustomerInformationPayload!
-  updateCrmGuideStatus(input: UpdateCrmGuideStatusInput!): UpdateCrmGuideStatusPayload!
-  updateCrmOnboardingStatus(input: UpdateCrmOnboardingStatusInput!): UpdateCrmOnboardingStatusPayload!
+  updateCrmGuideStatus(input: CrmGuideStatusInput!): UpdateCrmGuideStatusPayload!
+  updateCrmOnboardingStatus(input: CrmOnboardingStatusInput!): UpdateCrmOnboardingStatusPayload!
+  updateCrmCustomerInformation(input: CrmCustomerInformationInput!): UpdateCrmCustomerInformationPayload!
 }
 
 # An object with an ID
@@ -2835,127 +1550,6 @@ enum ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE {
   ReactNativeApollo
   ReactRelay
   VueApollo
-}
-
-input OnboardingStatusFilter {
-  # Logical AND on all given filters.
-  AND: [OnboardingStatusFilter!]
-
-  # Logical OR on all given filters.
-  OR: [OnboardingStatusFilter!]
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
-  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
-
-  # All values that are not equal to given value.
-  gettingStarted_not: ONBOARDING_STATUS_GETTING_STARTED
-
-  # All values that are contained in given list.
-  gettingStarted_in: [ONBOARDING_STATUS_GETTING_STARTED!]
-
-  # All values that are not contained in given list.
-  gettingStarted_not_in: [ONBOARDING_STATUS_GETTING_STARTED!]
-  gettingStartedCompleted: Boolean
-
-  # All values that are not equal to given value.
-  gettingStartedCompleted_not: Boolean
-  gettingStartedExample: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
-
-  # All values that are not equal to given value.
-  gettingStartedExample_not: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
-
-  # All values that are contained in given list.
-  gettingStartedExample_in: [ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE!]
-
-  # All values that are not contained in given list.
-  gettingStartedExample_not_in: [ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE!]
-  gettingStartedSkipped: Boolean
-
-  # All values that are not equal to given value.
-  gettingStartedSkipped_not: Boolean
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  systemBridge: SystemBridgeFilter
 }
 
 enum Operation {
@@ -3068,183 +1662,6 @@ type Project implements Node {
   functionRequestHistogram(period: HistogramPeriod!): [Int!]!
 }
 
-input ProjectBillingInformationFilter {
-  # Logical AND on all given filters.
-  AND: [ProjectBillingInformationFilter!]
-
-  # Logical OR on all given filters.
-  OR: [ProjectBillingInformationFilter!]
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  plan: String
-
-  # All values that are not equal to given value.
-  plan_not: String
-
-  # All values that are contained in given list.
-  plan_in: [String!]
-
-  # All values that are not contained in given list.
-  plan_not_in: [String!]
-
-  # All values less than the given value.
-  plan_lt: String
-
-  # All values less than or equal the given value.
-  plan_lte: String
-
-  # All values greater than the given value.
-  plan_gt: String
-
-  # All values greater than or equal the given value.
-  plan_gte: String
-
-  # All values containing the given string.
-  plan_contains: String
-
-  # All values not containing the given string.
-  plan_not_contains: String
-
-  # All values starting with the given string.
-  plan_starts_with: String
-
-  # All values not starting with the given string.
-  plan_not_starts_with: String
-
-  # All values ending with the given string.
-  plan_ends_with: String
-
-  # All values not ending with the given string.
-  plan_not_ends_with: String
-  stripeCustomerId: String
-
-  # All values that are not equal to given value.
-  stripeCustomerId_not: String
-
-  # All values that are contained in given list.
-  stripeCustomerId_in: [String!]
-
-  # All values that are not contained in given list.
-  stripeCustomerId_not_in: [String!]
-
-  # All values less than the given value.
-  stripeCustomerId_lt: String
-
-  # All values less than or equal the given value.
-  stripeCustomerId_lte: String
-
-  # All values greater than the given value.
-  stripeCustomerId_gt: String
-
-  # All values greater than or equal the given value.
-  stripeCustomerId_gte: String
-
-  # All values containing the given string.
-  stripeCustomerId_contains: String
-
-  # All values not containing the given string.
-  stripeCustomerId_not_contains: String
-
-  # All values starting with the given string.
-  stripeCustomerId_starts_with: String
-
-  # All values not starting with the given string.
-  stripeCustomerId_not_starts_with: String
-
-  # All values ending with the given string.
-  stripeCustomerId_ends_with: String
-
-  # All values not ending with the given string.
-  stripeCustomerId_not_ends_with: String
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  creditCard: CreditCardFilter
-  invoices_every: InvoiceFilter
-  invoices_some: InvoiceFilter
-  invoices_none: InvoiceFilter
-  project: ProjectFilter
-}
-
 # A connection to a list of items.
 type ProjectConnection {
   # Information to aid in pagination.
@@ -3264,203 +1681,10 @@ type ProjectDatabase implements Node {
 # An edge in a connection.
 type ProjectEdge {
   # The item at the end of the edge.
-  node: Project!
+  node: CrmProject!
 
   # A cursor for use in pagination.
   cursor: String!
-}
-
-input ProjectFilter {
-  # Logical AND on all given filters.
-  AND: [ProjectFilter!]
-
-  # Logical OR on all given filters.
-  OR: [ProjectFilter!]
-  createdAt: DateTime
-
-  # All values that are not equal to given value.
-  createdAt_not: DateTime
-
-  # All values that are contained in given list.
-  createdAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  createdAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  createdAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  createdAt_lte: DateTime
-
-  # All values greater than the given value.
-  createdAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  createdAt_gte: DateTime
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  isDeleted: Boolean
-
-  # All values that are not equal to given value.
-  isDeleted_not: Boolean
-  name: String
-
-  # All values that are not equal to given value.
-  name_not: String
-
-  # All values that are contained in given list.
-  name_in: [String!]
-
-  # All values that are not contained in given list.
-  name_not_in: [String!]
-
-  # All values less than the given value.
-  name_lt: String
-
-  # All values less than or equal the given value.
-  name_lte: String
-
-  # All values greater than the given value.
-  name_gt: String
-
-  # All values greater than or equal the given value.
-  name_gte: String
-
-  # All values containing the given string.
-  name_contains: String
-
-  # All values not containing the given string.
-  name_not_contains: String
-
-  # All values starting with the given string.
-  name_starts_with: String
-
-  # All values not starting with the given string.
-  name_not_starts_with: String
-
-  # All values ending with the given string.
-  name_ends_with: String
-
-  # All values not ending with the given string.
-  name_not_ends_with: String
-  systemProjectId: String
-
-  # All values that are not equal to given value.
-  systemProjectId_not: String
-
-  # All values that are contained in given list.
-  systemProjectId_in: [String!]
-
-  # All values that are not contained in given list.
-  systemProjectId_not_in: [String!]
-
-  # All values less than the given value.
-  systemProjectId_lt: String
-
-  # All values less than or equal the given value.
-  systemProjectId_lte: String
-
-  # All values greater than the given value.
-  systemProjectId_gt: String
-
-  # All values greater than or equal the given value.
-  systemProjectId_gte: String
-
-  # All values containing the given string.
-  systemProjectId_contains: String
-
-  # All values not containing the given string.
-  systemProjectId_not_contains: String
-
-  # All values starting with the given string.
-  systemProjectId_starts_with: String
-
-  # All values not starting with the given string.
-  systemProjectId_not_starts_with: String
-
-  # All values ending with the given string.
-  systemProjectId_ends_with: String
-
-  # All values not ending with the given string.
-  systemProjectId_not_ends_with: String
-  updatedAt: DateTime
-
-  # All values that are not equal to given value.
-  updatedAt_not: DateTime
-
-  # All values that are contained in given list.
-  updatedAt_in: [DateTime!]
-
-  # All values that are not contained in given list.
-  updatedAt_not_in: [DateTime!]
-
-  # All values less than the given value.
-  updatedAt_lt: DateTime
-
-  # All values less than or equal the given value.
-  updatedAt_lte: DateTime
-
-  # All values greater than the given value.
-  updatedAt_gt: DateTime
-
-  # All values greater than or equal the given value.
-  updatedAt_gte: DateTime
-  customer: CustomerFilter
-  projectBillingInformation: ProjectBillingInformationFilter
-}
-
-enum ProjectOrderBy {
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  isDeleted_ASC
-  isDeleted_DESC
-  name_ASC
-  name_DESC
-  systemProjectId_ASC
-  systemProjectId_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 type Query {
@@ -3785,33 +2009,6 @@ type SigninClientUserPayload {
   clientMutationId: String
 }
 
-input SigninCustomerInput {
-  email: String!
-  password: String!
-  clientMutationId: String
-}
-
-type SigninCustomerPayload {
-  token: String!
-  viewer: Viewer!
-  clientMutationId: String
-}
-
-input SignupCustomerInput {
-  email: String!
-  name: String!
-  source: CustomerSourceType!
-  clientMutationId: String
-}
-
-type SignupCustomerPayload {
-  viewer: Viewer!
-  user: Customer!
-  userEdge: ClientEdge!
-  resetPasswordToken: String!
-  clientMutationId: String
-}
-
 # This is a StringConstraint
 type StringConstraint implements Node, FieldConstraint {
   equalsString: String
@@ -3827,98 +2024,6 @@ type StringConstraint implements Node, FieldConstraint {
   id: ID!
   constraintType: FieldConstraintTypeType!
   fieldId: ID!
-}
-
-input SystemBridgeFilter {
-  # Logical AND on all given filters.
-  AND: [SystemBridgeFilter!]
-
-  # Logical OR on all given filters.
-  OR: [SystemBridgeFilter!]
-  id: ID
-
-  # All values that are not equal to given value.
-  id_not: ID
-
-  # All values that are contained in given list.
-  id_in: [ID!]
-
-  # All values that are not contained in given list.
-  id_not_in: [ID!]
-
-  # All values less than the given value.
-  id_lt: ID
-
-  # All values less than or equal the given value.
-  id_lte: ID
-
-  # All values greater than the given value.
-  id_gt: ID
-
-  # All values greater than or equal the given value.
-  id_gte: ID
-
-  # All values containing the given string.
-  id_contains: ID
-
-  # All values not containing the given string.
-  id_not_contains: ID
-
-  # All values starting with the given string.
-  id_starts_with: ID
-
-  # All values not starting with the given string.
-  id_not_starts_with: ID
-
-  # All values ending with the given string.
-  id_ends_with: ID
-
-  # All values not ending with the given string.
-  id_not_ends_with: ID
-  systemCustomerId: String
-
-  # All values that are not equal to given value.
-  systemCustomerId_not: String
-
-  # All values that are contained in given list.
-  systemCustomerId_in: [String!]
-
-  # All values that are not contained in given list.
-  systemCustomerId_not_in: [String!]
-
-  # All values less than the given value.
-  systemCustomerId_lt: String
-
-  # All values less than or equal the given value.
-  systemCustomerId_lte: String
-
-  # All values greater than the given value.
-  systemCustomerId_gt: String
-
-  # All values greater than or equal the given value.
-  systemCustomerId_gte: String
-
-  # All values containing the given string.
-  systemCustomerId_contains: String
-
-  # All values not containing the given string.
-  systemCustomerId_not_contains: String
-
-  # All values starting with the given string.
-  systemCustomerId_starts_with: String
-
-  # All values not starting with the given string.
-  systemCustomerId_not_starts_with: String
-
-  # All values ending with the given string.
-  systemCustomerId_ends_with: String
-
-  # All values not ending with the given string.
-  systemCustomerId_not_ends_with: String
-  customer: CustomerFilter
-  guideStatus: GuideStatusFilter
-  information: CustomerInformationFilter
-  onboardingStatus: OnboardingStatusFilter
 }
 
 input TrustedSetFeatureToggleInput {
@@ -4070,45 +2175,16 @@ type UpdateAuthProviderPayload {
   clientMutationId: String
 }
 
-input UpdateCrmCustomerInformationInput {
-  createdAt: DateTime
-  email: String
-  isBeta: Boolean
-  name: String
-  referral: String
-  signupPath: String
-  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE
-  source: String
-  updatedAt: DateTime
-  clientMutationId: String!
-}
-
 type UpdateCrmCustomerInformationPayload {
-  clientMutationId: String!
-  customerInformation: crm_CustomerInformation
-}
-
-input UpdateCrmGuideStatusInput {
-  guide1: Boolean
-  clientMutationId: String!
+  customerInformation: CrmCustomerInformation
 }
 
 type UpdateCrmGuideStatusPayload {
-  clientMutationId: String!
-  guideStatus: crm_GuideStatus
-}
-
-input UpdateCrmOnboardingStatusInput {
-  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
-  gettingStartedCompleted: Boolean
-  gettingStartedExample: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
-  gettingStartedSkipped: Boolean
-  clientMutationId: String!
+  guideStatus: CrmGuideStatus
 }
 
 type UpdateCrmOnboardingStatusPayload {
-  clientMutationId: String!
-  onboardingStatus: crm_OnboardingStatus
+  onboardingStatus: CrmOnboardingStatus
 }
 
 input UpdateCustomerInput {

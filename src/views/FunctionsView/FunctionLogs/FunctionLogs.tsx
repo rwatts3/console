@@ -178,44 +178,46 @@ const MappedFunctionLogs = mapProps({
   logs: props => props.node.logs.edges.map(edge => edge.node),
 })(withRouter(FunctionLogsComponent))
 
-export const FunctionLogs = createRefetchContainer(MappedFunctionLogs, {
-  viewer: graphql`
-    fragment FunctionLogs_viewer on Viewer {
-      id
-      project: projectByName(projectName: $projectName) {
+export const FunctionLogs = createRefetchContainer(
+  MappedFunctionLogs,
+  {
+    viewer: graphql`
+      fragment FunctionLogs_viewer on Viewer {
         id
-        name
-      }
-      user {
-        crm {
-          information {
-            isBeta
-          }
+        project: projectByName(projectName: $projectName) {
+          id
+          name
         }
-      }
-    }
-  `,
-  node: graphql.experimental`
-    fragment FunctionLogs_node on Node {
-      id
-      ... on Function {
-        name
-        logs(last: 500) {
-          edges {
-            node {
-              id
-              duration
-              message
-              requestId
-              timestamp
-              status
+        user {
+          crm {
+            information {
+              isBeta
             }
           }
         }
       }
-    }
-  `,
-},
+    `,
+    node: graphql.experimental`
+      fragment FunctionLogs_node on Node {
+        id
+        ... on Function {
+          name
+          logs(last: 500) {
+            edges {
+              node {
+                id
+                duration
+                message
+                requestId
+                timestamp
+                status
+              }
+            }
+          }
+        }
+      }
+    `,
+  },
   graphql.experimental`
     query FunctionLogsRefetchQuery($id: ID!) {
       node(id: $id) {

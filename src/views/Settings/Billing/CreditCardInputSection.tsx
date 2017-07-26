@@ -16,8 +16,8 @@ import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
-import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
-import SetPlanMutation from '../../../mutations/SetPlanMutation'
+import SetCreditCardMutation from '../../../mutations/Billing/SetCreditCardMutation'
+import SetPlanMutation from '../../../mutations/Billing/SetPlanMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
@@ -35,7 +35,6 @@ interface State {
   state: string
   city: string
   country: string
-
   addressDataValid: boolean
 }
 
@@ -284,7 +283,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
       <div className='flex justifyEnd itemsEnd w100'>
         <div
           className='black50 mb25 mr38 pv10 pointer'
-          onClick={() => this.props.go(-1)}
+          onClick={() => this.props.goBack()}
         >Cancel</div>
         <div
           className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer ${!this.state.creditCardDetailsValid && 'o50'}`}

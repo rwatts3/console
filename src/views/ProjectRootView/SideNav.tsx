@@ -499,40 +499,42 @@ const MappedSideNav = mapProps({
     props.viewer.user.crm.information.isBeta || false,
 })(ReduxContainer)
 
-export default createRefetchContainer(MappedSideNav, {
-  viewer: graphql`
-    fragment SideNav_viewer on Viewer {
-      user {
+export default createRefetchContainer(
+  MappedSideNav,
+  {
+    viewer: graphql`
+      fragment SideNav_viewer on Viewer {
+        user {
+          id
+          createdAt
+          crm {
+            information {
+              isBeta
+            }
+          }
+        }
+      }
+    `,
+    project: graphql.experimental`
+      fragment SideNav_project on Project {
         id
-        createdAt
-        crm {
-          information {
-            isBeta
+        name
+        alias
+        webhookUrl
+        region
+        models(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              itemCount
+              isSystem
+            }
           }
         }
       }
-    }
-  `,
-  project: graphql.experimental`
-    fragment SideNav_project on Project {
-      id
-      name
-      alias
-      webhookUrl
-      region
-      models(first: 1000) {
-        edges {
-          node {
-            id
-            name
-            itemCount
-            isSystem
-          }
-        }
-      }
-    }
-  `,
-},
+    `,
+  },
   graphql.experimental`
     query SideNavRefetchQuery($projectName: String!) {
       viewer {

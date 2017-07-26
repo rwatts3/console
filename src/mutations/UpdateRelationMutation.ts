@@ -52,8 +52,8 @@ function commit(input: Props) {
     optimisticResponse: {
       updateRelation: {
         relation: input.filterNullAndUndefined(),
-      }
-    }
+      },
+    },
   })
 }
 
