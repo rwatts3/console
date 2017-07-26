@@ -1445,14 +1445,14 @@ babel-relay-plugin@0.9.3:
   dependencies:
     graphql "^0.6.0"
 
-babel-runtime@6.x, babel-runtime@6.x.x, babel-runtime@^6.18.0, babel-runtime@^6.20.0, babel-runtime@^6.23.0:
+babel-runtime@6.x, babel-runtime@6.x.x, babel-runtime@^6.18.0, babel-runtime@^6.20.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
 
-babel-runtime@^6.11.6, babel-runtime@^6.22.0:
+babel-runtime@^6.11.6:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.22.0.tgz#1cf8b4ac67c77a4ddb0db2ae1f74de52ac4ca611"
   dependencies:
@@ -3469,9 +3469,9 @@ forwarded@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.0.tgz#19ef9874c4ae1c297bcf078fde63a09b66a84363"
 
-found-relay@next:
+"found-relay@git+https://github.com/timsuchanek/found-relay":
   version "0.3.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/found-relay/-/found-relay-0.3.0-alpha.4.tgz#409b9696b0896d06dfcd919e616dadfbd6fcb586"
+  resolved "git+https://github.com/timsuchanek/found-relay#64faed587169909228b4589ce55b9441cedeab5a"
   dependencies:
     babel-runtime "^6.23.0"
     invariant "^2.2.2"
@@ -7314,9 +7314,9 @@ react-redux@^5.0.5:
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
 
-react-relay@^1.1.0:
+"react-relay@git+https://github.com/timsuchanek/react-relay":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-1.1.0.tgz#56cd76885a886d93dd052efebbc0af5b6ceea998"
+  resolved "git+https://github.com/timsuchanek/react-relay#2849eac332289014abd61e9d639fc0c23d0872aa"
   dependencies:
     babel-runtime "^6.23.0"
     fbjs "^0.8.1"
