@@ -161,11 +161,6 @@ class ActionsView extends React.Component<Props, State> {
 }
 
 export default createFragmentContainer(withRouter(ActionsView), {
-    /* TODO manually deal with:
-    initialVariables: {
-      projectName: null, // injected from router
-    }
-    */
     viewer: graphql`
         fragment ActionsView_viewer on Viewer {
             project: projectByName(projectName: $projectName) {

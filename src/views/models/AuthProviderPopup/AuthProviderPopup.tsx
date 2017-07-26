@@ -187,11 +187,6 @@ const MappedAuthProviderPopup = mapProps({
 })(withRouter(AuthProviderPopup))
 
 export default createFragmentContainer(MappedAuthProviderPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment AuthProviderPopup_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

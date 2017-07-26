@@ -204,8 +204,6 @@ class AlgoliaView extends React.Component<Props, State> {
     this.setState({
       showNewIndex: false,
     } as State)
-// TODO props.relay.* APIs do not exist on compat containers
-//     this.props.relay.forceFetch()
   }
 
   private handleShowNewIndex = () => {

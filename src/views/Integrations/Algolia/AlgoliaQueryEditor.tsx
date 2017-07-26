@@ -133,14 +133,6 @@ class AlgoliaQueryEditor extends React.Component<Props, State> {
 }
 
 export default createFragmentContainer(AlgoliaQueryEditor, {
-  /* TODO manually deal with:
-  initialVariables: {
-    // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-    // modelIdExists: true,
-    selectedModelId: null,
-    modelIdExists: false,
-  }
-  */
   algolia: graphql`
     fragment AlgoliaQueryEditor_algolia on SearchProviderAlgolia {
       ...AlgoliaQuery_algolia

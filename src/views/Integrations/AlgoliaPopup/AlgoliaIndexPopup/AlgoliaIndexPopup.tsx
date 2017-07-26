@@ -214,11 +214,6 @@ const MappedAlgoliaIndexPopup = mapProps({
 })(withRouter(AlgoliaIndexPopup))
 
 export const AlgoliaEditIndexPopup = createFragmentContainer(MappedAlgoliaIndexPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   node: graphql`
     fragment AlgoliaIndexPopup_node on Node {
       id
@@ -263,11 +258,6 @@ export const AlgoliaEditIndexPopup = createFragmentContainer(MappedAlgoliaIndexP
 })
 
 export const AlgoliaCreateIndexPopup = createFragmentContainer(withRouter(MappedAlgoliaIndexPopup), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment AlgoliaIndexPopup_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

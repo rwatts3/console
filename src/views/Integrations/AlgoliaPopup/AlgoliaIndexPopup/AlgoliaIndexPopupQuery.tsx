@@ -129,14 +129,6 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
 }
 
 export default createFragmentContainer(AlgoliaIndexPopupQuery, {
-  /* TODO manually deal with:
-  initialVariables: {
-    // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-    // modelIdExists: true,
-    selectedModelId: null,
-    modelIdExists: false,
-  }
-  */
   algolia: graphql`
     fragment AlgoliaIndexPopupQuery_algolia on SearchProviderAlgolia {
       algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)

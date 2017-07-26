@@ -4,7 +4,7 @@ import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay'
 import {Viewer, Invoice} from '../../../types/types'
@@ -416,7 +416,6 @@ class Billing extends React.Component<Props, State> {
             isEditingCreditCardInfo: false,
             isLoading: false,
           } as State)
-// TODO props.relay.* APIs do not exist on compat containers
           this.props.relay.forceFetch()
         })
         .catch(transaction => {
@@ -433,12 +432,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedBilling = connect(null, mapDispatchToProps)(Billing)
 
-export default createFragmentContainer(mappedBilling, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
+export default createRefetchContainer(mappedBilling, {
   viewer: graphql`
     fragment Billing_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
@@ -466,17 +460,17 @@ export default createFragmentContainer(mappedBilling, {
                 node {
                   id
                   name
-#                  systemProjectId
+                  systemProjectId
                   projectBillingInformation {
                     plan
                     invoices(first: 1000)  {
                       edges {
                         node {
-#                          overageRequests
-#                          usageRequests
-#                          usageStorage
-#                          usedSeats
-#                          timestamp
+                          overageRequests
+                          usageRequests
+                          usageStorage
+                          usedSeats
+                          timestamp
                           total
                         }
                       }

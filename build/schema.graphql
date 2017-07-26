@@ -656,6 +656,12 @@ input CrmGuideStatusInput {
 type CrmInvoice {
   invoiceNumber: String
   total: Float
+  overageRequests: Float
+  usageRequests: [Int!]
+  overageStorage: Float
+  usageStorage: [Float!]
+  usedSeats: Float
+  timestamp: DateTime
   id: String
 }
 
@@ -678,9 +684,7 @@ input CrmOnboardingStatusInput {
 type CrmProject {
   id: String
   projectBillingInformation: CrmProjectBillingInformation!
-  isActive: Boolean
-  isDeleted: Boolean
-  lastActive: String
+  systemProjectId: String
   name: String
 }
 

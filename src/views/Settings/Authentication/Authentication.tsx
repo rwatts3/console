@@ -71,11 +71,6 @@ class Authentication extends React.Component<Props, {}> {
 }
 
 export default createFragmentContainer(Authentication, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment Authentication_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

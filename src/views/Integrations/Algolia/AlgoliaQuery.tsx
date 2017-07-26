@@ -110,14 +110,6 @@ class AlgoliaQuery extends React.Component<Props, State> {
 export default createRefetchContainer(
   AlgoliaQuery,
   {
-    /* TODO manually deal with:
-    initialVariables: {
-      // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-      // modelIdExists: true,
-      selectedModelId: null,
-      modelIdExists: false,
-    }
-    */
     algolia: graphql.experimental`
       fragment AlgoliaQuery_algolia on SearchProviderAlgolia
       @argumentDefinitions(

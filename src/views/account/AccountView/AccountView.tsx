@@ -32,11 +32,6 @@ class AccountView extends React.Component<Props, {}> {
 }
 
 export default createFragmentContainer(AccountView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment AccountView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
