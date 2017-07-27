@@ -34,7 +34,7 @@
     padding: 0 3px 0 5px;
     min-width: 20px;
     text-align: right;
-    color: rgba(255,255,255,.2);
+    color: rgba(255,255,255,.2) !important;
     white-space: nowrap;
 }
 
@@ -134,7 +134,7 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 
 /* Default styles for common addons */
 
-div.CodeMirror span.CodeMirror-matchingbracket {color: rgba(255,255,255,.4); text-decoration: underline;}
+div.CodeMirror span.CodeMirror-matchingbracket {color: rgba(255,255,255,.4) !important; text-decoration: underline;}
 /*div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}*/
 /*.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }*/
 /*.CodeMirror-activeline-background {background: #e8f2ff;}*/

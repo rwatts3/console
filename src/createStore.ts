@@ -59,10 +59,9 @@ export default function () {
   store.dispatch(FarceActions.init())
   store.dispatch(fetchGettingStartedState())
 
-
   if (__GA_CODE__ && navigator.userAgent !== 'chromeless') {
     ReactGA.initialize(__GA_CODE__)
-    ReactGA.pageview(pathname)
+    ReactGA.pageview(window.location.pathname)
 
     let lastState: any = store.getState()
     store.subscribe(() => {

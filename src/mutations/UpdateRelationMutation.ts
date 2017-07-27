@@ -24,9 +24,11 @@ const mutation = graphql`
         description
         leftModel {
           id
+          ...TypeList_model
         }
         rightModel {
           id
+          ...TypeList_model
         }
         fieldOnLeftModel {
           id
