@@ -1,17 +1,12 @@
 import Chromeless from 'chromeless'
-import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import { config, CONSOLE_URL } from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    closeTab,
-    viewport,
-  })
+  const chromeless = new Chromeless(config)
 
   return chromeless
-    .cookies.set(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3200)
     .wait('a[data-test="sidenav-permissions"]')
@@ -31,6 +26,6 @@ export default async (cookies: any[]): Promise<any> => {
     .wait('.buttons .button.active')
     .click('.buttons .button.active')
     .wait(1200)
-    .eval.code(() => document.querySelector('.z5:last-child h3[data-test="permission-row-label"]').innerHTML)
+    .evaluate(() => document.querySelector('.z5:last-child h3[data-test="permission-row-label"]').innerHTML)
 
 }

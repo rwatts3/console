@@ -1,16 +1,12 @@
 import Chromeless from 'chromeless'
-import { CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import { config, CONSOLE_URL } from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    viewport,
-  })
+  const chromeless = new Chromeless(config)
 
   await chromeless
-    .cookies.set(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3200)
     .wait('a[data-test="sidenav-databrowser"]')
@@ -21,25 +17,19 @@ export default async (cookies: any[]): Promise<any> => {
     .wait(2200)
     .click('div[class^="NewRowInactive__add"]')
     .type('test url')
-    .eval.code(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
-
-  await chromeless
+    .evaluate(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
     .click('div[data-test="new-row-cell-description"] > div > div')
     .wait(400)
     .wait('div[data-test="new-row-cell-description"] input')
     .type('some description', 'div[data-test="new-row-cell-description"] input')
-    .eval.code(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
-
-  await chromeless
+    .evaluate(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
     .wait(700)
     .click('button[data-test="add-node"]')
     .wait(300)
     .click('div[data-test="edit-field-imageUrl"]')
     .click('div[data-test="cell-imageUrl"]')
     .type('123')
-    .eval.code(() => document.querySelector('input').focus())
-
-  return chromeless
+    .evaluate(() => document.querySelector('input').focus())
     .press(13)
     .wait(400)
     .click('div[data-test="checkbox-row-0"]')

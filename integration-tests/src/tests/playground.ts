@@ -1,16 +1,13 @@
 import Chromeless from 'chromeless'
-import {CONSOLE_URL, runRemote, waitTimeout} from '../config'
+import { config, CONSOLE_URL } from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-  })
+  const chromeless = new Chromeless(config)
 
   return chromeless
     .goto(CONSOLE_URL)
-    .cookies.set(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3000)
     .wait('.playground-button')

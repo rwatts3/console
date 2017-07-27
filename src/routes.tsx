@@ -88,13 +88,12 @@ function render({Component, props, error}) {
 
       // not authorized
       } else if (code === 2001) {
-        cookiestore.remove('graphcool_auth_token')
-        cookiestore.remove('graphcool_customer_id')
-        tracker.reset()
-        return <RedirectOnMount to={`/login${props.location.search}`} />
+        console.error(`Its a 2001`)
+        // cookiestore.remove('graphcool_auth_token')
+        // cookiestore.remove('graphcool_customer_id')
+        // tracker.reset()
+        // return <RedirectOnMount to={`/login${props.location.search}`} />
       }
-    } else {
-      debugger
     }
   }
 

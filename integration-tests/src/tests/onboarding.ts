@@ -1,17 +1,12 @@
 import Chromeless from 'chromeless'
-import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import { config, CONSOLE_URL } from '../config'
 import * as fs from 'fs'
 
 export default async (cookies: any[]): Promise<any> =>  {
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    closeTab,
-    viewport,
-  })
+  const chromeless = new Chromeless(config)
 
-  await chromeless
-    .cookies.set(cookies)
+  const screenshot = await chromeless
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(2600)
     .wait('div[data-test="start-onboarding"]')
@@ -24,11 +19,8 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.button.save')
     .click('.button.save')
     .wait(2100)
-
     .click('a[data-test="add-post-field"]')
-    .eval.code(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
-
-  const screenshot = await chromeless
+    .evaluate(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
     .wait(1100)
     .wait('input.fieldNameInputField')
     .type('imageUrl', 'input.fieldNameInputField')
@@ -75,7 +67,7 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('div[data-test="close-popup"]')
     .click('div[data-test="close-popup"]')
     .wait(2000)
-    .eval.screenshot()
+    .screenshot()
 
   console.log('\n\n')
   console.log(screenshot)

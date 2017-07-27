@@ -1,17 +1,11 @@
 import Chromeless from 'chromeless'
 const cuid = require('cuid')
-import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from './config'
+import { config, CONSOLE_URL } from './config'
 
-export default (): Promise<any> =>  {
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    closeTab,
-    viewport,
-  })
+export default async (): Promise<any> =>  {
+  const chromeless = new Chromeless(config)
 
-  return chromeless
-    .cookies.clearAll()
+  const cookies = await chromeless
     .goto(CONSOLE_URL + '/signup')
     .wait(1000)
     .wait('button[type="submit"]')
@@ -26,5 +20,7 @@ export default (): Promise<any> =>  {
     .type('I am a Test', 'input[data-test="source"]')
     .click('div[data-test="open-console"]')
     // done with giving signup data
-    .cookies.get()
+    .cookiesGet()
+
+  return cookies
 }
