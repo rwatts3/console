@@ -460,6 +460,7 @@ const MappedCell = connect(
 
 let CellContainer = MappedCell
 
+// jest...
 if (process.env.NODE_ENV !== 'test') {
   CellContainer = createFragmentContainer(MappedCell, {
     field: graphql`

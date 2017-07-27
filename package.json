@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack --config webpack.config.build.js -p && cp -r static/* dist",
+    "build": "npm run relay-compiler; rm -rf dist && NODE_ENV=production GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack --config webpack.config.build.js -p && cp -r static/* dist",
     "pre-deploy": "npm run dll && npm run build && cp dll/vendor.bundle.js dist/vendor.bundle.js && cp dist/index.html dist/200.html ",
     "deploy-production": "netlify deploy -p dist -s $NETLIFY_ID -t $NETLIFY_TOKEN",
     "deploy-integration": "netlify deploy -p dist -s $INTEGRATION_NETLIFY_ID -t $INTEGRATION_NETLIFY_TOKEN",
@@ -15,7 +15,8 @@
     "test-integration": "cd integration-tests && tsc && ava --serial dist/test.js",
     "dll": "webpack --config dll.webpack.config.js",
     "analyze": "source-map-explorer dist/app.*",
-    "relay-compiler": "relay-compiler --watch --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx"
+    "watch-relay-compiler": "relay-compiler --watch --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx",
+    "relay-compiler": "relay-compiler --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx"
   },
   "pre-push": [
     "test-quick"
