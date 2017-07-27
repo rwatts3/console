@@ -3,6 +3,8 @@ machine:
     version: 7.10.0
 
 dependencies:
+  pre:
+    - bash ./install_watchman.sh
   override:
     - npm install -g yarn
     - rm -rf node_modules
