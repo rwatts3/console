@@ -20,13 +20,15 @@ const client = new GraphQLClient(`${__BACKEND_ADDR__}/system`, {
   headers,
 })
 
-function fetchQuery(
+export function fetchQuery(
   operation,
   variables,
 ) {
 
-  console.log('fetching query', operation, variables)
-  return client.request(operation.text, variables).then(data => ({data}))
+  return client.request(operation.text, variables).then(data => {
+    console.log('fetched', operation, data)
+    return {data}
+  })
 }
 
 // Create a network layer from the fetch function

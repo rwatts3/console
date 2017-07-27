@@ -110,11 +110,6 @@ class SchemaViewer extends React.Component<Props, null> {
 }
 
 export default createFragmentContainer(withRouter(SchemaViewer), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment SchemaViewer_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

@@ -161,11 +161,6 @@ class Export extends React.Component<Props, {}> {
 const ReduxContainer = connect(null, {showNotification})(Export)
 
 export default createFragmentContainer(ReduxContainer, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment Export_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

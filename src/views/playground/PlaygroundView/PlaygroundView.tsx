@@ -229,11 +229,6 @@ const mapDispatchToProps = (dispatch) => {
 const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
 
 export default createFragmentContainer(MappedPlaygroundView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment PlaygroundView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
@@ -246,5 +241,3 @@ export default createFragmentContainer(MappedPlaygroundView, {
     }
   `,
 })
-
-// httpApiPrefix={__BACKEND_ADDR__}

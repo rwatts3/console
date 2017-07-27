@@ -172,7 +172,6 @@ class AuthProviderPopup extends React.Component<Props, null> {
   }
 
   private close = () => {
-    // TODO
     if (this.props.location.state && this.props.location.state.returnTo) {
       this.props.router.push(this.props.location.state.returnTo)
     } else {

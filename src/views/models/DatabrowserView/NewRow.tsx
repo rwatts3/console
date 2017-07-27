@@ -77,7 +77,6 @@ class NewRow extends React.Component<Props, State> {
   render() {
     const fields = this.getFields()
 
-    // .sort(compareFields) // TODO remove this once field ordering is implemented
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
     const {step} = this.props.gettingStarted

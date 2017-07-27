@@ -120,11 +120,6 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
 }
 
 export default createFragmentContainer(withRouter(ConfirmPricingPlan), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment ConfirmPricingPlan_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

@@ -52,11 +52,6 @@ const MappedFunctionsView = mapProps({
 })(FunctionsView)
 
 export default createFragmentContainer(MappedFunctionsView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment FunctionsView_viewer on Viewer {
       id

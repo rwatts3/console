@@ -455,10 +455,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         digits: authProvider.digits,
         auth0: authProvider.auth0,
       }).then(() => {
-        // TODO refetch the whole schema
-        // The force fetching because authproviders are too complicated to selective choose the config
-        // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-        // which is needed to reflect all affected data
         this.props.forceFetchRoot()
       })
       .catch(transaction => {

@@ -32,11 +32,6 @@ class IntegrationsView extends React.Component<Props, {}> {
 }
 
 export default createFragmentContainer(IntegrationsView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment IntegrationsView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

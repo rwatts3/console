@@ -112,11 +112,6 @@ class Team extends React.Component<Props, {}> {
 const mappedTeam = connect(null, {showNotification})(Team)
 
 export default createFragmentContainer(mappedTeam, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment Team_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

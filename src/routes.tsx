@@ -76,87 +76,6 @@ import CliInfoPopup from './views/SchemaView/CliInfoPopup'
 //   `,
 // }
 
-/**
- * Looks in the route and in parent routes for a loadingColor property
- * @param routes
- * @returns {string}
- */
-function getLoadingColor(routes) {
-  const stack = routes.slice()
-  let color = null
-  while (stack.length > 0 && color === null) {
-    const route = stack.pop()
-    if (route.hasOwnProperty('loadingColor')) {
-      color = route['loadingColor']
-    }
-  }
-  return color !== null ? color : '#8989B1'
-}
-
-/* eslint-disable react/prop-types */
-const oldRender = ({error, props, routerProps, element, ...rest}) => {
-  if (error) {
-    if (error.message && error.message === 'Failed to fetch' && location.pathname === '/') {
-      cookiestore.remove('graphcool_auth_token')
-      cookiestore.remove('graphcool_customer_id')
-      window.location.pathname = '/'
-      return null
-    }
-
-    const err = error.source.errors[0]
-
-    tracker.track(ConsoleEvents.unexpectedError({error: JSON.stringify(err)}))
-
-    if (err.code === 2001) {
-      cookiestore.remove('graphcool_auth_token')
-      cookiestore.remove('graphcool_customer_id')
-      tracker.reset()
-
-      return (
-        <RedirectOnMount to={`/login${routerProps.location.search}`} />
-      )
-    }
-
-    // if the project doesn't exist on this account
-    if (err.code === 4033) {
-      graphcoolAlert('The requested project doesn\'t exist on your account.')
-
-      return (
-        <RedirectOnMount to={`/`} />
-      )
-    }
-
-    if (routerProps && routerProps.params.projectName && routerProps.params.modelName) {
-      // if we have a model and a project, there might be only a problem with the model, so redirect to project
-      return (
-        <RedirectOnMount to={`/${routerProps.params.projectName}`} />
-      )
-    }
-
-    return (
-      // TODO https://github.com/relay-tools/react-router-relay/issues/156
-      <RedirectOnMount to={`/${routerProps.params.projectName}`} />
-    )
-  }
-
-  if (props) {
-    return React.cloneElement(element, props)
-  }
-
-  const color = getLoadingColor(routerProps.routes)
-
-  return (
-    <div className='loader'>
-      <style jsx>{`
-        .loader {
-          @p: .top0, .left0, .right0, .bottom0, .fixed, .flex, .justifyCenter, .itemsCenter, .z999;
-        }
-      `}</style>
-      <Loading color={color}/>
-    </div>
-  )
-}
-
 function render({Component, props, error}) {
   if (error) {
     if (error.response) {
@@ -188,7 +107,7 @@ function render({Component, props, error}) {
           pointer-events: none;
         }
       `}</style>
-        <Loading color={'black'}/>
+        <Loading color={'#666'}/>
       </div>
     )
   }
@@ -367,7 +286,7 @@ export default (
               ...SchemaView_viewer
             }
           }
-        `} render={render} loadingColor='white'>
+        `} render={render}>
           <Route path='cli-guide' Component={CliInfoPopup} render={render}/>
           <Route path='types' Component={() => null} render={render}/>
           <Route path='interfaces' Component={() => null} render={render}/>

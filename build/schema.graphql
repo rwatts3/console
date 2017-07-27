@@ -138,7 +138,7 @@ type AddCustomMutationFunctionPayload {
   viewer: Viewer!
   project: Project!
   user: Customer!
-  function: CustomMutationFunction!
+  function: SchemaExtensionFunction!
   functionEdge: FunctionEdge!
   clientMutationId: String
 }
@@ -160,7 +160,7 @@ type AddCustomQueryFunctionPayload {
   viewer: Viewer!
   project: Project!
   user: Customer!
-  function: CustomQueryFunction!
+  function: SchemaExtensionFunction!
   functionEdge: FunctionEdge!
   clientMutationId: String
 }
@@ -618,7 +618,7 @@ type CrmCreditCard {
 
 type CrmCustomer {
   id: String
-  projects(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projects(before: String, after: String, first: Int, last: Int): CrmProjectConnection!
 }
 
 type CrmCustomerInformation {
@@ -665,6 +665,24 @@ type CrmInvoice {
   id: String
 }
 
+# A connection to a list of items.
+type CrmInvoiceConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [CrmInvoiceEdge]
+}
+
+# An edge in a connection.
+type CrmInvoiceEdge {
+  # The item at the end of the edge.
+  node: CrmInvoice!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
 type CrmOnboardingStatus {
   gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
   gettingStartedCompleted: Boolean
@@ -691,8 +709,26 @@ type CrmProject {
 type CrmProjectBillingInformation {
   id: String
   plan: String
-  invoices(before: String, after: String, first: Int, last: Int): InvoiceConnection!
+  invoices(before: String, after: String, first: Int, last: Int): CrmInvoiceConnection!
   creditCard: CrmCreditCard
+}
+
+# A connection to a list of items.
+type CrmProjectConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [CrmProjectEdge]
+}
+
+# An edge in a connection.
+type CrmProjectEdge {
+  # The item at the end of the edge.
+  node: CrmProject!
+
+  # A cursor for use in pagination.
+  cursor: String!
 }
 
 type CrmSystemBridge {
@@ -729,40 +765,6 @@ enum CustomerSourceType {
   LEARN_APOLLO
   DOCS
   WAIT_LIST
-}
-
-# This is a CustomMutationFunction
-type CustomMutationFunction implements Node, Function {
-  schema: String!
-
-  # The id of the object.
-  id: ID!
-  logs(before: String, after: String, first: Int, last: Int): LogConnection!
-  stats(before: String, after: String, first: Int, last: Int): FunctionStats!
-  name: String!
-  type: FunctionType!
-  isActive: Boolean!
-  webhookUrl: String
-  webhookHeaders: String
-  inlineCode: String
-  auth0Id: String
-}
-
-# This is a CustomQueryFunction
-type CustomQueryFunction implements Node, Function {
-  schema: String!
-
-  # The id of the object.
-  id: ID!
-  logs(before: String, after: String, first: Int, last: Int): LogConnection!
-  stats(before: String, after: String, first: Int, last: Int): FunctionStats!
-  name: String!
-  type: FunctionType!
-  isActive: Boolean!
-  webhookUrl: String
-  webhookHeaders: String
-  inlineCode: String
-  auth0Id: String
 }
 
 scalar DateTime
@@ -1238,24 +1240,6 @@ type InviteCollaboratorPayload {
   clientMutationId: String
 }
 
-# A connection to a list of items.
-type InvoiceConnection {
-  # Information to aid in pagination.
-  pageInfo: PageInfo!
-
-  # A list of edges.
-  edges: [InvoiceEdge]
-}
-
-# An edge in a connection.
-type InvoiceEdge {
-  # The item at the end of the edge.
-  node: CrmInvoice!
-
-  # A cursor for use in pagination.
-  cursor: String!
-}
-
 # This is a ListConstraint
 type ListConstraint implements Node, FieldConstraint {
   uniqueItems: Boolean
@@ -1685,7 +1669,7 @@ type ProjectDatabase implements Node {
 # An edge in a connection.
 type ProjectEdge {
   # The item at the end of the edge.
-  node: CrmProject!
+  node: Project!
 
   # A cursor for use in pagination.
   cursor: String!
@@ -2220,7 +2204,7 @@ type UpdateCustomMutationFunctionPayload {
   viewer: Viewer!
   project: Project!
   user: Customer!
-  function: CustomMutationFunction!
+  function: SchemaExtensionFunction!
   functionEdge: FunctionEdge!
   clientMutationId: String
 }
@@ -2242,7 +2226,7 @@ type UpdateCustomQueryFunctionPayload {
   viewer: Viewer!
   project: Project!
   user: Customer!
-  function: CustomQueryFunction!
+  function: SchemaExtensionFunction!
   functionEdge: FunctionEdge!
   clientMutationId: String
 }

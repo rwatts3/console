@@ -1,28 +1,23 @@
-// TS-lint disabled because otherwise React is not defined.
 import 'babel-polyfill'
-import * as React from 'react' // tslint:disable-line
-// import * as Relay from 'react-relay/classic'
-import * as ReactDOM from 'react-dom'
-// import { default as useRelay } from 'found-relay'
-// import { Router, browserHistory, applyRouterMiddleware } from 'found'
-import { Provider } from 'react-redux'
-
-/* Found / Relay Imports */
-import createConnectedRouter from 'found/lib/createConnectedRouter'
-import createRender from 'found/lib/createRender'
-import { Resolver } from 'found-relay'
-
-/* End Found / Relay Imports */
-
-import * as ReactGA from 'react-ga'
-import * as cookiestore from 'cookiestore'
-import 'graphcool-graphiql/graphiql_dark.css'
+import './styles/codemirror.css'
+import './styles/graphiql_dark.css'
 import './styles/voyager.css'
 import './styles/mdn-like.css'
 import './utils/polyfils'
+import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/shell/shell'
+require('offline-plugin/runtime').install()
+
+import * as React from 'react' // tslint:disable-lne
+import * as ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import * as ReactGA from 'react-ga'
+import * as cookiestore from 'cookiestore'
+import createConnectedRouter from 'found/lib/createConnectedRouter'
+import createRender from 'found/lib/createRender'
+import { Resolver } from 'found-relay'
 import relayEnvironment from './relayEnvironment'
 import createStore from './createStore'
-require('offline-plugin/runtime').install()
 
 // save last referral
 if (!cookiestore.has('graphcool_last_referral')) {
@@ -55,14 +50,6 @@ const ConnectedRouter = createConnectedRouter({
     ),
   }),
 })
-
-// const Router = createFarceRouter({
-//   historyProtocol: new BrowserProtocol(),
-//   historyMiddlewares: [queryMiddleware],
-//   routeConfig: routes,
-//
-//   render: createRender({}),
-// });
 
 ReactDOM.render(
   (

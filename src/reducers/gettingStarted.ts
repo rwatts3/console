@@ -19,7 +19,6 @@ export function reduceGettingStartedState(state: GettingStartedReducerState = in
       if (!gettingStartedState.selectedExample) {
         gettingStartedState.selectedExample = state.gettingStartedState.selectedExample
       }
-      // TODO: use reselect for derived data
       return Object.assign({}, state, {
         gettingStartedState,
         poll: gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE'),

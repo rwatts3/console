@@ -36,11 +36,6 @@ class General extends React.Component<Props, {}> {
 }
 
 export default createFragmentContainer(General, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment General_viewer on Viewer {
       ...DangerZone_viewer,

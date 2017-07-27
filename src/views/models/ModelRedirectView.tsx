@@ -52,11 +52,6 @@ const MappedModelRedirectView = mapProps({
 })(withRouter(ModelRedirectView))
 
 export default createFragmentContainer(MappedModelRedirectView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment ModelRedirectView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

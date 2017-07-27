@@ -688,7 +688,7 @@ class RelationPopup extends React.Component<Props, State> {
       }).then(() => {
           // The force fetching because relations are too complicated to selective choose the config
           // TODO props.relay.* APIs do not exist on compat containers
-          this.props.relay.forceFetch()
+          // this.props.relay.forceFetch()
           this.close()
         })
         .catch((transaction: Transaction) => {

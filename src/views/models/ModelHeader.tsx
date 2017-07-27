@@ -312,11 +312,6 @@ const ReduxContainer = connect(
 )(withRouter(ModelHeader))
 
 export default createFragmentContainer(ReduxContainer, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment ModelHeader_viewer on Viewer {
       ...Header_viewer

@@ -170,11 +170,6 @@ class SchemaView extends React.Component<Props, State> {
 }
 
 export default createRefetchContainer(withRouter(SchemaView), {
-  /* TODO manually deal with:
-   initialVariables: {
-   projectName: null, // injected from router
-   }
-   */
   viewer: graphql`
     fragment SchemaView_viewer on Viewer {
       id

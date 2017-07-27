@@ -148,13 +148,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       sssModelName: props.models[0].name,
     }
 
-    // selectedModelName: null,
-    //   modelSelected: false,
-    //   binding: null,
-    //   operation: null,
-    // TODO put in schema of selected fn
-// TODO props.relay.* APIs do not exist on compat containers
-// TODO needs manual handling
     this.props.relay.refetch(fragmentVariables => ({
       ...fragmentVariables,
       modelSelected: true,
@@ -163,7 +156,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       binding: newNode && newNode.binding || 'PRE_WRITE',
     }))
     isSSS = this.state.eventType === 'SSS'
-    global['f'] = this
   }
 
   componentDidUpdate(prevProps: Props, prevState: FunctionPopupState) {
@@ -753,12 +745,6 @@ export default createRefetchContainer(
         webhookHeaders
         webhookUrl
         ... on SchemaExtensionFunction {
-          schema
-        }
-        ... on CustomMutationFunction {
-          schema
-        }
-        ... on CustomQueryFunction {
           schema
         }
         ... on ServerSideSubscriptionFunction {

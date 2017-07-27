@@ -340,11 +340,6 @@ const MappedAlgoliaPopup = mapProps({
 })(ReduxContainer)
 
 export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment AlgoliaView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

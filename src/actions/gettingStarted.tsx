@@ -8,6 +8,7 @@ import IconNotification from '../components/IconNotification/IconNotification'
 import cuid from 'cuid'
 import {showPopup} from '../actions/popup'
 import {forceShowNewRow} from './databrowser/ui'
+import { fetchQuery } from '../relayEnvironment'
 
 export function showDonePopup() {
   const id = cuid()
@@ -84,42 +85,30 @@ export function skip(): (dispatch: (action: ReduxAction) => any, getState: any) 
   }
 }
 
-export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => any) => Promise<{}> {
-  return (dispatch: (action: ReduxAction) => any): Promise<{}> => {
-    console.warn('TODO: fix gettingStarted black magic')
-    return Promise.resolve({})
-    // TODO fix this black magic / implement it with the new api
-    // const query = Relay.createQuery(
-    //   Relay.QL`
-    //     query {
-    //       viewer {
-    //         user {
-    //           crm {
-    //             onboardingStatus {
-    //               id
-    //               gettingStarted
-    //               gettingStartedSkipped
-    //               gettingStartedExample
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }`,
-    //   {},
-    // )
-    //
-    // return new Promise((resolve: () => any, reject: (error: Error) => any) => {
-    //   Relay.Store.primeCache({ query }, ({done, error}) => {
-    //     if (done) {
-    //       const data = Relay.Store.readQuery(query)[0]
-    //       const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.user.crm.onboardingStatus
-    //       dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
-    //       resolve()
-    //     } else if (error) {
-    //       reject(Error('Error when fetching gettingStartedState'))
-    //     }
-    //   })
-    // })
+export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => any) => Promise<void> {
+  return (dispatch: (action: ReduxAction) => any): Promise<void> => {
+    const query = `
+      query {
+        viewer {
+          user {
+            crm {
+              onboardingStatus {
+                id
+                gettingStarted
+                gettingStartedSkipped
+                gettingStartedExample
+              }
+            }
+          }
+        }
+      }`
+    const variables = {}
+
+    return fetchQuery({text: query}, variables)
+      .then(({data}) => {
+        const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.viewer.user.crm.onboardingStatus
+        dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
+      })
   }
 }
 // dependencies so that the steps' tethers are shown

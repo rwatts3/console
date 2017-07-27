@@ -127,7 +127,7 @@
     "react-modal": "^1.6.5",
     "react-notification-system": "^0.2.7",
     "react-redux": "5.0.3",
-    "react-relay": "git+https://github.com/timsuchanek/react-relay",
+    "react-relay": "git+https://github.com/timsuchanek/react-relay#build1",
     "react-resizable": "^1.6.0",
     "react-responsive": "^1.3.0",
     "react-router": "^2.6.0",

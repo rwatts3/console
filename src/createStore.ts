@@ -59,7 +59,7 @@ export default function () {
   ))
 
   store.dispatch(FarceActions.init())
-  // store.dispatch(fetchGettingStartedState())
+  store.dispatch(fetchGettingStartedState())
 
   return store
 }

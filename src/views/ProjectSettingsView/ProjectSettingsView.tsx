@@ -217,11 +217,6 @@ const mapDispatchToProps = (dispatch) => {
 const MappedProjectSettingsView = connect(null, mapDispatchToProps)(withRouter(ProjectSettingsView))
 
 export default createFragmentContainer(MappedProjectSettingsView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment ProjectSettingsView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

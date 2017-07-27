@@ -19,7 +19,7 @@ import SideNav from '../../views/ProjectRootView/SideNav'
 import OnboardSideNav from './OnboardSideNav'
 import AuthView from '../AuthView/AuthView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-import { skip, update } from '../../actions/gettingStarted'
+import { fetchGettingStartedState, skip, update } from '../../actions/gettingStarted'
 import { Viewer, Customer, Project } from '../../types/types'
 import { PopupState } from '../../types/popup'
 import { GettingStartedState } from '../../types/gettingStarted'
@@ -63,6 +63,7 @@ interface Props {
   update: (step: string, skipped: boolean, customerId: string) => void
   showNotification: ShowNotificationCallback
   skip: () => void
+  fetchGettingStartedState: () => void
 }
 
 const MIN_SIDEBAR_WIDTH = 67
@@ -113,16 +114,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
             email: this.props.user.crm.information.email,
             name: this.props.user.crm.information.name,
           })
-
-          // TODO adjusts events to Intercom
-          // Smooch.on('message:sent', () => {
-          //   tracker.track(ConsoleEvents.Smooch.messageWritten())
-          // })
-
-          // Smooch.on('widget:opened', () => {
-          //   tracker.track(ConsoleEvents.Smooch.opened())
-          // })
-
         }
       })
 
@@ -166,18 +157,17 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {gettingStarted, gettingStartedSkipped} = this.props.user.crm.onboardingStatus
-    const prevGettingStarted = prevProps.user.crm.onboardingStatus.gettingStarted
+    const {step, skipped} = this.props.gettingStartedState
+    const prevStep = prevProps.gettingStartedState.step
 
     if (this.props.params.projectName !== prevProps.params.projectName && this.props.isLoggedin) {
       tracker.identify(this.props.user.id, this.props.project.id)
     }
 
-    if (gettingStarted !== prevGettingStarted) {
+    if (step !== prevStep) {
       this.updateForceFetching()
-
-      tracker.track(ConsoleEvents.Onboarding.gettingStarted({step: gettingStarted, skipped: gettingStartedSkipped}))
-    } else if (this.props.pollGettingStartedOnboarding !== prevProps.pollGettingStartedOnboarding) {
+      tracker.track(ConsoleEvents.Onboarding.gettingStarted({step, skipped: skipped}))
+    } else if (this.props.pollGettingStartedOnboarding) {
       this.updateForceFetching()
     }
   }
@@ -262,7 +252,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
                 {this.props.children}
               </div>
               {this.props.gettingStartedState.isActive() &&
-              <OnboardingBar params={this.props.params}/>
+                <OnboardingBar params={this.props.params}/>
               }
             </div>
           </div>
@@ -306,15 +296,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       if (!this.refreshInterval) {
         this.refreshInterval = setInterval(
           () => {
-            // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
-// TODO props.relay.* APIs do not exist on compat containers
-            this.props.relay.forceFetch({}, () => {
-              this.props.update(
-                this.props.user.crm.onboardingStatus.gettingStarted,
-                this.props.user.crm.onboardingStatus.gettingStartedSkipped,
-                this.props.user.id,
-              )
-            })
+            this.props.fetchGettingStartedState()
           },
           5000,
         )
@@ -356,11 +338,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
               message: `Successfuly uploaded the file ${res.name}. It's now available at ${res.url}.`,
             })
           }
-
-// TODO props.relay.* APIs do not exist on compat containers
-          this.props.relay.forceFetch({}, () => {
-            //
-          })
         })
     }
   }
@@ -375,7 +352,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({update, showNotification, skip}, dispatch)
+  return bindActionCreators({update, showNotification, skip, fetchGettingStartedState}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -399,11 +376,6 @@ const MappedProjectRootView = mapProps({
 })(ReduxContainer)
 
 export default createFragmentContainer(MappedProjectRootView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment ProjectRootView_viewer on Viewer {
       id
@@ -422,10 +394,6 @@ export default createFragmentContainer(MappedProjectRootView, {
       user {
         id
         crm {
-          onboardingStatus {
-            gettingStarted
-            gettingStartedSkipped
-          }
           information {
             name
             email

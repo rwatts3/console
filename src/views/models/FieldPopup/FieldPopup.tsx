@@ -498,7 +498,6 @@ class FieldPopup extends React.Component<Props, State> {
   private update() {
     const {field} = this.state
     let updatedField: any = this.patchDefaultAndMigrationValue(field)
-    // TODO: proper typing
     this.setState({loading: true} as State)
 
     UpdateFieldMutation.commit(updatedField)
@@ -552,19 +551,6 @@ const MappedFieldPopup = mapProps({
 })(ReduxContainer)
 
 export default createFragmentContainer(MappedFieldPopup, {
-  /* TODO manually deal with:
-  initialVariables: {
-    modelName: null, // injected from router
-    projectName: null, // injected from router
-    fieldName: null, // injected from router
-    fieldExists: false,
-  }
-  */
-  /* TODO manually deal with:
-  prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
-    fieldExists: !!prevVariables.fieldName,
-  }))
-  */
   viewer: graphql`
     fragment FieldPopup_viewer on Viewer {
       model: modelByName(projectName: $projectName, modelName: $modelName) {

@@ -14,13 +14,6 @@ module.exports = {
     app: [
       'babel-polyfill',
       './src/main',
-      './src/styles/codemirror.css',
-      // './src/styles/graphiql.css',
-      'codemirror/mode/javascript/javascript',
-      'codemirror/mode/shell/shell',
-      // 'codemirror/lib/codemirror.css',
-      // 'codemirror/theme/dracula.css',
-      'graphcool-graphiql/graphiql_dark.css',
     ],
     styles: 'graphcool-styles/dist/styles.css',
   },

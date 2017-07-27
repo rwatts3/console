@@ -78,6 +78,7 @@ class OnboardingBar extends React.Component<Props, State> {
                 done={step.n < progress.index}
                 n={step.n}
                 onClick={() => this.gotoStep(step.n)}
+                key={step.n}
               >
                 {step.text}
               </Step>

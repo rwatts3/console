@@ -56,11 +56,6 @@ const MappedPermissionsView = mapProps({
 })(PermissionsView)
 
 export default createFragmentContainer(MappedPermissionsView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment PermissionsView_viewer on Viewer {
       project: projectByName(projectName: $projectName) {

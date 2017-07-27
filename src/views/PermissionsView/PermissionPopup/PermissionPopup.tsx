@@ -120,8 +120,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
   updateRelayVariables() {
     if (this.state.selectedOperation) {
-// TODO props.relay.* APIs do not exist on compat containers
-// TODO needs manual handling
       this.props.relay.refetch(fragmentVariables => {
         console.log(`fragmentVariables`, fragmentVariables)
         return {
@@ -508,11 +506,6 @@ const MappedPermissionPopup = mapProps({
 export default createRefetchContainer(
   withRouter(MappedPermissionPopup),
   {
-    /* TODO manually deal with:
-    initialVariables: {
-      operation: 'CREATE',
-    }
-    */
     node: graphql`
       fragment PermissionPopup_node on Node {
         id

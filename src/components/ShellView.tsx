@@ -17,11 +17,6 @@ export default function ShellView({value}: Props) {
           theme: 'mdn-like',
           readOnly: true,
         }}
-        onFocusChange={(focused) => {
-          if (focused) {
-            // TODO track
-          }
-        }}
       />
     </div>
   )

@@ -294,14 +294,6 @@ const Container = mapProps({
 })(ReduxContainer)
 
 export default createFragmentContainer(Container, {
-  /* TODO manually deal with:
-  initialVariables: {
-    // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-    // modelIdExists: true,
-    selectedModelId: null,
-    modelIdExists: false,
-  }
-  */
   project: graphql`
     fragment CreateAlgoliaIndex_project on Project {
       models(first: 1000) {

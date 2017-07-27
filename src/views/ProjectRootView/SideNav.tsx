@@ -486,7 +486,6 @@ const ReduxContainer = connect(
 const MappedSideNav = mapProps({
   params: (props) => props.params,
   project: (props) => props.project,
-// TODO props.relay.* APIs do not exist on compat containers
   relay: (props) => props.relay,
   models: (props) => props.project.models.edges
     .map((edge) => edge.node)
@@ -546,7 +545,6 @@ export default createRefetchContainer(
   `,
 )
 
-// TODO put in seperate component
 /* tslint:disable */
 const mutationFragments = graphql`
   fragment SideNav_model on Model {

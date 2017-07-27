@@ -167,8 +167,6 @@ class FunctionLogsComponent extends React.Component<Props, State> {
   }
 
   private reload = () => {
-    console.log('force fetch')
-// TODO props.relay.* APIs do not exist on compat containers
     this.props.relay.refetch(fragmentVariables => fragmentVariables)
   }
 }

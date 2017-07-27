@@ -251,7 +251,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         items = Immutable.setIn(items, [itemIndex, 'selected'], false)
       }
 
-      // TODO this is tricky and necessary for required relations to be changed
+      // this is tricky and necessary for required relations to be changed
       const newValue = !items[index].selected
       items = Immutable.setIn(items, [index, 'selected'], newValue)
 

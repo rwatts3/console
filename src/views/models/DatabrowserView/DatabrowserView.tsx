@@ -182,7 +182,6 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     this.mounted = true
     this.props.router.addTransitionHook((nextLocation) => {
       if (this.props.newRowActive) {
-        // TODO with custom dialogs use "return false" and display custom dialog
         if (this.state.shouldLeaveRoute) {
           return true
         }
@@ -795,12 +794,6 @@ const MappedDatabrowserView = mapProps({
 })(ReduxContainer)
 
 export default createFragmentContainer(MappedDatabrowserView, {
-  /* TODO manually deal with:
-  initialVariables: {
-    modelName: null, // injected from router
-    projectName: null, // injected from router
-  }
-  */
   viewer: graphql`
     fragment DatabrowserView_viewer on Viewer {
       model: modelByName(projectName: $projectName, modelName: $modelName) {
