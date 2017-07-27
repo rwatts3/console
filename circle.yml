@@ -3,8 +3,13 @@ machine:
     version: 7.10.0
 
 dependencies:
+  cache_directories:
+    - watchman
   pre:
-    - bash ./install_watchman.sh
+    - if [[ ! -e watchman ]]; then git clone https://github.com/facebook/watchman.git && cd watchman/ && git checkout v4.7.0 && ./autogen.sh && ./configure && make; fi
+    - cd watchman && sudo make install
+    - sudo sysctl fs.inotify.max_user_watches=524288
+    - sudo sysctl -p
   override:
     - npm install -g yarn
     - rm -rf node_modules
