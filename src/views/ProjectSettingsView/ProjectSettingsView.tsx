@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {Viewer, Project} from '../../types/types'
 import {ShowNotificationCallback} from '../../types/utils'
@@ -136,14 +139,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
   private onClickResetProjectData = (): void => {
     graphcoolConfirm('This will reset the project data.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectDataMutation({
+          ResetProjectDataMutation.commit({
             projectId: this.props.viewer.project.id,
-          }),
-          {
-            onSuccess: () => {
-              this.props.router.replace(`/${this.props.params.projectName}/playground`)
-            },
+          }).then(() => {
+            this.props.router.replace(`/${this.props.params.projectName}/playground`)
           })
       })
   }
@@ -151,14 +150,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
   private onClickResetCompleteProject = (): void => {
     graphcoolConfirm('This will reset the projects data and schema.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectSchemaMutation({
+          ResetProjectSchemaMutation.commit({
             projectId: this.props.viewer.project.id,
-          }),
-          {
-            onSuccess: () => {
-              this.props.router.replace(`/${this.props.params.projectName}/playground`)
-            },
+          }).then(() => {
+            this.props.router.replace(`/${this.props.params.projectName}/playground`)
           })
       })
   }
@@ -172,37 +167,29 @@ class ProjectSettingsView extends React.Component<Props, State> {
     }
     graphcoolConfirm('This action will delete this project.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeleteProjectMutation({
+          DeleteProjectMutation.commit({
             projectId: this.props.viewer.project.id,
             customerId: this.props.viewer.user.id,
-          }),
-          {
-            onSuccess: () => {
-              // TODO replace hard reload
-              // was added because deleting the last project caused
-              // a relay issue
-              window.location.pathname = '/'
-            },
+          }).then(() => {
+            // TODO replace hard reload
+            // was added because deleting the last project caused
+            // a relay issue
+            window.location.pathname = '/'
           })
       })
   }
 
   private saveSettings = (): void => {
-    Relay.Store.commitUpdate(
-      new UpdateProjectMutation(
+      UpdateProjectMutation.commit(
         {
-          project: this.props.viewer.project,
+          id: this.props.viewer.project.id,
           name: this.state.projectName,
-        }),
-      {
-        onSuccess: () => {
+        }).then(() => {
           this.props.router.replace(`/${this.state.projectName}/`)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      })
+        })
   }
 
   private updateProjectName = (name: string): void => {
@@ -229,35 +216,32 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedProjectSettingsView = connect(null, mapDispatchToProps)(withRouter(ProjectSettingsView))
 
-export default Relay.createContainer(MappedProjectSettingsView, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          name
-          id
-          permanentAuthTokens (first: 1000) {
-            edges {
-              node {
-                ${PermanentAuthTokenRow.getFragment('permanentAuthToken')}
-                id
-                name
-                token
-              }
-            }
-          }
-        }
-        user {
-          projects(first: 1000) {
-            edges {
-              node
+export default createFragmentContainer(MappedProjectSettingsView, {
+  viewer: graphql`
+    fragment ProjectSettingsView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        name
+        id
+        permanentAuthTokens (first: 1000) {
+          edges {
+            node {
+              ...PermanentAuthTokenRow_permanentAuthToken
+              id
+              name
+              token
             }
           }
         }
       }
-    `,
-  },
+      user {
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
+  `,
 })

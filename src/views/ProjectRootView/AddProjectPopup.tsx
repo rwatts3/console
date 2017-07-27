@@ -13,16 +13,18 @@ import tracker from '../../utils/metrics'
 import {onFailureShowNotification} from '../../utils/relay'
 import {connect} from 'react-redux'
 import {showNotification} from '../../actions/notification'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {ShowNotificationCallback} from '../../types/utils'
 import * as Bluebird from 'bluebird'
 import {Region} from '../../types/types'
+import { RelayProp } from 'react-relay'
 
 interface Props {
   onRequestClose: () => void
   customerId: string
   router: any
   showNotification: ShowNotificationCallback
+  relay: RelayProp
 }
 
 interface State {
@@ -230,24 +232,20 @@ class AddProjectPopup extends React.Component<Props, State> {
       {loading: true} as State,
       () => {
         if (projectName) {
-          Relay.Store.commitUpdate(
-            new AddProjectMutation({
-              projectName,
-              customerId: this.props.customerId,
-              region: regionsEnum[selectedIndex],
-            }),
-            {
-              onSuccess: () => {
-                tracker.track(ConsoleEvents.Project.created({name: projectName}))
-                this.setState({loading: false} as State)
-                this.props.router.replace(`${projectName}`)
-              },
-              onFailure: (transaction) => {
-                this.setState({loading: false} as State)
-                onFailureShowNotification(transaction, this.props.showNotification)
-              },
-            },
-          )
+          AddProjectMutation.commit({
+            projectName,
+            customerId: this.props.customerId,
+            region: regionsEnum[selectedIndex],
+          })
+          .then(() => {
+            tracker.track(ConsoleEvents.Project.created({name: projectName}))
+            this.setState({loading: false} as State)
+            this.props.router.replace(`${projectName}`)
+          })
+          .catch(transaction => {
+            this.setState({loading: false} as State)
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
         }
       },
     )

@@ -8,13 +8,16 @@ import {creditCardNumberValid, expirationDateValid, cpcValid,
   minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits} from '../../../utils/creditCardValidator'
 import {Icon} from 'graphcool-styles'
 import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
 import {showNotification} from '../../../actions/notification'
 import {bindActionCreators} from 'redux'
-import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
-import SetPlanMutation from '../../../mutations/SetPlanMutation'
+import SetCreditCardMutation from '../../../mutations/Billing/SetCreditCardMutation'
+import SetPlanMutation from '../../../mutations/Billing/SetPlanMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 
 interface State {
@@ -32,7 +35,6 @@ interface State {
   state: string
   city: string
   country: string
-
   addressDataValid: boolean
 }
 
@@ -416,21 +418,16 @@ class CreditCardInputSection extends React.Component<Props, State> {
             this.stripeResponseHandler,
           )
       } else {
-        Relay.Store.commitUpdate(
-          new SetPlanMutation({
+          SetPlanMutation.commit({
             projectId: this.props.projectId,
             plan: this.props.plan,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.close()
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
               this.props.setLoading(false)
-            },
-          },
-        )
+            })
       }
     } else {
       console.log('Not valid')
@@ -448,35 +445,24 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
     const token = response.id
 
-    Relay.Store.commitUpdate(
-      new SetCreditCardMutation({
+      SetCreditCardMutation.commit({
         projectId: this.props.projectId,
         token: token,
-      }),
-      {
-        onSuccess: () => {
-          Relay.Store.commitUpdate(
-            new SetPlanMutation({
-              projectId: this.props.projectId,
-              plan: this.props.plan,
-            }),
-            {
-              onSuccess: () => {
-                this.props.close()
-              },
-              onFailure: (transaction) => {
-                onFailureShowNotification(transaction, this.props.showNotification)
-                this.props.setLoading(false)
-              },
-            },
-          )
-        },
-        onFailure: (transaction) => {
+      }).then(() => {
+        SetPlanMutation.commit({
+          projectId: this.props.projectId,
+          plan: this.props.plan,
+        })
+        .then(() => this.props.close())
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.props.setLoading(false)
-        },
-      },
-    )
+        })
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.props.setLoading(false)
+      })
 
   }
 
@@ -526,32 +512,30 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedCreditCardInputSection = connect(null, mapDispatchToProps)(CreditCardInputSection)
 
-export default Relay.createContainer(mappedCreditCardInputSection, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        crm: user {
-          name
-          crm {
-            customer {
-              id
-              projects(first: 1000) {
-                edges {
-                  node {
-                    name
-                    projectBillingInformation {
-                      creditCard {
-                        addressCity
-                        addressCountry
-                        addressLine1
-                        addressLine2
-                        addressState
-                        addressZip
-                        expMonth
-                        expYear
-                        last4
-                        name
-                      }
+export default createFragmentContainer(mappedCreditCardInputSection, {
+  viewer: graphql`
+    fragment CreditCardInputSection_viewer on Viewer {
+      crm: user {
+        name
+        crm {
+          customer {
+            id
+            projects(first: 1000) {
+              edges {
+                node {
+                  name
+                  projectBillingInformation {
+                    creditCard {
+                      addressCity
+                      addressCountry
+                      addressLine1
+                      addressLine2
+                      addressState
+                      addressZip
+                      expMonth
+                      expYear
+                      last4
+                      name
                     }
                   }
                 }
@@ -559,6 +543,6 @@ export default Relay.createContainer(mappedCreditCardInputSection, {
             }
           }
         }
-      }`,
-  },
+      }
+    }`,
 })

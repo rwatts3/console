@@ -69,7 +69,6 @@ function isStringlyType(field: Field, serialize: boolean = false): boolean {
 }
 
 function isValidList(value: any): boolean {
-  // TODO improve this code because it doesn't check if the items are of the same type
   return value instanceof Array
 }
 

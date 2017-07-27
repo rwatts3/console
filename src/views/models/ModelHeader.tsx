@@ -1,20 +1,21 @@
 import * as React from 'react'
 import {showNotification} from '../../actions/notification'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {connect} from 'react-redux'
 import {nextStep} from '../../actions/gettingStarted'
-import {Link, withRouter} from 'react-router'
+import {Link, withRouter} from 'found'
 import ModelDescription from './ModelDescription'
 import Tether from '../../components/Tether/Tether'
 import Header from '../../components/Header/Header'
 import {Model, Viewer, Project} from '../../types/types'
 import {GettingStartedState} from '../../types/gettingStarted'
-import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
-import AuthProviderPopup from './AuthProviderPopup/AuthProviderPopup'
 import {Icon, particles, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import UpdateModelNameMutation from '../../mutations/UpdateModelNameMutation'
+import UpdateModelMutation from '../../mutations/UpdateModelMutation'
 import DeleteModelMutation from '../../mutations/DeleteModelMutation'
 import {ShowNotificationCallback} from '../../types/utils'
 import {onFailureShowNotification} from '../../utils/relay'
@@ -268,52 +269,34 @@ class ModelHeader extends React.Component<Props, State> {
     }
 
     if (modelName) {
-      Relay.Store.commitUpdate(
-        new UpdateModelNameMutation({
+        UpdateModelMutation.commit({
           name: modelName,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
+          id: this.props.model.id,
+        }).then(() => {
             tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
             redirect()
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     }
   }
 
   private deleteModel = () => {
-
     graphcoolConfirm('You are deleting this model.')
       .then(() => {
         this.props.router.replace(`/${this.props.params.projectName}/models`)
-
-        Relay.Store.commitUpdate(
-          new DeleteModelMutation({
+          DeleteModelMutation.commit({
             projectId: this.props.project.id,
             modelId: this.props.model.id,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
               this.props.forceFetchRoot()
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+            })
       })
-  }
-
-  private handleModelModalClose = () => {
-    this.setState({
-      editModelModalOpen: false,
-    } as State)
   }
 }
 
@@ -328,45 +311,40 @@ const ReduxContainer = connect(
   },
 )(withRouter(ModelHeader))
 
-export default Relay.createContainer(ReduxContainer, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        ${Header.getFragment('viewer')}
-      }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        ${Header.getFragment('project')}
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        itemCount
-        isSystem
-        fields(first: 100) {
-          edges {
-            node {
+export default createFragmentContainer(ReduxContainer, {
+  viewer: graphql`
+    fragment ModelHeader_viewer on Viewer {
+      ...Header_viewer
+    }
+  `,
+  project: graphql`
+    fragment ModelHeader_project on Project {
+      ...Header_project
+    }
+  `,
+  model: graphql`
+    fragment ModelHeader_model on Model {
+      id
+      name
+      itemCount
+      isSystem
+      fields(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            typeIdentifier
+            relatedModel {
               id
+            }
+            reverseRelationField {
               name
-              typeIdentifier
-              relatedModel {
-                id
-              }
-              reverseRelationField {
-                name
-                id
-              }
+              id
             }
           }
         }
-        ${ModelDescription.getFragment('model')}
       }
-    `,
-  },
+      ...ModelDescription_model
+    }
+  `,
 })

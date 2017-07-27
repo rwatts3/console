@@ -1,7 +1,8 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
-  relationId: string
+  id: string
   name: string
   description?: string
   leftModelId: string
@@ -14,56 +15,48 @@ interface Props {
   fieldOnRightModelIsRequired: boolean
 }
 
-interface Response {
-}
-
-export default class UpdateRelationMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateRelation}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateRelationPayload {
-        relation
-        project
+const mutation = graphql`
+  mutation UpdateRelationMutation($input: UpdateRelationInput!) {
+    updateRelation(input: $input) {
+      relation {
+        id
+        name
+        description
+        leftModel {
+          id
+          ...TypeList_model
+        }
+        rightModel {
+          id
+          ...TypeList_model
+        }
+        fieldOnLeftModel {
+          id
+        }
+        fieldOnRightModel {
+          id
+        }
       }
-    `
+    }
   }
+`
 
-  getConfigs() {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {input},
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        relation: this.props.relationId,
+        relation: input.id,
       },
-    }]
-  }
-
-  getVariables() {
-    return this.getRelation()
-  }
-
-  getOptimisticResponse() {
-    return {
-      relation: this.getRelation.filterNullAndUndefined(),
-    }
-  }
-
-  private getRelation = () => {
-    return {
-      id: this.props.relationId,
-      name: this.props.name,
-      description: this.props.description,
-      leftModelId: this.props.leftModelId,
-      rightModelId: this.props.rightModelId,
-      fieldOnLeftModelName: this.props.fieldOnLeftModelName,
-      fieldOnRightModelName: this.props.fieldOnRightModelName,
-      fieldOnLeftModelIsList: this.props.fieldOnLeftModelIsList,
-      fieldOnRightModelIsList: this.props.fieldOnRightModelIsList,
-      fieldOnLeftModelIsRequired: this.props.fieldOnLeftModelIsRequired,
-      fieldOnRightModelIsRequired: this.props.fieldOnRightModelIsRequired,
-    }
-  }
+    }],
+    optimisticResponse: {
+      updateRelation: {
+        relation: input.filterNullAndUndefined(),
+      },
+    },
+  })
 }
+
+export default { commit }

@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
@@ -8,39 +9,51 @@ interface Props {
   includeMutationCallbacks: boolean
 }
 
-export default class CloneProjectMutation extends Relay.Mutation<Props, {}> {
-  getMutation () {
-    return Relay.QL`mutation{cloneProject}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on CloneProjectPayload {
-        projectEdge
-        user
+const mutation = graphql`
+  mutation CloneProjectMutation($input: CloneProjectInput!) {
+    cloneProject(input: $input) {
+      projectEdge {
+        node {
+          id
+        }
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'RANGE_ADD',
-      parentName: 'user',
-      parentID: this.props.customerId,
-      connectionName: 'projects',
-      edgeName: 'projectEdge',
-      rangeBehaviors: {
-        '': 'append',
-      },
-    }]
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-      name: this.props.name,
-      includeData: this.props.includeData,
-      includeMutationCallbacks: this.props.includeMutationCallbacks,
+      user {
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
     }
   }
+`
+
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        projectId: input.projectId,
+        name: input.name,
+        includeData: input.includeData,
+        includeMutationCallbacks: input.includeMutationCallbacks,
+      },
+    },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'user',
+        parentID: input.customerId,
+        connectionName: 'projects',
+        edgeName: 'projectEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
+      },
+    ],
+  })
 }
+
+export default {commit}

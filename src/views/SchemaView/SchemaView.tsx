@@ -2,19 +2,22 @@ import * as React from 'react'
 import SchemaOverview from './SchemaOverview/SchemaOverview'
 import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
-import * as Relay from 'react-relay/classic'
-import {Viewer, Enum} from '../../types/types'
+import {
+  createRefetchContainer,
+  graphql,
+} from 'react-relay'
+import { Viewer, Enum } from '../../types/types'
 import ResizableBox from '../../components/ResizableBox'
-import {throttle} from 'lodash'
+import { throttle } from 'lodash'
 import EnumsOverview from './EnumsOverview/EnumsOverview'
-import {withRouter} from 'react-router'
+import { withRouter } from 'found'
 
 interface Props {
   viewer: Viewer
   location: any
   params: any
   relay: any
-  router: ReactRouter.InjectedRouter
+  router: any
   route: ReactRouter.Route
 }
 
@@ -45,6 +48,7 @@ class SchemaView extends React.Component<Props, State> {
       blur: false,
       scroll: 0,
     }
+    global['relayProps'] = props.relay
   }
 
   componentDidMount() {
@@ -57,7 +61,7 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   addLeaveHook() {
-    this.props.router.setRouteLeaveHook(this.props.route, (nextLocation) => {
+    this.props.router.addTransitionHook((nextLocation) => {
       if ((this.state.typesChanged || this.state.enumsChanged) && !this.forceLeaveRoute) {
         graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
           .then(() => {
@@ -112,7 +116,6 @@ class SchemaView extends React.Component<Props, State> {
           >
             <SchemaEditor
               project={viewer.project}
-              forceFetchSchemaView={this.props.relay.forceFetch}
               onTypesChange={this.handleTypesChange}
               onEnumsChange={this.handleEnumsChange}
               isBeta={isBeta}
@@ -166,31 +169,26 @@ class SchemaView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(withRouter(SchemaView), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+export default createRefetchContainer(withRouter(SchemaView), {
+  viewer: graphql`
+    fragment SchemaView_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          ${SchemaEditor.getFragment('project')}
-          ${SchemaOverview.getFragment('project')}
-          ${EnumsOverview.getFragment('project')}
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
+        name
+        ...SchemaEditor_project
+        ...SchemaOverview_project
+        ...EnumsOverview_project
+      }
+      user {
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })
 
 const mockEnums: Enum[] = [

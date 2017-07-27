@@ -1,20 +1,22 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {ModelPermission, Model} from '../../../../types/types'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {ModelPermission, Model, Relation, RelationPermission} from '../../../../types/types'
 import {$p, variables, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import NewToggleButton from '../../../../components/NewToggleButton/NewToggleButton'
-import PermissionLabel from './PermissionLabel'
-import ModelPermissionFields from './ModelPermissionFields'
+import RelationPermissionLabel from './RelationPermissionLabel'
 import styled from 'styled-components'
-import {Link, withRouter} from 'react-router'
-import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
+import {Link, withRouter} from 'found'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
+import UpdateRelationPermission from '../../../../mutations/RelationPermission/UpdateRelationPermission'
 
 interface Props {
-  permission: ModelPermission
-  model: Model
+  permission: RelationPermission
+  relation: Relation
   params: any
 }
 
@@ -42,9 +44,9 @@ const Arrow = styled.div`
   }
 `
 
-class ModelPermissionComponent extends React.Component<Props, {}> {
+class RelationPermissionComponent extends React.Component<Props, {}> {
   render() {
-    const {permission, model, params: {projectName}} = this.props
+    const {permission, relation, params: {projectName}} = this.props
     return (
       <Container
         className={cx(
@@ -56,8 +58,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
       >
         <Link
           className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1, $p.itemsCenter)}
-          to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
-          data-test={`edit-permission-button-${model.name}`}
+          to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
         >
           <PermissionType className={cx(
             $p.flex,
@@ -66,8 +67,10 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
             $p.justifyBetween,
             $p.relative,
           )}>
-            <h3 className={cx($p.black50, $p.f16, $p.fw6)} data-test='permission-row-label'>
-              {permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'}
+            <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
+              {permission.ruleName ?
+                permission.ruleName : permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'
+              }
             </h3>
             <Arrow className={cx(
               $p.justifyEnd,
@@ -84,9 +87,19 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
               />
             </Arrow>
           </PermissionType>
-          <PermissionLabel isActive={permission.isActive} operation={permission.operation} className={$p.ml10} />
-          {['READ', 'CREATE', 'UPDATE'].includes(permission.operation) && (
-            <ModelPermissionFields permission={permission} model={model} />
+          {permission.connect && (
+            <RelationPermissionLabel
+              isActive={permission.isActive}
+              operation='connect'
+              className={$p.ml10}
+            />
+          )}
+          {permission.disconnect && (
+            <RelationPermissionLabel
+              isActive={permission.isActive}
+              operation='disconnect'
+              className={$p.ml10}
+            />
           )}
         </Link>
         <div>
@@ -98,34 +111,27 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
 
   private toggleActiveState = () => {
     const {permission} = this.props
-    Relay.Store.commitUpdate(
-      new ToggleActivePermissionMutation({id: permission.id, isActive: !permission.isActive}),
-      {
-        onFailure: (transaction) => console.log(transaction),
-      },
-    )
+      UpdateRelationPermission.commit({id: permission.id, isActive: !permission.isActive})
+        .then((transaction) => console.log(transaction))
     tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
   }
 }
 
-export default Relay.createContainer(withRouter(ModelPermissionComponent), {
-  fragments: {
-    permission: () => Relay.QL`
-      fragment on ModelPermission {
-        id
-        operation
-        userType
-        fieldIds
-        isActive
-        ${ModelPermissionFields.getFragment('permission')}
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        ${ModelPermissionFields.getFragment('model')}
-      }
-    `,
-  },
+export default createFragmentContainer(withRouter(RelationPermissionComponent), {
+  permission: graphql`
+    fragment RelationPermissionComponent_permission on RelationPermission {
+      id
+      userType
+      connect
+      disconnect
+      ruleName
+      isActive
+    }
+  `,
+  relation: graphql`
+    fragment RelationPermissionComponent_relation on Relation {
+      id
+      name
+    }
+  `,
 })

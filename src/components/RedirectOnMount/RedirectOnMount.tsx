@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {debounce} from 'lodash'
 
 interface Props {

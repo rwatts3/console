@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {AuthTrigger} from '../types'
 import {Response} from '../../../mutations/AuthenticateCustomerMutation'
 import * as cookiestore from 'cookiestore'

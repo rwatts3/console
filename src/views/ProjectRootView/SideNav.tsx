@@ -1,15 +1,15 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import * as Relay from 'react-relay/classic'
-import {withRouter, Link} from 'react-router'
+import {
+  createRefetchContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter, Link} from 'found'
 import {connect} from 'react-redux'
 import cuid from 'cuid'
 import mapProps from '../../components/MapProps/MapProps'
-import ScrollBox from '../../components/ScrollBox/ScrollBox'
 import Tether from '../../components/Tether/Tether'
-import AddModelMutation from '../../mutations/AddModelMutation'
 import {sideNavSyncer} from '../../utils/sideNavSyncer'
-import {onFailureShowNotification} from '../../utils/relay'
 import {nextStep, showDonePopup} from '../../actions/gettingStarted'
 import {showPopup} from '../../actions/popup'
 import {Project, Viewer, Model} from '../../types/types'
@@ -18,7 +18,6 @@ import {showNotification} from '../../actions/notification'
 import {Popup} from '../../types/popup'
 import {GettingStartedState} from '../../types/gettingStarted'
 import EndpointPopup from './EndpointPopup'
-import AddModelPopup from './AddModelPopup'
 import styled from 'styled-components'
 import * as cx from 'classnames'
 import {$p, $v, Icon} from 'graphcool-styles'
@@ -26,6 +25,7 @@ import { ExcludeProps } from '../../utils/components'
 import tracker from '../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import SideNavElement from './SideNavElement'
+import { RelayProp } from 'react-relay'
 
 interface Props {
   params: any
@@ -33,7 +33,7 @@ interface Props {
   project: Project
   projectCount: number
   viewer: Viewer
-  relay: Relay.RelayProp
+  relay: RelayProp
   models: Model[]
   gettingStartedState: GettingStartedState
   nextStep: () => Promise<any>
@@ -169,8 +169,6 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   render() {
     const {isBetaCustomer, project, expanded, viewer} = this.props
-    const lastMutationCallbackUsers = new Date('2017-06-09T00:00:00.000Z').getTime()
-    const showMutationCallbacks = new Date(viewer.user.createdAt).getTime() < lastMutationCallbackUsers
     return (
       <div
         className='side-nav'
@@ -227,15 +225,6 @@ export class SideNav extends React.PureComponent<Props, State> {
             small={!this.props.expanded}
             data-test='sidenav-permissions'
           />
-          {showMutationCallbacks && (
-            <SideNavElement
-              link={`/${project.name}/actions`}
-              iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
-              text='Mutation Callbacks'
-              active={this.props.location.pathname.endsWith('/actions')}
-              small={!this.props.expanded}
-            />
-          )}
           <SideNavElement
             link={`/${project.name}/integrations`}
             iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
@@ -278,7 +267,7 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   private renderPlayground = () => {
-    const playgroundPageActive = this.props.router.isActive(`/${this.props.params.projectName}/playground`)
+    const playgroundPageActive = `/${this.props.params.projectName}/playground` === this.props.location.pathname
     const showGettingStartedOnboardingPopup = () => {
       if (this.props.gettingStartedState.isCurrentStep('STEP3_OPEN_PLAYGROUND')) {
         this.props.nextStep()
@@ -345,8 +334,8 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private renderModels = () => {
     const modelActive = (model) => (
-      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/schema`) ||
-      this.props.router.isActive(`/${this.props.params.projectName}/models/${model.name}/databrowser`)
+      this.props.location.pathname === `/${this.props.params.projectName}/models/${model.name}/schema` ||
+      this.props.location.pathname === `/${this.props.params.projectName}/models/${model.name}/databrowser`
     )
 
     const turnedToggleMore = `
@@ -458,43 +447,10 @@ export class SideNav extends React.PureComponent<Props, State> {
 
   private fetch = () => {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
-    this.props.relay.forceFetch()
-  }
-
-  private addModel = (modelName: string) => {
-    const redirect = () => {
-      this.props.router.push(`/${this.props.params.projectName}/models/${modelName}`)
-      this.setState({
-        addingNewModel: false,
-        newModelIsValid: true,
-      } as State)
-    }
-
-    if (modelName) {
-      Relay.Store.commitUpdate(
-        new AddModelMutation({
-          modelName,
-          projectId: this.props.project.id,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
-            if (
-              modelName === 'Post' &&
-              this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
-            ) {
-              this.props.showDonePopup()
-              this.props.nextStep().then(redirect)
-            } else {
-              redirect()
-            }
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
-    }
+    const {projectName} = this.props.params
+    this.props.relay.refetch({
+      projectName,
+    })
   }
 
   private showEndpointPopup = () => {
@@ -510,18 +466,6 @@ export class SideNav extends React.PureComponent<Props, State> {
       ),
       id,
     })
-  }
-
-  private showAddModelPopup = () => {
-    const id = cuid()
-    this.props.showPopup({
-      element: <AddModelPopup id={id} saveModel={this.saveModel} />,
-      id,
-    })
-  }
-
-  private saveModel = (modelName: string) => {
-    this.addModel(modelName)
   }
 }
 
@@ -554,10 +498,11 @@ const MappedSideNav = mapProps({
     props.viewer.user.crm.information.isBeta || false,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedSideNav, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+export default createRefetchContainer(
+  MappedSideNav,
+  {
+    viewer: graphql`
+      fragment SideNav_viewer on Viewer {
         user {
           id
           createdAt
@@ -569,14 +514,14 @@ export default Relay.createContainer(MappedSideNav, {
         }
       }
     `,
-    project: () => Relay.QL`
-      fragment on Project {
+    project: graphql.experimental`
+      fragment SideNav_project on Project {
         id
         name
         alias
         webhookUrl
         region
-        models(first: 100) {
+        models(first: 1000) {
           edges {
             node {
               id
@@ -589,4 +534,23 @@ export default Relay.createContainer(MappedSideNav, {
       }
     `,
   },
-})
+  graphql.experimental`
+    query SideNavRefetchQuery($projectName: String!) {
+      viewer {
+        projectByName(projectName: $projectName) {
+          ...SideNav_project
+        }
+      }
+    }
+  `,
+)
+
+/* tslint:disable */
+const mutationFragments = graphql`
+  fragment SideNav_model on Model {
+    id
+    name
+    itemCount
+    isSystem
+  }
+`

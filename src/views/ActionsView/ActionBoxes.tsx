@@ -1,5 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createRefetchContainer,
+  graphql,
+  RelayProp,
+} from 'react-relay'
 import styled from 'styled-components'
 import {
   Action,
@@ -27,7 +31,7 @@ import {ConsoleEvents} from 'graphcool-metrics'
 interface Props {
   action?: Action
   project: Project
-  relay: Relay.RelayProp
+  relay: RelayProp
   close: () => void
 }
 
@@ -69,7 +73,7 @@ class ActionBoxes extends React.Component<Props, State> {
 
     const triggerMutationModelModelId = action ? action.triggerMutationModel.model.id : ''
     const triggerMutationModelFragment = action ? action.triggerMutationModel.fragment : ''
-    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : ''
+    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : 'CREATE'
     const handlerWebhookUrl = action && action.handlerWebhook ? action.handlerWebhook.url : ''
 
     const { schema, valid } = extractSchema({
@@ -89,15 +93,13 @@ class ActionBoxes extends React.Component<Props, State> {
       changesMade: false,
     }
 
-    props.relay.setVariables({
+    props.relay.refetch(fragmentVariables => ({
+      ...fragmentVariables,
+      projectName: this.props.project.name,
       selectedModelMutationType: triggerMutationModelMutationType,
       selectedModelId: triggerMutationModelModelId,
       hasSelectedModelId: !!action,
-    })
-  }
-
-  componentWillMount () {
-    this.props.relay.forceFetch()
+    }))
   }
 
   componentWillReceiveProps (props: Props) {
@@ -213,15 +215,24 @@ class ActionBoxes extends React.Component<Props, State> {
     this.setState(partialState)
 
     if (payload.triggerMutationModelModelId) {
-      this.props.relay.setVariables({ selectedModelId: payload.triggerMutationModelModelId })
+      this.props.relay.refetch(fragmentVariables => ({
+        ...fragmentVariables,
+        projectName: this.props.project.name,
+        selectedModelId: payload.triggerMutationModelModelId,
+        hasSelectedModelId: true,
+      }))
+    } else {
+      if (payload.triggerMutationModelMutationType) {
+        this.props.relay.refetch(fragmentVariables => ({
+          ...fragmentVariables,
+          projectName: this.props.project.name,
+          selectedModelId: this.state.triggerMutationModelModelId,
+          selectedModelMutationType: payload.triggerMutationModelMutationType,
+          hasSelectedModelId: true,
+        }))
+      }
     }
 
-    if (payload.triggerMutationModelMutationType) {
-      this.props.relay.setVariables({
-        selectedModelMutationType: payload.triggerMutationModelMutationType,
-        hasSelectedModelId: true,
-      })
-    }
   }
 
   private onUpdateHandler = (payload: UpdateHandlerPayload) => {
@@ -264,8 +275,7 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   private createAction = () => {
-    Relay.Store.commitUpdate(
-      new AddActionMutation({
+      AddActionMutation.commit({
         projectId: this.props.project.id,
         isActive: true,
         description: this.state.description,
@@ -279,38 +289,29 @@ class ActionBoxes extends React.Component<Props, State> {
         handlerWebhook: {
           url: this.state.handlerWebhookUrl,
         },
-      }),
-      {
-        onSuccess: () => {
-          this.props.close()
-        },
-      },
-    )
+      }).then(() => {
+        this.props.close()
+      })
   }
 
   private updateAction = () => {
-    Relay.Store.commitUpdate(
-      new UpdateActionMutation({
-        actionId: this.props.action.id,
-        isActive: this.props.action.isActive,
-        description: this.state.description,
-        triggerType: 'MUTATION_MODEL' as ActionTriggerType,
-        handlerType: 'WEBHOOK' as ActionHandlerType,
-        triggerMutationModel: {
-          fragment: this.state.triggerMutationModelFragment,
-          mutationType: this.state.triggerMutationModelMutationType,
-          modelId: this.state.triggerMutationModelModelId,
-        },
-        handlerWebhook: {
-          url: this.state.handlerWebhookUrl,
-        },
-      }),
-      {
-        onSuccess: () => {
-          this.props.close()
-        },
+    UpdateActionMutation.commit({
+      actionId: this.props.action.id,
+      isActive: this.props.action.isActive,
+      description: this.state.description,
+      triggerType: 'MUTATION_MODEL' as ActionTriggerType,
+      handlerType: 'WEBHOOK' as ActionHandlerType,
+      triggerMutationModel: {
+        fragment: this.state.triggerMutationModelFragment,
+        mutationType: this.state.triggerMutationModelMutationType,
+        modelId: this.state.triggerMutationModelModelId,
       },
-    )
+      handlerWebhook: {
+        url: this.state.handlerWebhookUrl,
+      },
+    }).then(() => {
+      this.props.close()
+    })
   }
 
   private renderConfirm = () => {
@@ -342,15 +343,11 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(ActionBoxes, {
-  initialVariables: {
-    selectedModelId: null,
-    selectedModelMutationType: null,
-    hasSelectedModelId: false,
-  },
-  fragments: {
-    action: () => Relay.QL`
-      fragment on Action {
+export default createRefetchContainer(
+  ActionBoxes,
+  {
+    action: graphql`
+      fragment ActionBoxes_action on Action {
         id
         description
         triggerType
@@ -368,14 +365,20 @@ export default Relay.createContainer(ActionBoxes, {
         }
       }
     `,
-    project: () => Relay.QL`
-      fragment on Project {
+    project: graphql.experimental`
+      fragment ActionBoxes_project on Project
+      @argumentDefinitions(
+        selectedModelId: {type: "ID!", defaultValue: ""}
+        selectedModelMutationType: {type: "ActionTriggerMutationModelMutationType!", defaultValue: CREATE}
+        hasSelectedModelId: {type: "Boolean!", defaultValue: false}
+      ) {
         id
+        name
         actionSchema(
           modelId: $selectedModelId
           modelMutationType: $selectedModelMutationType
         ) @include(if: $hasSelectedModelId)
-        ${ActionTriggerBox.getFragment('project')}
+        ...ActionTriggerBox_project
         models(first: 1000) {
           edges {
             node {
@@ -387,4 +390,22 @@ export default Relay.createContainer(ActionBoxes, {
       }
     `,
   },
-})
+  graphql.experimental`
+    query ActionBoxesRefetchQuery(
+      $selectedModelId: ID!,
+      $selectedModelMutationType: ActionTriggerMutationModelMutationType!,
+      $hasSelectedModelId: Boolean!
+      $projectName: String!
+    ) {
+      viewer {
+        projectByName(projectName: $projectName) {
+          ...ActionBoxes_project @arguments(
+            selectedModelId: $selectedModelId,
+            selectedModelMutationType: $selectedModelMutationType,
+            hasSelectedModelId: $hasSelectedModelId,
+          )
+        }
+      }
+    }
+  `,
+)

@@ -1,35 +1,31 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
 }
 
-export default class ResetProjectDataMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{resetProjectData}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on ResetProjectDataPayload {
-        viewer
+const mutation = graphql`
+  mutation ResetProjectDataMutation($input: ResetProjectDataInput!) {
+    resetProjectData(input: $input) {
+      viewer {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {input},
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
         viewer: 'cryptic',
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {PermanentAuthToken} from '../../types/types'
 import {Icon} from 'graphcool-styles'
 import DeletePermanentAuthTokenMutation from '../../mutations/DeletePermanentAuthTokenMutation'
@@ -76,14 +79,11 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
   }
 
   private deleteSystemToken = (): void => {
-    Relay.Store.commitUpdate(
-      new DeletePermanentAuthTokenMutation({
-        projectId: this.props.projectId,
-        tokenId: this.props.permanentAuthToken.id,
-      }),
-      {
-        onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-      })
+    DeletePermanentAuthTokenMutation.commit({
+      projectId: this.props.projectId,
+      tokenId: this.props.permanentAuthToken.id,
+    })
+      .catch(transaction => onFailureShowNotification(transaction, this.props.showNotification))
   }
 }
 
@@ -93,14 +93,12 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedPermanentAuthTokenRow = connect(null, mapDispatchToProps)(PermanentAuthTokenRow)
 
-export default Relay.createContainer(MappedPermanentAuthTokenRow, {
-  fragments: {
-    permanentAuthToken: () => Relay.QL`
-      fragment on PermanentAuthToken {
-        id
-        name
-        token
-      }
-    `,
-  },
+export default createFragmentContainer(MappedPermanentAuthTokenRow, {
+  permanentAuthToken: graphql`
+    fragment PermanentAuthTokenRow_permanentAuthToken on PermanentAuthToken {
+      id
+      name
+      token
+    }
+  `,
 })

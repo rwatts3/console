@@ -2,7 +2,7 @@ import * as React from 'react'
 import {Model} from '../../../types/types'
 import * as Relay from 'react-relay/classic'
 import FieldItem from './FieldItem'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import {Icon, $v} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
 import TypeBoxSettings from './TypeBoxSettings'
@@ -16,7 +16,7 @@ import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {showNotification} from '../../../actions/notification'
 import {ShowNotificationCallback} from '../../../types/utils'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   projectName: string
@@ -456,21 +456,16 @@ class TypeBox extends React.Component<Props,State> {
   }
 
   private editModel = (modelName: string) => {
-    Relay.Store.commitUpdate(
-      new UpdateModelNameMutation({
-        name: modelName,
-        modelId: this.props.model.id,
-      }),
-      {
-        onSuccess: () => {
-          this.stopEditModelName()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.stopEditModelName()
-        },
-      },
-    )
+    UpdateModelNameMutation.commit({
+      name: modelName,
+      id: this.props.model.id,
+    }).then(() => {
+        this.stopEditModelName()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.stopEditModelName()
+      })
   }
 
   private onChangeModelName = e => {

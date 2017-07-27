@@ -1,7 +1,10 @@
 import * as React from 'react'
 import {Viewer} from '../../../types/types'
 import ProjectInfo from './ProjectInfo'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import DangerZone from './DangerZone'
 
 interface Props {
@@ -32,20 +35,15 @@ class General extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(General, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        ${DangerZone.getFragment('viewer')},
-        project: projectByName(projectName: $projectName) {
-          ${DangerZone.getFragment('project')},
-          ${ProjectInfo.getFragment('project')}
-          name
-        }
+export default createFragmentContainer(General, {
+  viewer: graphql`
+    fragment General_viewer on Viewer {
+      ...DangerZone_viewer,
+      project: projectByName(projectName: $projectName) {
+        ...DangerZone_project,
+        ...ProjectInfo_project
+        name
       }
-    `,
-  },
+    }
+  `,
 })

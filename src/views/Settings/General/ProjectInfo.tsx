@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter, Link} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter, Link} from 'found'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {$p} from 'graphcool-styles'
@@ -55,6 +58,7 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   render() {
+
     return (
 
       <div className='flex flexColumn pt38 pl60'>
@@ -314,23 +318,20 @@ class ProjectInfo extends React.Component<Props, State> {
   }
 
   private saveSettings = (): void => {
-    Relay.Store.commitUpdate(
-      new UpdateProjectMutation(
+      UpdateProjectMutation.commit(
         {
-          project: this.props.project,
+          id: this.props.project.id,
           name: this.state.newProjectName,
           alias: this.state.newAlias,
-        }),
-      {
-        onSuccess: () => {
+        })
+        .then(() => {
           const message = 'Successfully updated project.'
           this.props.showNotification({message: message, level: 'success'})
           this.props.router.replace(`/${this.state.newProjectName}/settings/general`)
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      })
+        })
   }
 
   private handleKeyDown = (e) => {
@@ -367,14 +368,12 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedProjectInfo = connect(null, mapDispatchToProps)(ProjectInfo)
 
-export default Relay.createContainer(withRouter(mappedProjectInfo), {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        name
-        alias
-      }
-    `,
-  },
+export default createFragmentContainer(withRouter(mappedProjectInfo), {
+  project: graphql`
+    fragment ProjectInfo_project on Project {
+      id
+      name
+      alias
+    }
+  `,
 })

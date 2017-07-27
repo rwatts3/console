@@ -1,10 +1,14 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+  RelayProp,
+} from 'react-relay'
 import {Transaction} from 'react-relay/classic'
 import {RelationPopupDisplayState, Cardinality, Model, Relation} from '../../types/types'
 import RelationHeader from './RelationHeader'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import RelationFooter from './RelationFooter'
 import DefineRelation from './DefineRelation'
 import SetMutation from './SetMutation'
@@ -57,7 +61,7 @@ interface State {
 interface Props {
   router: ReactRouter.InjectedRouter
   viewer: any
-  relay: Relay.RelayProp
+  relay: RelayProp
   showNotification: ShowNotificationCallback
   location: any
 }
@@ -299,7 +303,7 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private switchToDisplayState = (displayState: RelationPopupDisplayState) => {
@@ -643,8 +647,7 @@ class RelationPopup extends React.Component<Props, State> {
     const rightField = this.state.fieldOnRightModelName
 
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new AddRelationMutation({
+      AddRelationMutation.commit({
         projectId: this.props.viewer.project.id,
         name: this.state.relationName,
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
@@ -656,17 +659,12 @@ class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
         fieldOnLeftModelIsRequired: this.state.fieldOnLeftModelIsRequired,
         fieldOnRightModelIsRequired: this.state.fieldOnRightModelIsRequired,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction: Transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+      }).then(() => {
+        this.close()
+      }).catch((transaction: Transaction) => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private editRelation = () => {
@@ -675,9 +673,8 @@ class RelationPopup extends React.Component<Props, State> {
     const rightField = this.state.fieldOnRightModelName
 
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new UpdateRelationMutation({
-        relationId: this.props.viewer.relation.id,
+      UpdateRelationMutation.commit({
+        id: this.props.viewer.relation.id,
         name: this.state.relationName,
         description: this.state.relationDescription === '' ? null : this.state.relationDescription,
         leftModelId: this.state.leftSelectedModel.id,
@@ -688,40 +685,33 @@ class RelationPopup extends React.Component<Props, State> {
         fieldOnRightModelIsList: this.state.selectedCardinality.startsWith('MANY'),
         fieldOnLeftModelIsRequired: this.state.fieldOnLeftModelIsRequired,
         fieldOnRightModelIsRequired: this.state.fieldOnRightModelIsRequired,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           // The force fetching because relations are too complicated to selective choose the config
-          this.props.relay.forceFetch()
+          // TODO props.relay.* APIs do not exist on compat containers
+          // this.props.relay.forceFetch()
           this.close()
-        },
-        onFailure: (transaction: Transaction) => {
+        })
+        .catch((transaction: Transaction) => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
-        },
-      },
-    )
+        })
   }
 
   private deleteRelation = () => {
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new DeleteRelationMutation({
-        relationId: this.props.viewer.relation.id,
-        projectId: this.props.viewer.project.id,
-        leftModelId: this.props.viewer.relation.leftModel.id,
-        rightModelId: this.props.viewer.relation.leftModel.id,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction: Transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+    DeleteRelationMutation.commit({
+      relationId: this.props.viewer.relation.id,
+      projectId: this.props.viewer.project.id,
+      leftModelId: this.props.viewer.relation.leftModel.id,
+      rightModelId: this.props.viewer.relation.leftModel.id,
+    })
+    .then(() => {
+      this.close()
+    })
+    .catch((transaction: Transaction) => {
+      onFailureShowNotification(transaction, this.props.showNotification)
+      this.setState({loading: false} as State)
+    })
   }
 }
 
@@ -731,78 +721,80 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedCreateRelationPopup = connect(null, mapDispatchToProps)(RelationPopup)
 
-export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
+export default createFragmentContainer(withRouter(mappedCreateRelationPopup), {
+  /* TODO manually deal with:
   initialVariables: {
     projectName: null, // injected from router
     relationName: null, // injected from router
     relationExists: false,
-  },
+  }
+  */
+  /* TODO manually deal with:
   prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
     relationExists: !!prevVariables.relationName,
-  })),
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        relation: relationByName(
-        projectName: $projectName
-        relationName: $relationName
-        ) @include(if: $relationExists) {
+  }))
+  */
+  viewer: graphql`
+    fragment RelationPopup_viewer on Viewer {
+      relation: relationByName(
+      projectName: $projectName
+      relationName: $relationName
+      ) @include(if: $relationExists) {
+        id
+        name
+        description
+        fieldOnLeftModel {
           id
           name
-          description
-          fieldOnLeftModel {
-            id
-            name
-            isList
-            isRequired
-          }
-          fieldOnRightModel {
-            id
-            name
-            isList
-            isRequired
-          }
-          leftModel {
-            id
-            name
-            namePlural
-            itemCount
-          }
-          rightModel {
-            id
-            name
-            namePlural
-            itemCount
-          }
+          isList
+          isRequired
         }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-        project: projectByName(projectName: $projectName) {
+        fieldOnRightModel {
           id
-          relations(first: 1000) {
-            edges {
-              node {
-                name
-              }
+          name
+          isList
+          isRequired
+        }
+        leftModel {
+          id
+          name
+          namePlural
+          itemCount
+        }
+        rightModel {
+          id
+          name
+          namePlural
+          itemCount
+        }
+      }
+      user {
+        crm {
+          information {
+            isBeta
+          }
+        }
+      }
+      project: projectByName(projectName: $projectName) {
+        id
+        relations(first: 1000) {
+          edges {
+            node {
+              name
             }
           }
-          models(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                namePlural
-                fields(first: 1000) {
-                  edges {
-                    node {
-                      id
-                      name
-                    }
+        }
+        models(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              namePlural
+              fields(first: 1000) {
+                edges {
+                  node {
+                    id
+                    name
                   }
                 }
               }
@@ -810,6 +802,6 @@ export default Relay.createContainer(withRouter(mappedCreateRelationPopup), {
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

@@ -2,7 +2,7 @@ import * as React from 'react'
 import Popup from '../../components/Popup'
 import ShellView from '../../components/ShellView'
 import {A} from '../../components/Links'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   projectId: string

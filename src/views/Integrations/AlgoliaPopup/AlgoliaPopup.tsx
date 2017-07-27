@@ -1,13 +1,16 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import ReactElement = React.ReactElement
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Viewer, SearchProviderAlgolia} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import AlgoliaPopupHeader from './AlgoliaPopupHeader'
 import AlgoliaPopupIndexes from './AlgoliaPopupIndexes'
 import AlgoliaPopupFooter from './AlgoliaPopupFooter'
@@ -131,23 +134,15 @@ class AlgoliaPopup extends React.Component<Props, State> {
   private update = () => {
     const {valid, apiKey, applicationId, isEnabled} = this.state
     const {algolia, projectId} = this.props
-    Relay.Store.commitUpdate(
-      new UpdateSearchProviderAlgolia({
-        searchProviderAlgoliaId: algolia.id,
-        isEnabled,
-        apiKey,
-        applicationId,
-        projectId,
-      }),
-      {
-        onSuccess: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+    UpdateSearchProviderAlgolia.commit({
+      id: algolia.id,
+      isEnabled,
+      apiKey,
+      applicationId,
+      projectId,
+    }).then(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+    })
   }
 }
 
@@ -167,33 +162,28 @@ const MappedAlgoliaPopup = mapProps({
   },
 })(ReduxContainer)
 
-export default Relay.createContainer(withRouter(MappedAlgoliaPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          integrations(first: 100) {
-            edges {
-              node {
+export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
+  viewer: graphql`
+    fragment AlgoliaPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        integrations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
                 id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  id
-                  isEnabled
-                  apiKey
-                  applicationId
-                  ${AlgoliaPopupIndexes.getFragment('algolia')}
-                }
+                isEnabled
+                apiKey
+                applicationId
+                ...AlgoliaPopupIndexes_algolia
               }
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

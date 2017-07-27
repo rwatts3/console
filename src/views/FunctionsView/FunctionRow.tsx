@@ -1,12 +1,15 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {Link} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {Link} from 'found'
 import {ServerlessFunction} from '../../types/types'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {Icon, $v} from 'graphcool-styles'
-import ToggleActiveRequestPipelineMutationFunction
-  from '../../mutations/Functions/ToggleActiveRequestPipelineMutationFunction'
+import UpdateRequestPipelineMutationFunction
+  from '../../mutations/Functions/UpdateRequestPipelineMutationFunction'
 import {onFailureShowNotification} from '../../utils/relay'
 import {showNotification} from '../../actions/notification'
 import {ShowNotificationCallback} from '../../types/utils'
@@ -16,8 +19,8 @@ import RequestGraph from './RequestGraph'
 import * as cn from 'classnames'
 import {getIsInline} from './FunctionPopup/FunctionPopup'
 import {getEventTypeFromFunction} from '../../utils/functions'
-import ToggleServerSideSubscriptionFunction from '../../mutations/Functions/ToggleServerSideSubscriptionFunction'
-import ToggleSchemaExtensionFunction from '../../mutations/Functions/ToggleSchemaExtensionFunction'
+import UpdateServerSideSubscriptionFunction from '../../mutations/Functions/UpdateServerSideSubscriptionFunction'
+import UpdateSchemaExtensionFunction from '../../mutations/Functions/UpdateSchemaExtensionFunction'
 import { RelayProp } from 'react-relay/classic'
 
 interface Props {
@@ -51,7 +54,7 @@ class FunctionRow extends React.Component<Props, State> {
   render() {
     const {fn, params: {projectName}} = this.props
     const eventType = getEventTypeFromFunction(fn)
-    const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/${eventType.toLowerCase()}/edit`
+    const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
     const isInline = getIsInline(fn)
 
     const lastCall = fn.stats.lastRequest ? moment(fn.stats.lastRequest).fromNow() : 'no recent invocations'
@@ -253,81 +256,80 @@ class FunctionRow extends React.Component<Props, State> {
     const eventType = getEventTypeFromFunction(this.props.fn)
     switch (eventType) {
       case 'RP':
-        return Relay.Store.commitUpdate(
-          new ToggleActiveRequestPipelineMutationFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+        return UpdateRequestPipelineMutationFunction.commit({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }).then(() => {
+            console.log('success at toggling')
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
       case 'SSS':
-        return Relay.Store.commitUpdate(
-          new ToggleServerSideSubscriptionFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+        return UpdateServerSideSubscriptionFunction.commit({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }).then(() => {
+            console.log('success at toggling')
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
       case 'SCHEMA_EXTENSION':
-        return Relay.Store.commitUpdate(
-          new ToggleSchemaExtensionFunction({
-            functionId: this.props.fn.id,
-            isActive: !this.props.fn.isActive,
-          }),
-          {
-            onSuccess: () => {
-              console.log('success at toggling')
-            },
-            onFailure: (transaction) => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+        return UpdateSchemaExtensionFunction.commit({
+          functionId: this.props.fn.id,
+          isActive: !this.props.fn.isActive,
+        }).then(() => {
+            console.log('success at toggling')
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
     }
   }
 }
 
 const ConnectedFunctionRow = connect(null, {showNotification})(FunctionRow)
 
-export default Relay.createContainer(withRouter(ConnectedFunctionRow), {
-  fragments: {
-    fn: () => Relay.QL`
-      fragment on Function {
-        __typename
-        id
-        name
-        isActive
-        type
-        auth0Id
-        stats {
-          errorCount
-          lastRequest
-          requestCount
-          requestHistogram
+export default createFragmentContainer(withRouter(ConnectedFunctionRow), {
+  fn: graphql`
+    fragment FunctionRow_fn on Function {
+      __typename
+      id
+      name
+      isActive
+      type
+      auth0Id
+      stats {
+        errorCount
+        lastRequest
+        requestCount
+        requestHistogram
+      }
+      ... on RequestPipelineMutationFunction {
+        binding
+        model {
+          name
         }
-      },
-    `,
-  },
+        operation
+      }
+    },
+  `,
 })
-// TODO add later when we use relay-modern
-// ... on RequestPipelineMutationFunction @include(if: $includeRP) {
-//   binding
-//   model {
-//     name
-//   }
-//   operation
-// }
+
+const mutationFragments = graphql`
+  fragment FunctionRow_function on Function {
+    __typename
+    id
+    name
+    isActive
+    type
+    auth0Id
+    stats {
+      errorCount
+      lastRequest
+      requestCount
+      requestHistogram
+    }
+  }
+`

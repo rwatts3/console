@@ -1,6 +1,9 @@
 import * as React from 'react'
-import {withRouter} from 'react-router'
-import * as Relay from 'react-relay/classic'
+// import {withRouter} from 'found'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import {default as mapProps} from 'map-props'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
@@ -24,7 +27,8 @@ class RootRedirectView extends React.Component<Props, {}> {
 
   componentWillMount(): void {
     if (this.props.projectName) {
-      this.props.router.replace(`/${this.props.projectName}${this.props.location.search}`)
+      const url = `/${this.props.projectName}${this.props.location.search}`
+      this.props.router.replace(url)
     }
   }
 
@@ -54,21 +58,21 @@ class RootRedirectView extends React.Component<Props, {}> {
 
   private addProject = (): void => {
     const projectName = window.prompt('Project name')
-    if (projectName) {
-      Relay.Store.commitUpdate(
-        new AddProjectMutation(
-          {
-            projectName,
-            customerId: this.props.viewer.user.id,
-            region: 'US_WEST_2',
-          }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Project.created({name: projectName}))
-            this.props.router.replace(`/${projectName}${this.props.location.search}`)
-          },
-        })
-    }
+    // if (projectName) {
+    //   Relay.Store.commitUpdate(
+    //     new AddProjectMutation(
+    //       {
+    //         projectName,
+    //         customerId: this.props.viewer.user.id,
+    //         region: 'US_WEST_2',
+    //       }),
+    //     {
+    //       onSuccess: () => {
+    //         tracker.track(ConsoleEvents.Project.created({name: projectName}))
+    //         this.props.router.replace(`/${projectName}${this.props.location.search}`)
+    //       },
+    //     })
+    // }
   }
 }
 
@@ -92,26 +96,23 @@ const MappedRootRedirectView = mapProps({
 
     return project.name
   },
-})(withRouter(RootRedirectView))
+})(RootRedirectView)
 
-export default Relay.createContainer(MappedRootRedirectView, {
-  fragments: {
-    // NOTE name needed because of relay bug
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+export default createFragmentContainer(MappedRootRedirectView, {
+  viewer: graphql`
+    fragment RootRedirectView_viewer on Viewer {
+      id
+      user {
         id
-        user {
-          id
-          projects(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+              name
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

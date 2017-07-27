@@ -2,7 +2,10 @@ import * as React from 'react'
 import {Project} from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import AddPermanentAuthTokenMutation from '../../../mutations/AddPermanentAuthTokenMutation'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import TokenRow from './TokenRow'
 import DeletePermanentAuthTokenMutation from '../../../mutations/DeletePermanentAuthTokenMutation'
 import {ShowNotificationCallback} from '../../../types/utils'
@@ -147,33 +150,24 @@ class Tokens extends React.Component<Props, State> {
     if (!this.state.newTokenName) {
       return
     }
-    Relay.Store.commitUpdate(
-      new AddPermanentAuthTokenMutation({
+      AddPermanentAuthTokenMutation.commit({
         projectId: this.props.project.id,
         tokenName: this.state.newTokenName,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           this.setState({
             newTokenName: '',
             isEnteringTokenName: false} as State)
-        },
-        onFailure: (transaction) => console.error('could not submit token, an error occured'),
-      },
-    )
+        })
+        .catch(transaction => console.error('could not submit token, an error occured'))
   }
 
   private deleteSystemToken = (token): void => {
     graphcoolConfirm(`This will delete token \'${token.name}\'`)
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeletePermanentAuthTokenMutation({
-            projectId: this.props.project.id,
-            tokenId: token.id,
-          }),
-          {
-            onFailure: (transaction) => onFailureShowNotification(transaction, this.props.showNotification),
-          })
+        DeletePermanentAuthTokenMutation.commit({
+          projectId: this.props.project.id,
+          tokenId: token.id,
+        }).catch(transaction => onFailureShowNotification(transaction, this.props.showNotification))
     })
   }
 }
@@ -184,21 +178,19 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedTokens = connect(null, mapDispatchToProps)(Tokens)
 
-export default Relay.createContainer(mappedTokens, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        permanentAuthTokens (first: 1000) {
-          edges {
-            node {
-              id
-              name
-              token
-            }
+export default createFragmentContainer(mappedTokens, {
+  project: graphql`
+    fragment Tokens_project on Project {
+      id
+      permanentAuthTokens (first: 1000) {
+        edges {
+          node {
+            id
+            name
+            token
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

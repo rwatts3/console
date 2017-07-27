@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import { withRouter } from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import { withRouter } from 'found'
 import {$p, $v, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled, { keyframes } from 'styled-components'
@@ -207,7 +210,6 @@ class AfterSignUpView extends React.Component<Props, State> {
         </Container>
       </div>
     )
-
   }
 
   private openIntercom = () => {
@@ -223,21 +225,16 @@ class AfterSignUpView extends React.Component<Props, State> {
       return
     }
 
-    Relay.Store.commitUpdate(
-      new UpdateCustomerSourceMutation({
-        customerInformationId: this.props.viewer.user.crm.information.id,
-        source: source,
-        referral: cookiestore.get('graphcool_last_referral'),
-      }),
-      {
-        onSuccess: () => {
-          this.props.router.push('/')
-        },
-        onFailure: () => {
-          this.props.router.push('/')
-        },
-      },
-    )
+    UpdateCustomerSourceMutation.commit({
+      customerInformationId: this.props.viewer.user.crm.information.id,
+      source: source,
+      referral: cookiestore.get('graphcool_last_referral'),
+    }).then(() => {
+        this.props.router.push('/')
+      })
+      .catch(() => {
+        this.props.router.push('/')
+      })
 
   }
 
@@ -260,23 +257,21 @@ class AfterSignUpView extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(withRouter(AfterSignUpView), {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          name
-          crm {
-            information {
-              id
-              name
-              email
-              source
-            }
+export default createFragmentContainer(withRouter(AfterSignUpView), {
+  viewer: graphql`
+    fragment AfterSignUpView_viewer on Viewer {
+      user {
+        id
+        name
+        crm {
+          information {
+            id
+            name
+            email
+            source
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

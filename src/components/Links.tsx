@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as cn from 'classnames'
 import { Icon, $v } from 'graphcool-styles'
-import { Link } from 'react-router'
+import { Link } from 'found'
 
 interface Props {
   hideArrow?: boolean

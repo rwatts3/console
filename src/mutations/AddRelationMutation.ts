@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
@@ -14,49 +15,86 @@ interface Props {
   fieldOnRightModelIsRequired: boolean
 }
 
-export default class AddRelationMutation extends Relay.Mutation<Props, {}> {
-
-    getMutation () {
-        return Relay.QL`mutation{addRelation}`
-    }
-
-    getFatQuery () {
-        return Relay.QL`
-            fragment on AddRelationPayload {
-                relation
-                leftModel
-                rightModel
-                project
+const mutation = graphql`
+  mutation AddRelationMutation($input: AddRelationInput!) {
+    addRelation(input: $input) {
+      relation {
+        id
+      }
+      leftModel {
+        ...NewRow_model
+        ...TypeList_model
+      }
+      rightModel {
+        ...NewRow_model
+        ...TypeList_model
+      }
+      project {
+        relations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              description
+              fieldOnLeftModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              fieldOnRightModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              leftModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
+              rightModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
             }
-        `
+          }
+        }
+      }
     }
+  }
+`
 
-  getConfigs() {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {input},
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'relations',
       edgeName: 'relationEdge',
       rangeBehaviors: {'': 'append'},
     }, {
       type: 'RANGE_ADD',
       parentName: 'leftModel',
-      parentID: this.props.leftModelId,
+      parentID: input.leftModelId,
       connectionName: 'fields',
       edgeName: 'fieldOnLeftModelEdge',
       rangeBehaviors: {'': 'append'},
     }, {
       type: 'RANGE_ADD',
       parentName: 'rightModel',
-      parentID: this.props.rightModelId,
+      parentID: input.rightModelId,
       connectionName: 'fields',
       edgeName: 'fieldOnRightModelEdge',
       rangeBehaviors: {'': 'append'},
-    }]
-  }
-
-  getVariables() {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default {commit}

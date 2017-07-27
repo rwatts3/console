@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'found'
 const classes: any = require('./AddFieldCell.scss')
 import {ConsoleEvents} from 'graphcool-metrics'
 import tracker from '../../../utils/metrics'

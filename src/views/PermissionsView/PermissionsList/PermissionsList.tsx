@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Model} from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import ModelPermissions from './ModelPermissions/ModelPermissions'
@@ -40,20 +43,18 @@ const MappedPermissionsList = mapProps({
   models: props => props.project.models.edges.map(edge => edge.node),
 })(PermissionsList)
 
-export default Relay.createContainer(MappedPermissionsList, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        name
-        models(first: 100) {
-          edges {
-            node {
-              id
-              ${ModelPermissions.getFragment('model')}
-            }
+export default createFragmentContainer(MappedPermissionsList, {
+  project: graphql`
+    fragment PermissionsList_project on Project {
+      name
+      models(first: 1000) {
+        edges {
+          node {
+            id
+            ...ModelPermissions_model
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

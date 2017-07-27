@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { nextStep } from '../../../actions/gettingStarted'
@@ -74,7 +77,6 @@ class NewRow extends React.Component<Props, State> {
   render() {
     const fields = this.getFields()
 
-    // .sort(compareFields) // TODO remove this once field ordering is implemented
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
     const {step} = this.props.gettingStarted
@@ -203,41 +205,39 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedNewRow = connect(mapStateToProps, mapDispatchToProps)(NewRow)
 
-export default Relay.createContainer(MappedNewRow, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        fields(first: 1000) {
-          edges {
-            node {
+export default createFragmentContainer(MappedNewRow, {
+  model: graphql`
+    fragment NewRow_model on Model {
+      fields(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            defaultValue
+            typeIdentifier
+            isList
+            isReadonly
+            enum {
               id
-              name
-              defaultValue
-              typeIdentifier
-              isList
-              isReadonly
-              enum {
-                id
-              }
-              ${Cell.getFragment('field')}
             }
+            ...Cell_field
           }
         }
       }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        enums(first: 1000) {
-          edges {
-            node {
-              id
-              name
-              values
-            }
+    }
+  `,
+  project: graphql`
+    fragment NewRow_project on Project {
+      id
+      enums(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            values
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

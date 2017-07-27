@@ -1,13 +1,16 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Viewer, SearchProviderAlgolia, AlgoliaSyncQuery} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import AlgoliaPopupIndexTop from './AlgoliaPopupIndexTop'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import UpdateAlgoliaSyncQueryMutation from '../../../mutations/UpdateAlgoliaSyncQueryMutation'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
 import AlgoliaIndexPopupQuery from './AlgoliaIndexPopup/AlgoliaIndexPopupQuery'
@@ -59,35 +62,31 @@ class AlgoliaPopupIndexes extends React.Component<Props, State> {
   toggle = (e) => {
     const {index: {id, fragment, indexName, isEnabled}} = this.props
 
-    Relay.Store.commitUpdate(
-      new UpdateAlgoliaSyncQueryMutation({
+      UpdateAlgoliaSyncQueryMutation.commit({
         algoliaSyncQueryId: id,
         indexName,
         fragment,
         isEnabled: !isEnabled,
-      }),
-    )
+      })
   }
 }
 
-export default Relay.createContainer(withRouter(AlgoliaPopupIndexes), {
-  fragments: {
-    algolia: () => Relay.QL`
-      fragment on SearchProviderAlgolia {
-        ${AlgoliaIndexPopupQuery.getFragment('algolia')}
-      }
-    `,
-    index: () => Relay.QL`
-      fragment on AlgoliaSyncQuery {
+export default createFragmentContainer(withRouter(AlgoliaPopupIndexes), {
+  algolia: graphql`
+    fragment AlgoliaPopupIndex_algolia on SearchProviderAlgolia {
+      ...AlgoliaIndexPopupQuery_algolia
+    }
+  `,
+  index: graphql`
+    fragment AlgoliaPopupIndex_index on AlgoliaSyncQuery {
+      id
+      fragment
+      indexName
+      isEnabled
+      model {
         id
-        fragment
-        indexName
-        isEnabled
-        model {
-          id
-          name
-        }
+        name
       }
-    `,
-  },
+    }
+  `,
 })

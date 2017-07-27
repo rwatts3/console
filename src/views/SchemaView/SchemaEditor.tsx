@@ -1,9 +1,12 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Project} from '../../types/types'
 import {sortSchema} from '../../../sortSchema'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
 import MigrationMessages from './MigrationMessages'
 const QueryEditor: any = require('./Editor/QueryEditor').QueryEditor
@@ -19,7 +22,6 @@ import SchemaExport from './SchemaExport'
 interface Props {
   project: Project
   relay: any
-  forceFetchSchemaView: () => void
   showNotification: ShowNotificationCallback
   onTypesChange: (changed: boolean) => void
   onEnumsChange: (enums: boolean) => void
@@ -273,32 +275,27 @@ class SchemaEditor extends React.Component<Props, State> {
     // const newSchema = this.addFrontmatter(schema)
     const newSchema = schema
     this.setState({loading: true} as State)
-    Relay.Store.commitUpdate(
-      new MigrateProject({
+      MigrateProject.commit({
         newSchema,
         isDryRun,
         force: true,
-      }),
-      {
-        onSuccess: (res) => {
-          if (isDryRun) {
-            this.setState({
-              messages: res.migrateProject.migrationMessages,
-              isDryRun: false,
-              errors: res.migrateProject.errors,
-              loading: false,
-            } as State)
-          } else {
-            this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
-            this.props.forceFetchSchemaView()
-          }
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+        projectId: this.props.project.id,
+      }).then(res => {
+        if (isDryRun) {
+          this.setState({
+            messages: res.migrateProject.migrationMessages,
+            isDryRun: false,
+            errors: res.migrateProject.errors,
+            loading: false,
+          } as State)
+        } else {
+          this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
+        }
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private reset = () => {
@@ -381,27 +378,25 @@ class SchemaEditor extends React.Component<Props, State> {
 
 const SchemaEditorRedux = connect(null, {showNotification})(SchemaEditor)
 
-export default Relay.createContainer(SchemaEditorRedux, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        schema
-        typeSchema
-        enumSchema
-        name
-        version
-        models(first: 100) {
-          edges {
-            node {
-              id
-              name
-            }
+export default createFragmentContainer(SchemaEditorRedux, {
+  project: graphql`
+    fragment SchemaEditor_project on Project {
+      id
+      schema
+      typeSchema
+      enumSchema
+      name
+      version
+      models(first: 1000) {
+        edges {
+          node {
+            id
+            name
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })
 
 const enumIdl = `enum Role {

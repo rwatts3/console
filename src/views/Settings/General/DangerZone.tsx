@@ -1,6 +1,9 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import ResetProjectDataMutation from '../../../mutations/ResetProjectDataMutation'
 import ResetProjectSchemaMutation from '../../../mutations/ResetProjectSchemaMutation'
 import DeleteProjectMutation from '../../../mutations/DeleteProjectMutation'
@@ -33,16 +36,16 @@ class DangerZone extends React.Component<Props, State> {
       <div className='container'>
         <style jsx={true}>{`
           .container {
-            @inherit: .mt38, .bt, .pt38, .ph60, .bgBlack04;
+            @p: .mt38, .bt, .pt38, .ph60, .bgBlack04;
             border-color: rgba(208,2,27,1);
           }
 
           .actionRow {
-            @inherit: .flex, .justifyBetween, .itemsCenter, .pv25, .ph16;
+            @p: .flex, .justifyBetween, .itemsCenter, .pv25, .ph16;
           }
 
           .bottomBorderForActionRow {
-            @inherit: .bb;
+            @p: .bb;
             border-color: rgba( 229, 229, 229, 1);
           }
 
@@ -69,21 +72,21 @@ class DangerZone extends React.Component<Props, State> {
           }
 
           .actionButton {
-            @inherit: .pv10, .ph16, .f16, .nowrap, .br2, .pointer;
+            @p: .pv10, .ph16, .f16, .nowrap, .br2, .pointer;
           }
 
           .dangerZoneTitle {
-            @inherit: .ttu, .f14, .fw6, .pl16, .pt25, .pb10;
+            @p: .ttu, .f14, .fw6, .pl16, .pt25, .pb10;
             color: rgba(242,92,84,1);
           }
 
           .hoveredOrangeActionButton {
-            @inherit: .white;
+            @p: .white;
             background-color: rgba(241,143,1,1);
           }
 
           .hoveredRedActionButton {
-            @inherit: .white;
+            @p: .white;
             background-color: rgba(242,92,84,1);
           }
 
@@ -164,40 +167,32 @@ class DangerZone extends React.Component<Props, State> {
 }
 
   private onClickResetProjectData = (): void => {
-    graphcoolConfirm('You are reseting the project data.')
+    graphcoolConfirm('You are resetting the project data.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectDataMutation({
+          ResetProjectDataMutation.commit({
             projectId: this.props.project.id,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.showNotification({message: 'All nodes were deleted', level: 'success'})
               this.props.router.replace(`/${this.props.project.name}/settings/general`)
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          })
+            })
       })
   }
 
   private onClickResetCompleteProject = (): void => {
     graphcoolConfirm('Your are resetting the projects schema and data.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new ResetProjectSchemaMutation({
+          ResetProjectSchemaMutation.commit({
             projectId: this.props.project.id,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.showNotification({message: 'All nodes and models were deleted', level: 'success'})
               this.props.router.replace(`/${this.props.project.name}/settings/general`)
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          })
+            })
       })
   }
 
@@ -210,17 +205,17 @@ class DangerZone extends React.Component<Props, State> {
     }
     graphcoolConfirm('You are deleting this project. All data and the schema will be lost.')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeleteProjectMutation({
-            projectId: this.props.project.id,
-            customerId: this.props.viewer.user.id,
-          }),
-          {
-            onSuccess: () => {
-              this.props.router.replace(`/`)
-              this.props.showNotification({message: 'Your project was deleted', level: 'success'})
-            },
-
+      console.log('DangerZone: delete Project')
+        DeleteProjectMutation.commit({
+          projectId: this.props.project.id,
+          customerId: this.props.viewer.user.id,
+        }).then(() => {
+          window.location.pathname = '/'
+          console.log('trying to redirect')
+        })
+          .catch(e => {
+            window.location.pathname = '/'
+            console.error(e)
           })
       })
   }
@@ -233,23 +228,25 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedDangerZone = connect(null, mapDispatchToProps)(withRouter(DangerZone))
 
-export default Relay.createContainer(MappedDangerZone, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          projects(first: 10) {
-            edges
+export default createFragmentContainer(MappedDangerZone, {
+  viewer: graphql`
+    fragment DangerZone_viewer on Viewer {
+      user {
+        id
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+            }
           }
         }
       }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        name
-      }
-    `,
-  },
+    }
+  `,
+  project: graphql`
+    fragment DangerZone_project on Project {
+      id
+      name
+    }
+  `,
 })

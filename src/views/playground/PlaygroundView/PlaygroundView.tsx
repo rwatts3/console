@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Helmet from 'react-helmet'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { Lokka } from 'lokka'
@@ -14,7 +17,6 @@ import {Icon} from 'graphcool-styles'
 import * as cookiestore from 'cookiestore'
 import endpoints from '../../../utils/endpoints'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
-import LoginClientUserMutation from '../../../mutations/LoginClientUserMutation'
 import {GettingStartedState} from '../../../types/gettingStarted'
 import {nextStep, previousStep} from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
@@ -226,23 +228,16 @@ const mapDispatchToProps = (dispatch) => {
 
 const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
 
-export default Relay.createContainer(MappedPlaygroundView, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          region
-        }
-        userModel: modelByName(projectName: $projectName, modelName: "User"){
-          id
-        }
+export default createFragmentContainer(MappedPlaygroundView, {
+  viewer: graphql`
+    fragment PlaygroundView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        region
       }
-    `,
-  },
+      userModel: modelByName(projectName: $projectName, modelName: "User"){
+        id
+      }
+    }
+  `,
 })
-
-// httpApiPrefix={__BACKEND_ADDR__}

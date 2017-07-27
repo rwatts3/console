@@ -262,6 +262,19 @@ export interface PermissionQueryArgument {
   group: string
 }
 
+export interface ModelPermissionUpdateInput {
+  id: string
+  fieldIds?: string[]
+  ruleWebhookUrl?: string
+  rule?: Rule
+  ruleName?: string
+  ruleGraphQuery?: string
+  applyToWholeModel?: boolean
+  isActive?: boolean
+  operation?: Operation
+  userType?: UserType
+}
+
 export interface ModelPermission {
   id: string
   fieldIds?: string[]

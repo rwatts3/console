@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Helmet from 'react-helmet'
 import IntegrationsCardGrid from './IntegrationsCardGrid'
 import IntegrationsHeader from './IntegrationsHeader'
@@ -28,24 +31,19 @@ class IntegrationsView extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(IntegrationsView, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${IntegrationsCardGrid.getFragment('project')}
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
+export default createFragmentContainer(IntegrationsView, {
+  viewer: graphql`
+    fragment IntegrationsView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...IntegrationsCardGrid_project
+      }
+      user {
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

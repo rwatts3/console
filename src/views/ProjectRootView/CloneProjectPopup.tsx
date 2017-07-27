@@ -1,10 +1,9 @@
 import * as React            from 'react'
-import * as Relay            from 'react-relay/classic'
 import {connect}             from 'react-redux'
 import {ConsoleEvents}       from 'graphcool-metrics'
 import * as cx               from 'classnames'
 import styled                from 'styled-components'
-import {withRouter}          from 'react-router'
+import {withRouter}          from 'found'
 import {
   $p,
   variables,
@@ -24,6 +23,10 @@ import {onFailureShowNotification} from '../../utils/relay'
 import {ShowNotificationCallback} from '../../types/utils'
 import * as Modal from 'react-modal'
 import {fieldModalStyle} from '../../utils/modalStyle'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 
 interface Props {
   router: ReactRouter.InjectedRouter
@@ -200,7 +203,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private onCancelClick = () => {
@@ -222,7 +225,7 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   private closePopup = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private cloneProject = () => {
@@ -247,27 +250,22 @@ class CloneProjectPopup extends React.Component<Props, State> {
     }))
 
     this.setState({loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new CloneProjectMutation({
+        CloneProjectMutation.commit({
           projectId,
           name: projectName,
           customerId,
           includeData,
           includeMutationCallbacks,
-        }),
-        {
-          onSuccess: () => {
+        }).then(() => {
             tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
 
             const {router} = this.props
 
             router.push(`/${projectName}`)
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     })
   }
 }
@@ -277,18 +275,13 @@ const ReduxContainer = connect(null, {showNotification})(CloneProjectPopup)
 const MappedCloneProjectPopup = mapProps({
   projectId: props => props.viewer.project.id,
   customerId: props => props.viewer.user.id,
-})(ReduxContainer)
+})(withRouter(ReduxContainer))
 
-export default Relay.createContainer(withRouter(MappedCloneProjectPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user { id }
-        project: projectByName(projectName: $projectName) { id }
-      }
-    `,
-  },
+export default createFragmentContainer(MappedCloneProjectPopup, {
+  viewer: graphql`
+    fragment CloneProjectPopup_viewer on Viewer {
+      user { id }
+      project: projectByName(projectName: $projectName) { id }
+    }
+  `,
 })

@@ -6,8 +6,6 @@ import ClickOutside from 'react-click-outside'
 import Datetime from 'react-datetime'
 const classes: any = require('./Datepicker.scss')
 
-// TODO remove once closed: https://github.com/YouCanBookMe/react-datetime/issues/44
-
 if (Datetime) {
   Datetime.prototype.componentWillReceiveProps = function (nextProps) {
     if (this.props.open !== nextProps.open) {

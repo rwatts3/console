@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {$v,Icon} from 'graphcool-styles'
 import Info from '../../components/Info'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import * as cx from 'classnames'
 import ComingSoonTag from './ComingSoonTag'
 

@@ -1,39 +1,47 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 import {RelationPermission} from '../../types/types'
 
-interface Response {
+type UserType = 'EVERYONE' | 'AUTHENTICATED'
+
+interface UpdateRelationPermissionInput {
+  id: string
+  connect?: boolean
+  disconnect?: boolean
+  userType?: UserType
+  rule?: Rule
+  ruleName?: string
+  ruleGraphQuery?: string
+  ruleWebhookUrl?: string
+  description?: string
+  isActive?: boolean
+  clientMutationId?: string
 }
 
-export default class UpdateRelationPermissionMutation extends Relay.Mutation<RelationPermission, Response> {
+type Rule = 'NONE' | 'GRAPH' | 'WEBHOOK'
 
-  getMutation () {
-    return Relay.QL`mutation{updateRelationPermission}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateRelationPermissionPayload {
-        relationPermission
+const mutation = graphql`
+  mutation UpdateRelationPermissionMutation($input: UpdateRelationPermissionInput!) {
+    updateRelationPermission(input: $input) {
+      relationPermission {
+        id
+        ...RelationPermissionComponent_permission
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        relationPermission: this.props.id,
-      },
-    }]
-  }
-
-  getOptimisticResponse () {
-    return {
-      relationPermission: this.props,
     }
   }
+`
 
-  getVariables () {
-    return this.props
-  }
+function commit(input: UpdateRelationPermissionInput) {
+  return makeMutation({
+    mutation,
+    variables: {input: input.filterNullAndUndefined()},
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        relationPermission: input.id,
+      },
+    }],
+  })
 }
+
+export default { commit }

@@ -1,10 +1,13 @@
 import * as React from 'react'
 import {Viewer} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {Icon} from 'graphcool-styles'
 import CreditCardInputSection from './CreditCardInputSection'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Loading from '../../../components/Loading/Loading'
 
 interface State {
@@ -26,6 +29,7 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
 
   render() {
 
+    console.log(this.props.viewer.crm.crm.customer.projects.edges)
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
       return edge.node.name === this.props.projectName
     }).node
@@ -101,12 +105,12 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
   }
 
   private close = () => {
-    this.props.router.goBack()
-    this.props.router.goBack()
+    this.props.router.go(-1)
+    this.props.router.go(-1)
   }
 
   private goBack = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private setLoading = (isLoading: boolean) => {
@@ -115,38 +119,33 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
 
 }
 
-export default Relay.createContainer(withRouter(ConfirmPricingPlan), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-        },
-        crm: user {
-          name
-          crm {
-            customer {
-              id
-              projects(first: 1000) {
-                edges {
-                  node {
-                    name
-                    projectBillingInformation {
-                      creditCard {
-                        last4
-                        name
-                      }
+export default createFragmentContainer(withRouter(ConfirmPricingPlan), {
+  viewer: graphql`
+    fragment ConfirmPricingPlan_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+      },
+      crm: user {
+        name
+        crm {
+          customer {
+            id
+            projects(first: 1000) {
+              edges {
+                node {
+                  name
+                  projectBillingInformation {
+                    creditCard {
+                      last4
+                      name
                     }
                   }
                 }
               }
             }
           }
-        },
-        ${CreditCardInputSection.getFragment('viewer')}
-      }
-    `},
-})
+        }
+      },
+      ...CreditCardInputSection_viewer
+    }
+  `})

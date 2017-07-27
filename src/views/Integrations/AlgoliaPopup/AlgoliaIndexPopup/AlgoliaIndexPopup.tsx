@@ -1,10 +1,13 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Project, Model, SearchProviderAlgolia, AlgoliaSyncQuery} from '../../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import mapProps from '../../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
 import AlgoliaIndexPopupHeader from './AlgoliaIndexPopupHeader'
@@ -158,13 +161,12 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     if (this.validate()) {
       this.close()
-      Relay.Store.commitUpdate(
-        new AddAlgoliaSyncQueryMutation({
+        AddAlgoliaSyncQueryMutation.commit({
           modelId: selectedModel.id,
           indexName: title,
           fragment,
           searchProviderAlgoliaId: algolia.id,
-        }))
+        })
     }
 
   }
@@ -175,13 +177,12 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     if (this.validate() && node) {
       this.close()
-      Relay.Store.commitUpdate(
-        new UpdateAlgoliaSyncQueryMutation({
+        UpdateAlgoliaSyncQueryMutation.commit({
           algoliaSyncQueryId: node.id,
           indexName: title,
           fragment,
           isEnabled,
-        }),
+        })
       )
     }
   }
@@ -191,12 +192,10 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     if (node) {
       this.close()
-      Relay.Store.commitUpdate(
-        new DeleteAlgoliaSyncQueryMutation({
-          algoliaSyncQueryId: node.id,
-          searchProviderAlgoliaId: algolia.id,
-        }),
-      )
+      DeleteAlgoliaSyncQueryMutation.commit({
+        algoliaSyncQueryId: node.id,
+        searchProviderAlgoliaId: algolia.id,
+      })
     }
   }
 }
@@ -214,86 +213,76 @@ const MappedAlgoliaIndexPopup = mapProps({
   },
 })(withRouter(AlgoliaIndexPopup))
 
-export const AlgoliaEditIndexPopup = Relay.createContainer(MappedAlgoliaIndexPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Node {
-        id
-        ... on AlgoliaSyncQuery {
-          fragment
-          indexName
-          isEnabled
-          model {
-            name
-            id
-          }
+export const AlgoliaEditIndexPopup = createFragmentContainer(MappedAlgoliaIndexPopup, {
+  node: graphql`
+    fragment AlgoliaIndexPopup_node on Node {
+      id
+      ... on AlgoliaSyncQuery {
+        fragment
+        indexName
+        isEnabled
+        model {
+          name
+          id
         }
       }
-    `,
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${AlgoliaIndexPopupModels.getFragment('project')}
-          models(first: 100) {
-            edges {
-              node {
-                id
-              }
+    }
+  `,
+  viewer: graphql`
+    fragment AlgoliaIndexPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...AlgoliaIndexPopupModels_project
+        models(first: 1000) {
+          edges {
+            node {
+              id
             }
           }
-          integrations(first: 100) {
-            edges {
-              node {
+        }
+        integrations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
                 id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  id
-                  ${AlgoliaIndexPopupQuery.getFragment('algolia')}
-                }
+                ...AlgoliaIndexPopupQuery_algolia
               }
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })
 
-export const AlgoliaCreateIndexPopup = Relay.createContainer(withRouter(MappedAlgoliaIndexPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${AlgoliaIndexPopupModels.getFragment('project')}
-          models(first: 100) {
-            edges {
-              node {
-                id
-              }
+export const AlgoliaCreateIndexPopup = createFragmentContainer(withRouter(MappedAlgoliaIndexPopup), {
+  viewer: graphql`
+    fragment AlgoliaIndexPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...AlgoliaIndexPopupModels_project
+        models(first: 1000) {
+          edges {
+            node {
+              id
             }
           }
-          integrations(first: 100) {
-            edges {
-              node {
+        }
+        integrations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
                 id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  id
-                  ${AlgoliaIndexPopupQuery.getFragment('algolia')}
-                }
+                ...AlgoliaIndexPopupQuery_algolia
               }
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

@@ -179,13 +179,10 @@ class AddModelPopup extends React.Component<Props, State> {
       // } as State)
     }
     if (modelName) {
-      Relay.Store.commitUpdate(
-        new AddModelMutation({
+        AddModelMutation.commit({
           modelName,
           projectId: this.props.projectId,
-        }),
-        {
-          onSuccess: () => {
+        }).then(() => {
             tracker.track(ConsoleEvents.Schema.Model.created({modelName}))
             if (
               modelName === 'Post' &&
@@ -196,12 +193,10 @@ class AddModelPopup extends React.Component<Props, State> {
             } else {
               redirect()
             }
-          },
-          onFailure: (transaction) => {
+          })
+          .catch((transaction) => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     }
   }
 }

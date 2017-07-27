@@ -1,13 +1,13 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import * as cx from 'classnames'
 import {$p, Icon} from 'graphcool-styles'
 
 interface Integration {
   isEnabled: boolean,
   logoURI?: string,
-  description: string
+  description: string | JSX.Element
   link: string
   logo?: any
 }

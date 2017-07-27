@@ -1,8 +1,12 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createRefetchContainer,
+  graphql,
+  RelayProp,
+} from 'react-relay'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import {Model, SearchProviderAlgolia} from '../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
@@ -11,7 +15,7 @@ interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
   onFragmentChange: (fragment: String, valid: boolean) => void
-  relay: Relay.RelayProp
+  relay: RelayProp
   selectedModel: Model
 }
 
@@ -50,20 +54,24 @@ class AlgoliaQuery extends React.Component<Props, State> {
   }
   componentDidMount() {
     const {relay, selectedModel} = this.props
-    relay.forceFetch(
-      {
+    relay.refetch(
+      fragmentVariables => ({
+        ...fragmentVariables,
         selectedModelId: selectedModel.id,
         modelIdExists: true,
-      },
+      }),
     )
   }
   componentWillReceiveProps(nextProps) {
     const {relay} = this.props
     if (nextProps.selectedModel !== this.props.selectedModel) {
-      relay.forceFetch({
-        selectedModelId: nextProps.selectedModel.id,
-        modelIdExists: true,
-      })
+      relay.refetch(
+        fragmentVariables => ({
+          ...fragmentVariables,
+          selectedModelId: nextProps.selectedModel.id,
+          modelIdExists: true,
+        }),
+      )
     }
 
     if (nextProps.algolia.algoliaSchema !== this.props.algolia.algoliaSchema) {
@@ -99,18 +107,38 @@ class AlgoliaQuery extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(AlgoliaQuery, {
-  initialVariables: {
-    // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-    // modelIdExists: true,
-    selectedModelId: null,
-    modelIdExists: false,
-  },
-  fragments: {
-    algolia: (props) => Relay.QL`
-      fragment on SearchProviderAlgolia {
+export default createRefetchContainer(
+  AlgoliaQuery,
+  {
+    algolia: graphql.experimental`
+      fragment AlgoliaQuery_algolia on SearchProviderAlgolia
+      @argumentDefinitions(
+        selectedModelId: {type: "ID!", defaultValue: ""}
+        modelIdExists: {type: "Boolean!", defaultValue: false}
+      ) {
         algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
       }
     `,
   },
-})
+  graphql.experimental`
+    query AlgoliaQueryRefetchQuery($selectedModelId: ID!, $modelIdExists: Boolean!, $projectName: String!) {
+      viewer {
+        projectByName(projectName: $projectName) {
+          id
+          integrations(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                type
+                ... on SearchProviderAlgolia {
+                  ...AlgoliaQuery_algolia @arguments(selectedModelId: $selectedModelId, modelIdExists: $modelIdExists)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+)

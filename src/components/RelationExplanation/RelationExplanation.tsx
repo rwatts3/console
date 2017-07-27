@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {getModelName, getModelNamePlural} from '../../utils/namegetter'
 import {Project} from '../../types/types'
 const classes: any = require('./RelationExplanation.scss')
@@ -68,20 +71,18 @@ class RelationExplanation extends React.Component<Props, {}> {
 
 }
 
-export default Relay.createContainer(RelationExplanation, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-          models (first: 1000) {
-            edges {
-              node {
-                id
-                name
-                namePlural
-              }
+export default createFragmentContainer(RelationExplanation, {
+  project: graphql`
+    fragment RelationExplanation_project on Project {
+        models (first: 1000) {
+          edges {
+            node {
+              id
+              name
+              namePlural
             }
-        }
+          }
       }
-    `,
-  },
+    }
+  `,
 })

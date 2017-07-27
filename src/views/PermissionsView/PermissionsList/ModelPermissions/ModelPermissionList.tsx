@@ -1,8 +1,11 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {ModelPermission, Model} from '../../../../types/types'
-import ModelPermissionComponent from './ModelPermission'
+import ModelPermissionComponent from './ModelPermissionComponent'
 import {$p} from 'graphcool-styles'
 
 interface Props {
@@ -17,7 +20,7 @@ interface Props {
 //   DELETE: 3,
 // }
 
-class ModelPermissionsList extends React.Component<Props, {}> {
+class ModelPermissionList extends React.Component<Props, {}> {
   render() {
     const {permissions, model, params} = this.props
     return (
@@ -38,22 +41,20 @@ class ModelPermissionsList extends React.Component<Props, {}> {
 const MappedPermissionsList = mapProps({
   permissions: props => props.model.permissions.edges.map(edge => edge.node),
   model: props => props.model,
-})(ModelPermissionsList)
+})(ModelPermissionList)
 
-export default Relay.createContainer(MappedPermissionsList, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        permissions(first: 100) {
-          edges {
-            node {
-              id
-              ${ModelPermissionComponent.getFragment('permission')}
-            }
+export default createFragmentContainer(MappedPermissionsList, {
+  model: graphql`
+    fragment ModelPermissionList_model on Model {
+      permissions(first: 1000) {
+        edges {
+          node {
+            id
+            ...ModelPermissionComponent_permission
           }
         }
-        ${ModelPermissionComponent.getFragment('model')}
       }
-    `,
-  },
+      ...ModelPermissionComponent_model
+    }
+  `,
 })

@@ -1,12 +1,15 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
 import {Model, ModelPermission} from '../../../../types/types'
 import {Icon, $p, variables} from 'graphcool-styles'
 import PermissionIcon from './PermissionIcon'
 import * as cx from 'classnames'
 import cuid from 'cuid'
-import {Link} from 'react-router'
+import {Link} from 'found'
 
 interface Props {
   model: Model
@@ -101,21 +104,19 @@ const MappedPermissionsList = mapProps({
   permissions: props => props.model.permissions.edges.map(edge => edge.node),
 })(ModelPermissionsHeader)
 
-export default Relay.createContainer(MappedPermissionsList, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        name
-        permissions(first: 100) {
-          edges {
-            node {
-              id
-              isActive
-              operation
-            }
+export default createFragmentContainer(MappedPermissionsList, {
+  model: graphql`
+    fragment ModelPermissionsHeader_model on Model {
+      name
+      permissions(first: 1000) {
+        edges {
+          node {
+            id
+            isActive
+            operation
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

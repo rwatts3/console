@@ -1,7 +1,10 @@
 import * as React from 'react'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import * as fetch from 'isomorphic-fetch'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import { bindActionCreators } from 'redux'
 import * as cx from 'classnames'
@@ -16,7 +19,7 @@ import SideNav from '../../views/ProjectRootView/SideNav'
 import OnboardSideNav from './OnboardSideNav'
 import AuthView from '../AuthView/AuthView'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-import { skip, update } from '../../actions/gettingStarted'
+import { fetchGettingStartedState, skip, update } from '../../actions/gettingStarted'
 import { Viewer, Customer, Project } from '../../types/types'
 import { PopupState } from '../../types/popup'
 import { GettingStartedState } from '../../types/gettingStarted'
@@ -60,6 +63,7 @@ interface Props {
   update: (step: string, skipped: boolean, customerId: string) => void
   showNotification: ShowNotificationCallback
   skip: () => void
+  fetchGettingStartedState: () => void
 }
 
 const MIN_SIDEBAR_WIDTH = 67
@@ -110,16 +114,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
             email: this.props.user.crm.information.email,
             name: this.props.user.crm.information.name,
           })
-
-          // TODO adjusts events to Intercom
-          // Smooch.on('message:sent', () => {
-          //   tracker.track(ConsoleEvents.Smooch.messageWritten())
-          // })
-
-          // Smooch.on('widget:opened', () => {
-          //   tracker.track(ConsoleEvents.Smooch.opened())
-          // })
-
         }
       })
 
@@ -163,18 +157,17 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {gettingStarted, gettingStartedSkipped} = this.props.user.crm.onboardingStatus
-    const prevGettingStarted = prevProps.user.crm.onboardingStatus.gettingStarted
+    const {step, skipped} = this.props.gettingStartedState
+    const prevStep = prevProps.gettingStartedState.step
 
     if (this.props.params.projectName !== prevProps.params.projectName && this.props.isLoggedin) {
       tracker.identify(this.props.user.id, this.props.project.id)
     }
 
-    if (gettingStarted !== prevGettingStarted) {
+    if (step !== prevStep) {
       this.updateForceFetching()
-
-      tracker.track(ConsoleEvents.Onboarding.gettingStarted({step: gettingStarted, skipped: gettingStartedSkipped}))
-    } else if (this.props.pollGettingStartedOnboarding !== prevProps.pollGettingStartedOnboarding) {
+      tracker.track(ConsoleEvents.Onboarding.gettingStarted({step, skipped: skipped}))
+    } else if (this.props.pollGettingStartedOnboarding) {
       this.updateForceFetching()
     }
   }
@@ -259,7 +252,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
                 {this.props.children}
               </div>
               {this.props.gettingStartedState.isActive() &&
-              <OnboardingBar params={this.props.params}/>
+                <OnboardingBar params={this.props.params}/>
               }
             </div>
           </div>
@@ -303,14 +296,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       if (!this.refreshInterval) {
         this.refreshInterval = setInterval(
           () => {
-            // ideally we would handle this with a Redux thunk, but somehow Relay does not support raw force fetches...
-            this.props.relay.forceFetch({}, () => {
-              this.props.update(
-                this.props.user.crm.onboardingStatus.gettingStarted,
-                this.props.user.crm.onboardingStatus.gettingStartedSkipped,
-                this.props.user.id,
-              )
-            })
+            this.props.fetchGettingStartedState()
           },
           5000,
         )
@@ -352,10 +338,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
               message: `Successfuly uploaded the file ${res.name}. It's now available at ${res.url}.`,
             })
           }
-
-          this.props.relay.forceFetch({}, () => {
-            //
-          })
         })
     }
   }
@@ -370,7 +352,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({update, showNotification, skip}, dispatch)
+  return bindActionCreators({update, showNotification, skip, fetchGettingStartedState}, dispatch)
 }
 
 const ReduxContainer = connect(
@@ -380,6 +362,7 @@ const ReduxContainer = connect(
 
 const MappedProjectRootView = mapProps({
   params: (props) => props.params,
+// TODO props.relay.* APIs do not exist on compat containers
   relay: (props) => props.relay,
   project: (props) => props.viewer.user ? props.viewer.project : null,
   allProjects: (props) => (
@@ -392,50 +375,41 @@ const MappedProjectRootView = mapProps({
   isLoggedin: (props) => props.viewer.user !== null,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedProjectRootView, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+export default createFragmentContainer(MappedProjectRootView, {
+  viewer: graphql`
+    fragment ProjectRootView_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          ${SideNav.getFragment('project')}
-          seats(first: 100) {
-            edges {
-              node {
-                id
-              }
+        name
+        ...SideNav_project
+        seats(first: 1000) {
+          edges {
+            node {
+              id
             }
           }
         }
-        user {
-          id
-          crm {
-            onboardingStatus {
-              gettingStarted
-              gettingStartedSkipped
-            }
-            information {
-              name
-              email
-              isBeta
-            }
-          }
-          projects(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        ${SideNav.getFragment('viewer')}
       }
-    `,
-  },
+      user {
+        id
+        crm {
+          information {
+            name
+            email
+            isBeta
+          }
+        }
+        projects(first: 1000) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+      ...SideNav_viewer
+    }
+  `,
 })

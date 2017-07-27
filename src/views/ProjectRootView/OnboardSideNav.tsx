@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {classnames} from '../../utils/classnames'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {nextStep, previousStep, skip, showCurrentStep} from '../../actions/gettingStarted'

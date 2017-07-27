@@ -1,11 +1,14 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import ReactElement = React.ReactElement
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import {Viewer, SearchProviderAlgolia, AlgoliaSyncQuery, Project} from '../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import AlgoliaPopupHeader from '../AlgoliaPopup/AlgoliaPopupHeader'
 import AlgoliaPopupIndexes from '../AlgoliaPopup/AlgoliaPopupIndexes'
 import AlgoliaPopupFooter from '../AlgoliaPopup/AlgoliaPopupFooter'
@@ -201,7 +204,6 @@ class AlgoliaView extends React.Component<Props, State> {
     this.setState({
       showNewIndex: false,
     } as State)
-    this.props.relay.forceFetch()
   }
 
   private handleShowNewIndex = () => {
@@ -251,25 +253,20 @@ class AlgoliaView extends React.Component<Props, State> {
 
     if (this.indexValid() && node) {
       console.log('updating index')
-      Relay.Store.commitUpdate(
-        new UpdateAlgoliaSyncQueryMutation({
+        UpdateAlgoliaSyncQueryMutation.commit({
           algoliaSyncQueryId: node.id,
           fragment: currentFragment,
           isEnabled: true,
           indexName: node.indexName,
-        }),
-        {
-          onSuccess: (transaction) => {
+        }).then(transaction => {
             this.props.showNotification({
               message: 'Index updated',
               level: 'success',
             })
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+          })
     }
   }
 
@@ -278,25 +275,20 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private update = () => {
-    const {valid, apiKey, applicationId, isEnabled} = this.state
+    const {apiKey, applicationId, isEnabled} = this.state
     const {algolia, projectId} = this.props
-    Relay.Store.commitUpdate(
-      new UpdateSearchProviderAlgolia({
-        searchProviderAlgoliaId: algolia.id,
+      UpdateSearchProviderAlgolia.commit({
+        id: algolia.id,
         isEnabled: true,
         apiKey,
         applicationId,
         projectId,
-      }),
-      {
-        onSuccess: (transaction) => {
+      }).then(transaction => {
           this.handleCloseModal()
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+        })
   }
 
   private delete = () => {
@@ -306,12 +298,10 @@ class AlgoliaView extends React.Component<Props, State> {
     const node = indexes[selectedIndexIndex]
 
     if (node) {
-      Relay.Store.commitUpdate(
-        new DeleteAlgoliaSyncQueryMutation({
-          algoliaSyncQueryId: node.id,
-          searchProviderAlgoliaId: algolia.id,
-        }),
-      )
+      DeleteAlgoliaSyncQueryMutation.commit({
+        algoliaSyncQueryId: node.id,
+        searchProviderAlgoliaId: algolia.id,
+      })
     }
 
     if (selectedIndexIndex > 0) {
@@ -349,41 +339,36 @@ const MappedAlgoliaPopup = mapProps({
   },
 })(ReduxContainer)
 
-export default Relay.createContainer(withRouter(MappedAlgoliaPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          ${CreateAlgoliaIndex.getFragment('project')}
-          integrations(first: 100) {
-            edges {
-              node {
+export default createFragmentContainer(withRouter(MappedAlgoliaPopup), {
+  viewer: graphql`
+    fragment AlgoliaView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        ...CreateAlgoliaIndex_project
+        integrations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              type
+              ... on SearchProviderAlgolia {
+                ...CreateAlgoliaIndex_algolia
+                ...AlgoliaQueryEditor_algolia
                 id
-                name
-                type
-                ... on SearchProviderAlgolia {
-                  ${CreateAlgoliaIndex.getFragment('algolia')}
-                  ${AlgoliaQueryEditor.getFragment('algolia')}
-                  id
-                  isEnabled
-                  apiKey
-                  applicationId
-                  algoliaSyncQueries(first: 100) {
-                    edges {
-                      node {
+                isEnabled
+                apiKey
+                applicationId
+                algoliaSyncQueries(first: 1000) {
+                  edges {
+                    node {
+                      id
+                      fragment
+                      indexName
+                      isEnabled
+                      model {
+                        itemCount
                         id
-                        fragment
-                        indexName
-                        isEnabled
-                        model {
-                          itemCount
-                          id
-                          name
-                        }
+                        name
                       }
                     }
                   }
@@ -393,6 +378,6 @@ export default Relay.createContainer(withRouter(MappedAlgoliaPopup), {
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

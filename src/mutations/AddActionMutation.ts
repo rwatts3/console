@@ -1,4 +1,6 @@
 import * as Relay from 'react-relay/classic'
+import {graphql} from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import { ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType } from '../types/types'
 
 interface Props {
@@ -21,38 +23,43 @@ interface HandlerWebhookProps {
   url: string
 }
 
-interface Response {
-}
-
-export default class AddActionMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation() {
-    return Relay.QL`mutation{addAction}`
-  }
-
-  getFatQuery() {
-    return Relay.QL`
-      fragment on AddActionPayload {
-        actionEdge
-        project
+const mutation = graphql`
+  mutation AddActionMutation($input: AddActionInput!) {
+    addAction(input: $input) {
+      actionEdge {
+        node {
+          id
+          ...ActionBoxes_action
+        }
       }
-    `
+      project {
+        actions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
   }
+`
 
-  getConfigs() {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {input},
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'actions',
       edgeName: 'actionEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables() {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default {commit}

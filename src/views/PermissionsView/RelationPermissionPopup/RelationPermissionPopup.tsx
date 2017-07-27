@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {buildClientSchema} from 'graphql'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -9,7 +12,7 @@ import {
 } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
 import {connect} from 'react-redux'
@@ -29,6 +32,7 @@ import UpdateRelationPermissionMutation from '../../../mutations/RelationPermiss
 import DeleteRelationPermissionMutation from '../../../mutations/RelationPermission/DeleteRelationPermission'
 import AddRelationPermissionMutation from '../../../mutations/RelationPermission/AddRelationPermission'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
+import { getEmptyRelationPermissionQuery } from './data'
 
 interface Props {
   params: any
@@ -37,7 +41,6 @@ interface Props {
   router: ReactRouter.InjectedRouter
   relation?: Relation
   permission?: RelationPermission
-  isBetaCustomer: boolean
   showNotification: ShowNotificationCallback
 }
 
@@ -66,7 +69,7 @@ const modalStyling = {
   },
 }
 
-class PermissionPopup extends React.Component<Props, RelationPermissionPopupState> {
+class RelationPermissionPopup extends React.Component<Props, RelationPermissionPopupState> {
   private mutationType: MutationType
 
   constructor(props) {
@@ -112,7 +115,6 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
       connect: true,
       disconnect: true,
     }
-    global['p'] = this
   }
 
   componentDidMount() {
@@ -354,16 +356,12 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
 
     this.setState({loading: true} as RelationPermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new UpdateRelationPermissionMutation(updatedNode),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as RelationPermissionPopupState)
-          },
-        },
-      )
+      UpdateRelationPermissionMutation.commit(updatedNode)
+        .then(() => this.closePopup())
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as RelationPermissionPopupState)
+        })
     })
   }
 
@@ -373,8 +371,7 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as RelationPermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new AddRelationPermissionMutation({
+        AddRelationPermissionMutation.commit({
           relationId: relation.id,
           connect,
           disconnect,
@@ -382,15 +379,11 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
           rule,
           ruleName,
           ruleGraphQuery,
-        }),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
+        }).then(() => this.closePopup())
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as RelationPermissionPopupState)
-          },
-        },
-      )
+          })
     })
   }
 
@@ -399,19 +392,15 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
 
     tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
     this.setState({loading: true} as RelationPermissionPopupState, () => {
-      Relay.Store.commitUpdate(
-        new DeleteRelationPermissionMutation({
+        DeleteRelationPermissionMutation.commit({
           relationPermissionId: id,
           relationId: relation.id,
-        }),
-        {
-          onSuccess: () => this.closePopup(),
-          onFailure: (transaction) => {
+        })
+          .then(() => this.closePopup())
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as RelationPermissionPopupState)
-          },
-        },
-      )
+          })
     })
   }
 
@@ -421,102 +410,46 @@ class PermissionPopup extends React.Component<Props, RelationPermissionPopupStat
   }
 }
 
-const ReduxContainer = connect(null, {showNotification})(PermissionPopup)
+const ReduxContainer = connect(null, {showNotification})(RelationPermissionPopup)
 
-const MappedPermissionPopup = mapProps({
+const MappedRelationPermissionPopup = mapProps({
   permission: props => props.node || null,
-  relation: props => (props.viewer && props.viewer.relation) || (props.node && props.node.relation),
-  isBetaCustomer: props => (props.viewer && props.viewer.user.crm.information.isBeta) || false,
+  relation: props => (props.viewer && props.viewer.relation),
 })(ReduxContainer)
 
-export const EditRelationPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Node {
+export default createFragmentContainer(withRouter(MappedRelationPermissionPopup), {
+  node: graphql`
+    fragment RelationPermissionPopup_node on Node {
+      id
+      ... on RelationPermission {
+        connect
+        disconnect
+        isActive
+        rule
+        ruleGraphQuery
+        ruleName
+        userType
+      }
+    }
+  `,
+  viewer: graphql`
+    fragment RelationPermissionPopup_viewer on Viewer {
+      relation: relationByName(projectName: $projectName, relationName: $relationName) {
         id
-        ... on RelationPermission {
-          connect
-          disconnect
-          isActive
-          rule
-          ruleGraphQuery
-          ruleName
-          userType
-          relation {
-            name
-            permissionSchema
-            permissionQueryArguments {
-              group
-              name
-              typeName
-            }
-            leftModel {
-              name
-            }
-            rightModel {
-              name
-            }
-          }
-        }
-      }
-    `,
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-  },
-})
-
-export const AddRelationPermissionPopup = Relay.createContainer(withRouter(MappedPermissionPopup), {
-  initialVariables: {
-    projectName: null, // injected from router
-    relationName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-        relation: relationByName(projectName: $projectName, relationName: $relationName) {
-          id
+        name
+        permissionSchema
+        permissionQueryArguments {
+          group
           name
-          permissionSchema
-          permissionQueryArguments {
-            group
-            name
-            typeName
-          }
-          leftModel {
-            name
-          }
-          rightModel {
-            name
-          }
+          typeName
+        }
+        leftModel {
+          name
+        }
+        rightModel {
+          name
         }
       }
-    `,
-  },
+    }
+  `,
 })
-
-function getEmptyRelationPermissionQuery(relation: Relation) {
-  return `query {
-  Some${relation.leftModel.name}Exists(filter: {
-    # ...
-  })
-  Some${relation.rightModel.name}Exists(filter: {
-    # ...
-  })
-}`
-}

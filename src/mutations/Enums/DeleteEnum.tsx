@@ -1,37 +1,37 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 
 interface Props {
   enumId: string
   projectId: string
 }
 
-export default class DeleteEnumMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{deleteEnum}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on DeleteEnumPayload {
-        project
+const mutation = graphql`
+  mutation DeleteEnumMutation($input: DeleteEnumInput!) {
+    deleteEnum(input: $input) {
+      enum {
+        id
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'NODE_DELETE',
-      parentName: 'project',
-      parentID: this.props.projectId,
-      connectionName: 'enums',
-      deletedIDFieldName: 'enum { id }',
-    }]
-  }
-
-  getVariables () {
-    return {
-      enumId: this.props.enumId,
     }
   }
+`
+
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        enumId: input.enumId,
+      },
+    },
+    configs: [{
+      type: 'NODE_DELETE',
+      parentName: 'project',
+      parentID: input.projectId,
+      connectionName: 'enums',
+      deletedIDFieldName: 'enum { id }',
+    }],
+  })
 }
+
+export default { commit }

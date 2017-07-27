@@ -2,7 +2,7 @@ import * as React from 'react'
 import {PricingPlan} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import PricingColumn from '../PricingColumn'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {Icon} from 'graphcool-styles'
 
 interface Props {
@@ -67,7 +67,7 @@ class ChangePricingPlan extends React.Component<Props, {}> {
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 
   private selectPlan = (plan: PricingPlan) => {

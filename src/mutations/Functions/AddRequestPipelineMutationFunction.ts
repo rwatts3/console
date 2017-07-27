@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 import {FunctionBinding, FunctionType} from '../../types/types'
 import {pick} from 'lodash'
 
@@ -16,38 +17,53 @@ interface Props {
   isActive: boolean
 }
 
-export default class AddRequestPipelineMutationFunction extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addRequestPipelineMutationFunction}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddRequestPipelineMutationFunctionPayload {
-        function
-        project
+const mutation = graphql`
+  mutation AddRequestPipelineMutationFunctionMutation($input: AddRequestPipelineMutationFunctionInput!) {
+    addRequestPipelineMutationFunction(input: $input) {
+      function {
+        ...FunctionPopup_function
+        ...FunctionRow_fn
+        ... on RequestPipelineMutationFunction {
+          binding
+          model {
+            id
+            name
+          }
+          operation
+        }
       }
-    `
+      project {
+        id
+        functions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {input: pick(input, [
+      'projectId', 'name', 'isActive', 'binding', 'modelId', 'operation',
+      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
+    ])},
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'functions',
       edgeName: 'functionEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, [
-      'projectId', 'name', 'isActive', 'binding', 'modelId', 'operation',
-      'type', 'webhookUrl', 'inlineCode', 'auth0Id', 'webhookHeaders',
-    ])
-  }
+    }],
+  })
 }
+
+export default { commit }
