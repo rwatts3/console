@@ -15,6 +15,15 @@ const mutation = graphql`
   mutation AuthenticateCustomerMutation($input: AuthenticateCustomerInput!) {
     authenticateCustomer(input: $input) {
       token
+      user {
+        id
+        createdAt
+        crm {
+          information {
+            source
+          }
+        }
+      }
     }
   }
 `
@@ -27,23 +36,7 @@ function commit(input: Props) {
         auth0IdToken: input.auth0IdToken,
       },
     },
-    configs: [{
-      type: 'REQUIRED_CHILDREN',
-      children: [graphql`
-        fragment AuthenticateCustomerMutationChildren on AuthenticateCustomerPayload {
-          token
-          user {
-            id
-            createdAt
-            crm {
-              information {
-                source
-              }
-            }
-          }
-        }
-      `],
-    }],
+    configs: [],
   })
 }
 
