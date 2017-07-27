@@ -458,43 +458,49 @@ const MappedCell = connect(
   },
 )(Cell)
 
-export default createFragmentContainer(MappedCell, {
-  field: graphql`
-    fragment Cell_field on Field {
-      id
-      name
-      isList
-      isRequired
-      isReadonly
-      typeIdentifier
-      enum {
-        id
-      }
-      model {
+let CellContainer = MappedCell
+
+if (process.env.NODE_ENV !== 'test') {
+  CellContainer = createFragmentContainer(MappedCell, {
+    field: graphql`
+      fragment Cell_field on Field {
         id
         name
-      }
-      relatedModel {
-        ...SelectNodesCell_model
-        id
-        name
-      }
-      reverseRelationField {
         isList
-        name
-      }
-      relationSide
-      relation {
-        fieldOnLeftModel {
+        isRequired
+        isReadonly
+        typeIdentifier
+        enum {
+          id
+        }
+        model {
           id
           name
         }
-        fieldOnRightModel {
+        relatedModel {
+          ...SelectNodesCell_model
           id
           name
         }
+        reverseRelationField {
+          isList
+          name
+        }
+        relationSide
+        relation {
+          fieldOnLeftModel {
+            id
+            name
+          }
+          fieldOnRightModel {
+            id
+            name
+          }
+        }
+        ...RelationsPopup_originField
       }
-      ...RelationsPopup_originField
-    }
-  `,
-})
+    `,
+  })
+}
+
+export default CellContainer

@@ -2,7 +2,12 @@ import * as React from 'react' // tslint:disable-line
 import {Example} from '../types/types'
 import {Dispatch, StateTree, ReduxThunk, ReduxAction} from '../types/reducers'
 import {GettingStartedState, Step} from './../types/gettingStarted'
-import UpdateCustomerOnboardingStatusMutation from '../mutations/UpdateCustomerOnboardingStatusMutation'
+let UpdateCustomerOnboardingStatusMutation
+// needed for jest tests
+if (process.env.NODE_ENV !== 'test') {
+  UpdateCustomerOnboardingStatusMutation = require('../mutations/UpdateCustomerOnboardingStatusMutation').default
+}
+
 import Constants from '../constants/gettingStarted'
 import IconNotification from '../components/IconNotification/IconNotification'
 import cuid from 'cuid'
@@ -30,6 +35,7 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
                              onboardingStatusId: string,
                              gettingStartedExample: Example = null): Promise<{}> {
   return new Promise((resolve, reject) => {
+    if (typeof UpdateCustomerOnboardingStatusMutation !== 'undefined') {
       UpdateCustomerOnboardingStatusMutation.commit(
         {
           onboardingStatusId,
@@ -54,7 +60,8 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
           console.error(err)
           reject()
         })
-    })
+    }
+  })
 }
 
 export function nextStep(): ReduxThunk {
