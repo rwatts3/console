@@ -148,15 +148,15 @@ div.CodeMirror span.CodeMirror-matchingbracket {color: rgba(255,255,255,.4) !imp
 /* The rest of this file contains styles related to the mechanics of
    the editor. You probably shouldn't touch them. */
 
-.CodeMirror {
+body .CodeMirror {
     position: relative;
     overflow: hidden;
-    background-color: rgb(15,32,45) !important;
+    background-color: rgb(15,32,45);
 }
 
-.CodeMirror-gutters {
+body .CodeMirror-gutters {
     border-right: none !important;
-    background-color: rgb(15,32,45) !important;
+    background-color: rgb(15,32,45);
 }
 
 .CodeMirror-scroll {
