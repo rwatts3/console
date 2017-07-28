@@ -5,7 +5,6 @@ export default async (cookies: any[]): Promise<any> => {
 
   const chromeless = new Chromeless({
     ...config,
-    implicitWait: false,
   })
 
   const result = await chromeless

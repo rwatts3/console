@@ -5,7 +5,6 @@ import * as fs from 'fs'
 export default async (cookies: any[]): Promise<any> =>  {
   const chromeless = new Chromeless({
     ...config,
-    implicitWait: false,
   })
 
   const screenshot = await chromeless
@@ -22,10 +21,9 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.button.save')
     .click('.button.save')
     .wait(2100)
-    .click('a[data-test="add-post-field"]')
+    // .click('a[data-test="add-post-field"]')
     .evaluate(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
     .wait(1100)
-    .wait('input.fieldNameInputField')
     .type('imageUrl', 'input.fieldNameInputField')
     .wait(600)
     .click('div[data-test="string-type"] div')
@@ -33,7 +31,6 @@ export default async (cookies: any[]): Promise<any> =>  {
     .click('.buttons div.button.active')
     .wait(1900)
     .click('a[data-test="add-post-field"]')
-    .wait('input.fieldNameInputField')
     .type('description', 'input.fieldNameInputField')
     .wait(600)
     .click('div[data-test="string-type"]')
@@ -55,7 +52,6 @@ export default async (cookies: any[]): Promise<any> =>  {
     .click('.tether-content .btn')
     .wait(1600)
     .click('.graphiql-wrapper:last-child .graphcool-execute-button svg')
-    .wait('.tether-content .btn')
     .click('.tether-content .btn')
     .wait(1100)
     .click('.graphiql-wrapper:last-child .graphcool-execute-button')
@@ -68,12 +64,9 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.bottom .skip')
     .click('.bottom .skip')
     .wait(1000)
-    .wait('div[data-test="close-popup"]')
     .click('div[data-test="close-popup"]')
     .wait(2000)
     .screenshot()
 
-  console.log('\n\n')
-  console.log(screenshot)
-  console.log('\n\n')
+  console.log('screenshot', screenshot)
 }

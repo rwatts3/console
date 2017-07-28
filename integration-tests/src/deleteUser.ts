@@ -51,7 +51,7 @@ export async function deleteCustomer({token, customerId}: CustomerInfo) {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({query, variables})
+    body: JSON.stringify({query, variables}),
   })
   console.log(result)
   const json = await result.json()
