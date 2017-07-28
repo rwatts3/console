@@ -40,7 +40,8 @@ class SchemaOverview extends React.Component<Props,State> {
     const {editingModelName, blur} = this.props
     const {activeFilter, addingType, editingModel} = this.state
     let selectedModel = undefined
-    if (this.props.location.query.hasOwnProperty('selectedModel')) {
+    console.log('this.props.location', this.props.location)
+    if (this.props.location && this.props.location.query && this.props.location.query.hasOwnProperty('selectedModel')) {
       selectedModel = this.props.location.query.selectedModel
     }
 

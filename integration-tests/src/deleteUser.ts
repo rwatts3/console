@@ -53,6 +53,7 @@ export async function deleteCustomer({token, customerId}: CustomerInfo) {
     },
     body: JSON.stringify({query, variables})
   })
+  console.log(result)
   const json = await result.json()
   return json
 }

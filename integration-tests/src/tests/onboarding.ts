@@ -3,7 +3,10 @@ import { config, CONSOLE_URL } from '../config'
 import * as fs from 'fs'
 
 export default async (cookies: any[]): Promise<any> =>  {
-  const chromeless = new Chromeless(config)
+  const chromeless = new Chromeless({
+    ...config,
+    implicitWait: false,
+  })
 
   const screenshot = await chromeless
     .cookiesSet(cookies)
@@ -42,10 +45,11 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.CodeMirror')
     .wait(300)
     .press(8, 2)
+    .press(8, 2)
     .wait(1500)
     .click('.graphcool-execute-button')
-    .wait(1100)
-    .click('.tab.plus')
+    .wait(2000)
+    .click('body .tabs .tab.plus svg')
     // execute mutation
     .wait(1100)
     .click('.tether-content .btn')

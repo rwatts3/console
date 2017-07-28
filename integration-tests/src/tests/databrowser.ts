@@ -3,9 +3,12 @@ import { config, CONSOLE_URL } from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
-  const chromeless = new Chromeless(config)
+  const chromeless = new Chromeless({
+    ...config,
+    implicitWait: false,
+  })
 
-  await chromeless
+  const result = await chromeless
     .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3200)
@@ -17,19 +20,22 @@ export default async (cookies: any[]): Promise<any> => {
     .wait(2200)
     .click('div[class^="NewRowInactive__add"]')
     .type('test url')
-    .evaluate(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
-    .click('div[data-test="new-row-cell-description"] > div > div')
+    // .evaluate(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
+    // .click('div[data-test="new-row-cell-description"] > div > div')
+    .press(9)
     .wait(400)
     .wait('div[data-test="new-row-cell-description"] input')
     .type('some description', 'div[data-test="new-row-cell-description"] input')
-    .evaluate(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
+    // .evaluate(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
     .wait(700)
     .click('button[data-test="add-node"]')
     .wait(300)
     .click('div[data-test="edit-field-imageUrl"]')
     .click('div[data-test="cell-imageUrl"]')
     .type('123')
-    .evaluate(() => document.querySelector('input').focus())
+    .wait(500)
+    .evaluate(() => document.querySelector('input').click())
+    .wait(500)
     .press(13)
     .wait(400)
     .click('div[data-test="checkbox-row-0"]')
@@ -37,5 +43,6 @@ export default async (cookies: any[]): Promise<any> => {
     .click('div[data-test="delete-button"]')
     .wait(400)
     .click('div.button.warning')
-    .end()
+
+  console.log(result)
 }
