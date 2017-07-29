@@ -240,7 +240,7 @@ class AddProjectPopup extends React.Component<Props, State> {
           .then(() => {
             tracker.track(ConsoleEvents.Project.created({name: projectName}))
             this.setState({loading: false} as State)
-            this.props.router.replace(`${projectName}`)
+            this.props.router.replace(`/${projectName}`)
           })
           .catch(transaction => {
             this.setState({loading: false} as State)

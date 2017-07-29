@@ -76,7 +76,7 @@ import CliInfoPopup from './views/SchemaView/CliInfoPopup'
 //   `,
 // }
 
-function render({Component, props, error}) {
+function render({Component, props, error, match}) {
   if (error) {
     if (error.response) {
       const {code} = error.response.errors[0]
@@ -88,11 +88,10 @@ function render({Component, props, error}) {
 
       // not authorized
       } else if (code === 2001) {
-        console.error(`Its a 2001`)
-        // cookiestore.remove('graphcool_auth_token')
-        // cookiestore.remove('graphcool_customer_id')
-        // tracker.reset()
-        // return <RedirectOnMount to={`/login${props.location.search}`} />
+        cookiestore.remove('graphcool_auth_token')
+        cookiestore.remove('graphcool_customer_id')
+        tracker.reset()
+        return <RedirectOnMount to={`/login${match.location.search}`} />
       }
     }
   }
