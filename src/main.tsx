@@ -7,6 +7,7 @@ import './utils/polyfils'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/mode/shell/shell'
 
+import RedirectOnMount from './components/RedirectOnMount/RedirectOnMount'
 import * as React from 'react' // tslint:disable-lne
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
@@ -37,9 +38,7 @@ const store = createStore()
 const ConnectedRouter = createConnectedRouter({
   render: createRender({
     renderError: ({ error }) => (
-      <div>
-        {error.status === 404 ? 'Not found' : 'Error'}
-      </div>
+      <RedirectOnMount to={`/`} />
     ),
   }),
 })
