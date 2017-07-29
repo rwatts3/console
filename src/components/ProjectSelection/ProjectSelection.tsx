@@ -100,7 +100,42 @@ const SettingsLink = styled(Link)`
     transition: fill ${variables.duration} linear;
   }
 
-  > div {
+  > div:first-of-type {
+    margin-left: 10px;
+  }
+
+  &:hover {
+    color: ${variables.white};
+    background: ${variables.gray20};
+
+    svg {
+      fill: ${variables.white};
+    }
+  }
+`
+
+const SettingsLinkDiv = styled.div`
+  background: ${variables.gray10};
+  font-size: ${variables.size14};
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: ${variables.white60};
+  width: ${props => props.small ? 'auto' : '50%'};
+  padding: ${props => props.small ? '6px' : '10px'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color ${variables.duration} linear, background ${variables.duration} linear;
+
+  svg {
+    fill: ${variables.white60};
+    transition: fill ${variables.duration} linear;
+  }
+
+  > div:first-of-type {
     margin-left: 10px;
   }
 
@@ -271,7 +306,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                   <div>Settings</div>
                 )}
               </SettingsLink>
-              <SettingsLink
+              <SettingsLinkDiv
                 className={cx(
                   {
                     [$p.ml10]: sidebarExpanded,
@@ -279,7 +314,6 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 )}
                 onClick={this.openUserDropdown}
                 small={!sidebarExpanded}
-                to=''
               >
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/user.svg')}/>
                 {sidebarExpanded && (
@@ -311,7 +345,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                     </div>
                   </ClickOutside>
                 )}
-              </SettingsLink>
+              </SettingsLinkDiv>
             </div>
             <div
               className={cx($p.relative, $p.bgBlack07)}
@@ -429,7 +463,8 @@ class ProjectSelection extends React.PureComponent<Props, State> {
     this.setState({expanded: false} as State)
   }
 
-  private openUserDropdown = () => {
+  private openUserDropdown = (e) => {
+    e.stopPropagation()
     this.setState({userDropdownVisible: true} as State)
   }
 
