@@ -44,7 +44,7 @@ class SchemaOverview extends React.Component<Props,State> {
     if (this.props.location &&
         this.props.location.query &&
         typeof this.props.location.query.selectedModel !== 'undefined'
-        ) {
+      ) {
       selectedModel = this.props.location.query.selectedModel
     }
 
