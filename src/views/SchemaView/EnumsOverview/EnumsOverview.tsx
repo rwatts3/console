@@ -41,7 +41,10 @@ class EnumsOverview extends React.Component<Props,State> {
     const {activeFilter, addingEnum} = this.state
     let selectedEnum = undefined
 
-    if (this.props.location && this.props.location.query && typeof this.props.location.query.selectedEnum !== 'undefined') {
+    if (this.props.location
+      && this.props.location.query
+      && typeof this.props.location.query.selectedEnum !== 'undefined'
+    ) {
       selectedEnum = this.props.location.query.selectedEnum
     }
 
