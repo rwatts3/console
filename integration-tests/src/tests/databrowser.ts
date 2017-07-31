@@ -42,6 +42,6 @@ export default async (cookies: any[]): Promise<any> => {
     .click('div[data-test="delete-button"]')
     .wait(400)
     .click('div.button.warning')
+    .end()
 
-  console.log(result)
 }

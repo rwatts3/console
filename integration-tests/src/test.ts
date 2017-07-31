@@ -58,11 +58,11 @@ test('createPermission', async t => {
   t.pass()
 })
 
-// test('databrowser', async t => {
-//   console.log('######### databrowser')
-//   await databrowser(cookies)
-//   t.pass()
-// })
+test('databrowser', async t => {
+  console.log('######### databrowser')
+  await databrowser(cookies)
+  t.pass()
+})
 
 // TODO activate later when new playground is used
 // test('playground', async t => {
