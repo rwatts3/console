@@ -280,7 +280,7 @@ class FunctionRow extends React.Component<Props, State> {
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
         }).then(() => {
-
+            // noop
           })
           .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
