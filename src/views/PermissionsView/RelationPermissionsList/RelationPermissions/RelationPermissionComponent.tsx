@@ -124,7 +124,7 @@ class RelationPermissionComponent extends React.Component<Props, {}> {
     UpdateRelationPermission.commit({
       id: permission.id,
       isActive: !permission.isActive,
-    }).then(transaction => console.log(transaction))
+    })
     tracker.track(
       ConsoleEvents.Permissions.toggled({ active: !permission.isActive }),
     )

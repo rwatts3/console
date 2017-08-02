@@ -1,8 +1,6 @@
 import * as React from 'react'
 
-interface Props {}
-
-export default function WaitingIndicator({  }: Props) {
+export default function WaitingIndicator() {
   return (
     <div className="waiting-indicator">
       <style jsx>{`

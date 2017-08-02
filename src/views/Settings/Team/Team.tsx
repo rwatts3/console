@@ -74,7 +74,7 @@ class Team extends React.Component<Props, {}> {
       edge => edge.node,
     )
     const project = projects.find(
-      project => project.name === this.props.params.projectName,
+      p => p.name === this.props.params.projectName,
     )
     if (!project) {
       return freeId

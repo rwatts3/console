@@ -24,7 +24,6 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.viewer.crm.crm.customer.projects.edges)
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(
       edge => {
         return edge.node.name === this.props.projectName

@@ -9,13 +9,13 @@ interface Props {
   cardHolderName: string
   expirationDate: string
   cpc: string
-  onCreditCardNumberChange: Function
-  onCardHolderNameChange: Function
-  onExpirationDateChange: Function
-  onCPCChange: Function
+  onCreditCardNumberChange: (num: string) => void
+  onCardHolderNameChange: (name: string) => void
+  onExpirationDateChange: (epiration: string) => void
+  onCPCChange: (cpc: string) => void
 
   isEditing: boolean
-  setEditingState: Function
+  setEditingState: (editing: boolean) => void
 
   addressLine1: string
   addressLine2: string
@@ -27,8 +27,8 @@ interface Props {
   creditCardDetailsValid: boolean
   addressDataValid: boolean
 
-  onAddressDataChange: Function
-  onSaveChanges: Function
+  onAddressDataChange: (key: string, address: string) => void
+  onSaveChanges: () => void
 
   invoices: Invoice[]
 }

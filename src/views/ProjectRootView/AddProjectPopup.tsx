@@ -59,12 +59,11 @@ class AddProjectPopup extends React.Component<Props, State> {
     }
   }
   componentDidMount() {
-    const times = []
     Bluebird.map(
       regions,
       (region, index) => {
-        const randomString1 = btoa(String((Math.random() * 10000000) | 0))
-        const randomString2 = btoa(String((Math.random() * 10000000) | 0))
+        const randomString1 = btoa(String(Math.round(Math.random() * 10000000)))
+        const randomString2 = btoa(String(Math.round(Math.random() * 10000000)))
         // the first request is always slow, so send 2
         return fetch(
           `https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`,

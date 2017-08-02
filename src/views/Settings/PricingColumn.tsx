@@ -9,7 +9,7 @@ interface Props {
   isCurrentPlan: boolean
   isSelected?: boolean
   className?: string
-  onSelectPlan?: Function
+  onSelectPlan?: () => void
   isDisplayedInConfirmPlan?: boolean
 }
 

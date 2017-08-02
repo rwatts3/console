@@ -5,9 +5,7 @@ import styled from 'styled-components'
 
 const Root = styled.div`margin-bottom: -${parseFloat($v.size10)}px;`
 
-interface Props {}
-
-export default class ComingSoonTag extends React.Component<Props, {}> {
+export default class ComingSoonTag extends React.Component<{}, {}> {
   render() {
     return (
       <Root

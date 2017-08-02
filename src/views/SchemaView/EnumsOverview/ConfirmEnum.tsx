@@ -8,10 +8,10 @@ interface State {
 
 interface Props {
   delete?: boolean
-  onCancel?: Function
-  onConfirmBreakingChanges?: Function
-  onConfirmDeletion?: Function
-  onResetBreakingChanges?: Function
+  onCancel?: () => void
+  onConfirmBreakingChanges?: () => void
+  onConfirmDeletion?: () => void
+  onResetBreakingChanges?: () => void
   className?: string
   initialModelName?: string
   mutatedModelName?: string

@@ -45,7 +45,7 @@ class SchemaViewer extends React.Component<Props, null> {
           <Voyager
             introspection={this.introspectionProvider}
             displayOptions={{
-              transformSchema: function(schema) {
+              transformSchema(schema) {
                 const { types } = schema
                 const copy = {...types}
 

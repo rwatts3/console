@@ -4,7 +4,7 @@ import { Cardinality } from '../../types/types'
 
 interface Props {
   selectedCartinality: Cardinality
-  didSelectCardinality: Function
+  didSelectCardinality: (c: Cardinality) => void
 }
 
 export default class CardinalitySelection extends React.Component<Props, {}> {

@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { Icon } from 'graphcool-styles'
 
-interface State {}
-
 interface Props {
   className?: string
   creditCardNumber: string
@@ -10,14 +8,14 @@ interface Props {
   expirationDate: string
   isEditing: boolean
   shouldDisplayVisaLogo?: boolean
-  setEditingState?: Function
-  onCreditCardNumberChange?: Function
-  onCardHolderNameChange?: Function
-  onExpirationDateChange?: Function
-  onKeyDown?: Function
+  setEditingState?: (editing: boolean) => void
+  onCreditCardNumberChange?: (num: string) => void
+  onCardHolderNameChange?: (name: string) => void
+  onExpirationDateChange?: (expiration: string) => void
+  onKeyDown?: (e: any) => void
 }
 
-export default class CreditCardFront extends React.Component<Props, State> {
+export default class CreditCardFront extends React.Component<Props, {}> {
   render() {
     return (
       <div className={`container ${this.props.className || ''}`}>

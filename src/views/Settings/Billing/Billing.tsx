@@ -269,12 +269,7 @@ class Billing extends React.Component<Props, State> {
   }
 
   private updateCPC = newValue => {
-    let newCPC
-    if (newValue.length > maxCPCDigits) {
-      newCPC = newValue.substr(0, maxCPCDigits)
-    } else {
-      newCPC = newValue
-    }
+    const newCPC = newValue.length > maxCPCDigits ? newValue.substr(0, maxCPCDigits) : newValue
     this.setState({ newCPC } as State, () =>
       this.validateCreditCardDetails(),
     )
@@ -312,15 +307,9 @@ class Billing extends React.Component<Props, State> {
       return
     }
 
-    let newLastComponent
-    if (
-      creditCardComponents.length <= maxChunks &&
-      lastComponent.length === 4
-    ) {
-      newLastComponent = lastComponent + ' '
-    } else {
-      newLastComponent = lastComponent
-    }
+    const newLastComponent =
+      (creditCardComponents.length <= maxChunks &&
+      lastComponent.length === 4) ? lastComponent + ' ' : lastComponent
 
     creditCardComponents[creditCardComponents.length - 1] = newLastComponent
     const newCreditCardNumber = creditCardComponents.join(' ')
@@ -425,7 +414,6 @@ class Billing extends React.Component<Props, State> {
 
   private stripeResponseHandler = (status, response) => {
     if (response.error) {
-      console.error(response.error)
       this.props.showNotification({
         message: response.error.message,
         level: 'error',

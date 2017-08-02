@@ -6,8 +6,8 @@ import CreateRelationHeaderTab from '../ProjectSettingsView/CreateRelationHeader
 
 interface Props {
   displayState: RelationPopupDisplayState
-  switchDisplayState: Function
-  close: Function
+  switchDisplayState: (s: RelationPopupDisplayState) => void
+  close: () => void
   breakingChanges: boolean[] // contains two values (one per tab), true if tab has breaking changes
   creating: boolean
 }
@@ -24,10 +24,6 @@ export default class CreateRelationHeader extends React.Component<Props, {}> {
       }
     })
     const plain: boolean[] = offsets.map(_ => true)
-
-    const leftTabColor =
-      displayState === 'DEFINE_RELATION' ? 'green' : 'black30'
-    const rightTabColor = displayState === 'SET_MUTATIONS' ? 'green' : 'black30'
 
     return (
       <div

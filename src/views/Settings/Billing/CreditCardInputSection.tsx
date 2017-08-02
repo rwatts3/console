@@ -46,9 +46,9 @@ interface Props {
   plan: PricingPlan
   projectId: string
   projectName: string
-  goBack?: Function
-  setLoading?: Function
-  close?: Function
+  goBack?: () => void
+  setLoading?: (loading: boolean) => void
+  close?: () => void
   showNotification: ShowNotificationCallback
   viewer: Viewer
 }
@@ -403,12 +403,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
       return
     }
 
-    let newLastComponent
-    if (creditCardComponents.length < maxChunks && lastComponent.length === 4) {
-      newLastComponent = lastComponent + ' '
-    } else {
-      newLastComponent = lastComponent
-    }
+    const newLastComponent = (creditCardComponents.length < maxChunks && lastComponent.length === 4) ? lastComponent + ' ' : lastComponent
 
     creditCardComponents[creditCardComponents.length - 1] = newLastComponent
     const newCreditCardNumber = creditCardComponents.join(' ')
@@ -476,7 +471,6 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   private stripeResponseHandler = (status, response) => {
     if (response.error) {
-      console.error(response.error)
       this.props.setLoading(false)
       return
     }

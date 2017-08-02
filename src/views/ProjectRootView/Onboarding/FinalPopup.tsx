@@ -14,8 +14,6 @@ interface Props {
   projectId: string
 }
 
-interface State {}
-
 const modalStyle = {
   overlay: fieldModalStyle.overlay,
   content: {
@@ -24,7 +22,7 @@ const modalStyle = {
   },
 }
 
-class FinalPopup extends React.Component<Props, State> {
+class FinalPopup extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

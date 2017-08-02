@@ -24,7 +24,7 @@ export default class EnumEditor extends React.Component<Props, State> {
   }
 
   render() {
-    const { enums, onChange, readOnly } = this.props
+    const { enums, readOnly } = this.props
     const { addingEnum, enumValue } = this.state
 
     return (
@@ -55,14 +55,14 @@ export default class EnumEditor extends React.Component<Props, State> {
             @p: .f14, .blue;
           }
         `}</style>
-        {enums.map(enumValue =>
+        {enums.map(value =>
           <div
-            key={enumValue}
+            key={value}
             className={cn('value', { readOnly })}
-            onClick={() => this.rmValue(enumValue)}
+            onClick={() => this.rmValue(value)}
           >
             <span>
-              {enumValue}
+              {value}
             </span>
           </div>,
         )}

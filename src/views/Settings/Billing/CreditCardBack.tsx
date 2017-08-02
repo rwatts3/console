@@ -5,10 +5,10 @@ interface Props {
   className?: string
   style?: any
   cpc: string
-  didChangeCPC: Function
-  setEditingState?: Function
-  onKeyDown?: Function
-  close?: Function
+  didChangeCPC: (value: string) => void
+  setEditingState?: () => void
+  onKeyDown?: (e: any) => void
+  close?: () => void
 }
 
 export default class CreditCardBack extends React.Component<Props, {}> {

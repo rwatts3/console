@@ -10,9 +10,9 @@ interface Props {
   leftSelectedModel: Model | null
   rightSelectedModel: Model | null
   selectedCardinality: Cardinality
-  didSelectLeftModel: Function
-  didSelectRightModel: Function
-  didSelectCardinality: Function
+  didSelectLeftModel: (m: Model) => void
+  didSelectRightModel: (m: Model) => void
+  didSelectCardinality: (c: Cardinality) => void
   rightFieldName: string
   rightFieldType: string
   leftFieldName: string

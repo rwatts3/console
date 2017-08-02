@@ -53,6 +53,8 @@ export default class MutationsInfoBox extends React.Component<Props, {}> {
   private generateMutationInfo = (set: boolean): JSX.Element => {
     let {
       relationName,
+    } = this.props
+    const {
       fieldOnLeftModelName,
       fieldOnRightModelName,
       selectedCardinality,
@@ -60,6 +62,7 @@ export default class MutationsInfoBox extends React.Component<Props, {}> {
       rightSelectedModel,
     } = this.props
     let relationPrefix
+    /* tslint:disable */
     if (
       selectedCardinality.startsWith('MANY') ||
       selectedCardinality.endsWith('MANY')
@@ -68,6 +71,7 @@ export default class MutationsInfoBox extends React.Component<Props, {}> {
     } else {
       relationPrefix = set ? 'set' : 'unset'
     }
+    /* tsline:enable */
     relationName =
       relationName && relationName.length > 0 ? relationName : '[___]'
     const firstIdName = fieldOnRightModelName + leftSelectedModel.name + 'Id'

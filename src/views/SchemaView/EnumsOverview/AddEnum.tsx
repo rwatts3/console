@@ -83,13 +83,9 @@ class AddEnum extends React.Component<Props, State> {
       editing,
       loading,
       showDeletePopup,
-      name,
-      values,
       showValuesError,
     } = this.state
     const { enumValue } = this.props
-    let fields
-    let permissions
 
     const breaking = false
 
@@ -360,7 +356,7 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private close = () => {
-    const { onRequestClose, router, projectId } = this.props
+    const { onRequestClose, router} = this.props
     if (typeof onRequestClose === 'function') {
       onRequestClose()
     }

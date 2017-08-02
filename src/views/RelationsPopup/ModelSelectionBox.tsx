@@ -13,7 +13,7 @@ interface Props {
   many: boolean
   models: Model[]
   selectedModel?: Model
-  didSelectedModel: Function
+  didSelectedModel: (m: Model) => void
   didChangeFieldName: (newFieldName: string) => void
   inputIsBreakingChange: boolean
   modelIsBreakingChange: boolean
@@ -187,14 +187,9 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
   }
 
   private didSelectModelWithName = (modelName: string) => {
-    const model = this.props.models.find(model => model.name === modelName)
+    const model = this.props.models.find(m => m.name === modelName)
     if (model) {
       this.props.didSelectedModel(model)
     }
-  }
-
-  private handleChange = e => {
-    this.didSelectModelWithName(e.target.value)
-    this.setState({ modelName: e.target.value })
   }
 }

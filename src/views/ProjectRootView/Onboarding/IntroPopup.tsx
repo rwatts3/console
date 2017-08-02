@@ -10,17 +10,7 @@ interface Props {
   skip: any
 }
 
-interface State {}
-
-const modalStyle = {
-  overlay: fieldModalStyle.overlay,
-  content: {
-    ...fieldModalStyle.content,
-    width: 588,
-  },
-}
-
-class IntroPopup extends React.Component<Props, State> {
+class IntroPopup extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

@@ -166,8 +166,10 @@ class Tokens extends React.Component<Props, State> {
           } as State,
         )
       })
-      .catch(transaction =>
-        console.error('could not submit token, an error occured'),
+      .catch(transaction => {
+
+        // no op
+        }
       )
   }
 

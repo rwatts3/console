@@ -18,8 +18,8 @@ interface State {
 interface Props {
   relationName: string
   relationDescription?: string
-  onChangeRelationNameInput: Function
-  onChangeRelationDescriptionInput: Function
+  onChangeRelationNameInput: (name: string) => void
+  onChangeRelationDescriptionInput: (description: string) => void
   leftSelectedModel: Model | null
   rightSelectedModel: Model | null
   selectedCardinality: Cardinality | null

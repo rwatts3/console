@@ -8,7 +8,7 @@ interface State {
 
 interface Props {
   seat: Seat
-  onDelete: Function
+  onDelete: () => void
 }
 
 export default class MemberRow extends React.Component<Props, State> {
@@ -28,7 +28,6 @@ export default class MemberRow extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.props.seat.status)
     return (
       <div
         className={`container ${this.state.isHovering && 'bgBlack02 br2'}`}

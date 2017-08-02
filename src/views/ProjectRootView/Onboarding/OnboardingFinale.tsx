@@ -6,9 +6,7 @@ interface Props {
   nextStep: () => void
 }
 
-interface State {}
-
-export default class OnboardingFinale extends React.Component<Props, State> {
+export default class OnboardingFinale extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

@@ -674,7 +674,6 @@ class RelationPopup extends React.Component<Props, State> {
   private cardinalityFromRelation(relation: Relation): Cardinality {
     // sanity check
     if (!relation) {
-      console.error('ERROR: NO RELATION')
       return null
     }
 

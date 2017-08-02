@@ -13,9 +13,7 @@ interface Props {
   params: any
 }
 
-interface State {}
-
-class OnboardingBar extends React.Component<Props, State> {
+class OnboardingBar extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

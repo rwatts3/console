@@ -3,8 +3,6 @@ import { Link } from 'found'
 import { Viewer } from '../../../types/types'
 import { billingInfo } from './billing_info'
 
-interface State {}
-
 interface Props {
   exceedsAllowedStorage?: boolean
   exceedsAllowedRequests?: boolean
@@ -13,7 +11,7 @@ interface Props {
   projectName: string
 }
 
-export default class CurrentPlan extends React.Component<Props, State> {
+export default class CurrentPlan extends React.Component<Props, {}> {
   state = {}
 
   render() {

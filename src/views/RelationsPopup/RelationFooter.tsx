@@ -9,13 +9,13 @@ interface State {
 
 interface Props {
   displayState: RelationPopupDisplayState
-  switchDisplayState: Function
-  onClickCreateRelation: Function
-  onClickEditRelation: Function
-  onClickDeleteRelation: Function
-  resetToInitialState: Function
+  switchDisplayState: (d: RelationPopupDisplayState) => void
+  onClickCreateRelation: () => void
+  onClickEditRelation: () => void
+  onClickDeleteRelation: () => void
+  resetToInitialState: () => void
   canSubmit: boolean
-  close: Function
+  close: () => void
   isEditingExistingRelation: boolean
   leftModel?: Model
   rightModel?: Model
