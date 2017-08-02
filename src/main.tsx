@@ -28,8 +28,9 @@ if (process.env.NODE_ENV === 'production') {
   offline.install({
     onUpdateReady: () => offline.applyUpdate(),
     onUpdated: () => {
-      if (typeof graphcoolAlert !== 'undefined') {
-        graphcoolAlert('There is a new version of the console available. Please refresh.')
+      if (typeof graphcoolNotification !== 'undefined') {
+        graphcoolNotification('We just deployed a new version of the Console.' +
+          ' Please refresh to see the latest version.')
       }
     },
   })
