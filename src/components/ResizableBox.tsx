@@ -28,8 +28,6 @@ export default class ResizableBox extends React.Component<any, any> {
   }
 
   onResize = (e: any, { element, size, ...rest }: any) => {
-    const { width, height } = size
-
     if (this.props.onResize) {
       if (typeof e.persist === 'function') {
         e.persist()

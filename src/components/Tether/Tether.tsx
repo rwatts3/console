@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { GettingStartedState } from '../../types/gettingStarted'
 import * as cn from 'classnames'
 import { TetherStep } from '../../types/types'
-const classes: any = require('./Tether.scss')
 
 interface Props {
   steps: TetherStep[]

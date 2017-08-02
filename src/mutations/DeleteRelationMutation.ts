@@ -1,5 +1,3 @@
-import * as Relay from 'react-relay/classic'
-import { Project } from '../types/types'
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
@@ -8,11 +6,6 @@ interface Props {
   projectId: string
   leftModelId: string
   rightModelId: string
-}
-
-interface DeleteRelationPayload {
-  project: Project
-  deletedId: string
 }
 
 const mutation = graphql`

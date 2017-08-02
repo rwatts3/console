@@ -8,7 +8,6 @@ import * as cx from 'classnames'
 import styled from 'styled-components'
 import { ConsoleEvents } from 'graphcool-metrics'
 import * as cookiestore from 'cookiestore'
-import cuid from 'cuid'
 import { $p, variables, Icon } from 'graphcool-styles'
 
 import ScrollBox from '../../components/ScrollBox/ScrollBox'
@@ -18,7 +17,6 @@ import { ShowNotificationCallback } from '../../types/utils'
 import { Popup } from '../../types/popup'
 import { showNotification } from '../../actions/notification'
 import { showPopup } from '../../actions/popup'
-import CloneProjectPopup from '../../views/ProjectRootView/CloneProjectPopup'
 
 interface Props {
   params: any

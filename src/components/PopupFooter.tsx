@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Icon, $v } from 'graphcool-styles'
+import { Icon} from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -22,7 +22,6 @@ export default class PopupFooter extends React.Component<Props, null> {
       activeTabIndex,
       tabs,
       onSelectIndex,
-      valid,
       create,
       onSubmit,
       changed,

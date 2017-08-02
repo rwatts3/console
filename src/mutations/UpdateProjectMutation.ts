@@ -1,10 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
-interface Project {
-  id: string
-}
-
 interface Props {
   name: string
   id: string

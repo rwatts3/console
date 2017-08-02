@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import { FunctionBinding, FunctionType } from '../../types/types'
+import { FunctionType } from '../../types/types'
 import { pick } from 'lodash'
 
 interface Props {

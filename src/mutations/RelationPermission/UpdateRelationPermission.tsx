@@ -1,6 +1,5 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import { RelationPermission } from '../../types/types'
 
 type UserType = 'EVERYONE' | 'AUTHENTICATED'
 
