@@ -180,15 +180,11 @@ describe('stringToValue', () => {
   })
 
   it('parses User List', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: true,
-      typeIdentifier: 'User'}
-    interface User {
-      id: string
-      name: string
-      email: string
-      password: string
+      typeIdentifier: 'User',
     }
 
     const input =

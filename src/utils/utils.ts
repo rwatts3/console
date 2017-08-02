@@ -71,7 +71,6 @@ export function retryUntilDone(
   const timeout = options.timeout || 100
 
   let tries = 0
-  const shouldBreak = false
 
   const interval = setInterval(() => {
     tries++

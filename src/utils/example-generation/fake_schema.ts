@@ -4,13 +4,10 @@ import {
   isAbstractType,
   GraphQLObjectType,
   GraphQLScalarType,
-  GraphQLAbstractType,
-  GraphQLOutputType,
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLEnumType,
-  GraphQLLeafType,
 } from 'graphql'
 
 import { getRandomInt, getRandomItem, typeFakers, fakeValue } from './fake'

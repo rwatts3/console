@@ -100,7 +100,7 @@ if (!Array.prototype.equals) {
 }
 
 interface Object {
-  mapToArray<U, V>(fn: (str: string, U) => V): [V]
+  mapToArray<U, V>(fn: (str: string, u: U) => V): [V]
   filterNullAndUndefined(): Object
 }
 

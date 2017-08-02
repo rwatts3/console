@@ -1,14 +1,12 @@
 import fakeIDL from './fake_idl'
 import { fakeSchema } from './fake_schema'
 import {
-  Source,
   parse,
   concatAST,
   buildASTSchema,
   execute,
   printSchema,
 } from 'graphql'
-import cuid from 'cuid'
 import { typeFakers } from './fake'
 
 const fakerIDL = parse(fakeIDL)
