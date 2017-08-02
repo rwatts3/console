@@ -133,8 +133,14 @@ module.exports = {
       }
     }),
     new OfflinePlugin({
-      autoUpdate: true,
-      updateStrategy: 'all',
+      excludes: ['**/*.map', 'index.html', '**/index.html'],
+      autoUpdate: 1000 * 60 * 2,
+      updateStrategy: 'changed',
+
+      ServiceWorker: {
+        events: true,
+        navigateFallbackURL: '/',
+      }
     }),
     new HappyPack({
       id: 'ts',
