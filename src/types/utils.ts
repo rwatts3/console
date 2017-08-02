@@ -3,6 +3,7 @@ export type NotificationLevel = 'success' | 'error' | 'warning' | 'info'
 export interface Notification {
   message: string
   level: NotificationLevel
+  autoDismiss?: number
 }
 export type ShowNotificationCallback = (notification: Notification) => void
 
