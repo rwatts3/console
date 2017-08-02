@@ -3,12 +3,6 @@ import { $p, variables, Icon } from 'graphcool-styles'
 import styled from 'styled-components'
 import * as cx from 'classnames'
 
-const ConditionButton = styled.div`
-  &:not(.${$p.bgBlue}):hover {
-    background-color: ${variables.gray10};
-  }
-`
-
 const CheckIcon = styled(Icon)`
   background-color: #4990E2;
   display: inline-flex !important;

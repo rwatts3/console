@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as cx from 'classnames'
-import { $g } from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import DocsResource from './DocsResource'
 import VideoPopup from './VideoPopup'

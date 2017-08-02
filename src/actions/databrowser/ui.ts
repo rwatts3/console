@@ -2,7 +2,6 @@ import Constants from '../../constants/databrowser/ui'
 import * as Immutable from 'immutable'
 import { ReduxAction, ReduxThunk } from '../../types/reducers'
 import { Field } from '../../types/types'
-import { nextStep } from '../gettingStarted'
 import { GridPosition } from '../../types/databrowser/ui'
 import { setNewRowShown } from './data'
 import { SYSTEM_MODELS_PLURAL } from '../../constants/system'
@@ -31,7 +30,6 @@ export function toggleNewRow(
     }
     const { newRowActive } = getState().databrowser.ui
     const { newRowShown } = getState().databrowser.data
-    const { step } = getState().gettingStarted.gettingStartedState
 
     if (!newRowShown) {
       dispatch(setNewRowShown())
