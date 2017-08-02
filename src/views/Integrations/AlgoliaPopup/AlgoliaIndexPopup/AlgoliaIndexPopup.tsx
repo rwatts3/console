@@ -183,7 +183,6 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
           fragment,
           isEnabled,
         })
-      )
     }
   }
 

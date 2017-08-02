@@ -243,7 +243,6 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
-          forceFetchRoot={this.forceFetch}
         >
           <div
             className={classnames(classes.button, classes.search, {
