@@ -17,7 +17,7 @@ interface Props {
   applicationId: string
   isEnabled: boolean
   connected: boolean
-  close: Function
+  close: () => void
 }
 
 const Paragraph = styled.p`width: 350px;`

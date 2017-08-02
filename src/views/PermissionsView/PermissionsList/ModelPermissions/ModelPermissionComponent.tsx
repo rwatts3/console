@@ -117,7 +117,7 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
     UpdateModelPermissionMutation.commit({
       id: permission.id,
       isActive: !permission.isActive,
-    }).catch(transaction => console.log(transaction))
+    })
     tracker.track(
       ConsoleEvents.Permissions.toggled({ active: !permission.isActive }),
     )

@@ -6,11 +6,11 @@ interface State {
 }
 
 interface Props {
-  onCancel?: Function
+  onCancel?: () => void
   className?: string
   numOperations: number
-  onConfirmBreakingChanges?: Function
-  onResetBreakingChanges?: Function
+  onConfirmBreakingChanges?: () => void
+  onResetBreakingChanges?: () => void
   showReset?: boolean
   saveLabel?: string
   resync?: boolean
@@ -25,7 +25,7 @@ export default class ConfirmOperationsPopup extends React.Component<
   }
 
   render() {
-    const { numOperations, showReset, resync } = this.props
+    const { numOperations, resync } = this.props
     const orangeIcon = require('assets/icons/warning_orange.svg')
 
     return (

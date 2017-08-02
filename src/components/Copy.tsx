@@ -27,7 +27,8 @@ export default class Copy extends React.Component<Props, State> {
   }
 
   render() {
-    let { text, color } = this.props
+    let { color } = this.props
+    const {text} = this.props
 
     color = color || $v.blue
 

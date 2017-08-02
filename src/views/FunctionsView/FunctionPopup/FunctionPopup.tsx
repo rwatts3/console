@@ -448,7 +448,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.update(updateInlineCode)(inlineCode(eventType))
   }
 
-  private update = (func: Function, done?: Function) => {
+  private update = (func: any, done?: (...args: any[]) => void) => {
     return (...params) => {
       this.setState(
         ({ fn, ...state }) => {
@@ -727,15 +727,6 @@ const MappedFunctionPopup = mapProps({
 export default createRefetchContainer(
   MappedFunctionPopup,
   {
-    /* TODO manually deal with:
-     initialVariables: {
-     projectName: null, // injected from router
-     selectedModelName: null,
-     modelSelected: false,
-     binding: null,
-     operation: null,
-     }
-     */
     viewer: graphql.experimental`
       fragment FunctionPopup_viewer on Viewer
         @argumentDefinitions(

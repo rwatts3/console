@@ -21,8 +21,8 @@ interface Props {
   description: string
   typeIdentifier: string
   isList: boolean
-  onChangeName: Function
-  onChangeDescription: Function
+  onChangeName: (name: string) => void
+  onChangeDescription: (description: string) => void
   onChangeTypeIdentifier: (type: FieldType) => void
   onToggleIsList: () => void
   onChangeEnumId: (id: string) => void
@@ -184,7 +184,7 @@ export default class BaseSettings extends React.Component<Props, State> {
               dropdownProps={{
                 className: `dropdown`,
               }}
-              options={this.props.enums.map(value => value.name)}
+              options={this.props.enums.map(e => e.name)}
               onSelect={(name: string) => {
                 const enumId = this.props.enums.find(e => e.name === name).id
                 this.props.onChangeEnumId(enumId)

@@ -23,10 +23,8 @@ interface Props {
 
 const ELEMENT_ID = 'auth0-lock'
 
-interface State {}
-
-class Auth0LockWrapper extends React.Component<Props, State> {
-  _lock: any
+class Auth0LockWrapper extends React.Component<Props, {}> {
+  lock: any
 
   componentDidMount() {
     let prefill
@@ -36,7 +34,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
       }
     }
 
-    this._lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
+    this.lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
       closable: false,
       additionalSignUpFields: [
         {
@@ -61,8 +59,8 @@ class Auth0LockWrapper extends React.Component<Props, State> {
       prefill,
     })
 
-    this._lock.on('authenticated', authResult => {
-      this._lock.hide()
+    this.lock.on('authenticated', authResult => {
+      this.lock.hide()
 
       window.localStorage.setItem(
         'graphcool_auth_provider',
@@ -85,7 +83,7 @@ class Auth0LockWrapper extends React.Component<Props, State> {
           this.props.successCallback(response.authenticateCustomer)
         })
         .catch(transaction => {
-          this._lock.show()
+          this.lock.show()
 
           onFailureShowNotification(transaction, this.props.showNotification)
 
@@ -97,11 +95,11 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         })
     })
 
-    this._lock.show()
+    this.lock.show()
   }
 
   componentWillUnmount() {
-    this._lock.hide()
+    this.lock.hide()
   }
 
   render() {

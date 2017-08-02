@@ -3,8 +3,6 @@ import * as cx from 'classnames'
 import { $p } from 'graphcool-styles'
 import styled from 'styled-components'
 
-interface Props {}
-
 interface State {
   activeIndex: number
   count: number
@@ -15,7 +13,7 @@ const Dot = styled.div`
   height: 10px;
 `
 
-export default class Steps extends React.Component<Props, State> {
+export default class Steps extends React.Component<{}, State> {
   constructor(props) {
     super(props)
 

@@ -631,7 +631,7 @@ class FunctionInput extends React.Component<Props, State> {
   }
 
   private runTest = () => {
-    const _runTest = () => {
+    const testRunner = () => {
       const { webhookUrl, isInline } = this.props
       const { exampleEvent } = this.state
       this.setLoading(true)
@@ -660,9 +660,9 @@ class FunctionInput extends React.Component<Props, State> {
 
     this.firstTest = false
     if (this.props.isInline) {
-      this.props.updateFunction().then(_runTest)
+      this.props.updateFunction().then(testRunner)
     } else {
-      _runTest()
+      testRunner()
     }
   }
 

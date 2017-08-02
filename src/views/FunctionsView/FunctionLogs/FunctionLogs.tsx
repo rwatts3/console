@@ -16,8 +16,6 @@ interface Props {
   relay: RelayProp
 }
 
-interface State {}
-
 const customModalStyle = {
   overlay: modalStyle.overlay,
   content: {
@@ -26,7 +24,7 @@ const customModalStyle = {
   },
 }
 
-class FunctionLogsComponent extends React.Component<Props, State> {
+class FunctionLogsComponent extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

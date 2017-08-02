@@ -24,9 +24,7 @@ interface Props {
   updateCalled: () => void
 }
 
-interface State {}
-
-class NewNodeRow extends React.Component<Props, State> {
+class NewNodeRow extends React.Component<Props, {}> {
   renderAddCell = () => {
     if (this.props.newRowActive) {
       return (

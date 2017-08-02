@@ -12,9 +12,7 @@ interface Props {
   params: any
 }
 
-interface State {}
-
-class FunctionsList extends React.Component<Props, State> {
+class FunctionsList extends React.Component<Props, {}> {
   render() {
     const { functions, project } = this.props
     return (

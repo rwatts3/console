@@ -13,7 +13,7 @@ interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
   fragmentChanged: boolean
-  onFragmentChange: (fragment: String, valid: boolean) => void
+  onFragmentChange: (fragment: string, valid: boolean) => void
   fragmentValid: boolean
   selectedModel: Model
   onCancel: () => void

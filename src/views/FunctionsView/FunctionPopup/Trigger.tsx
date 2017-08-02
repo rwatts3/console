@@ -112,9 +112,9 @@ export default function Trigger({
               value={operation}
               onChange={(e: any) => onChangeOperation(e.target.value)}
             >
-              {operations.map(operation =>
-                <option key={operation} value={operation}>
-                  {operation.toLowerCase() + 'd'}
+              {operations.map(op =>
+                <option key={op} value={op}>
+                  {op.toLowerCase() + 'd'}
                 </option>,
               )}
             </Select>

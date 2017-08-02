@@ -64,28 +64,7 @@ function getSpecificEditCell(reqs: CellRequirements): JSX.Element {
   return getScalarEditCell(reqs)
 }
 
-function getNonScalarListEditCell(reqs: CellRequirements): JSX.Element {
-  return (
-    <RelationsPopup
-      originField={reqs.field}
-      originNodeId={reqs.nodeId}
-      onCancel={() => reqs.methods.cancel(true)}
-      projectId={reqs.projectId}
-    />
-  )
-}
-
 function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
-  const isList = reqs.field.isList
-  let values
-
-  if (isList) {
-    values = reqs.value
-  } else {
-    // if it is null, don't add []
-    values = reqs.value ? [reqs.value] : reqs.value
-  }
-
   return (
     <SelectNodesCell
       endpointUrl={`${__BACKEND_ADDR__}/simple/v1/${reqs.projectId}`}

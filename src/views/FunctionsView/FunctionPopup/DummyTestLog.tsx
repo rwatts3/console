@@ -1,8 +1,6 @@
 import * as React from 'react'
 
-interface Props {}
-
-export default function DummyTestLog({  }: Props) {
+export default function DummyTestLog() {
   return (
     <div className="dummy-test-log">
       <style jsx>{`

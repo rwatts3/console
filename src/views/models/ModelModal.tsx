@@ -8,7 +8,7 @@ import { $v } from 'graphcool-styles'
 interface Props {
   isOpen: boolean
   contentLabel: string
-  onRequestClose: Function
+  onRequestClose: () => void
   model: Model
   type: Type
 }

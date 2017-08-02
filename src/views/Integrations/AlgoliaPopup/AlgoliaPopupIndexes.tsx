@@ -17,9 +17,7 @@ interface Props {
   algolia: SearchProviderAlgolia
 }
 
-interface State {}
-
-class AlgoliaPopupIndexes extends React.Component<Props, State> {
+class AlgoliaPopupIndexes extends React.Component<Props, {}> {
   render() {
     const { algolia, params } = this.props
     return (

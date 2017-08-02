@@ -83,7 +83,6 @@ function updateReduxAndRelay(
         })
         .catch(err => {
           // Error
-          console.error(err)
           reject()
         })
     }

@@ -11,8 +11,8 @@ import { $p, $v, Icon } from 'graphcool-styles'
 interface Props {
   apiKey: string
   applicationId: string
-  onChangeApiKey: Function
-  onChangeApplicationId: Function
+  onChangeApiKey: (key: string) => void
+  onChangeApplicationId: (id: string) => void
   onRequestClose: () => void
   onSave: () => void
 }

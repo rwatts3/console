@@ -144,7 +144,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   updateRelayVariables() {
     if (this.state.selectedOperation) {
       this.props.relay.refetch(fragmentVariables => {
-        console.log(`fragmentVariables`, fragmentVariables)
         return {
           ...fragmentVariables,
           operation: this.state.selectedOperation,

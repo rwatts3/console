@@ -589,8 +589,8 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           value={value}
           projectId={this.props.project.id}
           projectName={this.props.params.projectName}
-          update={(value, field, callback) =>
-            this.updateEditingNode(value, field, callback, nodeId, rowIndex)}
+          update={(updatingValue, updatingField, callback) =>
+            this.updateEditingNode(updatingValue, updatingField, callback, nodeId, rowIndex)}
           reload={() => this.loadData(rowIndex, 1)}
           nodeId={nodeId}
           rowIndex={rowIndex}

@@ -4,7 +4,7 @@ const ReactModal: any = require('react-modal')
 interface Props {
   isOpen: boolean
   contentLabel: string
-  onRequestClose: Function
+  onRequestClose: () => void
   width?: number
 }
 

@@ -231,7 +231,8 @@ class SelectNodesCell extends React.Component<Props, State> {
   private handleRowSelection = ({ index, rowData }) => {
     this.setState(state => {
       const { multiSelect } = this.props
-      let { items, values } = state
+      let { items} = state
+      const {values} = state
       const row = items[index]
 
       if (!multiSelect && values && values.length > 0 && row.id !== values[0]) {
@@ -435,7 +436,9 @@ class SelectNodesCell extends React.Component<Props, State> {
         this.lastQuery = query
         this.firstQuery = false
       })
-      .catch(e => console.error(e))
+      .catch(e => {
+        // noop
+      })
   }
 
   private getAllName() {

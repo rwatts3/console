@@ -21,7 +21,7 @@ import Loading from '../../../components/Loading/Loading'
 interface Props {
   algolia: SearchProviderAlgolia
   models: Model[]
-  onRequestClose: Function
+  onRequestClose: () => void
   showNotification: ShowNotificationCallback
   noIndeces: boolean
 }

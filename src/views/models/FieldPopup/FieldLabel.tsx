@@ -13,8 +13,8 @@ interface State {
 interface Props {
   name: string
   description?: string
-  onChangeName: Function
-  onChangeDescription: Function
+  onChangeName: () => void
+  onChangeDescription: () => void
   errors: FieldPopupErrors
   showErrors: boolean
 }

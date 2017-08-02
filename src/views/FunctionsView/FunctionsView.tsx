@@ -12,12 +12,10 @@ interface Props {
   params: any
 }
 
-interface State {}
-
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript'
 
-class FunctionsView extends React.Component<Props, State> {
+class FunctionsView extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

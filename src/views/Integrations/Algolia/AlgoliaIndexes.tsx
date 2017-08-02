@@ -10,9 +10,7 @@ interface Props {
   indexes: any[]
 }
 
-interface State {}
-
-export default class AlgoliaIndexes extends React.Component<Props, State> {
+export default class AlgoliaIndexes extends React.Component<Props, {}> {
   render() {
     const { indexes, params, selectedIndexIndex, onSelectIndex } = this.props
 

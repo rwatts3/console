@@ -10,7 +10,7 @@ import { parse } from 'graphql/language'
 interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
-  onFragmentChange: (fragment: String, valid: boolean) => void
+  onFragmentChange: (fragment: string, valid: boolean) => void
   relay: RelayProp
   selectedModel: Model
 }

@@ -13,7 +13,7 @@ import { idToBeginning } from '../../../utils/utils'
 interface Props {
   columnWidths: { [key: string]: number }
   model: Model
-  toggleNewRow: (fields: Field[], modelNamePlural: String) => any
+  toggleNewRow: (fields: Field[], modelNamePlural: string) => any
   height: number
   params: any
 }

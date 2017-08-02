@@ -139,9 +139,9 @@ export default class EditValueInput extends React.Component<Props, State> {
       inList: true,
       projectId: this.props.projectId,
       methods: {
-        save: value => {
+        save: savingValue => {
           this.setState({ isEnteringValue: false } as State)
-          this.props.onChangeValue(value)
+          this.props.onChangeValue(savingValue)
         },
         cancel: () => {
           this.setState({ isEnteringValue: false } as State)

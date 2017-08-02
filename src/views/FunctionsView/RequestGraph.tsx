@@ -6,9 +6,7 @@ interface Props {
   stats: FunctionStats
 }
 
-interface State {}
-
-export default class RequestGraph extends React.Component<Props, State> {
+export default class RequestGraph extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

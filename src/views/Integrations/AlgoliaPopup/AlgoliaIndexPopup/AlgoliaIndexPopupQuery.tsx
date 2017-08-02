@@ -1,12 +1,9 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql, RelayProp } from 'react-relay'
-import { $p, $v } from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import styled from 'styled-components'
 import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
-import { Project, Model, SearchProviderAlgolia } from '../../../../types/types'
-import { withRouter } from 'found'
-import mapProps from '../../../../components/MapProps/MapProps'
+import { Model, SearchProviderAlgolia } from '../../../../types/types'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
@@ -14,7 +11,7 @@ import { parse } from 'graphql/language'
 interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
-  onFragmentChange: (fragment: String, valid: boolean) => void
+  onFragmentChange: (fragment: string, valid: boolean) => void
   relay: RelayProp
   selectedModel: Model
 }
@@ -22,19 +19,6 @@ interface Props {
 interface State {
   schema: any
 }
-
-const SelectedModel = styled.div`
-  &:before {
-    content: "";
-    position: absolute;
-    left: -2px;
-    top: 2px;
-    background: ${$v.blue};
-    height: 30px;
-    width: 6px;
-    border-radius: 2px;
-  }
-`
 
 function extractSchema({
   schemaString,
@@ -59,7 +43,7 @@ function extractSchema({
 export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
   constructor(props) {
     super(props)
-    const { schema, valid } = extractSchema({
+    const { schema } = extractSchema({
       schemaString: props.algolia.algoliaSchema,
       query: props.fragment,
     })

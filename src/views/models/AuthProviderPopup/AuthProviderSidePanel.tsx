@@ -456,7 +456,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private getSelectedType(definition) {
-    const line = definition.split('\n').find(line => line.includes('onType:'))
+    const line = definition.split('\n').find(l => l.includes('onType:'))
     if (line) {
       const regex = /.+?:\s{0,1}(.+)/
       const result = regex.exec(line)

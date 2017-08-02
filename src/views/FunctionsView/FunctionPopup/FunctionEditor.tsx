@@ -40,9 +40,7 @@ interface Props {
   params: any
 }
 
-interface State {}
-
-export default class FunctionEditor extends React.Component<Props, State> {
+export default class FunctionEditor extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 

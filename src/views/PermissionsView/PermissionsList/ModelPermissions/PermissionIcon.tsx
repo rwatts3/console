@@ -66,7 +66,9 @@ const PermissionIcon = props => {
   const { operation, isActive, className } = props
 
   const ContainerClass = isActive ? Container : DisabledContainer
-  let { icon, containerClass } = getIconSettings(operation)
+  const settings = getIconSettings(operation)
+  const { icon} = settings
+  let {containerClass} = settings
 
   let inactiveColor = {}
   if (!isActive) {

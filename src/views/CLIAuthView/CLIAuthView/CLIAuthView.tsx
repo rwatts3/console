@@ -41,14 +41,6 @@ const redirectURL = (authTrigger: AuthTrigger): string => {
 }
 
 export default class CLIAuthView extends React.Component<Props, State> {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      loading: props.location.hash.length > 1,
-    }
-  }
-
   // used from routes as `onEnter` hook
   static routeRedirectWhenAuthenticated = async (nextState, replace, cb) => {
     if (cookiestore.has('graphcool_auth_token')) {
@@ -65,6 +57,14 @@ export default class CLIAuthView extends React.Component<Props, State> {
       }
     } else {
       cb()
+    }
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      loading: props.location.hash.length > 1,
     }
   }
 

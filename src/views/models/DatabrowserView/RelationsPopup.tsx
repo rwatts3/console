@@ -266,7 +266,6 @@ class RelationsPopup extends React.Component<Props, State> {
           this.reload()
           this.handleSuccess(isRelated, nodeId)
         }
-        console.error(err)
       })
   }
 
@@ -285,11 +284,7 @@ class RelationsPopup extends React.Component<Props, State> {
       const relatedNode = nodes.find(node => node.get('id') === nodeId).toJS()
       let oldValue = relatedNode[originField.reverseRelationField.name]
       oldValue = Array.isArray(oldValue) ? oldValue : []
-      if (isRelated) {
-        value = oldValue.filter(val => val.id !== originNodeId)
-      } else {
-        value = unionBy(oldValue, [{ id: originNodeId }], val => val.id)
-      }
+      value = isRelated ? oldValue.filter(val => val.id !== originNodeId) : unionBy(oldValue, [{ id: originNodeId }], val => val.id)
     } else {
       if (isRelated) {
         value = null

@@ -418,7 +418,7 @@ class FieldPopup extends React.Component<Props, State> {
     this.setState({ field: this.props.field || emptyField } as State)
   }
 
-  private updateField = (fn: Function, done?: Function) => {
+  private updateField = (fn: any, done?: () => void) => {
     return (...params) => {
       this.setState(
         ({ field, ...state }) => {
@@ -511,7 +511,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private create() {
-    const _create = () => {
+    const creator = () => {
       this.setState({ loading: true } as State)
 
       const { modelId } = this.props
@@ -549,7 +549,7 @@ class FieldPopup extends React.Component<Props, State> {
         this.updateField(updateName, () => {
           this.props.showDonePopup()
           this.props.nextStep()
-          _create()
+          creator()
         })('imageUrl')
       } else {
         this.props.showNotification({
@@ -580,7 +580,7 @@ class FieldPopup extends React.Component<Props, State> {
           return
         }
       }
-      _create()
+      creator()
     }
   }
 

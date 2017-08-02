@@ -16,9 +16,9 @@ interface Props {
   needsMigrationIndex: number
   breaking?: boolean
   name: string
-  onConfirmBreakingChanges: Function
-  onReset: Function
-  onDelete: Function
+  onConfirmBreakingChanges: () => void
+  onReset: () => void
+  onDelete: () => void
   onCancel: (e: any) => void
   onDeletePopupVisibilityChange: (visible: boolean) => void
   initialField?: Field

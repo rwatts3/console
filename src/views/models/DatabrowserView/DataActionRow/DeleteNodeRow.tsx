@@ -13,9 +13,7 @@ interface Props {
   clearNodeSelection: () => any
 }
 
-interface State {}
-
-class DeleteNodeRow extends React.Component<Props, State> {
+class DeleteNodeRow extends React.Component<Props, {}> {
   render() {
     const nodes = this.props.selectedNodeIds.size
     return (

@@ -2,19 +2,14 @@ import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import styled from 'styled-components'
 import {
-  Viewer,
   SearchProviderAlgolia,
   AlgoliaSyncQuery,
 } from '../../../types/types'
-import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { withRouter } from 'found'
-import AlgoliaPopupIndexTop from './AlgoliaPopupIndexTop'
 import { Link } from 'found'
 import UpdateAlgoliaSyncQueryMutation from '../../../mutations/UpdateAlgoliaSyncQueryMutation'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
-import AlgoliaIndexPopupQuery from './AlgoliaIndexPopup/AlgoliaIndexPopupQuery'
 import GraphQLCode from '../../../components/GraphQLCode/GraphQLCode'
 
 interface Props {
@@ -23,11 +18,9 @@ interface Props {
   params: any
 }
 
-interface State {}
-class AlgoliaPopupIndexes extends React.Component<Props, State> {
+class AlgoliaPopupIndexes extends React.Component<Props, {}> {
   render() {
     const {
-      algolia,
       params,
       index: { indexName, fragment, isEnabled, model, id },
     } = this.props

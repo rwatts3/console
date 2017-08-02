@@ -78,8 +78,6 @@ class NewRow extends React.Component<Props, State> {
     const loading = this.props.writing
     const { step } = this.props.gettingStarted
 
-    console.log(this.props.project)
-
     return (
       <div
         className={classnames(classes.root, {
