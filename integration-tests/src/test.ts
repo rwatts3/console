@@ -13,10 +13,20 @@ import {deleteCustomer, extractCustomerInfo} from './deleteUser'
 let cookies: any[] = []
 
 test.before('signup, get cookie and run onboarding', async t => {
-  console.log('######### signup')
-  cookies = await signup()
-  console.log('######### onboarding')
-  await onboarding(cookies)
+  let worked = false
+  let count = 0
+  while (!worked && count < 5) {
+    try {
+      console.log('######### signup')
+      cookies = await signup()
+      console.log('######### onboarding')
+      await onboarding(cookies)
+      worked = false
+      count++
+    } catch (e) {
+      //
+    }
+  }
 })
 
 test.after('delete user', async () => {
