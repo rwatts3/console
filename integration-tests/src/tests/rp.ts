@@ -1,17 +1,12 @@
 import Chromeless from 'chromeless'
-import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import { config, CONSOLE_URL } from '../config'
 
 export default async (cookies: any[]): Promise<any> =>  {
 
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    viewport,
-    closeTab,
-  })
+  const chromeless = new Chromeless(config)
 
   await chromeless
-    .cookies.set(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3200)
     .wait('a[data-test="sidenav-functions"]')
@@ -29,9 +24,7 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.next .next-name')
     .click('.next .next-name')
     .wait(700)
-    .eval.code(() => document.querySelector('input[data-test="function-name-input"]').focus())
-
-  return chromeless
+    .evaluate(() => document.querySelector('input[data-test="function-name-input"]').focus())
     .type('Test RP Function', 'input[data-test="function-name-input"]')
     .wait('.buttons .button.active')
     .click('.buttons .button.active')

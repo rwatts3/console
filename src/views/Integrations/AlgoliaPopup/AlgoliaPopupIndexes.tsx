@@ -1,11 +1,14 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Viewer, SearchProviderAlgolia} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import AlgoliaPopupIndexTop from './AlgoliaPopupIndexTop'
 import AlgoliaPopupIndex from './AlgoliaPopupIndex'
 import mapProps from '../../../components/MapProps/MapProps'
@@ -38,20 +41,18 @@ class AlgoliaPopupIndexes extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(withRouter(AlgoliaPopupIndexes), {
-  fragments: {
-    algolia: () => Relay.QL`
-      fragment on SearchProviderAlgolia {
-        ${AlgoliaPopupIndex.getFragment('algolia')}
-        algoliaSyncQueries(first: 100) {
-          edges {
-            node {
-              id
-              ${AlgoliaPopupIndex.getFragment('index')}
-            }
+export default createFragmentContainer(withRouter(AlgoliaPopupIndexes), {
+  algolia: graphql`
+    fragment AlgoliaPopupIndexes_algolia on SearchProviderAlgolia {
+      ...AlgoliaPopupIndex_algolia
+      algoliaSyncQueries(first: 1000) {
+        edges {
+          node {
+            id
+            ...AlgoliaPopupIndex_index
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

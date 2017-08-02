@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import AuthProviderSidePanel from './AuthProviderSidePanel'
 import {Icon} from 'graphcool-styles'
 import { $p } from 'graphcool-styles'
@@ -9,7 +12,7 @@ import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import mapProps from '../../../components/MapProps/MapProps'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   project: Project
@@ -169,7 +172,6 @@ class AuthProviderPopup extends React.Component<Props, null> {
   }
 
   private close = () => {
-    // TODO
     if (this.props.location.state && this.props.location.state.returnTo) {
       this.props.router.push(this.props.location.state.returnTo)
     } else {
@@ -183,32 +185,27 @@ const MappedAuthProviderPopup = mapProps({
   isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(AuthProviderPopup))
 
-export default Relay.createContainer(MappedAuthProviderPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          authProviders(first: 100) {
-            edges {
-              node {
-                type
-                isEnabled
-              }
+export default createFragmentContainer(MappedAuthProviderPopup, {
+  viewer: graphql`
+    fragment AuthProviderPopup_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        authProviders(first: 1000) {
+          edges {
+            node {
+              type
+              isEnabled
             }
           }
-          ${AuthProviderSidePanel.getFragment('project')}
         }
-        user {
-          crm {
-            information {
-              isBeta
-            }
+        ...AuthProviderSidePanel_project
+      }
+      user {
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

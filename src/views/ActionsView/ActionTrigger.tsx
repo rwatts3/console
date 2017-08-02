@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { classnames } from '../../utils/classnames'
 import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
 import { UpdateTriggerPayload } from './ActionTriggerBox'
@@ -109,20 +112,18 @@ class ActionTrigger extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(ActionTrigger, {
-    fragments: {
-      project: () => Relay.QL`
-        fragment on Project {
-          models (first: 1000) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
+export default createFragmentContainer(ActionTrigger, {
+  project: graphql`
+    fragment ActionTrigger_project on Project {
+      models (first: 1000) {
+        edges {
+          node {
+            id
+            name
           }
         }
-      `,
-    },
-  },
+      }
+    }
+  `,
+},
 )

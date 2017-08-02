@@ -7,7 +7,7 @@ import {classnames} from '../../../utils/classnames'
 import {SYSTEM_MODELS} from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 import Tether from '../../../components/Tether/Tether'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import {idToBeginning} from '../../../utils/utils'
 
 interface Props {
@@ -170,7 +170,6 @@ class NewRowInactive extends React.Component<Props, State> {
   }
 
   private toggleNewRow = (fields: Field[]) => {
-    // TODO get isSystem properly from the system api
     if (this.state.active) {
       this.props.toggleNewRow(fields, this.props.model.namePlural)
     }

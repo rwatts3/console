@@ -1,36 +1,34 @@
 import Chromeless from 'chromeless'
-import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import { config, CONSOLE_URL } from '../config'
 import * as fs from 'fs'
 
 export default async (cookies: any[]): Promise<any> =>  {
   const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    closeTab,
-    viewport,
+    ...config,
   })
 
-  await chromeless
-    .cookies.set(cookies)
+  const screenshot = await chromeless
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
-    .wait(2600)
+    .wait(3600)
     .wait('div[data-test="start-onboarding"]')
     .click('div[data-test="start-onboarding"]')
-    .wait(1100)
+    .wait(2100)
     .click('.add-type')
-    .wait(300)
+    .wait(700)
     .type('Post', '.name-input')
-    .wait(300)
+    .wait(700)
     .wait('.button.save')
     .click('.button.save')
-    .wait(2100)
-
-    .click('a[data-test="add-post-field"]')
-    .eval.code(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
-
-  const screenshot = await chromeless
+    .wait(2000)
+    .wait(2000)
+    .wait(2000)
+    .click('a[data-test="add-post-field"] .add-button')
+    // .evaluate(() => document.querySelector('a[data-test="add-post-field"] .add-button').click())
     .wait(1100)
-    .wait('input.fieldNameInputField')
+    .screenshot()
+
+    const screenshot2 = await chromeless
     .type('imageUrl', 'input.fieldNameInputField')
     .wait(600)
     .click('div[data-test="string-type"] div')
@@ -38,9 +36,8 @@ export default async (cookies: any[]): Promise<any> =>  {
     .click('.buttons div.button.active')
     .wait(1900)
     .click('a[data-test="add-post-field"]')
-    .wait('input.fieldNameInputField')
     .type('description', 'input.fieldNameInputField')
-    .wait(600)
+    .wait(1000)
     .click('div[data-test="string-type"]')
     .wait(900)
     .click('.buttons div.button')
@@ -50,16 +47,20 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.CodeMirror')
     .wait(300)
     .press(8, 2)
-    .wait(1500)
+    .press(8, 2)
+    .wait(2500)
+    .screenshot()
+  console.log('screenshot 2', screenshot2)
+
+    await chromeless
     .click('.graphcool-execute-button')
-    .wait(1100)
-    .click('.tab.plus')
+    .wait(2000)
+    .click('body .tabs .tab.plus svg')
     // execute mutation
     .wait(1100)
     .click('.tether-content .btn')
     .wait(1600)
     .click('.graphiql-wrapper:last-child .graphcool-execute-button svg')
-    .wait('.tether-content .btn')
     .click('.tether-content .btn')
     .wait(1100)
     .click('.graphiql-wrapper:last-child .graphcool-execute-button')
@@ -72,12 +73,8 @@ export default async (cookies: any[]): Promise<any> =>  {
     .wait('.bottom .skip')
     .click('.bottom .skip')
     .wait(1000)
-    .wait('div[data-test="close-popup"]')
     .click('div[data-test="close-popup"]')
     .wait(2000)
-    .eval.screenshot()
+    .screenshot()
 
-  console.log('\n\n')
-  console.log(screenshot)
-  console.log('\n\n')
 }

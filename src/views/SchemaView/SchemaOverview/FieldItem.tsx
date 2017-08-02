@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Field, ModelPermission} from '../../../types/types'
 import TypeTag from './TypeTag'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import PermissionsTag from './PermissionsTag'
 import {isScalar} from '../../../utils/graphql'
 import {Icon} from 'graphcool-styles'

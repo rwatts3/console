@@ -1,8 +1,12 @@
 import * as React from 'react'
 import {Viewer} from '../../../types/types'
 import Tokens from './Tokens'
-import * as Relay from 'react-relay'
-import * as cookiestore from 'cookiestore' import Copy from '../../../components/Copy'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import * as cookiestore from 'cookiestore'
+import Copy from '../../../components/Copy'
 
 interface Props {
   viewer: Viewer
@@ -66,17 +70,12 @@ class Authentication extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(Authentication, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${Tokens.getFragment('project')}
-        }
+export default createFragmentContainer(Authentication, {
+  viewer: graphql`
+    fragment Authentication_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...Tokens_project
       }
-    `,
-  },
+    }
+  `,
 })

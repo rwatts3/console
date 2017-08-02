@@ -1,7 +1,10 @@
 import * as React from 'react'
 import EnumsOverviewHeader from './EnumsOverviewHeader'
 import EnumList from './EnumList'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Project, Enum} from '../../../types/types'
 import AddEnum from './AddEnum'
 import Tether from '../../../components/Tether/Tether'
@@ -37,7 +40,11 @@ class EnumsOverview extends React.Component<Props,State> {
     const {editingEnumName, blur} = this.props
     const {activeFilter, addingEnum} = this.state
     let selectedEnum = undefined
-    if (this.props.location.query.hasOwnProperty('selectedEnum')) {
+
+    if (this.props.location
+      && this.props.location.query
+      && typeof this.props.location.query.selectedEnum !== 'undefined'
+    ) {
       selectedEnum = this.props.location.query.selectedEnum
     }
 
@@ -117,13 +124,11 @@ class EnumsOverview extends React.Component<Props,State> {
   }
 }
 
-export default Relay.createContainer(EnumsOverview, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        ${EnumList.getFragment('project')}
-      }
-    `,
-  },
+export default createFragmentContainer(EnumsOverview, {
+  project: graphql`
+    fragment EnumsOverview_project on Project {
+      id
+      ...EnumList_project
+    }
+  `,
 })

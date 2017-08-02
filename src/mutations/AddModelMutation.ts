@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
@@ -6,39 +7,51 @@ interface Props {
   description?: string
 }
 
-export default class AddModelMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addModel}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddModelPayload {
-        modelEdge
-        project
+const mutation = graphql`
+  mutation AddModelMutation($input: AddModelInput!) {
+    addModel(input: $input) {
+      modelEdge {
+        node {
+          ...NewRow_model
+          ...ModelHeader_model
+          ...SideNav_model
+          ...TypeList_model
+        }
       }
-    `
+      project {
+        models(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        projectId: input.projectId,
+        modelName: input.modelName,
+        description: input.description,
+      },
+    },
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'models',
       edgeName: 'modelEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-      modelName: this.props.modelName,
-      description: this.props.description,
-    }
-  }
+    }],
+  })
 }
+
+export default {commit}

@@ -1,44 +1,57 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   projectId: string
   email: string
 }
 
-export default class AddCollaboratorMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{inviteCollaborator}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on InviteCollaboratorPayload {
-        project
-        seat {
-          email
+const mutation = graphql`
+  mutation AddCollaboratorMutation($input: InviteCollaboratorInput!) {
+    inviteCollaborator(input: $input) {
+      project {
+        id
+        seats(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
         }
       }
-    `
+      seatEdge {
+        node {
+          id
+          isOwner
+          email
+          name
+          status
+        }
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        projectId: input.projectId,
+        email: input.email,
+      },
+    },
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'seats',
       edgeName: 'seatEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      projectId: this.props.projectId,
-      email: this.props.email,
-    }
-  }
+    }],
+  })
 }
+
+export default {commit}

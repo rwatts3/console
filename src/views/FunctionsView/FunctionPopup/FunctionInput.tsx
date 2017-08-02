@@ -26,7 +26,7 @@ import TestLog from './TestLog'
 import DummyTestLog from './DummyTestLog'
 import ResizableBox from '../../../components/ResizableBox'
 import Loading from '../../../components/Loading/Loading'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 
 interface Props {
   schema: string

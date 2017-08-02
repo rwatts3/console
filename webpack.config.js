@@ -9,18 +9,11 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HappyPack = require('happypack')
 
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'source-map',
   entry: {
     app: [
       'babel-polyfill',
       './src/main',
-      './src/styles/codemirror.css',
-      // './src/styles/graphiql.css',
-      'codemirror/mode/javascript/javascript',
-      'codemirror/mode/shell/shell',
-      // 'codemirror/lib/codemirror.css',
-      // 'codemirror/theme/dracula.css',
-      'graphcool-graphiql/graphiql_dark.css',
     ],
     styles: 'graphcool-styles/dist/styles.css',
   },
@@ -30,11 +23,6 @@ module.exports = {
   },
   module: {
     rules: [{
-      enforce: 'pre',
-      test: /\.ts(x?)$/,
-      loader: 'tslint-loader',
-      exclude: /node_modules/,
-    }, {
       test: /\.json$/, // TODO check if still needed
       loader: 'json-loader',
     }, {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {Enum} from '../../../types/types'
-import * as Relay from 'react-relay'
-import {Link} from 'react-router'
+import * as Relay from 'react-relay/classic'
+import {Link} from 'found'
 import {Icon, $v} from 'graphcool-styles'
 import {isScalar} from '../../../utils/graphql'
 import {idToBeginning} from '../../../utils/utils'
@@ -13,7 +13,7 @@ import Info from '../../../components/Info'
 import {onFailureShowNotification} from '../../../utils/relay'
 import {showNotification} from '../../../actions/notification'
 import {ShowNotificationCallback} from '../../../types/utils'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import EnumEditor from './EnumEditor'
 
 interface Props {

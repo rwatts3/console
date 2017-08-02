@@ -1,6 +1,9 @@
 import * as React from 'react'
 import * as FileSaver from 'file-saver'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer} from '../../../types/types'
 import * as cookiestore from 'cookiestore'
 import {Lokka} from 'lokka'
@@ -157,19 +160,14 @@ class Export extends React.Component<Props, {}> {
 
 const ReduxContainer = connect(null, {showNotification})(Export)
 
-export default Relay.createContainer(ReduxContainer, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          name
-          id
-          schema
-        }
+export default createFragmentContainer(ReduxContainer, {
+  viewer: graphql`
+    fragment Export_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        name
+        id
+        schema
       }
-    `,
-  },
+    }
+  `,
 })

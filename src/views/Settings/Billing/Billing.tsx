@@ -3,13 +3,16 @@ import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
-import * as Relay from 'react-relay'
+import {
+  createRefetchContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer, Invoice} from '../../../types/types'
 import {
   creditCardNumberValid, expirationDateValid, cpcValid,
   minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits,
 } from '../../../utils/creditCardValidator'
-import SetCreditCardMutation from '../../../mutations/SetCreditCardMutation'
+import SetCreditCardMutation from '../../../mutations/Billing/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
 import {ShowNotificationCallback} from '../../../types/utils'
 import {connect} from 'react-redux'
@@ -405,25 +408,20 @@ class Billing extends React.Component<Props, State> {
 
     const token = response.id
 
-    Relay.Store.commitUpdate(
-      new SetCreditCardMutation({
+      SetCreditCardMutation.commit({
         projectId: this.props.viewer.project.id,
         token: token,
-      }),
-      {
-        onSuccess: () => {
+      }).then(() => {
           this.setState({
             isEditingCreditCardInfo: false,
             isLoading: false,
           } as State)
           this.props.relay.forceFetch()
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({isLoading: false} as State)
-        },
-      },
-    )
+        })
   }
 
 }
@@ -434,65 +432,60 @@ const mapDispatchToProps = (dispatch) => {
 
 const mappedBilling = connect(null, mapDispatchToProps)(Billing)
 
-export default Relay.createContainer(mappedBilling, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          seats(first: 1000) {
-            edges {
-              node {
-                id
-                isOwner
-                email
-                name
-              }
+export default createRefetchContainer(mappedBilling, {
+  viewer: graphql`
+    fragment Billing_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        name
+        seats(first: 1000) {
+          edges {
+            node {
+              id
+              isOwner
+              email
+              name
             }
           }
-        },
-        crm: user {
-          name
-          email
-          crm {
-            customer {
-              id
-              projects(first: 1000) {
-                edges {
-                  node {
-                    id
-                    name
-                    systemProjectId
-                    projectBillingInformation {
-                      plan
-                      invoices(first: 1000)  {
-                        edges {
-                          node {
-                            overageRequests
-                            usageRequests
-                            usageStorage
-                            usedSeats
-                            timestamp
-                            total
-                          }
+        }
+      },
+      crm: user {
+        name
+        email
+        crm {
+          customer {
+            id
+            projects(first: 1000) {
+              edges {
+                node {
+                  id
+                  name
+                  systemProjectId
+                  projectBillingInformation {
+                    plan
+                    invoices(first: 1000)  {
+                      edges {
+                        node {
+                          overageRequests
+                          usageRequests
+                          usageStorage
+                          usedSeats
+                          timestamp
+                          total
                         }
                       }
-                      creditCard {
-                        addressCity
-                        addressCountry
-                        addressLine1
-                        addressLine2
-                        addressState
-                        addressZip
-                        expMonth
-                        expYear
-                        last4
-                        name
-                      }
+                    }
+                    creditCard {
+                      addressCity
+                      addressCountry
+                      addressLine1
+                      addressLine2
+                      addressState
+                      addressZip
+                      expMonth
+                      expYear
+                      last4
+                      name
                     }
                   }
                 }
@@ -501,5 +494,5 @@ export default Relay.createContainer(mappedBilling, {
           }
         }
       }
-    `},
-})
+    }
+  `})

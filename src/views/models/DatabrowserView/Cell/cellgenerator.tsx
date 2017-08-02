@@ -9,11 +9,17 @@ import JsonCell from './JsonCell'
 import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
 import NodeSelector from '../../../../components/NodeSelector/NodeSelector'
-import RelationsPopup from '../RelationsPopup'
+let RelationsPopup = () => null
+let SelectNodesCell = () => null
+// needed for jest tests
+if (process.env.NODE_ENV !== 'test') {
+  RelationsPopup = require('../RelationsPopup').default
+  SelectNodesCell = require('./SelectNodesCell/SelectNodesCell').default
+}
+
 import {isScalar, isNonScalarList} from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
 import NullableCell from './NullableCell'
-import SelectNodesCell from './SelectNodesCell/SelectNodesCell'
 
 export interface CellRequirements {
   value: any

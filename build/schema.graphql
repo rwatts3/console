@@ -1,0 +1,2536 @@
+# This is an action
+type Action implements Node {
+  id: ID!
+  isActive: Boolean!
+  description: String
+  triggerType: ActionTriggerType!
+  handlerType: ActionHandlerType!
+  triggerMutationModel: ActionTriggerMutationModel
+  triggerMutationRelation: ActionTriggerMutationRelation
+  handlerWebhook: ActionHandlerWebhook
+}
+
+# A connection to a list of items.
+type ActionConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [ActionEdge]
+}
+
+# An edge in a connection.
+type ActionEdge {
+  # The item at the end of the edge.
+  node: Action!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+enum ActionHandlerType {
+  WEBHOOK
+}
+
+# This is an ActionHandlerWebhook
+type ActionHandlerWebhook implements Node {
+  id: ID!
+  url: String!
+  isAsync: Boolean!
+}
+
+input ActionHandlerWebhookEmbed {
+  url: String!
+  isAsync: Boolean
+}
+
+input ActionTriggerModelMutationEmbed {
+  fragment: String!
+  modelId: ID!
+  mutationType: ActionTriggerMutationModelMutationType!
+}
+
+# This is an ActionTriggerMutationModel
+type ActionTriggerMutationModel implements Node {
+  id: ID!
+  fragment: String!
+  model: Model!
+  mutationType: ActionTriggerMutationModelMutationType!
+}
+
+enum ActionTriggerMutationModelMutationType {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum ActionTriggerMutationModelRelationType {
+  ADD
+  REMOVE
+}
+
+# This is an ActionTriggerMutationRelation
+type ActionTriggerMutationRelation implements Node {
+  id: ID!
+  fragment: String!
+  relation: Relation!
+  mutationType: ActionTriggerMutationModelRelationType!
+}
+
+enum ActionTriggerType {
+  MUTATION_MODEL
+  MUTATION_RELATION
+}
+
+input AddActionInput {
+  projectId: ID!
+  isActive: Boolean!
+  description: String
+  triggerType: ActionTriggerType!
+  handlerType: ActionHandlerType!
+  handlerWebhook: ActionHandlerWebhookEmbed
+  triggerMutationModel: ActionTriggerModelMutationEmbed
+  clientMutationId: String
+}
+
+type AddActionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  action: Action!
+  actionConnection(before: String, after: String, first: Int, last: Int): ActionConnection!
+  actionEdge: ActionEdge!
+  clientMutationId: String
+}
+
+input AddAlgoliaSyncQueryInput {
+  modelId: String!
+  indexName: String!
+  fragment: String!
+  clientMutationId: String
+}
+
+type AddAlgoliaSyncQueryPayload {
+  viewer: Viewer!
+  project: Project!
+  algoliaSyncQuery: AlgoliaSyncQuery!
+  searchProviderAlgolia: SearchProviderAlgolia!
+  user: Customer!
+  algoliaSyncQueryConnection(before: String, after: String, first: Int, last: Int): AlgoliaSyncQueryConnection!
+  algoliaSyncQueryEdge: AlgoliaSyncQueryEdge!
+  clientMutationId: String
+}
+
+input AddCustomMutationFunctionInput {
+  projectId: ID!
+  isActive: Boolean!
+  name: String!
+  schema: String!
+  type: FunctionType!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type AddCustomMutationFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: SchemaExtensionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input AddCustomQueryFunctionInput {
+  projectId: ID!
+  isActive: Boolean!
+  name: String!
+  schema: String!
+  type: FunctionType!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type AddCustomQueryFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: SchemaExtensionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input AddEnumInput {
+  projectId: ID!
+  name: String!
+  values: [String!]!
+  clientMutationId: String
+}
+
+type AddEnumPayload {
+  viewer: Viewer!
+  project: Project!
+  enum: Enum!
+  enumEdge: EnumEdge!
+  clientMutationId: String
+}
+
+input AddFieldConstraintInput {
+  fieldId: ID!
+  constraintType: FieldConstraintTypeType!
+  equalsString: String
+  oneOfString: [String!]
+  minLength: Int
+  maxLength: Int
+  startsWith: String
+  endsWith: String
+  includes: String
+  regex: String
+  equalsNumber: Float
+  oneOfNumber: [Float!]
+  min: Float
+  max: Float
+  exclusiveMin: Float
+  exclusiveMax: Float
+  multipleOf: Float
+  equalsBoolean: Boolean
+  uniqueItems: Boolean
+  minItems: Int
+  maxItems: Int
+  clientMutationId: String
+}
+
+type AddFieldConstraintPayload {
+  viewer: Viewer!
+  project: Project!
+  field: Field!
+  constraints: [FieldConstraint!]!
+  clientMutationId: String
+}
+
+input AddFieldInput {
+  modelId: ID!
+  name: String!
+  typeIdentifier: String!
+  isRequired: Boolean!
+  isList: Boolean!
+  isUnique: Boolean!
+  relationId: String
+  enumId: ID
+  defaultValue: String
+  migrationValue: String
+  description: String
+  clientMutationId: String
+}
+
+type AddFieldPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  model: Model!
+  field: Field!
+  fieldConnection(before: String, after: String, first: Int, last: Int): FieldConnection!
+  fieldEdge: FieldEdge!
+  clientMutationId: String
+}
+
+input AddModelInput {
+  projectId: ID!
+  modelName: String!
+  description: String
+  clientMutationId: String
+}
+
+type AddModelPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  model: Model!
+  modelConnection(before: String, after: String, first: Int, last: Int): ModelConnection!
+  modelEdge: ModelEdge!
+  clientMutationId: String
+}
+
+input AddModelPermissionInput {
+  modelId: ID!
+  operation: Operation!
+  userType: UserType!
+  rule: Rule!
+  ruleName: String
+  ruleGraphQuery: String
+  ruleWebhookUrl: String
+  fieldIds: [String!]!
+  applyToWholeModel: Boolean!
+  description: String
+  isActive: Boolean!
+  clientMutationId: String
+}
+
+type AddModelPermissionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  model: Model!
+  modelPermission: ModelPermission!
+  modelPermissionConnection(before: String, after: String, first: Int, last: Int): ModelPermissionConnection!
+  modelPermissionEdge: ModelPermissionEdge!
+  clientMutationId: String
+}
+
+input AddPermanentAuthTokenInput {
+  projectId: ID!
+  name: String!
+  description: String
+  clientMutationId: String
+}
+
+type AddPermanentAuthTokenPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  permanentAuthToken: PermanentAuthToken!
+  permanentAuthTokenConnection(before: String, after: String, first: Int, last: Int): PermanentAuthTokenConnection!
+  permanentAuthTokenEdge: PermanentAuthTokenEdge!
+  clientMutationId: String
+}
+
+input AddProjectInput {
+  name: String!
+  alias: String
+  webhookUrl: String
+  schema: String
+  region: Region
+  clientMutationId: String
+}
+
+type AddProjectPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projectEdge: ProjectEdge!
+  clientMutationId: String
+}
+
+input AddRelationFieldMirrorInput {
+  fieldId: ID!
+  relationId: ID!
+  clientMutationId: String
+}
+
+type AddRelationFieldMirrorPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  relationFieldMirror: RelationFieldMirror!
+  relation: Relation!
+  relationFieldMirrorConnection(before: String, after: String, first: Int, last: Int): RelationFieldMirrorConnection!
+  relationFieldMirrorEdge: RelationFieldMirrorEdge!
+  clientMutationId: String
+}
+
+input AddRelationInput {
+  projectId: ID!
+  leftModelId: ID!
+  rightModelId: ID!
+  fieldOnLeftModelName: String!
+  fieldOnRightModelName: String!
+  fieldOnLeftModelIsList: Boolean!
+  fieldOnRightModelIsList: Boolean!
+
+  # Defaults to false. Can only be true for non-list relation fields
+  fieldOnLeftModelIsRequired: Boolean
+
+  # Defaults to false. Can only be true for non-list relation fields
+  fieldOnRightModelIsRequired: Boolean
+  name: String!
+  description: String
+  clientMutationId: String
+}
+
+type AddRelationPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  relation: Relation!
+  leftModel: Model!
+  rightModel: Model!
+  modelConnection(before: String, after: String, first: Int, last: Int): ModelConnection!
+  relationEdge: RelationEdge!
+  leftModelEdge: ModelEdge!
+  rightModelEdge: ModelEdge!
+  fieldEdge: FieldEdge!
+  fieldOnLeftModelEdge: FieldEdge!
+  fieldOnRightModelEdge: FieldEdge!
+  clientMutationId: String
+}
+
+input AddRelationPermissionInput {
+  relationId: ID!
+  connect: Boolean!
+  disconnect: Boolean!
+  userType: UserType!
+  rule: Rule!
+  ruleName: String
+  ruleGraphQuery: String
+  ruleWebhookUrl: String
+  description: String
+  isActive: Boolean!
+  clientMutationId: String
+}
+
+type AddRelationPermissionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  relation: Relation!
+  relationPermission: RelationPermission!
+  relationPermissionConnection(before: String, after: String, first: Int, last: Int): RelationPermissionConnection!
+  relationPermissionEdge: RelationPermissionEdge!
+  clientMutationId: String
+}
+
+input AddRequestPipelineMutationFunctionInput {
+  projectId: ID!
+  name: String!
+  isActive: Boolean!
+  binding: FunctionBinding!
+  modelId: String!
+  operation: RequestPipelineMutationOperation!
+  type: FunctionType!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type AddRequestPipelineMutationFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: RequestPipelineMutationFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input AddSchemaExtensionFunctionInput {
+  projectId: ID!
+  isActive: Boolean!
+  name: String!
+  schema: String!
+  type: FunctionType!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type AddSchemaExtensionFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: SchemaExtensionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input AddServerSideSubscriptionFunctionInput {
+  projectId: ID!
+  name: String!
+  isActive: Boolean!
+  query: String!
+  type: FunctionType!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type AddServerSideSubscriptionFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: ServerSideSubscriptionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+# This is an AlgoliaSyncQuery
+type AlgoliaSyncQuery implements Node {
+  id: ID!
+  indexName: String!
+  fragment: String!
+  isEnabled: Boolean!
+  model: Model!
+}
+
+# A connection to a list of items.
+type AlgoliaSyncQueryConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [AlgoliaSyncQueryEdge]
+}
+
+# An edge in a connection.
+type AlgoliaSyncQueryEdge {
+  # The item at the end of the edge.
+  node: AlgoliaSyncQuery!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+input AuthenticateCustomerInput {
+  auth0IdToken: String!
+  clientMutationId: String
+}
+
+type AuthenticateCustomerPayload {
+  viewer: Viewer!
+  user: Customer!
+  userEdge: ClientEdge!
+  token: String!
+  clientMutationId: String
+}
+
+# This is a AuthProvider
+type AuthProvider implements Node {
+  id: ID!
+  type: AuthProviderType!
+  isEnabled: Boolean!
+  digits: AuthProviderDigitsMeta
+  auth0: AuthProviderAuth0Meta
+}
+
+# Auth0 Meta Information
+type AuthProviderAuth0Meta {
+  clientId: String
+  clientSecret: String
+  domain: String
+}
+
+input AuthProviderAuth0MetaInput {
+  clientId: String!
+  clientSecret: String!
+  domain: String!
+}
+
+# A connection to a list of items.
+type AuthProviderConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [AuthProviderEdge]
+}
+
+# Digits Meta Information
+type AuthProviderDigitsMeta {
+  consumerKey: String
+  consumerSecret: String
+}
+
+input AuthProviderDigitsMetaInput {
+  consumerKey: String!
+  consumerSecret: String!
+}
+
+# An edge in a connection.
+type AuthProviderEdge {
+  # The item at the end of the edge.
+  node: AuthProvider!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+enum AuthProviderType {
+  AUTH_PROVIDER_EMAIL
+  AUTH_PROVIDER_DIGITS
+  AUTH_PROVIDER_AUTH0
+}
+
+# The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
+scalar BigDecimal
+
+# The `BigInt` scalar type represents non-fractional signed whole numeric values. BigInt can represent arbitrary big values.
+scalar BigInt
+
+# This is a BooleanConstraint
+type BooleanConstraint implements Node, FieldConstraint {
+  equalsBoolean: Boolean
+
+  # The id of the object.
+  id: ID!
+  constraintType: FieldConstraintTypeType!
+  fieldId: ID!
+}
+
+# An edge in a connection.
+type ClientEdge {
+  # The item at the end of the edge.
+  node: Customer!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+input CloneProjectInput {
+  projectId: String!
+  name: String!
+  includeData: Boolean!
+  includeMutationCallbacks: Boolean!
+  clientMutationId: String
+}
+
+type CloneProjectPayload {
+  viewer: Viewer!
+  project: Project!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projectEdge: ProjectEdge!
+  user: Customer!
+  clientMutationId: String
+}
+
+type CrmCreditCard {
+  addressCity: String
+  addressCountry: String
+  addressLine1: String
+  addressLine2: String
+  addressState: String
+  addressZip: String
+  expMonth: Int
+  expYear: Int
+  last4: Int
+  name: String
+  id: String
+}
+
+type CrmCustomer {
+  id: String
+  projects(before: String, after: String, first: Int, last: Int): CrmProjectConnection!
+}
+
+type CrmCustomerInformation {
+  email: String
+  isBeta: Boolean
+  name: String
+  referral: String
+  signupPath: String
+  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE
+  source: String
+  id: String
+}
+
+input CrmCustomerInformationInput {
+  email: String
+  isBeta: Boolean
+  name: String
+  referral: String
+  signupPath: String
+  signupSource: CUSTOMER_INFORMATION_SIGNUP_SOURCE
+  source: String
+  clientMutationId: String
+}
+
+type CrmGuideStatus {
+  guide1: Boolean
+  id: String
+}
+
+input CrmGuideStatusInput {
+  guide1: Boolean
+  clientMutationId: String
+}
+
+type CrmInvoice {
+  invoiceNumber: String
+  total: Float
+  overageRequests: Float
+  usageRequests: [Int!]
+  overageStorage: Float
+  usageStorage: [Float!]
+  usedSeats: Float
+  timestamp: DateTime
+  id: String
+}
+
+# A connection to a list of items.
+type CrmInvoiceConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [CrmInvoiceEdge]
+}
+
+# An edge in a connection.
+type CrmInvoiceEdge {
+  # The item at the end of the edge.
+  node: CrmInvoice!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+type CrmOnboardingStatus {
+  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
+  gettingStartedCompleted: Boolean
+  gettingStartedExample: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
+  gettingStartedSkipped: Boolean
+  id: String
+}
+
+input CrmOnboardingStatusInput {
+  gettingStarted: ONBOARDING_STATUS_GETTING_STARTED
+  gettingStartedCompleted: Boolean
+  gettingStartedExample: ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE
+  gettingStartedSkipped: Boolean
+  clientMutationId: String
+}
+
+type CrmProject {
+  id: String
+  projectBillingInformation: CrmProjectBillingInformation!
+  systemProjectId: String
+  name: String
+}
+
+type CrmProjectBillingInformation {
+  id: String
+  plan: String
+  invoices(before: String, after: String, first: Int, last: Int): CrmInvoiceConnection!
+  creditCard: CrmCreditCard
+}
+
+# A connection to a list of items.
+type CrmProjectConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [CrmProjectEdge]
+}
+
+# An edge in a connection.
+type CrmProjectEdge {
+  # The item at the end of the edge.
+  node: CrmProject!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+type CrmSystemBridge {
+  id: String!
+  information: CrmCustomerInformation!
+  onboardingStatus: CrmOnboardingStatus!
+  guideStatus: CrmGuideStatus!
+  customer: CrmCustomer!
+}
+
+# This is a Customer
+type Customer implements Node {
+  id: ID!
+  crm: CrmSystemBridge
+  name: String!
+  email: String!
+  source: CustomerSourceType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  projects(before: String, after: String, first: Int, last: Int): ProjectConnection!
+}
+
+enum CUSTOMER_INFORMATION_SIGNUP_SOURCE {
+  HOMEPAGE
+  DOCS
+  LEARN_RELAY
+  WAIT_LIST
+  LEARN_APOLLO
+  CLI
+}
+
+enum CustomerSourceType {
+  LEARN_RELAY
+  LEARN_APOLLO
+  DOCS
+  WAIT_LIST
+}
+
+scalar DateTime
+
+input DeleteActionInput {
+  actionId: ID!
+  clientMutationId: String
+}
+
+type DeleteActionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  action: Action!
+  actionConnection(before: String, after: String, first: Int, last: Int): ActionConnection!
+  actionEdge: ActionEdge!
+  deletedId: String!
+  clientMutationId: String
+}
+
+input DeleteAlgoliaSyncQueryInput {
+  algoliaSyncQueryId: String!
+  clientMutationId: String
+}
+
+type DeleteAlgoliaSyncQueryPayload {
+  viewer: Viewer!
+  project: Project!
+  algoliaSyncQuery: AlgoliaSyncQuery!
+  deletedId: String!
+  searchProviderAlgolia: SearchProviderAlgolia!
+  user: Customer!
+  algoliaSyncQueryConnection(before: String, after: String, first: Int, last: Int): AlgoliaSyncQueryConnection!
+  algoliaSyncQueryEdge: AlgoliaSyncQueryEdge!
+  clientMutationId: String
+}
+
+input DeleteCreditCardInput {
+  projectId: ID!
+  clientMutationId: String
+}
+
+type DeleteCreditCardPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  clientMutationId: String
+}
+
+input DeleteCustomerInput {
+  customerId: String!
+  clientMutationId: String
+}
+
+type DeleteCustomerPayload {
+  viewer: Viewer!
+  deletedId: String!
+  user: Customer!
+  clientMutationId: String
+}
+
+input DeleteEnumInput {
+  enumId: ID!
+  clientMutationId: String
+}
+
+type DeleteEnumPayload {
+  viewer: Viewer!
+  project: Project!
+  enum: Enum!
+  deletedId: ID!
+  clientMutationId: String
+}
+
+input DeleteFieldConstraintInput {
+  constraintId: ID!
+  clientMutationId: String
+}
+
+type DeleteFieldConstraintPayload {
+  viewer: Viewer!
+  project: Project!
+  constraint: FieldConstraint!
+  deletedId: ID!
+  clientMutationId: String
+}
+
+input DeleteFieldInput {
+  fieldId: String!
+  clientMutationId: String
+}
+
+type DeleteFieldPayload {
+  viewer: Viewer!
+  deletedId: String!
+  user: Customer!
+  model: Model!
+  fieldConnection(before: String, after: String, first: Int, last: Int): FieldConnection!
+  clientMutationId: String
+}
+
+input DeleteFunctionInput {
+  functionId: String!
+  clientMutationId: String
+}
+
+type DeleteFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  deletedId: String!
+  user: Customer!
+  clientMutationId: String
+}
+
+input DeleteModelInput {
+  modelId: String!
+  clientMutationId: String
+}
+
+type DeleteModelPayload {
+  viewer: Viewer!
+  deletedId: String!
+  deletedRelationFieldIds: [String!]!
+  user: Customer!
+  project: Project!
+  modelConnection(before: String, after: String, first: Int, last: Int): ModelConnection!
+  clientMutationId: String
+}
+
+input DeleteModelPermissionInput {
+  modelPermissionId: String!
+  clientMutationId: String
+}
+
+type DeleteModelPermissionPayload {
+  viewer: Viewer!
+  deletedId: String!
+  user: Customer!
+  model: Model!
+  modelPermissionConnection(before: String, after: String, first: Int, last: Int): ModelPermissionConnection!
+  clientMutationId: String
+}
+
+input DeletePermanentAuthTokenInput {
+  permanentAuthTokenId: String!
+  clientMutationId: String
+}
+
+type DeletePermanentAuthTokenPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  deletedId: String!
+  permanentAuthTokenConnection(before: String, after: String, first: Int, last: Int): PermanentAuthTokenConnection!
+  clientMutationId: String
+}
+
+input DeleteProjectInput {
+  projectId: String!
+  clientMutationId: String
+}
+
+type DeleteProjectPayload {
+  viewer: Viewer!
+  deletedId: String!
+  user: Customer!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  clientMutationId: String
+}
+
+input DeleteRelationFieldMirrorInput {
+  relationFieldMirrorId: String!
+  clientMutationId: String
+}
+
+type DeleteRelationFieldMirrorPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  deletedId: ID!
+  relation: Relation!
+  relationFieldMirrorConnection(before: String, after: String, first: Int, last: Int): RelationFieldMirrorConnection!
+  clientMutationId: String
+}
+
+input DeleteRelationInput {
+  relationId: String!
+  clientMutationId: String
+}
+
+type DeleteRelationPayload {
+  viewer: Viewer!
+  deletedId: String!
+  user: Customer!
+  project: Project!
+  relationConnection(before: String, after: String, first: Int, last: Int): RelationConnection!
+  clientMutationId: String
+}
+
+input DeleteRelationPermissionInput {
+  relationPermissionId: String!
+  clientMutationId: String
+}
+
+type DeleteRelationPermissionPayload {
+  viewer: Viewer!
+  deletedId: String!
+  user: Customer!
+  relation: Relation!
+  relationPermissionConnection(before: String, after: String, first: Int, last: Int): RelationPermissionConnection!
+  clientMutationId: String
+}
+
+# This is an enum
+type Enum implements Node {
+  id: ID!
+  name: String!
+  values: [String!]!
+}
+
+# A connection to a list of items.
+type EnumConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [EnumEdge]
+}
+
+# An edge in a connection.
+type EnumEdge {
+  # The item at the end of the edge.
+  node: Enum!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+input ExportDataInput {
+  projectId: String!
+  clientMutationId: String
+}
+
+type ExportDataPayload {
+  viewer: Viewer!
+  project: Project!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projectEdge: ProjectEdge!
+  user: Customer!
+  url: String!
+  clientMutationId: String
+}
+
+# The feature toggles of a project.
+type FeatureToggle implements Node {
+  id: ID!
+  name: String!
+  isEnabled: Boolean!
+}
+
+# A connection to a list of items.
+type FeatureToggleConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [FeatureToggleEdge]
+}
+
+# An edge in a connection.
+type FeatureToggleEdge {
+  # The item at the end of the edge.
+  node: FeatureToggle!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# This is a field
+type Field implements Node {
+  id: ID!
+  name: String!
+  typeIdentifier: String!
+  description: String
+  isRequired: Boolean!
+  isList: Boolean!
+  isUnique: Boolean!
+  isSystem: Boolean!
+  isReadonly: Boolean!
+  enum: Enum
+  constraints: [FieldConstraint!]!
+  defaultValue: String
+  relation: Relation
+  model: Model
+  relatedModel: Model
+  relationSide: RelationSide
+  reverseRelationField: Field
+}
+
+# A connection to a list of items.
+type FieldConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [FieldEdge]
+}
+
+# This is a FieldConstraint
+interface FieldConstraint {
+  id: ID!
+  constraintType: FieldConstraintTypeType!
+  fieldId: ID!
+}
+
+enum FieldConstraintTypeType {
+  STRING
+  NUMBER
+  BOOLEAN
+  LIST
+}
+
+# An edge in a connection.
+type FieldEdge {
+  # The item at the end of the edge.
+  node: Field!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# This is a Function
+interface Function {
+  id: ID!
+  logs(before: String, after: String, first: Int, last: Int): LogConnection!
+  stats(before: String, after: String, first: Int, last: Int): FunctionStats!
+  name: String!
+  type: FunctionType!
+  isActive: Boolean!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+}
+
+enum FunctionBinding {
+  TRANSFORM_ARGUMENT
+  PRE_WRITE
+  TRANSFORM_PAYLOAD
+}
+
+# A connection to a list of items.
+type FunctionConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [FunctionEdge]
+}
+
+# An edge in a connection.
+type FunctionEdge {
+  # The item at the end of the edge.
+  node: Function!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# This is statistics for a Function
+type FunctionStats {
+  requestHistogram: [Int!]!
+  requestCount: Int!
+  errorCount: Int!
+  lastRequest: DateTime
+}
+
+enum FunctionType {
+  WEBHOOK
+  AUTH0
+}
+
+input GenerateUserTokenInput {
+  pat: String!
+  projectId: ID!
+  userId: ID!
+  modelName: ID!
+  expirationInSeconds: Int
+  clientMutationId: String
+}
+
+type GenerateUserTokenPayload {
+  token: String!
+  clientMutationId: String
+}
+
+enum HistogramPeriod {
+  MONTH
+  WEEK
+  DAY
+  HOUR
+  HALF_HOUR
+}
+
+input InstallPackageInput {
+  projectId: ID!
+  definition: String!
+  clientMutationId: String
+}
+
+type InstallPackagePayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  packageDefinition: PackageDefinition!
+  packageDefinitionConnection(before: String, after: String, first: Int, last: Int): PackageDefinitionConnection!
+  packageDefinitionEdge: PackageDefinitionEdge!
+  clientMutationId: String
+}
+
+# This is an integration. Use inline fragment to get values from the concrete
+# type: `{id ... on SearchProviderAlgolia { algoliaSchema }}`
+interface Integration {
+  id: ID!
+  isEnabled: Boolean!
+  name: IntegrationNameType!
+  type: IntegrationTypeType!
+}
+
+# A connection to a list of items.
+type IntegrationConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [IntegrationEdge]
+}
+
+# An edge in a connection.
+type IntegrationEdge {
+  # The item at the end of the edge.
+  node: Integration!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+enum IntegrationNameType {
+  AUTH_PROVIDER_AUTH0
+  AUTH_PROVIDER_DIGITS
+  AUTH_PROVIDER_EMAIL
+  SEARCH_PROVIDER_ALGOLIA
+}
+
+enum IntegrationTypeType {
+  AUTH_PROVIDER
+  SEARCH_PROVIDER
+}
+
+input InviteCollaboratorInput {
+  projectId: ID!
+  email: String!
+  clientMutationId: String
+}
+
+type InviteCollaboratorPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  seat: Seat!
+  seatConnection(before: String, after: String, first: Int, last: Int): SeatConnection!
+  seatEdge: SeatEdge!
+  clientMutationId: String
+}
+
+# This is a ListConstraint
+type ListConstraint implements Node, FieldConstraint {
+  uniqueItems: Boolean
+  minItems: Int
+  maxItems: Int
+
+  # The id of the object.
+  id: ID!
+  constraintType: FieldConstraintTypeType!
+  fieldId: ID!
+}
+
+# A log is a log is a log
+type Log implements Node {
+  id: ID!
+  requestId: String
+  duration: Int!
+  status: LogStatus!
+  timestamp: DateTime!
+  message: String!
+}
+
+# A connection to a list of items.
+type LogConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [LogEdge]
+}
+
+# An edge in a connection.
+type LogEdge {
+  # The item at the end of the edge.
+  node: Log!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+enum LogStatus {
+  SUCCESS
+  FAILURE
+}
+
+# The `Long` scalar type represents non-fractional signed whole numeric values.
+# Long can represent values between -(2^63) and 2^63 - 1.
+scalar Long
+
+input MigrateProjectInput {
+  newSchema: String!
+
+  # If set to false the migration is not performed.
+  isDryRun: Boolean!
+
+  # If set to false the migration will fail if data would be lost. Defaults to false.
+  force: Boolean
+  clientMutationId: String
+}
+
+type MigrateProjectPayload {
+  project: Project
+  migrationMessages: [MigrationMessage!]!
+  errors: [SchemaError!]!
+  clientMutationId: String
+}
+
+# verbal descriptions of actions taken during a schema migration
+type MigrationMessage {
+  type: String!
+  action: String!
+  name: String!
+  description: String!
+  subDescriptions: [MigrationSubMessage!]!
+}
+
+# verbal descriptions of actions taken during a schema migration
+type MigrationSubMessage {
+  type: String!
+  action: String!
+  name: String!
+  description: String!
+}
+
+# This is a model
+type Model implements Node {
+  id: ID!
+  name: String!
+  namePlural: String!
+  description: String
+  isSystem: Boolean!
+  fields(before: String, after: String, first: Int, last: Int): FieldConnection!
+  permissions(before: String, after: String, first: Int, last: Int): ModelPermissionConnection!
+  itemCount: Int!
+  permissionSchema(operation: Operation!): String!
+  requestPipelineFunctionSchema(operation: RequestPipelineMutationOperation!, binding: FunctionBinding!): String!
+  permissionQueryArguments(operation: Operation!): [PermissionQueryArgument!]!
+}
+
+# A connection to a list of items.
+type ModelConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [ModelEdge]
+}
+
+# An edge in a connection.
+type ModelEdge {
+  # The item at the end of the edge.
+  node: Model!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# This is a model permission
+type ModelPermission implements Node {
+  id: ID!
+  fieldIds: [String!]!
+  ruleWebhookUrl: String
+  rule: Rule!
+  ruleName: String
+  ruleGraphQuery: String
+  applyToWholeModel: Boolean!
+  isActive: Boolean!
+  operation: Operation!
+  userType: UserType!
+  description: String
+  model: Model!
+}
+
+# A connection to a list of items.
+type ModelPermissionConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [ModelPermissionEdge]
+}
+
+# An edge in a connection.
+type ModelPermissionEdge {
+  # The item at the end of the edge.
+  node: ModelPermission!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+type Mutation {
+  authenticateCustomer(input: AuthenticateCustomerInput!): AuthenticateCustomerPayload
+  trustedSignupCustomer(input: TrustedSignupCustomerInput!): TrustedSignupCustomerPayload
+  signinClientUser(input: SigninClientUserInput!): SigninClientUserPayload
+  trustedSigninCustomer(input: TrustedSigninCustomerInput!): TrustedSigninCustomerPayload
+  updateCustomer(input: UpdateCustomerInput!): UpdateCustomerPayload
+  updatePassword(input: UpdatePasswordInput!): UpdatePasswordPayload
+  resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
+  addField(input: AddFieldInput!): AddFieldPayload
+  addModel(input: AddModelInput!): AddModelPayload
+  addRelation(input: AddRelationInput!): AddRelationPayload
+  addProject(input: AddProjectInput!): AddProjectPayload
+  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload
+  deleteCustomer(input: DeleteCustomerInput!): DeleteCustomerPayload
+  deleteField(input: DeleteFieldInput!): DeleteFieldPayload
+  deleteModel(input: DeleteModelInput!): DeleteModelPayload
+  deleteRelation(input: DeleteRelationInput!): DeleteRelationPayload
+  updateProject(input: UpdateProjectInput!): UpdateProjectPayload
+  trustedSetProjectDatabase(input: TrustedSetProjectDatabaseInput!): TrustedSetProjectDatabasePayload
+  migrateProject(input: MigrateProjectInput!): MigrateProjectPayload
+  updateModel(input: UpdateModelInput!): UpdateModelPayload
+  updateRelation(input: UpdateRelationInput!): UpdateRelationPayload
+  updateField(input: UpdateFieldInput!): UpdateFieldPayload
+  addRelationFieldMirror(input: AddRelationFieldMirrorInput!): AddRelationFieldMirrorPayload
+  deleteRelationFieldMirror(input: DeleteRelationFieldMirrorInput!): DeleteRelationFieldMirrorPayload
+  addPermanentAuthToken(input: AddPermanentAuthTokenInput!): AddPermanentAuthTokenPayload
+  deletePermanentAuthToken(input: DeletePermanentAuthTokenInput!): DeletePermanentAuthTokenPayload
+  resetProjectData(input: ResetProjectDataInput!): ResetProjectDataPayload
+  resetProjectSchema(input: ResetProjectSchemaInput!): ResetProjectSchemaPayload
+  addAction(input: AddActionInput!): AddActionPayload
+  updateAction(input: UpdateActionInput!): UpdateActionPayload
+  deleteAction(input: DeleteActionInput!): DeleteActionPayload
+  addModelPermission(input: AddModelPermissionInput!): AddModelPermissionPayload
+  updateModelPermission(input: UpdateModelPermissionInput!): UpdateModelPermissionPayload
+  deleteModelPermission(input: DeleteModelPermissionInput!): DeleteModelPermissionPayload
+  updateAuthProvider(input: UpdateAuthProviderInput!): UpdateAuthProviderPayload
+  updateSearchProviderAlgolia(input: UpdateSearchProviderAlgoliaInput!): UpdateSearchProviderAlgoliaPayload
+  addAlgoliaSyncQuery(input: AddAlgoliaSyncQueryInput!): AddAlgoliaSyncQueryPayload
+  deleteAlgoliaSyncQuery(input: DeleteAlgoliaSyncQueryInput!): DeleteAlgoliaSyncQueryPayload
+  updateAlgoliaSyncQuery(input: UpdateAlgoliaSyncQueryInput!): UpdateAlgoliaSyncQueryPayload
+  cloneProject(input: CloneProjectInput!): CloneProjectPayload
+  exportData(input: ExportDataInput!): ExportDataPayload
+  inviteCollaborator(input: InviteCollaboratorInput!): InviteCollaboratorPayload
+  removeCollaborator(input: RemoveCollaboratorInput!): RemoveCollaboratorPayload
+  setCreditCard(input: SetCreditCardInput!): SetCreditCardPayload
+  deleteCreditCard(input: DeleteCreditCardInput!): DeleteCreditCardPayload
+  setPlan(input: SetPlanInput!): SetPlanPayload
+  generateUserToken(input: GenerateUserTokenInput!): GenerateUserTokenPayload
+  deleteRelationPermission(input: DeleteRelationPermissionInput!): DeleteRelationPermissionPayload
+  addRelationPermission(input: AddRelationPermissionInput!): AddRelationPermissionPayload
+  updateRelationPermission(input: UpdateRelationPermissionInput!): UpdateRelationPermissionPayload
+  installPackage(input: InstallPackageInput!): InstallPackagePayload
+  uninstallPackage(input: UninstallPackageInput!): UninstallPackagePayload
+  addEnum(input: AddEnumInput!): AddEnumPayload
+  updateEnum(input: UpdateEnumInput!): UpdateEnumPayload
+  deleteEnum(input: DeleteEnumInput!): DeleteEnumPayload
+  addRequestPipelineMutationFunction(input: AddRequestPipelineMutationFunctionInput!): AddRequestPipelineMutationFunctionPayload
+  updateRequestPipelineMutationFunction(input: UpdateRequestPipelineMutationFunctionInput!): UpdateRequestPipelineMutationFunctionPayload
+  deleteFunction(input: DeleteFunctionInput!): DeleteFunctionPayload
+  addServerSideSubscriptionFunction(input: AddServerSideSubscriptionFunctionInput!): AddServerSideSubscriptionFunctionPayload
+  updateServerSideSubscriptionFunction(input: UpdateServerSideSubscriptionFunctionInput!): UpdateServerSideSubscriptionFunctionPayload
+  trustedUpdateProject(input: TrustedUpdateProjectInput!): TrustedUpdateProjectPayload
+  trustedSetFeatureToggle(input: TrustedSetFeatureToggleInput!): TrustedSetFeatureTogglePayload
+  addFieldConstraint(input: AddFieldConstraintInput!): AddFieldConstraintPayload
+  deleteFieldConstraint(input: DeleteFieldConstraintInput!): DeleteFieldConstraintPayload
+  updateFieldConstraint(input: UpdateFieldConstraintInput!): UpdateFieldConstraintPayload
+  addCustomMutationFunction(input: AddCustomMutationFunctionInput!): AddCustomMutationFunctionPayload
+  updateCustomMutationFunction(input: UpdateCustomMutationFunctionInput!): UpdateCustomMutationFunctionPayload
+  addCustomQueryFunction(input: AddCustomQueryFunctionInput!): AddCustomQueryFunctionPayload
+  updateCustomQueryFunction(input: UpdateCustomQueryFunctionInput!): UpdateCustomQueryFunctionPayload
+  addSchemaExtensionFunction(input: AddSchemaExtensionFunctionInput!): AddSchemaExtensionFunctionPayload
+  updateSchemaExtensionFunction(input: UpdateSchemaExtensionFunctionInput!): UpdateSchemaExtensionFunctionPayload
+  updateCrmGuideStatus(input: CrmGuideStatusInput!): UpdateCrmGuideStatusPayload!
+  updateCrmOnboardingStatus(input: CrmOnboardingStatusInput!): UpdateCrmOnboardingStatusPayload!
+  updateCrmCustomerInformation(input: CrmCustomerInformationInput!): UpdateCrmCustomerInformationPayload!
+}
+
+# An object with an ID
+interface Node {
+  # The id of the object.
+  id: ID!
+}
+
+# This is a NumberConstraint
+type NumberConstraint implements Node, FieldConstraint {
+  equalsNumber: Float
+  oneOfNumber: [Float!]
+  min: Float
+  max: Float
+  exclusiveMin: Float
+  exclusiveMax: Float
+  multipleOf: Float
+
+  # The id of the object.
+  id: ID!
+  constraintType: FieldConstraintTypeType!
+  fieldId: ID!
+}
+
+enum ONBOARDING_STATUS_GETTING_STARTED {
+  STEP0_OVERVIEW
+  STEP1_CREATE_POST_MODEL
+  STEP2_CLICK_CONFIRM_IMAGEURL
+  STEP2_CLICK_CREATE_FIELD_IMAGEURL
+  STEP2_CREATE_FIELD_DESCRIPTION
+  STEP2_ENTER_FIELD_NAME_IMAGEURL
+  STEP2_SELECT_TYPE_IMAGEURL
+  STEP3_CLICK_ADD_NODE1
+  STEP3_CLICK_ADD_NODE2
+  STEP3_CLICK_DATA_BROWSER
+  STEP3_CLICK_ENTER_DESCRIPTION
+  STEP3_CLICK_ENTER_IMAGEURL
+  STEP3_CLICK_SAVE_NODE1
+  STEP4_CLICK_BEGIN_PART1
+  STEP4_CLICK_BEGIN_PART2
+  STEP4_CLICK_PLAYGROUND
+  STEP4_CLICK_TEASER_PART2
+  STEP4_CLICK_TEASER_STEP5
+  STEP4_WAITING_PART1
+  STEP4_WAITING_PART2
+  STEP5_DONE
+  STEP5_SELECT_EXAMPLE
+  STEP5_WAITING
+  STEP6_CLOSED
+  STEP3_CLICK_POST_MODEL
+  STEP2_ENTER_FIELD_NAME_DESCRIPTION
+  STEP2_SELECT_TYPE_DESCRIPTION
+  STEP2_CLICK_CONFIRM_DESCRIPTION
+  STEP3_OPEN_PLAYGROUND
+  STEP3_UNCOMMENT_DESCRIPTION
+  STEP3_RUN_QUERY1
+  STEP3_CREATE_MUTATION_TAB
+  STEP3_ENTER_MUTATION1_VALUES
+  STEP3_RUN_MUTATION1
+  STEP3_ENTER_MUTATION2_VALUE
+  STEP3_RUN_MUTATION2
+  STEP3_SELECT_QUERY_TAB
+  STEP3_RUN_QUERY2
+  STEP3_OPEN_FINAL_POPUP
+}
+
+enum ONBOARDING_STATUS_GETTING_STARTED_EXAMPLE {
+  AngularApollo
+  ReactApollo
+  ReactNativeApollo
+  ReactRelay
+  VueApollo
+}
+
+enum Operation {
+  READ
+  CREATE
+  UPDATE
+  DELETE
+}
+
+# this is a beta feature. Expect breaking changes.
+type PackageDefinition implements Node {
+  id: ID!
+  definition: String!
+  name: String
+}
+
+# A connection to a list of items.
+type PackageDefinitionConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [PackageDefinitionEdge]
+}
+
+# An edge in a connection.
+type PackageDefinitionEdge {
+  # The item at the end of the edge.
+  node: PackageDefinition!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+# Used to grant permanent access to your applications and services
+type PermanentAuthToken implements Node {
+  id: ID!
+  name: String!
+  token: String!
+}
+
+# A connection to a list of items.
+type PermanentAuthTokenConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [PermanentAuthTokenEdge]
+}
+
+# An edge in a connection.
+type PermanentAuthTokenEdge {
+  # The item at the end of the edge.
+  node: PermanentAuthToken!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# PermissionQueryArgument
+type PermissionQueryArgument {
+  name: String!
+  typeName: String!
+  group: String!
+}
+
+# This is a project
+type Project implements Node {
+  id: ID!
+  name: String!
+  alias: String
+  version: Int!
+  region: Region!
+  projectDatabase: ProjectDatabase!
+  schema: String!
+  typeSchema: String!
+  enumSchema: String!
+  isGlobalEnumsEnabled: Boolean!
+  webhookUrl: String
+  seats(before: String, after: String, first: Int, last: Int): SeatConnection!
+  integrations(before: String, after: String, first: Int, last: Int): IntegrationConnection!
+  authProviders(before: String, after: String, first: Int, last: Int): AuthProviderConnection!
+  fields(before: String, after: String, first: Int, last: Int): FieldConnection!
+  models(before: String, after: String, first: Int, last: Int): ModelConnection!
+  enums(before: String, after: String, first: Int, last: Int): EnumConnection!
+  packageDefinitions(before: String, after: String, first: Int, last: Int): PackageDefinitionConnection!
+  relations(before: String, after: String, first: Int, last: Int): RelationConnection!
+  permanentAuthTokens(before: String, after: String, first: Int, last: Int): PermanentAuthTokenConnection!
+  functions(before: String, after: String, first: Int, last: Int): FunctionConnection!
+  featureToggles(before: String, after: String, first: Int, last: Int): FeatureToggleConnection!
+  actions(before: String, after: String, first: Int, last: Int): ActionConnection!
+  actionSchema(modelId: ID!, modelMutationType: ActionTriggerMutationModelMutationType!): String!
+  allowMutations: Boolean!
+  availableUserRoles: [String!]!
+  functionRequestHistogram(period: HistogramPeriod!): [Int!]!
+}
+
+# A connection to a list of items.
+type ProjectConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [ProjectEdge]
+}
+
+# This is the database for a project
+type ProjectDatabase implements Node {
+  id: ID!
+  name: String!
+  region: Region!
+}
+
+# An edge in a connection.
+type ProjectEdge {
+  # The item at the end of the edge.
+  node: Project!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+type Query {
+  viewer: Viewer!
+
+  # Fetches an object given its ID
+  node(
+    # The ID of an object
+    id: ID!
+  ): Node
+}
+
+enum Region {
+  EU_WEST_1
+  AP_NORTHEAST_1
+  US_WEST_2
+}
+
+# This is a relation
+type Relation implements Node {
+  id: ID!
+  leftModel: Model!
+  fieldOnLeftModel: Field!
+  rightModel: Model!
+  fieldOnRightModel: Field!
+  permissions(before: String, after: String, first: Int, last: Int): RelationPermissionConnection!
+  name: String!
+  description: String
+  fieldMirrors: [RelationFieldMirror!]!
+  permissionSchema: String!
+  permissionQueryArguments: [PermissionQueryArgument!]!
+}
+
+# A connection to a list of items.
+type RelationConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [RelationEdge]
+}
+
+# An edge in a connection.
+type RelationEdge {
+  # The item at the end of the edge.
+  node: Relation!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# This is a relation field mirror
+type RelationFieldMirror implements Node {
+  id: ID!
+  fieldId: ID!
+  relationId: ID!
+}
+
+# A connection to a list of items.
+type RelationFieldMirrorConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [RelationFieldMirrorEdge]
+}
+
+# An edge in a connection.
+type RelationFieldMirrorEdge {
+  # The item at the end of the edge.
+  node: RelationFieldMirror!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+# This is a relation permission
+type RelationPermission implements Node {
+  id: ID!
+  ruleWebhookUrl: String
+  rule: Rule!
+  ruleName: String
+  ruleGraphQuery: String
+  isActive: Boolean!
+  connect: Boolean!
+  disconnect: Boolean!
+  userType: UserType!
+  description: String
+  relation: Relation!
+}
+
+# A connection to a list of items.
+type RelationPermissionConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [RelationPermissionEdge]
+}
+
+# An edge in a connection.
+type RelationPermissionEdge {
+  # The item at the end of the edge.
+  node: RelationPermission!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+enum RelationSide {
+  A
+  B
+}
+
+input RemoveCollaboratorInput {
+  projectId: ID!
+  email: String!
+  clientMutationId: String
+}
+
+type RemoveCollaboratorPayload {
+  viewer: Viewer!
+  deletedId: String!
+  project: Project!
+  seatConnection(before: String, after: String, first: Int, last: Int): SeatConnection!
+  clientMutationId: String
+}
+
+# This is a RequestPipelineMutationFunction
+type RequestPipelineMutationFunction implements Node, Function {
+  model: Model!
+  binding: FunctionBinding!
+  operation: RequestPipelineMutationOperation!
+
+  # The id of the object.
+  id: ID!
+  logs(before: String, after: String, first: Int, last: Int): LogConnection!
+  stats(before: String, after: String, first: Int, last: Int): FunctionStats!
+  name: String!
+  type: FunctionType!
+  isActive: Boolean!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+}
+
+enum RequestPipelineMutationOperation {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+input ResetPasswordInput {
+  resetPasswordToken: String!
+  newPassword: String!
+  clientMutationId: String
+}
+
+type ResetPasswordPayload {
+  viewer: Viewer!
+  user: Customer!
+  token: String!
+  clientMutationId: String
+}
+
+input ResetProjectDataInput {
+  projectId: String!
+  clientMutationId: String
+}
+
+type ResetProjectDataPayload {
+  viewer: Viewer!
+  user: Customer!
+  project: Project!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projectEdge: ProjectEdge!
+  clientMutationId: String
+}
+
+input ResetProjectSchemaInput {
+  projectId: String!
+  clientMutationId: String
+}
+
+type ResetProjectSchemaPayload {
+  viewer: Viewer!
+  user: Customer!
+  project: Project!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projectEdge: ProjectEdge!
+  clientMutationId: String
+}
+
+enum Rule {
+  NONE
+  GRAPH
+  WEBHOOK
+}
+
+# An error that occurred while validating the schema.
+type SchemaError {
+  type: String!
+  field: String
+  description: String!
+}
+
+# This is a SchemaExtensionFunction
+type SchemaExtensionFunction implements Node, Function {
+  schema: String!
+
+  # The id of the object.
+  id: ID!
+  logs(before: String, after: String, first: Int, last: Int): LogConnection!
+  stats(before: String, after: String, first: Int, last: Int): FunctionStats!
+  name: String!
+  type: FunctionType!
+  isActive: Boolean!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+}
+
+# This is a SearchProviderAlgolia
+type SearchProviderAlgolia implements Node, Integration {
+  id: ID!
+  applicationId: String!
+  apiKey: String!
+  algoliaSyncQueries(before: String, after: String, first: Int, last: Int): AlgoliaSyncQueryConnection!
+  algoliaSchema(modelId: ID!): String!
+  isEnabled: Boolean!
+  name: IntegrationNameType!
+  type: IntegrationTypeType!
+}
+
+# This is a seat
+type Seat implements Node {
+  id: ID!
+  isOwner: Boolean!
+  email: String!
+  name: String
+  status: SeatStatus!
+}
+
+# A connection to a list of items.
+type SeatConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [SeatEdge]
+}
+
+# An edge in a connection.
+type SeatEdge {
+  # The item at the end of the edge.
+  node: Seat!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+enum SeatStatus {
+  JOINED
+  INVITED_TO_PROJECT
+  INVITED_TO_GRAPHCOOL
+}
+
+# This is a ServerSideSubscriptionFunction
+type ServerSideSubscriptionFunction implements Node, Function {
+  query: String!
+
+  # The id of the object.
+  id: ID!
+  logs(before: String, after: String, first: Int, last: Int): LogConnection!
+  stats(before: String, after: String, first: Int, last: Int): FunctionStats!
+  name: String!
+  type: FunctionType!
+  isActive: Boolean!
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+}
+
+input SetCreditCardInput {
+  projectId: ID!
+  token: String!
+  clientMutationId: String
+}
+
+type SetCreditCardPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  clientMutationId: String
+}
+
+input SetPlanInput {
+  projectId: ID!
+  plan: String!
+  clientMutationId: String
+}
+
+type SetPlanPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  plan: String!
+  clientMutationId: String
+}
+
+input SigninClientUserInput {
+  projectId: ID!
+  clientUserId: ID!
+  clientMutationId: String
+}
+
+type SigninClientUserPayload {
+  token: String!
+  clientMutationId: String
+}
+
+# This is a StringConstraint
+type StringConstraint implements Node, FieldConstraint {
+  equalsString: String
+  oneOfString: [String!]
+  minLength: Int
+  maxLength: Int
+  startsWith: String
+  endsWith: String
+  includes: String
+  regex: String
+
+  # The id of the object.
+  id: ID!
+  constraintType: FieldConstraintTypeType!
+  fieldId: ID!
+}
+
+input TrustedSetFeatureToggleInput {
+  projectId: String!
+  name: String!
+  isEnabled: Boolean!
+  secret: String!
+  clientMutationId: String
+}
+
+type TrustedSetFeatureTogglePayload {
+  viewer: Viewer!
+  project: Project!
+  featureToggle: FeatureToggle!
+  clientMutationId: String
+}
+
+input TrustedSetProjectDatabaseInput {
+  projectId: String!
+  projectDatabaseId: String!
+  secret: String!
+  clientMutationId: String
+}
+
+type TrustedSetProjectDatabasePayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  clientMutationId: String
+}
+
+input TrustedSigninCustomerInput {
+  email: String!
+  secret: String!
+  clientMutationId: String
+}
+
+type TrustedSigninCustomerPayload {
+  token: String!
+  resetPasswordToken: String!
+  viewer: Viewer!
+  clientMutationId: String
+}
+
+input TrustedSignupCustomerInput {
+  email: String!
+  name: String
+  source: CustomerSourceType!
+  secret: String!
+  clientMutationId: String
+}
+
+type TrustedSignupCustomerPayload {
+  viewer: Viewer!
+  client: Customer!
+  clientEdge: ClientEdge!
+  resetPasswordToken: String!
+  token: String!
+  clientMutationId: String
+}
+
+input TrustedUpdateProjectInput {
+  id: String!
+  name: String
+  alias: String
+  webhookUrl: String
+  allowQueries: Boolean
+  allowMutations: Boolean
+  secret: String!
+  clientMutationId: String
+}
+
+type TrustedUpdateProjectPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  clientMutationId: String
+}
+
+input UninstallPackageInput {
+  projectId: ID!
+  name: String!
+  clientMutationId: String
+}
+
+type UninstallPackagePayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  packageDefinition: PackageDefinition!
+  packageDefinitionConnection(before: String, after: String, first: Int, last: Int): PackageDefinitionConnection!
+  clientMutationId: String
+}
+
+input UpdateActionInput {
+  actionId: ID!
+  isActive: Boolean
+  description: String
+  triggerType: ActionTriggerType
+  handlerType: ActionHandlerType
+  handlerWebhook: ActionHandlerWebhookEmbed
+  triggerMutationModel: ActionTriggerModelMutationEmbed
+  clientMutationId: String
+}
+
+type UpdateActionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  action: Action!
+  actionConnection(before: String, after: String, first: Int, last: Int): ActionConnection!
+  actionEdge: ActionEdge!
+  clientMutationId: String
+}
+
+input UpdateAlgoliaSyncQueryInput {
+  algoliaSyncQueryId: String!
+  indexName: String!
+  fragment: String!
+  isEnabled: Boolean!
+  clientMutationId: String
+}
+
+type UpdateAlgoliaSyncQueryPayload {
+  viewer: Viewer!
+  project: Project!
+  algoliaSyncQuery: AlgoliaSyncQuery!
+  searchProviderAlgolia: SearchProviderAlgolia!
+  user: Customer!
+  algoliaSyncQueryConnection(before: String, after: String, first: Int, last: Int): AlgoliaSyncQueryConnection!
+  algoliaSyncQueryEdge: AlgoliaSyncQueryEdge!
+  clientMutationId: String
+}
+
+input UpdateAuthProviderInput {
+  id: ID!
+  isEnabled: Boolean!
+  digits: AuthProviderDigitsMetaInput
+  auth0: AuthProviderAuth0MetaInput
+  clientMutationId: String
+}
+
+type UpdateAuthProviderPayload {
+  viewer: Viewer!
+  project: Project!
+  authProvider: AuthProvider!
+  authProviderEdge: AuthProviderEdge!
+  user: Customer!
+  clientMutationId: String
+}
+
+type UpdateCrmCustomerInformationPayload {
+  customerInformation: CrmCustomerInformation
+}
+
+type UpdateCrmGuideStatusPayload {
+  guideStatus: CrmGuideStatus
+}
+
+type UpdateCrmOnboardingStatusPayload {
+  onboardingStatus: CrmOnboardingStatus
+}
+
+input UpdateCustomerInput {
+  name: String
+  email: String
+  clientMutationId: String
+}
+
+type UpdateCustomerPayload {
+  viewer: Viewer!
+  user: Customer!
+  clientMutationId: String
+}
+
+input UpdateCustomMutationFunctionInput {
+  functionId: ID!
+  name: String
+  isActive: Boolean
+  schema: String
+  type: FunctionType
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type UpdateCustomMutationFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: SchemaExtensionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input UpdateCustomQueryFunctionInput {
+  functionId: ID!
+  name: String
+  isActive: Boolean
+  schema: String
+  type: FunctionType
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type UpdateCustomQueryFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: SchemaExtensionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input UpdateEnumInput {
+  enumId: ID!
+  name: String
+  values: [String!]
+  migrationValue: String
+  clientMutationId: String
+}
+
+type UpdateEnumPayload {
+  viewer: Viewer!
+  project: Project!
+  enum: Enum!
+  enumEdge: EnumEdge!
+  clientMutationId: String
+}
+
+input UpdateFieldConstraintInput {
+  constraintId: ID!
+  equalsString: String
+  oneOfString: [String!]
+  minLength: Int
+  maxLength: Int
+  startsWith: String
+  endsWith: String
+  includes: String
+  regex: String
+  equalsNumber: Float
+  oneOfNumber: [Float!]
+  min: Float
+  max: Float
+  exclusiveMin: Float
+  exclusiveMax: Float
+  multipleOf: Float
+  equalsBoolean: Boolean
+  uniqueItems: Boolean
+  minItems: Int
+  maxItems: Int
+  clientMutationId: String
+}
+
+type UpdateFieldConstraintPayload {
+  viewer: Viewer!
+  project: Project!
+  field: Field!
+  constraints: [FieldConstraint!]!
+  clientMutationId: String
+}
+
+input UpdateFieldInput {
+  id: String!
+  defaultValue: String
+  migrationValue: String
+  description: String
+  name: String
+  typeIdentifier: String
+  isUnique: Boolean
+  isRequired: Boolean
+  isList: Boolean
+  enumId: ID
+  clientMutationId: String
+}
+
+type UpdateFieldPayload {
+  viewer: Viewer!
+  model: Model!
+  field: Field!
+  user: Customer!
+  fieldConnection(before: String, after: String, first: Int, last: Int): FieldConnection!
+  fieldEdge: FieldEdge!
+  clientMutationId: String
+}
+
+input UpdateModelInput {
+  id: String!
+  description: String
+  name: String
+  clientMutationId: String
+}
+
+type UpdateModelPayload {
+  viewer: Viewer!
+  project: Project!
+  model: Model!
+  user: Customer!
+  modelConnection(before: String, after: String, first: Int, last: Int): ModelConnection!
+  modelEdge: ModelEdge!
+  clientMutationId: String
+}
+
+input UpdateModelPermissionInput {
+  id: ID!
+  operation: Operation
+  userType: UserType
+  rule: Rule
+  ruleName: String
+  ruleGraphQuery: String
+  ruleWebhookUrl: String
+  fieldIds: [String!]
+  applyToWholeModel: Boolean
+  description: String
+  isActive: Boolean
+  clientMutationId: String
+}
+
+type UpdateModelPermissionPayload {
+  viewer: Viewer!
+  model: Model!
+  modelPermission: ModelPermission!
+  user: Customer!
+  modelPermissionConnection(before: String, after: String, first: Int, last: Int): ModelPermissionConnection!
+  modelPermissionEdge: ModelPermissionEdge!
+  clientMutationId: String
+}
+
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
+  clientMutationId: String
+}
+
+type UpdatePasswordPayload {
+  viewer: Viewer!
+  user: Customer!
+  clientMutationId: String
+}
+
+input UpdateProjectInput {
+  id: String!
+  name: String
+  alias: String
+  webhookUrl: String
+  allowQueries: Boolean
+  allowMutations: Boolean
+  clientMutationId: String
+}
+
+type UpdateProjectPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
+  projectEdge: ProjectEdge!
+  clientMutationId: String
+}
+
+input UpdateRelationInput {
+  id: ID!
+  leftModelId: ID
+  rightModelId: ID
+  fieldOnLeftModelName: String
+  fieldOnRightModelName: String
+  fieldOnLeftModelIsList: Boolean
+  fieldOnRightModelIsList: Boolean
+  fieldOnLeftModelIsRequired: Boolean
+  fieldOnRightModelIsRequired: Boolean
+  name: String
+  description: String
+  clientMutationId: String
+}
+
+type UpdateRelationPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  relation: Relation!
+  leftModel: Model!
+  rightModel: Model!
+  modelConnection(before: String, after: String, first: Int, last: Int): ModelConnection!
+  relationEdge: RelationEdge!
+  leftModelEdge: ModelEdge!
+  rightModelEdge: ModelEdge!
+  fieldOnLeftModelEdge: FieldEdge!
+  fieldOnRightModelEdge: FieldEdge!
+  clientMutationId: String
+}
+
+input UpdateRelationPermissionInput {
+  id: ID!
+  connect: Boolean
+  disconnect: Boolean
+  userType: UserType
+  rule: Rule
+  ruleName: String
+  ruleGraphQuery: String
+  ruleWebhookUrl: String
+  description: String
+  isActive: Boolean
+  clientMutationId: String
+}
+
+type UpdateRelationPermissionPayload {
+  viewer: Viewer!
+  relation: Relation!
+  relationPermission: RelationPermission!
+  user: Customer!
+  relationPermissionConnection(before: String, after: String, first: Int, last: Int): RelationPermissionConnection!
+  relationPermissionEdge: RelationPermissionEdge!
+  clientMutationId: String
+}
+
+input UpdateRequestPipelineMutationFunctionInput {
+  functionId: ID!
+  name: String
+  isActive: Boolean
+  operation: RequestPipelineMutationOperation
+  binding: FunctionBinding
+  modelId: String
+  type: FunctionType
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type UpdateRequestPipelineMutationFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: RequestPipelineMutationFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input UpdateSchemaExtensionFunctionInput {
+  functionId: ID!
+  name: String
+  isActive: Boolean
+  schema: String
+  type: FunctionType
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type UpdateSchemaExtensionFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: SchemaExtensionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+input UpdateSearchProviderAlgoliaInput {
+  projectId: String!
+  applicationId: String!
+  apiKey: String!
+  isEnabled: Boolean!
+  clientMutationId: String
+}
+
+type UpdateSearchProviderAlgoliaPayload {
+  viewer: Viewer!
+  project: Project!
+  searchProviderAlgolia: SearchProviderAlgolia!
+  user: Customer!
+  clientMutationId: String
+}
+
+input UpdateServerSideSubscriptionFunctionInput {
+  functionId: ID!
+  name: String
+  isActive: Boolean
+  query: String
+  type: FunctionType
+  webhookUrl: String
+  webhookHeaders: String
+  inlineCode: String
+  auth0Id: String
+  clientMutationId: String
+}
+
+type UpdateServerSideSubscriptionFunctionPayload {
+  viewer: Viewer!
+  project: Project!
+  user: Customer!
+  function: ServerSideSubscriptionFunction!
+  functionEdge: FunctionEdge!
+  clientMutationId: String
+}
+
+enum UserType {
+  EVERYONE
+  AUTHENTICATED
+}
+
+# This is the famous Relay viewer object
+type Viewer implements Node {
+  id: ID!
+  user: Customer
+  project(id: ID!): Project
+  projectByName(projectName: String!): Project
+  model(id: ID!): Model
+  modelByName(projectName: String!, modelName: String!): Model
+  relation(id: ID!): Relation
+  relationByName(projectName: String!, relationName: String!): Relation
+  field(id: ID!): Field
+  fieldByName(projectName: String!, modelName: String!, fieldName: String!): Field
+}
+

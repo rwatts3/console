@@ -1,33 +1,37 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 
 export interface InstallPackageInput {
   projectId: string
   definition: string
 }
 
-export default class InstallPackage extends Relay.Mutation<InstallPackageInput, null> {
-
-  getMutation () {
-    return Relay.QL`mutation{installPackage}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on InstallPackagePayload {
-        project {
-          schema
-          packageDefinitions
+const mutation = graphql`
+  mutation InstallPackageMutation($input: InstallPackageInput!) {
+    installPackage(input: $input) {
+      project {
+        schema
+        packageDefinitions(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
         }
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: InstallPackageInput) {
+  return makeMutation({
+    mutation,
+    variables: {input},
+    configs: [{
       type: 'REQUIRED_CHILDREN',
       children: [
-          Relay.QL`
-          fragment  on InstallPackagePayload {
+        graphql`
+          fragment InstallPackageChildren on InstallPackagePayload {
             project {
               schema
               packageDefinitions(first: 100) {
@@ -43,10 +47,8 @@ export default class InstallPackage extends Relay.Mutation<InstallPackageInput, 
           }
         `,
       ],
-    }]
-  }
-
-  getVariables () {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default { commit }

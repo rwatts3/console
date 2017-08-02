@@ -1,16 +1,14 @@
 import Chromeless from 'chromeless'
-import { CONSOLE_URL, runRemote, viewport, waitTimeout } from '../config'
+import { config, CONSOLE_URL } from '../config'
 
 export default async (cookies: any[]): Promise<any> => {
 
   const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    viewport,
+    ...config,
   })
 
-  await chromeless
-    .cookies.set(cookies)
+  const result = await chromeless
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3200)
     .wait('a[data-test="sidenav-databrowser"]')
@@ -21,25 +19,22 @@ export default async (cookies: any[]): Promise<any> => {
     .wait(2200)
     .click('div[class^="NewRowInactive__add"]')
     .type('test url')
-    .eval.code(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
-
-  await chromeless
-    .click('div[data-test="new-row-cell-description"] > div > div')
+    // .evaluate(() => document.querySelector('div[data-test="new-row-cell-imageUrl"] input').blur())
+    // .click('div[data-test="new-row-cell-description"] > div > div')
+    .press(9)
     .wait(400)
     .wait('div[data-test="new-row-cell-description"] input')
     .type('some description', 'div[data-test="new-row-cell-description"] input')
-    .eval.code(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
-
-  await chromeless
+    // .evaluate(() => document.querySelector('div[data-test="new-row-cell-description"] input').blur())
     .wait(700)
     .click('button[data-test="add-node"]')
     .wait(300)
     .click('div[data-test="edit-field-imageUrl"]')
     .click('div[data-test="cell-imageUrl"]')
     .type('123')
-    .eval.code(() => document.querySelector('input').focus())
-
-  return chromeless
+    .wait(500)
+    .evaluate(() => document.querySelector('input').click())
+    .wait(500)
     .press(13)
     .wait(400)
     .click('div[data-test="checkbox-row-0"]')
@@ -48,4 +43,5 @@ export default async (cookies: any[]): Promise<any> => {
     .wait(400)
     .click('div.button.warning')
     .end()
+
 }

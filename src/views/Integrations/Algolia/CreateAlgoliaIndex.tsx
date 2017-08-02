@@ -1,8 +1,11 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
 import {SearchProviderAlgolia, Model} from '../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
@@ -253,24 +256,20 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
         return this.setState({saving: true} as State)
       }
       this.setState({loading: true} as State, () => {
-        Relay.Store.commitUpdate(
-          new AddAlgoliaSyncQueryMutation({
-            modelId: selectedModel.id,
-            indexName: title,
-            fragment,
-            searchProviderAlgoliaId: algolia.id,
-          }),
-          {
-            onSuccess: (res) => {
-              this.setState({loading: false} as State)
-              this.close()
-            },
-            onFailure: (res) => {
-              this.setState({loading: false} as State)
-              onFailureShowNotification(res, this.props.showNotification)
-            },
-          },
-        )
+        AddAlgoliaSyncQueryMutation.commit({
+          modelId: selectedModel.id,
+          indexName: title,
+          fragment,
+          searchProviderAlgoliaId: algolia.id,
+        })
+          .then(res => {
+            this.setState({loading: false} as State)
+            this.close()
+          })
+          .catch(res => {
+            this.setState({loading: false} as State)
+            onFailureShowNotification(res, this.props.showNotification)
+          })
       })
     }
 
@@ -294,33 +293,25 @@ const Container = mapProps({
   },
 })(ReduxContainer)
 
-export default Relay.createContainer(Container, {
-  initialVariables: {
-    // selectedModelId: 'ciwtmzbd600pk019041qz8b7g',
-    // modelIdExists: true,
-    selectedModelId: null,
-    modelIdExists: false,
-  },
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        models(first: 100) {
-          edges {
-            node {
-              id
-              name
-              itemCount
-            }
+export default createFragmentContainer(Container, {
+  project: graphql`
+    fragment CreateAlgoliaIndex_project on Project {
+      models(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            itemCount
           }
         }
       }
-    `,
-    algolia: (props) => Relay.QL`
-      fragment on SearchProviderAlgolia {
-        ${AlgoliaQuery.getFragment('algolia')}
-      }
-    `,
-  },
+    }
+  `,
+  algolia: graphql`
+    fragment CreateAlgoliaIndex_algolia on SearchProviderAlgolia {
+      ...AlgoliaQuery_algolia
+    }
+  `,
 })
 
 const emptyAlgoliaFragment = `

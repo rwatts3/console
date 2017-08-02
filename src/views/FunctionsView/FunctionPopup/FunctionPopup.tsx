@@ -1,9 +1,12 @@
 import * as React from 'react'
 import mapProps from '../../../components/MapProps/MapProps'
-import * as Relay from 'react-relay'
+import {
+  createRefetchContainer,
+  graphql,
+} from 'react-relay'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
-import { withRouter } from 'react-router'
+import { withRouter } from 'found'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 import PopupHeader from '../../../components/PopupHeader'
 import PopupFooter from '../../../components/PopupFooter'
@@ -88,58 +91,71 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     const eventType = getEventTypeFromFunction(props.node)
 
+    let newNode = props.node
     if (props.node) {
       if (props.node.model) {
-        props.node.modelId = props.node.model.id
+        newNode = {
+          ...newNode,
+          modelId: newNode.model.id,
+        }
       }
       if (props.node.auth0Id && props.node.auth0Id.length > 0) {
-        props.node._inlineWebhookUrl = props.node.webhookUrl
-        // props.node.webhookUrl = ''
+        newNode = {
+          ...newNode,
+          _inlineWebhookUrl: newNode.webhookUrl,
+        }
       } else if (props.node.type !== 'WEBHOOK') {
         // transition to the truth
-        props.node.type = 'WEBHOOK'
+        newNode = {
+          ...newNode,
+          type: 'WEBHOOK',
+        }
       }
       if (props.node.type === 'WEBHOOK') {
-        props.node._webhookUrl = props.node.webhookUrl
+        newNode = {
+          ...newNode,
+          _webhookURL: newNode.webhookUrl,
+        }
       }
       if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
         try {
-          props.node._webhookHeaders = JSON.parse(props.node.webhookHeaders)
+          newNode = {
+            ...newNode,
+            _webhookHeaders: JSON.parse(newNode.webhookHeaders),
+          }
         } catch (e) {
           //
         }
       }
 
       if (eventType === 'SCHEMA_EXTENSION') {
-        props.node.schemaExtension = props.node.schema
-        props.node.query = props.node.schema
+        newNode = {
+          ...newNode,
+          schemaExtension: newNode.schema,
+          query: newNode.schema,
+        }
       }
     }
 
     this.state = {
       activeTabIndex: 0,
-      editing: Boolean(props.node),
+      editing: Boolean(newNode),
       showErrors: false,
-      fn: props.node || getEmptyFunction(props.models, props.functions, 'RP'),
+      fn: newNode || getEmptyFunction(props.models, props.functions, 'RP'),
       loading: false,
       eventType,
       showTest: false,
       sssModelName: props.models[0].name,
     }
 
-    // selectedModelName: null,
-    //   modelSelected: false,
-    //   binding: null,
-    //   operation: null,
-    // TODO put in schema of selected fn
-    this.props.relay.setVariables({
+    this.props.relay.refetch(fragmentVariables => ({
+      ...fragmentVariables,
       modelSelected: true,
-      operation: props.node && props.node.operation || 'CREATE',
-      selectedModelName: (props.node && props.node.model && props.node.model.name) || 'User',
-      binding: props.node && props.node.binding || 'PRE_WRITE',
-    })
+      operation: newNode && newNode.operation || 'CREATE',
+      selectedModelName: (newNode && newNode.model && newNode.model.name) || 'User',
+      binding: newNode && newNode.binding || 'PRE_WRITE',
+    }))
     isSSS = this.state.eventType === 'SSS'
-    global['f'] = this
   }
 
   componentDidUpdate(prevProps: Props, prevState: FunctionPopupState) {
@@ -147,12 +163,15 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       prevState.fn.operation !== this.state.fn.operation ||
       prevState.fn.binding !== this.state.fn.binding
     ) {
-      this.props.relay.setVariables({
+// TODO props.relay.* APIs do not exist on compat containers
+// TODO needs manual handling
+      this.props.relay.refetch(fragmentVariables => ({
+        ...fragmentVariables,
         modelSelected: true,
         operation: this.state.fn.operation,
         selectedModelName: this.props.models.find(model => model.id === this.state.fn.modelId).name,
         binding: this.state.fn.binding,
-      })
+      }))
     }
 
     if (prevState.sssModelName !== this.state.sssModelName) {
@@ -467,22 +486,17 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   private delete = () => {
     // smepty
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new DeleteFunction({
-        functionId: this.props.node.id,
-        projectId: this.props.project.id,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    DeleteFunction.commit({
+      functionId: this.props.node.id,
+      projectId: this.props.project.id,
+    }).then(() => {
+      this.close()
+      this.setLoading(false)
+    })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private submit = () => {
@@ -553,110 +567,86 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private createSSSFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddServerSideSubscriptionFunction(input),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    AddServerSideSubscriptionFunction.commit(input)
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private createRPFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddRequestPipelineMutationFunction(input),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    AddRequestPipelineMutationFunction.commit(input)
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private createSchemaExtension(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new AddSchemaExtensionFunction({
-        ...input,
-        schema: input.schemaExtension,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    AddSchemaExtensionFunction.commit({
+      ...input,
+      schema: input.schemaExtension,
+    })
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private updateSSSFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateServerSideSubscriptionFunction(input),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    UpdateServerSideSubscriptionFunction.commit(input)
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private updateRPFunction(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateRequestPipelineMutationFunction(input),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    UpdateRequestPipelineMutationFunction.commit(input)
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private updateSchemaExtension(input) {
     this.setLoading(true)
-    Relay.Store.commitUpdate(
-      new UpdateSchemaExtensionFunction({
-        ...input,
-        schema: input.schemaExtension,
-      }),
-      {
-        onSuccess: () => {
-          this.close()
-          this.setLoading(false)
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setLoading(false)
-        },
-      },
-    )
+    UpdateSchemaExtensionFunction.commit({
+      ...input,
+      schema: input.schemaExtension,
+    })
+      .then(() => {
+        this.close()
+        this.setLoading(false)
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setLoading(false)
+      })
   }
 
   private close = () => {
@@ -684,235 +674,30 @@ const MappedFunctionPopup = mapProps({
   project: props => props.viewer.project,
   models: props => props.viewer.project.models.edges.map(edge => edge.node),
   schema: props => props.viewer.model && props.viewer.model.requestPipelineFunctionSchema,
-  node: props => props.node,
+  node: props => props.node || null,
   functions: props => props.viewer.project.functions ? props.viewer.project.functions.edges.map(edge => edge.node) : [],
   isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(ConnectedFunctionPopup))
 
-export const EditRPFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on RequestPipelineMutationFunction {
-          binding
-          model {
-            id
-            name
-          }
-          operation
-        }
-      }
-    `,
-  },
-})
-
-export const EditSSSFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on ServerSideSubscriptionFunction {
-          query
-        }
-      }
-    `,
-  },
-})
-
-export const EditSchemaExtensionFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on SchemaExtensionFunction {
-          schema
-        }
-        ... on CustomMutationFunction {
-          schema
-        }
-        ... on CustomQueryFunction {
-          schema
-        }
-      }
-    `,
-  },
-})
-
-export const EditCustomQueryFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          models(first: 100) {
-            edges {
-              node {
-                id
-                name
-              }
-            }
-          }
-        }
-        model: modelByName(modelName: $selectedModelName projectName: $projectName) @include(if: $modelSelected) {
-          requestPipelineFunctionSchema(binding: $binding operation: $operation)
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
-      }
-    `,
-    node: () => Relay.QL`
-      fragment on Function {
-        ${FunctionFragment}
-        ... on CustomQueryFunction {
-          schema
-        }
-      }
-    `,
-  },
-})
-
-const FunctionFragment = Relay.QL`
-  fragment on Function {
-    __typename
-    id
-    name
-    inlineCode
-    isActive
-    type
-    auth0Id
-    webhookHeaders
-    webhookUrl
-  }
-`
-
-export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
-  initialVariables: {
-    projectName: null, // injected from router
-    selectedModelName: null,
-    modelSelected: false,
-    binding: null,
-    operation: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+export default createRefetchContainer(
+  MappedFunctionPopup,
+  {
+    /* TODO manually deal with:
+     initialVariables: {
+     projectName: null, // injected from router
+     selectedModelName: null,
+     modelSelected: false,
+     binding: null,
+     operation: null,
+     }
+     */
+    viewer: graphql.experimental`
+      fragment FunctionPopup_viewer on Viewer @argumentDefinitions(
+        selectedModelName: {type: "String!", defaultValue: ""}
+        modelSelected: {type: "Boolean!", defaultValue: false}
+        binding: {type: "FunctionBinding!", defaultValue: TRANSFORM_ARGUMENT}
+        operation: {type: "RequestPipelineMutationOperation!", defaultValue: CREATE}
+      ) {
         id
         user {
           crm {
@@ -948,17 +733,77 @@ export const CreateFunctionPopup = Relay.createContainer(MappedFunctionPopup, {
         }
       }
     `,
+    node: graphql`
+      fragment FunctionPopup_node on Function {
+        __typename
+        id
+        name
+        inlineCode
+        isActive
+        type
+        auth0Id
+        webhookHeaders
+        webhookUrl
+        ... on SchemaExtensionFunction {
+          schema
+        }
+        ... on ServerSideSubscriptionFunction {
+          query
+        }
+        ... on RequestPipelineMutationFunction {
+          binding
+          model {
+            id
+            name
+          }
+          operation
+        }
+      }
+    `,
   },
-})
+  graphql.experimental`
+    query FunctionPopupRefetchQuery(
+    $projectName: String!,
+    $selectedModelName: String!,
+    $binding: FunctionBinding!,
+    $operation: RequestPipelineMutationOperation!,
+    $modelSelected: Boolean!
+    ) {
+      viewer {
+        ...FunctionPopup_viewer @arguments(
+          selectedModelName: $selectedModelName,
+          binding: $binding,
+          operation: $operation,
+          modelSelected: $modelSelected
+        )
+      }
+    }
+  `,
+)
 
-/*
-TODO: add this again when we use relay modern
-... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
-  id
-  binding
-  model {
+const mutationFragments = graphql`
+  fragment FunctionPopup_function on Function {
+    __typename
     id
     name
+    inlineCode
+    isActive
+    type
+    auth0Id
+    webhookHeaders
+    webhookUrl
+
   }
-}
-*/
+`
+
+/*
+ TODO: add this again when we use relay modern
+ ... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
+ id
+ binding
+ model {
+ id
+ name
+ }
+ }
+ */

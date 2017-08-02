@@ -1,8 +1,11 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import mapProps from '../../components/MapProps/MapProps'
 import {Project, ServerlessFunction} from '../../types/types'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
 import FunctionRow from './FunctionRow'
 
@@ -69,20 +72,18 @@ const FunctionsListMapped = mapProps({
   functions: props => props.project.functions.edges.map(edge => edge.node),
 })(FunctionsList)
 
-export default Relay.createContainer(FunctionsListMapped, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        name
-        functions(first: 1000) {
-          edges {
-            node {
-              id
-              ${FunctionRow.getFragment('fn')}
-            }
+export default createFragmentContainer(FunctionsListMapped, {
+  project: graphql`
+    fragment FunctionsList_project on Project {
+      name
+      functions(first: 1000) {
+        edges {
+          node {
+            id
+            ...FunctionRow_fn
           }
         }
-      },
-    `,
-  },
+      }
+    },
+  `,
 })

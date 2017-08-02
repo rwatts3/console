@@ -1,7 +1,7 @@
 const classes: any = require('./ProjectSelection.scss')
 
 import * as React                   from 'react'
-import { Link }                     from 'react-router'
+import { Link }                     from 'found'
 import { connect }                  from 'react-redux'
 import ClickOutside                 from 'react-click-outside'
 import * as cx                      from 'classnames'
@@ -100,7 +100,42 @@ const SettingsLink = styled(Link)`
     transition: fill ${variables.duration} linear;
   }
 
-  > div {
+  > div:first-of-type {
+    margin-left: 10px;
+  }
+
+  &:hover {
+    color: ${variables.white};
+    background: ${variables.gray20};
+
+    svg {
+      fill: ${variables.white};
+    }
+  }
+`
+
+const SettingsLinkDiv = styled.div`
+  background: ${variables.gray10};
+  font-size: ${variables.size14};
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: ${variables.white60};
+  width: ${props => props.small ? 'auto' : '50%'};
+  padding: ${props => props.small ? '6px' : '10px'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color ${variables.duration} linear, background ${variables.duration} linear;
+
+  svg {
+    fill: ${variables.white60};
+    transition: fill ${variables.duration} linear;
+  }
+
+  > div:first-of-type {
     margin-left: 10px;
   }
 
@@ -261,13 +296,17 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 },
               )}
             >
-              <SettingsLink to={`/${this.props.params.projectName}/settings`} small={!sidebarExpanded}>
+              <SettingsLink
+                to={`/${this.props.params.projectName}/settings`}
+                small={!sidebarExpanded}
+                onClick={this.closeProjectsList}
+              >
                 <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
                 {sidebarExpanded && (
                   <div>Settings</div>
                 )}
               </SettingsLink>
-              <SettingsLink
+              <SettingsLinkDiv
                 className={cx(
                   {
                     [$p.ml10]: sidebarExpanded,
@@ -306,7 +345,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                     </div>
                   </ClickOutside>
                 )}
-              </SettingsLink>
+              </SettingsLinkDiv>
             </div>
             <div
               className={cx($p.relative, $p.bgBlack07)}
@@ -349,14 +388,17 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                       ['inlineFlex ml25 mt16 mb10']: !sidebarExpanded,
                     },
                   )}
-                  onClick={this.props.add}
+                  onClick={() => {
+                    this.closeProjectsList()
+                    this.props.add()
+                  }}
                   data-test='add-project-button'
                 >
                   <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
                 </AddProject>
                 {this.props.projects.map((project, index) => (
                   <ListItem
-                    key={project.name}
+                    key={project.id}
                     className={cx(
                         $p.relative,
                         $p.f20,
@@ -412,6 +454,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
 
   private onSelectProject = (id: string) => {
     this.toggle()
+    this.closeProjectsList()
 
     tracker.track(ConsoleEvents.Project.selected({id}))
   }
@@ -420,7 +463,8 @@ class ProjectSelection extends React.PureComponent<Props, State> {
     this.setState({expanded: false} as State)
   }
 
-  private openUserDropdown = () => {
+  private openUserDropdown = (e) => {
+    e.stopPropagation()
     this.setState({userDropdownVisible: true} as State)
   }
 
@@ -451,6 +495,7 @@ class ProjectSelection extends React.PureComponent<Props, State> {
         <Link
           to={`/${this.props.selectedProject.name}/settings/team`}
           onClick={(e) => {
+            this.closeProjectsList()
             e.stopPropagation() // don't toggle
           }}
         >

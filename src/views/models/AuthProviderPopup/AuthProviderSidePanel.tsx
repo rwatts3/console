@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as Immutable from 'immutable'
 import FloatingInput from '../../../components/FloatingInput/FloatingInput'
 import UpdateAuthProviderMutation from '../../../mutations/UpdateAuthProviderMutation'
@@ -446,49 +449,35 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     if (authProvider.type === 'anonymous-auth-provider') {
       return this.updateAnonymousAuthProvider()
     }
-    Relay.Store.commitUpdate(
-      new UpdateAuthProviderMutation({
+      UpdateAuthProviderMutation.commit({
         authProviderId: authProvider.id,
         isEnabled: authProvider.isEnabled,
         digits: authProvider.digits,
         auth0: authProvider.auth0,
-      }),
-      {
-        onSuccess: () => {
-          // The force fetching because authproviders are too complicated to selective choose the config
-          // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-          // which is needed to reflect all affected data
-          this.props.forceFetchRoot()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        },
-      },
-    )
+      }).then(() => {
+        this.props.forceFetchRoot()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+      })
   }
 
   private uninstallAnonymousAuthProvider() {
     return new Promise((resolve, reject) => {
-      Relay.Store.commitUpdate(
-        new UninstallPackage({
-          projectId: this.props.project.id,
-          name: 'anonymous-auth-provider',
-        }),
-        {
-          onSuccess: (res) => {
-            // The force fetching because authproviders are too complicated to selective choose the config
-            // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-            // which is needed to reflect all affected data
-            console.log('Uninstalled Package', res)
-            // this.props.forceFetchRoot()
-            resolve(res)
-          },
-          onFailure: (transaction) => {
-            reject(transaction)
-            onFailureShowNotification(transaction, this.props.showNotification)
-          },
-        },
-      )
+      UninstallPackage.commit({
+        projectId: this.props.project.id,
+        name: 'anonymous-auth-provider',
+      }).then((res) => {
+        // The force fetching because authproviders are too complicated to selective choose the config
+        // forceFetchRoot gets passed down from StuctureView/DatabrowserView
+        // which is needed to reflect all affected data
+        // this.props.forceFetchRoot()
+        resolve(res)
+      })
+      .catch(transaction => {
+        reject(transaction)
+        onFailureShowNotification(transaction, this.props.showNotification)
+      })
     })
   }
 
@@ -500,24 +489,18 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       if (isEnabled) {
         const definition = getAnonymousPackage(this.state.selectedAnonymousModel)
 
-        Relay.Store.commitUpdate(
-          new InstallPackage({
+          InstallPackage.commit({
             projectId: this.props.project.id,
             definition,
-          }),
-          {
-            onSuccess: (res) => {
+          }).then(res => {
               // The force fetching because authproviders are too complicated to selective choose the config
               // forceFetchRoot gets passed down from StuctureView/DatabrowserView
               // which is needed to reflect all affected data
-              console.log('Installed Package', res)
               this.props.forceFetchRoot()
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+            })
       } else {
         this.uninstallAnonymousAuthProvider()
           .then(() => {
@@ -546,49 +529,47 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({showNotification}, dispatch)
 }
 
-export default Relay.createContainer(connect(null, mapDispatchToProps)(MappedAuthProviderSidePanel), {
-    fragments: {
-        project: () => Relay.QL`
-          fragment on Project {
-            id
-            models(first: 100) {
-              edges {
-                node {
-                  id
-                  name
-                }
-              }
+export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedAuthProviderSidePanel), {
+    project: graphql`
+      fragment AuthProviderSidePanel_project on Project {
+        id
+        models(first: 1000) {
+          edges {
+            node {
+              id
+              name
             }
-            packageDefinitions(first: 100) {
-              edges {
-                node {
-                  id
-                  definition
-                  name
-                }
-              }
+          }
+        }
+        packageDefinitions(first: 1000) {
+          edges {
+            node {
+              id
+              definition
+              name
             }
-            authProviders(first: 100) {
-              edges {
-                node {
-                  id
-                  type
-                  isEnabled
-                  digits {
-                    consumerKey
-                    consumerSecret
-                  }
-                  auth0 {
-                    clientId
-                    clientSecret
-                    domain
-                  }
-                }
+          }
+        }
+        authProviders(first: 1000) {
+          edges {
+            node {
+              id
+              type
+              isEnabled
+              digits {
+                consumerKey
+                consumerSecret
+              }
+              auth0 {
+                clientId
+                clientSecret
+                domain
               }
             }
           }
-        `,
-    },
+        }
+      }
+    `,
 })
 
 interface AuthText {

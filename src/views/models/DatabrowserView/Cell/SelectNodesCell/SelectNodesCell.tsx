@@ -8,7 +8,10 @@ import SearchBox from './SearchBox'
 import * as Immutable from 'seamless-immutable'
 import modalStyle from '../../../../../utils/modalStyle'
 import {Model, Field} from '../../../../../types/types'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as mapProps from 'map-props'
 import {isScalar} from '../../../../../utils/graphql'
 import TypeTag from '../../../../SchemaView/SchemaOverview/TypeTag'
@@ -248,7 +251,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         items = Immutable.setIn(items, [itemIndex, 'selected'], false)
       }
 
-      // TODO this is tricky and necessary for required relations to be changed
+      // this is tricky and necessary for required relations to be changed
       const newValue = !items[index].selected
       items = Immutable.setIn(items, [index, 'selected'], newValue)
 
@@ -458,27 +461,25 @@ const MappedSelectNodesCell = mapProps({
   fields: props => props.model.fields.edges.map(edge => edge.node),
 })(SelectNodesCell)
 
-export default Relay.createContainer(MappedSelectNodesCell, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        namePlural
-        ${Table.getFragment('model')}
-        fields(first: 1000) {
-          edges {
-            node {
-              id
-              typeIdentifier
+export default createFragmentContainer(MappedSelectNodesCell, {
+  model: graphql`
+    fragment SelectNodesCell_model on Model {
+      id
+      name
+      namePlural
+      ...Table_model
+      fields(first: 1000) {
+        edges {
+          node {
+            id
+            typeIdentifier
+            name
+            relatedModel {
               name
-              relatedModel {
-                name
-              }
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

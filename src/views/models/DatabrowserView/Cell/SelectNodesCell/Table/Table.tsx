@@ -1,7 +1,10 @@
 import * as React from 'react'
 import { InfiniteLoader, Table, Column } from 'react-virtualized'
 import {Model} from '../../../../../../types/types'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {calculateFieldColumnWidths} from '../../../../utils'
 import headerRenderer from './headerRenderer'
 import {Icon} from 'graphcool-styles'
@@ -259,13 +262,11 @@ class TableComponent extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(TableComponent, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        namePlural
-      }
-    `,
-  },
+export default createFragmentContainer(TableComponent, {
+  model: graphql`
+    fragment Table_model on Model {
+      id
+      namePlural
+    }
+  `,
 })

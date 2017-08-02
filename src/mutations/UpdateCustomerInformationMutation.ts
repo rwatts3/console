@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import {} from '../types/gettingStarted'
 
 interface Props {
@@ -7,43 +8,32 @@ interface Props {
   email?: string
 }
 
-export default class UpdateCustomerInformationMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateCrmCustomerInformation}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateCrmCustomerInformationPayload {
-        customerInformation
+const mutation = graphql`
+  mutation UpdateCustomerInformationMutation($input: CrmCustomerInformationInput!) {
+    updateCrmCustomerInformation(input: $input) {
+      customerInformation {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        name: input.name,
+        email: input.email,
+      },
+    },
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        customerInformation: this.props.customerInformationId,
+        customerInformation: input.customerInformationId,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      name: this.props.name,
-      email: this.props.email,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      customerInformation: {
-        id: this.props.customerInformationId,
-        name: this.props.name,
-        email: this.props.email,
-      },
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

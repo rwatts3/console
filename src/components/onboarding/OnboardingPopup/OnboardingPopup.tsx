@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {GettingStartedState} from '../../../types/gettingStarted'
@@ -62,7 +62,6 @@ class OnboardingPopup extends React.Component<Props, {}> {
   private skipGettingStarted = (): void => {
     graphcoolConfirm('You are skipping the getting started tour.')
       .then(() => {
-        // TODO: fix this hack
         Promise.resolve(this.props.skip())
           .then(() => {
             this.props.router.replace(`/${this.props.params.projectName}/models`)

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Field, Project, Model, Enum} from '../../../types/types'
-import * as Relay from 'react-relay'
+import * as Relay from 'react-relay/classic'
 import {connect} from 'react-redux'
 import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
 import {showNotification} from '../../../actions/notification'
@@ -12,7 +12,7 @@ import tracker from '../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {idToBeginning} from '../../../utils/utils'
 import ConfirmEnum from './ConfirmEnum'
 import EnumEditor from './EnumEditor'
@@ -303,64 +303,51 @@ class AddEnum extends React.Component<Props, State> {
 
   private delete = () => {
     this.setState({loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new DeleteEnumMutation({
+        DeleteEnumMutation.commit({
           enumId: this.props.enumValue.id,
           projectId: this.props.projectId,
-        }),
-        {
-          onSuccess: () => {
+        })
+          .then(() => {
             this.close()
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as State)
-          },
-        },
-      )
-    })
-  }
+          })
+        })
+    }
 
   private addEnum = () => {
     const {name, values} = this.state
     if (name && values.length > 0) {
-      Relay.Store.commitUpdate(
-        new AddEnumMutation({
+        AddEnumMutation.commit({
           name,
           values,
           projectId: this.props.projectId,
-        }),
-        {
-          onSuccess: () => {
+        }).then(() => {
             this.close()
-          },
-          onFailure: (transaction) => {
+          })
+          .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
             this.setState({loading: false} as State)
-          },
-        },
-      )
-    }
+          })
+      }
   }
 
   private editEnum = () => {
     const {name, values} = this.state
-    Relay.Store.commitUpdate(
-      new UpdateEnumMutation({
+      UpdateEnumMutation.commit({
         name,
         values,
         enumId: this.props.enumValue.id,
-      }),
-      {
-        onSuccess: () => {
+      })
+        .then(() => {
           this.close()
-        },
-        onFailure: (transaction) => {
+        })
+        .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
           this.setState({loading: false} as State)
-        },
-      },
-    )
+        })
   }
 
   private close = () => {
@@ -371,7 +358,7 @@ class AddEnum extends React.Component<Props, State> {
 
     // if we're editing, go back to the schema page of the project
     if (this.props.enumValue) {
-      router.goBack()
+      router.go(-1)
     }
   }
 }

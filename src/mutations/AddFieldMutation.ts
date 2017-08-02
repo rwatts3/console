@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
   modelId: string
@@ -14,47 +15,51 @@ interface Props {
   enumId?: string
 }
 
-export default class AddFieldMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addField}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddFieldPayload {
-        fieldEdge
-        model
+const mutation = graphql`
+  mutation AddFieldMutation($input: AddFieldInput!) {
+    addField(input: $input) {
+      fieldEdge {
+        node {
+          id
+        }
       }
-    `
+      model {
+        ...NewRow_model
+        ...TypeList_model
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        modelId: input.modelId,
+        name: input.name,
+        typeIdentifier: input.typeIdentifier,
+        isRequired: input.isRequired,
+        isList: input.isList,
+        isUnique: input.isUnique,
+        defaultValue: input.defaultValue,
+        relationId: input.relationId,
+        migrationValue: input.migrationValue,
+        description: input.description || null,
+        enumId: input.enumId || null,
+      },
+    },
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'model',
-      parentID: this.props.modelId,
+      parentID: input.modelId,
       connectionName: 'fields',
       edgeName: 'fieldEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      modelId: this.props.modelId,
-      name: this.props.name,
-      typeIdentifier: this.props.typeIdentifier,
-      isRequired: this.props.isRequired,
-      isList: this.props.isList,
-      isUnique: this.props.isUnique,
-      defaultValue: this.props.defaultValue,
-      relationId: this.props.relationId,
-      migrationValue: this.props.migrationValue,
-      description: this.props.description || null,
-      enumId: this.props.enumId || null,
-    }
-  }
+    }],
+  })
 }
+
+export default {commit}

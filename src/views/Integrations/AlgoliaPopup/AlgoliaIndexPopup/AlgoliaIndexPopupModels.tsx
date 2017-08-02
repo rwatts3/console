@@ -1,10 +1,13 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {$p, $v} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import {Project, Model, SearchProviderAlgolia} from '../../../../types/types'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import mapProps from '../../../../components/MapProps/MapProps'
 
 interface Props {
@@ -93,19 +96,17 @@ const MappedAlgoliaIndexPopupModels = mapProps({
   models: props => props.project.models.edges.map(edge => edge.node),
 })(withRouter(AlgoliaIndexPopupModels))
 
-export default Relay.createContainer(MappedAlgoliaIndexPopupModels, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        models(first: 100) {
-          edges {
-            node {
-              id
-              name
-            }
+export default createFragmentContainer(MappedAlgoliaIndexPopupModels, {
+  project: graphql`
+    fragment AlgoliaIndexPopupModels_project on Project {
+      models(first: 1000) {
+        edges {
+          node {
+            id
+            name
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

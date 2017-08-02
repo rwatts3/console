@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import { User } from '../types/types'
 
 interface Props {
@@ -10,43 +11,33 @@ export interface Response {
   user: User
 }
 
-export default class AuthenticateCustomerMutation extends Relay.Mutation<Props, Response> {
-
-  getMutation () {
-    return Relay.QL`mutation{authenticateCustomer}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AuthenticateCustomerPayload {
-        token # this is not needed but may not be empty
-      }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'REQUIRED_CHILDREN',
-      children: [Relay.QL`
-        fragment on AuthenticateCustomerPayload {
-          token
-          user {
-            id
-            createdAt
-            crm {
-              information {
-                source
-              }
-            }
+const mutation = graphql`
+  mutation AuthenticateCustomerMutation($input: AuthenticateCustomerInput!) {
+    authenticateCustomer(input: $input) {
+      token
+      user {
+        id
+        createdAt
+        crm {
+          information {
+            source
           }
         }
-      `],
-    }]
-  }
-
-  getVariables () {
-    return {
-      auth0IdToken: this.props.auth0IdToken,
+      }
     }
   }
+`
+
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        auth0IdToken: input.auth0IdToken,
+      },
+    },
+    configs: [],
+  })
 }
+
+export default { commit }

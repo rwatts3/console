@@ -11,8 +11,11 @@ import Constraints from './Constraints'
 import {emptyField, mockConstraints} from './constants'
 import mapProps from 'map-props'
 import {connect} from 'react-redux'
-import * as Relay from 'react-relay'
-import {withRouter} from 'react-router'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
+import {withRouter} from 'found'
 import {
   toggleIsList,
   updateName,
@@ -88,7 +91,7 @@ class FieldPopup extends React.Component<Props, State> {
     if (field) {
       // if there's a field, just passthrough the field to the stateG
       if (field.isSystem) {
-        this.props.router.goBack()
+        this.props.router.go(-1)
         this.props.showNotification({
           message: 'You cannot edit system fields',
           level: 'warning',
@@ -346,21 +349,16 @@ class FieldPopup extends React.Component<Props, State> {
 
   private handleDelete = () => {
     this.setState({deleting: true, loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new DeleteFieldMutation({
-          fieldId: this.state.field.id,
-          modelId: this.props.modelId,
-        }),
-        {
-          onSuccess: () => {
-            this.close()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            // this.setState({loading: false} as State)
-          },
-        },
-      )
+      DeleteFieldMutation.commit({
+        fieldId: this.state.field.id,
+        modelId: this.props.modelId,
+      })
+        .then(() => {
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        })
     })
   }
 
@@ -445,27 +443,20 @@ class FieldPopup extends React.Component<Props, State> {
       const {field} = this.state
 
       let input: any = this.patchDefaultAndMigrationValue(field)
-      // let input = field
 
       input = {
         ...input,
         modelId,
-        // enumId: 'cj26domcw0f0m0143gglbv0zy',
-        // enumValues: [],
       }
 
-      Relay.Store.commitUpdate(
-        new AddFieldMutation(input),
-        {
-          onSuccess: () => {
-            this.close()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as State)
-          },
-        },
-      )
+      AddFieldMutation.commit(input)
+        .then(() => {
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
+        })
     }
 
     if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CONFIRM_IMAGEURL')) {
@@ -507,25 +498,20 @@ class FieldPopup extends React.Component<Props, State> {
   private update() {
     const {field} = this.state
     let updatedField: any = this.patchDefaultAndMigrationValue(field)
-    // TODO: proper typing
     this.setState({loading: true} as State)
 
-    Relay.Store.commitUpdate(
-      new UpdateFieldMutation(updatedField),
-      {
-        onSuccess: () => {
-          this.close()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+    UpdateFieldMutation.commit(updatedField)
+      .then(() => {
+        this.close()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private close = () => {
-    this.props.router.goBack()
+    this.props.router.go(-1)
   }
 }
 
@@ -564,61 +550,50 @@ const MappedFieldPopup = mapProps({
   isGlobalEnumsEnabled: props => true,
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedFieldPopup, {
-  initialVariables: {
-    modelName: null, // injected from router
-    projectName: null, // injected from router
-    fieldName: null, // injected from router
-    fieldExists: false,
-  },
-  prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
-    fieldExists: !!prevVariables.fieldName,
-  })),
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
+export default createFragmentContainer(MappedFieldPopup, {
+  viewer: graphql`
+    fragment FieldPopup_viewer on Viewer {
+      model: modelByName(projectName: $projectName, modelName: $modelName) {
+        id
+        itemCount
+      }
+      field: fieldByName(
+      projectName: $projectName
+      modelName: $modelName
+      fieldName: $fieldName
+      ) @include(if: $fieldExists) {
+        id
+        name
+        typeIdentifier
+        description
+        isRequired
+        isList
+        isUnique
+        isSystem
+        defaultValue
+        enum {
           id
-          itemCount
         }
-        field: fieldByName(
-        projectName: $projectName
-        modelName: $modelName
-        fieldName: $fieldName
-        ) @include(if: $fieldExists) {
+        relation {
           id
+        }
+        reverseRelationField {
           name
-          typeIdentifier
-          description
-          isRequired
-          isList
-          isUnique
-          isSystem
-          defaultValue
-          enum {
-            id
-          }
-          relation {
-            id
-          }
-          reverseRelationField {
-            name
-          }
         }
-        project: projectByName(projectName: $projectName) {
-          id
-          isGlobalEnumsEnabled
-          enums(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                values
-              }
+      }
+      project: projectByName(projectName: $projectName) {
+        id
+        isGlobalEnumsEnabled
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
             }
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

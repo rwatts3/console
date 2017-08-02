@@ -1,8 +1,12 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+  RelayProp,
+} from 'react-relay'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {
   toggleNodeSelection, clearNodeSelection, setNodeSelection, setScrollTop, setLoading,
   hideNewRow, toggleSearch, selectCell,
@@ -54,9 +58,9 @@ const classes: any = require('./DatabrowserView.scss')
 const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
 
 interface Props {
-  relay: Relay.RelayProp
+  relay: RelayProp
   viewer: Viewer & { model: Model }
-  router: ReactRouter.InjectedRouter
+  router: any
   route: any
   params: any
   location: any
@@ -176,9 +180,8 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.mounted = true
-    this.props.router.setRouteLeaveHook(this.props.route, (nextLocation) => {
+    this.props.router.addTransitionHook((nextLocation) => {
       if (this.props.newRowActive) {
-        // TODO with custom dialogs use "return false" and display custom dialog
         if (this.state.shouldLeaveRoute) {
           return true
         }
@@ -224,13 +227,6 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     ) {
       this.reloadData(0, nextProps)
     }
-  }
-
-  forceFetch = () => {
-    this.props.relay.forceFetch({}, () => {
-      // console.log('force fetched', this.props.model.namePlural, this.props.fields)
-      // this.reloadData()
-    })
   }
 
   render() {
@@ -789,63 +785,57 @@ const MappedDatabrowserView = mapProps({
   enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
 })(ReduxContainer)
 
-export default Relay.createContainer(MappedDatabrowserView, {
-  initialVariables: {
-    modelName: null, // injected from router
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        model: modelByName(projectName: $projectName, modelName: $modelName) {
-          id
-          name
-          namePlural
-          itemCount
-          isSystem
-          fields(first: 1000) {
-            edges {
-              node {
+export default createFragmentContainer(MappedDatabrowserView, {
+  viewer: graphql`
+    fragment DatabrowserView_viewer on Viewer {
+      model: modelByName(projectName: $projectName, modelName: $modelName) {
+        id
+        name
+        namePlural
+        itemCount
+        isSystem
+        fields(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              typeIdentifier
+              isList
+              isReadonly
+              isSystem
+              defaultValue
+              relatedModel {
                 id
                 name
-                typeIdentifier
+              }
+              reverseRelationField {
+                id
                 isList
-                isReadonly
-                isSystem
-                defaultValue
-                relatedModel {
-                  id
-                  name
-                }
-                reverseRelationField {
-                  id
-                  isList
-                  name
-                }
-                ${HeaderCell.getFragment('field')}
-                ${Cell.getFragment('field')}
-              }
-            }
-          }
-          ${NewRow.getFragment('model')}
-          ${ModelHeader.getFragment('model')}
-        }
-        project: projectByName(projectName: $projectName) {
-          id
-          ${ModelHeader.getFragment('project')}
-          ${NewRow.getFragment('project')}
-          enums(first: 1000) {
-            edges {
-              node {
-                id
                 name
-                values
               }
+              ...HeaderCell_field
+              ...Cell_field
             }
           }
         }
-        ${ModelHeader.getFragment('viewer')}
+        ...NewRow_model
+        ...ModelHeader_model
       }
-    `,
-  },
+      project: projectByName(projectName: $projectName) {
+        id
+        ...ModelHeader_project
+        ...NewRow_project
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
+            }
+          }
+        }
+      }
+      ...ModelHeader_viewer
+    }
+  `,
 })

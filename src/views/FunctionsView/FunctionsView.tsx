@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Project, ServerlessFunction} from '../../types/types'
 import mapProps from '../../components/MapProps/MapProps'
 import FunctionsList from './FunctionsList'
@@ -48,27 +51,22 @@ const MappedFunctionsView = mapProps({
   project: props => props.viewer.project,
 })(FunctionsView)
 
-export default Relay.createContainer(MappedFunctionsView, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
+export default createFragmentContainer(MappedFunctionsView, {
+  viewer: graphql`
+    fragment FunctionsView_viewer on Viewer {
+      id
+      project: projectByName(projectName: $projectName) {
         id
-        project: projectByName(projectName: $projectName) {
-          id
-          name
-          ${FunctionsList.getFragment('project')}
-        }
-        user {
-          crm {
-            information {
-              isBeta
-            }
+        name
+        ...FunctionsList_project
+      }
+      user {
+        crm {
+          information {
+            isBeta
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

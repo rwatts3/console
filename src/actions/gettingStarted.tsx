@@ -1,14 +1,19 @@
 import * as React from 'react' // tslint:disable-line
-import * as Relay from 'react-relay'
 import {Example} from '../types/types'
 import {Dispatch, StateTree, ReduxThunk, ReduxAction} from '../types/reducers'
 import {GettingStartedState, Step} from './../types/gettingStarted'
-import UpdateCustomerOnboardingStatusMutation from '../mutations/UpdateCustomerOnboardingStatusMutation'
+let UpdateCustomerOnboardingStatusMutation
+// needed for jest tests
+if (process.env.NODE_ENV !== 'test') {
+  UpdateCustomerOnboardingStatusMutation = require('../mutations/UpdateCustomerOnboardingStatusMutation').default
+}
+
 import Constants from '../constants/gettingStarted'
 import IconNotification from '../components/IconNotification/IconNotification'
 import cuid from 'cuid'
 import {showPopup} from '../actions/popup'
 import {forceShowNewRow} from './databrowser/ui'
+import { fetchQuery } from '../relayEnvironment'
 
 export function showDonePopup() {
   const id = cuid()
@@ -30,8 +35,8 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
                              onboardingStatusId: string,
                              gettingStartedExample: Example = null): Promise<{}> {
   return new Promise((resolve, reject) => {
-    Relay.Store.commitUpdate(
-      new UpdateCustomerOnboardingStatusMutation(
+    if (typeof UpdateCustomerOnboardingStatusMutation !== 'undefined') {
+      UpdateCustomerOnboardingStatusMutation.commit(
         {
           onboardingStatusId,
           gettingStarted,
@@ -39,9 +44,8 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
             false : gettingStartedSkipped,
           gettingStartedCompleted: ['STEP5_DONE', 'STEP6_CLOSED'].includes(gettingStarted),
           gettingStartedExample,
-        }),
-      {
-        onSuccess: () => {
+        })
+        .then(() => {
           dispatch(update(gettingStarted, gettingStartedSkipped, onboardingStatusId, gettingStartedExample))
 
           // refresh intercom messages once onboarding done/skipped
@@ -50,13 +54,13 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
           }
 
           resolve()
-        },
-        onFailure: (err) => {
+        })
+        .catch((err) => {
           // Error
           console.error(err)
           reject()
-        },
-    })
+        })
+    }
   })
 }
 
@@ -88,39 +92,30 @@ export function skip(): (dispatch: (action: ReduxAction) => any, getState: any) 
   }
 }
 
-export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => any) => Promise<{}> {
-  return (dispatch: (action: ReduxAction) => any): Promise<{}> => {
-    const query = Relay.createQuery(
-      Relay.QL`
-        query {
-          viewer {
-            user {
-              crm {
-                onboardingStatus {
-                  id
-                  gettingStarted
-                  gettingStartedSkipped
-                  gettingStartedExample
-                }
+export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => any) => Promise<void> {
+  return (dispatch: (action: ReduxAction) => any): Promise<void> => {
+    const query = `
+      query {
+        viewer {
+          user {
+            crm {
+              onboardingStatus {
+                id
+                gettingStarted
+                gettingStartedSkipped
+                gettingStartedExample
               }
             }
           }
-        }`,
-      {},
-    )
-
-    return new Promise((resolve: () => any, reject: (error: Error) => any) => {
-      Relay.Store.primeCache({ query }, ({done, error}) => {
-        if (done) {
-          const data = Relay.Store.readQuery(query)[0]
-          const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.user.crm.onboardingStatus
-          dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
-          resolve()
-        } else if (error) {
-          reject(Error('Error when fetching gettingStartedState'))
         }
+      }`
+    const variables = {}
+
+    return fetchQuery({text: query}, variables)
+      .then(({data}) => {
+        const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.viewer.user.crm.onboardingStatus
+        dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
       })
-    })
   }
 }
 // dependencies so that the steps' tethers are shown

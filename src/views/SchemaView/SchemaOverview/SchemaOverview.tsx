@@ -1,7 +1,10 @@
 import * as React from 'react'
 import SchemaOverviewHeader from './SchemaOverviewHeader'
 import TypeList from './TypeList'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Project, Model} from '../../../types/types'
 import AddType from './AddType'
 import Tether from '../../../components/Tether/Tether'
@@ -37,7 +40,10 @@ class SchemaOverview extends React.Component<Props,State> {
     const {editingModelName, blur} = this.props
     const {activeFilter, addingType, editingModel} = this.state
     let selectedModel = undefined
-    if (this.props.location.query.hasOwnProperty('selectedModel')) {
+    if (this.props.location &&
+        this.props.location.query &&
+        typeof this.props.location.query.selectedModel !== 'undefined'
+      ) {
       selectedModel = this.props.location.query.selectedModel
     }
 
@@ -122,13 +128,11 @@ class SchemaOverview extends React.Component<Props,State> {
   }
 }
 
-export default Relay.createContainer(SchemaOverview, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        id
-        ${TypeList.getFragment('project')}
-      }
-    `,
-  },
+export default createFragmentContainer(SchemaOverview, {
+  project: graphql`
+    fragment SchemaOverview_project on Project {
+      id
+      ...TypeList_project
+    }
+  `,
 })

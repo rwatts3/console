@@ -33,6 +33,7 @@ export function extractCustomerInfo(cookies: Cookie[]): CustomerInfo {
 }
 
 export async function deleteCustomer({token, customerId}: CustomerInfo) {
+  console.log('deleting customer', token, customerId)
   const query = `mutation ($customerId: String!) {
     deleteCustomer(input: {
       customerId: $customerId
@@ -51,7 +52,7 @@ export async function deleteCustomer({token, customerId}: CustomerInfo) {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({query, variables})
+    body: JSON.stringify({query, variables}),
   })
   const json = await result.json()
   return json

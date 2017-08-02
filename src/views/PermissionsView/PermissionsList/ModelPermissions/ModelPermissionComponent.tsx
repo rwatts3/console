@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {ModelPermission, Model} from '../../../../types/types'
 import {$p, variables, Icon} from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -7,8 +10,8 @@ import NewToggleButton from '../../../../components/NewToggleButton/NewToggleBut
 import PermissionLabel from './PermissionLabel'
 import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
-import {Link, withRouter} from 'react-router'
-import ToggleActivePermissionMutation from '../../../../mutations/ModelPermission/ToggleActivePermissionMutation'
+import {Link, withRouter} from 'found'
+import UpdateModelPermissionMutation from '../../../../mutations/ModelPermission/UpdateModelPermissionMutation'
 import tracker from '../../../../utils/metrics'
 import {ConsoleEvents} from 'graphcool-metrics'
 
@@ -98,34 +101,28 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
 
   private toggleActiveState = () => {
     const {permission} = this.props
-    Relay.Store.commitUpdate(
-      new ToggleActivePermissionMutation({id: permission.id, isActive: !permission.isActive}),
-      {
-        onFailure: (transaction) => console.log(transaction),
-      },
-    )
+    UpdateModelPermissionMutation.commit({id: permission.id, isActive: !permission.isActive})
+      .catch(transaction => console.log(transaction))
     tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
   }
 }
 
-export default Relay.createContainer(withRouter(ModelPermissionComponent), {
-  fragments: {
-    permission: () => Relay.QL`
-      fragment on ModelPermission {
-        id
-        operation
-        userType
-        fieldIds
-        isActive
-        ${ModelPermissionFields.getFragment('permission')}
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        id
-        name
-        ${ModelPermissionFields.getFragment('model')}
-      }
-    `,
-  },
+export default createFragmentContainer(withRouter(ModelPermissionComponent), {
+  permission: graphql`
+    fragment ModelPermissionComponent_permission on ModelPermission {
+      id
+      operation
+      userType
+      fieldIds
+      isActive
+      ...ModelPermissionFields_permission
+    }
+  `,
+  model: graphql`
+    fragment ModelPermissionComponent_model on Model {
+      id
+      name
+      ...ModelPermissionFields_model
+    }
+  `,
 })

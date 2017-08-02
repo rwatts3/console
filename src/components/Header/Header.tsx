@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import { Project } from '../../types/types'
 const classes: any = require('./Header.scss')
 
@@ -43,20 +46,18 @@ class Header extends React.Component<Props, State> {
   }
 }
 
-export default Relay.createContainer(Header, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id
-          name
-        }
-      }
-    `,
-    project: () => Relay.QL`
-      fragment on Project {
+export default createFragmentContainer(Header, {
+  viewer: graphql`
+    fragment Header_viewer on Viewer {
+      user {
         id
+        name
       }
-    `,
-  },
+    }
+  `,
+  project: graphql`
+    fragment Header_project on Project {
+      id
+    }
+  `,
 })

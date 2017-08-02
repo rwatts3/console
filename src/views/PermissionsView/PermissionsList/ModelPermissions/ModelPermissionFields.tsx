@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {ModelPermission, Field} from '../../../../types/types'
 import {$p, variables} from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -84,30 +87,28 @@ const MappedModelPermissionFields = mapProps({
   },
 })(ModelPermissionFields)
 
-export default Relay.createContainer(MappedModelPermissionFields, {
-  fragments: {
-    permission: () => Relay.QL`
-      fragment on ModelPermission {
-        fieldIds
-        operation
-        applyToWholeModel
-        isActive
-      }
-    `,
-    model: () => Relay.QL`
-      fragment on Model {
-        fields(first: 100) {
-          edges {
-            node {
-              id
-              name
-              isReadonly
-              isList
-              typeIdentifier
-            }
+export default createFragmentContainer(MappedModelPermissionFields, {
+  permission: graphql`
+    fragment ModelPermissionFields_permission on ModelPermission {
+      fieldIds
+      operation
+      applyToWholeModel
+      isActive
+    }
+  `,
+  model: graphql`
+    fragment ModelPermissionFields_model on Model {
+      fields(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            isReadonly
+            isList
+            typeIdentifier
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

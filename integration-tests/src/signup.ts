@@ -1,17 +1,12 @@
 import Chromeless from 'chromeless'
 const cuid = require('cuid')
-import { closeTab, CONSOLE_URL, runRemote, viewport, waitTimeout } from './config'
+import { config, CONSOLE_URL } from './config'
 
-export default (): Promise<any> =>  {
-  const chromeless = new Chromeless({
-    runRemote,
-    waitTimeout,
-    closeTab,
-    viewport,
-  })
+const run = async (): Promise<any> =>  {
+  const chromeless = new Chromeless(config)
 
-  return chromeless
-    .cookies.clearAll()
+  const cookies = await chromeless
+    .cookiesClearAll()
     .goto(CONSOLE_URL + '/signup')
     .wait(1000)
     .wait('button[type="submit"]')
@@ -19,12 +14,16 @@ export default (): Promise<any> =>  {
     .type(`asdfasdf`, 'input[type="password"]')
     .type(`Bob`, 'input[type="text"]')
     .click('button[type="submit"]')
-    .wait(3000)
+    .wait(4000)
     // done with signup
-    .wait('input[data-test="source"]')
-    // THIS IS CRITICAL AS IT IS USED IN NILANS SCRIPTS
     .type('I am a Test', 'input[data-test="source"]')
     .click('div[data-test="open-console"]')
     // done with giving signup data
-    .cookies.get()
+    .cookiesGet()
+
+  console.log('got cookies', cookies)
+
+  return cookies
 }
+
+export default run

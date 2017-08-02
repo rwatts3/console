@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {Viewer, Seat} from '../../../types/types'
 import EmptyRow from './EmptyRow'
 import MemberRow from './MemberRow'
@@ -93,58 +96,48 @@ class Team extends React.Component<Props, {}> {
     graphcoolConfirm('This will remove the user with email ' +
         seat.email + ' as a collaborator from this project')
       .then(() => {
-        Relay.Store.commitUpdate(
-          new DeleteCollaboratorMutation({
+          DeleteCollaboratorMutation.commit({
             projectId: this.props.viewer.project.id,
             email: seat.email,
-          }),
-          {
-            onSuccess: () => {
+          }).then(() => {
               this.props.showNotification({message: 'Removed collaborator with email: ' + seat.email, level: 'success'})
-            },
-            onFailure: (transaction) => {
+            })
+            .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)
-            },
-          },
-        )
+            })
       })
   }
 }
 
 const mappedTeam = connect(null, {showNotification})(Team)
 
-export default Relay.createContainer(mappedTeam, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          id
-          seats(first: 1000) {
-            edges {
-              node {
-                id
-                name
-                email
-                isOwner
-                status
-              }
+export default createFragmentContainer(mappedTeam, {
+  viewer: graphql`
+    fragment Team_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        id
+        seats(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              email
+              isOwner
+              status
             }
           }
         }
-        user {
-          crm {
-            customer {
-              projects(first: 100) {
-                edges {
-                  node {
-                    id
-                    name
-                    projectBillingInformation {
-                      plan
-                    }
+      }
+      user {
+        crm {
+          customer {
+            projects(first: 1000) {
+              edges {
+                node {
+                  id
+                  name
+                  projectBillingInformation {
+                    plan
                   }
                 }
               }
@@ -152,6 +145,6 @@ export default Relay.createContainer(mappedTeam, {
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

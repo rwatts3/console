@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {Link} from 'react-router'
+import {Link} from 'found'
 
 interface Props {
   onAddIndex: () => void

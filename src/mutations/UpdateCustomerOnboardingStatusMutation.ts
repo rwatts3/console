@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import {Step} from '../types/gettingStarted'
 import {Example} from '../types/types'
 
@@ -10,54 +11,38 @@ interface Props {
   gettingStartedExample: Example
 }
 
-export default class UpdateCustomerOnboardingStatusMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateCrmOnboardingStatus}`
-  }
-
-  getFatQuery () {
-    // TODO don't know why I have to specify so much otherwise it thinks that onboardingStatus is a user
-    return Relay.QL`
-      fragment on UpdateCrmOnboardingStatusPayload {
-        onboardingStatus {
-          id
-          gettingStarted
-          gettingStartedExample
-          systemBridge
-          gettingStartedSkipped
-          gettingStartedCompleted
-        }
+const mutation = graphql`
+  mutation UpdateCustomerOnboardingStatusMutation($input:  CrmOnboardingStatusInput!) {
+    updateCrmOnboardingStatus(input: $input) {
+      onboardingStatus {
+        id
+        gettingStarted
+        gettingStartedExample
+        gettingStartedSkipped
+        gettingStartedCompleted
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {
+      input: {
+        gettingStarted: input.gettingStarted,
+        gettingStartedSkipped: input.gettingStartedSkipped,
+        gettingStartedCompleted: input.gettingStartedCompleted,
+        gettingStartedExample: input.gettingStartedExample,
+      },
+    },
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        onboardingStatus: this.props.onboardingStatusId,
+        onboardingStatus: input.onboardingStatusId,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      gettingStarted: this.props.gettingStarted,
-      gettingStartedSkipped: this.props.gettingStartedSkipped,
-      gettingStartedCompleted: this.props.gettingStartedCompleted,
-      gettingStartedExample: this.props.gettingStartedExample,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      onboardingStatus: {
-        id: this.props.onboardingStatusId,
-        gettingStarted: this.props.gettingStarted,
-        gettingStartedSkipped: this.props.gettingStartedSkipped,
-        gettingStartedCompleted: this.props.gettingStartedCompleted,
-      },
-    }
-  }
+    }],
+  })
 }
+
+export default { commit }

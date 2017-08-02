@@ -1,4 +1,6 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
+import {omit} from 'lodash'
 
 export interface UpdateFieldProps {
   id: string
@@ -15,60 +17,43 @@ export interface UpdateFieldProps {
   enumId?: string
 }
 
-export default class UpdateFieldMutation extends Relay.Mutation<UpdateFieldProps, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateField}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateFieldPayload {
-        field
+const mutation = graphql`
+  mutation UpdateFieldMutation($input: UpdateFieldInput!) {
+    updateField(input: $input) {
+      field {
+        id
       }
-    `
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: UpdateFieldProps) {
+  return makeMutation({
+    mutation,
+    variables: {input: omit(input, ['isSystem', 'relation', 'reverseRelationField', 'enum'])},
+    configs: [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        field: this.props.id,
+        field: input.id,
       },
-    }]
-  }
-
-  getVariables () {
-    return {
-      id: this.props.id,
-      name: this.props.name,
-      typeIdentifier: this.props.typeIdentifier,
-      enumValues: this.props.enumValues,
-      isRequired: this.props.isRequired,
-      isList: this.props.isList,
-      isUnique: this.props.isUnique,
-      defaultValue: this.props.defaultValue,
-      relationId: this.props.relationId,
-      migrationValue: this.props.migrationValue,
-      description: this.props.description,
-      enumId: this.props.enumId,
-    }
-  }
-
-  getOptimisticResponse () {
-    return {
-      field: {
-        id: this.props.id,
-        name: this.props.name,
-        typeIdentifier: this.props.typeIdentifier,
-        enumValues: this.props.enumValues,
-        isRequired: this.props.isRequired,
-        isList: this.props.isList,
-        isUnique: this.props.isUnique,
-        defaultValue: this.props.defaultValue,
-        description: this.props.description || null,
-        enumId: this.props.enumId,
+    }],
+    optimisticResponse: {
+      updateField: {
+        field: {
+          id: input.id,
+          name: input.name,
+          typeIdentifier: input.typeIdentifier,
+          enumValues: input.enumValues,
+          isRequired: input.isRequired,
+          isList: input.isList,
+          isUnique: input.isUnique,
+          defaultValue: input.defaultValue,
+          description: input.description || null,
+          enumId: input.enumId,
+        },
       },
-    }
-  }
+    },
+  })
 }
+
+export default { commit }

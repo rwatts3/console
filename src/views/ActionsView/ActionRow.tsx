@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Toggle from 'react-toggle-button'
 import { Action } from '../../types/types'
 import {Icon} from 'graphcool-styles'
@@ -120,12 +123,10 @@ class ActionRow extends React.Component<Props, State> {
 
   private toggleIsActive = (e: any) => {
     tracker.track(ConsoleEvents.MutationCallbacks.toggled())
-    Relay.Store.commitUpdate(
-      new UpdateActionMutation({
-        actionId: this.props.action.id,
-        isActive: !this.props.action.isActive,
-      }),
-    )
+    UpdateActionMutation.commit({
+      actionId: this.props.action.id,
+      isActive: !this.props.action.isActive,
+    })
   }
 
   private deleteAction = (e: React.MouseEvent<any>) => {
@@ -134,33 +135,29 @@ class ActionRow extends React.Component<Props, State> {
     graphcoolConfirm('You\'re deleting this Mutation Callback')
       .then(() => {
         tracker.track(ConsoleEvents.MutationCallbacks.deleted())
-        Relay.Store.commitUpdate(
-          new DeleteActionMutation({
-            actionId: this.props.action.id,
-            projectId: this.props.projectId,
-          }),
-        )
+        DeleteActionMutation.commit({
+          actionId: this.props.action.id,
+          projectId: this.props.projectId,
+        })
       })
   }
 
 }
 
-export default Relay.createContainer(ActionRow, {
-  fragments: {
-    action: () => Relay.QL`
-      fragment on Action {
-        id
-        triggerType
-        handlerType
-        description
-        isActive
-        triggerMutationModel {
-          model {
-            name
-          }
-          mutationType
+export default createFragmentContainer(ActionRow, {
+  action: graphql`
+    fragment ActionRow_action on Action {
+      id
+      triggerType
+      handlerType
+      description
+      isActive
+      triggerMutationModel {
+        model {
+          name
         }
+        mutationType
       }
-    `,
-  },
+    }
+  `,
 })

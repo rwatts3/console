@@ -1,6 +1,9 @@
 import * as React from 'react'
 import * as cx from 'classnames'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import styled from 'styled-components'
 import {Project} from '../../types/types'
 import {$p} from 'graphcool-styles'
@@ -43,7 +46,18 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     const digitsIntegration = {
       isEnabled: Boolean(providers.find(prov => prov.type === 'AUTH_PROVIDER_DIGITS' && prov.isEnabled)),
       logoURI: require('assets/graphics/digits.png'),
-      description: 'No more passwords. Powerful login that grows your mobile graph',
+      description: <div>
+        <div>
+          The Digits integration is <b>deprecated</b> and will be removed on the 09/30/17
+        </div>
+        <a
+          href='http://get.digits.com/blog/introducing-firebase-phone-authentication'
+          target='_blank'
+          onClick={e => e.stopPropagation()}
+        >
+          <b>Read more</b>
+        </a>
+      </div>,
       link: `/${projectName}/integrations/authentication/digits`,
     }
 
@@ -132,34 +146,32 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
   }
 }
 
-export default Relay.createContainer(IntegrationsCardGrid, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        integrations(first: 100) {
-          edges {
-            node {
-              id
-              isEnabled
-            }
-          }
-        }
-        authProviders(first: 100) {
-          edges {
-            node {
-              isEnabled
-              type
-            }
-          }
-        }
-        packageDefinitions(first: 100) {
-          edges {
-            node {
-              name
-            }
+export default createFragmentContainer(IntegrationsCardGrid, {
+  project: graphql`
+    fragment IntegrationsCardGrid_project on Project {
+      integrations(first: 1000) {
+        edges {
+          node {
+            id
+            isEnabled
           }
         }
       }
-    `,
-  },
+      authProviders(first: 1000) {
+        edges {
+          node {
+            isEnabled
+            type
+          }
+        }
+      }
+      packageDefinitions(first: 1000) {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  `,
 })

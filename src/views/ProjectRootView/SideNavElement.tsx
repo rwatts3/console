@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Icon, $v} from 'graphcool-styles'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import * as cn from 'classnames'
 
 interface Props {

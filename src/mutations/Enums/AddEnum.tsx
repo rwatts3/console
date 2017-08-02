@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
 
 interface Props {
   projectId: string
@@ -6,35 +7,36 @@ interface Props {
   values: string[]
 }
 
-export default class AddEnumMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{addEnum}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on AddEnumPayload {
-        enumEdge
-        project
+const mutation = graphql`
+  mutation AddEnumMutation($input: AddEnumInput!) {
+    addEnum(input: $input) {
+      enumEdge {
+        node {
+          id
+        }
       }
-    `
+      project {
+        id
+      }
+    }
   }
+`
 
-  getConfigs () {
-    return [{
+function commit(input: Props) {
+  return makeMutation({
+    mutation,
+    variables: {input},
+    configs: [{
       type: 'RANGE_ADD',
       parentName: 'project',
-      parentID: this.props.projectId,
+      parentID: input.projectId,
       connectionName: 'enums',
       edgeName: 'enumEdge',
       rangeBehaviors: {
         '': 'append',
       },
-    }]
-  }
-
-  getVariables () {
-    return this.props
-  }
+    }],
+  })
 }
+
+export default { commit }

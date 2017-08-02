@@ -1,4 +1,4 @@
-import {isEqual} from 'lodash'
+import {isEqual, sortBy} from 'lodash'
 import {PermissionPopupState} from './PermissionPopup'
 import {ModelPermission} from '../../../types/types'
 export interface PermissionPopupErrors {
@@ -56,7 +56,7 @@ export function didChange(state: PermissionPopupState, permission?: ModelPermiss
     return false
   }
   return state.selectedOperation !== permission.operation ||
-      !isEqual(state.fieldIds.sort(), permission.fieldIds.sort()) ||
+      !isEqual(sortBy(state.fieldIds), sortBy(permission.fieldIds)) ||
       state.applyToWholeModel !== permission.applyToWholeModel ||
       state.rule !== permission.rule ||
       state.queryChanged ||

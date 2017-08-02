@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {classnames} from '../../../utils/classnames'
 import {valueToString, stringToValue} from '../../../utils/valueparser'
 import styled, { keyframes } from 'styled-components'
@@ -9,7 +12,7 @@ import RelationsPopup from './RelationsPopup'
 import {CellRequirements, getEditCell} from './Cell/cellgenerator'
 import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
 import {isNonScalarList, isScalar} from '../../../utils/graphql'
-import { Link } from 'react-router'
+import { Link } from 'found'
 import {connect} from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
@@ -290,7 +293,6 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private renderExisting = (): JSX.Element => {
-    console.log(this.props.enums, this.props.field.enum)
     if (this.props.editing) {
       let enumValues: any = []
       const {field} = this.props
@@ -389,6 +391,7 @@ export class Cell extends React.PureComponent<Props, State> {
             }}>
               <CellLink
                 onClick={e => e.preventDefault()}
+                to=''
               >
                 {'Copy'}
               </CellLink>
@@ -455,10 +458,13 @@ const MappedCell = connect(
   },
 )(Cell)
 
-export default Relay.createContainer(MappedCell, {
-  fragments: {
-    field: () => Relay.QL`
-      fragment on Field {
+let CellContainer = MappedCell
+
+// jest...
+if (process.env.NODE_ENV !== 'test') {
+  CellContainer = createFragmentContainer(MappedCell, {
+    field: graphql`
+      fragment Cell_field on Field {
         id
         name
         isList
@@ -473,7 +479,7 @@ export default Relay.createContainer(MappedCell, {
           name
         }
         relatedModel {
-          ${SelectNodesCell.getFragment('model')}
+          ...SelectNodesCell_model
           id
           name
         }
@@ -492,8 +498,10 @@ export default Relay.createContainer(MappedCell, {
             name
           }
         }
-        ${RelationsPopup.getFragment('originField')}
+        ...RelationsPopup_originField
       }
     `,
-  },
-})
+  })
+}
+
+export default CellContainer

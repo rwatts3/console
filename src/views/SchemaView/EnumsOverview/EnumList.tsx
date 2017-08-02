@@ -1,6 +1,9 @@
 import * as React from 'react'
 import {Project, Model, Enum} from '../../../types/types'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import EnumBox from './EnumBox'
 import AddEnum from './AddEnum'
 import {debounce} from 'lodash'
@@ -94,21 +97,19 @@ const MappedEnumList = mapProps({
   enums: props => props.project.enums.edges.map(edge => edge.node),
 })(EnumList)
 
-export default Relay.createContainer(MappedEnumList, {
-  fragments: {
-    project: () => Relay.QL`
-      fragment on Project {
-        name
-        enums(first: 1000) {
-          edges {
-            node {
-              id
-              name
-              values
-            }
+export default createFragmentContainer(MappedEnumList, {
+  project: graphql`
+    fragment EnumList_project on Project {
+      name
+      enums(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            values
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

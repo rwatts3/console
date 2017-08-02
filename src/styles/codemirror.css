@@ -27,7 +27,6 @@
 
 .CodeMirror-gutters {
     border-right: 1px solid #ddd;
-    background-color: #f7f7f7;
     white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
@@ -35,7 +34,7 @@
     padding: 0 3px 0 5px;
     min-width: 20px;
     text-align: right;
-    color: rgba(255,255,255,.2);
+    color: rgba(255,255,255,.2) !important;
     white-space: nowrap;
 }
 
@@ -135,7 +134,7 @@ div.CodeMirror-overwrite div.CodeMirror-cursor {}
 
 /* Default styles for common addons */
 
-div.CodeMirror span.CodeMirror-matchingbracket {color: rgba(255,255,255,.4); text-decoration: underline;}
+div.CodeMirror span.CodeMirror-matchingbracket {color: rgba(255,255,255,.4) !important; text-decoration: underline;}
 /*div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}*/
 /*.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }*/
 /*.CodeMirror-activeline-background {background: #e8f2ff;}*/
@@ -149,14 +148,14 @@ div.CodeMirror span.CodeMirror-matchingbracket {color: rgba(255,255,255,.4); tex
 /* The rest of this file contains styles related to the mechanics of
    the editor. You probably shouldn't touch them. */
 
-.CodeMirror {
+body .CodeMirror {
     position: relative;
     overflow: hidden;
     background-color: rgb(15,32,45);
 }
 
-.CodeMirror-gutters {
-    border-right: none;
+body .CodeMirror-gutters {
+    border-right: none !important;
     background-color: rgb(15,32,45);
 }
 

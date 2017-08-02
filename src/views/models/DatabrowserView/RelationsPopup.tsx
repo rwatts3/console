@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import * as Immutable from 'immutable'
 import {Field, Node} from '../../../types/types'
 import {isScalar} from '../../../utils/graphql'
@@ -288,36 +291,34 @@ const ReduxRelationsPopup = connect(
   {updateCell},
 )(RelationsPopup)
 
-export default Relay.createContainer(ReduxRelationsPopup, {
-  fragments: {
-    originField: () => Relay.QL`
-      fragment on Field {
+export default createFragmentContainer(ReduxRelationsPopup, {
+  originField: graphql`
+    fragment RelationsPopup_originField on Field {
+      name
+      isList
+      relatedModel {
+        id
         name
-        isList
-        relatedModel {
-          id
-          name
-          namePlural
-          fields(first: 1000) {
-            edges {
-              node {
-                typeIdentifier
-                name
-              }
+        namePlural
+        fields(first: 1000) {
+          edges {
+            node {
+              typeIdentifier
+              name
             }
           }
         }
-        reverseRelationField {
-          isList
-          name
-        }
-        model {
-          name
-        }
-        relation {
-          name
-        }
       }
-    `,
-  },
+      reverseRelationField {
+        isList
+        name
+      }
+      model {
+        name
+      }
+      relation {
+        name
+      }
+    }
+  `,
 })

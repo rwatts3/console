@@ -17,3 +17,4 @@ lib
 dll
 .happypack
 test.tsx
+**/__generated__

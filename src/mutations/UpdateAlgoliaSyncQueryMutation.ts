@@ -1,4 +1,5 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../utils/makeMutation'
 import {pick} from 'lodash'
 
 interface Props {
@@ -8,43 +9,51 @@ interface Props {
   fragment: string
 }
 
-export default class UpdateAlgoliaSyncQueryMutation extends Relay.Mutation<Props, {}> {
-
-  getMutation () {
-    return Relay.QL`mutation{updateAlgoliaSyncQuery}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on UpdateAlgoliaSyncQueryPayload {
-        searchProviderAlgolia
-        algoliaSyncQuery
+const mutation = graphql`
+  mutation UpdateAlgoliaSyncQueryMutation($input: UpdateAlgoliaSyncQueryInput!) {
+    updateAlgoliaSyncQuery(input: $input) {
+      searchProviderAlgolia {
+        id
+        algoliaSyncQueries(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        algoliaSyncQuery: this.props.algoliaSyncQueryId,
-      },
-    }]
-  }
-
-  getVariables () {
-    return pick(this.props, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled'])
-  }
-
-  getOptimisticResponse () {
-    const {algoliaSyncQueryId, isEnabled, indexName, fragment} = this.props
-    return {
-      algoliaSyncQuery: {
-        id: algoliaSyncQueryId,
-        isEnabled,
-        indexName,
-        fragment,
-      },
+      algoliaSyncQuery {
+        id
+        isEnabled
+        indexName
+        fragment
+      }
     }
   }
+`
+
+function commit(input: Props) {
+  const {algoliaSyncQueryId, isEnabled, indexName, fragment} = input
+  return makeMutation({
+    mutation,
+    variables: {input: pick(input, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled'])},
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        algoliaSyncQuery: input.algoliaSyncQueryId,
+      },
+    }],
+    optimisticResponse: {
+      updateAlgoliaSyncQuery: {
+        algoliaSyncQuery: {
+          id: algoliaSyncQueryId,
+          isEnabled,
+          indexName,
+          fragment,
+        },
+      },
+    },
+  })
 }
+
+export default { commit }

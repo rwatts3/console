@@ -1,7 +1,6 @@
 import * as React from 'react'
 import FieldItem from './FieldItem'
 import {Field, Project, Model} from '../../../types/types'
-import * as Relay from 'react-relay'
 import {connect} from 'react-redux'
 import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
 import {showNotification} from '../../../actions/notification'
@@ -12,10 +11,9 @@ import {onFailureShowNotification} from '../../../utils/relay'
 import tracker from '../../../utils/metrics'
 import AddModelMutation from '../../../mutations/AddModelMutation'
 import {ConsoleEvents} from 'graphcool-metrics'
-import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
-import {withRouter} from 'react-router'
+import {withRouter} from 'found'
 import {idToBeginning} from '../../../utils/utils'
 import UpdateModelMutation from '../../../mutations/UpdateModelMutation'
 import ConfirmModel from './ConfirmModel'
@@ -352,21 +350,17 @@ class AddType extends React.Component<Props, State> {
 
   private delete = () => {
     this.setState({loading: true} as State, () => {
-      Relay.Store.commitUpdate(
-        new DeleteModelMutation({
-          projectId: this.props.projectId,
-          modelId: this.props.model.id,
-        }),
-        {
-          onSuccess: () => {
-            this.close()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as State)
-          },
-        },
-      )
+      DeleteModelMutation.commit({
+        projectId: this.props.projectId,
+        modelId: this.props.model.id,
+      })
+        .then(() => {
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
+        })
     })
   }
 
@@ -379,63 +373,55 @@ class AddType extends React.Component<Props, State> {
       ) {
         newModelName = 'Post'
       }
-      Relay.Store.commitUpdate(
-        new AddModelMutation({
-          description,
-          modelName: newModelName,
-          projectId: this.props.projectId,
-        }),
-        {
-          onSuccess: () => {
-            tracker.track(ConsoleEvents.Schema.Model.created({modelName: newModelName}))
-            if (
-              newModelName === 'Post' &&
-              this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
-            ) {
-              this.props.showDonePopup()
-              this.props.nextStep()
-            }
-            tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: newModelName}))
-            this.close()
-          },
-          onFailure: (transaction) => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as State)
-          },
-        },
-      )
+      AddModelMutation.commit({
+        description,
+        modelName: newModelName,
+        projectId: this.props.projectId,
+      })
+        .then(() => {
+          tracker.track(ConsoleEvents.Schema.Model.created({modelName: newModelName}))
+          if (
+            newModelName === 'Post' &&
+            this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
+          ) {
+            this.props.showDonePopup()
+            this.props.nextStep()
+          }
+          tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: newModelName}))
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({loading: false} as State)
+        })
     }
   }
 
   private editModel = (modelName: string, description: string) => {
-    Relay.Store.commitUpdate(
-      new UpdateModelMutation({
-        name: modelName,
-        description,
-        modelId: this.props.model.id,
-      }),
-      {
-        onSuccess: () => {
-          tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
-          this.close()
-        },
-        onFailure: (transaction) => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
-        },
-      },
-    )
+    UpdateModelMutation.commit({
+      name: modelName,
+      description,
+      id: this.props.model.id,
+    })
+      .then(() => {
+        tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
+        this.close()
+      })
+      .catch((transaction) => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({loading: false} as State)
+      })
   }
 
   private close = () => {
-    const {onRequestClose, router, projectId} = this.props
+    const {onRequestClose, router} = this.props
     if (typeof onRequestClose === 'function') {
       onRequestClose()
     }
 
     // if we're editing, go back to the schema page of the project
     if (this.props.model) {
-      router.goBack()
+      router.go(-1)
     }
   }
 }

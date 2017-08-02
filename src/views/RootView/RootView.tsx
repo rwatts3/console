@@ -8,6 +8,7 @@ import NotificationSystem from 'react-notification-system'
 import * as MediaQuery from 'react-responsive'
 import MobileScreen from './MobileScreen'
 import {throttle} from 'lodash'
+import Alert from '../../components/Window/Alert'
 
 interface Props {
   children: Element
@@ -16,14 +17,6 @@ interface Props {
 }
 
 class RootView extends React.Component<Props, {}> {
-
-  // rerender = throttle(
-  //   () => {
-  //     this.forceUpdate()
-  //     console.log('force update')
-  //   },
-  //   300,
-  // )
 
   refs: {
     [key: string]: any;
@@ -40,6 +33,7 @@ class RootView extends React.Component<Props, {}> {
   render () {
     return (
       <div style={{ height: '100%' }}>
+        <Alert />
         <style jsx global>{`
           .butn {
             @p: .br2, .buttonShadow, .pv12, .ph16, .f14, .fw6, .inlineFlex, .itemsCenter, .pointer;

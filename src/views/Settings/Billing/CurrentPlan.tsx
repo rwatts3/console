@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Link} from 'react-router'
+import {Link} from 'found'
 import {Viewer} from '../../../types/types'
 import {billingInfo} from './billing_info'
 

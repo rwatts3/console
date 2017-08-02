@@ -1,62 +1,98 @@
-import * as Relay from 'react-relay'
+import { graphql } from 'react-relay'
+import { makeMutation } from '../../utils/makeMutation'
+import {omit} from 'lodash'
 
 export interface MigrateProjectInput {
   newSchema: string
   isDryRun: boolean
   force: boolean
+  projectId: string
 }
 
-export default class MigrateProject extends Relay.Mutation<MigrateProjectInput, null> {
-
-  getMutation () {
-    return Relay.QL`mutation{migrateProject}`
-  }
-
-  getFatQuery () {
-    return Relay.QL`
-      fragment on MigrateProjectPayload {
-        migrationMessages
-        errors
-        project {
-          schema
+const mutation = graphql`
+  mutation MigrateProjectMutation($input: MigrateProjectInput!) {
+    migrateProject(input: $input) {
+      errors {
+        description
+        field
+        type
+      }
+      migrationMessages {
+        name
+        type
+        action
+        description
+        subDescriptions {
+          action
+          description
+          name
+          type
         }
       }
-    `
-  }
-
-  getConfigs () {
-    return [{
-      type: 'REQUIRED_CHILDREN',
-      children: [
-        Relay.QL`
-          fragment  on MigrateProjectPayload {
-            errors {
-              description
-              field
-              type
-            }
-            migrationMessages {
-              name
-              type
-              action
-              description
-              subDescriptions {
-                action
-                description
-                name
-                type
-              }
-            }
-            project {
-              schema
+      project {
+        schema
+        typeSchema
+        enumSchema
+        version
+        models(first: 1000) {
+          edges {
+            node {
+              ...NewRow_model
+              ...ModelHeader_model
+              ...SideNav_model
+              ...TypeList_model
             }
           }
-        `,
-      ],
-    }]
+        }
+        relations(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              description
+              fieldOnLeftModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              fieldOnRightModel {
+                id
+                name
+                isList
+                isRequired
+              }
+              leftModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
+              rightModel {
+                id
+                name
+                namePlural
+                itemCount
+              }
+            }
+          }
+        }
+      }
+    }
   }
+`
 
-  getVariables () {
-    return this.props
-  }
+function commit(input: MigrateProjectInput) {
+  return makeMutation({
+    mutation,
+    variables: {input: omit(input, ['projectId'])},
+    configs: [{
+      type: 'FIELDS_CHANGE',
+      fieldIDs: {
+        project: input.projectId,
+      },
+    }],
+  })
 }
+
+export default { commit }

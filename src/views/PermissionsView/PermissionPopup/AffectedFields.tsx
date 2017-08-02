@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import {$p, variables, Icon, $g} from 'graphcool-styles'
 import * as cx from 'classnames'
 import {Operation, Field} from '../../../types/types'
@@ -141,21 +144,19 @@ const MappedAffectedFields = mapProps({
   },
 })(AffectedFields)
 
-export default Relay.createContainer(MappedAffectedFields, {
-  fragments: {
-    model: () => Relay.QL`
-      fragment on Model {
-        fields(first: 100) {
-          edges {
-            node {
-              id
-              isReadonly
-              name
-              typeIdentifier
-            }
+export default createFragmentContainer(MappedAffectedFields, {
+  model: graphql`
+    fragment AffectedFields_model on Model {
+      fields(first: 1000) {
+        edges {
+          node {
+            id
+            isReadonly
+            name
+            typeIdentifier
           }
         }
       }
-    `,
-  },
+    }
+  `,
 })

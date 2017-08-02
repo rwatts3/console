@@ -1,5 +1,8 @@
 import * as React from 'react'
-import * as Relay from 'react-relay'
+import {
+  createFragmentContainer,
+  graphql,
+} from 'react-relay'
 import Helmet from 'react-helmet'
 import mapProps from '../../components/MapProps/MapProps'
 import {Project} from '../../types/types'
@@ -52,18 +55,13 @@ const MappedPermissionsView = mapProps({
   project: props => props.viewer.project,
 })(PermissionsView)
 
-export default Relay.createContainer(MappedPermissionsView, {
-  initialVariables: {
-    projectName: null, // injected from router
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        project: projectByName(projectName: $projectName) {
-          ${PermissionsList.getFragment('project')}
-          ${AllRelationPermissionsList.getFragment('project')}
-        }
+export default createFragmentContainer(MappedPermissionsView, {
+  viewer: graphql`
+    fragment PermissionsView_viewer on Viewer {
+      project: projectByName(projectName: $projectName) {
+        ...PermissionsList_project
+        ...AllRelationPermissionsList_project
       }
-    `,
-  },
+    }
+  `,
 })
