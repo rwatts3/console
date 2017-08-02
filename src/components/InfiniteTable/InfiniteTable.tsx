@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import {InfiniteLoader, Grid} from 'react-virtualized'
-import {Model, Project, FieldWidths} from '../../types/types'
+import { InfiniteLoader, Grid } from 'react-virtualized'
+import { Model, Project, FieldWidths } from '../../types/types'
 import DataActionRow from '../../views/models/DatabrowserView/DataActionRow'
-import {GridPosition} from '../../types/databrowser/ui'
+import { GridPosition } from '../../types/databrowser/ui'
 
 interface Props {
   minimumBatchSize?: number
@@ -44,16 +44,12 @@ interface Props {
   updateCalled: () => void
 }
 
-export function createCellRenderer (cellRenderer) {
+export function createCellRenderer(cellRenderer) {
   // console.warn('cellRenderer udpate needed')
 
-  return function cellRendererWrapper ({ key, style, ...rest }) {
+  return function cellRendererWrapper({ key, style, ...rest }) {
     return (
-      <div
-        className='Grid__cell'
-        key={key}
-        style={style}
-      >
+      <div className="Grid__cell" key={key} style={style}>
         {cellRenderer(rest)}
       </div>
     )
@@ -61,33 +57,42 @@ export function createCellRenderer (cellRenderer) {
 }
 
 export default class InfiniteTable extends React.Component<Props, {}> {
-
   render() {
     return (
-      <div style={{height: '100%', position: 'relative'}}>
+      <div style={{ height: '100%', position: 'relative' }}>
         <InfiniteLoader
           minimumBatchSize={this.props.minimumBatchSize}
           threshold={this.props.threshold}
           rowCount={this.props.rowCount}
           loadMoreRows={this.loadMoreRows}
-          isRowLoaded={({index}) => {
+          isRowLoaded={({ index }) => {
             const loaded = this.props.loadedList.get(index)
             return loaded
           }}
-          >
-          {({onRowsRendered, registerChild}) => (
+        >
+          {({ onRowsRendered, registerChild }) =>
             <div
-              style={{display: 'flex', flexDirection: 'row', height: '100%', position: 'relative'}}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                height: '100%',
+                position: 'relative',
+              }}
             >
               <Grid
                 columnWidth={this.props.columnWidth}
                 columnCount={this.props.columnCount}
                 height={this.props.headerHeight}
                 cellRenderer={createCellRenderer(this.props.headerRenderer)}
-                cellStyle={{position: 'absolute', marginTop: '-1px'}}
+                cellStyle={{ position: 'absolute', marginTop: '-1px' }}
                 rowHeight={this.props.headerHeight}
                 rowCount={1}
-                style={{overflowX: 'visible', overflowY: 'visible', width: 'auto', position: 'relative'}}
+                style={{
+                  overflowX: 'visible',
+                  overflowY: 'visible',
+                  width: 'auto',
+                  position: 'relative',
+                }}
                 width={this.props.width}
               />
               <DataActionRow
@@ -107,7 +112,11 @@ export default class InfiniteTable extends React.Component<Props, {}> {
               <Grid
                 ref={registerChild}
                 width={this.props.width}
-                height={this.props.height - this.props.headerHeight - this.props.addRowHeight}
+                height={
+                  this.props.height -
+                  this.props.headerHeight -
+                  this.props.addRowHeight
+                }
                 style={{
                   overflow: 'visible',
                   position: 'absolute',
@@ -118,30 +127,32 @@ export default class InfiniteTable extends React.Component<Props, {}> {
                   // WARNING: Due to https://bugs.chromium.org/p/chromium/issues/detail?id=20574
                   // it's not possible to use transform here yet, because we have popups as children
                   // we need to refactor the popup infrastructure before
-                  top: this.props.headerHeight +
+                  top:
+                    this.props.headerHeight +
                     this.props.addRowHeight +
-                    ((this.props.newRowActive &&
-                      this.props.loadedList.size > 0) ? 10 : 0),
+                    (this.props.newRowActive && this.props.loadedList.size > 0
+                      ? 10
+                      : 0),
                   transition: '.3s all',
                 }}
-                cellStyle={{position: 'absolute'}}
+                cellStyle={{ position: 'absolute' }}
                 rowHeight={this.props.rowHeight}
                 columnCount={this.props.columnCount}
                 columnWidth={this.props.columnWidth}
                 rowCount={this.props.rowCount}
                 cellRenderer={createCellRenderer(this.renderCell)}
-                onSectionRendered={(section) => this.onGridRowsRendered(section, onRowsRendered)}
+                onSectionRendered={section =>
+                  this.onGridRowsRendered(section, onRowsRendered)}
                 scrollToRow={this.props.selectedCell.row}
                 overscanRowCount={20}
               />
-            </div>
-          )}
+            </div>}
         </InfiniteLoader>
       </div>
     )
   }
 
-  private renderCell = (input) => {
+  private renderCell = input => {
     if (this.props.loadedList.get(input.rowIndex)) {
       return this.props.cellRenderer(input)
     } else {
@@ -149,7 +160,7 @@ export default class InfiniteTable extends React.Component<Props, {}> {
     }
   }
 
-  private loadMoreRows = (input) => {
+  private loadMoreRows = input => {
     return new Promise((resolve, reject) => {
       this.props.loadMoreRows(input).then(() => {
         resolve(true)

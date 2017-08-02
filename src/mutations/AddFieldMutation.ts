@@ -49,17 +49,19 @@ function commit(input: Props) {
         enumId: input.enumId || null,
       },
     },
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'model',
-      parentID: input.modelId,
-      connectionName: 'fields',
-      edgeName: 'fieldEdge',
-      rangeBehaviors: {
-        '': 'append',
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'model',
+        parentID: input.modelId,
+        connectionName: 'fields',
+        edgeName: 'fieldEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

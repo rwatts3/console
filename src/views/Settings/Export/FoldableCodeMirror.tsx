@@ -12,7 +12,6 @@ interface Props {
 }
 
 export default class FoldableCodeMirror extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -22,22 +21,15 @@ export default class FoldableCodeMirror extends React.Component<Props, State> {
   }
 
   render() {
-    return this.state.isFolded ? (
-      <div
-        className='h100'
-        style={{maxHeight: this.props.maxHeight}}>
-        <CodeMirror
-          options={this.props.options}>
+    return this.state.isFolded
+      ? <div className="h100" style={{ maxHeight: this.props.maxHeight }}>
+          <CodeMirror options={this.props.options}>
+            value={this.props.value}
+          </CodeMirror>
+        </div>
+      : <CodeMirror options={this.props.options}>
           value={this.props.value}
         </CodeMirror>
-      </div>
-      ) : (
-        <CodeMirror
-          options={this.props.options}>
-          value={this.props.value}
-        </CodeMirror>
-      )
-
   }
 }
 

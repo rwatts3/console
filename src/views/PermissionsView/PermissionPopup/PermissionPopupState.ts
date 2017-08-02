@@ -1,6 +1,6 @@
-import {isEqual, sortBy} from 'lodash'
-import {PermissionPopupState} from './PermissionPopup'
-import {ModelPermission} from '../../../types/types'
+import { isEqual, sortBy } from 'lodash'
+import { PermissionPopupState } from './PermissionPopup'
+import { ModelPermission } from '../../../types/types'
 export interface PermissionPopupErrors {
   permissionTypeMissing: boolean
   invalidQuery: boolean
@@ -8,7 +8,7 @@ export interface PermissionPopupErrors {
 }
 
 export function isValid(state: PermissionPopupState): PermissionPopupErrors {
-  let errors: PermissionPopupErrors = {
+  const errors: PermissionPopupErrors = {
     permissionTypeMissing: false,
     invalidQuery: false,
     noFieldsSelected: false,
@@ -16,14 +16,20 @@ export function isValid(state: PermissionPopupState): PermissionPopupErrors {
 
   errors.permissionTypeMissing = state.selectedOperation === null
   errors.invalidQuery = !state.queryValid
-  errors.noFieldsSelected = state.editing ? false :
-    (state.selectedOperation !== 'DELETE' && (state.fieldIds.length === 0 && !state.applyToWholeModel))
+  errors.noFieldsSelected = state.editing
+    ? false
+    : state.selectedOperation !== 'DELETE' &&
+      (state.fieldIds.length === 0 && !state.applyToWholeModel)
 
   return errors
 }
 
-export function errorInTab(errors: PermissionPopupErrors, editing: boolean, index: number) {
-  const {permissionTypeMissing, invalidQuery, noFieldsSelected} = errors
+export function errorInTab(
+  errors: PermissionPopupErrors,
+  editing: boolean,
+  index: number,
+) {
+  const { permissionTypeMissing, invalidQuery, noFieldsSelected } = errors
 
   if (editing) {
     if (index === 0) {
@@ -33,7 +39,6 @@ export function errorInTab(errors: PermissionPopupErrors, editing: boolean, inde
     if (index === 1) {
       return invalidQuery
     }
-
   } else {
     if (index === 0) {
       return permissionTypeMissing
@@ -51,14 +56,19 @@ export function errorInTab(errors: PermissionPopupErrors, editing: boolean, inde
   return false
 }
 
-export function didChange(state: PermissionPopupState, permission?: ModelPermission) {
+export function didChange(
+  state: PermissionPopupState,
+  permission?: ModelPermission,
+) {
   if (!permission) {
     return false
   }
-  return state.selectedOperation !== permission.operation ||
-      !isEqual(sortBy(state.fieldIds), sortBy(permission.fieldIds)) ||
-      state.applyToWholeModel !== permission.applyToWholeModel ||
-      state.rule !== permission.rule ||
-      state.queryChanged ||
-      state.userType !== permission.userType
+  return (
+    state.selectedOperation !== permission.operation ||
+    !isEqual(sortBy(state.fieldIds), sortBy(permission.fieldIds)) ||
+    state.applyToWholeModel !== permission.applyToWholeModel ||
+    state.rule !== permission.rule ||
+    state.queryChanged ||
+    state.userType !== permission.userType
+  )
 }

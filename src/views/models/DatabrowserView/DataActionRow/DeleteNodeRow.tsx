@@ -1,9 +1,9 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
-import {Icon} from 'graphcool-styles'
+import { connect } from 'react-redux'
+import { Icon } from 'graphcool-styles'
 const classes: any = require('./DeleteNodeRow.scss')
 import * as Immutable from 'immutable'
-import {clearNodeSelection} from '../../../../actions/databrowser/ui'
+import { clearNodeSelection } from '../../../../actions/databrowser/ui'
 
 interface Props {
   headerHeight: number
@@ -13,8 +13,7 @@ interface Props {
   clearNodeSelection: () => any
 }
 
-interface State {
-}
+interface State {}
 
 class DeleteNodeRow extends React.Component<Props, State> {
   render() {
@@ -24,16 +23,23 @@ class DeleteNodeRow extends React.Component<Props, State> {
         className={`flex items-center bg-light-gray ${classes.red}`}
         style={{
           overflow: 'visible',
-            position: 'fixed',
-            paddingLeft: 10,
-            left: 40 + 300,
-            width: window.innerWidth - 300 - 40,
-            top: this.props.headerHeight + 66 + 60 + 1,
-            height: this.props.height,
+          position: 'fixed',
+          paddingLeft: 10,
+          left: 40 + 300,
+          width: window.innerWidth - 300 - 40,
+          top: this.props.headerHeight + 66 + 60 + 1,
+          height: this.props.height,
         }}
       >
-        <Icon width={16} height={16} src={require('assets/icons/delete.svg')} className='mr1' />
-        <span>Delete {nodes} node{nodes > 1 ? 's' : ''}?</span>
+        <Icon
+          width={16}
+          height={16}
+          src={require('assets/icons/delete.svg')}
+          className="mr1"
+        />
+        <span>
+          Delete {nodes} node{nodes > 1 ? 's' : ''}?
+        </span>
         <div
           style={{
             marginLeft: 'auto',
@@ -44,16 +50,19 @@ class DeleteNodeRow extends React.Component<Props, State> {
             justifyContent: 'flex-end',
           }}
         >
-            <div className={`${classes.button}`} onClick={this.props.clearNodeSelection}>
-              <span>Cancel</span>
-            </div>
-            <div
-              className={`${classes.button} ${classes.red}`}
-              onClick={this.props.deleteSelectedNodes}
-              data-test='delete-button'
-            >
-              <span>Delete</span>
-            </div>
+          <div
+            className={`${classes.button}`}
+            onClick={this.props.clearNodeSelection}
+          >
+            <span>Cancel</span>
+          </div>
+          <div
+            className={`${classes.button} ${classes.red}`}
+            onClick={this.props.deleteSelectedNodes}
+            data-test="delete-button"
+          >
+            <span>Delete</span>
+          </div>
         </div>
       </div>
     )

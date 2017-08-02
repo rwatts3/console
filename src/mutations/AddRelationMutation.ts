@@ -71,30 +71,34 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'relations',
-      edgeName: 'relationEdge',
-      rangeBehaviors: {'': 'append'},
-    }, {
-      type: 'RANGE_ADD',
-      parentName: 'leftModel',
-      parentID: input.leftModelId,
-      connectionName: 'fields',
-      edgeName: 'fieldOnLeftModelEdge',
-      rangeBehaviors: {'': 'append'},
-    }, {
-      type: 'RANGE_ADD',
-      parentName: 'rightModel',
-      parentID: input.rightModelId,
-      connectionName: 'fields',
-      edgeName: 'fieldOnRightModelEdge',
-      rangeBehaviors: {'': 'append'},
-    }],
+    variables: { input },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'relations',
+        edgeName: 'relationEdge',
+        rangeBehaviors: { '': 'append' },
+      },
+      {
+        type: 'RANGE_ADD',
+        parentName: 'leftModel',
+        parentID: input.leftModelId,
+        connectionName: 'fields',
+        edgeName: 'fieldOnLeftModelEdge',
+        rangeBehaviors: { '': 'append' },
+      },
+      {
+        type: 'RANGE_ADD',
+        parentName: 'rightModel',
+        parentID: input.rightModelId,
+        connectionName: 'fields',
+        edgeName: 'fieldOnRightModelEdge',
+        rangeBehaviors: { '': 'append' },
+      },
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

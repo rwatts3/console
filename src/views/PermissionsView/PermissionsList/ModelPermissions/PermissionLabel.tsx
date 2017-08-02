@@ -1,9 +1,9 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import styled from 'styled-components'
-import {Operation} from '../../../../types/types'
-import {texts} from '../../../../utils/permission'
+import { Operation } from '../../../../types/types'
+import { texts } from '../../../../utils/permission'
 
 function getTagSettings(operation: Operation) {
   switch (operation) {
@@ -36,20 +36,32 @@ function getTagSettings(operation: Operation) {
   }
 }
 
-const PermissionLabel = (props) => {
-  const {operation, isActive, className} = props
+const PermissionLabel = props => {
+  const { operation, isActive, className } = props
 
-  const {text, color, containerClass} = getTagSettings(operation)
+  const { text, color, containerClass } = getTagSettings(operation)
 
-  const Text = styled.div`
-    color: ${color};
-  `
+  const Text = styled.div`color: ${color};`
 
   return (
-    <div className={cx('container', $p.br1, $p.ph6, $p.dib, $p.nowrap, $p.fw6, containerClass, className, {
-      [$p.o50]: !isActive,
-    })}>
-      <Text>{text}</Text>
+    <div
+      className={cx(
+        'container',
+        $p.br1,
+        $p.ph6,
+        $p.dib,
+        $p.nowrap,
+        $p.fw6,
+        containerClass,
+        className,
+        {
+          [$p.o50]: !isActive,
+        },
+      )}
+    >
+      <Text>
+        {text}
+      </Text>
     </div>
   )
 }

@@ -1,16 +1,17 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import {Viewer, SearchProviderAlgolia, AlgoliaSyncQuery} from '../../../types/types'
+import {
+  Viewer,
+  SearchProviderAlgolia,
+  AlgoliaSyncQuery,
+} from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'found'
+import { withRouter } from 'found'
 import AlgoliaPopupIndexTop from './AlgoliaPopupIndexTop'
-import {Link} from 'found'
+import { Link } from 'found'
 import UpdateAlgoliaSyncQueryMutation from '../../../mutations/UpdateAlgoliaSyncQueryMutation'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
 import AlgoliaIndexPopupQuery from './AlgoliaIndexPopup/AlgoliaIndexPopupQuery'
@@ -22,22 +23,40 @@ interface Props {
   params: any
 }
 
-interface State {
-}
+interface State {}
 class AlgoliaPopupIndexes extends React.Component<Props, State> {
   render() {
-    const {algolia, params, index: {indexName, fragment, isEnabled, model, id}} = this.props
+    const {
+      algolia,
+      params,
+      index: { indexName, fragment, isEnabled, model, id },
+    } = this.props
     return (
-      <div
-        className={cx($p.flex, $p.flexRow)}
-      >
+      <div className={cx($p.flex, $p.flexRow)}>
         <div className={cx($p.ph38, $p.w50, $p.relative)}>
           <Link
-            className={cx($p.black, $p.fw3, $p.f25, $p.mt10, $p.pointer, $p.db, $p.pr16)}
+            className={cx(
+              $p.black,
+              $p.fw3,
+              $p.f25,
+              $p.mt10,
+              $p.pointer,
+              $p.db,
+              $p.pr16,
+            )}
             to={`/${params.projectName}/integrations/algolia/edit/${id}`}
-          >{indexName}</Link>
+          >
+            {indexName}
+          </Link>
           <div
-            className={cx($p.bgBlack10, $p.f16, $p.pv0, $p.ph6, $p.mt16, $p.dib)}
+            className={cx(
+              $p.bgBlack10,
+              $p.f16,
+              $p.pv0,
+              $p.ph6,
+              $p.mt16,
+              $p.dib,
+            )}
           >
             {model.name}
           </div>
@@ -59,15 +78,15 @@ class AlgoliaPopupIndexes extends React.Component<Props, State> {
     )
   }
 
-  toggle = (e) => {
-    const {index: {id, fragment, indexName, isEnabled}} = this.props
+  toggle = e => {
+    const { index: { id, fragment, indexName, isEnabled } } = this.props
 
-      UpdateAlgoliaSyncQueryMutation.commit({
-        algoliaSyncQueryId: id,
-        indexName,
-        fragment,
-        isEnabled: !isEnabled,
-      })
+    UpdateAlgoliaSyncQueryMutation.commit({
+      algoliaSyncQueryId: id,
+      indexName,
+      fragment,
+      isEnabled: !isEnabled,
+    })
   }
 }
 

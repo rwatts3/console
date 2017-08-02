@@ -1,15 +1,12 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
-import {Model, ModelPermission} from '../../../../types/types'
-import {Icon, $p, variables} from 'graphcool-styles'
+import { Model, ModelPermission } from '../../../../types/types'
+import { Icon, $p, variables } from 'graphcool-styles'
 import PermissionIcon from './PermissionIcon'
 import * as cx from 'classnames'
 import cuid from 'cuid'
-import {Link} from 'found'
+import { Link } from 'found'
 
 interface Props {
   model: Model
@@ -21,7 +18,7 @@ const operations = ['READ', 'UPDATE', 'CREATE', 'DELETE']
 
 class ModelPermissionsHeader extends React.Component<Props, {}> {
   enhancePermissions(permissions: ModelPermission[]) {
-    let todo = operations.slice()
+    const todo = operations.slice()
 
     permissions.forEach(permission => {
       if (todo.includes(permission.operation)) {
@@ -31,33 +28,35 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
     })
 
     // create "fake" permissions to show not active permissions in the ui
-    return todo.map(operation => ({
-      operation,
-      isActive: false,
-      id: cuid(),
-    })).concat(permissions)
+    return todo
+      .map(operation => ({
+        operation,
+        isActive: false,
+        id: cuid(),
+      }))
+      .concat(permissions)
   }
   render() {
-    const {model, permissions, params} = this.props
+    const { model, permissions, params } = this.props
     const enhancedPermissions = this.enhancePermissions(permissions)
     return (
-      <div className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}>
+      <div
+        className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}
+      >
         <div className={cx($p.flex, $p.flexRow, $p.itemsCenter)}>
-          <h2 className={cx($p.black50, $p.fw4, $p.ph6, $p.bgWhite)}>{model.name}</h2>
+          <h2 className={cx($p.black50, $p.fw4, $p.ph6, $p.bgWhite)}>
+            {model.name}
+          </h2>
           <div className={cx($p.flex, $p.flexRow, $p.ph6, $p.bgWhite, $p.ml16)}>
             {enhancedPermissions.map((permission, index) =>
-              (
-                <PermissionIcon
-                  key={permission.id}
-                  operation={permission.operation}
-                  isActive={permission.isActive}
-                  className={cx(
-                    {
-                      [$p.ml6]: index !== 0,
-                    },
-                  )}
-                />
-              ),
+              <PermissionIcon
+                key={permission.id}
+                operation={permission.operation}
+                isActive={permission.isActive}
+                className={cx({
+                  [$p.ml6]: index !== 0,
+                })}
+              />,
             )}
           </div>
         </div>
@@ -92,7 +91,6 @@ class ModelPermissionsHeader extends React.Component<Props, {}> {
               New Permission
             </div>
           </Link>
-
         </div>
       </div>
     )

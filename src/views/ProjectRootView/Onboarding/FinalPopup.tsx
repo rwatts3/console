@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../../utils/modalStyle'
-import {connect} from 'react-redux'
-import {nextStep, skip} from '../../../actions/gettingStarted'
-import {GettingStartedState} from '../../../types/gettingStarted'
+import { fieldModalStyle } from '../../../utils/modalStyle'
+import { connect } from 'react-redux'
+import { nextStep, skip } from '../../../actions/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
 import SelectExample from './SelectExample'
 import OnboardingFinale from './OnboardingFinale'
 
@@ -14,9 +14,7 @@ interface Props {
   projectId: string
 }
 
-interface State {
-
-}
+interface State {}
 
 const modalStyle = {
   overlay: fieldModalStyle.overlay,
@@ -27,44 +25,44 @@ const modalStyle = {
 }
 
 class FinalPopup extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   render() {
-    const step = this.props.gettingStartedState.skipped ? undefined : this.props.gettingStartedState.step
+    const step = this.props.gettingStartedState.skipped
+      ? undefined
+      : this.props.gettingStartedState.step
 
     return (
       <Modal
         isOpen
         style={modalStyle}
-        contentLabel='Onboarding Finale'
+        contentLabel="Onboarding Finale"
         onRequestClose={this.close}
       >
-        <div className='intro-popup'>
+        <div className="intro-popup">
           <style jsx={true}>{`
             .intro-popup {
-              @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .bgWhite, .relative, .overflowAuto;
+              @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .bgWhite,
+                .relative, .overflowAuto;
             }
           `}</style>
-          {(step === 'STEP5_SELECT_EXAMPLE' || step === 'STEP5_WAITING') && (
-            <SelectExample step={step} projectId={this.props.projectId} />
-          )}
-          {step === 'STEP5_DONE' && (
-            <OnboardingFinale nextStep={this.props.nextStep} />
-          )}
+          {(step === 'STEP5_SELECT_EXAMPLE' || step === 'STEP5_WAITING') &&
+            <SelectExample step={step} projectId={this.props.projectId} />}
+          {step === 'STEP5_DONE' &&
+            <OnboardingFinale nextStep={this.props.nextStep} />}
         </div>
       </Modal>
     )
   }
 
   private close = () => {
-    const step = this.props.gettingStartedState.skipped ? undefined : this.props.gettingStartedState.step
+    const step = this.props.gettingStartedState.skipped
+      ? undefined
+      : this.props.gettingStartedState.step
     if (step === 'STEP5_DONE') {
       this.props.nextStep()
     }
@@ -75,5 +73,5 @@ export default connect(
   state => ({
     gettingStartedState: state.gettingStarted.gettingStartedState,
   }),
-  {nextStep, skip},
+  { nextStep, skip },
 )(FinalPopup)

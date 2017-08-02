@@ -1,13 +1,15 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import {Project, Model, SearchProviderAlgolia, AlgoliaSyncQuery} from '../../../../types/types'
-import {withRouter} from 'found'
+import {
+  Project,
+  Model,
+  SearchProviderAlgolia,
+  AlgoliaSyncQuery,
+} from '../../../../types/types'
+import { withRouter } from 'found'
 import mapProps from '../../../../components/MapProps/MapProps'
 import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
 import AlgoliaIndexPopupHeader from './AlgoliaIndexPopupHeader'
@@ -33,13 +35,9 @@ interface State {
   isEnabled: boolean
 }
 
-const Paragraph = styled.p`
-  width: 350px;
-`
+const Paragraph = styled.p`width: 350px;`
 
-const Container = styled.div`
-  width: 600px;
-`
+const Container = styled.div`width: 600px;`
 
 class AlgoliaIndexPopup extends React.Component<Props, State> {
   constructor(props) {
@@ -47,7 +45,7 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
 
     // if we're editing the AlgoliaSyncQuery
     if (props.node) {
-      const {model, indexName, isEnabled, fragment} = props.node
+      const { model, indexName, isEnabled, fragment } = props.node
 
       this.state = {
         title: indexName,
@@ -69,8 +67,8 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
   }
 
   render() {
-    const {title, selectedModel, fragment} = this.state
-    const {project, algolia, node} = this.props
+    const { title, selectedModel, fragment } = this.state
+    const { project, algolia, node } = this.props
 
     return (
       <PopupWrapper onClickOutside={this.close}>
@@ -123,24 +121,24 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
   }
 
   protected onTitleChange = (e: any) => {
-    this.setState({title: e.target.value} as State)
+    this.setState({ title: e.target.value } as State)
   }
 
   protected selectModel = (model: Model) => {
-    this.setState({selectedModel: model} as State)
+    this.setState({ selectedModel: model } as State)
   }
 
   protected setFragment = (fragment: string, fragmentValid: boolean) => {
-    this.setState({fragment, fragmentValid} as State)
+    this.setState({ fragment, fragmentValid } as State)
   }
 
   private close = () => {
-    const {params, router} = this.props
+    const { params, router } = this.props
     router.push(`/${params.projectName}/integrations/algolia`)
   }
 
   private validate() {
-    const {fragmentValid, title } = this.state
+    const { fragmentValid, title } = this.state
 
     if (!fragmentValid) {
       alert('Please provide a valid fragment')
@@ -156,38 +154,43 @@ class AlgoliaIndexPopup extends React.Component<Props, State> {
   }
 
   private create = () => {
-    const {fragment, fragmentValid, title, selectedModel} = this.state
-    const {algolia} = this.props
+    const { fragment, fragmentValid, title, selectedModel } = this.state
+    const { algolia } = this.props
 
     if (this.validate()) {
       this.close()
-        AddAlgoliaSyncQueryMutation.commit({
-          modelId: selectedModel.id,
-          indexName: title,
-          fragment,
-          searchProviderAlgoliaId: algolia.id,
-        })
+      AddAlgoliaSyncQueryMutation.commit({
+        modelId: selectedModel.id,
+        indexName: title,
+        fragment,
+        searchProviderAlgoliaId: algolia.id,
+      })
     }
-
   }
 
   private update = () => {
-    const {fragment, fragmentValid, title, selectedModel, isEnabled} = this.state
-    const {node} = this.props
+    const {
+      fragment,
+      fragmentValid,
+      title,
+      selectedModel,
+      isEnabled,
+    } = this.state
+    const { node } = this.props
 
     if (this.validate() && node) {
       this.close()
-        UpdateAlgoliaSyncQueryMutation.commit({
-          algoliaSyncQueryId: node.id,
-          indexName: title,
-          fragment,
-          isEnabled,
-        })
+      UpdateAlgoliaSyncQueryMutation.commit({
+        algoliaSyncQueryId: node.id,
+        indexName: title,
+        fragment,
+        isEnabled,
+      })
     }
   }
 
   private delete = () => {
-    const {node, algolia} = this.props
+    const { node, algolia } = this.props
 
     if (node) {
       this.close()
@@ -203,7 +206,9 @@ const MappedAlgoliaIndexPopup = mapProps({
   node: props => props.node || null,
   project: props => props.viewer.project,
   algolia: props => {
-    const algolias = props.viewer.project.integrations.edges.filter(edge => edge.node.type === 'SEARCH_PROVIDER')
+    const algolias = props.viewer.project.integrations.edges.filter(
+      edge => edge.node.type === 'SEARCH_PROVIDER',
+    )
     if (algolias.length > 0) {
       return algolias[0].node
     }
@@ -212,76 +217,82 @@ const MappedAlgoliaIndexPopup = mapProps({
   },
 })(withRouter(AlgoliaIndexPopup))
 
-export const AlgoliaEditIndexPopup = createFragmentContainer(MappedAlgoliaIndexPopup, {
-  node: graphql`
-    fragment AlgoliaIndexPopup_node on Node {
-      id
-      ... on AlgoliaSyncQuery {
-        fragment
-        indexName
-        isEnabled
-        model {
-          name
-          id
-        }
-      }
-    }
-  `,
-  viewer: graphql`
-    fragment AlgoliaIndexPopup_viewer on Viewer {
-      project: projectByName(projectName: $projectName) {
-        ...AlgoliaIndexPopupModels_project
-        models(first: 1000) {
-          edges {
-            node {
-              id
-            }
+export const AlgoliaEditIndexPopup = createFragmentContainer(
+  MappedAlgoliaIndexPopup,
+  {
+    node: graphql`
+      fragment AlgoliaIndexPopup_node on Node {
+        id
+        ... on AlgoliaSyncQuery {
+          fragment
+          indexName
+          isEnabled
+          model {
+            name
+            id
           }
         }
-        integrations(first: 1000) {
-          edges {
-            node {
-              id
-              name
-              type
-              ... on SearchProviderAlgolia {
+      }
+    `,
+    viewer: graphql`
+      fragment AlgoliaIndexPopup_viewer on Viewer {
+        project: projectByName(projectName: $projectName) {
+          ...AlgoliaIndexPopupModels_project
+          models(first: 1000) {
+            edges {
+              node {
                 id
-                ...AlgoliaIndexPopupQuery_algolia
+              }
+            }
+          }
+          integrations(first: 1000) {
+            edges {
+              node {
+                id
+                name
+                type
+                ... on SearchProviderAlgolia {
+                  id
+                  ...AlgoliaIndexPopupQuery_algolia
+                }
               }
             }
           }
         }
       }
-    }
-  `,
-})
+    `,
+  },
+)
 
-export const AlgoliaCreateIndexPopup = createFragmentContainer(withRouter(MappedAlgoliaIndexPopup), {
-  viewer: graphql`
-    fragment AlgoliaIndexPopup_viewer on Viewer {
-      project: projectByName(projectName: $projectName) {
-        ...AlgoliaIndexPopupModels_project
-        models(first: 1000) {
-          edges {
-            node {
-              id
+export const AlgoliaCreateIndexPopup = createFragmentContainer(
+  withRouter(MappedAlgoliaIndexPopup),
+  {
+    viewer: graphql`
+      fragment AlgoliaIndexPopup_viewer on Viewer {
+        project: projectByName(projectName: $projectName) {
+          ...AlgoliaIndexPopupModels_project
+          models(first: 1000) {
+            edges {
+              node {
+                id
+              }
             }
           }
-        }
-        integrations(first: 1000) {
-          edges {
-            node {
-              id
-              name
-              type
-              ... on SearchProviderAlgolia {
+          integrations(first: 1000) {
+            edges {
+              node {
                 id
-                ...AlgoliaIndexPopupQuery_algolia
+                name
+                type
+                ... on SearchProviderAlgolia {
+                  id
+                  ...AlgoliaIndexPopupQuery_algolia
+                }
               }
             }
           }
         }
       }
-    }
-  `,
-})
+    `,
+  },
+)

@@ -1,19 +1,16 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {ModelPermission, Model} from '../../../../types/types'
-import {$p, variables, Icon} from 'graphcool-styles'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { ModelPermission, Model } from '../../../../types/types'
+import { $p, variables, Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
 import NewToggleButton from '../../../../components/NewToggleButton/NewToggleButton'
 import PermissionLabel from './PermissionLabel'
 import ModelPermissionFields from './ModelPermissionFields'
 import styled from 'styled-components'
-import {Link, withRouter} from 'found'
+import { Link, withRouter } from 'found'
 import UpdateModelPermissionMutation from '../../../../mutations/ModelPermission/UpdateModelPermissionMutation'
 import tracker from '../../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   permission: ModelPermission
@@ -47,38 +44,48 @@ const Arrow = styled.div`
 
 class ModelPermissionComponent extends React.Component<Props, {}> {
   render() {
-    const {permission, model, params: {projectName}} = this.props
+    const { permission, model, params: { projectName } } = this.props
     return (
       <Container
-        className={cx(
-          $p.flex,
-          $p.flexRow,
-          $p.justifyBetween,
-          $p.itemsCenter,
-        )}
+        className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}
       >
         <Link
-          className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1, $p.itemsCenter)}
+          className={cx(
+            $p.flex,
+            $p.flexRow,
+            $p.overflowHidden,
+            $p.flex1,
+            $p.itemsCenter,
+          )}
           to={`/${projectName}/permissions/${model.name}/edit/${permission.id}`}
           data-test={`edit-permission-button-${model.name}`}
         >
-          <PermissionType className={cx(
-            $p.flex,
-            $p.flexRow,
-            $p.itemsCenter,
-            $p.justifyBetween,
-            $p.relative,
-          )}>
-            <h3 className={cx($p.black50, $p.f16, $p.fw6)} data-test='permission-row-label'>
-              {permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'}
-            </h3>
-            <Arrow className={cx(
-              $p.justifyEnd,
+          <PermissionType
+            className={cx(
               $p.flex,
               $p.flexRow,
-              $p.flexAuto,
+              $p.itemsCenter,
+              $p.justifyBetween,
               $p.relative,
-            )}>
+            )}
+          >
+            <h3
+              className={cx($p.black50, $p.f16, $p.fw6)}
+              data-test="permission-row-label"
+            >
+              {permission.userType === 'EVERYONE'
+                ? 'Everyone'
+                : 'Authenticated'}
+            </h3>
+            <Arrow
+              className={cx(
+                $p.justifyEnd,
+                $p.flex,
+                $p.flexRow,
+                $p.flexAuto,
+                $p.relative,
+              )}
+            >
               <Icon
                 src={require('graphcool-styles/icons/fill/triangle.svg')}
                 color={variables.gray20}
@@ -87,23 +94,33 @@ class ModelPermissionComponent extends React.Component<Props, {}> {
               />
             </Arrow>
           </PermissionType>
-          <PermissionLabel isActive={permission.isActive} operation={permission.operation} className={$p.ml10} />
-          {['READ', 'CREATE', 'UPDATE'].includes(permission.operation) && (
-            <ModelPermissionFields permission={permission} model={model} />
-          )}
+          <PermissionLabel
+            isActive={permission.isActive}
+            operation={permission.operation}
+            className={$p.ml10}
+          />
+          {['READ', 'CREATE', 'UPDATE'].includes(permission.operation) &&
+            <ModelPermissionFields permission={permission} model={model} />}
         </Link>
         <div>
-          <NewToggleButton defaultChecked={permission.isActive} onChange={this.toggleActiveState} />
+          <NewToggleButton
+            defaultChecked={permission.isActive}
+            onChange={this.toggleActiveState}
+          />
         </div>
       </Container>
     )
   }
 
   private toggleActiveState = () => {
-    const {permission} = this.props
-    UpdateModelPermissionMutation.commit({id: permission.id, isActive: !permission.isActive})
-      .catch(transaction => console.log(transaction))
-    tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
+    const { permission } = this.props
+    UpdateModelPermissionMutation.commit({
+      id: permission.id,
+      isActive: !permission.isActive,
+    }).catch(transaction => console.log(transaction))
+    tracker.track(
+      ConsoleEvents.Permissions.toggled({ active: !permission.isActive }),
+    )
   }
 }
 

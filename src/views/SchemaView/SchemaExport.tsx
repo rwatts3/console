@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as FileSaver from 'file-saver'
 import Info from '../../components/Info'
-import {Button} from '../../components/Links'
+import { Button } from '../../components/Links'
 import getFullIdl from '../../utils/schema'
 
 interface Props {
@@ -15,7 +15,6 @@ interface State {
 }
 
 export default class SchemaExport extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -32,20 +31,18 @@ export default class SchemaExport extends React.Component<Props, State> {
             @p: .fixed, .top0, .left0, .right0, .bottom0, .z3;
           }
         `}</style>
-        {this.state.open && (
-          <div className='close' onClick={this.toggle}></div>
-        )}
+        {this.state.open && <div className="close" onClick={this.toggle} />}
         <Info
-          customTip={React.cloneElement(this.props.children as any, {onClick: this.toggle})}
+          customTip={React.cloneElement(this.props.children as any, {
+            onClick: this.toggle,
+          })}
           isOpen={this.state.open}
           top
           offsetX={40}
           width={346}
         >
-          <div className='mb10'>
-            Choose the schema to export...
-          </div>
-          <div className='flex justifyBetween'>
+          <div className="mb10">Choose the schema to export...</div>
+          <div className="flex justifyBetween">
             <Button
               hideArrow
               onClick={this.downloadFull}
@@ -75,15 +72,16 @@ export default class SchemaExport extends React.Component<Props, State> {
   }
 
   private downloadFull = () => {
-    getFullIdl(this.props.projectId)
-      .then((idl) => {
-        const blob = new Blob([idl], {type: 'text/plain;charset=utf-8'})
-        FileSaver.saveAs(blob, `${this.props.projectName}-relay.schema`)
-      })
+    getFullIdl(this.props.projectId).then(idl => {
+      const blob = new Blob([idl], { type: 'text/plain;charset=utf-8' })
+      FileSaver.saveAs(blob, `${this.props.projectName}-relay.schema`)
+    })
   }
 
   private downloadSimplified = () => {
-    const blob = new Blob([this.props.schema], {type: 'text/plain;charset=utf-8'})
+    const blob = new Blob([this.props.schema], {
+      type: 'text/plain;charset=utf-8',
+    })
     FileSaver.saveAs(blob, `${this.props.projectName}-simplified.schema`)
   }
 }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { findDOMNode } from 'react-dom'
 import Tooltip from 'rc-tooltip'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 const classes: any = require('./Help.scss')
 
 require('rc-tooltip/assets/bootstrap.css')
@@ -13,18 +13,23 @@ interface Props {
 }
 
 export default class Help extends React.Component<Props, {}> {
-
   render() {
-
-    const overlay = this.props.text.split('\n').map((line, index, arr) => (
-      <span key={line}>{line}{index < arr.length - 1 && (<br />)}</span>
-    ))
+    const overlay = this.props.text.split('\n').map((line, index, arr) =>
+      <span key={line}>
+        {line}
+        {index < arr.length - 1 && <br />}
+      </span>,
+    )
 
     return (
       <div>
         <Tooltip
           placement={this.props.placement || 'right'}
-          overlay={<span onClick={(e) => e.stopPropagation()}>{overlay}</span>}
+          overlay={
+            <span onClick={e => e.stopPropagation()}>
+              {overlay}
+            </span>
+          }
           getTooltipContainer={() => findDOMNode((this.refs as any).container)}
         >
           <Icon
@@ -33,7 +38,7 @@ export default class Help extends React.Component<Props, {}> {
             src={require('assets/icons/info.svg')}
           />
         </Tooltip>
-        <div className={classes.container} ref='container' />
+        <div className={classes.container} ref="container" />
       </div>
     )
   }

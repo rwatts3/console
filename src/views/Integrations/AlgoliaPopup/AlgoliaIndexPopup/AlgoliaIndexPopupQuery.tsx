@@ -1,15 +1,11 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-  RelayProp,
-} from 'react-relay'
+import { createFragmentContainer, graphql, RelayProp } from 'react-relay'
 import { $p, $v } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
-import {Project, Model, SearchProviderAlgolia} from '../../../../types/types'
-import {withRouter} from 'found'
+import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
+import { Project, Model, SearchProviderAlgolia } from '../../../../types/types'
+import { withRouter } from 'found'
 import mapProps from '../../../../components/MapProps/MapProps'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
@@ -40,7 +36,10 @@ const SelectedModel = styled.div`
   }
 `
 
-function extractSchema ({ schemaString, query }): { schema: any, valid: boolean } {
+function extractSchema({
+  schemaString,
+  query,
+}): { schema: any; valid: boolean } {
   const schema = schemaString
     ? buildClientSchema(JSON.parse(schemaString))
     : null
@@ -70,16 +69,14 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
     }
   }
   componentDidMount() {
-    const {relay, selectedModel} = this.props
-    relay.forceFetch(
-      {
-        selectedModelId: selectedModel.id,
-        modelIdExists: true,
-      },
-    )
+    const { relay, selectedModel } = this.props
+    relay.forceFetch({
+      selectedModelId: selectedModel.id,
+      modelIdExists: true,
+    })
   }
   componentWillReceiveProps(nextProps) {
-    const {relay} = this.props
+    const { relay } = this.props
     if (nextProps.selectedModel !== this.props.selectedModel) {
       relay.forceFetch({
         selectedModelId: nextProps.selectedModel.id,
@@ -88,17 +85,17 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
     }
 
     if (nextProps.algolia.algoliaSchema !== this.props.algolia.algoliaSchema) {
-      const {algolia, fragment} = nextProps
+      const { algolia, fragment } = nextProps
       const { schema, valid } = extractSchema({
         schemaString: algolia.algoliaSchema,
         query: fragment,
       })
-      this.setState({schema})
+      this.setState({ schema })
     }
   }
   render() {
-    const {fragment, onFragmentChange} = this.props
-    const {schema} = this.state
+    const { fragment, onFragmentChange } = this.props
+    const { schema } = this.state
     return (
       <div className={cx($p.bgDarkerBlue, $p.w50, $p.pb38, 'root')}>
         <style jsx>{`
@@ -117,7 +114,7 @@ export class AlgoliaIndexPopupQuery extends React.Component<Props, State> {
   }
 
   private handleEdit = (fragment: string) => {
-    const {algolia} = this.props
+    const { algolia } = this.props
 
     const { schema, valid } = extractSchema({
       schemaString: algolia.algoliaSchema,

@@ -1,18 +1,15 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import Helmet from 'react-helmet'
 import mapProps from '../../components/MapProps/MapProps'
-import {Project} from '../../types/types'
+import { Project } from '../../types/types'
 import PermissionsList from './PermissionsList/PermissionsList'
 import PermissionsHeader from './PermissionsHeader/PermissionsHeader'
 import AllRelationPermissionsList from './RelationPermissionsList/AllRelationPermissionsList'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   params: any
@@ -26,20 +23,13 @@ class PermissionsView extends React.Component<Props, null> {
     tracker.track(ConsoleEvents.Permissions.viewed())
   }
   render() {
-    const {project, params, location} = this.props
+    const { project, params, location } = this.props
     return (
-      <div
-        className={cx(
-          $p.flex,
-          $p.flexColumn,
-          $p.bgBlack04,
-        )}
-      >
-        <Helmet title='Permissions'/>
+      <div className={cx($p.flex, $p.flexColumn, $p.bgBlack04)}>
+        <Helmet title="Permissions" />
         <PermissionsHeader params={params} location={location} />
-        {this.props.children && (
-          React.cloneElement(this.props.children, {params, project})
-        )}
+        {this.props.children &&
+          React.cloneElement(this.props.children, { params, project })}
       </div>
     )
   }

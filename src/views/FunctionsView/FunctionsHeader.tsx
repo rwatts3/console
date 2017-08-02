@@ -1,22 +1,23 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import ModalDocs from '../../components/ModalDocs/ModalDocs'
-import {Link} from 'found'
+import { Link } from 'found'
 import DocsPopup from '../../components/DocsPopup'
 
 interface Props {
   params: any
 }
 
-export default function FunctionsHeader({params}: Props) {
+export default function FunctionsHeader({ params }: Props) {
   return (
-    <div className='functions-header'>
+    <div className="functions-header">
       <style jsx={true}>{`
         .functions-header {
           @p: .bgBlack04, .pa16, .flex, .justifyBetween, .w100;
         }
         .btn {
-          @p: .bgGreen, .buttonShadow, .br2, .white, .ttu, .fw6, .f14, .ml25, .pointer, .flex, .itemsCenter;
+          @p: .bgGreen, .buttonShadow, .br2, .white, .ttu, .fw6, .f14, .ml25,
+            .pointer, .flex, .itemsCenter;
           padding: 7px 11px;
           transition: $duration all;
         }
@@ -42,8 +43,8 @@ export default function FunctionsHeader({params}: Props) {
           @p: .z2;
         }
       `}</style>
-      <div className='flex itemsCenter'>
-        <div className='title flex itemsCenter'>
+      <div className="flex itemsCenter">
+        <div className="title flex itemsCenter">
           <Icon
             src={require('graphcool-styles/icons/fill/actions.svg')}
             color={$v.darkerBlue}
@@ -52,8 +53,11 @@ export default function FunctionsHeader({params}: Props) {
           />
           <span>Functions</span>
         </div>
-        <Link to={`/${params.projectName}/functions/create`} data-test='create-function-button'>
-          <div className='btn'>
+        <Link
+          to={`/${params.projectName}/functions/create`}
+          data-test="create-function-button"
+        >
+          <div className="btn">
             <Icon
               src={require('graphcool-styles/icons/stroke/addFull.svg')}
               stroke
@@ -64,7 +68,7 @@ export default function FunctionsHeader({params}: Props) {
           </div>
         </Link>
       </div>
-      <div className='docs'>
+      <div className="docs">
         <DocsPopup
           offsetX={16}
           offsetY={16}
@@ -72,10 +76,11 @@ export default function FunctionsHeader({params}: Props) {
             {
               title: 'Overview over Functions',
               type: 'guide',
-              link: 'https://www.graph.cool/docs/reference/functions/overview-boo6uteemo/',
+              link:
+                'https://www.graph.cool/docs/reference/functions/overview-boo6uteemo/',
             },
           ]}
-          videoId='l-0jGOxXKGY'
+          videoId="l-0jGOxXKGY"
         />
       </div>
     </div>

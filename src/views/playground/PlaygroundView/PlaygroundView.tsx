@@ -1,8 +1,5 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import Helmet from 'react-helmet'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { Lokka } from 'lokka'
@@ -10,24 +7,24 @@ import { Transport } from 'lokka-transport-http'
 import GraphiQL from 'graphiql'
 import { Viewer, User, Project } from '../../../types/types'
 import { saveQuery } from '../../../utils/QueryHistoryStorage'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import QueryHistory from '../../../components/QueryHistory/QueryHistory'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import * as cookiestore from 'cookiestore'
 import endpoints from '../../../utils/endpoints'
 import { sideNavSyncer } from '../../../utils/sideNavSyncer'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {nextStep, previousStep} from '../../../actions/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { nextStep, previousStep } from '../../../actions/gettingStarted'
 const classes: any = require('./PlaygroundView.scss')
 import * as cx from 'classnames'
-import {$p} from 'graphcool-styles'
-import {Popup} from '../../../types/popup'
-import {showPopup} from '../../../actions/popup'
+import { $p } from 'graphcool-styles'
+import { Popup } from '../../../types/popup'
+import { showPopup } from '../../../actions/popup'
 import cuid from 'cuid'
 import CodeGenerationPopup from './CodeGenerationPopup/CodeGenerationPopup'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import Playground from 'graphcool-graphiql'
 import getSubscriptionEndpoint from '../../../utils/region'
 import Tether from '../../../components/Tether/Tether'
@@ -65,7 +62,7 @@ const ONBOARDING_QUERY_PART2 = `{
 type Endpoint = 'SIMPLE' | 'RELAY'
 
 interface Props {
-  viewer: Viewer & { project: Project, userModel: any }
+  viewer: Viewer & { project: Project; userModel: any }
   params: any
   gettingStartedState: GettingStartedState
   nextStep: () => any
@@ -86,15 +83,15 @@ interface State {
 }
 
 class PlaygroundView extends React.Component<Props, State> {
-
   private lokka: any
   private guestLokka: any
   private id: string
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
 
-    const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.viewer.project.id}`
+    const clientEndpoint = `${__BACKEND_ADDR__}/relay/v1/${this.props.viewer
+      .project.id}`
     const token = cookiestore.get('graphcool_auth_token')
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -106,26 +103,30 @@ class PlaygroundView extends React.Component<Props, State> {
     this.lokka = new Lokka({ transport })
     this.guestLokka = new Lokka({ transport: guestTransport })
 
-    const usedPlayground = window.localStorage.getItem(`used-playground-${this.props.viewer.project.id}`)
+    const usedPlayground = window.localStorage.getItem(
+      `used-playground-${this.props.viewer.project.id}`,
+    )
     // const isOnboarding = props.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2')
     const isOnboarding = true
 
     this.state = {
       users: [DASHBOARD_ADMIN, GUEST],
       historyVisible: false,
-      query: isOnboarding ? ONBOARDING_QUERY_PART1 : usedPlayground ? undefined : DEFAULT_QUERY,
+      query: isOnboarding
+        ? ONBOARDING_QUERY_PART1
+        : usedPlayground ? undefined : DEFAULT_QUERY,
       variables: undefined,
-      selectedEndpoint: (window.localStorage.getItem('SELECTED_ENDPOINT') || 'SIMPLE') as Endpoint,
+      selectedEndpoint: (window.localStorage.getItem('SELECTED_ENDPOINT') ||
+        'SIMPLE') as Endpoint,
       selectedUserId: DASHBOARD_ADMIN.id,
       selectedUserToken: null,
       adminToken: token,
       lastQuerySuccessful: false,
       lastQuery: '',
     }
-
   }
 
-  componentDidUpdate (nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     // if (this.props.gettingStartedState.step !== nextProps.gettingStartedState.step) {
     //   if (nextProps.gettingStartedState.isCurrentStep('STEP4_WAITING_PART2') ||
     //       nextProps.gettingStartedState.isCurrentStep('STEP4_CLICK_TEASER_PART2')) {
@@ -141,7 +142,7 @@ class PlaygroundView extends React.Component<Props, State> {
     // }
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (this.props.viewer.userModel) {
       const query = `
         {
@@ -156,28 +157,28 @@ class PlaygroundView extends React.Component<Props, State> {
           }
         }
       `
-      this.lokka.query(query)
-        .then((results) => {
-          const users = results.viewer.allUsers.edges.map((edge) => edge.node)
-          this.setState({ users: [DASHBOARD_ADMIN, GUEST, ...users] } as State)
-        })
+      this.lokka.query(query).then(results => {
+        const users = results.viewer.allUsers.edges.map(edge => edge.node)
+        this.setState({ users: [DASHBOARD_ADMIN, GUEST, ...users] } as State)
+      })
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     tracker.track(ConsoleEvents.Playground.viewed())
   }
 
-  getEndpoint () {
-    return `${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint].alias}/${this.props.viewer.project.id}`
+  getEndpoint() {
+    return `${__BACKEND_ADDR__}/${endpoints[this.state.selectedEndpoint]
+      .alias}/${this.props.viewer.project.id}`
   }
 
   handleResponse = (graphQLParams, response) => {
     if (!response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
-      tracker.track(ConsoleEvents.Playground.queryRan({type: 'Fail'}))
+      tracker.track(ConsoleEvents.Playground.queryRan({ type: 'Fail' }))
     }
     if (response.ok && !graphQLParams.query.includes('IntrospectionQuery')) {
-      tracker.track(ConsoleEvents.Playground.queryRan({type: 'Success'}))
+      tracker.track(ConsoleEvents.Playground.queryRan({ type: 'Success' }))
     }
 
     if (graphQLParams.query.includes('mutation')) {
@@ -186,15 +187,16 @@ class PlaygroundView extends React.Component<Props, State> {
     }
   }
 
-  render () {
-
-    const {project} = this.props.viewer
+  render() {
+    const { project } = this.props.viewer
     const subscriptionsEndpoint = getSubscriptionEndpoint(project.region)
-    const step = this.props.gettingStartedState.skipped ? undefined : this.props.gettingStartedState.step
+    const step = this.props.gettingStartedState.skipped
+      ? undefined
+      : this.props.gettingStartedState.step
 
     return (
       <div className={classes.root}>
-        <Helmet title='Playground' />
+        <Helmet title="Playground" />
         <style jsx={true}>{`
           div :global(.onboarding-hint) {
             @p: .pa0, .bgNone;
@@ -213,20 +215,21 @@ class PlaygroundView extends React.Component<Props, State> {
       </div>
     )
   }
-
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     gettingStartedState: state.gettingStarted.gettingStartedState,
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return bindActionCreators({ nextStep, previousStep, showPopup }, dispatch)
 }
 
-const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(PlaygroundView)
+const MappedPlaygroundView = connect(mapStateToProps, mapDispatchToProps)(
+  PlaygroundView,
+)
 
 export default createFragmentContainer(MappedPlaygroundView, {
   viewer: graphql`
@@ -235,7 +238,7 @@ export default createFragmentContainer(MappedPlaygroundView, {
         id
         region
       }
-      userModel: modelByName(projectName: $projectName, modelName: "User"){
+      userModel: modelByName(projectName: $projectName, modelName: "User") {
         id
       }
     }

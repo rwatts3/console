@@ -1,4 +1,4 @@
-export function keysChanged(a: Object, b: Object, keys: string[]) {
+export function keysChanged(a: any, b: any, keys: string[]) {
   let changed = false
   keys.forEach(key => {
     if (a[key] !== b[key]) {

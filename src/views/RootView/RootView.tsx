@@ -1,13 +1,13 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {clearNotification} from '../../actions/notification'
-import {Notification} from '../../types/utils'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { clearNotification } from '../../actions/notification'
+import { Notification } from '../../types/utils'
 import NotificationSystem from 'react-notification-system'
 import * as MediaQuery from 'react-responsive'
 import MobileScreen from './MobileScreen'
-import {throttle} from 'lodash'
+import { throttle } from 'lodash'
 import Alert from '../../components/Window/Alert'
 
 interface Props {
@@ -17,9 +17,8 @@ interface Props {
 }
 
 class RootView extends React.Component<Props, {}> {
-
   refs: {
-    [key: string]: any;
+    [key: string]: any
     notificationSystem: any
   }
 
@@ -30,13 +29,14 @@ class RootView extends React.Component<Props, {}> {
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={{ height: '100%' }}>
         <Alert />
         <style jsx global>{`
           .butn {
-            @p: .br2, .buttonShadow, .pv12, .ph16, .f14, .fw6, .inlineFlex, .itemsCenter, .pointer;
+            @p: .br2, .buttonShadow, .pv12, .ph16, .f14, .fw6, .inlineFlex,
+              .itemsCenter, .pointer;
             letter-spacing: 0.3px;
           }
           .butn.primary {
@@ -46,11 +46,11 @@ class RootView extends React.Component<Props, {}> {
             @p: .ml10;
           }
         `}</style>
-        <Helmet titleTemplate='%s | Graphcool'/>
+        <Helmet titleTemplate="%s | Graphcool" />
         <MediaQuery minWidth={720}>
-          {matches => matches ? (this.props.children) : (<MobileScreen />)}
+          {matches => (matches ? this.props.children : <MobileScreen />)}
         </MediaQuery>
-        <NotificationSystem ref='notificationSystem' />
+        <NotificationSystem ref="notificationSystem" />
       </div>
     )
   }
@@ -62,8 +62,8 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({clearNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ clearNotification }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootView)

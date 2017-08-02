@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 
@@ -29,7 +29,7 @@ const Slider = styled.div`
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   }
 `
 
@@ -47,30 +47,26 @@ export default class NewToggleButton extends React.Component<Props, {}> {
   render() {
     return (
       <Container
-        className={cx(
-          $p.relative,
-          $p.dib,
-          this.props.className,
-        )}
+        className={cx($p.relative, $p.dib, this.props.className)}
         style={this.props.style}
       >
         <ToggleInput
-          type='checkbox'
+          type="checkbox"
           className={$p.dn}
           checked={this.props.defaultChecked}
           onChange={this.props.onChange}
         />
-        <Slider className={cx(
-          $p.absolute,
-          $p.pointer,
-          $p.top0,
-          $p.left0,
-          $p.right0,
-          $p.bottom0,
-          $p.bgBlack20,
-        )}>
-
-        </Slider>
+        <Slider
+          className={cx(
+            $p.absolute,
+            $p.pointer,
+            $p.top0,
+            $p.left0,
+            $p.right0,
+            $p.bottom0,
+            $p.bgBlack20,
+          )}
+        />
       </Container>
     )
   }

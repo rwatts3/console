@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 
 interface State {
   userConfirmedBreakingChanges: boolean
@@ -16,21 +16,21 @@ interface Props {
   resync?: boolean
 }
 
-export default class ConfirmOperationsPopup extends React.Component<Props, State> {
-
+export default class ConfirmOperationsPopup extends React.Component<
+  Props,
+  State
+> {
   state = {
     userConfirmedBreakingChanges: false,
   }
 
   render() {
-
-    const {numOperations, showReset, resync} = this.props
+    const { numOperations, showReset, resync } = this.props
     const orangeIcon = require('assets/icons/warning_orange.svg')
 
     return (
       <div className={`container breakingChangesPositioning`}>
         <style jsx={true}>{`
-
           .container {
             @p: .buttonShadow, .bgWhite, .absolute;
           }
@@ -45,32 +45,23 @@ export default class ConfirmOperationsPopup extends React.Component<Props, State
             @p: .ml10, .fw6, .f16, .ttu;
           }
 
-          .headerColorsOrange{
-            color: rgba(241,143,1,1);
-            background-color: rgba(241,143,1,.2);
+          .headerColorsOrange {
+            color: rgba(241, 143, 1, 1);
+            background-color: rgba(241, 143, 1, .2);
           }
 
           .confirmButtonOrange {
             @p: .white, .ma16, .ph25, .pv10, .f16, .br2, .pointer;
-            background-color: rgba(241,143,1,1);
+            background-color: rgba(241, 143, 1, 1);
           }
-
         `}</style>
         <div className={`flex itemsCenter pv10 pl10 headerColorsOrange`}>
-          <Icon
-            src={orangeIcon}
-            width={22}
-            height={22}
-          />
-          <div className={`headerText`}
-          >
-            Usage Warning
-          </div>
+          <Icon src={orangeIcon} width={22} height={22} />
+          <div className={`headerText`}>Usage Warning</div>
         </div>
-        <div className='pa25 f16 black50 bb bBlack10'>
-          {resync && (
-            'Note that all nodes will be resynced with the new query. '
-          )}
+        <div className="pa25 f16 black50 bb bBlack10">
+          {resync &&
+            'Note that all nodes will be resynced with the new query. '}
           Your changes will use up to {numOperations} Operations in Algolia.
         </div>
         {this.generateFooterForBreakingChanges()}
@@ -80,12 +71,11 @@ export default class ConfirmOperationsPopup extends React.Component<Props, State
 
   private generateFooterForBreakingChanges = (): JSX.Element => {
     return (
-      <div className='flex justifyBetween bgBlack04'>
+      <div className="flex justifyBetween bgBlack04">
         <style jsx={true}>{`
-
           .confirmButtonOrange {
             @p: .white, .ma16, .ph25, .pv10, .f16, .br2, .pointer;
-            background-color: rgba(241,143,1,1);
+            background-color: rgba(241, 143, 1, 1);
           }
 
           .confirmButtonGreen {
@@ -95,30 +85,30 @@ export default class ConfirmOperationsPopup extends React.Component<Props, State
           .animateChange {
             transition: .35s linear all;
           }
-
         `}</style>
         <div>
-          {this.props.showReset && (
+          {this.props.showReset &&
             <div
-              className='pa25 f16 pointer black50'
+              className="pa25 f16 pointer black50"
               onClick={() => this.props.onCancel()}
             >
               Cancel
-            </div>
-          )}
+            </div>}
         </div>
-        {!this.state.userConfirmedBreakingChanges ? (<div
-            className='confirmButtonOrange'
-            onClick={() => this.setState({userConfirmedBreakingChanges: true} as State)}
-          >
-            Got it
-          </div>)
-          : (<div
-            className='confirmButtonGreen animateChange'
-            onClick={() => this.props.onConfirmBreakingChanges()}
-          >
-            {this.props.saveLabel || 'Save Changes'}
-          </div>)}
+        {!this.state.userConfirmedBreakingChanges
+          ? <div
+              className="confirmButtonOrange"
+              onClick={() =>
+                this.setState({ userConfirmedBreakingChanges: true } as State)}
+            >
+              Got it
+            </div>
+          : <div
+              className="confirmButtonGreen animateChange"
+              onClick={() => this.props.onConfirmBreakingChanges()}
+            >
+              {this.props.saveLabel || 'Save Changes'}
+            </div>}
       </div>
     )
   }

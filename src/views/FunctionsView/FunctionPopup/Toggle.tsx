@@ -7,9 +7,13 @@ interface ToggleProps {
   activeChoice: string
 }
 
-export default function Toggle({choices, onChange, activeChoice}: ToggleProps) {
+export default function Toggle({
+  choices,
+  onChange,
+  activeChoice,
+}: ToggleProps) {
   return (
-    <div className='toggle'>
+    <div className="toggle">
       <style jsx>{`
         .toggle {
           @p: .flex;
@@ -27,15 +31,15 @@ export default function Toggle({choices, onChange, activeChoice}: ToggleProps) {
           @p: .white70;
         }
       `}</style>
-      {choices.map((choice, i) => (
+      {choices.map((choice, i) =>
         <div
-          className={cn('choice', {active: choice === activeChoice})}
+          className={cn('choice', { active: choice === activeChoice })}
           key={choice}
           onClick={() => onChange(choice, i)}
         >
           {choice}
-        </div>
-      ))}
+        </div>,
+      )}
     </div>
   )
 }

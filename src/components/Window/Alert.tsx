@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../utils/modalStyle'
+import { fieldModalStyle } from '../../utils/modalStyle'
 
 interface State {
   isOpen: boolean
@@ -31,41 +31,41 @@ export default class Alert extends React.Component<null, State> {
       text: '',
       title: '',
     }
-    global['graphcoolAlert'] = this.showAlert
-    global['graphcoolConfirm'] = this.showConfirm
+    global.graphcoolAlert = this.showAlert
+    global.graphcoolConfirm = this.showConfirm
   }
 
   showAlert = (text: string, title?: string) => {
-    this.setState({isOpen: true, text, title: title || ''} as State)
+    this.setState({ isOpen: true, text, title: title || '' } as State)
   }
 
   showConfirm = (text: string, title?: string) => {
     return new Promise((resolve, reject) => {
-      this.setState({isOpen: true, isConfirm: true, text, title: title || ''})
+      this.setState({ isOpen: true, isConfirm: true, text, title: title || '' })
       this.resolve = resolve
       this.reject = reject
     })
   }
 
   render() {
-    const {isOpen, text, title} = this.state
+    const { isOpen, text, title } = this.state
     return (
       <Modal
         isOpen={isOpen}
-        contentLabel='Alert'
+        contentLabel="Alert"
         style={modalStyling}
         onRequestClose={this.close}
       >
         <style jsx>{`
           .alert {
-            @p: .buttonShadow
+            @p: .buttonShadow;
           }
           .text {
             @p: .bgWhite, .pa38, .black50, .tc;
           }
           .footer {
             @p: .pa25, .flex, .justifyBetween, .itemsCenter, .bt, .bBlack10;
-            background: rgb(250,250,250);
+            background: rgb(250, 250, 250);
           }
           .button {
             @p: .br2, .pointer;
@@ -85,25 +85,26 @@ export default class Alert extends React.Component<null, State> {
             line-height: 2;
           }
         `}</style>
-        <div className='alert'>
-          <div className='text'>
-            <div className='title'>
+        <div className="alert">
+          <div className="text">
+            <div className="title">
               {title && title.length > 0 ? title : 'Are you sure?'}
             </div>
             <div>
               {text}
             </div>
-            <div>
-              Do you really want to continue?
-            </div>
+            <div>Do you really want to continue?</div>
           </div>
-          <div className='footer'>
+          <div className="footer">
             <div>
-              {this.state.isConfirm && (
-                <div className='button cancel' onClick={this.cancel}>Cancel</div>
-              )}
+              {this.state.isConfirm &&
+                <div className="button cancel" onClick={this.cancel}>
+                  Cancel
+                </div>}
             </div>
-            <div className='button warning' onClick={this.confirm}>Continue anyway</div>
+            <div className="button warning" onClick={this.confirm}>
+              Continue anyway
+            </div>
           </div>
         </div>
       </Modal>
@@ -125,6 +126,6 @@ export default class Alert extends React.Component<null, State> {
   }
 
   private close = () => {
-    this.setState({isOpen: false} as State)
+    this.setState({ isOpen: false } as State)
   }
 }

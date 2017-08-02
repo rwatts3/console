@@ -1,15 +1,18 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../../utils/modalStyle'
-import {Icon, $v} from 'graphcool-styles'
+import { fieldModalStyle } from '../../../utils/modalStyle'
+import { Icon, $v } from 'graphcool-styles'
 import TestLog from './TestLog'
-import {FunctionBinding, Log} from '../../../types/types'
-import {smoothScrollTo} from '../../../utils/smooth'
+import { FunctionBinding, Log } from '../../../types/types'
+import { smoothScrollTo } from '../../../utils/smooth'
 import DummyTestLog from './DummyTestLog'
-import {generateSSSTestEvent, generateRPTestEvent} from '../../../utils/functionTest'
-import {EventType} from './FunctionPopup'
+import {
+  generateSSSTestEvent,
+  generateRPTestEvent,
+} from '../../../utils/functionTest'
+import { EventType } from './FunctionPopup'
 import Loading from '../../../components/Loading/Loading'
-import {reverse} from 'lodash'
+import { reverse } from 'lodash'
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
 
 interface Props {
@@ -36,19 +39,19 @@ export interface TestResponse {
   inline?: {
     errors: TestError[]
     event: string
-    logs: string,
-    returnValue?: any,
+    logs: string
+    returnValue?: any
   }
   webhook?: {
     request: {
       body: string
       headers: any
-      url: string,
-    },
+      url: string
+    }
     response: {
       body: string
-      statusCode: number,
-    },
+      statusCode: number
+    }
   }
 }
 
@@ -74,7 +77,6 @@ const modalStyling = {
 }
 
 export default class TestPopup extends React.Component<Props, State> {
-
   private ref: any
 
   constructor(props: Props) {
@@ -89,11 +91,23 @@ export default class TestPopup extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.schema !== nextProps.schema) {
-      this.setState({input: JSON.stringify(generateRPTestEvent(nextProps.schema), null, 2)} as State)
+      this.setState(
+        {
+          input: JSON.stringify(generateRPTestEvent(nextProps.schema), null, 2),
+        } as State,
+      )
     }
 
     if (this.props.eventType !== nextProps.eventType) {
-      this.setState({input: getEventInput(nextProps.eventType, nextProps.schema, nextProps.sssModelName)} as State)
+      this.setState(
+        {
+          input: getEventInput(
+            nextProps.eventType,
+            nextProps.schema,
+            nextProps.sssModelName,
+          ),
+        } as State,
+      )
     }
 
     if (nextProps.isOpen && !this.props.isOpen) {
@@ -102,12 +116,12 @@ export default class TestPopup extends React.Component<Props, State> {
   }
 
   render() {
-    const {onRequestClose, isOpen, binding, eventType} = this.props
-    const {responses, input} = this.state
+    const { onRequestClose, isOpen, binding, eventType } = this.props
+    const { responses, input } = this.state
     return (
       <Modal
         onRequestClose={onRequestClose}
-        contentLabel='Function Testing Popup'
+        contentLabel="Function Testing Popup"
         style={modalStyling}
         isOpen={isOpen}
       >
@@ -160,7 +174,8 @@ export default class TestPopup extends React.Component<Props, State> {
             @p: .fixed, .top0, .right0, .pa60;
           }
           .loading {
-            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter,
+              .justifyCenter;
           }
           .clear {
             @p: .f12, .ttu, .br2, .mr38, .fw6, .pointer, .darkerBlue, .z999;
@@ -172,8 +187,8 @@ export default class TestPopup extends React.Component<Props, State> {
             @p: .o70;
           }
         `}</style>
-        <div className='test-popup'>
-          <div className='close-icon'>
+        <div className="test-popup">
+          <div className="close-icon">
             <Icon
               src={require('graphcool-styles/icons/stroke/cross.svg')}
               stroke
@@ -182,96 +197,85 @@ export default class TestPopup extends React.Component<Props, State> {
               width={26}
               height={26}
               onClick={onRequestClose}
-              className='cross'
+              className="cross"
             />
           </div>
-          <div className='input'>
-            <div className='intro'>
+          <div className="input">
+            <div className="intro">
               <h2>
                 {this.getTitle(eventType, binding)}
               </h2>
               <p>
-                To test your function, choose a payload that represents a valid input,
-                then run it and see in the logs, if it works.
+                To test your function, choose a payload that represents a valid
+                input, then run it and see in the logs, if it works.
               </p>
             </div>
-            <div className='editor'>
-              <div className='editor-head'>
-                Define your event input
-              </div>
+            <div className="editor">
+              <div className="editor-head">Define your event input</div>
               <ResultViewer
                 value={input}
                 editable
                 onChange={this.handleInputChange}
               />
-              <div className='buttons'>
-                <div
-                  className='butn primary'
-                  onClick={this.runTest}
-                >
+              <div className="buttons">
+                <div className="butn primary" onClick={this.runTest}>
                   <Icon
                     src={require('graphcool-styles/icons/fill/triangle.svg')}
                     color={$v.white}
                     width={10}
                     height={10}
                   />
-                  <span>
-                    Run
-                  </span>
+                  <span>Run</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className='output'>
-            <div className='header'>
-              <div className='flex itemsCenter'>
+          <div className="output">
+            <div className="header">
+              <div className="flex itemsCenter">
                 <Icon
                   src={require('graphcool-styles/icons/fill/logs.svg')}
                   color={$v.white40}
                   width={24}
                   height={24}
                 />
-                <div className='title'>
-                  Your Test Logs
-                </div>
+                <div className="title">Your Test Logs</div>
               </div>
-              <div className='clear' onClick={this.clear}>Clear</div>
+              <div className="clear" onClick={this.clear}>
+                Clear
+              </div>
             </div>
-            <div className='logs' ref={this.setRef}>
-              {responses.length === 0 && (
-                <div className='will-appear'>
+            <div className="logs" ref={this.setRef}>
+              {responses.length === 0 &&
+                <div className="will-appear">
                   The logs for your test function will appear here.
-                </div>
-              )}
-              {responses.length > 0 ? reverse(responses).map(res => (
-                <TestLog response={res} key={res.timestamp} />
-              )) : (
-                [0,1,2].map(i => (
-                  <DummyTestLog key={i} />
-                ))
-              )}
+                </div>}
+              {responses.length > 0
+                ? reverse(responses).map(res =>
+                    <TestLog response={res} key={res.timestamp} />,
+                  )
+                : [0, 1, 2].map(i => <DummyTestLog key={i} />)}
             </div>
           </div>
-          {this.state.loading && (
-            <div className='loading'>
+          {this.state.loading &&
+            <div className="loading">
               <Loading color={$v.white50} />
-            </div>
-          )}
+            </div>}
         </div>
       </Modal>
     )
   }
 
   private clear = () => {
-    this.setState({responses: []} as State)
+    this.setState({ responses: [] } as State)
   }
 
   private setLoading(loading: boolean) {
-    this.setState({loading} as State)
+    this.setState({ loading } as State)
   }
 
   private getTitle(eventType: EventType, binding: FunctionBinding) {
-    let title = 'Test the '
+    const title = 'Test the '
     if (eventType === 'RP') {
       return `${title} ${binding} hook point`
     }
@@ -282,24 +286,28 @@ export default class TestPopup extends React.Component<Props, State> {
   }
 
   private runTest = () => {
-    const {webhookUrl, isInline} = this.props
-    const {input} = this.state
+    const { webhookUrl, isInline } = this.props
+    const { input } = this.state
     this.setLoading(true)
-    return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
-      method: 'post',
-      body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: input}),
-    })
+    return fetch(
+      'https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/',
+      {
+        method: 'post',
+        body: JSON.stringify({
+          isInlineFunction: isInline,
+          url: webhookUrl,
+          event: input,
+        }),
+      },
+    )
       .then(res => res.json())
       .then((res: any) => {
-        this.setState(
-          state => {
-            return {
-              ...state,
-              responses: state.responses.concat(res),
-            }
-          },
-          this.scrollDown,
-        )
+        this.setState(state => {
+          return {
+            ...state,
+            responses: state.responses.concat(res),
+          }
+        }, this.scrollDown)
         this.setLoading(false)
       })
   }
@@ -316,11 +324,15 @@ export default class TestPopup extends React.Component<Props, State> {
   }
 
   private handleInputChange = (input: string) => {
-    this.setState({input} as State)
+    this.setState({ input } as State)
   }
 }
 
-export function getEventInput(eventType: EventType, schema: string, sssModelName: string) {
+export function getEventInput(
+  eventType: EventType,
+  schema: string,
+  sssModelName: string,
+) {
   let inputData
   if (eventType === 'RP') {
     inputData = generateRPTestEvent(schema)

@@ -6,40 +6,41 @@ export function query(query): Promise<any> {
   if (query.match(/allArtists/)) {
     return new Promise((resolve, reject) => {
       resolve({
-        'viewer': {
-          'allArtists': {
-            'edges': [
+        viewer: {
+          allArtists: {
+            edges: [
               {
-                'node': {
-                  'id': 'cink6lsyw002e01rnakgeqdy5',
-                  'description': 'Artist from Brooklyn, NY',
-                  'name': 'Anil Duran',
-                  'artwork': {
-                    'id': 'cim1z9003001q0plmsdl2bkfc',
+                node: {
+                  id: 'cink6lsyw002e01rnakgeqdy5',
+                  description: 'Artist from Brooklyn, NY',
+                  name: 'Anil Duran',
+                  artwork: {
+                    id: 'cim1z9003001q0plmsdl2bkfc',
                   },
                 },
               },
               {
-                'node': {
-                  'id': 'cink6kdmu002b01rnvcd0m8sa',
-                  'description': 'Artist from Croatia',
-                  'name': 'Manuela Pieri',
-                  'artwork': {
-                    'id': 'cim1zk8f1004p0plmw0voxhdv',
+                node: {
+                  id: 'cink6kdmu002b01rnvcd0m8sa',
+                  description: 'Artist from Croatia',
+                  name: 'Manuela Pieri',
+                  artwork: {
+                    id: 'cim1zk8f1004p0plmw0voxhdv',
                   },
                 },
               },
               {
-                'node': {
-                  'id': 'cink6int2002801rnjxxpvj3m',
-                  'description': 'Self Portrait with Felt Hat (1887)',
-                  'name': 'Vincent Van Gogh',
-                  'artwork': {
-                    'id': 'cim5895og00dy0pp1t2efj14j',
+                node: {
+                  id: 'cink6int2002801rnjxxpvj3m',
+                  description: 'Self Portrait with Felt Hat (1887)',
+                  name: 'Vincent Van Gogh',
+                  artwork: {
+                    id: 'cim5895og00dy0pp1t2efj14j',
                   },
                 },
-              }],
-              'count': 3,
+              },
+            ],
+            count: 3,
           },
         },
       })

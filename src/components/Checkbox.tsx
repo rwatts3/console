@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -8,9 +8,9 @@ interface Props {
   children?: any
 }
 
-export default function Checkbox({checked, onToggle, children}: Props) {
+export default function Checkbox({ checked, onToggle, children }: Props) {
   return (
-    <div className='option-cell' onClick={onToggle}>
+    <div className="option-cell" onClick={onToggle}>
       <style jsx>{`
         .option-cell {
           @p: .inlineFlex, .itemsCenter, .pointer;
@@ -27,15 +27,14 @@ export default function Checkbox({checked, onToggle, children}: Props) {
           @p: .bn, .bgGreen20;
         }
       `}</style>
-      <div className={cn('option', {checked})}>
-        {checked && (
+      <div className={cn('option', { checked })}>
+        {checked &&
           <Icon
             src={require('graphcool-styles/icons/fill/check.svg')}
             color={checked ? $v.green : 'white'}
             width={17}
             height={17}
-          />
-        )}
+          />}
       </div>
       {children || null}
     </div>

@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {TestResponse} from './TestPopup'
+import { TestResponse } from './TestPopup'
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import * as moment from 'moment'
 import * as cn from 'classnames'
 
@@ -25,7 +25,7 @@ function extractDataFromResponse(response: TestResponse) {
   let error = null
 
   if (response.inline) {
-    const {inline} = response
+    const { inline } = response
     event = inline.event
     if (inline.returnValue) {
       returnValue = JSON.stringify(inline.returnValue, null, 2)
@@ -35,7 +35,7 @@ function extractDataFromResponse(response: TestResponse) {
   }
 
   if (response.webhook) {
-    const {webhook} = response
+    const { webhook } = response
     requestHeaders = JSON.stringify(webhook.request.headers, null, 2)
     requestBody = webhook.request.body
     responseStatusCode = webhook.response.statusCode
@@ -54,7 +54,7 @@ function extractDataFromResponse(response: TestResponse) {
   }
 }
 
-export default function TestLog({response}: Props) {
+export default function TestLog({ response }: Props) {
   const date = new Date(response.timestamp)
   const ago = moment(date).fromNow()
   const isError = response.isError
@@ -72,7 +72,7 @@ export default function TestLog({response}: Props) {
   const wrapLogs = window.innerWidth < 1300
 
   return (
-    <div className={cn('test-log', {error: isError})}>
+    <div className={cn('test-log', { error: isError })}>
       <style jsx={true}>{`
         .test-log {
           @p: .w100, .overflowAuto, .mb25;
@@ -122,7 +122,8 @@ export default function TestLog({response}: Props) {
           @p: .mono, .white80;
           letter-spacing: 0.6px;
         }
-        .value, .test-log :global(.CodeMirror) {
+        .value,
+        .test-log :global(.CodeMirror) {
           font-size: 13px;
         }
         .error-response .value {
@@ -141,122 +142,136 @@ export default function TestLog({response}: Props) {
           @p: .mb10, .mt16;
         }
       `}</style>
-      <div className='header'>
-        <div className='header-sides'>
-          {error ? (
-            <Icon src={require('graphcool-styles/icons/stroke/cross.svg')} color={$v.red} stroke strokeWidth={4} />
-          ) : (
-            <Icon src={require('graphcool-styles/icons/fill/check.svg')} color={$v.green} />
-          )}
+      <div className="header">
+        <div className="header-sides">
+          {error
+            ? <Icon
+                src={require('graphcool-styles/icons/stroke/cross.svg')}
+                color={$v.red}
+                stroke
+                strokeWidth={4}
+              />
+            : <Icon
+                src={require('graphcool-styles/icons/fill/check.svg')}
+                color={$v.green}
+              />}
         </div>
-        <div className='line' />
-        <div className='header-sides'>{ago}</div>
+        <div className="line" />
+        <div className="header-sides">
+          {ago}
+        </div>
       </div>
-      <div className='meta'>
-        {['timestamp', 'duration'].map(key => (
-          <div className='meta-entry'>
-            <div className='label'>{key}</div>
-            <div className='value'>{response[key]}</div>
-          </div>
-        ))}
-      </div>
-      {event && (
-        <div className='entry'>
-          <div className='label'>Event</div>
-          <div className='graphiql-container'>
-            <ResultViewer
-              value={event}
-            />
-          </div>
-        </div>
-      )}
-      {returnValue && (
-        <div className='entry'>
-          <div className='label'>Return Value</div>
-          <div className='graphiql-container'>
-            <ResultViewer
-              value={returnValue}
-            />
-          </div>
-        </div>
-      )}
-      {requestHeaders && (
-        <div className='entry'>
-          <div className='label'>Request Headers</div>
-          <div className='graphiql-container'>
-            <ResultViewer
-              value={requestHeaders}
-            />
-          </div>
-        </div>
-      )}
-      {requestBody && (
-        <div className='entry'>
-          <div className='label'>Request Body</div>
-          <div className='graphiql-container'>
-            <ResultViewer
-              value={requestBody}
-            />
-          </div>
-        </div>
-      )}
-      {responseStatusCode && (
-        <div className='meta-entry'>
-          <div className='label'>Response Status Code</div>
-          <div className='value'>{responseStatusCode}</div>
-        </div>
-      )}
-      {responseBody && (
-        <div className='entry'>
-          <div className='label'>Response Body</div>
-          <div className='graphiql-container'>
-            <ResultViewer
-              value={responseBody}
-            />
-          </div>
-        </div>
-      )}
-      {logs && logs.length > 0 && (
-        <div className='entry'>
-          <div className='label'>Logs</div>
-          {logs.map(log => (
-            <div className={cn('value flex itemsStart', {flexColumn: wrapLogs})} key={log}>
-              <b className='dib nowrap flexFixed'>{log.slice(0, 25)}</b>
-              <span className={cn('flexAuto', {'ml10': !wrapLogs})}>{log.slice(25, log.length)}</span>
+      <div className="meta">
+        {['timestamp', 'duration'].map(key =>
+          <div className="meta-entry">
+            <div className="label">
+              {key}
             </div>
-          ))}
-        </div>
-      )}
-      {error && (typeof error === 'string' ? (
-        <div className='error-response'>
-          <h2 className='mono'>Error</h2>
-          <div className='meta-entry'>
-            <div className='label'>message</div>
-            <div className='value'>{error}</div>
+            <div className="value">
+              {response[key]}
+            </div>
+          </div>,
+        )}
+      </div>
+      {event &&
+        <div className="entry">
+          <div className="label">Event</div>
+          <div className="graphiql-container">
+            <ResultViewer value={event} />
           </div>
-        </div>
-      ) : (
-        <div className='error-response'>
-          <h2 className='mono'>Error</h2>
-          <div className='meta-entry'>
-            <div className='label'>code</div>
-            <div className='value'>{error.code}</div>
+        </div>}
+      {returnValue &&
+        <div className="entry">
+          <div className="label">Return Value</div>
+          <div className="graphiql-container">
+            <ResultViewer value={returnValue} />
           </div>
-          <div className='meta-entry'>
-            <div className='label'>message</div>
-            <div className='value'>{error.message}</div>
+        </div>}
+      {requestHeaders &&
+        <div className="entry">
+          <div className="label">Request Headers</div>
+          <div className="graphiql-container">
+            <ResultViewer value={requestHeaders} />
           </div>
-          <div className='meta-entry'>
-            <div className='label'>error</div>
-            <div className='value'>{error.error}</div>
+        </div>}
+      {requestBody &&
+        <div className="entry">
+          <div className="label">Request Body</div>
+          <div className="graphiql-container">
+            <ResultViewer value={requestBody} />
           </div>
-          <div className='mt10 mono'>
-            {error.stack.split('\n').map(line => (
-              <p key={line}>{line}</p>
-            ))}
+        </div>}
+      {responseStatusCode &&
+        <div className="meta-entry">
+          <div className="label">Response Status Code</div>
+          <div className="value">
+            {responseStatusCode}
           </div>
-        </div>
-      ))}
+        </div>}
+      {responseBody &&
+        <div className="entry">
+          <div className="label">Response Body</div>
+          <div className="graphiql-container">
+            <ResultViewer value={responseBody} />
+          </div>
+        </div>}
+      {logs &&
+        logs.length > 0 &&
+        <div className="entry">
+          <div className="label">Logs</div>
+          {logs.map(log =>
+            <div
+              className={cn('value flex itemsStart', { flexColumn: wrapLogs })}
+              key={log}
+            >
+              <b className="dib nowrap flexFixed">
+                {log.slice(0, 25)}
+              </b>
+              <span className={cn('flexAuto', { ml10: !wrapLogs })}>
+                {log.slice(25, log.length)}
+              </span>
+            </div>,
+          )}
+        </div>}
+      {error &&
+        (typeof error === 'string'
+          ? <div className="error-response">
+              <h2 className="mono">Error</h2>
+              <div className="meta-entry">
+                <div className="label">message</div>
+                <div className="value">
+                  {error}
+                </div>
+              </div>
+            </div>
+          : <div className="error-response">
+              <h2 className="mono">Error</h2>
+              <div className="meta-entry">
+                <div className="label">code</div>
+                <div className="value">
+                  {error.code}
+                </div>
+              </div>
+              <div className="meta-entry">
+                <div className="label">message</div>
+                <div className="value">
+                  {error.message}
+                </div>
+              </div>
+              <div className="meta-entry">
+                <div className="label">error</div>
+                <div className="value">
+                  {error.error}
+                </div>
+              </div>
+              <div className="mt10 mono">
+                {error.stack.split('\n').map(line =>
+                  <p key={line}>
+                    {line}
+                  </p>,
+                )}
+              </div>
+            </div>)}
     </div>
   )
 }

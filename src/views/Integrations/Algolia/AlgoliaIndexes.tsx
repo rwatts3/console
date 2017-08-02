@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Relay from 'react-relay/classic'
-import {Viewer, SearchProviderAlgolia} from '../../../types/types'
-import {withRouter} from 'found'
+import { Viewer, SearchProviderAlgolia } from '../../../types/types'
+import { withRouter } from 'found'
 
 interface Props {
   params: any
@@ -10,24 +10,26 @@ interface Props {
   indexes: any[]
 }
 
-interface State {
-}
+interface State {}
 
 export default class AlgoliaIndexes extends React.Component<Props, State> {
   render() {
-    const {indexes, params, selectedIndexIndex, onSelectIndex} = this.props
+    const { indexes, params, selectedIndexIndex, onSelectIndex } = this.props
 
     return (
       <div>
-        {indexes.map((index, i) => (
+        {indexes.map((index, i) =>
           <div
-            className={'algolia-index' + (i === selectedIndexIndex ? ' active' : '')}
+            className={
+              'algolia-index' + (i === selectedIndexIndex ? ' active' : '')
+            }
             key={index.id}
             onClick={() => onSelectIndex(i)}
           >
             <style jsx>{`
               .algolia-index {
-                @p: .ph38, .pv25, .bb, .bBlack10, .flex, .itemsCenter, .relative, .overflowHidden, .pointer;
+                @p: .ph38, .pv25, .bb, .bBlack10, .flex, .itemsCenter, .relative,
+                  .overflowHidden, .pointer;
               }
               .algolia-index.active {
                 @p: .bgBlack04;
@@ -48,14 +50,14 @@ export default class AlgoliaIndexes extends React.Component<Props, State> {
                 padding: 2px 5px 3px 6px;
               }
             `}</style>
-            <div className='index-name'>
+            <div className="index-name">
               {index.indexName}
             </div>
-            <div className='model'>
+            <div className="model">
               {index.model.name}
             </div>
-          </div>
-        ))}
+          </div>,
+        )}
       </div>
     )
   }

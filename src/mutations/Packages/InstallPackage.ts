@@ -26,28 +26,30 @@ const mutation = graphql`
 function commit(input: InstallPackageInput) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'REQUIRED_CHILDREN',
-      children: [
-        graphql`
-          fragment InstallPackageChildren on InstallPackagePayload {
-            project {
-              schema
-              packageDefinitions(first: 100) {
-                edges {
-                  node {
-                    id
-                    definition
-                    name
+    variables: { input },
+    configs: [
+      {
+        type: 'REQUIRED_CHILDREN',
+        children: [
+          graphql`
+            fragment InstallPackageChildren on InstallPackagePayload {
+              project {
+                schema
+                packageDefinitions(first: 100) {
+                  edges {
+                    node {
+                      id
+                      definition
+                      name
+                    }
                   }
                 }
               }
             }
-          }
-        `,
-      ],
-    }],
+          `,
+        ],
+      },
+    ],
   })
 }
 

@@ -1,4 +1,3 @@
-
 import '../polyfils'
 import * as nameValidator from '../nameValidator'
 
@@ -44,8 +43,11 @@ describe('nameValidator', () => {
     expect(nameValidator.validateModelName('Model')).toBe(true)
     expect(nameValidator.validateModelName('MyModel')).toBe(true)
     expect(nameValidator.validateModelName('M')).toBe(true)
-    expect(nameValidator.validateModelName('MySuperExtraDuperHyperMegaLongModelNameIsSuperCoolAndSuperAwesome'))
-      .toBe(true)
+    expect(
+      nameValidator.validateModelName(
+        'MySuperExtraDuperHyperMegaLongModelNameIsSuperCoolAndSuperAwesome',
+      ),
+    ).toBe(true)
   })
 
   it('should accept model names with multiple capital letters in row', () => {
@@ -101,7 +103,9 @@ describe('nameValidator', () => {
 
   it('should allow project names containing numbers', () => {
     expect(nameValidator.validateProjectName('My 1st Project')).toBe(true)
-    expect(nameValidator.validateProjectName('My 22nd and 23rd Project')).toBe(true)
+    expect(nameValidator.validateProjectName('My 22nd and 23rd Project')).toBe(
+      true,
+    )
     expect(nameValidator.validateProjectName('A12334566')).toBe(true)
     expect(nameValidator.validateProjectName('ABC123ABC')).toBe(true)
   })
@@ -109,20 +113,28 @@ describe('nameValidator', () => {
   it('should allow project names containing spaces', () => {
     expect(nameValidator.validateProjectName('My project')).toBe(true)
     expect(nameValidator.validateProjectName('My Super Project')).toBe(true)
-    expect(nameValidator.validateProjectName('My Super Awesome 2nd Project')).toBe(true)
+    expect(
+      nameValidator.validateProjectName('My Super Awesome 2nd Project'),
+    ).toBe(true)
   })
 
   it('should allow long project names', () => {
-    expect(nameValidator.validateProjectName('My project is the very best Like no one ever was' +
-      ' To catch them is my real test' +
-      ' To train them is my cause')).toBe(true)
+    expect(
+      nameValidator.validateProjectName(
+        'My project is the very best Like no one ever was' +
+          ' To catch them is my real test' +
+          ' To train them is my cause',
+      ),
+    ).toBe(true)
   })
 
-  it(
-    'should allow project names starting with a capital letter and only containing alphanumberic letters and space',
-    () => {
-      expect(nameValidator.validateProjectName('My PROJECT')).toBe(true)
-      expect(nameValidator.validateProjectName('My Cool Project is Cool')).toBe(true)
-      expect(nameValidator.validateProjectName('My 12341487096th Project')).toBe(true)
-    })
+  it('should allow project names starting with a capital letter and only containing alphanumberic letters and space', () => {
+    expect(nameValidator.validateProjectName('My PROJECT')).toBe(true)
+    expect(nameValidator.validateProjectName('My Cool Project is Cool')).toBe(
+      true,
+    )
+    expect(nameValidator.validateProjectName('My 12341487096th Project')).toBe(
+      true,
+    )
+  })
 })

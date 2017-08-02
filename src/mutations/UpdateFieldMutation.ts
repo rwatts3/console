@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
-import {omit} from 'lodash'
+import { omit } from 'lodash'
 
 export interface UpdateFieldProps {
   id: string
@@ -30,13 +30,22 @@ const mutation = graphql`
 function commit(input: UpdateFieldProps) {
   return makeMutation({
     mutation,
-    variables: {input: omit(input, ['isSystem', 'relation', 'reverseRelationField', 'enum'])},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        field: input.id,
+    variables: {
+      input: omit(input, [
+        'isSystem',
+        'relation',
+        'reverseRelationField',
+        'enum',
+      ]),
+    },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          field: input.id,
+        },
       },
-    }],
+    ],
     optimisticResponse: {
       updateField: {
         field: {

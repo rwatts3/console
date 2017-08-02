@@ -1,23 +1,18 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
-import {A, Button} from '../../../components/Links'
+import { Icon, $v } from 'graphcool-styles'
+import { A, Button } from '../../../components/Links'
 
 interface Props {
   nextStep: () => void
 }
 
-interface State {
-
-}
+interface State {}
 
 export default class OnboardingFinale extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   componentDidMount() {
@@ -28,7 +23,7 @@ export default class OnboardingFinale extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className='onboarding-finale'>
+      <div className="onboarding-finale">
         <style jsx>{`
           .onboarding-finale {
             @p: .w100, .pt60, .overflowAuto;
@@ -65,7 +60,8 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             @p: .f20, .darkBlue70, .fw6;
           }
           .twitter-btn {
-            @p: .buttonShadow, .white, .pv12, .ph16, .ttu, .f16, .fw6, .flex, .itemsCenter, .noUnderline, .br2;
+            @p: .buttonShadow, .white, .pv12, .ph16, .ttu, .f16, .fw6, .flex,
+              .itemsCenter, .noUnderline, .br2;
             background: #1da1f2;
           }
           .twitter-btn span {
@@ -99,8 +95,8 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             transition: transform .25s ease, box-shadow .25s ease;
           }
           .guide:hover {
-            box-shadow: 0px 2px 13px 0px rgba(0,0,0,0.12);
-            transform: translate3D(0,-1px,0);
+            box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.12);
+            transform: translate3D(0, -1px, 0);
           }
           .guide h2 {
             @p: .darkBlue, .flex, .itemsCenter, .tl;
@@ -115,19 +111,19 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             @p: .pa38;
           }
         `}</style>
-        <div className='intro'>
+        <div className="intro">
           <h1>
-            <span className='success'>🎉 </span>
+            <span className="success">🎉 </span>
             Congratulations
           </h1>
           <p>
-            You did it! We prepared a lot of resources that you can read to learn more about Graphcool and GraphQL
-            in general.
+            You did it! We prepared a lot of resources that you can read to
+            learn more about Graphcool and GraphQL in general.
           </p>
           <div
-            className='close'
+            className="close"
             onClick={this.props.nextStep}
-            data-test='close-popup'
+            data-test="close-popup"
           >
             <Icon
               src={require('graphcool-styles/icons/stroke/cross.svg')}
@@ -139,33 +135,38 @@ export default class OnboardingFinale extends React.Component<Props, State> {
             />
           </div>
         </div>
-        <div className='share'>
+        <div className="share">
           <h2>If you liked it, share it on Twitter</h2>
           <a
-            className='twitter-btn'
+            className="twitter-btn"
             href={`https://twitter.com/home?status=%20`}
-            target='_blank'
+            target="_blank"
           >
-            <Icon src={require('assets/icons/twitter.svg')} color={$v.white} width={32} height={32} />
+            <Icon
+              src={require('assets/icons/twitter.svg')}
+              color={$v.white}
+              width={32}
+              height={32}
+            />
             <span>Tweet about it</span>
           </a>
         </div>
-        <div className='resources'>
-          <div className='left'>
+        <div className="resources">
+          <div className="left">
             <h3>Interactive Guides</h3>
-            <a className='guide' href='https://www.learnrelay.org/'>
+            <a className="guide" href="https://www.learnrelay.org/">
               <h2>
                 <Icon
                   src={require('graphcool-styles/icons/fill/relayLogo.svg')}
                   width={50}
                   height={50}
-                  color='#f26b00'
+                  color="#f26b00"
                 />
                 <span>Learn Relay</span>
               </h2>
               <p>Learn everything about Facebook's GraphQL Client Relay</p>
             </a>
-            <a className='guide' href='https://www.learnapollo.com/'>
+            <a className="guide" href="https://www.learnapollo.com/">
               <h2>
                 <Icon
                   src={require('graphcool-styles/icons/fill/apolloLogo.svg')}
@@ -177,42 +178,57 @@ export default class OnboardingFinale extends React.Component<Props, State> {
               </h2>
               <p>Learn the Apollo Client basics in an interactive Tutorial</p>
             </a>
-            <a className='guide' href='https://www.graph.cool/freecom/'>
+            <a className="guide" href="https://www.graph.cool/freecom/">
               <h2>
-                <img width={40} height={40} src={require('assets/graphics/freecom.svg')} alt=''/>
+                <img
+                  width={40}
+                  height={40}
+                  src={require('assets/graphics/freecom.svg')}
+                  alt=""
+                />
                 <span>Freecom</span>
               </h2>
-              <p>Learn how to build a free Intercom clone with modern technologies</p>
+              <p>
+                Learn how to build a free Intercom clone with modern
+                technologies
+              </p>
             </a>
           </div>
-          <div className='right'>
+          <div className="right">
             <h3>Next Steps</h3>
             <Step
-              title='Advanced Query Parameters'
-              description={'Learn more about Graphcools powerful filter API that ' +
-              'allows you to specify exactly what you want.'}
-              to={'https://www.graph.cool/docs/tutorials/designing-powerfu' +
-              'l-apis-with-graphql-query-parameters-aing7uech3/'}
+              title="Advanced Query Parameters"
+              description={
+                'Learn more about Graphcools powerful filter API that ' +
+                'allows you to specify exactly what you want.'
+              }
+              to={
+                'https://www.graph.cool/docs/tutorials/designing-powerfu' +
+                'l-apis-with-graphql-query-parameters-aing7uech3/'
+              }
             />
             <Step
-              title='Authentication & Authorization'
-              description={'Graphcool provides a powerful Auth mechanism that supports Facebook, Google etc.' +
-              ' that you can leverage in your app'}
-              to='https://www.graph.cool/docs/reference/auth/overview-wejileech9/'
+              title="Authentication & Authorization"
+              description={
+                'Graphcool provides a powerful Auth mechanism that supports Facebook, Google etc.' +
+                ' that you can leverage in your app'
+              }
+              to="https://www.graph.cool/docs/reference/auth/overview-wejileech9/"
             />
             <Step
-              title='Functions'
-              description={'GraphQL is a powerful technology. But sometimes you want ' +
-              'custom logic. With functions you can extend Graphcool to your needs.'}
-              to='https://www.graph.cool/docs/reference/functions/overview-boo6uteemo/'
+              title="Functions"
+              description={
+                'GraphQL is a powerful technology. But sometimes you want ' +
+                'custom logic. With functions you can extend Graphcool to your needs.'
+              }
+              to="https://www.graph.cool/docs/reference/functions/overview-boo6uteemo/"
             />
-            <div className='go-to-docs'>
-              <A target='https://graph.cool/docs/'>Go to Docs</A>
+            <div className="go-to-docs">
+              <A target="https://graph.cool/docs/">Go to Docs</A>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 }
@@ -223,12 +239,13 @@ interface StepProps {
   to: string
 }
 
-function Step({title, description, to}) {
+function Step({ title, description, to }) {
   return (
-    <a href={to} target='_blank' className='step'>
+    <a href={to} target="_blank" className="step">
       <style jsx>{`
         .step {
-          @p: .bb, .bDarkBlue06, .flex, .itemsCenter, .pl38, .mt16, .pr25, .darkBlue70;
+          @p: .bb, .bDarkBlue06, .flex, .itemsCenter, .pl38, .mt16, .pr25,
+            .darkBlue70;
           transition: transform .25s background-color;
           padding-bottom: 20px;
         }
@@ -251,28 +268,32 @@ function Step({title, description, to}) {
 
         @keyframes move {
           0% {
-            transform: translate3D(0,0,0);
+            transform: translate3D(0, 0, 0);
           }
 
           50% {
-            transform: translate3D(3px,0,0);
+            transform: translate3D(3px, 0, 0);
           }
 
           100% {
-            transform: translate3D(0,0,0);
+            transform: translate3D(0, 0, 0);
           }
         }
       `}</style>
-      <div className='content'>
-        <h2>{title}</h2>
-        <p>{description}</p>
+      <div className="content">
+        <h2>
+          {title}
+        </h2>
+        <p>
+          {description}
+        </p>
       </div>
       <Icon
         src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
         color={$v.blue}
         width={14}
         height={11}
-        className='arrow'
+        className="arrow"
       />
     </a>
   )

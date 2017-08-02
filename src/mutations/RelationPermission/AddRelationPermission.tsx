@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import {UserType, PermissionRuleType} from '../../types/types'
+import { UserType, PermissionRuleType } from '../../types/types'
 
 interface Props {
   relationId: string
@@ -38,20 +38,24 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input: {
-      ...input,
-      isActive: true,
-    }},
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'relation',
-      parentID: input.relationId,
-      connectionName: 'permissions',
-      edgeName: 'relationPermissionEdge',
-      rangeBehaviors: {
-        '': 'append',
+    variables: {
+      input: {
+        ...input,
+        isActive: true,
       },
-    }],
+    },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'relation',
+        parentID: input.relationId,
+        connectionName: 'permissions',
+        edgeName: 'relationPermissionEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
+      },
+    ],
   })
 }
 

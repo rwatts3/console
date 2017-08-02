@@ -19,13 +19,12 @@ export default class LoadingCell extends React.Component<Props, {}> {
       >
         <span className={classes.content}>
           {!this.props.empty &&
-          <div
-            className={classes.loader}
-            style={{
-              width: `${100 - (50 * Math.random())}%`,
-            }}
-          />
-          }
+            <div
+              className={classes.loader}
+              style={{
+                width: `${100 - 50 * Math.random()}%`,
+              }}
+            />}
         </span>
       </div>
     )

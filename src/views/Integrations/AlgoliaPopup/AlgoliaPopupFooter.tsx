@@ -1,11 +1,9 @@
 import * as React from 'react' // tslint:disable-line
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 
-const Container = styled.div`
-  height: 103px;
-`
+const Container = styled.div`height: 103px;`
 
 const Button = styled.button`
   transition: color ${variables.duration} linear;
@@ -21,10 +19,21 @@ interface Props {
   onUpdate: (e: any) => void
 }
 
-export default ({onCancel, isValid, onUpdate}: Props) => (
-  <Container className={cx($p.flex, $p.justifyBetween, $p.white, $p.itemsCenter, $p.bt, $p.ph25)}>
-    <div onClick={onCancel} className={cx($p.black50, $p.pointer)}>Cancel</div>
-    {isValid && (
+export default ({ onCancel, isValid, onUpdate }: Props) =>
+  <Container
+    className={cx(
+      $p.flex,
+      $p.justifyBetween,
+      $p.white,
+      $p.itemsCenter,
+      $p.bt,
+      $p.ph25,
+    )}
+  >
+    <div onClick={onCancel} className={cx($p.black50, $p.pointer)}>
+      Cancel
+    </div>
+    {isValid &&
       <Button
         className={cx(
           $p.ml25,
@@ -43,7 +52,5 @@ export default ({onCancel, isValid, onUpdate}: Props) => (
         }}
       >
         Update
-      </Button>
-    )}
+      </Button>}
   </Container>
-)

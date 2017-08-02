@@ -1,10 +1,7 @@
 import * as React from 'react'
-import {Viewer} from '../../../types/types'
+import { Viewer } from '../../../types/types'
 import ProjectInfo from './ProjectInfo'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import DangerZone from './DangerZone'
 
 interface Props {
@@ -12,20 +9,17 @@ interface Props {
 }
 
 class General extends React.Component<Props, {}> {
-
   render() {
     return (
-      <div className='container'>
+      <div className="container">
         <style jsx={true}>{`
           .container {
             @inherit: .br;
             max-width: 700px;
-            border-color: rgba( 229, 229, 229, 1);
+            border-color: rgba(229, 229, 229, 1);
           }
         `}</style>
-        <ProjectInfo
-          project={this.props.viewer.project}
-        />
+        <ProjectInfo project={this.props.viewer.project} />
         <DangerZone
           viewer={this.props.viewer}
           project={this.props.viewer.project}
@@ -38,9 +32,9 @@ class General extends React.Component<Props, {}> {
 export default createFragmentContainer(General, {
   viewer: graphql`
     fragment General_viewer on Viewer {
-      ...DangerZone_viewer,
+      ...DangerZone_viewer
       project: projectByName(projectName: $projectName) {
-        ...DangerZone_project,
+        ...DangerZone_project
         ...ProjectInfo_project
         name
       }

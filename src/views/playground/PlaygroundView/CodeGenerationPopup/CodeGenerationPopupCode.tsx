@@ -1,12 +1,12 @@
 import * as React from 'react'
 import * as cx from 'classnames'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as Codemirror from 'react-codemirror'
-import {CodeGenerator} from '../../../../utils/codeGeneration'
-import {GraphQLClient, Environment} from '../../../../types/types'
-import {connect} from 'react-redux'
+import { CodeGenerator } from '../../../../utils/codeGeneration'
+import { GraphQLClient, Environment } from '../../../../types/types'
+import { connect } from 'react-redux'
 import EditorConfiguration = CodeMirror.EditorConfiguration
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import tracker from '../../../../utils/metrics'
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 
 class CodeGenerationPopupCode extends React.Component<Props, {}> {
   render() {
-    const {client, environment, endpointUrl, query} = this.props
+    const { client, environment, endpointUrl, query } = this.props
 
     const generator = new CodeGenerator(client, environment, endpointUrl)
     const projectSetup = generator.getSetup()
@@ -30,14 +30,18 @@ class CodeGenerationPopupCode extends React.Component<Props, {}> {
         <Codemirror
           key={projectSetup}
           value={projectSetup}
-          options={{
-            height: 100,
-            mode: 'shell',
-            theme: 'dracula',
-          } as EditorConfiguration}
-          onFocusChange={(focused) => {
+          options={
+            {
+              height: 100,
+              mode: 'shell',
+              theme: 'dracula',
+            } as EditorConfiguration
+          }
+          onFocusChange={focused => {
             if (focused) {
-              tracker.track(ConsoleEvents.Playground.CodeGenerationPopup.setupFocused())
+              tracker.track(
+                ConsoleEvents.Playground.CodeGenerationPopup.setupFocused(),
+              )
             }
           }}
         />
@@ -45,13 +49,17 @@ class CodeGenerationPopupCode extends React.Component<Props, {}> {
         <Codemirror
           key={code}
           value={code}
-          options={{
-            mode: 'javascript',
-            theme: 'dracula',
-          } as EditorConfiguration}
-          onFocusChange={(focused) => {
+          options={
+            {
+              mode: 'javascript',
+              theme: 'dracula',
+            } as EditorConfiguration
+          }
+          onFocusChange={focused => {
             if (focused) {
-              tracker.track(ConsoleEvents.Playground.CodeGenerationPopup.codeFocused())
+              tracker.track(
+                ConsoleEvents.Playground.CodeGenerationPopup.codeFocused(),
+              )
             }
           }}
         />

@@ -2,23 +2,25 @@ import * as React from 'react'
 import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
-import {chunk, mmDDyyyyFromTimestamp} from '../../../utils/utils'
+import { chunk, mmDDyyyyFromTimestamp } from '../../../utils/utils'
+import { createRefetchContainer, graphql } from 'react-relay'
+import { Viewer, Invoice } from '../../../types/types'
 import {
-  createRefetchContainer,
-  graphql,
-} from 'react-relay'
-import {Viewer, Invoice} from '../../../types/types'
-import {
-  creditCardNumberValid, expirationDateValid, cpcValid,
-  minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits,
+  creditCardNumberValid,
+  expirationDateValid,
+  cpcValid,
+  minCPCDigits,
+  minCreditCardDigits,
+  maxCPCDigits,
+  maxCreditCardDigits,
 } from '../../../utils/creditCardValidator'
 import SetCreditCardMutation from '../../../mutations/Billing/SetCreditCardMutation'
 import Loading from '../../../components/Loading/Loading'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {connect} from 'react-redux'
-import {showNotification} from '../../../actions/notification'
-import {bindActionCreators} from 'redux'
-import {onFailureShowNotification} from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { connect } from 'react-redux'
+import { showNotification } from '../../../actions/notification'
+import { bindActionCreators } from 'redux'
+import { onFailureShowNotification } from '../../../utils/relay'
 
 interface State {
   newCreditCardNumber: string
@@ -41,7 +43,6 @@ interface State {
 }
 
 interface Props {
-
   viewer: Viewer
   node: Node
   location: any
@@ -57,12 +58,10 @@ interface Props {
 }
 
 class Billing extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
     this.state = {
-
       newCreditCardNumber: '',
       newCardHolderName: '',
       newExpirationDate: '',
@@ -85,18 +84,18 @@ class Billing extends React.Component<Props, State> {
 
   renderSyncNotice() {
     return (
-      <div className='flex flexColumn itemsCenter justifyCenter ph96 tc size black50'>
+      <div className="flex flexColumn itemsCenter justifyCenter ph96 tc size black50">
         <style jsx={true}>{`
-            .size {
-              height: 350px;
-              width: 700px;
-            }
-          `}</style>
+          .size {
+            height: 350px;
+            width: 700px;
+          }
+        `}</style>
         <div>
-          We're currently synchronizing your project data.
-          Please wait a little bit until Billing is available here.
+          We're currently synchronizing your project data. Please wait a little
+          bit until Billing is available here.
         </div>
-        <div className='mt16'>
+        <div className="mt16">
           If you have a question, please contact our support team! 👋
         </div>
       </div>
@@ -104,30 +103,36 @@ class Billing extends React.Component<Props, State> {
   }
 
   renderNeedOwnerShipNotice() {
-    const owner = this.props.viewer.project.seats.edges.find(seat => seat.node.isOwner).node
+    const owner = this.props.viewer.project.seats.edges.find(
+      seat => seat.node.isOwner,
+    ).node
     return (
-      <div className='flex flexColumn itemsCenter justifyCenter ph96 tc size black50'>
+      <div className="flex flexColumn itemsCenter justifyCenter ph96 tc size black50">
         <style jsx={true}>{`
-            .size {
-              height: 350px;
-              width: 700px;
-            }
-          `}</style>
+          .size {
+            height: 350px;
+            width: 700px;
+          }
+        `}</style>
         <div>
-          You are not the owner of this project. If you have questions about the billing,
-          talk to <b>{owner.name}</b> (<b>{owner.email}</b>),
-          who is the owner of this project.
+          You are not the owner of this project. If you have questions about the
+          billing, talk to <b>{owner.name}</b> (<b>{owner.email}</b>), who is
+          the owner of this project.
         </div>
       </div>
     )
   }
 
   render() {
+    const crmProjectsAvailable =
+      Boolean(this.props.viewer.crm) &&
+      Boolean(this.props.viewer.crm.crm) &&
+      Boolean(this.props.viewer.crm.crm.customer) &&
+      Boolean(this.props.viewer.crm.crm.customer.projects)
 
-    const crmProjectsAvailable = Boolean(this.props.viewer.crm) && Boolean(this.props.viewer.crm.crm) &&
-      Boolean(this.props.viewer.crm.crm.customer) && Boolean(this.props.viewer.crm.crm.customer.projects)
-
-    const ownerMail = this.props.viewer.project.seats.edges.find(seat => seat.node.isOwner).node.email
+    const ownerMail = this.props.viewer.project.seats.edges.find(
+      seat => seat.node.isOwner,
+    ).node.email
     const isOwner = ownerMail === this.props.viewer.crm.email
 
     if (!crmProjectsAvailable) {
@@ -138,9 +143,11 @@ class Billing extends React.Component<Props, State> {
       }
     }
 
-    const projectNode = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
-      return edge.node.systemProjectId === this.props.viewer.project.id
-    })
+    const projectNode = this.props.viewer.crm.crm.customer.projects.edges.find(
+      edge => {
+        return edge.node.systemProjectId === this.props.viewer.project.id
+      },
+    )
 
     let project = null
     if (projectNode && projectNode.node) {
@@ -157,20 +164,31 @@ class Billing extends React.Component<Props, State> {
 
     const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
 
-    const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(edge => edge.node)
+    const invoices: Invoice[] = project.projectBillingInformation.invoices.edges.map(
+      edge => edge.node,
+    )
     const currentInvoice = invoices[invoices.length - 1]
     const creditCard = project.projectBillingInformation.creditCard
-    const expirationYear = creditCard ? creditCard.expYear.toString().substr(2, 2) : ''
-    const creditCardNumber = creditCard ? 'XXXX XXXX XXXX ' + creditCard.last4 : ''
-    const expirationDate = creditCard ? creditCard.expMonth + '/' + expirationYear : ''
+    const expirationYear = creditCard
+      ? creditCard.expYear.toString().substr(2, 2)
+      : ''
+    const creditCardNumber = creditCard
+      ? 'XXXX XXXX XXXX ' + creditCard.last4
+      : ''
+    const expirationDate = creditCard
+      ? creditCard.expMonth + '/' + expirationYear
+      : ''
 
     return (
-      <div className={`container ${this.state.isEditingCreditCardInfo && 'bottomPadding'}`}>
+      <div
+        className={`container ${this.state.isEditingCreditCardInfo &&
+          'bottomPadding'}`}
+      >
         <style jsx>{`
           .container {
             @p: .br;
             max-width: 700px;
-            border-color: rgba( 229, 229, 229, 1);
+            border-color: rgba(229, 229, 229, 1);
           }
 
           .bottomPadding {
@@ -183,9 +201,8 @@ class Billing extends React.Component<Props, State> {
             bottom: 0px;
             left: 0px;
             right: 0px;
-            background-color: rgb(250,250,250);
+            background-color: rgb(250, 250, 250);
           }
-
         `}</style>
         <CurrentPlan
           plan={project.projectBillingInformation.plan}
@@ -197,23 +214,39 @@ class Billing extends React.Component<Props, State> {
           usedSeats={seats}
           plan={project.projectBillingInformation.plan}
           lastInvoiceDate={mmDDyyyyFromTimestamp(currentInvoice.timestamp)}
-          currentNumberOfRequests={currentInvoice.usageRequests.reduce((a, b) => a + b, 0)}
+          currentNumberOfRequests={currentInvoice.usageRequests.reduce(
+            (a, b) => a + b,
+            0,
+          )}
           usedStoragePerDay={currentInvoice.usageStorage}
           overageRequests={currentInvoice.overageRequests}
           overageStorage={currentInvoice.overageStorage}
         />
-        {!this.state.isLoading ?
-          (project.projectBillingInformation.creditCard &&
+        {!this.state.isLoading
+          ? project.projectBillingInformation.creditCard &&
             <CreditCardInformation
               onCreditCardNumberChange={this.updateCreditCardNumber}
-              onCardHolderNameChange={(newValue) => this.setState({newCardHolderName: newValue} as State)}
+              onCardHolderNameChange={newValue =>
+                this.setState({ newCardHolderName: newValue } as State)}
               onExpirationDateChange={this.updateExpirationDate}
               onCPCChange={this.updateCPC}
               setEditingState={this.setEditingState}
               isEditing={this.state.isEditingCreditCardInfo}
-              creditCardNumber={this.state.isEditingCreditCardInfo ? this.state.newCreditCardNumber : creditCardNumber}
-              cardHolderName={this.state.isEditingCreditCardInfo ? this.state.newCardHolderName : creditCard.name}
-              expirationDate={this.state.isEditingCreditCardInfo ? this.state.newExpirationDate : expirationDate}
+              creditCardNumber={
+                this.state.isEditingCreditCardInfo
+                  ? this.state.newCreditCardNumber
+                  : creditCardNumber
+              }
+              cardHolderName={
+                this.state.isEditingCreditCardInfo
+                  ? this.state.newCardHolderName
+                  : creditCard.name
+              }
+              expirationDate={
+                this.state.isEditingCreditCardInfo
+                  ? this.state.newExpirationDate
+                  : expirationDate
+              }
               cpc={this.state.newCPC}
               addressLine1={this.state.newAddressLine1}
               addressLine2={this.state.newAddressLine2}
@@ -227,45 +260,36 @@ class Billing extends React.Component<Props, State> {
               onSaveChanges={this.initiateUpdateCreditCard}
               invoices={invoices}
             />
-          )
-          :
-          (
-            <div className='loadingContainer'>
-              <Loading/>
-            </div>
-          )
-        }
+          : <div className="loadingContainer">
+              <Loading />
+            </div>}
         {this.props.children}
       </div>
     )
   }
 
-  private updateCPC = (newValue) => {
+  private updateCPC = newValue => {
     let newCPC
     if (newValue.length > maxCPCDigits) {
       newCPC = newValue.substr(0, maxCPCDigits)
     } else {
       newCPC = newValue
     }
-    this.setState(
-      {newCPC: newCPC} as State,
-      () => this.validateCreditCardDetails(),
+    this.setState({ newCPC } as State, () =>
+      this.validateCreditCardDetails(),
     )
   }
 
-  private updateExpirationDate = (newValue) => {
+  private updateExpirationDate = newValue => {
     if (newValue.length > 5) {
       return
     }
-    this.setState(
-      {newExpirationDate: newValue} as State,
-      () => this.validateCreditCardDetails(),
+    this.setState({ newExpirationDate: newValue } as State, () =>
+      this.validateCreditCardDetails(),
     )
-
   }
 
-  private updateCreditCardNumber = (newValue) => {
-
+  private updateCreditCardNumber = newValue => {
     // max chunks is 5 since a credit card can have up to 19 digits
     const maxChunks = 5
 
@@ -273,15 +297,14 @@ class Billing extends React.Component<Props, State> {
     if (newValue.length > 4 && !newValue.includes(' ')) {
       const chunks = chunk(newValue, maxChunks, true)
       const newCreditCardNumber = chunks.join(' ')
-      this.setState(
-        {newCreditCardNumber: newCreditCardNumber} as State,
-        () => this.validateCreditCardDetails(),
+      this.setState({ newCreditCardNumber } as State, () =>
+        this.validateCreditCardDetails(),
       )
       return
     }
 
     // regular typing
-    let creditCardComponents = newValue.split(' ')
+    const creditCardComponents = newValue.split(' ')
     const lastComponent = creditCardComponents[creditCardComponents.length - 1]
 
     const newValueWithoutSpaces = creditCardComponents.join('')
@@ -290,7 +313,10 @@ class Billing extends React.Component<Props, State> {
     }
 
     let newLastComponent
-    if (creditCardComponents.length <= maxChunks && lastComponent.length === 4) {
+    if (
+      creditCardComponents.length <= maxChunks &&
+      lastComponent.length === 4
+    ) {
       newLastComponent = lastComponent + ' '
     } else {
       newLastComponent = lastComponent
@@ -298,14 +324,13 @@ class Billing extends React.Component<Props, State> {
 
     creditCardComponents[creditCardComponents.length - 1] = newLastComponent
     const newCreditCardNumber = creditCardComponents.join(' ')
-    this.setState(
-      {newCreditCardNumber: newCreditCardNumber} as State,
-      () => this.validateCreditCardDetails(),
+    this.setState({ newCreditCardNumber } as State, () =>
+      this.validateCreditCardDetails(),
     )
   }
 
   private setEditingState = (isEditing: boolean, saveChanges: boolean) => {
-    this.setState({isEditingCreditCardInfo: isEditing} as State)
+    this.setState({ isEditingCreditCardInfo: isEditing } as State)
   }
 
   private validateAddressDetails = () => {
@@ -314,54 +339,57 @@ class Billing extends React.Component<Props, State> {
     // const stateValid = this.state.newState.length > 0
     const cityValid = this.state.newCity.length > 0
     const countryValid = this.state.newCountry.length > 0
-    const addressValid = addressLine1Valid && zipcodeValid && cityValid && countryValid
-    this.setState({addressDataValid: addressValid} as State)
-
+    const addressValid =
+      addressLine1Valid && zipcodeValid && cityValid && countryValid
+    this.setState({ addressDataValid: addressValid } as State)
   }
 
   private validateCreditCardDetails = () => {
-    const isCreditCardNumberValid = creditCardNumberValid(this.state.newCreditCardNumber)
-    const isExpirationDateValid = expirationDateValid(this.state.newExpirationDate)
+    const isCreditCardNumberValid = creditCardNumberValid(
+      this.state.newCreditCardNumber,
+    )
+    const isExpirationDateValid = expirationDateValid(
+      this.state.newExpirationDate,
+    )
     const isCPCValid = cpcValid(this.state.newCPC)
-    this.setState({creditCardDetailsValid: isCreditCardNumberValid && isExpirationDateValid && isCPCValid} as State)
+    this.setState(
+      {
+        creditCardDetailsValid:
+          isCreditCardNumberValid && isExpirationDateValid && isCPCValid,
+      } as State,
+    )
   }
 
   private onAddressDataChange = (fieldName: string, newValue: string) => {
     switch (fieldName) {
       case 'addressLine1':
-        this.setState(
-          {newAddressLine1: newValue} as State,
-          () => this.validateAddressDetails(),
+        this.setState({ newAddressLine1: newValue } as State, () =>
+          this.validateAddressDetails(),
         )
         break
       case 'addressLine2':
-        this.setState(
-          {newAddressLine2: newValue} as State,
-          () => this.validateAddressDetails(),
+        this.setState({ newAddressLine2: newValue } as State, () =>
+          this.validateAddressDetails(),
         )
         break
       case 'city':
-        this.setState(
-          {newCity: newValue} as State,
-          () => this.validateAddressDetails(),
+        this.setState({ newCity: newValue } as State, () =>
+          this.validateAddressDetails(),
         )
         break
       case 'zipCode':
-        this.setState(
-          {newZipCode: newValue} as State,
-          () => this.validateAddressDetails(),
+        this.setState({ newZipCode: newValue } as State, () =>
+          this.validateAddressDetails(),
         )
         break
       case 'state':
-        this.setState(
-          {newState: newValue} as State,
-          () => this.validateAddressDetails(),
+        this.setState({ newState: newValue } as State, () =>
+          this.validateAddressDetails(),
         )
         break
       case 'country':
-        this.setState(
-          {newCountry: newValue} as State,
-          () => this.validateAddressDetails(),
+        this.setState({ newCountry: newValue } as State, () =>
+          this.validateAddressDetails(),
         )
         break
       default:
@@ -370,13 +398,12 @@ class Billing extends React.Component<Props, State> {
   }
 
   private initiateUpdateCreditCard = () => {
-
     const expirationDateComponents = this.state.newExpirationDate.split('/')
     const expirationMonth = expirationDateComponents[0]
     const expirationYear = expirationDateComponents[1]
 
     if (this.state.creditCardDetailsValid && this.state.addressDataValid) {
-      this.setState({isLoading: true} as State)
+      this.setState({ isLoading: true } as State)
       Stripe.card.createToken(
         {
           number: this.state.newCreditCardNumber,
@@ -394,40 +421,43 @@ class Billing extends React.Component<Props, State> {
         this.stripeResponseHandler,
       )
     }
-
   }
 
   private stripeResponseHandler = (status, response) => {
-
     if (response.error) {
       console.error(response.error)
-      this.props.showNotification({message: response.error.message, level: 'error'})
-      this.setState({isLoading: false} as State)
+      this.props.showNotification({
+        message: response.error.message,
+        level: 'error',
+      })
+      this.setState({ isLoading: false } as State)
       return
     }
 
     const token = response.id
 
-      SetCreditCardMutation.commit({
-        projectId: this.props.viewer.project.id,
-        token: token,
-      }).then(() => {
-          this.setState({
+    SetCreditCardMutation.commit({
+      projectId: this.props.viewer.project.id,
+      token,
+    })
+      .then(() => {
+        this.setState(
+          {
             isEditingCreditCardInfo: false,
             isLoading: false,
-          } as State)
-          this.props.relay.forceFetch()
-        })
-        .catch(transaction => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({isLoading: false} as State)
-        })
+          } as State,
+        )
+        this.props.relay.forceFetch()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({ isLoading: false } as State)
+      })
   }
-
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ showNotification }, dispatch)
 }
 
 const mappedBilling = connect(null, mapDispatchToProps)(Billing)
@@ -448,7 +478,7 @@ export default createRefetchContainer(mappedBilling, {
             }
           }
         }
-      },
+      }
       crm: user {
         name
         email
@@ -463,7 +493,7 @@ export default createRefetchContainer(mappedBilling, {
                   systemProjectId
                   projectBillingInformation {
                     plan
-                    invoices(first: 1000)  {
+                    invoices(first: 1000) {
                       edges {
                         node {
                           overageRequests
@@ -495,4 +525,5 @@ export default createRefetchContainer(mappedBilling, {
         }
       }
     }
-  `})
+  `,
+})

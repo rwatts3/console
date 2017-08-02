@@ -1,6 +1,10 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
-import { ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType } from '../types/types'
+import {
+  ActionTriggerType,
+  ActionHandlerType,
+  ActionTriggerMutationModelMutationType,
+} from '../types/types'
 
 interface Props {
   actionId: string
@@ -36,13 +40,15 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input: input.filterNullAndUndefined()},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        action: input.actionId,
+    variables: { input: input.filterNullAndUndefined() },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          action: input.actionId,
+        },
       },
-    }],
+    ],
   })
 }
 

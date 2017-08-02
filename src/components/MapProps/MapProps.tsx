@@ -1,9 +1,10 @@
 import * as React from 'react'
 
-export default function mapProps(mapping: { [key: string]: (props: any) => any }) {
-  return (DecoratedComponent) => {
+export default function mapProps(mapping: {
+  [key: string]: (props: any) => any
+}) {
+  return DecoratedComponent => {
     class MapProps extends React.Component<{}, {}> {
-
       static DecoratedComponent = DecoratedComponent
 
       render() {
@@ -11,9 +12,9 @@ export default function mapProps(mapping: { [key: string]: (props: any) => any }
 
         try {
           mapped = Object.keys(mapping).reduce(
-            (acc, key) => (Object.assign({}, acc, {
-              [key]: mapping[key](this.props),
-            })),
+            (acc, key) =>
+              {...acc, 
+                [key]: mapping[key](this.props)},
             {},
           )
         } catch (err) {
@@ -21,9 +22,9 @@ export default function mapProps(mapping: { [key: string]: (props: any) => any }
           return null
         }
 
-        const newProps = Object.assign({}, this.props, mapped)
+        const newProps = {...this.props, ...mapped}
 
-        return <DecoratedComponent {...newProps}/>
+        return <DecoratedComponent {...newProps} />
       }
     }
 

@@ -1,32 +1,34 @@
 import * as React from 'react'
-const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor').QueryEditor
+const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor')
+  .QueryEditor
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 import JsEditor from './JsEditor'
 import Toggle from './Toggle'
 import WebhookEditor from './WebhookEditor'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../../utils/modalStyle'
+import { fieldModalStyle } from '../../../utils/modalStyle'
 import StepMarker from './StepMarker'
-import {EventType} from './FunctionPopup'
+import { EventType } from './FunctionPopup'
 import { buildClientSchema, introspectionQuery } from 'graphql'
-import {CustomGraphiQL} from 'graphcool-graphiql'
-import {getEventInput} from './TestPopup'
+import { CustomGraphiQL } from 'graphcool-graphiql'
+import { getEventInput } from './TestPopup'
 import TestButton from './TestButton'
-import {FunctionType} from '../../../types/types'
+import { FunctionType } from '../../../types/types'
 import {
-  getSSSExampleEvent, getFakeSchema,
+  getSSSExampleEvent,
+  getFakeSchema,
   getCustomMutationExampleEvent,
 } from '../../../utils/example-generation/index'
-import {throttle} from 'lodash'
-import {generateRPTestEvent} from '../../../utils/functionTest'
-import {smoothScrollTo} from '../../../utils/smooth'
+import { throttle } from 'lodash'
+import { generateRPTestEvent } from '../../../utils/functionTest'
+import { smoothScrollTo } from '../../../utils/smooth'
 import TestLog from './TestLog'
 import DummyTestLog from './DummyTestLog'
 import ResizableBox from '../../../components/ResizableBox'
 import Loading from '../../../components/Loading/Loading'
-import {withRouter} from 'found'
+import { withRouter } from 'found'
 
 interface Props {
   schema: string
@@ -36,8 +38,8 @@ interface Props {
   onTypeChange: (type: FunctionType) => void
   webhookUrl: string
   onChangeUrl: (url: string) => void
-  headers: {[key: string]: string}
-  onChangeHeaders: (headers: {[key: string]: string}) => void
+  headers: { [key: string]: string }
+  onChangeHeaders: (headers: { [key: string]: string }) => void
   editing: boolean
   eventType: EventType
   onChangeQuery: (query: string) => void
@@ -68,18 +70,18 @@ export interface TestResponse {
   inline?: {
     errors: TestError[]
     event: string
-    logs: string,
+    logs: string
   }
   webhook?: {
     request: {
       body: string
       headers: any
-      url: string,
-    },
+      url: string
+    }
     response: {
       body: string
-      statusCode: number,
-    },
+      statusCode: number
+    }
   }
 }
 
@@ -101,7 +103,7 @@ class FunctionInput extends React.Component<Props, State> {
       getSSSExampleEvent(schema, subscriptionQuery).then(res => {
         const exampleEvent = JSON.stringify(res, null, 2)
         if (res) {
-          this.setState({exampleEvent} as State)
+          this.setState({ exampleEvent } as State)
         }
       })
     },
@@ -113,7 +115,10 @@ class FunctionInput extends React.Component<Props, State> {
   private updateCustomMutationExampleEvent = throttle(
     (query: string) => {
       const exampleEvent = getCustomMutationExampleEvent(query)
-      this.setState(state => ({...state, exampleEvent: JSON.stringify(exampleEvent, null, 2)}))
+      this.setState(state => ({
+        ...state,
+        exampleEvent: JSON.stringify(exampleEvent, null, 2),
+      }))
     },
     1000,
     {
@@ -131,7 +136,7 @@ class FunctionInput extends React.Component<Props, State> {
       responses: [],
       loading: false,
     }
-    global['i'] = this
+    global.i = this
   }
   render() {
     const fullscreen = this.props.location.pathname.endsWith('fullscreen')
@@ -153,7 +158,7 @@ class FunctionInput extends React.Component<Props, State> {
         <Modal
           isOpen
           style={modalStyling}
-          contentLabel='Function Editor'
+          contentLabel="Function Editor"
           onRequestClose={this.close}
         >
           {this.renderComponent()}
@@ -185,7 +190,10 @@ class FunctionInput extends React.Component<Props, State> {
       this.updateSSSExampleEvent(this.state.fakeSchema, nextProps.query)
     }
 
-    if (nextProps.query !== this.props.query && nextProps.eventType === 'SCHEMA_EXTENSION') {
+    if (
+      nextProps.query !== this.props.query &&
+      nextProps.eventType === 'SCHEMA_EXTENSION'
+    ) {
       this.updateCustomMutationExampleEvent(nextProps.query)
     }
 
@@ -196,31 +204,32 @@ class FunctionInput extends React.Component<Props, State> {
   updateRPExampleEvent(schema?: string) {
     const newSchema = schema || this.props.schema
     const exampleEvent = JSON.stringify(generateRPTestEvent(newSchema), null, 2)
-    this.setState({exampleEvent} as State)
+    this.setState({ exampleEvent } as State)
   }
   fetchSSSchema() {
-    const {projectId} = this.props
+    const { projectId } = this.props
     const endpointUrl = `${__BACKEND_ADDR__}/simple/v1/${projectId}`
 
-    return fetch(endpointUrl, { // tslint:disable-line
+    return fetch(endpointUrl, {
+      // tslint:disable-line
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
         'x-graphcool-source': 'console:playground',
       },
-      body: JSON.stringify({query: introspectionQuery}),
+      body: JSON.stringify({ query: introspectionQuery }),
     })
-      .then((response) => {
+      .then(response => {
         return response.json()
       })
       .then((res: any) => {
         const ssschema = buildClientSchema(res.data)
         // trim out mutationType and queryType
-        ssschema['_mutationType']['_fields'] = {}
-        ssschema['_queryType']['_fields'] = {}
+        ssschema._mutationType._fields = {}
+        ssschema._queryType._fields = {}
         const fullSchema = buildClientSchema(res.data)
         const fakeSchema = getFakeSchema(fullSchema)
-        this.setState({ssschema, fakeSchema} as State)
+        this.setState({ ssschema, fakeSchema } as State)
         this.updateSSSExampleEvent(fakeSchema)
       })
   }
@@ -256,11 +265,20 @@ class FunctionInput extends React.Component<Props, State> {
     }
   }
   renderComponent() {
-    const {inputWidth, showExample, responses} = this.state
+    const { inputWidth, showExample, responses } = this.state
     const {
-      schema, value, onChange, onTypeChange, isInline, onChangeUrl, webhookUrl, eventType, sssModelName, location,
+      schema,
+      value,
+      onChange,
+      onTypeChange,
+      isInline,
+      onChangeUrl,
+      webhookUrl,
+      eventType,
+      sssModelName,
+      location,
     } = this.props
-    const {onChangeQuery} = this.props
+    const { onChangeQuery } = this.props
 
     const inputTitle = this.getInputTitle()
     const fullscreen = location.pathname.endsWith('fullscreen')
@@ -273,9 +291,11 @@ class FunctionInput extends React.Component<Props, State> {
     const logsWidth = window.innerWidth / logsDenominator - 120
 
     return (
-      <div className={cn('request-pipeline-function-input', 'sss', {
-        fullscreen,
-      })}>
+      <div
+        className={cn('request-pipeline-function-input', 'sss', {
+          fullscreen,
+        })}
+      >
         <style jsx>{`
           .request-pipeline-function-input {
             @p: .br2, .buttonShadow, .flex, .relative;
@@ -293,7 +313,8 @@ class FunctionInput extends React.Component<Props, State> {
           .fullscreen .input {
             height: 100vh;
           }
-          .input :global(.CodeMirror), .input :global(.CodeMirror-gutters) {
+          .input :global(.CodeMirror),
+          .input :global(.CodeMirror-gutters) {
             background: transparent;
           }
           .input.sss :global(.CodeMirror-gutters) {
@@ -351,7 +372,8 @@ class FunctionInput extends React.Component<Props, State> {
             @p: .pt6, .flex, .flexColumn, .flexAuto, .br2, .brRight, .relative;
           }
           .test-button {
-            @p: .absolute, .bottom0, .right0, .mb25, .mr25, .z999, .flex, .itemsEnd;
+            @p: .absolute, .bottom0, .right0, .mb25, .mr25, .z999, .flex,
+              .itemsEnd;
           }
           .body :global(.ReactCodeMirror) {
             width: 100%;
@@ -384,7 +406,8 @@ class FunctionInput extends React.Component<Props, State> {
             @p: .mv20, .f16, .green;
           }
           .loading {
-            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter,
+              .justifyCenter;
           }
           .clear {
             @p: .f12, .ttu, .br2, .mr38, .fw6, .pointer, .darkerBlue;
@@ -396,13 +419,15 @@ class FunctionInput extends React.Component<Props, State> {
             @p: .o70;
           }
           .loading {
-            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter, .justifyCenter;
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .flex, .itemsCenter,
+              .justifyCenter;
           }
           .close-icon {
             @p: .absolute, .top25, .right25, .pointer;
           }
           .powered-by {
-            @p: .flexColumn, .itemsCenter, .ma16, .f14, .white30, .noUnderline, .dib, .absolute, .bottom0, .left0, .z3;
+            @p: .flexColumn, .itemsCenter, .ma16, .f14, .white30, .noUnderline,
+              .dib, .absolute, .bottom0, .left0, .z3;
           }
           .powered-by div {
             @p: .mb16;
@@ -418,34 +443,40 @@ class FunctionInput extends React.Component<Props, State> {
           }
         `}</style>
         <ResizableBox
-          id='function-event'
+          id="function-event"
           width={eventWidth}
           height={eventHeight}
           hideArrow
           onResize={this.handleResize}
         >
           <div className={cn('input', 'sss')}>
-            <div className='sss-input'>
-              {eventType === 'SSS' && !this.props.editing && (
-                <StepMarker style={{left: -12, top: -1, position: 'relative'}}>2</StepMarker>
-              )}
+            <div className="sss-input">
+              {eventType === 'SSS' &&
+                !this.props.editing &&
+                <StepMarker
+                  style={{ left: -12, top: -1, position: 'relative' }}
+                >
+                  2
+                </StepMarker>}
               <Toggle
                 choices={[inputTitle, 'Example Event']}
-                activeChoice={this.state.showExample ? 'Example Event' : inputTitle}
+                activeChoice={
+                  this.state.showExample ? 'Example Event' : inputTitle
+                }
                 onChange={this.handleInputChange}
               />
             </div>
-            {showExample && (
-              <div className='sss-editor pl16 flexAuto'>
+            {showExample &&
+              <div className="sss-editor pl16 flexAuto">
                 <ResultViewer
                   value={this.state.exampleEvent}
                   editable
                   onChange={this.handleExampleChange}
                 />
-              </div>
-            )}
-            {!showExample && eventType === 'RP' && (
-              <div className='pl25 flexAuto'>
+              </div>}
+            {!showExample &&
+              eventType === 'RP' &&
+              <div className="pl25 flexAuto">
                 <QueryEditor
                   value={schema}
                   onChange={this.handleExampleChange}
@@ -453,121 +484,120 @@ class FunctionInput extends React.Component<Props, State> {
                   hideLineNumbers
                   hideFold
                 />
-              </div>
-            )}
-            {!showExample && (['SSS', 'SCHEMA_EXTENSION'].includes(eventType)) && (
-              <div className='sss-editor flexAuto'>
+              </div>}
+            {!showExample &&
+              ['SSS', 'SCHEMA_EXTENSION'].includes(eventType) &&
+              <div className="sss-editor flexAuto">
                 <CustomGraphiQL
                   rerenderQuery={true}
                   schema={this.state.ssschema}
                   variables={''}
                   query={this.props.query}
-                  fetcher={() => { return Promise.resolve() }}
+                  fetcher={() => {
+                    return Promise.resolve()
+                  }}
                   disableQueryHeader
                   queryOnly
                   showDocs
                   onEditQuery={onChangeQuery}
-
                 />
-              </div>
-            )}
-            {fullscreen && (
-              <a className='powered-by' href='https://auth0.com/Extend/developers' target='_blank'>
+              </div>}
+            {fullscreen &&
+              <a
+                className="powered-by"
+                href="https://auth0.com/Extend/developers"
+                target="_blank"
+              >
                 <div>powered by</div>
                 <img src={require('assets/graphics/auth0-extend.svg')} />
-              </a>
-            )}
+              </a>}
           </div>
         </ResizableBox>
-        <div className='function'>
-          <div className='head'>
-            <div className='flex'>
-              {!this.props.editing && (
-                <StepMarker style={{left: -20, top: -1, position: 'relative'}}>
+        <div className="function">
+          <div className="head">
+            <div className="flex">
+              {!this.props.editing &&
+                <StepMarker
+                  style={{ left: -20, top: -1, position: 'relative' }}
+                >
                   {eventType === 'RP' && '2'}
                   {['SSS', 'SCHEMA_EXTENSION'].includes(eventType) && '3'}
-                </StepMarker>
-              )}
-              <div className='ml10'>
+                </StepMarker>}
+              <div className="ml10">
                 <Toggle
                   choices={['Inline Code', 'Webhook']}
                   activeChoice={isInline ? 'Inline Code' : 'Webhook'}
-                  onChange={choice => choice === 'Inline Code' ? onTypeChange('AUTH0') : onTypeChange('WEBHOOK')}
+                  onChange={choice =>
+                    choice === 'Inline Code'
+                      ? onTypeChange('AUTH0')
+                      : onTypeChange('WEBHOOK')}
                 />
               </div>
             </div>
           </div>
-          <div className='body'>
-            {isInline ? (
-              <JsEditor
-                onChange={onChange}
-                value={value}
-                onFocusChange={this.handleEditorFocusChange}
-                onRun={this.runTest}
-              />
-            ) : (
-              <WebhookEditor
-                onChangeUrl={this.props.onChangeUrl}
-                url={webhookUrl}
-                headers={this.props.headers}
-                onChangeHeaders={this.props.onChangeHeaders}
-                showErrors={this.props.showErrors}
-              />
-            )}
-            {fullscreen && (
-              <div className='test-button'>
-                <TestButton onClick={this.runTest} className='o70' />
-              </div>
-            )}
+          <div className="body">
+            {isInline
+              ? <JsEditor
+                  onChange={onChange}
+                  value={value}
+                  onFocusChange={this.handleEditorFocusChange}
+                  onRun={this.runTest}
+                />
+              : <WebhookEditor
+                  onChangeUrl={this.props.onChangeUrl}
+                  url={webhookUrl}
+                  headers={this.props.headers}
+                  onChangeHeaders={this.props.onChangeHeaders}
+                  showErrors={this.props.showErrors}
+                />}
+            {fullscreen &&
+              <div className="test-button">
+                <TestButton onClick={this.runTest} className="o70" />
+              </div>}
           </div>
         </div>
-        {fullscreen && (
-          <div className='output'>
+        {fullscreen &&
+          <div className="output">
             <ResizableBox
-              id='function-logs'
+              id="function-logs"
               width={logsWidth}
               height={window.innerHeight - 64}
               hideArrow
               left
             >
-              <div className='header'>
-                <div className='flex itemsCenter'>
+              <div className="header">
+                <div className="flex itemsCenter">
                   <Icon
                     src={require('graphcool-styles/icons/fill/logs.svg')}
                     color={$v.white40}
                     width={24}
                     height={24}
                   />
-                  <div className='title'>
-                    Your Test Logs
-                  </div>
+                  <div className="title">Your Test Logs</div>
                 </div>
-                <div className='clear' onClick={this.clear}>Clear</div>
+                <div className="clear" onClick={this.clear}>
+                  Clear
+                </div>
               </div>
-              <div className='logs' ref={this.setRef}>
-                {responses.length === 0 && (
-                  <div className='will-appear'>
+              <div className="logs" ref={this.setRef}>
+                {responses.length === 0 &&
+                  <div className="will-appear">
                     The logs for your function test will appear here.
-                  </div>
-                )}
-                {responses.length > 0 ? responses.map(res => (
-                  <TestLog response={res} key={res.timestamp} />
-                )) : (
-                  [0,1,2].map(i => (
-                    <DummyTestLog key={i} />
-                  ))
-                )}
-                {this.state.loading && (
-                  <div className='loading'>
+                  </div>}
+                {responses.length > 0
+                  ? responses.map(res =>
+                      <TestLog response={res} key={res.timestamp} />,
+                    )
+                  : [0, 1, 2].map(i => <DummyTestLog key={i} />)}
+                {this.state.loading &&
+                  <div className="loading">
                     <Loading color={$v.white50} />
-                  </div>
-                )}
+                  </div>}
               </div>
             </ResizableBox>
-          </div>
-        )}
-        {fullscreen && (
-          <div className='close-icon'>
+          </div>}
+        {fullscreen &&
+          <div className="close-icon">
             <Icon
               src={require('graphcool-styles/icons/stroke/cross.svg')}
               stroke
@@ -576,66 +606,68 @@ class FunctionInput extends React.Component<Props, State> {
               width={32}
               height={32}
               onClick={this.close}
-              className='cross'
+              className="cross"
             />
-          </div>
-        )}
+          </div>}
       </div>
     )
   }
 
   private clear = () => {
-    this.setState({responses: []} as State)
+    this.setState({ responses: [] } as State)
   }
 
   private handleExampleChange = (exampleEvent: string) => {
-    this.setState({exampleEvent} as State)
+    this.setState({ exampleEvent } as State)
   }
 
   private handleInputChange = (_, i: number) => {
     const showExample = i === 1
-    this.setState({showExample} as State)
+    this.setState({ showExample } as State)
   }
 
   private handleResize = (inputWidth: number) => {
-    this.setState({inputWidth} as State)
+    this.setState({ inputWidth } as State)
   }
 
   private runTest = () => {
     const _runTest = () => {
-      const {webhookUrl, isInline} = this.props
-      const {exampleEvent} = this.state
+      const { webhookUrl, isInline } = this.props
+      const { exampleEvent } = this.state
       this.setLoading(true)
-      return fetch('https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/', {
-        method: 'post',
-        body: JSON.stringify({isInlineFunction: isInline, url: webhookUrl, event: exampleEvent}),
-      })
+      return fetch(
+        'https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/execute/',
+        {
+          method: 'post',
+          body: JSON.stringify({
+            isInlineFunction: isInline,
+            url: webhookUrl,
+            event: exampleEvent,
+          }),
+        },
+      )
         .then(res => res.json())
         .then((res: any) => {
-          this.setState(
-            state => {
-              return {
-                ...state,
-                responses: [res].concat(state.responses),
-              }
-            },
-            this.scrollUp,
-          )
+          this.setState(state => {
+            return {
+              ...state,
+              responses: [res].concat(state.responses),
+            }
+          }, this.scrollUp)
           this.setLoading(false)
         })
     }
 
     this.firstTest = false
     if (this.props.isInline) {
-      this.props.updateFunction()
-        .then(_runTest)
+      this.props.updateFunction().then(_runTest)
     } else {
       _runTest()
     }
   }
 
   private setLoading(loading: boolean) {
-    this.setState({loading} as State)
+    this.setState({ loading } as State)
   }
 
   private setRef = logsRef => {
@@ -648,7 +680,7 @@ class FunctionInput extends React.Component<Props, State> {
     }
   }
 
-  private close = (e) => {
+  private close = e => {
     if (e.type === 'keydown' && e.keyCode === 27) {
       return
     }
@@ -656,7 +688,7 @@ class FunctionInput extends React.Component<Props, State> {
     this.toggleFullscreen()
   }
 
-  private handleEditorFocusChange = (focused) => {
+  private handleEditorFocusChange = focused => {
     // const {pathname} = this.props.location
     // only open fullscreen when focus is established, not other way around
     // if (!pathname.endsWith('fullscreen')) {
@@ -665,7 +697,7 @@ class FunctionInput extends React.Component<Props, State> {
   }
 
   private toggleFullscreen = (open?: boolean) => {
-    const {pathname} = this.props.location
+    const { pathname } = this.props.location
     const willOpen = open || !pathname.endsWith('fullscreen')
 
     if (willOpen && !pathname.endsWith('fullscreen')) {

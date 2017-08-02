@@ -1,9 +1,9 @@
 import * as React from 'react'
 import ModelSelectionBox from './ModelSelectionBox'
 import CardinalitySelection from './CardinalitySelection'
-import {Cardinality, Model} from '../../types/types'
-import {lowercaseFirstLetter} from '../../utils/utils'
-import {Icon, $v} from 'graphcool-styles'
+import { Cardinality, Model } from '../../types/types'
+import { lowercaseFirstLetter } from '../../utils/utils'
+import { Icon, $v } from 'graphcool-styles'
 
 interface Props {
   models: Model[]
@@ -34,10 +34,9 @@ interface Props {
 }
 
 export default class ModelSelection extends React.Component<Props, {}> {
-
   render() {
     return (
-      <div className='container'>
+      <div className="container">
         <style jsx={true}>{`
           .container {
             @inherit: .flex, .ph38, .pt16, .justifyBetween;
@@ -60,14 +59,20 @@ export default class ModelSelection extends React.Component<Props, {}> {
             margin-left: 32px;
           }
         `}</style>
-        <div className={`flex itemsCenter ${this.props.selectedCardinality.startsWith('MANY') && 'topMargin20'}`}>
+        <div
+          className={`flex itemsCenter ${this.props.selectedCardinality.startsWith(
+            'MANY',
+          ) && 'topMargin20'}`}
+        >
           <ModelSelectionBox
             many={this.props.selectedCardinality.startsWith('MANY')}
             models={this.props.models}
             didSelectedModel={this.props.didSelectLeftModel}
             selectedModel={this.props.leftSelectedModel}
             relatedFieldName={this.props.fieldOnLeftModelName}
-            relatedFieldType={this.props.rightSelectedModel && this.props.leftFieldType}
+            relatedFieldType={
+              this.props.rightSelectedModel && this.props.leftFieldType
+            }
             didChangeFieldName={this.props.didChangeFieldNameOnLeftModel}
             inputIsBreakingChange={this.props.leftInputIsBreakingChange}
             modelIsBreakingChange={this.props.leftModelIsBreakingChange}
@@ -76,43 +81,49 @@ export default class ModelSelection extends React.Component<Props, {}> {
             didChangeIsRequired={this.props.didChangeFieldOnLeftModelIsRequired}
             singleCardinality={!this.props.selectedCardinality.endsWith('MANY')}
           />
-          <div className='greenLine' />
+          <div className="greenLine" />
         </div>
         <CardinalitySelection
           selectedCartinality={this.props.selectedCardinality}
           didSelectCardinality={this.props.didSelectCardinality}
         />
         <div
-          className={`relative flex itemsCenter ${this.props.selectedCardinality.endsWith('MANY') && 'topMargin20'}`}
+          className={`relative flex itemsCenter ${this.props.selectedCardinality.endsWith(
+            'MANY',
+          ) && 'topMargin20'}`}
         >
-          <div className='greenLine' />
-          {!this.props.rightSelectedModel && (
+          <div className="greenLine" />
+          {!this.props.rightSelectedModel &&
             <Icon
               width={24}
               height={24}
               src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
               color={$v.blue50}
-              className='intro-arrow'
-            />
-          )}
+              className="intro-arrow"
+            />}
           <ModelSelectionBox
             many={this.props.selectedCardinality.endsWith('MANY')}
             models={this.props.models}
             didSelectedModel={this.props.didSelectRightModel}
             selectedModel={this.props.rightSelectedModel}
             relatedFieldName={this.props.fieldOnRightModelName}
-            relatedFieldType={this.props.leftSelectedModel && this.props.rightFieldType}
+            relatedFieldType={
+              this.props.leftSelectedModel && this.props.rightFieldType
+            }
             didChangeFieldName={this.props.didChangeFieldNameOnRightModel}
             inputIsBreakingChange={this.props.rightInputIsBreakingChange}
             modelIsBreakingChange={this.props.rightModelIsBreakingChange}
             forbiddenFieldNames={this.props.forbiddenFieldNamesForRightModel}
             isRequired={this.props.fieldOnRightModelIsRequired}
-            didChangeIsRequired={this.props.didChangeFieldOnRightModelIsRequired}
-            singleCardinality={!this.props.selectedCardinality.startsWith('MANY')}
+            didChangeIsRequired={
+              this.props.didChangeFieldOnRightModelIsRequired
+            }
+            singleCardinality={
+              !this.props.selectedCardinality.startsWith('MANY')
+            }
           />
         </div>
       </div>
     )
   }
-
 }

@@ -1,22 +1,25 @@
-import {ReduxAction, ReduxThunk, Dispatch} from '../../types/reducers'
-import {TypedValue, NonScalarValue} from '../../types/utils'
-import {OrderBy, Field, Model} from '../../types/types'
-import {StateTree} from '../../types/reducers'
+import { ReduxAction, ReduxThunk, Dispatch } from '../../types/reducers'
+import { TypedValue, NonScalarValue } from '../../types/utils'
+import { OrderBy, Field, Model } from '../../types/types'
+import { StateTree } from '../../types/reducers'
 import Constants from '../../constants/databrowser/data'
 import * as Immutable from 'immutable'
-import {addNode as addRelayNode, queryNodes, updateNode as updateRelayNode, deleteNode} from '../../utils/relay'
-import {hideNewRow, setLoading, clearNodeSelection} from './ui'
-import {showDonePopup, nextStep} from '../gettingStarted'
-import {showNotification} from '../notification'
-import {isNonScalarList, isScalar} from '../../utils/graphql'
-import {sideNavSyncer} from '../../utils/sideNavSyncer'
+import {
+  addNode as addRelayNode,
+  queryNodes,
+  updateNode as updateRelayNode,
+  deleteNode,
+} from '../../utils/relay'
+import { hideNewRow, setLoading, clearNodeSelection } from './ui'
+import { showNotification } from '../notification'
+import { isNonScalarList, isScalar } from '../../utils/graphql'
+import { sideNavSyncer } from '../../utils/sideNavSyncer'
 import * as bluebird from 'bluebird'
-import {GridPosition} from '../../types/databrowser/ui'
-import {toggleNewRow} from '../../actions/databrowser/ui'
+import { GridPosition } from '../../types/databrowser/ui'
+import { toggleNewRow } from '../../actions/databrowser/ui'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
-import {unionBy} from 'lodash'
-import Any = jasmine.Any
+import { ConsoleEvents } from 'graphcool-metrics'
+import { unionBy } from 'lodash'
 
 export function setItemCount(count: number) {
   return {
@@ -50,7 +53,10 @@ export function setOrder(orderBy: OrderBy): ReduxAction {
   }
 }
 
-export function setData(nodes: Immutable.List<Immutable.Map<string, any>>, loaded: Immutable.List<boolean>) {
+export function setData(
+  nodes: Immutable.List<Immutable.Map<string, any>>,
+  loaded: Immutable.List<boolean>,
+) {
   return {
     type: Constants.SET_DATA,
     payload: {
@@ -60,51 +66,73 @@ export function setData(nodes: Immutable.List<Immutable.Map<string, any>>, loade
   }
 }
 
-export function reloadDataAsync(lokka: any,
-                                modelNamePlural: string,
-                                fields: Field[],
-                                index: number = 0,
-                                searchQuery: string = ''): ReduxThunk {
+export function reloadDataAsync(
+  lokka: any,
+  modelNamePlural: string,
+  fields: Field[],
+  index: number = 0,
+  searchQuery: string = '',
+): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
-    dispatch(setData(Immutable.List<Immutable.Map<string, any>>(), Immutable.List<boolean>()))
-    return dispatch(loadDataAsync(lokka, modelNamePlural, fields, index, 100, searchQuery))
-      .then(() => {
-        sideNavSyncer.notifySideNav()
-        dispatch(setLoading(false))
-      })
+    dispatch(
+      setData(
+        Immutable.List<Immutable.Map<string, any>>(),
+        Immutable.List<boolean>(),
+      ),
+    )
+    return dispatch(
+      loadDataAsync(lokka, modelNamePlural, fields, index, 100, searchQuery),
+    ).then(() => {
+      sideNavSyncer.notifySideNav()
+      dispatch(setLoading(false))
+    })
   }
 }
 
 let lastModelNamePlural = null
 
-function cleanServerData(node, fields) {
-  fields.filter((field) => isNonScalarList(field))
-    .forEach(({name}) => node[name] = node[name].edges.map(({node}) => node))
-  return node
+function cleanServerData(dataNode, fields) {
+  fields
+    .filter(field => isNonScalarList(field))
+    .forEach(
+      ({ name }) => (dataNode[name] = dataNode[name].edges.map(({ node }) => node)),
+    )
+  return dataNode
 }
 
-export function loadDataAsync(lokka: any,
-                              modelNamePlural: string,
-                              fields: Field[],
-                              skip: number,
-                              first: number,
-                              searchQuery: string = ''): ReduxThunk {
+export function loadDataAsync(
+  lokka: any,
+  modelNamePlural: string,
+  fields: Field[],
+  skip: number,
+  first: number,
+  searchQuery: string = '',
+): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
-    const {data} = getState().databrowser
+    const { data } = getState().databrowser
     // as we have optimistic ui updates, they trigger an unwanted reload to the InfiniteLoader
     // so disable loading while doing the mutations
     if (data.mutationActive) {
       return Promise.reject({})
     }
     lastModelNamePlural = modelNamePlural
-    return queryNodes(lokka, modelNamePlural, fields, skip, first, searchQuery, data.orderBy)
+    return queryNodes(
+      lokka,
+      modelNamePlural,
+      fields,
+      skip,
+      first,
+      searchQuery,
+      data.orderBy,
+    )
       .then(results => {
-        const newNodes = results.viewer[`all${modelNamePlural}`]
-          .edges.map(({node}) => {
+        const newNodes = results.viewer[`all${modelNamePlural}`].edges
+          .map(({ node }) => {
             // Transforms the relay query into something that the valueparser understands
             // Previously we used the simple API that's why this is necessary
             return cleanServerData(node, fields)
-          }).map(Immutable.Map)
+          })
+          .map(Immutable.Map)
 
         let nodes = data.nodes
         let loaded = data.loaded
@@ -124,27 +152,44 @@ export function loadDataAsync(lokka: any,
         // 1. needs to be the first time the following conditions are true
         // 2. node list is empty
         // 3. search term is empty, too
-        if (nodes.size === 0 && searchQuery.length === 0 && !getState().databrowser.data.newRowShown) {
+        if (
+          nodes.size === 0 &&
+          searchQuery.length === 0 &&
+          !getState().databrowser.data.newRowShown
+        ) {
           dispatch(toggleNewRow(fields, modelNamePlural))
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err.rawError) {
-          err.rawError.forEach(error => dispatch(showNotification({message: error.message, level: 'error'})))
+          err.rawError.forEach(error =>
+            dispatch(
+              showNotification({ message: error.message, level: 'error' }),
+            ),
+          )
         } else {
-          dispatch(showNotification({message: err.message, level: 'error'}))
+          dispatch(showNotification({ message: err.message, level: 'error' }))
         }
       })
   }
 }
 
-export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldValues: { [key: string]: any }): ReduxThunk { // tslint:disable-line
+export function addNodeAsync(
+  lokka: any,
+  model: Model,
+  fields: Field[],
+  fieldValues: { [key: string]: any },
+): ReduxThunk {
+  // tslint:disable-line
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
     dispatch(mutationRequest())
 
     dispatch(hideNewRow())
 
-    const values = Object.keys(fieldValues).mapToObject(key => key, key => fieldValues[key].value)
+    const values = Object.keys(fieldValues).mapToObject(
+      key => key,
+      key => fieldValues[key].value,
+    )
 
     dispatch(addNodeRequest(Immutable.Map<string, any>(values)))
     dispatch(increaseCountChange(model.id))
@@ -153,7 +198,7 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
       .then(res => {
         let node = res[`create${model.name}`][lowercaseFirstLetter(model.name)]
         node = cleanServerData(node, fields)
-        dispatch(addNodeSuccess(Immutable.Map<string,any>(node)))
+        dispatch(addNodeSuccess(Immutable.Map<string, any>(node)))
         dispatch(mutationSuccess())
 
         // const {gettingStartedState} = getState().gettingStarted
@@ -167,35 +212,42 @@ export function addNodeAsync(lokka: any, model: Model, fields: Field[], fieldVal
         //   dispatch(nextStep())
         // }
       })
-      .catch((err) => {
-        console.error(err)
+      .catch(err => {
         dispatch(mutationError())
         dispatch(decreaseCountChange(model.id))
         if (err.rawError) {
-          err.rawError.forEach(error => dispatch(showNotification({message: error.message, level: 'error'})))
+          err.rawError.forEach(error =>
+            dispatch(
+              showNotification({ message: error.message, level: 'error' }),
+            ),
+          )
         }
       })
   }
 }
 
-export function updateNodeAsync(lokka: any,
-                                model: Model,
-                                fields: Field[],
-                                value: TypedValue,
-                                field: Field,
-                                callback,
-                                nodeId: string,
-                                rowIndex: number): ReduxThunk {
+export function updateNodeAsync(
+  lokka: any,
+  model: Model,
+  fields: Field[],
+  value: TypedValue,
+  field: Field,
+  callback,
+  nodeId: string,
+  rowIndex: number,
+): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
-
     if (field.isReadonly) {
       return Promise.reject({})
     }
     dispatch(mutationRequest())
 
     // if relation to self
-    if (!isScalar(field.typeIdentifier) && field.relatedModel.id === field.model.id) {
-      const {nodes} = getState().databrowser.data
+    if (
+      !isScalar(field.typeIdentifier) &&
+      field.relatedModel.id === field.model.id
+    ) {
+      const { nodes } = getState().databrowser.data
 
       const node = nodes.find(n => n.get('id') === nodeId)
       // the list case doesn't need to be implemented, because that's handled in the RelationsPopup
@@ -204,14 +256,26 @@ export function updateNodeAsync(lokka: any,
         const refId = reference.id
         const relatedNode = nodes.find(n => n.get('id') === refId)
         if (relatedNode) {
-          addBackReferenceFromRelatedNode(node, relatedNode, field, dispatch, getState)
+          addBackReferenceFromRelatedNode(
+            node,
+            relatedNode,
+            field,
+            dispatch,
+            getState,
+          )
         }
       } else {
         reference = node.get(field.name)
         const refId = reference.id
         const relatedNode = nodes.find(n => n.get('id') === refId)
         if (relatedNode) {
-          removeBackReferenceFromRelatedNode(node, relatedNode, field, dispatch, getState)
+          removeBackReferenceFromRelatedNode(
+            node,
+            relatedNode,
+            field,
+            dispatch,
+            getState,
+          )
         }
       }
     }
@@ -220,22 +284,28 @@ export function updateNodeAsync(lokka: any,
     // first we need to update the references fields, then we can update the field itself
     // in the case, that an optional reference goes from id x to null, the node with id x
     // needs to be updated
-    dispatch(updateCell({
-      position: {
-        row: rowIndex,
-        field: field.name,
-      },
-      value,
-    }))
+    dispatch(
+      updateCell({
+        position: {
+          row: rowIndex,
+          field: field.name,
+        },
+        value,
+      }),
+    )
     return updateRelayNode(lokka, model.name, value, field, nodeId)
-      .then((res) => {
+      .then(res => {
         dispatch(mutationSuccess())
         callback(true)
       })
-      .catch((err) => {
+      .catch(err => {
         dispatch(mutationError())
         callback(false)
-        err.rawError.forEach((error) => dispatch(showNotification({message: error.message, level: 'error'})))
+        err.rawError.forEach(error =>
+          dispatch(
+            showNotification({ message: error.message, level: 'error' }),
+          ),
+        )
       })
   }
 }
@@ -244,14 +314,16 @@ function lowercaseFirstLetter(s: string) {
   return s.charAt(0).toLowerCase() + s.slice(1)
 }
 
-function removeBackReferenceFromRelatedNode(originNode: Immutable.Map<string, any>,
-                                            relatedNode: Immutable.Map<string, any>,
-                                            originField: Field,
-                                            dispatch: Dispatch,
-                                            getState: () => StateTree) {
-  const {nodes} = getState().databrowser.data
+function removeBackReferenceFromRelatedNode(
+  originNode: Immutable.Map<string, any>,
+  relatedNode: Immutable.Map<string, any>,
+  originField: Field,
+  dispatch: Dispatch,
+  getState: () => StateTree,
+) {
+  const { nodes } = getState().databrowser.data
   const relatedNodeRowIndex = nodes.indexOf(relatedNode)
-  const {reverseRelationField} = originField
+  const { reverseRelationField } = originField
 
   const position = {
     row: relatedNodeRowIndex,
@@ -266,19 +338,24 @@ function removeBackReferenceFromRelatedNode(originNode: Immutable.Map<string, an
     value = null
   }
 
-  dispatch(updateCell({
-    position, value,
-  }))
+  dispatch(
+    updateCell({
+      position,
+      value,
+    }),
+  )
 }
 
-function addBackReferenceFromRelatedNode(originNode: Immutable.Map<string, any>,
-                                         relatedNode: Immutable.Map<string, any>,
-                                         originField: Field,
-                                         dispatch: Dispatch,
-                                         getState: () => StateTree) {
-  const {nodes} = getState().databrowser.data
+function addBackReferenceFromRelatedNode(
+  originNode: Immutable.Map<string, any>,
+  relatedNode: Immutable.Map<string, any>,
+  originField: Field,
+  dispatch: Dispatch,
+  getState: () => StateTree,
+) {
+  const { nodes } = getState().databrowser.data
   const relatedNodeRowIndex = nodes.indexOf(relatedNode)
-  const {reverseRelationField} = originField
+  const { reverseRelationField } = originField
 
   const position = {
     row: relatedNodeRowIndex,
@@ -289,25 +366,35 @@ function addBackReferenceFromRelatedNode(originNode: Immutable.Map<string, any>,
   const originNodeId = originNode.get('id')
   if (reverseRelationField.isList) {
     const oldValues = relatedNode.get(reverseRelationField.name)
-    value = unionBy(oldValues, [{id: originNodeId}], ref => ref.id)
+    value = unionBy(oldValues, [{ id: originNodeId }], ref => ref.id)
   } else {
-    value = {id: originNodeId}
+    value = { id: originNodeId }
   }
 
-  dispatch(updateCell({
-    position, value,
-  }))
+  dispatch(
+    updateCell({
+      position,
+      value,
+    }),
+  )
 }
 
-export function deleteSelectedNodes(lokka: any, projectName: string, modelName: string, model: Model): ReduxThunk {
+export function deleteSelectedNodes(
+  lokka: any,
+  projectName: string,
+  modelName: string,
+  model: Model,
+): ReduxThunk {
   return (dispatch, getState) => {
-    const {selectedNodeIds} = getState().databrowser.ui
-    const {nodes} = getState().databrowser.data
+    const { selectedNodeIds } = getState().databrowser.ui
+    const { nodes } = getState().databrowser.data
     const ids = selectedNodeIds.toArray()
 
     // update referenced nodes
     const fields = model.fields.edges.map(edge => edge.node)
-    const relationFields = fields.filter(field => !isScalar(field.typeIdentifier))
+    const relationFields = fields.filter(
+      field => !isScalar(field.typeIdentifier),
+    )
     ids.forEach(id => {
       dispatch(decreaseCountChange(model.id))
       const node = nodes.find(n => n.get('id') === id)
@@ -331,7 +418,13 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
             if (!ids.includes(refId)) {
               const relatedNode = nodes.find(n => n.get('id') === refId)
               if (relatedNode) {
-                removeBackReferenceFromRelatedNode(node, relatedNode, relationField, dispatch, getState)
+                removeBackReferenceFromRelatedNode(
+                  node,
+                  relatedNode,
+                  relationField,
+                  dispatch,
+                  getState,
+                )
               }
             }
           })
@@ -341,7 +434,13 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
           if (!ids.includes(refId)) {
             const relatedNode = nodes.find(n => n.get('id') === refId)
             if (relatedNode) {
-              removeBackReferenceFromRelatedNode(node, relatedNode, relationField, dispatch, getState)
+              removeBackReferenceFromRelatedNode(
+                node,
+                relatedNode,
+                relationField,
+                dispatch,
+                getState,
+              )
             }
           }
         }
@@ -352,30 +451,37 @@ export function deleteSelectedNodes(lokka: any, projectName: string, modelName: 
     dispatch(deleteNodes(ids))
     dispatch(clearNodeSelection())
 
-    return bluebird.map(ids, id => deleteNode(lokka, modelName, id), {
-      concurrency: 5,
-    })
+    return bluebird
+      .map(ids, id => deleteNode(lokka, modelName, id), {
+        concurrency: 5,
+      })
       .then(() => {
-        tracker.track(ConsoleEvents.Databrowser.deleteNodesCompleted({count: ids.length}))
+        tracker.track(
+          ConsoleEvents.Databrowser.deleteNodesCompleted({ count: ids.length }),
+        )
 
         dispatch(mutationSuccess())
       })
-      .catch((err) => {
+      .catch(err => {
         dispatch(mutationError())
-        for (let i = 0; i < ids.length; i++) {
+        for (const _ of ids) {
           dispatch(increaseCountChange(model.id))
         }
         if (err.rawError) {
-          err.rawError.forEach((error) => this.props.showNotification({message: error.message, level: 'error'}))
+          err.rawError.forEach(error =>
+            this.props.showNotification({
+              message: error.message,
+              level: 'error',
+            }),
+          )
         }
       })
-
   }
 }
 
 export function updateCell(payload: {
-  position: GridPosition,
-  value: TypedValue,
+  position: GridPosition
+  value: TypedValue
 }) {
   return {
     type: Constants.UPDATE_CELL,
@@ -401,14 +507,14 @@ export function mutationRequest() {
   }
 }
 
-export function addNodeRequest(payload: Immutable.Map<string,any>) {
+export function addNodeRequest(payload: Immutable.Map<string, any>) {
   return {
     type: Constants.ADD_NODE_REQUEST,
     payload,
   }
 }
 
-export function addNodeSuccess(payload: Immutable.Map<string,any>) {
+export function addNodeSuccess(payload: Immutable.Map<string, any>) {
   return {
     type: Constants.ADD_NODE_SUCCESS,
     payload,

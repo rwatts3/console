@@ -1,61 +1,87 @@
 import * as React from 'react' // tslint:disable-line
-import {Example} from '../types/types'
-import {Dispatch, StateTree, ReduxThunk, ReduxAction} from '../types/reducers'
-import {GettingStartedState, Step} from './../types/gettingStarted'
+import { Example } from '../types/types'
+import { Dispatch, StateTree, ReduxThunk, ReduxAction } from '../types/reducers'
+import { GettingStartedState, Step } from './../types/gettingStarted'
 let UpdateCustomerOnboardingStatusMutation
 // needed for jest tests
 if (process.env.NODE_ENV !== 'test') {
-  UpdateCustomerOnboardingStatusMutation = require('../mutations/UpdateCustomerOnboardingStatusMutation').default
+  UpdateCustomerOnboardingStatusMutation = require('../mutations/UpdateCustomerOnboardingStatusMutation')
+    .default
 }
 
 import Constants from '../constants/gettingStarted'
 import IconNotification from '../components/IconNotification/IconNotification'
 import cuid from 'cuid'
-import {showPopup} from '../actions/popup'
-import {forceShowNewRow} from './databrowser/ui'
+import { showPopup } from '../actions/popup'
+import { forceShowNewRow } from './databrowser/ui'
 import { fetchQuery } from '../relayEnvironment'
 
 export function showDonePopup() {
   const id = cuid()
-  const element = <IconNotification id={id}/>
-  return showPopup({id, element, blurBackground: false})
+  const element = <IconNotification id={id} />
+  return showPopup({ id, element, blurBackground: false })
 }
 
-export function update(step: Step,
-                       skipped: boolean,
-                       onboardingStatusId: string,
-                       selectedExample?: Example): ReduxAction {
-  const payload = {gettingStartedState: new GettingStartedState({step, skipped, onboardingStatusId, selectedExample})}
-  return {type: Constants.UPDATE, payload}
+export function update(
+  step: Step,
+  skipped: boolean,
+  onboardingStatusId: string,
+  selectedExample?: Example,
+): ReduxAction {
+  const payload = {
+    gettingStartedState: new GettingStartedState({
+      step,
+      skipped,
+      onboardingStatusId,
+      selectedExample,
+    }),
+  }
+  return { type: Constants.UPDATE, payload }
 }
 
-function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
-                             gettingStarted: Step,
-                             gettingStartedSkipped: boolean,
-                             onboardingStatusId: string,
-                             gettingStartedExample: Example = null): Promise<{}> {
+function updateReduxAndRelay(
+  dispatch: (action: ReduxAction) => any,
+  gettingStarted: Step,
+  gettingStartedSkipped: boolean,
+  onboardingStatusId: string,
+  gettingStartedExample: Example = null,
+): Promise<{}> {
   return new Promise((resolve, reject) => {
     if (typeof UpdateCustomerOnboardingStatusMutation !== 'undefined') {
-      UpdateCustomerOnboardingStatusMutation.commit(
-        {
-          onboardingStatusId,
+      UpdateCustomerOnboardingStatusMutation.commit({
+        onboardingStatusId,
+        gettingStarted,
+        gettingStartedSkipped: ['STEP5_DONE', 'STEP6_CLOSED'].includes(
           gettingStarted,
-          gettingStartedSkipped: ['STEP5_DONE', 'STEP6_CLOSED'].includes(gettingStarted) ?
-            false : gettingStartedSkipped,
-          gettingStartedCompleted: ['STEP5_DONE', 'STEP6_CLOSED'].includes(gettingStarted),
-          gettingStartedExample,
-        })
+        )
+          ? false
+          : gettingStartedSkipped,
+        gettingStartedCompleted: ['STEP5_DONE', 'STEP6_CLOSED'].includes(
+          gettingStarted,
+        ),
+        gettingStartedExample,
+      })
         .then(() => {
-          dispatch(update(gettingStarted, gettingStartedSkipped, onboardingStatusId, gettingStartedExample))
+          dispatch(
+            update(
+              gettingStarted,
+              gettingStartedSkipped,
+              onboardingStatusId,
+              gettingStartedExample,
+            ),
+          )
 
           // refresh intercom messages once onboarding done/skipped
-          if (window.Intercom && (gettingStarted === 'STEP6_CLOSED' || gettingStartedSkipped)) {
+          if (
+            window.Intercom &&
+            (gettingStarted === 'STEP6_CLOSED' || gettingStartedSkipped)
+          ) {
             setTimeout(() => Intercom('update'), 2000)
           }
 
           resolve()
         })
-        .catch((err) => {
+        .catch(err => {
           // Error
           console.error(err)
           reject()
@@ -66,33 +92,63 @@ function updateReduxAndRelay(dispatch: (action: ReduxAction) => any,
 
 export function nextStep(): ReduxThunk {
   return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
-    const {step, skipped, onboardingStatusId, selectedExample} = getState().gettingStarted.gettingStartedState
+    const {
+      step,
+      skipped,
+      onboardingStatusId,
+      selectedExample,
+    } = getState().gettingStarted.gettingStartedState
     const currentStepIndex = GettingStartedState.steps.indexOf(step)
     const nextStep = GettingStartedState.steps[currentStepIndex + 1]
 
-    return updateReduxAndRelay(dispatch, nextStep, skipped, onboardingStatusId, selectedExample)
+    return updateReduxAndRelay(
+      dispatch,
+      nextStep,
+      skipped,
+      onboardingStatusId,
+      selectedExample,
+    )
   }
 }
 
 export function previousStep(): ReduxThunk {
   return (dispatch: (action: ReduxAction) => any, getState): Promise<{}> => {
-    const {step, skipped, onboardingStatusId, selectedExample} = getState().gettingStarted.gettingStartedState
+    const {
+      step,
+      skipped,
+      onboardingStatusId,
+      selectedExample,
+    } = getState().gettingStarted.gettingStartedState
     const currentStepIndex = GettingStartedState.steps.indexOf(step)
     const nextStep = GettingStartedState.steps[currentStepIndex - 1]
 
-    return updateReduxAndRelay(dispatch, nextStep, skipped, onboardingStatusId, selectedExample)
+    return updateReduxAndRelay(
+      dispatch,
+      nextStep,
+      skipped,
+      onboardingStatusId,
+      selectedExample,
+    )
   }
 }
 
-export function skip(): (dispatch: (action: ReduxAction) => any, getState: any) => Promise<{}> {
+export function skip(): (
+  dispatch: (action: ReduxAction) => any,
+  getState: any,
+) => Promise<{}> {
   return (dispatch: (action: ReduxAction) => any, getState): Promise<{}> => {
-    const {step, onboardingStatusId} = getState().gettingStarted.gettingStartedState
+    const {
+      step,
+      onboardingStatusId,
+    } = getState().gettingStarted.gettingStartedState
 
     return updateReduxAndRelay(dispatch, step, true, onboardingStatusId)
   }
 }
 
-export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => any) => Promise<void> {
+export function fetchGettingStartedState(): (
+  dispatch: (action: ReduxAction) => any,
+) => Promise<void> {
   return (dispatch: (action: ReduxAction) => any): Promise<void> => {
     const query = `
       query {
@@ -111,11 +167,22 @@ export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => 
       }`
     const variables = {}
 
-    return fetchQuery({text: query}, variables)
-      .then(({data}) => {
-        const {id, gettingStarted, gettingStartedSkipped, gettingStartedExample} = data.viewer.user.crm.onboardingStatus
-        dispatch(update(gettingStarted, gettingStartedSkipped, id, gettingStartedExample))
-      })
+    return fetchQuery({ text: query }, variables).then(({ data }) => {
+      const {
+        id,
+        gettingStarted,
+        gettingStartedSkipped,
+        gettingStartedExample,
+      } = data.viewer.user.crm.onboardingStatus
+      dispatch(
+        update(
+          gettingStarted,
+          gettingStartedSkipped,
+          id,
+          gettingStartedExample,
+        ),
+      )
+    })
   }
 }
 // dependencies so that the steps' tethers are shown
@@ -172,9 +239,12 @@ export function fetchGettingStartedState(): (dispatch: (action: ReduxAction) => 
 //   'STEP6_CLOSED',
 // -> route: http://domain/projectName/playground
 
-export function showCurrentStep(router: ReactRouter.InjectedRouter, params: any) {
+export function showCurrentStep(
+  router: ReactRouter.InjectedRouter,
+  params: any,
+) {
   return (dispatch, getState) => {
-    const {step} = getState().gettingStarted.gettingStartedState
+    const { step } = getState().gettingStarted.gettingStartedState
 
     switch (step) {
       case 'STEP0_OVERVIEW':

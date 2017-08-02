@@ -16,11 +16,19 @@
     "dll": "webpack --config dll.webpack.config.js",
     "analyze": "source-map-explorer dist/app.*",
     "watch-relay-compiler": "relay-compiler --watch --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx",
-    "relay-compiler": "relay-compiler --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx"
+    "relay-compiler": "relay-compiler --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx",
+    "prettier": "prettier --single-quote --no-semi --trailing-comma all --write --write '*.{ts,tsx}' 'src/views/ProjectRootView/EndpointPopup.tsx'"
   },
   "pre-push": [
     "test-quick"
   ],
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --single-quote --no-semi --trailing-comma all --write",
+      "tslint",
+      "git add"
+    ]
+  },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
@@ -190,6 +198,7 @@
     "node-noop": "^1.0.0",
     "node-sass": "4.4.0",
     "postcss-loader": "^0.9.1",
+    "prettier": "^1.5.3",
     "raw-loader": "^0.5.1",
     "react-addons-test-utils": "^15.3.2",
     "react-test-renderer": "^15.3.2",
@@ -202,6 +211,7 @@
     "svgo-loader": "^1.1.0",
     "tslint": "5.3.2",
     "tslint-config-standard": "^2.0.0",
+    "tslint-graphcool-frontend": "^0.0.3",
     "tslint-loader": "^3.0.0",
     "typescript": "2.1.5",
     "url-loader": "^0.5.7",

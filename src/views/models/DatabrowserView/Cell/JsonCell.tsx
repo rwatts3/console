@@ -7,18 +7,19 @@ export default class JsonCell extends React.Component<CellProps<string>, {}> {
     return (
       <textarea
         autoFocus
-        type='text'
-        ref='input'
+        type="text"
+        ref="input"
         defaultValue={valueToString(this.props.value, this.props.field, false)}
         onKeyDown={this.onKeyDown}
-        onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
-        className='mono'
+        onBlur={(e: any) =>
+          this.props.save(stringToValue(e.target.value, this.props.field))}
+        className="mono"
       />
     )
   }
 
   private onKeyDown = (e: any) => {
-    if ([37,38,39,40].includes(e.keyCode)) {
+    if ([37, 38, 39, 40].includes(e.keyCode)) {
       return
     }
     this.props.onKeyDown(e)

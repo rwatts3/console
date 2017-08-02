@@ -1,9 +1,13 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {CellRequirements, getScalarEditCell, getEditCell} from '../DatabrowserView/Cell/cellgenerator'
-import {TypedValue} from '../../../types/utils'
+import {
+  CellRequirements,
+  getScalarEditCell,
+  getEditCell,
+} from '../DatabrowserView/Cell/cellgenerator'
+import { TypedValue } from '../../../types/utils'
 import { Enum, Field } from '../../../types/types'
-import {valueToString} from '../../../utils/valueparser'
+import { valueToString } from '../../../utils/valueparser'
 import * as cn from 'classnames'
 
 interface State {
@@ -22,21 +26,18 @@ interface Props {
 }
 
 export default class EditValueInput extends React.Component<Props, State> {
-
   state = {
     isEnteringValue: false,
     isHoveringValue: false,
   }
 
   render() {
-
-    const {isEnteringValue} = this.state
-    const {value, placeholder, field, optional} = this.props
+    const { isEnteringValue } = this.state
+    const { value, placeholder, field, optional } = this.props
 
     return (
-      <div className='container'>
+      <div className="container">
         <style jsx={true}>{`
-
           .container {
             @p: .bgWhite, .flex, .justifyCenter;
           }
@@ -64,56 +65,57 @@ export default class EditValueInput extends React.Component<Props, State> {
             left: -56px;
           }
         `}</style>
-        {isEnteringValue ?
-          (
-            <div className='relative'>
-              <div className={cn('edit-value', {entering: isEnteringValue})}>
+        {isEnteringValue
+          ? <div className="relative">
+              <div className={cn('edit-value', { entering: isEnteringValue })}>
                 {this.getInput()}
               </div>
             </div>
-          )
-          :
-          (typeof value === 'undefined' ? (
-            <div
-              className='flex itemsCenter pointer bbox edit-value'
-              onClick={() => this.setState({
-                isEnteringValue: true,
-              } as State)}
-            >
-              <Icon
-                src={require('../../../assets/icons/edit_circle_gray.svg')}
-                width={26}
-                height={26}
-              />
-              <div className='f16 black40 ml16'>
-                {placeholder || 'add value'}
-                {optional && (
-                  <span className='black30'> (optional)</span>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div
-              className='flex itemsCenter pointer bbox edit-value '
-              onMouseEnter={() => this.setState({isHoveringValue: true} as State)}
-              onMouseLeave={() => this.setState({isHoveringValue: true} as State)}
-              onClick={() => this.setState({
-                isEnteringValue: true,
-                isHoveringValue: false,
-              } as State)}
-            >
-              <div className='f16 black50 pr6'>{valueToString(value, field, true)}</div>
-              {this.state.isHoveringValue && (
+          : typeof value === 'undefined'
+            ? <div
+                className="flex itemsCenter pointer bbox edit-value"
+                onClick={() =>
+                  this.setState(
+                    {
+                      isEnteringValue: true,
+                    } as State,
+                  )}
+              >
                 <Icon
-                  className='ml6'
-                  src={require('../../../assets/icons/edit_project_name.svg')}
-                  width={20}
-                  height={20}
+                  src={require('../../../assets/icons/edit_circle_gray.svg')}
+                  width={26}
+                  height={26}
                 />
-              )}
-            </div>
-          )
-        )}
+                <div className="f16 black40 ml16">
+                  {placeholder || 'add value'}
+                  {optional && <span className="black30"> (optional)</span>}
+                </div>
+              </div>
+            : <div
+                className="flex itemsCenter pointer bbox edit-value "
+                onMouseEnter={() =>
+                  this.setState({ isHoveringValue: true } as State)}
+                onMouseLeave={() =>
+                  this.setState({ isHoveringValue: true } as State)}
+                onClick={() =>
+                  this.setState(
+                    {
+                      isEnteringValue: true,
+                      isHoveringValue: false,
+                    } as State,
+                  )}
+              >
+                <div className="f16 black50 pr6">
+                  {valueToString(value, field, true)}
+                </div>
+                {this.state.isHoveringValue &&
+                  <Icon
+                    className="ml6"
+                    src={require('../../../assets/icons/edit_project_name.svg')}
+                    width={20}
+                    height={20}
+                  />}
+              </div>}
       </div>
     )
   }
@@ -137,16 +139,19 @@ export default class EditValueInput extends React.Component<Props, State> {
       inList: true,
       projectId: this.props.projectId,
       methods: {
-        save: (value) => {
-          this.setState({isEnteringValue: false} as State)
+        save: value => {
+          this.setState({ isEnteringValue: false } as State)
           this.props.onChangeValue(value)
         },
         cancel: () => {
-          this.setState({isEnteringValue: false} as State)
+          this.setState({ isEnteringValue: false } as State)
         },
         onKeyDown: (e: any) => {
-          if (['String'].includes(this.props.field.typeIdentifier) && e.keyCode === 13) {
-            this.setState({isEnteringValue: false} as State)
+          if (
+            ['String'].includes(this.props.field.typeIdentifier) &&
+            e.keyCode === 13
+          ) {
+            this.setState({ isEnteringValue: false } as State)
             this.props.onChangeValue(e.target.value)
           }
           // on key down...
@@ -158,16 +163,19 @@ export default class EditValueInput extends React.Component<Props, State> {
     return getEditCell(requirements)
   }
 
-  private handleKeyDownOnFieldValue = (e) => {
+  private handleKeyDownOnFieldValue = e => {
     if (e.keyCode === 13) {
-      this.setState({
-        isEnteringValue: false,
-      } as State)
+      this.setState(
+        {
+          isEnteringValue: false,
+        } as State,
+      )
     } else if (e.keyCode === 27) {
-      this.setState({
-        isEnteringValue: false,
-      } as State)
+      this.setState(
+        {
+          isEnteringValue: false,
+        } as State,
+      )
     }
   }
-
 }

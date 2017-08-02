@@ -1,26 +1,22 @@
 import * as React from 'react'
 // import {withRouter} from 'found'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import * as cookiestore from 'cookiestore'
-import {default as mapProps} from 'map-props'
+import { default as mapProps } from 'map-props'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
-import {Viewer} from '../../types/types'
+import { Viewer } from '../../types/types'
 import tracker from '../../utils/metrics'
 const classes: any = require('./RootRedirectView.scss')
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
-  viewer: Viewer,
-  projectName: string,
+  viewer: Viewer
+  projectName: string
   router: ReactRouter.InjectedRouter
   location: any
 }
 
 class RootRedirectView extends React.Component<Props, {}> {
-
   constructor(props: Props) {
     super(props)
   }
@@ -42,7 +38,7 @@ class RootRedirectView extends React.Component<Props, {}> {
     return true
   }
 
-  render () {
+  render() {
     if (!this.props.projectName) {
       return (
         <div className={classes.addProject} onClick={this.addProject}>
@@ -51,9 +47,7 @@ class RootRedirectView extends React.Component<Props, {}> {
       )
     }
 
-    return (
-      <div>Redirecting...</div>
-    )
+    return <div>Redirecting...</div>
   }
 
   private addProject = (): void => {
@@ -77,17 +71,19 @@ class RootRedirectView extends React.Component<Props, {}> {
 }
 
 const MappedRootRedirectView = mapProps({
-  viewer: (props) => props.viewer,
-  projectName: (props) => {
+  viewer: props => props.viewer,
+  projectName: props => {
     if (!props.viewer.user || props.viewer.user.projects.edges.length === 0) {
       return null
     }
 
-    const projects = props.viewer.user.projects.edges.map((edge) => edge.node)
+    const projects = props.viewer.user.projects.edges.map(edge => edge.node)
     let project
 
     if (cookiestore.has('graphcool_last_used_project_id')) {
-      project = projects.find((p) => p.id === cookiestore.get('graphcool_last_used_project_id'))
+      project = projects.find(
+        p => p.id === cookiestore.get('graphcool_last_used_project_id'),
+      )
     }
 
     if (!project) {

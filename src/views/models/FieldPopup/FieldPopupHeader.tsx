@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
-import {FieldPopupErrors, errorInTab} from './FieldPopupState'
+import { Icon, $v } from 'graphcool-styles'
+import { FieldPopupErrors, errorInTab } from './FieldPopupState'
 import * as cn from 'classnames'
 
 interface Props {
@@ -15,9 +15,16 @@ interface Props {
 }
 
 const FieldPopupHeader = ({
-  activeTabIndex, onSelectTab, tabs, onRequestClose, errors, showErrors, create, modelName,
-  }: Props) => (
-  <div className='field-popup-header'>
+  activeTabIndex,
+  onSelectTab,
+  tabs,
+  onRequestClose,
+  errors,
+  showErrors,
+  create,
+  modelName,
+}: Props) =>
+  <div className="field-popup-header">
     <style jsx>{`
       .field-popup-header {
         @p: .flex, .relative;
@@ -37,7 +44,8 @@ const FieldPopupHeader = ({
         @p: .bgBlue;
       }
       .tabs {
-        @p: .flex1, .bbox, .overflowVisible, .flex, .itemsCenter, .pointer, .pl16;
+        @p: .flex1, .bbox, .overflowVisible, .flex, .itemsCenter, .pointer,
+          .pl16;
         height: 43px;
       }
       .close {
@@ -46,28 +54,29 @@ const FieldPopupHeader = ({
         right: 24px;
       }
     `}</style>
-    <div className='border'>
+    <div className="border">
       <div className={'badge' + (!create ? ' update' : '')}>
         {create ? 'New Field' : 'Update Field'}
-        &nbsp;<span className='ttl'>on</span>
-        &nbsp;<b className='ttc'>{modelName.length > 8 ? modelName.slice(0, 8) + '…' : modelName}</b>
+        &nbsp;<span className="ttl">on</span>
+        &nbsp;<b className="ttc">
+          {modelName.length > 8 ? modelName.slice(0, 8) + '…' : modelName}
+        </b>
       </div>
-      <div className='tabs'>
-        {tabs.map((tab, index) => (
+      <div className="tabs">
+        {tabs.map((tab, index) =>
           <Tab
             key={tab}
             active={index === activeTabIndex}
             hasError={showErrors && errorInTab(errors, index)}
             onClick={() => onSelectTab(index)}
             needsMigration={errors.migrationValueMissing && index === 1}
-          >{tab}</Tab>
-        ))}
+          >
+            {tab}
+          </Tab>,
+        )}
       </div>
     </div>
-    <div
-      className='close'
-      onClick={onRequestClose}
-    >
+    <div className="close" onClick={onRequestClose}>
       <Icon
         src={require('graphcool-styles/icons/stroke/cross.svg')}
         stroke
@@ -78,7 +87,6 @@ const FieldPopupHeader = ({
       />
     </div>
   </div>
-)
 
 export default FieldPopupHeader
 
@@ -90,17 +98,20 @@ interface TabProps {
   needsMigration: boolean
 }
 
-const Tab = ({active, children, onClick, hasError, needsMigration}: TabProps) => {
+const Tab = ({
+  active,
+  children,
+  onClick,
+  hasError,
+  needsMigration,
+}: TabProps) => {
   return (
     <div
-      className={cn(
-        'tab',
-        {
-          'active': active,
-          'error': hasError,
-          'needs-migration': !hasError && needsMigration, // prioritize errors over migration
-        },
-      )}
+      className={cn('tab', {
+        active,
+        error: hasError,
+        'needs-migration': !hasError && needsMigration, // prioritize errors over migration
+      })}
       onClick={onClick}
     >
       <style jsx>{`
@@ -151,11 +162,10 @@ const Tab = ({active, children, onClick, hasError, needsMigration}: TabProps) =>
         }
       `}</style>
       {children}
-      {active && (
-        <div className='after-active'>
-          <div className='bar'></div>
-        </div>
-      )}
+      {active &&
+        <div className="after-active">
+          <div className="bar" />
+        </div>}
     </div>
   )
 }

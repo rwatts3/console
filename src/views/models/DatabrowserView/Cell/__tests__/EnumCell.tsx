@@ -2,12 +2,13 @@ import * as React from 'react' // tslint:disable-line
 import EnumCell from '../EnumCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import {TypedValue} from '../../../../../types/utils'
-import {FieldType} from '../../../../../types/types'
+import { TypedValue } from '../../../../../types/utils'
+import { FieldType } from '../../../../../types/types'
 
 test('EnumCell renders', () => {
-
-  const save = jest.fn((value: TypedValue) => { /* */ })
+  const save = jest.fn((value: TypedValue) => {
+    /* */
+  })
   const cancel = jest.fn()
   const onKeyDown = jest.fn()
   const field = {
@@ -27,7 +28,7 @@ test('EnumCell renders', () => {
 
   const component = shallow(
     <EnumCell
-      value='asd'
+      value="asd"
       save={save}
       cancel={cancel}
       onKeyDown={onKeyDown}
@@ -37,5 +38,4 @@ test('EnumCell renders', () => {
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()
-
 })

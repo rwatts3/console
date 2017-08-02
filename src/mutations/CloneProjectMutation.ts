@@ -56,4 +56,4 @@ function commit(input: Props) {
   })
 }
 
-export default {commit}
+export default { commit }

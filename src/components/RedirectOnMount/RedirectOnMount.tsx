@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {withRouter} from 'found'
-import {debounce} from 'lodash'
+import { withRouter } from 'found'
+import { debounce } from 'lodash'
 
 interface Props {
   to: string
@@ -19,12 +19,11 @@ const replace = debounce(
 )
 
 class RedirectOnMount extends React.Component<Props, {}> {
-
-  componentWillMount () {
+  componentWillMount() {
     replace(this.props.router, this.props.to)
   }
 
-  render () {
+  render() {
     return null
   }
 }

@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import {FunctionType} from '../../types/types'
-import {pick} from 'lodash'
+import { FunctionType } from '../../types/types'
+import { pick } from 'lodash'
 
 interface Props {
   name?: string
@@ -16,7 +16,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateServerSideSubscriptionFunctionMutation($input: UpdateServerSideSubscriptionFunctionInput!) {
+  mutation UpdateServerSideSubscriptionFunctionMutation(
+    $input: UpdateServerSideSubscriptionFunctionInput!
+  ) {
     updateServerSideSubscriptionFunction(input: $input) {
       function {
         ...FunctionPopup_function
@@ -39,16 +41,27 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input: pick(input, [
-      'name', 'isActive', 'query',
-      'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
-    ]).filterNullAndUndefined()},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        function: input.functionId,
+    variables: {
+      input: pick(input, [
+        'name',
+        'isActive',
+        'query',
+        'type',
+        'webhookUrl',
+        'webhookHeaders',
+        'inlineCode',
+        'auth0Id',
+        'functionId',
+      ]).filterNullAndUndefined(),
+    },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          function: input.functionId,
+        },
       },
-    }],
+    ],
   })
 }
 

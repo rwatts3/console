@@ -1,12 +1,12 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import {Link} from 'found'
+import { Link } from 'found'
 import * as cx from 'classnames'
-import {$p, Icon} from 'graphcool-styles'
+import { $p, Icon } from 'graphcool-styles'
 
 interface Integration {
-  isEnabled: boolean,
-  logoURI?: string,
+  isEnabled: boolean
+  logoURI?: string
   description: string | JSX.Element
   link: string
   logo?: any
@@ -24,22 +24,27 @@ const LinkCard = styled(Link)`
 const ConnectionCheckmark = styled.div`
   width: 30px;
   height: 30px;
-  background-color: #27AE60;
+  background-color: #27ae60;
 `
 
-const Logo = styled.img`
-  height: 54px;
-`
+const Logo = styled.img`height: 54px;`
 
 export default class IntegrationsCard extends React.Component<Props, {}> {
   render() {
-    const {integration} = this.props
+    const { integration } = this.props
     return (
       <LinkCard
-        className={cx($p.flex, $p.flexColumn, $p.pa38, $p.bgWhite, $p.buttonShadow, $p.mt25, $p.ml25)}
+        className={cx(
+          $p.flex,
+          $p.flexColumn,
+          $p.pa38,
+          $p.bgWhite,
+          $p.buttonShadow,
+          $p.mt25,
+          $p.ml25,
+        )}
         to={integration.link}
       >
-
         {/*
         <div className={cx($p.w100, $p.flex, $p.flexRow, $p.justifyEnd)}>
           <ConnectionCheckmark
@@ -68,17 +73,23 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
           )}
         >
           <div>
-            {integration.logo ? (
-              integration.logo
-            ) : (
-              <Logo src={integration.logoURI} alt='integration-logo' />
-            )}
+            {integration.logo
+              ? integration.logo
+              : <Logo src={integration.logoURI} alt="integration-logo" />}
           </div>
           <div className={cx($p.black50, $p.mt16)}>
             {integration.description}
           </div>
-          <div className={cx($p.flex, $p.flexRow, $p.justifyCenter, $p.itemsCenter, $p.mt38)}>
-            {typeof integration.isEnabled === 'boolean' && (
+          <div
+            className={cx(
+              $p.flex,
+              $p.flexRow,
+              $p.justifyCenter,
+              $p.itemsCenter,
+              $p.mt38,
+            )}
+          >
+            {typeof integration.isEnabled === 'boolean' &&
               <div
                 className={cx(
                   $p.ttu,
@@ -95,11 +106,9 @@ export default class IntegrationsCard extends React.Component<Props, {}> {
                 )}
               >
                 {integration.isEnabled ? 'Enabled' : 'Not Enabled'}
-              </div>
-            )}
+              </div>}
           </div>
         </div>
-
       </LinkCard>
     )
   }

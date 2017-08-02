@@ -1,8 +1,8 @@
 import * as React from 'react'
-import {CellProps} from './cells'
-import {stringToValue} from '../../../../utils/valueparser'
+import { CellProps } from './cells'
+import { stringToValue } from '../../../../utils/valueparser'
 import { connect } from 'react-redux'
-import {nextStep} from '../../../../actions/gettingStarted'
+import { nextStep } from '../../../../actions/gettingStarted'
 
 // extend the interface for the onboarding functionality
 declare module './cells' {
@@ -17,9 +17,8 @@ interface State {
 }
 
 export class StringCell extends React.Component<CellProps<string>, State> {
-
   refs: {
-    input: HTMLInputElement,
+    input: HTMLInputElement
   }
 
   enterPressed: boolean
@@ -39,14 +38,15 @@ export class StringCell extends React.Component<CellProps<string>, State> {
   }
 
   render() {
-    const numLines = this.state.value ? this.state.value.split(/\r\n|\r|\n/).length : 1
+    const numLines = this.state.value
+      ? this.state.value.split(/\r\n|\r|\n/).length
+      : 1
 
-    return (
-      numLines > 1 ? (
-        <textarea
+    return numLines > 1
+      ? <textarea
           autoFocus
-          type='text'
-          ref='input'
+          type="text"
+          ref="input"
           value={this.state.value}
           onKeyDown={this.onKeyDown}
           style={{
@@ -62,13 +62,12 @@ export class StringCell extends React.Component<CellProps<string>, State> {
             this.props.save(stringToValue(e.target.value, this.props.field))
           }}
           onChange={this.onChange}
-          placeholder='Enter a String...'
+          placeholder="Enter a String..."
         />
-      ) : (
-        <input
+      : <input
           autoFocus
-          type='text'
-          ref='input'
+          type="text"
+          ref="input"
           value={this.state.value}
           onKeyDown={this.onKeyDown}
           onBlur={(e: any) => {
@@ -80,10 +79,8 @@ export class StringCell extends React.Component<CellProps<string>, State> {
             this.props.save(stringToValue(e.target.value, this.props.field))
           }}
           onChange={this.onChange}
-          placeholder='Enter a String...'
+          placeholder="Enter a String..."
         />
-      )
-    )
   }
 
   private stopEvent = (e: any) => {
@@ -101,21 +98,21 @@ export class StringCell extends React.Component<CellProps<string>, State> {
     const numLines = e.target.value.split(/\r\n|\r|\n/).length
     if (e.keyCode === 13 && (e.metaKey || e.shiftKey)) {
       if (numLines === 1) {
-        this.setState({value: e.target.value + '\n'})
+        this.setState({ value: e.target.value + '\n' })
         this.enterPressed = true
         this.stopEvent(e)
         return
       }
     }
-    if ([37,38,39,40].includes(e.keyCode)) {
+    if ([37, 38, 39, 40].includes(e.keyCode)) {
       return
     }
     this.props.onKeyDown(e)
   }
 
   private onChange = (e: any) => {
-    const {value} = e.target
-    this.setState({value})
+    const { value } = e.target
+    this.setState({ value })
 
     // ONLY FOR ONBOARDING
     if (typeof this.props.nextStep !== 'function') {

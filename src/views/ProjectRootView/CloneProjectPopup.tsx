@@ -1,32 +1,25 @@
-import * as React            from 'react'
-import {connect}             from 'react-redux'
-import {ConsoleEvents}       from 'graphcool-metrics'
-import * as cx               from 'classnames'
-import styled                from 'styled-components'
-import {withRouter}          from 'found'
-import {
-  $p,
-  variables,
-  Icon,
-}                            from 'graphcool-styles'
+import * as React from 'react'
+import { connect } from 'react-redux'
+import { ConsoleEvents } from 'graphcool-metrics'
+import * as cx from 'classnames'
+import styled from 'styled-components'
+import { withRouter } from 'found'
+import { $p, variables, Icon } from 'graphcool-styles'
 
-import {validateProjectName} from '../../utils/nameValidator'
-import tracker               from '../../utils/metrics'
+import { validateProjectName } from '../../utils/nameValidator'
+import tracker from '../../utils/metrics'
 
-import mapProps              from '../../components/MapProps/MapProps'
+import mapProps from '../../components/MapProps/MapProps'
 
-import CloneProjectMutation  from '../../mutations/CloneProjectMutation'
-import Checkbox              from '../../components/Form/Checkbox'
+import CloneProjectMutation from '../../mutations/CloneProjectMutation'
+import Checkbox from '../../components/Form/Checkbox'
 import Loading from '../../components/Loading/Loading'
-import {showNotification} from '../../actions/notification'
-import {onFailureShowNotification} from '../../utils/relay'
-import {ShowNotificationCallback} from '../../types/utils'
+import { showNotification } from '../../actions/notification'
+import { onFailureShowNotification } from '../../utils/relay'
+import { ShowNotificationCallback } from '../../types/utils'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../utils/modalStyle'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { fieldModalStyle } from '../../utils/modalStyle'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 interface Props {
   router: ReactRouter.InjectedRouter
@@ -46,9 +39,9 @@ interface State {
 
 const NameInput = styled.input`
   &::-webkit-input-placeholder {
-  color: ${variables.gray20};
-  opacity: 1;
-}
+    color: ${variables.gray20};
+    opacity: 1;
+  }
   &::-moz-placeholder {
     color: ${variables.gray20};
     opacity: 1;
@@ -63,9 +56,7 @@ const NameInput = styled.input`
   }
 `
 
-const Warning = styled.div`
-  bottom: -44px;
-`
+const Warning = styled.div`bottom: -44px;`
 
 const Button = styled.button`
   padding: ${variables.size16};
@@ -91,13 +82,9 @@ const CloneButton = styled(Button)`
   }
 `
 
-const MiniHeadline = styled.div`
-  margin-top: -13px;
-`
+const MiniHeadline = styled.div`margin-top: -13px;`
 
-const NestedCheckboxes = styled.div`
-  padding-left: 12px;
-`
+const NestedCheckboxes = styled.div`padding-left: 12px;`
 
 const modalStyling = {
   ...fieldModalStyle,
@@ -126,23 +113,20 @@ class CloneProjectPopup extends React.Component<Props, State> {
     return (
       <Modal
         isOpen
-        contentLabel='Clone Project'
+        contentLabel="Clone Project"
         onRequestClose={this.close}
         style={modalStyling}
       >
-        <div className={cx($p.relative, $p.pa60, $p.bb, $p.bBlack20 )}>
+        <div className={cx($p.relative, $p.pa60, $p.bb, $p.bBlack20)}>
           <div className={cx($p.relative)}>
-            {this.state.showError && (
-              <Warning
-                className={cx($p.absolute, $p.left0, $p.orange, $p.f14)}
-              >
-                A project name has to start with a capital letter
-                and may only contain alphanumeric characters and spaces.
-              </Warning>
-            )}
+            {this.state.showError &&
+              <Warning className={cx($p.absolute, $p.left0, $p.orange, $p.f14)}>
+                A project name has to start with a capital letter and may only
+                contain alphanumeric characters and spaces.
+              </Warning>}
             <NameInput
               className={cx($p.fw3, $p.f38, $p.bNone, $p.lhSolid, $p.tl)}
-              type='text'
+              type="text"
               autoFocus
               placeholder={`Clone of ${projectName}...`}
               onKeyDown={e => e.keyCode === 13 && this.cloneProject()}
@@ -152,52 +136,60 @@ class CloneProjectPopup extends React.Component<Props, State> {
           </div>
         </div>
         <MiniHeadline className={cx($p.tc)}>
-          <p className={cx($p.dib, $p.f16, $p.fw3, $p.bgWhite, $p.ph16, $p.relative)}>
+          <p
+            className={cx(
+              $p.dib,
+              $p.f16,
+              $p.fw3,
+              $p.bgWhite,
+              $p.ph16,
+              $p.relative,
+            )}
+          >
             Clone Settings
           </p>
         </MiniHeadline>
         <div className={cx($p.pa60, $p.f25, $p.fw3)}>
-          <Checkbox
-            checked={true}
-            label='Schema'
-          />
+          <Checkbox checked={true} label="Schema" />
           <NestedCheckboxes>
             <Checkbox
               checked={this.state.includeData}
               onClick={this.onIncludeDataToggle}
               nested={true}
-              label='Data'
+              label="Data"
               forceHighlightVerticalLine={this.state.includeMutationCallbacks}
             />
             <Checkbox
               checked={this.state.includeMutationCallbacks}
               onClick={this.onIncludeMutationCallbacksToggle}
               nested={true}
-              label='Mutation Callbacks'
+              label="Mutation Callbacks"
             />
           </NestedCheckboxes>
         </div>
         <div
-          className={cx($p.bt, $p.bBlack10, $p.pa25, $p.flex, $p.justifyBetween)}
+          className={cx(
+            $p.bt,
+            $p.bBlack10,
+            $p.pa25,
+            $p.flex,
+            $p.justifyBetween,
+          )}
         >
-          <Button onClick={this.onCancelClick}>
-            Cancel
-          </Button>
-          <CloneButton onClick={this.cloneProject}>
-            Clone
-          </CloneButton>
+          <Button onClick={this.onCancelClick}>Cancel</Button>
+          <CloneButton onClick={this.cloneProject}>Clone</CloneButton>
         </div>
         <style jsx>{`
           .loading {
-            @p: .left0, .top0, .right0, .bottom0, .bgWhite80, .flex, .itemsCenter, .justifyCenter, .z2;
+            @p: .left0, .top0, .right0, .bottom0, .bgWhite80, .flex,
+              .itemsCenter, .justifyCenter, .z2;
             @p: .h100, .w100, .absolute;
           }
         `}</style>
-        {this.state.loading && (
-          <div className='loading'>
+        {this.state.loading &&
+          <div className="loading">
             <Loading />
-          </div>
-        )}
+          </div>}
       </Modal>
     )
   }
@@ -221,7 +213,11 @@ class CloneProjectPopup extends React.Component<Props, State> {
   }
 
   private onIncludeMutationCallbacksToggle = () => {
-    this.setState({ includeMutationCallbacks: !this.state.includeMutationCallbacks } as State)
+    this.setState(
+      {
+        includeMutationCallbacks: !this.state.includeMutationCallbacks,
+      } as State,
+    )
   }
 
   private closePopup = () => {
@@ -230,47 +226,55 @@ class CloneProjectPopup extends React.Component<Props, State> {
 
   private cloneProject = () => {
     const { projectId, customerId } = this.props
-    const { projectName, includeData, includeMutationCallbacks, loading } = this.state
+    const {
+      projectName,
+      includeData,
+      includeMutationCallbacks,
+      loading,
+    } = this.state
 
     if (loading) {
       return
     }
 
     if (projectName != null && !validateProjectName(projectName)) {
-      this.setState({showError: true} as State)
+      this.setState({ showError: true } as State)
 
       // Don't submit as long as name is invalid
       return
     }
 
-    tracker.track(ConsoleEvents.Project.ClonePopup.submitted({
-      name: projectName,
-      includeData,
-      includeMutationCallbacks,
-    }))
+    tracker.track(
+      ConsoleEvents.Project.ClonePopup.submitted({
+        name: projectName,
+        includeData,
+        includeMutationCallbacks,
+      }),
+    )
 
-    this.setState({loading: true} as State, () => {
-        CloneProjectMutation.commit({
-          projectId,
-          name: projectName,
-          customerId,
-          includeData,
-          includeMutationCallbacks,
-        }).then(() => {
-            tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
+    this.setState({ loading: true } as State, () => {
+      CloneProjectMutation.commit({
+        projectId,
+        name: projectName,
+        customerId,
+        includeData,
+        includeMutationCallbacks,
+      })
+        .then(() => {
+          tracker.track(ConsoleEvents.Project.cloned({ name: projectName }))
 
-            const {router} = this.props
+          const { router } = this.props
 
-            router.push(`/${projectName}`)
-          })
-          .catch(transaction => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          })
+          router.push(`/${projectName}`)
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        })
     })
   }
 }
 
-const ReduxContainer = connect(null, {showNotification})(CloneProjectPopup)
+const ReduxContainer = connect(null, { showNotification })(CloneProjectPopup)
 
 const MappedCloneProjectPopup = mapProps({
   projectId: props => props.viewer.project.id,
@@ -280,8 +284,12 @@ const MappedCloneProjectPopup = mapProps({
 export default createFragmentContainer(MappedCloneProjectPopup, {
   viewer: graphql`
     fragment CloneProjectPopup_viewer on Viewer {
-      user { id }
-      project: projectByName(projectName: $projectName) { id }
+      user {
+        id
+      }
+      project: projectByName(projectName: $projectName) {
+        id
+      }
     }
   `,
 })

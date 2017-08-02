@@ -19,21 +19,35 @@ interface Props {
   title?: string
 }
 
-export function A(
-  {
-    hideArrow, primary, button, green, white, gray, greenOnWhite, arrowToBottom,
-    target, children, className, onClick, title, ...rest,
-  }: Props,
-) {
-  const isExternal = target && (target.startsWith('http') || target.startsWith('mailto'))
+export function A({
+  hideArrow,
+  primary,
+  button,
+  green,
+  white,
+  gray,
+  greenOnWhite,
+  arrowToBottom,
+  target,
+  children,
+  className,
+  onClick,
+  title,
+  ...rest,
+}: Props) {
+  const isExternal =
+    target && (target.startsWith('http') || target.startsWith('mailto'))
   return (
     <div
-      className={cn(
-        'link',
-        className, {
-          primary, button, green, 'green-on-white': greenOnWhite, white, arrowToBottom, gray,
-        },
-      )}
+      className={cn('link', className, {
+        primary,
+        button,
+        green,
+        'green-on-white': greenOnWhite,
+        white,
+        arrowToBottom,
+        gray,
+      })}
       onClick={onClick}
       title={title || ''}
       {...rest}
@@ -58,7 +72,8 @@ export function A(
           fill: $darkBlue70;
         }
 
-        .link :global(a), .link > div {
+        .link :global(a),
+        .link > div {
           @p: .flex, .itemsCenter, .ttu, .tracked, .fw6, .nowrap, .noUnderline;
           font-size: inherit;
           color: inherit;
@@ -66,7 +81,8 @@ export function A(
 
         .button {
           @p: .br2, .pv10, .ph16, .buttonShadow, .white, .bgBlue;
-          transition: background .25s ease, box-shadow .25s ease, transform .25s ease;
+          transition: background .25s ease, box-shadow .25s ease,
+            transform .25s ease;
         }
 
         .button :global(svg) {
@@ -102,18 +118,18 @@ export function A(
         }
 
         .link:hover {
-          color: #69A4E0;
+          color: #69a4e0;
         }
 
         .button:hover {
           color: $white;
-          background: #3F8AD7;
-          box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.15);
-          transform: translate3D(0,-1px,0);
+          background: #3f8ad7;
+          box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.15);
+          transform: translate3D(0, -1px, 0);
         }
 
         .button.green:hover {
-          background: #3CB66F;
+          background: #3cb66f;
         }
 
         .button.white:hover {
@@ -122,7 +138,7 @@ export function A(
         }
 
         .button.green-on-white:hover {
-          color: #3CB66F;
+          color: #3cb66f;
           background: $white;
         }
 
@@ -136,29 +152,29 @@ export function A(
 
         @keyframes move {
           0% {
-            transform: translate3D(0,0,0);
+            transform: translate3D(0, 0, 0);
           }
 
           50% {
-            transform: translate3D(3px,0,0);
+            transform: translate3D(3px, 0, 0);
           }
 
           100% {
-            transform: translate3D(0,0,0);
+            transform: translate3D(0, 0, 0);
           }
         }
 
         @keyframes moveToBottom {
           0% {
-            transform: rotate(90deg) translate3D(0,0,0);
+            transform: rotate(90deg) translate3D(0, 0, 0);
           }
 
           50% {
-            transform: rotate(90deg) translate3D(3px,0,0);
+            transform: rotate(90deg) translate3D(3px, 0, 0);
           }
 
           100% {
-            transform: rotate(90deg) translate3D(0,0,0);
+            transform: rotate(90deg) translate3D(0, 0, 0);
           }
         }
 
@@ -167,61 +183,64 @@ export function A(
             @p: .f16;
           }
         }
-
       `}</style>
-      {isExternal ? (
-          <a href={target} target={target.startsWith('mailto') ? '_self' : '_blank'}>
-            { children ? children : 'Learn more'}
-            {!hideArrow && (
+      {isExternal
+        ? <a
+            href={target}
+            target={target.startsWith('mailto') ? '_self' : '_blank'}
+          >
+            {children ? children : 'Learn more'}
+            {!hideArrow &&
               <Icon
                 src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
                 color={$v.blue}
                 width={14}
                 height={11}
-                className='arrow'
-              />
-            )}
+                className="arrow"
+              />}
           </a>
-        ) : (
-          target ? (
-              <Link to={target}>
-                {children ? children : 'Learn more'}
-                {!hideArrow && (
-                  <Icon
-                    src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
-                    color={$v.blue}
-                    width={14}
-                    height={11}
-                    className='arrow'
-                  />
-                )}
-              </Link>
-            ) : (
-              <div>
-                {children ? children : 'Learn more'}
-                {!hideArrow && (
-                  <Icon
-                    src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
-                    color={$v.blue}
-                    width={14}
-                    height={11}
-                    className='arrow'
-                  />
-                )}
-              </div>
-            )
-        )}
+        : target
+          ? <Link to={target}>
+              {children ? children : 'Learn more'}
+              {!hideArrow &&
+                <Icon
+                  src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
+                  color={$v.blue}
+                  width={14}
+                  height={11}
+                  className="arrow"
+                />}
+            </Link>
+          : <div>
+              {children ? children : 'Learn more'}
+              {!hideArrow &&
+                <Icon
+                  src={require('graphcool-styles/icons/fill/fullArrowRight.svg')}
+                  color={$v.blue}
+                  width={14}
+                  height={11}
+                  className="arrow"
+                />}
+            </div>}
     </div>
   )
 }
 
-export function Button(
-  {
-    hideArrow, primary, green, white, greenOnWhite, arrowToBottom, target, children, className, onClick, title, ...rest,
-  }: Props,
-) {
+export function Button({
+  hideArrow,
+  primary,
+  green,
+  white,
+  greenOnWhite,
+  arrowToBottom,
+  target,
+  children,
+  className,
+  onClick,
+  title,
+  ...rest,
+}: Props) {
   return (
-
     <A
       button
       hideArrow={hideArrow}

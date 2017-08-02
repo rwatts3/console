@@ -1,32 +1,31 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import * as Immutable from 'immutable'
-import {Field, Node} from '../../../types/types'
-import {isScalar} from '../../../utils/graphql'
-import {getLokka} from '../../../utils/simpleapi'
-import {Icon} from 'graphcool-styles'
+import { Field, Node } from '../../../types/types'
+import { isScalar } from '../../../utils/graphql'
+import { getLokka } from '../../../utils/simpleapi'
+import { Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {particles} from 'graphcool-styles'
-import {updateCell} from '../../../actions/databrowser/data'
+import { particles } from 'graphcool-styles'
+import { updateCell } from '../../../actions/databrowser/data'
 const classes: any = require('./RelationsPopup.scss')
-import {connect} from 'react-redux'
-import {GridPosition} from '../../../types/databrowser/ui'
-import {TypedValue, NonScalarValue} from '../../../types/utils'
-import {unionBy} from 'lodash'
+import { connect } from 'react-redux'
+import { GridPosition } from '../../../types/databrowser/ui'
+import { TypedValue, NonScalarValue } from '../../../types/utils'
+import { unionBy } from 'lodash'
 
 interface Props {
   projectId: string
   originField: Field
   originNodeId: string
   onCancel: () => void
-  updateCell: (payload: {
-    position: GridPosition,
-    value: TypedValue,
-  }) => void
+  updateCell: (
+    payload: {
+      position: GridPosition
+      value: TypedValue
+    },
+  ) => void
   nodes: Immutable.List<Immutable.Map<string, any>>
 }
 
@@ -35,7 +34,11 @@ interface NodeWrapper {
   node: Node
 }
 
-enum Selection { All, Related, Unrelated }
+enum Selection {
+  All,
+  Related,
+  Unrelated,
+}
 
 interface State {
   nodes: Immutable.List<NodeWrapper>
@@ -45,7 +48,6 @@ interface State {
 }
 
 class RelationsPopup extends React.Component<Props, State> {
-
   private lokka: any
 
   constructor(props: Props) {
@@ -67,7 +69,7 @@ class RelationsPopup extends React.Component<Props, State> {
     const relatedFields = this.props.originField.relatedModel.fields
     const filter = this.state.filter.toLowerCase()
     const filteredNodes = this.state.nodes
-      .filter(({isRelated}) => {
+      .filter(({ isRelated }) => {
         switch (this.state.selection) {
           case Selection.All:
             return true
@@ -77,12 +79,14 @@ class RelationsPopup extends React.Component<Props, State> {
             return !isRelated
         }
       })
-      .filter(({node}) => (
+      .filter(({ node }) =>
         relatedFields.edges
-          .map((edge) => edge.node)
-          .filter((field) => isScalar(field.typeIdentifier) && node[field.name])
-          .some((field) => node[field.name].toString().toLowerCase().includes(filter))
-      ))
+          .map(edge => edge.node)
+          .filter(field => isScalar(field.typeIdentifier) && node[field.name])
+          .some(field =>
+            node[field.name].toString().toLowerCase().includes(filter),
+          ),
+      )
 
     return (
       <PopupWrapper onClickOutside={this.props.onCancel}>
@@ -105,38 +109,50 @@ class RelationsPopup extends React.Component<Props, State> {
                   height={30}
                 />
                 <input
-                  type='text'
-                  placeholder='Filter...'
+                  type="text"
+                  placeholder="Filter..."
                   value={this.state.filter}
-                  onChange={(e: any) => this.setState({ filter: e.target.value } as State)}
+                  onChange={(e: any) =>
+                    this.setState({ filter: e.target.value } as State)}
                 />
               </div>
               <div className={classes.selection}>
                 <div
-                  className={`${this.state.selection === Selection.All ? classes.active : ''}`}
-                  onClick={() => this.setState({ selection: Selection.All } as State)}
+                  className={`${this.state.selection === Selection.All
+                    ? classes.active
+                    : ''}`}
+                  onClick={() =>
+                    this.setState({ selection: Selection.All } as State)}
                 >
                   All
                 </div>
                 <div
-                  className={`${this.state.selection === Selection.Related ? classes.active : ''}`}
-                  onClick={() => this.setState({ selection: Selection.Related } as State)}
+                  className={`${this.state.selection === Selection.Related
+                    ? classes.active
+                    : ''}`}
+                  onClick={() =>
+                    this.setState({ selection: Selection.Related } as State)}
                 >
                   Related
                 </div>
                 <div
-                  className={`${this.state.selection === Selection.Unrelated ? classes.active : ''}`}
-                  onClick={() => this.setState({ selection: Selection.Unrelated } as State)}
+                  className={`${this.state.selection === Selection.Unrelated
+                    ? classes.active
+                    : ''}`}
+                  onClick={() =>
+                    this.setState({ selection: Selection.Unrelated } as State)}
                 >
                   Unrelated
                 </div>
               </div>
             </div>
             <div className={classes.list}>
-              {filteredNodes.map(({isRelated, node}) => (
+              {filteredNodes.map(({ isRelated, node }) =>
                 <div
                   key={node.id}
-                  className={`${classes.item} ${isRelated ? classes.related : ''}`}
+                  className={`${classes.item} ${isRelated
+                    ? classes.related
+                    : ''}`}
                   onClick={() => this.toggleRelation(isRelated, node.id)}
                 >
                   <div className={classes.check}>
@@ -146,16 +162,15 @@ class RelationsPopup extends React.Component<Props, State> {
                       src={require('assets/new_icons/check.svg')}
                     />
                   </div>
-                  <div>{JSON.stringify(node, null, 2)}</div>
-                </div>
-              ))}
+                  <div>
+                    {JSON.stringify(node, null, 2)}
+                  </div>
+                </div>,
+              )}
             </div>
             <div className={classes.footer}>
               {this.state.success &&
-              <div className={classes.savedIndicator}>
-                All changes saved
-              </div>
-              }
+                <div className={classes.savedIndicator}>All changes saved</div>}
               <div className={classes.close} onClick={this.props.onCancel}>
                 Close
               </div>
@@ -171,10 +186,11 @@ class RelationsPopup extends React.Component<Props, State> {
     const originModel = this.props.originField.model
 
     const fieldNames = relatedModel.fields.edges
-      .map(({node}) => node)
-      .map((field) => isScalar(field.typeIdentifier)
-        ? field.name
-        : `${field.name} { id }`)
+      .map(({ node }) => node)
+      .map(
+        field =>
+          isScalar(field.typeIdentifier) ? field.name : `${field.name} { id }`,
+      )
       .join(' ')
     const query = `
       {
@@ -189,18 +205,20 @@ class RelationsPopup extends React.Component<Props, State> {
       }
     `
 
-    return this.lokka.query(query)
-      .then((results) => {
-        const allNodes: any[] = results[`all${relatedModel.namePlural}`]
-        const resultModelEntries = results[originModel.name]
-        const relatedNodes: any[] = resultModelEntries === null ? [] : resultModelEntries[this.props.originField.name]
-        const nodes = allNodes.map((node) => ({
-          node,
-          isRelated: relatedNodes.some((relatedNode) => relatedNode.id === node.id),
-        }))
+    return this.lokka.query(query).then(results => {
+      const allNodes: any[] = results[`all${relatedModel.namePlural}`]
+      const resultModelEntries = results[originModel.name]
+      const relatedNodes: any[] =
+        resultModelEntries === null
+          ? []
+          : resultModelEntries[this.props.originField.name]
+      const nodes = allNodes.map(node => ({
+        node,
+        isRelated: relatedNodes.some(relatedNode => relatedNode.id === node.id),
+      }))
 
-        this.setState({nodes: Immutable.List(nodes)} as State)
-      })
+      this.setState({ nodes: Immutable.List(nodes) } as State)
+    })
   }
 
   private toggleRelation(isRelated: boolean, nodeId: string): void {
@@ -214,7 +232,10 @@ class RelationsPopup extends React.Component<Props, State> {
     let mutationArg1
     let mutationArg2
     let payloadName
-    if (originModelName === relatedModelName && originFieldName === relatedFieldName) {
+    if (
+      originModelName === relatedModelName &&
+      originFieldName === relatedFieldName
+    ) {
       mutationArg1 = `${relatedFieldName}1${originModelName}Id`
       mutationArg2 = `${originFieldName}2${relatedModelName}Id`
       payloadName = `${relatedFieldName}1${originModelName}`
@@ -234,7 +255,8 @@ class RelationsPopup extends React.Component<Props, State> {
         }
       }
     }`
-    this.lokka.mutate(mutation)
+    this.lokka
+      .mutate(mutation)
       .then(this.reload)
       .then(() => {
         this.handleSuccess(isRelated, nodeId)
@@ -246,14 +268,13 @@ class RelationsPopup extends React.Component<Props, State> {
         }
         console.error(err)
       })
-
   }
 
   private handleSuccess(isRelated: boolean, nodeId: string) {
-    this.setState({success: true} as State)
+    this.setState({ success: true } as State)
 
     // update related node in databrowser
-    const {nodes, originField, originNodeId} = this.props
+    const { nodes, originField, originNodeId } = this.props
     const i = nodes.findIndex(node => node.get('id') === nodeId)
     const position = {
       row: i,
@@ -267,7 +288,7 @@ class RelationsPopup extends React.Component<Props, State> {
       if (isRelated) {
         value = oldValue.filter(val => val.id !== originNodeId)
       } else {
-        value = unionBy(oldValue, [{id: originNodeId}], val => val.id)
+        value = unionBy(oldValue, [{ id: originNodeId }], val => val.id)
       }
     } else {
       if (isRelated) {
@@ -279,7 +300,8 @@ class RelationsPopup extends React.Component<Props, State> {
       }
     }
     this.props.updateCell({
-      position, value,
+      position,
+      value,
     })
   }
 }
@@ -288,7 +310,7 @@ const ReduxRelationsPopup = connect(
   state => ({
     nodes: state.databrowser.data.nodes,
   }),
-  {updateCell},
+  { updateCell },
 )(RelationsPopup)
 
 export default createFragmentContainer(ReduxRelationsPopup, {

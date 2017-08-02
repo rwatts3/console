@@ -19,4 +19,4 @@ export interface NonScalarValue {
 
 export type ScalarValue = number | string | Date | boolean
 export type AtomicValue = ScalarValue | NonScalarValue
-export type TypedValue = ScalarValue | NonScalarValue | Array<AtomicValue>
+export type TypedValue = ScalarValue | NonScalarValue | AtomicValue[]

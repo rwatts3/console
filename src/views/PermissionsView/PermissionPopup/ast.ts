@@ -1,12 +1,18 @@
-import {parse, visit} from 'graphql'
-import {validate} from 'graphql/validation'
+import { parse, visit } from 'graphql'
+import { validate } from 'graphql/validation'
 
-import {PermissionVariable, PermissionQueryArgument} from '../../../types/types'
-export function putVariablesToQuery(query: string, variables: PermissionQueryArgument[]) {
+import {
+  PermissionVariable,
+  PermissionQueryArgument,
+} from '../../../types/types'
+export function putVariablesToQuery(
+  query: string,
+  variables: PermissionQueryArgument[],
+) {
   let newQuery = query
 
   try {
-    let ast = parse(query)
+    const ast = parse(query)
     // let nameEnd = -1
     let selectionStart = -1
 
@@ -25,7 +31,10 @@ export function putVariablesToQuery(query: string, variables: PermissionQueryArg
     })
 
     // newQuery = query.slice(0, nameEnd) + renderVariables(variables) + query.slice(selectionStart, query.length)
-    newQuery = 'query ' + renderVariables(variables) + query.slice(selectionStart, query.length)
+    newQuery =
+      'query ' +
+      renderVariables(variables) +
+      query.slice(selectionStart, query.length)
   } catch (e) {
     //
   }
@@ -37,7 +46,7 @@ export function extractSelection(query: string) {
   let newQuery = query
 
   try {
-    let ast = parse(query)
+    const ast = parse(query)
     let selectionStart = -1
     let selectionEnd = -1
 
@@ -59,11 +68,16 @@ export function extractSelection(query: string) {
   return newQuery
 }
 
-export function addVarsAndName(modelNamePlural: string, query: string, vars: PermissionQueryArgument[], schema: any) {
+export function addVarsAndName(
+  modelNamePlural: string,
+  query: string,
+  vars: PermissionQueryArgument[],
+  schema: any,
+) {
   let newQuery = query
 
   try {
-    let ast = parse(query)
+    const ast = parse(query)
     let selectionStart = -1
     let selectionEnd = -1
 
@@ -77,12 +91,15 @@ export function addVarsAndName(modelNamePlural: string, query: string, vars: Per
       },
     })
 
-    const {variables} = getVariableNamesFromQuery(query, false, schema)
-    const mappedVariables = variables.map(variable => vars.find(arg => arg.name === variable))
+    const { variables } = getVariableNamesFromQuery(query, false, schema)
+    const mappedVariables = variables.map(variable =>
+      vars.find(arg => arg.name === variable),
+    )
 
     const printedVariables = renderVariables(mappedVariables)
 
-    newQuery = `query ` + printedVariables + query.slice(selectionStart, query.length)
+    newQuery =
+      `query ` + printedVariables + query.slice(selectionStart, query.length)
   } catch (e) {
     //
   }
@@ -94,12 +111,12 @@ export function getVariableNamesFromQuery(
   query: string,
   definitionOnly: boolean = false,
   schema: any,
-): {variables: string[], valid: boolean} {
-  let variables = new Set()
+): { variables: string[]; valid: boolean } {
+  const variables = new Set()
   let valid = true
 
   try {
-    let ast = parse(query)
+    const ast = parse(query)
 
     let config = {}
 
@@ -130,7 +147,8 @@ export function getVariableNamesFromQuery(
   const result = Array.from(variables)
 
   return {
-    variables: result, valid,
+    variables: result,
+    valid,
   }
 }
 
@@ -138,11 +156,13 @@ function renderVariables(variables: PermissionQueryArgument[]) {
   if (variables.length === 0) {
     return ' '
   }
-  return '(' +
-    variables.map(variable => (
-      `${variable.name}: ${renderType(variable)}`
-    )).join(', ') +
+  return (
+    '(' +
+    variables
+      .map(variable => `${variable.name}: ${renderType(variable)}`)
+      .join(', ') +
     ') '
+  )
 }
 
 export function renderType(variable: PermissionQueryArgument) {

@@ -1,11 +1,12 @@
 import * as React from 'react'
-const Codemirror: any = require('../views/FunctionsView/FunctionLogs/Codemirror').default
+const Codemirror: any = require('../views/FunctionsView/FunctionLogs/Codemirror')
+  .default
 
 interface Props {
   value: string
 }
 
-export default function ShellView({value}: Props) {
+export default function ShellView({ value }: Props) {
   return (
     <div>
       <Codemirror

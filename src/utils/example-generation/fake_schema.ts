@@ -13,30 +13,25 @@ import {
   GraphQLLeafType,
 } from 'graphql'
 
-import {
-  getRandomInt,
-  getRandomItem,
-  typeFakers,
-  fakeValue,
-} from './fake'
+import { getRandomInt, getRandomItem, typeFakers, fakeValue } from './fake'
 
 interface GraphQLAppliedDiretives {
   isApplied(directiveName: string): boolean
-  getAppliedDirectives(): Array<string>
+  getAppliedDirectives(): string[]
   getDirectiveArgs(directiveName: string): { [argName: string]: any }
 }
 
-type FakeArgs = {
-  type: string,
-  options: {[key: string]: any}
-  locale: string,
+interface FakeArgs {
+  type: string
+  options: { [key: string]: any }
+  locale: string
 }
-type ExamplesArgs = {
-  values: [any],
+interface ExamplesArgs {
+  values: [any]
 }
-type DirectiveArgs = {
+interface DirectiveArgs {
   fake?: FakeArgs
-  examples?: ExamplesArgs,
+  examples?: ExamplesArgs
 }
 
 const stdTypeNames = Object.keys(typeFakers)
@@ -55,43 +50,39 @@ function astToJSON(ast) {
     case Kind.LIST:
       return ast.values.map(astToJSON)
     case Kind.OBJECT:
-      return ast.fields.reduce(
-        (object, {name, value}) => {
-          object[name.value] = astToJSON(value)
-          return object
-        },
-        {},
-      )
+      return ast.fields.reduce((object, { name, value }) => {
+        object[name.value] = astToJSON(value)
+        return object
+      }, {})
   }
 }
 
 export function fakeSchema(schema) {
   const mutationTypeName = (schema.getMutationType() || {}).name
-  const jsonType = schema.getTypeMap()['examples__JSON']
+  const jsonType = schema.getTypeMap().examples__JSON
   jsonType.parseLiteral = astToJSON
 
   const typeMap = schema.getTypeMap()
-  for (let type of Object.values(typeMap)) {
-    if (type instanceof GraphQLScalarType && !stdTypeNames.includes(type.name)) {
-      type.serialize = (value => value)
+  for (const type of Object.values(typeMap)) {
+    if (
+      type instanceof GraphQLScalarType &&
+      !stdTypeNames.includes(type.name)
+    ) {
+      type.serialize = value => value
     }
     if (type instanceof GraphQLObjectType && !type.name.startsWith('__')) {
       addFakeProperties(type)
     }
     if (isAbstractType(type)) {
-      type.resolveType = (obj => obj.__typename)
+      type.resolveType = obj => obj.__typename
     }
   }
 
   function addFakeProperties(objectType: any) {
-    const isMutation = (objectType.name === mutationTypeName)
+    const isMutation = objectType.name === mutationTypeName
 
-    for (let field of Object.values(objectType.getFields())) {
-      if (isMutation && isRelayMutation(field)) {
-        field.resolve = getRelayMutationResolver()
-      } else {
-        field.resolve = getFieldResolver(field)
-      }
+    for (const field of Object.values(objectType.getFields())) {
+      field.resolve = isMutation && isRelayMutation(field) ? getRelayMutationResolver() : getFieldResolver(field)
     }
   }
 
@@ -115,7 +106,7 @@ export function fakeSchema(schema) {
     const fakeResolver = getResolver(type, field)
     return (source, _0, _1, info) => {
       const value = getCurrentSourceProperty(source, info.path)
-      return (value !== undefined) ? value : fakeResolver()
+      return value !== undefined ? value : fakeResolver()
     }
   }
 
@@ -125,7 +116,7 @@ export function fakeSchema(schema) {
       if (value instanceof Error) {
         return value
       }
-      return {...args['input'], ...value}
+      return { ...args.input, ...value }
     }
   }
 
@@ -158,7 +149,7 @@ export function fakeSchema(schema) {
 
   function abstractTypeResolver(type: any) {
     const possibleTypes = schema.getPossibleTypes(type)
-    return () => ({__typename: getRandomItem(possibleTypes)})
+    return () => ({ __typename: getRandomItem(possibleTypes) })
   }
 }
 
@@ -175,7 +166,7 @@ function arrayResolver(itemResolver) {
 }
 
 function getFakeDirectives(object: any) {
-  const directives = object['appliedDirectives'] as GraphQLAppliedDiretives
+  const directives = object.appliedDirectives as GraphQLAppliedDiretives
   if (!directives) {
     return {}
   }
@@ -196,7 +187,7 @@ function getLeafResolver(type: any, field) {
     ...getFakeDirectives(field),
   }
 
-  let {fake, examples} = directiveToArgs
+  const { fake, examples } = directiveToArgs
   if (examples) {
     return () => getRandomItem(examples.values)
   }

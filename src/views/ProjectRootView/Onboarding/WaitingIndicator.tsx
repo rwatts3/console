@@ -1,19 +1,17 @@
 import * as React from 'react'
 
-interface Props {
+interface Props {}
 
-}
-
-export default function WaitingIndicator({}: Props) {
+export default function WaitingIndicator({  }: Props) {
   return (
-    <div className='waiting-indicator'>
+    <div className="waiting-indicator">
       <style jsx>{`
         .waiting-indicator {
           @p: .br100, .flex, .itemsCenter, .justifyCenter;
           width: 36px;
           height: 36px;
         }
-         @keyframes pulse {
+        @keyframes pulse {
           0% {
             opacity: 1;
             transform: scale(0.1);
@@ -39,8 +37,8 @@ export default function WaitingIndicator({}: Props) {
           height: 18px;
         }
       `}</style>
-      <div className='inner' />
-      <div className='static' />
+      <div className="inner" />
+      <div className="static" />
     </div>
   )
 }

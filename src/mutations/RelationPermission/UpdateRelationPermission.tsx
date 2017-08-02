@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import {RelationPermission} from '../../types/types'
+import { RelationPermission } from '../../types/types'
 
 type UserType = 'EVERYONE' | 'AUTHENTICATED'
 
@@ -21,7 +21,9 @@ interface UpdateRelationPermissionInput {
 type Rule = 'NONE' | 'GRAPH' | 'WEBHOOK'
 
 const mutation = graphql`
-  mutation UpdateRelationPermissionMutation($input: UpdateRelationPermissionInput!) {
+  mutation UpdateRelationPermissionMutation(
+    $input: UpdateRelationPermissionInput!
+  ) {
     updateRelationPermission(input: $input) {
       relationPermission {
         id
@@ -34,13 +36,15 @@ const mutation = graphql`
 function commit(input: UpdateRelationPermissionInput) {
   return makeMutation({
     mutation,
-    variables: {input: input.filterNullAndUndefined()},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        relationPermission: input.id,
+    variables: { input: input.filterNullAndUndefined() },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          relationPermission: input.id,
+        },
       },
-    }],
+    ],
   })
 }
 

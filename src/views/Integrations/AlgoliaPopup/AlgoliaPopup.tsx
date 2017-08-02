@@ -1,25 +1,22 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import ReactElement = React.ReactElement
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import {Viewer, SearchProviderAlgolia} from '../../../types/types'
+import { Viewer, SearchProviderAlgolia } from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
-import {withRouter} from 'found'
+import { withRouter } from 'found'
 import AlgoliaPopupHeader from './AlgoliaPopupHeader'
 import AlgoliaPopupIndexes from './AlgoliaPopupIndexes'
 import AlgoliaPopupFooter from './AlgoliaPopupFooter'
 import mapProps from '../../../components/MapProps/MapProps'
 import UpdateSearchProviderAlgolia from '../../../mutations/UpdateSearchProviderAlgolia'
-import {connect} from 'react-redux'
-import {showNotification} from '../../../actions/notification'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {ShowNotificationCallback} from '../../../types/utils'
+import { connect } from 'react-redux'
+import { showNotification } from '../../../actions/notification'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 
 interface Props {
   viewer: Viewer
@@ -38,9 +35,7 @@ interface State {
   isEnabled: boolean
 }
 
-const Container = styled.div`
-  width: 620px;
-`
+const Container = styled.div`width: 620px;`
 
 const ScrollContainer = styled.div`
   max-height: calc(100vh - 103px); // 103px is the height of the footer
@@ -50,7 +45,7 @@ class AlgoliaPopup extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const {algolia: {apiKey, applicationId, isEnabled}} = props
+    const { algolia: { apiKey, applicationId, isEnabled } } = props
     this.state = {
       valid: false,
       apiKey,
@@ -59,11 +54,11 @@ class AlgoliaPopup extends React.Component<Props, State> {
     }
   }
   render() {
-    const {algolia, params, children} = this.props
-    const {valid, apiKey, applicationId, isEnabled} = this.state
+    const { algolia, params, children } = this.props
+    const { valid, apiKey, applicationId, isEnabled } = this.state
     return (
       <PopupWrapper onClickOutside={this.close}>
-        <Helmet title='Integrations - Algolia' />
+        <Helmet title="Integrations - Algolia" />
         <div
           className={cx(
             $p.flex,
@@ -109,31 +104,34 @@ class AlgoliaPopup extends React.Component<Props, State> {
   }
 
   private apiKeyChange = (e: any) => {
-    this.setState({apiKey: e.target.value} as State, this.updateValid)
+    this.setState({ apiKey: e.target.value } as State, this.updateValid)
   }
 
   private applicationIdChange = (e: any) => {
-    this.setState({applicationId: e.target.value} as State, this.updateValid)
+    this.setState({ applicationId: e.target.value } as State, this.updateValid)
   }
 
   private isEnabledChange = (e: any) => {
-    this.setState({isEnabled: !this.state.isEnabled} as State, this.updateValid)
+    this.setState(
+      { isEnabled: !this.state.isEnabled } as State,
+      this.updateValid,
+    )
   }
 
   private updateValid() {
-    const {apiKey, applicationId} = this.state
+    const { apiKey, applicationId } = this.state
     const valid = apiKey.length > 0 && applicationId.length > 0
-    this.setState({valid} as State)
+    this.setState({ valid } as State)
   }
 
   private close = () => {
-    const {router, params: {projectName}} = this.props
+    const { router, params: { projectName } } = this.props
     router.push(`/${projectName}/integrations`)
   }
 
   private update = () => {
-    const {valid, apiKey, applicationId, isEnabled} = this.state
-    const {algolia, projectId} = this.props
+    const { valid, apiKey, applicationId, isEnabled } = this.state
+    const { algolia, projectId } = this.props
     UpdateSearchProviderAlgolia.commit({
       id: algolia.id,
       isEnabled,
@@ -141,7 +139,7 @@ class AlgoliaPopup extends React.Component<Props, State> {
       applicationId,
       projectId,
     }).then(transaction => {
-        onFailureShowNotification(transaction, this.props.showNotification)
+      onFailureShowNotification(transaction, this.props.showNotification)
     })
   }
 }
@@ -153,7 +151,9 @@ const ReduxContainer = connect(null, {
 const MappedAlgoliaPopup = mapProps({
   projectId: props => props.viewer.project.id,
   algolia: props => {
-    const algolias = props.viewer.project.integrations.edges.filter(edge => edge.node.type === 'SEARCH_PROVIDER')
+    const algolias = props.viewer.project.integrations.edges.filter(
+      edge => edge.node.type === 'SEARCH_PROVIDER',
+    )
     if (algolias.length > 0) {
       return algolias[0].node
     }

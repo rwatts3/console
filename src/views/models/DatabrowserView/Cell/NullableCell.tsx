@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {classnames} from '../../../../utils/classnames'
+import { classnames } from '../../../../utils/classnames'
 
 const classes = require('./NullableCell.scss')
 
@@ -13,7 +13,6 @@ interface State {
 }
 
 export default class NullableCell extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -28,13 +27,11 @@ export default class NullableCell extends React.Component<Props, State> {
         {this.getSubCell()}
         <div
           className={classnames(classes.button, classes.blue)}
-          onMouseEnter={() => this.setState({isOverNullButton: true})}
-          onMouseLeave={() => this.setState({isOverNullButton: false})}
+          onMouseEnter={() => this.setState({ isOverNullButton: true })}
+          onMouseLeave={() => this.setState({ isOverNullButton: false })}
           onClick={() => this.props.save(null)}
         >
-          <div>
-          null
-          </div>
+          <div>null</div>
         </div>
       </div>
     )
@@ -45,14 +42,9 @@ export default class NullableCell extends React.Component<Props, State> {
       return this.props.cell
     }
 
-    const props = Object.assign(
-      {},
-      this.props.cell.props,
-      {
-        save: () => null,
-        cancel: () => null,
-      },
-    )
+    const props = {...this.props.cell.props, 
+      save: () => null,
+      cancel: () => null}
     return React.cloneElement(this.props.cell, props)
   }
 }

@@ -27,12 +27,14 @@ function commit(input: Props) {
         referral: input.referral,
       },
     },
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        customerInformation: input.customerInformationId,
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          customerInformation: input.customerInformationId,
+        },
       },
-    }],
+    ],
   })
 }
 

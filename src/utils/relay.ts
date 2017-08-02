@@ -1,35 +1,42 @@
-import {injectNetworkLayer, DefaultNetworkLayer, Transaction} from 'react-relay/classic'
-import {ShowNotificationCallback} from '../types/utils'
+import {
+  injectNetworkLayer,
+  DefaultNetworkLayer,
+  Transaction,
+} from 'react-relay/classic'
+import { ShowNotificationCallback } from '../types/utils'
 import * as cookiestore from 'cookiestore'
-import {Lokka} from 'lokka'
-import {Transport} from 'lokka-transport-http'
-import {toGQL} from '../views/models/utils'
-import {isScalar, isNonScalarList} from './graphql'
-import {Field, OrderBy} from '../types/types'
-import {TypedValue} from '../types/utils'
+import { Lokka } from 'lokka'
+import { Transport } from 'lokka-transport-http'
+import { toGQL } from '../views/models/utils'
+import { isScalar, isNonScalarList } from './graphql'
+import { Field, OrderBy } from '../types/types'
+import { TypedValue } from '../types/utils'
 
-export function updateNetworkLayer (): void {
+export function updateNetworkLayer(): void {
   try {
-    const isLoggedin = cookiestore.has('graphcool_auth_token') && cookiestore.has('graphcool_customer_id')
+    const isLoggedin =
+      cookiestore.has('graphcool_auth_token') &&
+      cookiestore.has('graphcool_customer_id')
     const headers = isLoggedin
       ? {
-        'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
-      }
+          Authorization: `Bearer ${cookiestore.get('graphcool_auth_token')}`,
+        }
       : null
     const api = `${__BACKEND_ADDR__}/system`
     const layer = new DefaultNetworkLayer(api, { headers, retryDelays: [] })
 
     injectNetworkLayer(layer)
   } catch (e) {
-    console.error(e)
+    // noop
   }
 }
 
-export function onFailureShowNotification (
+export function onFailureShowNotification(
   transaction: Transaction,
   showNotification: ShowNotificationCallback,
 ): void {
-  console.error(transaction)
+  // TODO add proper error handling again
+  // console.error(transaction)
   // const error = transaction.getError() as any
   // // NOTE if error returns non-200 response, there is no `source` provided (probably because of fetch)
   // if (typeof Raven !== 'undefined') {
@@ -54,24 +61,28 @@ export function getLokka(projectId: string): any {
     'x-graphcool-source': 'console:databrowser',
   }
   const transport = new Transport(clientEndpoint, { headers })
-  return new Lokka({transport})
+  return new Lokka({ transport })
 }
 
 function camelCase(value: string) {
   return value.charAt(0).toLowerCase() + value.slice(1)
 }
 
-function getInputString(fieldValues: {[key: string]: any}): string {
+function getInputString(fieldValues: { [key: string]: any }): string {
   return fieldValues
     .mapToArray((fieldName, obj) => obj)
-    .filter(({value}) => value !== null)
-    .filter(({field}) => !field.isReadonly)
-    .filter(({field}) => (!isNonScalarList(field)))
-    .map(({field, value}) => toGQL(value, field))
+    .filter(({ value }) => value !== null)
+    .filter(({ field }) => !field.isReadonly)
+    .filter(({ field }) => !isNonScalarList(field))
+    .map(({ field, value }) => toGQL(value, field))
     .join(' ')
 }
 
-function getAddMutation(modelName: string, fieldValues: {[key: string]: any}, fields: Field[]) {
+function getAddMutation(
+  modelName: string,
+  fieldValues: { [key: string]: any },
+  fields: Field[],
+) {
   const inputString = getInputString(fieldValues)
 
   const inputArgumentsString = `(input: {${inputString} clientMutationId: "a"})`
@@ -93,7 +104,6 @@ export function addNode(
   fieldValues: { [key: string]: any },
   fields: Field[],
 ): Promise<any> {
-
   const mutation = `
     {
       ${getAddMutation(modelName, fieldValues, fields)}
@@ -105,15 +115,23 @@ export function addNode(
 export function addNodes(
   lokka: any,
   modelName: string,
-  fieldValueArray: {[key: string]: any}[],
+  fieldValueArray: Array<{ [key: string]: any }>,
   fields: Field[],
 ): Promise<any> {
-  const mutations = fieldValueArray.map((value, index) => `add${index}: ${getAddMutation(modelName, value, fields)}`)
+  const mutations = fieldValueArray.map(
+    (value, index) =>
+      `add${index}: ${getAddMutation(modelName, value, fields)}`,
+  )
   return lokka.mutate(`{${mutations.join('\n')}}`)
 }
 
-export function updateNode(lokka: any, modelName: string, value: TypedValue,
-                           field: Field, nodeId: string): Promise<any> {
+export function updateNode(
+  lokka: any,
+  modelName: string,
+  value: TypedValue,
+  field: Field,
+  nodeId: string,
+): Promise<any> {
   const mutation = `
     {
       update${modelName}(
@@ -132,7 +150,11 @@ export function updateNode(lokka: any, modelName: string, value: TypedValue,
   return lokka.mutate(mutation)
 }
 
-export function deleteNode(lokka: any, modelName: string, nodeId: string): Promise<any> {
+export function deleteNode(
+  lokka: any,
+  modelName: string,
+  nodeId: string,
+): Promise<any> {
   const mutation = `
     {
       delete${modelName}(
@@ -150,14 +172,18 @@ export function deleteNode(lokka: any, modelName: string, nodeId: string): Promi
 
 function getFieldsProjection(fields: Field[], subNodeLimit: number = 3) {
   return fields
-    .map((field) => isScalar(field.typeIdentifier)
-      ? field.name : field.isList
-      ? `${field.name} (first: ${subNodeLimit}) { edges { node { id } } }`
-      : `${field.name} { id }`)
+    .map(
+      field =>
+        isScalar(field.typeIdentifier)
+          ? field.name
+          : field.isList
+            ? `${field.name} (first: ${subNodeLimit}) { edges { node { id } } }`
+            : `${field.name} { id }`,
+    )
     .join(' ')
 }
 
-function addSlashes( str ) {
+function addSlashes(str) {
   return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
 }
 
@@ -171,7 +197,6 @@ export function queryNodes(
   orderBy?: OrderBy,
   subNodeLimit: number = 3,
 ): Promise<any> {
-
   const fieldNames = getFieldsProjection(fields, subNodeLimit)
 
   let filterQuery = ''
@@ -217,7 +242,9 @@ export function queryNodes(
   }
 
   const filter = filterQuery !== '' ? `filter: { ${filterQuery} }` : ''
-  const orderByQuery = orderBy ? `orderBy: ${orderBy.fieldName}_${orderBy.order}` : ''
+  const orderByQuery = orderBy
+    ? `orderBy: ${orderBy.fieldName}_${orderBy.order}`
+    : ''
   const query = `
     {
       viewer {

@@ -26,28 +26,30 @@ const mutation = graphql`
 function commit(input: UninstallPackageInput) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'REQUIRED_CHILDREN',
-      children: [
-        graphql`
-          fragment UninstallPackageChildren on UninstallPackagePayload {
-            project {
-              schema
-              packageDefinitions(first: 100) {
-                edges {
-                  node {
-                    id
-                    definition
-                    name
+    variables: { input },
+    configs: [
+      {
+        type: 'REQUIRED_CHILDREN',
+        children: [
+          graphql`
+            fragment UninstallPackageChildren on UninstallPackagePayload {
+              project {
+                schema
+                packageDefinitions(first: 100) {
+                  edges {
+                    node {
+                      id
+                      definition
+                      name
+                    }
                   }
                 }
               }
             }
-          }
-        `,
-      ],
-    }],
+          `,
+        ],
+      },
+    ],
   })
 }
 

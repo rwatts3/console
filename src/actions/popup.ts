@@ -1,5 +1,5 @@
-import {ReduxAction} from '../types/reducers'
-import {Popup} from '../types/popup'
+import { ReduxAction } from '../types/reducers'
+import { Popup } from '../types/popup'
 import Constants from '../constants/popup'
 
 export function showPopup(popup: Popup): ReduxAction {

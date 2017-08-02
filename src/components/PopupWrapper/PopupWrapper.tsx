@@ -1,8 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
-import {closePopup} from '../../actions/popup'
-import {ReduxAction} from '../../types/reducers'
+import { closePopup } from '../../actions/popup'
+import { ReduxAction } from '../../types/reducers'
 import styled from 'styled-components'
 
 interface Props {
@@ -19,7 +19,7 @@ const Container = styled.div`
 
 class PopupWrapper extends React.Component<Props, {}> {
   refs: {
-    container: Element,
+    container: Element
   }
 
   componentDidMount() {
@@ -31,7 +31,13 @@ class PopupWrapper extends React.Component<Props, {}> {
   }
 
   keyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+    if (
+      e.keyCode === 27 &&
+      !(
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+    ) {
       this.close(e)
     }
   }
@@ -39,12 +45,12 @@ class PopupWrapper extends React.Component<Props, {}> {
   render() {
     return (
       <Container
-        className='fixed left-0 right-0 top-0 bottom-0 z-999'
+        className="fixed left-0 right-0 top-0 bottom-0 z-999"
         style={{
           overflow: 'scroll',
         }}
         onClick={this.handleClick}
-        ref='container'
+        ref="container"
       >
         {this.props.children}
       </Container>
@@ -52,7 +58,6 @@ class PopupWrapper extends React.Component<Props, {}> {
   }
 
   private handleClick = (e: any) => {
-
     const container: Element = ReactDOM.findDOMNode(this.refs.container)
     if (!container.children) {
       return

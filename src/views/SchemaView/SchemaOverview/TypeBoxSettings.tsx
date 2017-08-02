@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import ClickOutside from 'react-click-outside'
 
 interface Props {
@@ -11,7 +11,6 @@ interface State {
 }
 
 export default class TypeBoxSettings extends React.Component<Props, State> {
-
   ref: HTMLDivElement
   canClose: boolean
 
@@ -24,11 +23,10 @@ export default class TypeBoxSettings extends React.Component<Props, State> {
   }
 
   render() {
-    const {open} = this.state
-    return (
-      open ? (
-        <ClickOutside onClickOutside={this.close}>
-          <div className='popup'>
+    const { open } = this.state
+    return open
+      ? <ClickOutside onClickOutside={this.close}>
+          <div className="popup">
             <style jsx>{`
               .popup {
                 @p: .bgWhite, .br2, .absolute, .nowrap, .pointer;
@@ -42,13 +40,14 @@ export default class TypeBoxSettings extends React.Component<Props, State> {
                 @p: .bgBlack04;
               }
             `}</style>
-            {React.Children.map(this.props.children, child => (
-              <div className='row' onClick={this.close}>{child}</div>
-            ))}
+            {React.Children.map(this.props.children, child =>
+              <div className="row" onClick={this.close}>
+                {child}
+              </div>,
+            )}
           </div>
         </ClickOutside>
-      ) : (
-        <div className='dots' ref={ref => this.ref = ref} onClick={this.open}>
+      : <div className="dots" ref={ref => (this.ref = ref)} onClick={this.open}>
           <style jsx>{`
             .dots {
               @p: .pr25, .pointer;
@@ -64,17 +63,15 @@ export default class TypeBoxSettings extends React.Component<Props, State> {
             height={19}
           />
         </div>
-      )
-    )
   }
 
-  private open = (e) => {
+  private open = e => {
     e.stopPropagation()
-    this.setState({open: true})
+    this.setState({ open: true })
   }
 
-  private close = (e) => {
+  private close = e => {
     e.stopPropagation()
-    this.setState({open: false})
+    this.setState({ open: false })
   }
 }

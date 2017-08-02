@@ -1,17 +1,19 @@
 import * as React from 'react'
+import { createFragmentContainer, graphql } from 'react-relay'
 import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {ModelPermission, Model, Relation, RelationPermission} from '../../../../types/types'
-import {$p, variables, Icon} from 'graphcool-styles'
+  ModelPermission,
+  Model,
+  Relation,
+  RelationPermission,
+} from '../../../../types/types'
+import { $p, variables, Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
 import NewToggleButton from '../../../../components/NewToggleButton/NewToggleButton'
 import RelationPermissionLabel from './RelationPermissionLabel'
 import styled from 'styled-components'
-import {Link, withRouter} from 'found'
+import { Link, withRouter } from 'found'
 import tracker from '../../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import UpdateRelationPermission from '../../../../mutations/RelationPermission/UpdateRelationPermission'
 
 interface Props {
@@ -46,39 +48,46 @@ const Arrow = styled.div`
 
 class RelationPermissionComponent extends React.Component<Props, {}> {
   render() {
-    const {permission, relation, params: {projectName}} = this.props
+    const { permission, relation, params: { projectName } } = this.props
     return (
       <Container
-        className={cx(
-          $p.flex,
-          $p.flexRow,
-          $p.justifyBetween,
-          $p.itemsCenter,
-        )}
+        className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}
       >
         <Link
-          className={cx($p.flex, $p.flexRow, $p.overflowHidden, $p.flex1, $p.itemsCenter)}
-          to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
-        >
-          <PermissionType className={cx(
+          className={cx(
             $p.flex,
             $p.flexRow,
+            $p.overflowHidden,
+            $p.flex1,
             $p.itemsCenter,
-            $p.justifyBetween,
-            $p.relative,
-          )}>
-            <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
-              {permission.ruleName ?
-                permission.ruleName : permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'
-              }
-            </h3>
-            <Arrow className={cx(
-              $p.justifyEnd,
+          )}
+          to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
+        >
+          <PermissionType
+            className={cx(
               $p.flex,
               $p.flexRow,
-              $p.flexAuto,
+              $p.itemsCenter,
+              $p.justifyBetween,
               $p.relative,
-            )}>
+            )}
+          >
+            <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
+              {permission.ruleName
+                ? permission.ruleName
+                : permission.userType === 'EVERYONE'
+                  ? 'Everyone'
+                  : 'Authenticated'}
+            </h3>
+            <Arrow
+              className={cx(
+                $p.justifyEnd,
+                $p.flex,
+                $p.flexRow,
+                $p.flexAuto,
+                $p.relative,
+              )}
+            >
               <Icon
                 src={require('graphcool-styles/icons/fill/triangle.svg')}
                 color={variables.gray20}
@@ -87,51 +96,59 @@ class RelationPermissionComponent extends React.Component<Props, {}> {
               />
             </Arrow>
           </PermissionType>
-          {permission.connect && (
+          {permission.connect &&
             <RelationPermissionLabel
               isActive={permission.isActive}
-              operation='connect'
+              operation="connect"
               className={$p.ml10}
-            />
-          )}
-          {permission.disconnect && (
+            />}
+          {permission.disconnect &&
             <RelationPermissionLabel
               isActive={permission.isActive}
-              operation='disconnect'
+              operation="disconnect"
               className={$p.ml10}
-            />
-          )}
+            />}
         </Link>
         <div>
-          <NewToggleButton defaultChecked={permission.isActive} onChange={this.toggleActiveState} />
+          <NewToggleButton
+            defaultChecked={permission.isActive}
+            onChange={this.toggleActiveState}
+          />
         </div>
       </Container>
     )
   }
 
   private toggleActiveState = () => {
-    const {permission} = this.props
-      UpdateRelationPermission.commit({id: permission.id, isActive: !permission.isActive})
-        .then((transaction) => console.log(transaction))
-    tracker.track(ConsoleEvents.Permissions.toggled({active: !permission.isActive}))
+    const { permission } = this.props
+    UpdateRelationPermission.commit({
+      id: permission.id,
+      isActive: !permission.isActive,
+    }).then(transaction => console.log(transaction))
+    tracker.track(
+      ConsoleEvents.Permissions.toggled({ active: !permission.isActive }),
+    )
   }
 }
 
-export default createFragmentContainer(withRouter(RelationPermissionComponent), {
-  permission: graphql`
-    fragment RelationPermissionComponent_permission on RelationPermission {
-      id
-      userType
-      connect
-      disconnect
-      ruleName
-      isActive
-    }
-  `,
-  relation: graphql`
-    fragment RelationPermissionComponent_relation on Relation {
-      id
-      name
-    }
-  `,
-})
+export default createFragmentContainer(
+  withRouter(RelationPermissionComponent),
+  {
+    permission: graphql`
+      fragment RelationPermissionComponent_permission on RelationPermission {
+        id
+        userType
+        connect
+        disconnect
+        ruleName
+        isActive
+      }
+    `,
+    relation: graphql`
+      fragment RelationPermissionComponent_relation on Relation {
+        id
+        name
+      }
+    `,
+  },
+)

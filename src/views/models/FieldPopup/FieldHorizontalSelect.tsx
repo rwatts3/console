@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {$v} from 'graphcool-styles'
+import { $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -18,19 +18,34 @@ interface Props {
 }
 
 export default class FieldHorizontalSelect extends React.Component<Props, {}> {
-
   render() {
-
-    const {activeBackgroundColor, selectedIndex, onChange, choices, infos, small, readOnly, className} = this.props
-    const {spread, disabledIndeces} = this.props
+    const {
+      activeBackgroundColor,
+      selectedIndex,
+      onChange,
+      choices,
+      infos,
+      small,
+      readOnly,
+      className,
+    } = this.props
+    const { spread, disabledIndeces } = this.props
     const inactiveTextColor = this.props.inactiveTextColor || $v.gray30
-    const inactiveBackgroundColor = this.props.inactiveBackgroundColor || $v.gray04
+    const inactiveBackgroundColor =
+      this.props.inactiveBackgroundColor || $v.gray04
 
     return (
-      <div className={cn('container', {'none-selected': selectedIndex === -1, small, readOnly, spread}, className)}>
+      <div
+        className={cn(
+          'container',
+          { 'none-selected': selectedIndex === -1, small, readOnly, spread },
+          className,
+        )}
+      >
         <style jsx>{`
           .container {
-            @p: .flex, .itemsCenter, .justifyCenter, .mv38, .relative, .ph16, .w100, .bbox;
+            @p: .flex, .itemsCenter, .justifyCenter, .mv38, .relative, .ph16,
+              .w100, .bbox;
             height: 42px;
           }
           .container.spread {
@@ -84,7 +99,8 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
           }
 
           .element {
-            @inherit: .relative, .pointer, .br2, .f14, .fw6, .ttu, .nowrap, .z0, .bgBlack04;
+            @inherit: .relative, .pointer, .br2, .f14, .fw6, .ttu, .nowrap, .z0,
+              .bgBlack04;
             margin: 0 -2px;
             padding: 10px 16px;
           }
@@ -123,35 +139,39 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
           const disabled = disabledIndeces && disabledIndeces.includes(i)
           return (
             <div
-              className={cn('flex flexColumn justifyCenter outer-element', {disabled})}
+              className={cn('flex flexColumn justifyCenter outer-element', {
+                disabled,
+              })}
               tabIndex={0}
               onFocus={() => onChange(i, choice)}
               onClick={() => !disabled && onChange(i, choice)}
               data-test={choice === 'String' ? 'string-type' : ''}
             >
               <div
-                className={cn('element', {selected: selectedIndex === i})}
+                className={cn('element', { selected: selectedIndex === i })}
                 key={i}
                 style={{
-                  backgroundColor: selectedIndex === i ? activeBackgroundColor : inactiveBackgroundColor,
+                  backgroundColor:
+                    selectedIndex === i
+                      ? activeBackgroundColor
+                      : inactiveBackgroundColor,
                   color: selectedIndex === i ? 'white' : inactiveTextColor,
                 }}
               >
                 {choice}
               </div>
-              {infos && infos[i] && (
-                <div className='additional-info'>
+              {infos &&
+                infos[i] &&
+                <div className="additional-info">
                   {infos[i]}
-                </div>
-              )}
+                </div>}
             </div>
           )
         })}
-        {selectedIndex === -1 && (
-          <div className='after-selection'>
-            <div className='bar'></div>
-          </div>
-        )}
+        {selectedIndex === -1 &&
+          <div className="after-selection">
+            <div className="bar" />
+          </div>}
       </div>
     )
   }

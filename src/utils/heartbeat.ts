@@ -20,34 +20,31 @@ export default function heartbeat(): () => void {
       lastInput = Date.now()
     },
     1000,
-    {trailing: true},
+    { trailing: true },
   )
 
   document.addEventListener('mousemove', eventHandler)
   document.addEventListener('keypress', eventHandler)
 
   if (__HEARTBEAT_ADDR__) {
-    const timer = setInterval(
-      async () => {
-        const payload = {
-          resource: 'console',
-          token: authToken,
-          projectId: lastUsedProjectId,
-        }
+    const timer = setInterval(async () => {
+      const payload = {
+        resource: 'console',
+        token: authToken,
+        projectId: lastUsedProjectId,
+      }
 
-        // only beat if there was a mousemove event in the last minute
-        if (Date.now() - 60000 < lastInput) {
-          await fetch(__HEARTBEAT_ADDR__, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          })
-        }
-      },
-      60000,
-    )
+      // only beat if there was a mousemove event in the last minute
+      if (Date.now() - 60000 < lastInput) {
+        await fetch(__HEARTBEAT_ADDR__, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+      }
+    }, 60000)
 
     return () => {
       clearInterval(timer)

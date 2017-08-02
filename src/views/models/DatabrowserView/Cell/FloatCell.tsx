@@ -2,7 +2,10 @@ import * as React from 'react'
 import { CellProps, CellState } from './cells'
 import { stringToValue, valueToString } from '../../../../utils/valueparser'
 
-export default class FloatCell extends React.Component<CellProps<number>, CellState> {
+export default class FloatCell extends React.Component<
+  CellProps<number>,
+  CellState
+> {
   constructor(props) {
     super(props)
 
@@ -13,13 +16,16 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
 
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      const valueString = valueToString(nextProps.value, this.props.field, false)
-      this.setState({valueString})
+      const valueString = valueToString(
+        nextProps.value,
+        this.props.field,
+        false,
+      )
+      this.setState({ valueString })
     }
   }
 
   handleChange = (e: any) => {
-
     if (e.target.value === '') {
       this.setState({
         valueString: e.target.value,
@@ -39,19 +45,20 @@ export default class FloatCell extends React.Component<CellProps<number>, CellSt
     return (
       <input
         autoFocus
-        type='text'
-        step='any'
-        ref='input'
+        type="text"
+        step="any"
+        ref="input"
         value={this.state.valueString}
-        onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
+        onBlur={(e: any) =>
+          this.props.save(stringToValue(e.target.value, this.props.field))}
         onKeyDown={this.handleKeyDown}
         onChange={this.handleChange}
-        placeholder='Enter a Float...'
+        placeholder="Enter a Float..."
       />
     )
   }
 
-  private handleKeyDown = (e) => {
+  private handleKeyDown = e => {
     if (e.keyCode === 13) {
       this.props.save(stringToValue(e.target.value, this.props.field))
     }

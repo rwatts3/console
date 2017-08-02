@@ -1,5 +1,9 @@
 import { Operation, UserType } from '../../../types/types'
-export function getEmptyPermissionQuery(modelName: string, operation: Operation, userType: UserType) {
+export function getEmptyPermissionQuery(
+  modelName: string,
+  operation: Operation,
+  userType: UserType,
+) {
   if (operation === 'CREATE') {
     if (userType === 'EVERYONE') {
       return `query {

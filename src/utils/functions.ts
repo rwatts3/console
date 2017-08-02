@@ -1,7 +1,6 @@
-import {EventType} from '../views/FunctionsView/FunctionPopup/FunctionPopup'
-import {ServerlessFunction} from '../types/types'
+import { EventType } from '../views/FunctionsView/FunctionPopup/FunctionPopup'
+import { ServerlessFunction } from '../types/types'
 export function getEventTypeFromFunction(fn: ServerlessFunction | null): EventType {
-
   if (!fn) {
     return 'SSS'
   }

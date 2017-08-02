@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Relation} from '../../../types/types'
+import { Relation } from '../../../types/types'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
 import RelationPermissionLabel from '../RelationPermissionsList/RelationPermissions/RelationPermissionLabel'
 
@@ -11,9 +11,14 @@ interface Props {
   toggleDisconnect: () => void
 }
 
-export default function RelationBaseSettings({connect, disconnect, toggleConnect, toggleDisconnect}: Props) {
+export default function RelationBaseSettings({
+  connect,
+  disconnect,
+  toggleConnect,
+  toggleDisconnect,
+}: Props) {
   return (
-    <div className='relation-base-settings'>
+    <div className="relation-base-settings">
       <style jsx={true}>{`
         .relation-base-settings {
           @p: .pl38, .pr38, .pb38;
@@ -25,22 +30,23 @@ export default function RelationBaseSettings({connect, disconnect, toggleConnect
           @p: .flex, .mt25;
         }
       `}</style>
-      <div className='intro'>
-        The operations that will be allowed by this permission. (Multiple selection possible.)
+      <div className="intro">
+        The operations that will be allowed by this permission. (Multiple
+        selection possible.)
       </div>
 
-      <div className='labels'>
+      <div className="labels">
         <RelationPermissionLabel
-          operation='connect'
+          operation="connect"
           isActive={connect}
           onClick={toggleConnect}
           editable
         />
         <RelationPermissionLabel
-          operation='disconnect'
+          operation="disconnect"
           isActive={disconnect}
           onClick={toggleDisconnect}
-          className='ml16'
+          className="ml16"
           editable
         />
       </div>

@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
-import {Step} from '../types/gettingStarted'
-import {Example} from '../types/types'
+import { Step } from '../types/gettingStarted'
+import { Example } from '../types/types'
 
 interface Props {
   onboardingStatusId: string
@@ -12,7 +12,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateCustomerOnboardingStatusMutation($input:  CrmOnboardingStatusInput!) {
+  mutation UpdateCustomerOnboardingStatusMutation(
+    $input: CrmOnboardingStatusInput!
+  ) {
     updateCrmOnboardingStatus(input: $input) {
       onboardingStatus {
         id
@@ -36,12 +38,14 @@ function commit(input: Props) {
         gettingStartedExample: input.gettingStartedExample,
       },
     },
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        onboardingStatus: input.onboardingStatusId,
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          onboardingStatus: input.onboardingStatusId,
+        },
       },
-    }],
+    ],
   })
 }
 

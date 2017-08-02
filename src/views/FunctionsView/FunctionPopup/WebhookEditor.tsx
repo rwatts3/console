@@ -1,13 +1,13 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
-import {smoothScrollTo} from '../../../utils/smooth'
-import {webhookUrlValid} from './functionPopupState'
+import { Icon, $v } from 'graphcool-styles'
+import { smoothScrollTo } from '../../../utils/smooth'
+import { webhookUrlValid } from './functionPopupState'
 
 interface Props {
   url: string
   onChangeUrl: (url: string) => void
-  headers: {[key: string]: string}
-  onChangeHeaders: (headers: {[key: string]: string}) => void
+  headers: { [key: string]: string }
+  onChangeHeaders: (headers: { [key: string]: string }) => void
   showErrors: boolean
 }
 
@@ -19,7 +19,6 @@ interface State {
 }
 
 export default class WebhookEditor extends React.Component<Props, State> {
-
   private ref: any
   private nameInput: any
 
@@ -35,10 +34,10 @@ export default class WebhookEditor extends React.Component<Props, State> {
   }
 
   render() {
-    const {url, onChangeUrl, headers, showErrors} = this.props
-    const {addingRow} = this.state
+    const { url, onChangeUrl, headers, showErrors } = this.props
+    const { addingRow } = this.state
     return (
-      <div className='webhook-editor' ref={this.setRef}>
+      <div className="webhook-editor" ref={this.setRef}>
         <style jsx={true}>{`
           .webhook-editor {
             @p: .overflowAuto, .flexAuto, .flex, .flexColumn;
@@ -77,7 +76,8 @@ export default class WebhookEditor extends React.Component<Props, State> {
           .edit-row {
             @p: .flex, .overflowHidden, .br2;
           }
-          .left, .right {
+          .left,
+          .right {
             @p: .pv10, .ph12;
           }
           .left {
@@ -109,45 +109,52 @@ export default class WebhookEditor extends React.Component<Props, State> {
           rows={2}
           onChange={this.urlChange}
           onKeyDown={this.keyDown}
-          placeholder='Paste your webhook url here…'
+          placeholder="Paste your webhook url here…"
           value={url}
         />
-        {showErrors && (!webhookUrlValid(url)) && (
-          <div className='error'>
-            Please enter a valid Webhook url ⤴
-          </div>
-        )}
-        <div className='headers'>
-          {headers && Object.keys(headers).map(name => (
-            this.state.editingRow === name ? (
-              <HeaderRow
+        {showErrors &&
+          !webhookUrlValid(url) &&
+          <div className="error">Please enter a valid Webhook url ⤴</div>}
+        <div className="headers">
+          {headers &&
+            Object.keys(headers).map(
+              name =>
+                this.state.editingRow === name
+                  ? <HeaderRow
+                      name={this.state.currentName}
+                      value={this.state.currentValue}
+                      onChangeName={this.onChangeName}
+                      onChangeValue={this.onChangeValue}
+                      onSubmit={this.finishEditRow}
+                      nameRef={ref => (this.nameInput = ref)}
+                    />
+                  : <div
+                      className="row"
+                      onClick={() => this.startEditRow(name)}
+                    >
+                      <div className="name">
+                        {name}
+                      </div>
+                      <div className="value">
+                        {headers[name]}
+                      </div>
+                      <div className="rm" onClick={() => this.removeRow(name)}>
+                        ×
+                      </div>
+                    </div>,
+            )}
+          {!addingRow
+            ? <div className="add-row-inactive" onClick={this.toggleAddRow}>
+                + add HTTP Header
+              </div>
+            : <HeaderRow
                 name={this.state.currentName}
                 value={this.state.currentValue}
                 onChangeName={this.onChangeName}
                 onChangeValue={this.onChangeValue}
-                onSubmit={this.finishEditRow}
-                nameRef={ref => this.nameInput = ref}
-              />
-            ) : (
-              <div className='row' onClick={() => this.startEditRow(name)}>
-                <div className='name'>{name}</div>
-                <div className='value'>{headers[name]}</div>
-                <div className='rm' onClick={() => this.removeRow(name)}>×</div>
-              </div>
-            )
-          ))}
-          {!addingRow ? (
-            <div className='add-row-inactive' onClick={this.toggleAddRow}>+ add HTTP Header</div>
-          ) : (
-            <HeaderRow
-              name={this.state.currentName}
-              value={this.state.currentValue}
-              onChangeName={this.onChangeName}
-              onChangeValue={this.onChangeValue}
-              onSubmit={this.addRow}
-              nameRef={ref => this.nameInput = ref}
-            />
-          )}
+                onSubmit={this.addRow}
+                nameRef={ref => (this.nameInput = ref)}
+              />}
         </div>
       </div>
     )
@@ -167,19 +174,21 @@ export default class WebhookEditor extends React.Component<Props, State> {
 
   private startEditRow = (name: string) => {
     const value = this.props.headers[name]
-    this.setState({
-      editingRow: name,
-      currentName: name,
-      currentValue: value,
-      addingRow: false,
-    } as State)
+    this.setState(
+      {
+        editingRow: name,
+        currentName: name,
+        currentValue: value,
+        addingRow: false,
+      } as State,
+    )
   }
 
   private finishEditRow = () => {
-    const {headers} = this.props
+    const { headers } = this.props
     const oldName = this.state.editingRow
 
-    let newHeaders = {}
+    const newHeaders = {}
 
     Object.keys(headers).forEach(name => {
       if (name === oldName) {
@@ -190,11 +199,13 @@ export default class WebhookEditor extends React.Component<Props, State> {
     })
 
     this.props.onChangeHeaders(newHeaders)
-    this.setState({
-      currentName: '',
-      currentValue: '',
-      editingRow: '',
-    } as State)
+    this.setState(
+      {
+        currentName: '',
+        currentValue: '',
+        editingRow: '',
+      } as State,
+    )
   }
 
   private setRef = ref => {
@@ -209,13 +220,13 @@ export default class WebhookEditor extends React.Component<Props, State> {
   }
 
   private removeRow = (name: string) => {
-    const copy = Object.assign({}, this.props.headers)
+    const copy = {...this.props.headers}
     delete copy[name]
     this.props.onChangeHeaders(copy)
   }
 
   private addRow = () => {
-    const {currentName, currentValue} = this.state
+    const { currentName, currentValue } = this.state
     this.props.onChangeHeaders({
       ...this.props.headers,
       [currentName]: currentValue,
@@ -232,11 +243,11 @@ export default class WebhookEditor extends React.Component<Props, State> {
   }
 
   private onChangeName = e => {
-    this.setState({currentName: e.target.value} as State)
+    this.setState({ currentName: e.target.value } as State)
   }
 
   private onChangeValue = e => {
-    this.setState({currentValue: e.target.value} as State)
+    this.setState({ currentValue: e.target.value } as State)
   }
 
   private urlChange = e => {
@@ -267,10 +278,17 @@ interface HeaderRowProps {
 }
 
 class HeaderRow extends React.Component<HeaderRowProps, null> {
-  render () {
-    const {name, value, onChangeName, onChangeValue, onSubmit, nameRef} = this.props
+  render() {
+    const {
+      name,
+      value,
+      onChangeName,
+      onChangeValue,
+      onSubmit,
+      nameRef,
+    } = this.props
     return (
-      <div className='edit-row'>
+      <div className="edit-row">
         <style jsx>{`
           .name {
             @p: .white, .fw6, .f14;
@@ -280,14 +298,16 @@ class HeaderRow extends React.Component<HeaderRowProps, null> {
             @p: .white, .f14;
           }
           .ok {
-            @p: .bgLightgreen20, .br100, .flex, .itemsCenter, .justifyCenter, .mh16, .pointer, .flexFixed;
+            @p: .bgLightgreen20, .br100, .flex, .itemsCenter, .justifyCenter,
+              .mh16, .pointer, .flexFixed;
             width: 25px;
             height: 25px;
           }
           .edit-row {
             @p: .flex, .overflowHidden, .br2, .mb10, .mt6;
           }
-          .left, .right {
+          .left,
+          .right {
             @p: .pv10, .ph12;
           }
           .left {
@@ -310,28 +330,31 @@ class HeaderRow extends React.Component<HeaderRowProps, null> {
             max-width: 125px;
           }
         `}</style>
-        <div className='left'>
+        <div className="left">
           <input
-            type='text'
-            className='name-input'
-            placeholder='Type a name ...'
+            type="text"
+            className="name-input"
+            placeholder="Type a name ..."
             autoFocus
             value={name}
             onChange={onChangeName}
             ref={nameRef}
           />
         </div>
-        <div className='right'>
+        <div className="right">
           <input
-            type='text'
-            className='value-input'
-            placeholder='Type the content ...'
+            type="text"
+            className="value-input"
+            placeholder="Type the content ..."
             value={value}
             onChange={onChangeValue}
             onKeyDown={this.handleKeyDown}
           />
-          <div className='ok' onClick={onSubmit}>
-            <Icon src={require('graphcool-styles/icons/fill/check.svg')} color={$v.green} />
+          <div className="ok" onClick={onSubmit}>
+            <Icon
+              src={require('graphcool-styles/icons/fill/check.svg')}
+              color={$v.green}
+            />
           </div>
         </div>
       </div>

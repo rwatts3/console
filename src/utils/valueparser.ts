@@ -1,7 +1,12 @@
-import {isValidDateTime, isValidEnum} from './utils'
-import {Field, Operation} from '../types/types'
-import {isScalar} from './graphql'
-import {TypedValue, NonScalarValue, ScalarValue, AtomicValue} from '../types/utils'
+import { isValidDateTime, isValidEnum } from './utils'
+import { Field, Operation } from '../types/types'
+import { isScalar } from './graphql'
+import {
+  TypedValue,
+  NonScalarValue,
+  ScalarValue,
+  AtomicValue,
+} from '../types/utils'
 
 export function valueToString(
   value: TypedValue,
@@ -14,29 +19,43 @@ export function valueToString(
   }
 
   if (field.isList) {
-
     if (!isValidList(value)) {
       return returnNullAsString ? 'null' : ''
     }
 
-    const valueArray: Array<AtomicValue> = value as Array<AtomicValue>
+    const valueArray: AtomicValue[] = value as AtomicValue[]
 
-    if (listIsEmpty(value as (ScalarValue[] | NonScalarValue[]))) {
+    if (listIsEmpty(value as ScalarValue[] | NonScalarValue[])) {
       return '[]'
     }
 
     if (!isStringlyType(field, serialize)) {
-      return `[${valueArray.map((val) =>
-        `${atomicValueToString(val, field, returnNullAsString, serialize)}`,
-      ).join(', ')}]`
+      return `[${valueArray
+        .map(
+          val =>
+            `${atomicValueToString(val, field, returnNullAsString, serialize)}`,
+        )
+        .join(', ')}]`
     } else {
-      return `[${valueArray.map((val) =>
-        `"${atomicValueToString(val, field, returnNullAsString, serialize)}"`,
-      ).join(', ')}]`
+      return `[${valueArray
+        .map(
+          val =>
+            `"${atomicValueToString(
+              val,
+              field,
+              returnNullAsString,
+              serialize,
+            )}"`,
+        )
+        .join(', ')}]`
     }
-
   } else {
-    return atomicValueToString(value as AtomicValue, field, returnNullAsString, serialize)
+    return atomicValueToString(
+      value as AtomicValue,
+      field,
+      returnNullAsString,
+      serialize,
+    )
   }
 }
 
@@ -72,7 +91,7 @@ function isValidList(value: any): boolean {
   return value instanceof Array
 }
 
-function listIsEmpty(value: (Array<AtomicValue>)): boolean {
+function listIsEmpty(value: AtomicValue[]): boolean {
   return value.length === 0
 }
 
@@ -116,11 +135,15 @@ export function atomicValueToString(
   }
 }
 
-export function stringToValue(rawValue: string, field: Field, forceScalar: boolean = false): TypedValue {
+export function stringToValue(
+  rawValue: string,
+  field: Field,
+  forceScalar: boolean = false,
+): TypedValue {
   if (rawValue === null) {
     return null
   }
-  const {isList, isRequired, typeIdentifier} = field
+  const { isList, isRequired, typeIdentifier } = field
   if (rawValue === '' && !isRequired) {
     return typeIdentifier === 'String' ? '' : null
   }
@@ -128,13 +151,13 @@ export function stringToValue(rawValue: string, field: Field, forceScalar: boole
   if (!isScalar(typeIdentifier) && !forceScalar) {
     if (isList) {
       try {
-        let json = JSON.parse(rawValue)
+        const json = JSON.parse(rawValue)
         if (!(json instanceof Array)) {
-          throw 'value is not an array'
+          throw new Error('value is not an array')
         }
-        for (let i = 0; i < json.length; i++) {
-          if (!json[i].hasOwnProperty('id')) {
-            throw 'value does not have "id" field'
+        for (const key of json) {
+          if (!key.hasOwnProperty('id')) {
+            throw new Error('value does not have "id" field')
           }
         }
         return json
@@ -142,12 +165,12 @@ export function stringToValue(rawValue: string, field: Field, forceScalar: boole
         return null // TODO add true error handling
       }
     }
-    return {id: rawValue}
+    return { id: rawValue }
   }
 
   if (isList && !forceScalar) {
     if (typeIdentifier === 'Enum') {
-      return rawValue.slice(1, -1).split(',').map((value) => value.trim())
+      return rawValue.slice(1, -1).split(',').map(value => value.trim())
     }
     try {
       return JSON.parse(rawValue)
@@ -157,14 +180,18 @@ export function stringToValue(rawValue: string, field: Field, forceScalar: boole
   } else {
     return {
       String: () => rawValue,
-      Boolean: () => rawValue.toLowerCase() === 'true' ? true : rawValue.toLowerCase() === 'false' ? false : null,
-      Int: () => isNaN(parseInt(rawValue, 10)) ? null : parseInt(rawValue, 10),
-      Float: () => isNaN(parseFloat(rawValue)) ? null : parseFloat(rawValue),
+      Boolean: () =>
+        rawValue.toLowerCase() === 'true'
+          ? true
+          : rawValue.toLowerCase() === 'false' ? false : null,
+      Int: () =>
+        isNaN(parseInt(rawValue, 10)) ? null : parseInt(rawValue, 10),
+      Float: () => (isNaN(parseFloat(rawValue)) ? null : parseFloat(rawValue)),
       GraphQLID: () => rawValue,
       Password: () => rawValue,
-      Enum: () => isValidEnum(rawValue) ? rawValue : null,
-      DateTime: () => isValidDateTime(rawValue) ? rawValue : null,
-      Json: () => isJSON(rawValue) ? rawValue : null,
+      Enum: () => (isValidEnum(rawValue) ? rawValue : null),
+      DateTime: () => (isValidDateTime(rawValue) ? rawValue : null),
+      Json: () => (isJSON(rawValue) ? rawValue : null),
     }[typeIdentifier]()
   }
 }

@@ -1,27 +1,22 @@
 import * as React from 'react'
-import {FunctionStats} from '../../types/types'
-import {LineChart} from 'react-svg-chart'
+import { FunctionStats } from '../../types/types'
+import { LineChart } from 'react-svg-chart'
 
 interface Props {
   stats: FunctionStats
 }
 
-interface State {
-
-}
+interface State {}
 
 export default class RequestGraph extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   render() {
-    const {requestHistogram} = this.props.stats
+    const { requestHistogram } = this.props.stats
 
     const points = requestHistogram.map(value => ({
       value: value + 1,
@@ -47,7 +42,7 @@ export default class RequestGraph extends React.Component<Props, State> {
           }
           .line-chart__label,
           .line-chart__value {
-            fill: rgb( 55, 55, 55 );
+            fill: rgb(55, 55, 55);
             font-size: 18px;
           }
           .line-chart__value {
@@ -66,12 +61,12 @@ export default class RequestGraph extends React.Component<Props, State> {
           width={200}
           height={30}
           pointSize={1}
-          className='line-chart'
+          className="line-chart"
           labelSpacing={2}
           valueHeight={3}
           valueOffset={4}
           valueWidth={2}
-          preserveAspectRatio='xMinYMid meet'
+          preserveAspectRatio="xMinYMid meet"
           showLabels={false}
         />
       </div>

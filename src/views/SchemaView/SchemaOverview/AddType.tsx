@@ -1,20 +1,20 @@
 import * as React from 'react'
 import FieldItem from './FieldItem'
-import {Field, Project, Model} from '../../../types/types'
-import {connect} from 'react-redux'
-import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
-import {showNotification} from '../../../actions/notification'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {validateModelName} from '../../../utils/nameValidator'
-import {onFailureShowNotification} from '../../../utils/relay'
+import { Field, Project, Model } from '../../../types/types'
+import { connect } from 'react-redux'
+import { showDonePopup, nextStep } from '../../../actions/gettingStarted'
+import { showNotification } from '../../../actions/notification'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { validateModelName } from '../../../utils/nameValidator'
+import { onFailureShowNotification } from '../../../utils/relay'
 import tracker from '../../../utils/metrics'
 import AddModelMutation from '../../../mutations/AddModelMutation'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
-import {withRouter} from 'found'
-import {idToBeginning} from '../../../utils/utils'
+import { withRouter } from 'found'
+import { idToBeginning } from '../../../utils/utils'
 import UpdateModelMutation from '../../../mutations/UpdateModelMutation'
 import ConfirmModel from './ConfirmModel'
 import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
@@ -43,16 +43,16 @@ interface Props {
 }
 
 const idField = {
-  'id': 'dummy',
-  'name': 'id',
-  'typeIdentifier': 'GraphQLID',
-  'isList': false,
-  'isRequired': true,
-  'isSystem': true,
-  'isUnique': true,
-  'isReadonly': true,
-  'relation': null,
-  'relatedModel': null,
+  id: 'dummy',
+  name: 'id',
+  typeIdentifier: 'GraphQLID',
+  isList: false,
+  isRequired: true,
+  isSystem: true,
+  isUnique: true,
+  isReadonly: true,
+  relation: null,
+  relatedModel: null,
 }
 
 class AddType extends React.Component<Props, State> {
@@ -61,8 +61,8 @@ class AddType extends React.Component<Props, State> {
 
     this.state = {
       // model
-      modelName: props.model && props.model.name || '',
-      description: props.model && props.model.description || '',
+      modelName: (props.model && props.model.name) || '',
+      description: (props.model && props.model.description) || '',
       // ui state
       showError: false,
       editing: Boolean(props.model),
@@ -78,8 +78,15 @@ class AddType extends React.Component<Props, State> {
     document.removeEventListener('keydown', this.handleEsc)
   }
   render() {
-    const {showError, editing, loading, editingDescription, description, showDeletePopup} = this.state
-    const {model} = this.props
+    const {
+      showError,
+      editing,
+      loading,
+      editingDescription,
+      description,
+      showDeletePopup,
+    } = this.state
+    const { model } = this.props
     let fields
     let permissions
     if (model) {
@@ -87,7 +94,10 @@ class AddType extends React.Component<Props, State> {
       permissions = model.permissions.edges.map(edge => edge.node)
     }
 
-    const breaking = Boolean(model) && model.itemCount > 0 && this.state.modelName !== this.props.model.name
+    const breaking =
+      Boolean(model) &&
+      model.itemCount > 0 &&
+      this.state.modelName !== this.props.model.name
 
     return (
       <div className={'add-type' + (Boolean(model) ? ' editing' : '')}>
@@ -103,7 +113,8 @@ class AddType extends React.Component<Props, State> {
             @p: .pv16, .flex, .itemsCenter, .bb, .bBlack10, .nowrap;
           }
           .badge {
-            @p: .bgGreen, .white, .relative, .f12, .fw6, .ttu, .top0, .br2, .selfStart;
+            @p: .bgGreen, .white, .relative, .f12, .fw6, .ttu, .top0, .br2,
+              .selfStart;
             padding: 2px 4px;
             left: -4px;
           }
@@ -128,7 +139,8 @@ class AddType extends React.Component<Props, State> {
             @p: .w100;
           }
           .footer {
-            @p: .flex, .justifyBetween, .bgBlack04, .pa16, .bt, .bBlack10, .relative;
+            @p: .flex, .justifyBetween, .bgBlack04, .pa16, .bt, .bBlack10,
+              .relative;
           }
           .button {
             @p: .f14, .pointer, .br2;
@@ -147,7 +159,8 @@ class AddType extends React.Component<Props, State> {
             @p: .orange, .f14, .ml10;
           }
           .loading {
-            @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70, .flex, .itemsCenter, .justifyCenter;
+            @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70,
+              .flex, .itemsCenter, .justifyCenter;
           }
           .underline {
             @p: .underline;
@@ -162,125 +175,129 @@ class AddType extends React.Component<Props, State> {
             @p: .flex, .itemsCenter;
           }
         `}</style>
-        <div className='header'>
-          {editing ? (
-            <div className='badge update'>Update Type</div>
-          ) : (
-            <div className='badge'>New Type</div>
-          )}
-          <div className='input-wrapper'>
+        <div className="header">
+          {editing
+            ? <div className="badge update">Update Type</div>
+            : <div className="badge">New Type</div>}
+          <div className="input-wrapper">
             <input
-              type='text'
-              className='name-input'
-              placeholder='Choose a name...'
+              type="text"
+              className="name-input"
+              placeholder="Choose a name..."
               autoFocus
               value={this.state.modelName}
               onChange={this.onModelNameChange}
               onKeyDown={this.handleKeyDown}
             />
-            {showError && (
-              <div className='error'>
-                Models must begin with an uppercase letter and only contain letters and numbers
-              </div>
-            )}
-            <div className='description-wrapper'>
-              {(editingDescription || (this.state.description && this.state.description.length > 0)) ? (
-                <input
-                  type='text'
-                  className='description-input'
-                  placeholder='Choose a description...'
-                  autoFocus={!editing}
-                  value={this.state.description}
-                  onChange={this.onDescriptionChange}
-                  onKeyDown={this.handleDescriptionKeyDown}
-                />
-              ) : (
-                <div className='edit-description' onClick={this.editDescription}>
-                  <div className='f16 black40'>
-                    <span className='underline'>add description</span>
-                    <span className='black30'> (optional)</span>
-                  </div>
-                </div>
-              )}
+            {showError &&
+              <div className="error">
+                Models must begin with an uppercase letter and only contain
+                letters and numbers
+              </div>}
+            <div className="description-wrapper">
+              {editingDescription ||
+              (this.state.description && this.state.description.length > 0)
+                ? <input
+                    type="text"
+                    className="description-input"
+                    placeholder="Choose a description..."
+                    autoFocus={!editing}
+                    value={this.state.description}
+                    onChange={this.onDescriptionChange}
+                    onKeyDown={this.handleDescriptionKeyDown}
+                  />
+                : <div
+                    className="edit-description"
+                    onClick={this.editDescription}
+                  >
+                    <div className="f16 black40">
+                      <span className="underline">add description</span>
+                      <span className="black30"> (optional)</span>
+                    </div>
+                  </div>}
             </div>
           </div>
         </div>
-        <div className='fields'>
-          {model ? (
-            fields.map((field, index) => (
-              <FieldItem
-                key={field.id}
-                field={field}
-                permissions={permissions}
-                hideBorder={index === 0}
-                projectName={this.props.params.projectName}
-                modelName={this.props.params.modelName}
-              />
-            ))
-          ) : (
-            <FieldItem
-              key={idField.id}
-              field={idField as Field}
-              permissions={[]}
-              hideBorder={true}
-              create
-              projectName={this.props.params ? this.props.params.projectName : undefined}
-              modelName={this.props.params ? this.props.params.modelName : undefined}
-            />
-          )}
+        <div className="fields">
+          {model
+            ? fields.map((field, index) =>
+                <FieldItem
+                  key={field.id}
+                  field={field}
+                  permissions={permissions}
+                  hideBorder={index === 0}
+                  projectName={this.props.params.projectName}
+                  modelName={this.props.params.modelName}
+                />,
+              )
+            : <FieldItem
+                key={idField.id}
+                field={idField as Field}
+                permissions={[]}
+                hideBorder={true}
+                create
+                projectName={
+                  this.props.params ? this.props.params.projectName : undefined
+                }
+                modelName={
+                  this.props.params ? this.props.params.modelName : undefined
+                }
+              />}
         </div>
-        <div className='footer'>
-          {editing ? (
-            showDeletePopup ? (
-              <ConfirmModel
-                delete
-                onConfirmDeletion={this.delete}
-                onCancel={this.hideDeletePopup}
-                initialModelName={this.props.model.name}
-                mutatedModelName={this.state.modelName}
-              />
-            ) : (
-              <div className='button delete' onClick={this.showDeletePopup}>Delete</div>
-            )
-          ) : (
-            <div className='button cancel' onClick={this.close}>Cancel</div>
-          )}
-          <div className='flexy'>
-            {editing && (
-              <div className='button cancel mr16' onClick={this.close}>Cancel</div>
-            )}
-            {breaking ? (
-              <ConfirmModel
-                onConfirmBreakingChanges={this.save}
-                onResetBreakingChanges={this.reset}
-                initialModelName={this.props.model.name}
-                mutatedModelName={this.state.modelName}
-              />
-            ) : (
-              <Tether
-                style={{
-                  pointerEvents: 'none',
-                }}
-                steps={[{
-                  step: 'STEP1_CREATE_POST_MODEL',
-                  title: `Save the "Post" Type`,
-                }]}
-                offsetX={15}
-                offsetY={5}
-                width={300}
-                horizontal='right'
-                key='STEP1_CREATE_POST_MODEL'
-              >
-                <div className='button save' onClick={this.save}>Save</div>
-              </Tether>
-            )}
+        <div className="footer">
+          {editing
+            ? showDeletePopup
+              ? <ConfirmModel
+                  delete
+                  onConfirmDeletion={this.delete}
+                  onCancel={this.hideDeletePopup}
+                  initialModelName={this.props.model.name}
+                  mutatedModelName={this.state.modelName}
+                />
+              : <div className="button delete" onClick={this.showDeletePopup}>
+                  Delete
+                </div>
+            : <div className="button cancel" onClick={this.close}>
+                Cancel
+              </div>}
+          <div className="flexy">
+            {editing &&
+              <div className="button cancel mr16" onClick={this.close}>
+                Cancel
+              </div>}
+            {breaking
+              ? <ConfirmModel
+                  onConfirmBreakingChanges={this.save}
+                  onResetBreakingChanges={this.reset}
+                  initialModelName={this.props.model.name}
+                  mutatedModelName={this.state.modelName}
+                />
+              : <Tether
+                  style={{
+                    pointerEvents: 'none',
+                  }}
+                  steps={[
+                    {
+                      step: 'STEP1_CREATE_POST_MODEL',
+                      title: `Save the "Post" Type`,
+                    },
+                  ]}
+                  offsetX={15}
+                  offsetY={5}
+                  width={300}
+                  horizontal="right"
+                  key="STEP1_CREATE_POST_MODEL"
+                >
+                  <div className="button save" onClick={this.save}>
+                    Save
+                  </div>
+                </Tether>}
           </div>
         </div>
-        {loading && (
-          <div className='loading'>
+        {loading &&
+          <div className="loading">
             <Loading />
-          </div>
-        )}
+          </div>}
       </div>
     )
   }
@@ -292,25 +309,25 @@ class AddType extends React.Component<Props, State> {
   }
 
   private showDeletePopup = () => {
-    this.setState({showDeletePopup: true} as State)
+    this.setState({ showDeletePopup: true } as State)
   }
 
   private hideDeletePopup = () => {
-    this.setState({showDeletePopup: false} as State)
+    this.setState({ showDeletePopup: false } as State)
   }
 
   private reset = () => {
-    this.setState({modelName: this.props.model.name} as State)
+    this.setState({ modelName: this.props.model.name } as State)
   }
 
   private editDescription = e => {
     e.stopPropagation()
-    this.setState({editingDescription: true} as State)
+    this.setState({ editingDescription: true } as State)
   }
 
   private stopEditDescription(e) {
     e.stopPropagation()
-    this.setState({editingDescription: false} as State)
+    this.setState({ editingDescription: false } as State)
   }
 
   private handleDescriptionKeyDown = e => {
@@ -326,20 +343,20 @@ class AddType extends React.Component<Props, State> {
   }
 
   private onDescriptionChange = e => {
-    this.setState({description: e.target.value} as State)
+    this.setState({ description: e.target.value } as State)
   }
 
   private onModelNameChange = e => {
-    this.setState({modelName: e.target.value} as State)
+    this.setState({ modelName: e.target.value } as State)
   }
 
   private save = () => {
-    const {modelName, editing, description} = this.state
+    const { modelName, editing, description } = this.state
     if (modelName !== null && !validateModelName(modelName)) {
-      return this.setState({showError: true} as State)
+      return this.setState({ showError: true } as State)
     }
 
-    this.setState({loading: true} as State, () => {
+    this.setState({ loading: true } as State, () => {
       if (editing) {
         this.editModel(modelName, description)
       } else {
@@ -349,7 +366,7 @@ class AddType extends React.Component<Props, State> {
   }
 
   private delete = () => {
-    this.setState({loading: true} as State, () => {
+    this.setState({ loading: true } as State, () => {
       DeleteModelMutation.commit({
         projectId: this.props.projectId,
         modelId: this.props.model.id,
@@ -359,7 +376,7 @@ class AddType extends React.Component<Props, State> {
         })
         .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
+          this.setState({ loading: false } as State)
         })
     })
   }
@@ -368,7 +385,9 @@ class AddType extends React.Component<Props, State> {
     if (modelName) {
       let newModelName = modelName
       if (
-        this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL') &&
+        this.props.gettingStartedState.isCurrentStep(
+          'STEP1_CREATE_POST_MODEL',
+        ) &&
         modelName.toLowerCase() === 'post'
       ) {
         newModelName = 'Post'
@@ -379,20 +398,29 @@ class AddType extends React.Component<Props, State> {
         projectId: this.props.projectId,
       })
         .then(() => {
-          tracker.track(ConsoleEvents.Schema.Model.created({modelName: newModelName}))
+          tracker.track(
+            ConsoleEvents.Schema.Model.created({ modelName: newModelName }),
+          )
           if (
             newModelName === 'Post' &&
-            this.props.gettingStartedState.isCurrentStep('STEP1_CREATE_POST_MODEL')
+            this.props.gettingStartedState.isCurrentStep(
+              'STEP1_CREATE_POST_MODEL',
+            )
           ) {
             this.props.showDonePopup()
             this.props.nextStep()
           }
-          tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Create', name: newModelName}))
+          tracker.track(
+            ConsoleEvents.Schema.Model.Popup.submitted({
+              type: 'Create',
+              name: newModelName,
+            }),
+          )
           this.close()
         })
         .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
+          this.setState({ loading: false } as State)
         })
     }
   }
@@ -404,17 +432,19 @@ class AddType extends React.Component<Props, State> {
       id: this.props.model.id,
     })
       .then(() => {
-        tracker.track(ConsoleEvents.Schema.Model.renamed({id: this.props.model.id}))
+        tracker.track(
+          ConsoleEvents.Schema.Model.renamed({ id: this.props.model.id }),
+        )
         this.close()
       })
-      .catch((transaction) => {
+      .catch(transaction => {
         onFailureShowNotification(transaction, this.props.showNotification)
-        this.setState({loading: false} as State)
+        this.setState({ loading: false } as State)
       })
   }
 
   private close = () => {
-    const {onRequestClose, router} = this.props
+    const { onRequestClose, router } = this.props
     if (typeof onRequestClose === 'function') {
       onRequestClose()
     }
@@ -427,8 +457,10 @@ class AddType extends React.Component<Props, State> {
 }
 
 export default connect(
-  state => ({gettingStartedState: state.gettingStarted.gettingStartedState}),
+  state => ({ gettingStartedState: state.gettingStarted.gettingStartedState }),
   {
-    showNotification, nextStep, showDonePopup,
+    showNotification,
+    nextStep,
+    showDonePopup,
   },
 )(withRouter(AddType))

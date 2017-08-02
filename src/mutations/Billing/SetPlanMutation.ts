@@ -33,7 +33,7 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
+    variables: { input },
     configs: [],
   })
 }

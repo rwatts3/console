@@ -7,7 +7,7 @@ import Datetime from 'react-datetime'
 const classes: any = require('./Datepicker.scss')
 
 if (Datetime) {
-  Datetime.prototype.componentWillReceiveProps = function (nextProps) {
+  Datetime.prototype.componentWillReceiveProps = function(nextProps) {
     if (this.props.open !== nextProps.open) {
       this.setState({ open: nextProps.open })
     }
@@ -39,13 +39,12 @@ interface State {
 }
 
 export default class DatePicker extends React.Component<Props, State> {
-
   refs: {
     [key: string]: any
-    container: Element,
+    container: Element
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -64,8 +63,8 @@ export default class DatePicker extends React.Component<Props, State> {
     document.removeEventListener('keydown', this.onKeyDown)
   }
 
-  render () {
-    const passThroughProps: any = Object.assign({}, this.props)
+  render() {
+    const passThroughProps: any = {...this.props}
 
     delete passThroughProps.onChange
     delete passThroughProps.dateFormat
@@ -78,22 +77,24 @@ export default class DatePicker extends React.Component<Props, State> {
       <div
         className={`${classes.root} ${this.props.className}`}
         onClick={() => this.markOpen()}
-        ref='container'
+        ref="container"
       >
-        <ClickOutside onClickOutside={() => {
-          if (this.props.autoClose) {
-            this.setState({open: false} as State)
-          }
-          if (typeof this.props.onClickOutside === 'function') {
-            this.props.onClickOutside(this.state.moment)
-          }
-        }}>
+        <ClickOutside
+          onClickOutside={() => {
+            if (this.props.autoClose) {
+              this.setState({ open: false } as State)
+            }
+            if (typeof this.props.onClickOutside === 'function') {
+              this.props.onClickOutside(this.state.moment)
+            }
+          }}
+        >
           <Datetime
             {...passThroughProps}
             className={classes.datetime}
-            dateFormat='YYYY-MM-DD'
-            timeFormat='HH:mm:ssZZ'
-            onChange={(m) => this.onChange(m)}
+            dateFormat="YYYY-MM-DD"
+            timeFormat="HH:mm:ssZZ"
+            onChange={m => this.onChange(m)}
             open={this.state.open}
           />
         </ClickOutside>
@@ -115,7 +116,7 @@ export default class DatePicker extends React.Component<Props, State> {
     }
   }
 
-  private onChange (m: Moment) {
+  private onChange(m: Moment) {
     if (this.props.applyImmediately) {
       this.applyChange(m)
     } else {
@@ -123,12 +124,12 @@ export default class DatePicker extends React.Component<Props, State> {
     }
   }
 
-  private applyChange (m: Moment) {
+  private applyChange(m: Moment) {
     this.setState({ open: false } as State)
     this.props.onChange(m)
   }
 
-  private markOpen () {
+  private markOpen() {
     if (!this.state.open) {
       this.setState({ open: true } as State)
 

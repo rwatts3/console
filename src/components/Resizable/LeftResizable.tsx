@@ -6,37 +6,41 @@ import cloneElement from './cloneElement'
 
 type Axis = 'both' | 'x' | 'y' | 'none'
 type State = {
-  resizing: boolean,
-  width: number, height: number,
-  slackW: number, slackH: number
+  resizing: boolean
+  width: number
+  height: number
+  slackW: number
+  slackH: number
 }
 type DragCallbackData = {
-  node: HTMLElement,
-  x: number, y: number,
-  deltaX: number, deltaY: number,
-  lastX: number, lastY: number
+  node: HTMLElement
+  x: number
+  y: number
+  deltaX: number
+  deltaY: number
+  lastX: number
+  lastY: number
 }
 type ResizeCallbackData = {
-  node: HTMLElement,
-  size: {width: number, height: number}
+  node: HTMLElement
+  size: { width: number; height: number }
 }
 export type Props = {
-  children: any,
-  width: number,
-  height: number,
-  handleSize: [number, number],
-  lockAspectRatio: boolean,
-  axis: Axis,
-  minConstraints: [number, number],
-  maxConstraints: [number, number],
-  onResizeStop?: (e: any, data: ResizeCallbackData) => any,
-  onResizeStart?: (e: any, data: ResizeCallbackData) => any,
-  onResize?: (e: any, data: ResizeCallbackData) => any,
+  children: any
+  width: number
+  height: number
+  handleSize: [number, number]
+  lockAspectRatio: boolean
+  axis: Axis
+  minConstraints: [number, number]
+  maxConstraints: [number, number]
+  onResizeStop?: (e: any, data: ResizeCallbackData) => any
+  onResizeStart?: (e: any, data: ResizeCallbackData) => any
+  onResize?: (e: any, data: ResizeCallbackData) => any
   draggableOpts?: any
 }
 
 export default class LeftResizable extends React.Component<Props, State> {
-
   static propTypes = {
     //
     // Required Props
@@ -76,36 +80,47 @@ export default class LeftResizable extends React.Component<Props, State> {
     onResize: PropTypes.func,
 
     // These will be passed wholesale to react-draggable's DraggableCore
-    draggableOpts: PropTypes.object
+    draggableOpts: PropTypes.object,
   }
   props: Props
 
-  static defaultProps =  {
+  static defaultProps = {
     handleSize: [20, 20],
     lockAspectRatio: false,
     axis: 'both',
     minConstraints: [20, 20],
-    maxConstraints: [Infinity, Infinity]
+    maxConstraints: [Infinity, Infinity],
   }
 
   state: State = {
     resizing: false,
-    width: this.props.width, height: this.props.height,
-    slackW: 0, slackH: 0
+    width: this.props.width,
+    height: this.props.height,
+    slackW: 0,
+    slackH: 0,
   }
 
   componentWillReceiveProps(nextProps: Props) {
     // If parent changes height/width, set that in our state.
-    if (!this.state.resizing &&
-        (nextProps.width !== this.props.width || nextProps.height !== this.props.height)) {
-      this.setState({
-        width: nextProps.width,
-        height: nextProps.height
-      } as State)
+    if (
+      !this.state.resizing &&
+      (nextProps.width !== this.props.width ||
+        nextProps.height !== this.props.height)
+    ) {
+      this.setState(
+        {
+          width: nextProps.width,
+          height: nextProps.height,
+        } as State,
+      )
     }
   }
 
-  lockAspectRatio(width: number, height: number, aspectRatio: number): [number, number] {
+  lockAspectRatio(
+    width: number,
+    height: number,
+    aspectRatio: number,
+  ): [number, number] {
     height = width / aspectRatio
     width = height * aspectRatio
     return [width, height]
@@ -128,7 +143,7 @@ export default class LeftResizable extends React.Component<Props, State> {
     // Add slack to the values used to calculate bound position. This will ensure that if
     // we start removing slack, the element won't react to it right away until it's been
     // completely removed.
-    let {slackW, slackH} = this.state
+    let { slackW, slackH } = this.state
     width += slackW
     height += slackH
 
@@ -142,10 +157,10 @@ export default class LeftResizable extends React.Component<Props, State> {
     }
 
     // If the numbers changed, we must have introduced some slack. Record it for the next iteration.
-    slackW += (oldW - width)
-    slackH += (oldH - height)
+    slackW += oldW - width
+    slackH += oldH - height
     if (slackW !== this.state.slackW || slackH !== this.state.slackH) {
-      this.setState({slackW, slackH} as State)
+      this.setState({ slackW, slackH } as State)
     }
 
     return [width, height]
@@ -158,8 +173,10 @@ export default class LeftResizable extends React.Component<Props, State> {
    * @return {Function}           Handler function.
    */
   resizeHandler(handlerName: string): Function {
-    return (e: any | MouseEvent, {node, deltaX, deltaY}: DragCallbackData) => {
-
+    return (
+      e: any | MouseEvent,
+      { node, deltaX, deltaY }: DragCallbackData,
+    ) => {
       // Axis restrictions
       const canDragX = this.props.axis === 'both' || this.props.axis === 'x'
       const canDragY = this.props.axis === 'both' || this.props.axis === 'y'
@@ -169,10 +186,10 @@ export default class LeftResizable extends React.Component<Props, State> {
       let height = this.state.height + (canDragY ? deltaY : 0)
 
       // Early return if no change
-      const widthChanged = width !== this.state.width, heightChanged = height !== this.state.height
+      const widthChanged = width !== this.state.width,
+        heightChanged = height !== this.state.height
       if (handlerName === 'onResize' && !widthChanged && !heightChanged) return
-
-      [width, height] = this.runConstraints(width, height)
+      ;[width, height] = this.runConstraints(width, height)
 
       // Set the appropriate state for this handler.
       const newState: any = {}
@@ -191,7 +208,9 @@ export default class LeftResizable extends React.Component<Props, State> {
       const hasCb = typeof this.props[handlerName] === 'function'
       if (hasCb) {
         if (typeof e.persist === 'function') e.persist()
-        this.setState(newState, () => this.props[handlerName](e, {node, size: {width, height}}))
+        this.setState(newState, () =>
+          this.props[handlerName](e, { node, size: { width, height } }),
+        )
       } else {
         this.setState(newState)
       }
@@ -199,16 +218,27 @@ export default class LeftResizable extends React.Component<Props, State> {
   }
 
   render() {
-    const {children, draggableOpts, width, height, handleSize,
-        lockAspectRatio, axis, minConstraints, maxConstraints, onResize,
-        onResizeStop, onResizeStart, ...p} = this.props
+    const {
+      children,
+      draggableOpts,
+      width,
+      height,
+      handleSize,
+      lockAspectRatio,
+      axis,
+      minConstraints,
+      maxConstraints,
+      onResize,
+      onResizeStop,
+      onResizeStart,
+      ...p,
+    } = this.props
 
     const m: any = p
 
-
-    const className = m.className ?
-      `${m.className} react-resizable`:
-      'react-resizable'
+    const className = m.className
+      ? `${m.className} react-resizable`
+      : 'react-resizable'
 
     // What we're doing here is getting the child of this element, and cloning it with this element's props.
     // We are then defining its children as:
@@ -225,10 +255,10 @@ export default class LeftResizable extends React.Component<Props, State> {
           onStop={this.resizeHandler('onResizeStop')}
           onStart={this.resizeHandler('onResizeStart')}
           onDrag={this.resizeHandler('onResize')}
-          >
+        >
           <span className="react-resizable-handle" />
-        </DraggableCore>
-      ]
+        </DraggableCore>,
+      ],
     })
   }
 }

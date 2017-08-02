@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
-import {pick} from 'lodash'
+import { pick } from 'lodash'
 
 interface Props {
   id: string
@@ -11,7 +11,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateSearchProviderAlgoliaMutation($input: UpdateSearchProviderAlgoliaInput!) {
+  mutation UpdateSearchProviderAlgoliaMutation(
+    $input: UpdateSearchProviderAlgoliaInput!
+  ) {
     updateSearchProviderAlgolia(input: $input) {
       searchProviderAlgolia {
         id
@@ -26,13 +28,17 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input: pick(input, ['isEnabled', 'apiKey', 'applicationId', 'projectId'])},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        searchProviderAlgolia: input.id,
+    variables: {
+      input: pick(input, ['isEnabled', 'apiKey', 'applicationId', 'projectId']),
+    },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          searchProviderAlgolia: input.id,
+        },
       },
-    }],
+    ],
   })
 }
 

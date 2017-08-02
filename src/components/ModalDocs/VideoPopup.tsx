@@ -7,11 +7,8 @@ interface Props {
   videoId: string
 }
 
-const VideoPopup = ({onRequestClose, videoId}: Props) => (
-  <Popup
-    onRequestClose={onRequestClose}
-    width={853}
-  >
+const VideoPopup = ({ onRequestClose, videoId }: Props) =>
+  <Popup onRequestClose={onRequestClose} width={853}>
     <Youtube
       videoId={videoId}
       opts={{
@@ -20,10 +17,8 @@ const VideoPopup = ({onRequestClose, videoId}: Props) => (
         playerVars: {
           autoplay: 1,
         },
-
       }}
     />
   </Popup>
-)
 
 export default VideoPopup

@@ -41,17 +41,19 @@ function commit(input: Props) {
         email: input.email,
       },
     },
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'seats',
-      edgeName: 'seatEdge',
-      rangeBehaviors: {
-        '': 'append',
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'seats',
+        edgeName: 'seatEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

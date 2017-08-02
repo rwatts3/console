@@ -1,5 +1,10 @@
 import * as React from 'react'
-import {FunctionBinding, Model, RequestPipelineMutationOperation, ServerlessFunction} from '../../../types/types'
+import {
+  FunctionBinding,
+  Model,
+  RequestPipelineMutationOperation,
+  ServerlessFunction,
+} from '../../../types/types'
 import RequestPipeline from './RequestPipeline'
 import Select from './Select'
 
@@ -15,10 +20,16 @@ interface Props {
 }
 
 export default function Trigger({
-  models, selectedModelId, binding, onModelChange, onBindingChange, operation, onChangeOperation,
+  models,
+  selectedModelId,
+  binding,
+  onModelChange,
+  onBindingChange,
+  operation,
+  onChangeOperation,
 }: Props) {
   return (
-    <div className='trigger'>
+    <div className="trigger">
       <style jsx>{`
         .trigger {
           @p: .darkBlue50, .f16;
@@ -68,51 +79,59 @@ export default function Trigger({
           margin-left: 7px;
         }
       `}</style>
-      <div className='intro'>
-        <div className='text'>
-          To manipulate data while processing, you need to <span className='n'>1</span>
-          <b>choose a type</b> whose request pipeline you want to hook, and <span className='n'>2</span>
+      <div className="intro">
+        <div className="text">
+          To manipulate data while processing, you need to{' '}
+          <span className="n">1</span>
+          <b>choose a type</b> whose request pipeline you want to hook, and{' '}
+          <span className="n">2</span>
           <b>choose a step</b> within this pipeline.
         </div>
-        <div className='line mv25 ph16'></div>
-        <div className='choose'>
-          <div className='n active'>1</div>
-          <div className='description'>Choose a type and mutation to hook in:</div>
-          <div className='relative'>
+        <div className="line mv25 ph16" />
+        <div className="choose">
+          <div className="n active">1</div>
+          <div className="description">
+            Choose a type and mutation to hook in:
+          </div>
+          <div className="relative">
             <Select
               value={selectedModelId}
-              className='ml38'
+              className="ml38"
               onChange={(e: any) => onModelChange(e.target.value)}
             >
-              {models.map(model => (
-                <option key={model.id} value={model.id}>{model.name}</option>
-              ))}
+              {models.map(model =>
+                <option key={model.id} value={model.id}>
+                  {model.name}
+                </option>,
+              )}
             </Select>
           </div>
-          <div className='mh16'>is</div>
-          <div className='relative'>
+          <div className="mh16">is</div>
+          <div className="relative">
             <Select
               value={operation}
               onChange={(e: any) => onChangeOperation(e.target.value)}
             >
-              {operations.map(operation => (
-                <option key={operation} value={operation}>{operation.toLowerCase() + 'd'}</option>
-              ))}
+              {operations.map(operation =>
+                <option key={operation} value={operation}>
+                  {operation.toLowerCase() + 'd'}
+                </option>,
+              )}
             </Select>
           </div>
         </div>
       </div>
-      <div className='line mt25'></div>
-      <div className='steps'>
-        <div className='steps-intro'>
-          <div className='n inactive second'>2</div>
-          <div className='description'>
+      <div className="line mt25" />
+      <div className="steps">
+        <div className="steps-intro">
+          <div className="n inactive second">2</div>
+          <div className="description">
             <div>
               Choose a step within the data processing, you want to hook in.
             </div>
             <a
-              href='https://www.graph.cool/docs/reference/functions/request-pipeline/overview-pa6guruhaf/'
-              target='_blank'
+              href="https://www.graph.cool/docs/reference/functions/request-pipeline/overview-pa6guruhaf/"
+              target="_blank"
             >
               More about what you can do in each step
             </a>

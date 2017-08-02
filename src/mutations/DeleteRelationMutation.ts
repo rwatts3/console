@@ -1,5 +1,5 @@
 import * as Relay from 'react-relay/classic'
-import {Project} from '../types/types'
+import { Project } from '../types/types'
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
@@ -34,13 +34,15 @@ function commit(input: Props) {
         relationId: input.relationId,
       },
     },
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'relations',
-      deletedIDFieldName: 'deletedId',
-    }],
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'relations',
+        deletedIDFieldName: 'deletedId',
+      },
+    ],
   })
 }
 

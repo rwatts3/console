@@ -1,16 +1,13 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {$p, variables, Icon, $g} from 'graphcool-styles'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { $p, variables, Icon, $g } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {Operation, Field} from '../../../types/types'
+import { Operation, Field } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import PermissionField from '../PermissionsList/ModelPermissions/PermissionField'
-import {validPermissionField} from '../../../utils/valueparser'
+import { validPermissionField } from '../../../utils/valueparser'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
-import {PermissionPopupErrors} from './PermissionPopupState'
+import { PermissionPopupErrors } from './PermissionPopupState'
 import Info from '../../../components/Info'
 
 interface Props {
@@ -27,7 +24,6 @@ interface Props {
 }
 
 class AffectedFields extends React.Component<Props, {}> {
-
   render() {
     const {
       fields,
@@ -39,11 +35,12 @@ class AffectedFields extends React.Component<Props, {}> {
       onReset,
       onSelectAll,
     } = this.props
-    const fieldsFiltered = fields
-      .filter(field => validPermissionField(selectedOperation, field))
+    const fieldsFiltered = fields.filter(field =>
+      validPermissionField(selectedOperation, field),
+    )
 
     return (
-      <div className='wrapper'>
+      <div className="wrapper">
         <style jsx={true}>{`
           .intro {
             @p: .black50, .mr38;
@@ -65,8 +62,16 @@ class AffectedFields extends React.Component<Props, {}> {
           }
         `}</style>
         <div className={cx($p.pl38, $p.pr25)}>
-          <div className={cx($p.flex, $p.flexRow, $p.itemsStart, $p.justifyBetween, $p.pb25)}>
-            <div className='intro'>
+          <div
+            className={cx(
+              $p.flex,
+              $p.flexRow,
+              $p.itemsStart,
+              $p.justifyBetween,
+              $p.pb25,
+            )}
+          >
+            <div className="intro">
               Select the fields for which this permission should be applied.
             </div>
             <Info
@@ -75,8 +80,18 @@ class AffectedFields extends React.Component<Props, {}> {
               customTip={
                 <div
                   className={cx(
-                    $p.pv6, $p.ph10, $p.ttu, $p.f14, $p.fw6, $p.pointer, $p.flex, $p.flexRow, $p.itemsCenter, $p.br2,
-                    $p.buttonShadow, $p.nowrap,
+                    $p.pv6,
+                    $p.ph10,
+                    $p.ttu,
+                    $p.f14,
+                    $p.fw6,
+                    $p.pointer,
+                    $p.flex,
+                    $p.flexRow,
+                    $p.itemsCenter,
+                    $p.br2,
+                    $p.buttonShadow,
+                    $p.nowrap,
                     {
                       [cx($p.bgWhite, $p.blue)]: !applyToWholeModel,
                       [cx($p.bgBlue, $p.white)]: applyToWholeModel,
@@ -84,55 +99,55 @@ class AffectedFields extends React.Component<Props, {}> {
                   )}
                   onClick={toggleApplyToWholeModel}
                 >
-                  {applyToWholeModel && (
+                  {applyToWholeModel &&
                     <Icon
                       src={require('graphcool-styles/icons/fill/check.svg')}
                       color={variables.white}
                       className={$p.mr4}
-                    />
-                  )}
+                    />}
                   Apply to whole Type
                 </div>
               }
             >
-              "Apply to whole Type" means, that also fields that will be created in the future are affected by
-              this permission.
+              "Apply to whole Type" means, that also fields that will be created
+              in the future are affected by this permission.
             </Info>
           </div>
           <div className={$p.mt16}>
-            {fieldsFiltered.length === 0 && (
+            {fieldsFiltered.length === 0 &&
               <div className={$p.brown}>
-                No fields can be effected by this permission,
-                as mutation permissions can't be applied to readonly fields
-              </div>
-            )}
-            {fieldsFiltered
-              .map(field => (
-                <PermissionField
-                  key={field.id}
-                  field={field}
-                  disabled={applyToWholeModel}
-                  selected={fieldIds.includes(field.id) || applyToWholeModel}
-                  onClick={() => toggleField && toggleField(field.id)}
-                  className={cx($p.pointer, $p.mr10, $p.mb10)}
-                  editable
-                />
-              ),
+                No fields can be effected by this permission, as mutation
+                permissions can't be applied to readonly fields
+              </div>}
+            {fieldsFiltered.map(field =>
+              <PermissionField
+                key={field.id}
+                field={field}
+                disabled={applyToWholeModel}
+                selected={fieldIds.includes(field.id) || applyToWholeModel}
+                onClick={() => toggleField && toggleField(field.id)}
+                className={cx($p.pointer, $p.mr10, $p.mb10)}
+                editable
+              />,
             )}
           </div>
         </div>
-        <div className='buttons'>
-          <div className='button' onClick={onSelectAll}>Select All</div>
-          <div className='button' onClick={onReset}>Reset</div>
+        <div className="buttons">
+          <div className="button" onClick={onSelectAll}>
+            Select All
+          </div>
+          <div className="button" onClick={onReset}>
+            Reset
+          </div>
         </div>
 
-        {this.props.errors.noFieldsSelected && this.props.showErrors && (
-          <div className='fields-error'>
+        {this.props.errors.noFieldsSelected &&
+          this.props.showErrors &&
+          <div className="fields-error">
             <ErrorInfo>
               Please specify which fields should be affected by the permission
             </ErrorInfo>
-          </div>
-        )}
+          </div>}
       </div>
     )
   }

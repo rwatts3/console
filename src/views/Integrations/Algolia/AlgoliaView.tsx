@@ -1,23 +1,25 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import ReactElement = React.ReactElement
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {Viewer, SearchProviderAlgolia, AlgoliaSyncQuery, Project} from '../../../types/types'
-import {withRouter} from 'found'
+import {
+  Viewer,
+  SearchProviderAlgolia,
+  AlgoliaSyncQuery,
+  Project,
+} from '../../../types/types'
+import { withRouter } from 'found'
 import AlgoliaPopupHeader from '../AlgoliaPopup/AlgoliaPopupHeader'
 import AlgoliaPopupIndexes from '../AlgoliaPopup/AlgoliaPopupIndexes'
 import AlgoliaPopupFooter from '../AlgoliaPopup/AlgoliaPopupFooter'
 import mapProps from '../../../components/MapProps/MapProps'
 import UpdateSearchProviderAlgolia from '../../../mutations/UpdateSearchProviderAlgolia'
-import {connect} from 'react-redux'
-import {showNotification} from '../../../actions/notification'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {ShowNotificationCallback} from '../../../types/utils'
+import { connect } from 'react-redux'
+import { showNotification } from '../../../actions/notification'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import AlgoliaHeader from './AlgoliaHeader'
 import AlgoliaIndexes from './AlgoliaIndexes'
 import AlgoliaQueryEditor from './AlgoliaQueryEditor'
@@ -55,7 +57,7 @@ class AlgoliaView extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    const {algolia: {apiKey, applicationId, isEnabled}, indexes} = props
+    const { algolia: { apiKey, applicationId, isEnabled }, indexes } = props
 
     this.state = {
       valid: false,
@@ -63,22 +65,29 @@ class AlgoliaView extends React.Component<Props, State> {
       applicationId,
       isEnabled,
       selectedIndexIndex: 0,
-      currentFragment: indexes[0] && indexes[0].fragment || '',
+      currentFragment: (indexes[0] && indexes[0].fragment) || '',
       editing: indexes.length > 0,
       showNewIndex: false,
       fragmentValid: true,
       showModal: applicationId.length === 0 && apiKey.length === 0,
     }
-    global['a'] = this
+    global.a = this
   }
   render() {
-    const {algolia, params, children, project} = this.props
-    const {selectedIndexIndex, showNewIndex, fragmentValid, applicationId, apiKey, showModal} = this.state
+    const { algolia, params, children, project } = this.props
+    const {
+      selectedIndexIndex,
+      showNewIndex,
+      fragmentValid,
+      applicationId,
+      apiKey,
+      showModal,
+    } = this.state
     const indexes = algolia.algoliaSyncQueries.edges.map(edge => edge.node)
 
     return (
-      <div className='algolia-view'>
-        <Helmet title='Algolia Integration' />
+      <div className="algolia-view">
+        <Helmet title="Algolia Integration" />
         <style jsx>{`
           .algolia-view {
             @p: .flex;
@@ -95,7 +104,8 @@ class AlgoliaView extends React.Component<Props, State> {
           }
           .intro {
             @p: .flex, .justifyCenter, .w100, .h100, .pa38, .itemsStart;
-            h1, h2 {
+            h1,
+            h2 {
               @p: .tc;
             }
             h1 {
@@ -109,47 +119,48 @@ class AlgoliaView extends React.Component<Props, State> {
             @p: .flex, .justifyCenter, .itemsCenter, .flexColumn, .mt16;
           }
         `}</style>
-        <div className='col'>
+        <div className="col">
           <AlgoliaHeader
             onAddIndex={this.handleShowNewIndex}
             onOpenModal={this.handleOpenModal}
             params={this.props.params}
           />
-          {indexes.length > 0 ? (
-            <AlgoliaIndexes
-              indexes={indexes}
-              params={params}
-              onSelectIndex={this.handleIndexSelection}
-              selectedIndexIndex={selectedIndexIndex}
-            />
-          ) : (
-            <div className='intro'>
-            </div>
-          )}
+          {indexes.length > 0
+            ? <AlgoliaIndexes
+                indexes={indexes}
+                params={params}
+                onSelectIndex={this.handleIndexSelection}
+                selectedIndexIndex={selectedIndexIndex}
+              />
+            : <div className="intro" />}
         </div>
-        <div className='col'>
-          {(indexes.length > 0 && !showNewIndex) ? (
-            <AlgoliaQueryEditor
-              algolia={algolia}
-              onFragmentChange={this.handleFragmentChange}
-              fragmentChanged={this.state.currentFragment !== indexes[selectedIndexIndex].fragment}
-              fragment={this.state.currentFragment}
-              selectedModel={indexes[selectedIndexIndex] && indexes[selectedIndexIndex].model}
-              onCancel={this.handleUpdateCancel}
-              onUpdate={this.updateIndex}
-              onDelete={this.delete}
-              fragmentValid={fragmentValid}
-            />
-          ) : (
-            <CreateAlgoliaIndex
-              algolia={algolia}
-              project={project}
-              onRequestClose={this.handleCloseNewIndex}
-              noIndeces={indexes.length === 0}
-            />
-          )}
+        <div className="col">
+          {indexes.length > 0 && !showNewIndex
+            ? <AlgoliaQueryEditor
+                algolia={algolia}
+                onFragmentChange={this.handleFragmentChange}
+                fragmentChanged={
+                  this.state.currentFragment !==
+                  indexes[selectedIndexIndex].fragment
+                }
+                fragment={this.state.currentFragment}
+                selectedModel={
+                  indexes[selectedIndexIndex] &&
+                  indexes[selectedIndexIndex].model
+                }
+                onCancel={this.handleUpdateCancel}
+                onUpdate={this.updateIndex}
+                onDelete={this.delete}
+                fragmentValid={fragmentValid}
+              />
+            : <CreateAlgoliaIndex
+                algolia={algolia}
+                project={project}
+                onRequestClose={this.handleCloseNewIndex}
+                noIndeces={indexes.length === 0}
+              />}
         </div>
-        {showModal && (
+        {showModal &&
           <AlgoliaModal
             apiKey={apiKey}
             applicationId={applicationId}
@@ -157,90 +168,107 @@ class AlgoliaView extends React.Component<Props, State> {
             onChangeApplicationId={this.handleApplicationId}
             onRequestClose={this.handleCloseModal}
             onSave={this.update}
-          />
-        )}
+          />}
       </div>
     )
   }
 
   private handleOpenModal = () => {
-    this.setState({
-      showModal: true,
-    } as State)
+    this.setState(
+      {
+        showModal: true,
+      } as State,
+    )
   }
 
   private handleCloseModal = () => {
     if (this.state.applicationId === '' && this.state.apiKey === '') {
       return this.close()
     }
-    this.setState({
-      showModal: false,
-    } as State)
+    this.setState(
+      {
+        showModal: false,
+      } as State,
+    )
   }
 
   private handleChangeApiKey = (e: any) => {
-    this.setState({
-      apiKey: e.target.value,
-    } as State)
+    this.setState(
+      {
+        apiKey: e.target.value,
+      } as State,
+    )
   }
 
   private handleApplicationId = (e: any) => {
-    this.setState({
-      applicationId: e.target.value,
-    } as State)
+    this.setState(
+      {
+        applicationId: e.target.value,
+      } as State,
+    )
   }
 
   private handleUpdateCancel = () => {
-    const {indexes} = this.props
-    const {selectedIndexIndex} = this.state
+    const { indexes } = this.props
+    const { selectedIndexIndex } = this.state
     const node = indexes[selectedIndexIndex]
 
-    this.setState({
-      currentFragment: node.fragment,
-    } as State)
+    this.setState(
+      {
+        currentFragment: node.fragment,
+      } as State,
+    )
   }
 
   private handleCloseNewIndex = () => {
-    this.setState({
-      showNewIndex: false,
-    } as State)
+    this.setState(
+      {
+        showNewIndex: false,
+      } as State,
+    )
   }
 
   private handleShowNewIndex = () => {
-    this.setState({
-      showNewIndex: true,
-    } as State)
+    this.setState(
+      {
+        showNewIndex: true,
+      } as State,
+    )
   }
 
   private handleFragmentChange = (fragment: string, fragmentValid: boolean) => {
-    this.setState({
-      currentFragment: fragment,
-      fragmentValid,
-    } as State)
+    this.setState(
+      {
+        currentFragment: fragment,
+        fragmentValid,
+      } as State,
+    )
   }
 
   private handleIndexSelection = (i: number) => {
-    const {indexes} = this.props
-    this.setState({
-      selectedIndexIndex: i,
-      currentFragment: indexes[i].fragment,
-    } as State)
+    const { indexes } = this.props
+    this.setState(
+      {
+        selectedIndexIndex: i,
+        currentFragment: indexes[i].fragment,
+      } as State,
+    )
   }
 
   private updateValid() {
-    const {apiKey, applicationId} = this.state
+    const { apiKey, applicationId } = this.state
     const valid = apiKey.length > 0 && applicationId.length > 0
-    this.setState({valid} as State)
+    this.setState({ valid } as State)
   }
 
   private close = () => {
-    const {router, params: {projectName}} = this.props
+    const { router, params: { projectName } } = this.props
     router.push(`/${projectName}/integrations`)
   }
 
   private updateIndex = () => {
-    const {indexes} = this.props
-    const {currentFragment, selectedIndexIndex} = this.state
+    const { indexes } = this.props
+    const { currentFragment, selectedIndexIndex } = this.state
     const node = indexes[selectedIndexIndex]
 
     if (!this.indexValid()) {
@@ -252,20 +280,21 @@ class AlgoliaView extends React.Component<Props, State> {
     }
 
     if (this.indexValid() && node) {
-        UpdateAlgoliaSyncQueryMutation.commit({
-          algoliaSyncQueryId: node.id,
-          fragment: currentFragment,
-          isEnabled: true,
-          indexName: node.indexName,
-        }).then(transaction => {
-            this.props.showNotification({
-              message: 'Index updated',
-              level: 'success',
-            })
+      UpdateAlgoliaSyncQueryMutation.commit({
+        algoliaSyncQueryId: node.id,
+        fragment: currentFragment,
+        isEnabled: true,
+        indexName: node.indexName,
+      })
+        .then(transaction => {
+          this.props.showNotification({
+            message: 'Index updated',
+            level: 'success',
           })
-          .catch(transaction => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-          })
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        })
     }
   }
 
@@ -274,25 +303,26 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private update = () => {
-    const {apiKey, applicationId, isEnabled} = this.state
-    const {algolia, projectId} = this.props
-      UpdateSearchProviderAlgolia.commit({
-        id: algolia.id,
-        isEnabled: true,
-        apiKey,
-        applicationId,
-        projectId,
-      }).then(transaction => {
-          this.handleCloseModal()
-        })
-        .catch(transaction => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        })
+    const { apiKey, applicationId, isEnabled } = this.state
+    const { algolia, projectId } = this.props
+    UpdateSearchProviderAlgolia.commit({
+      id: algolia.id,
+      isEnabled: true,
+      apiKey,
+      applicationId,
+      projectId,
+    })
+      .then(transaction => {
+        this.handleCloseModal()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+      })
   }
 
   private delete = () => {
-    const {algolia, indexes} = this.props
-    const {selectedIndexIndex} = this.state
+    const { algolia, indexes } = this.props
+    const { selectedIndexIndex } = this.state
 
     const node = indexes[selectedIndexIndex]
 
@@ -304,9 +334,11 @@ class AlgoliaView extends React.Component<Props, State> {
     }
 
     if (selectedIndexIndex > 0) {
-      this.setState({
-        selectedIndexIndex: selectedIndexIndex - 1,
-      } as State)
+      this.setState(
+        {
+          selectedIndexIndex: selectedIndexIndex - 1,
+        } as State,
+      )
     }
   }
 }
@@ -319,7 +351,9 @@ const MappedAlgoliaPopup = mapProps({
   projectId: props => props.viewer.project.id,
   project: props => props.viewer.project,
   algolia: props => {
-    const algolias = props.viewer.project.integrations.edges.filter(edge => edge.node.type === 'SEARCH_PROVIDER')
+    const algolias = props.viewer.project.integrations.edges.filter(
+      edge => edge.node.type === 'SEARCH_PROVIDER',
+    )
     if (algolias.length > 0) {
       return algolias[0].node
     }
@@ -328,7 +362,9 @@ const MappedAlgoliaPopup = mapProps({
   },
   indexes: props => {
     let algolia: any
-    const algolias = props.viewer.project.integrations.edges.filter(edge => edge.node.type === 'SEARCH_PROVIDER')
+    const algolias = props.viewer.project.integrations.edges.filter(
+      edge => edge.node.type === 'SEARCH_PROVIDER',
+    )
     if (algolias.length > 0) {
       algolia = algolias[0].node
       return algolia.algoliaSyncQueries.edges.map(edge => edge.node)

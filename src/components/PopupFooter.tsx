@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -33,14 +33,16 @@ export default class PopupFooter extends React.Component<Props, null> {
     } = this.props
 
     return (
-      <div className='popup-footer'>
+      <div className="popup-footer">
         <style jsx>{`
           .popup-footer {
-            @p: .bbox, .bgBlack02, .bt, .bBlack10, .pr16, .flex, .justifyBetween, .itemsCenter, .relative;
+            @p: .bbox, .bgBlack02, .bt, .bBlack10, .pr16, .flex, .justifyBetween,
+              .itemsCenter, .relative;
             height: 80px;
             padding-left: 30px;
           }
-          .cancel, .delete {
+          .cancel,
+          .delete {
             @p: .f16, .black50, .pointer;
           }
           .cancel {
@@ -49,7 +51,8 @@ export default class PopupFooter extends React.Component<Props, null> {
           .delete {
             @p: .red;
           }
-          .next-name, .prev-name {
+          .next-name,
+          .prev-name {
             @p: .ttu, .fw6, .f14, .blue, .blue;
             letter-spacing: 0.53px;
           }
@@ -64,13 +67,16 @@ export default class PopupFooter extends React.Component<Props, null> {
           }
           .divider {
             @p: .mh16;
-            border: 1px solid rgba(42,126,211,0.3);
+            border: 1px solid rgba(42, 126, 211, 0.3);
             height: 30px;
           }
-          .prev, .next, .buttons {
+          .prev,
+          .next,
+          .buttons {
             @p: .flex, .itemsCenter;
           }
-          .next, .prev {
+          .next,
+          .prev {
             @p: .pointer;
           }
           .next {
@@ -85,53 +91,47 @@ export default class PopupFooter extends React.Component<Props, null> {
           .button.active {
             @p: .bgGreen, .white, .pointer;
           }
-          .next-name.needs-migration, .prev-name.needs-migration {
+          .next-name.needs-migration,
+          .prev-name.needs-migration {
             @p: .lightOrange;
           }
         `}</style>
-        {create ? (
-          <div className='cancel' onClick={onCancel}>
-            Cancel
-          </div>
-        ) : (
-          <div>
-            <div className='delete' onClick={onDelete}>
-              Delete
+        {create
+          ? <div className="cancel" onClick={onCancel}>
+              Cancel
             </div>
-          </div>
-        )}
-        <div className='buttons'>
+          : <div>
+              <div className="delete" onClick={onDelete}>
+                Delete
+              </div>
+            </div>}
+        <div className="buttons">
           <div
-            className='prev'
+            className="prev"
             onClick={() => onSelectIndex(activeTabIndex - 1)}
           >
-            {activeTabIndex > 0 && (
+            {activeTabIndex > 0 &&
               <Icon
                 src={require('../assets/icons/blue_arrow_left.svg')}
                 stroke
                 strokeWidth={2}
                 width={13}
                 height={13}
-              />
-            )}
-            {activeTabIndex > 0 && (
-              <div
-                className='prev-name'
-              >
+              />}
+            {activeTabIndex > 0 &&
+              <div className="prev-name">
                 {tabs[activeTabIndex - 1]}
-              </div>
-            )}
+              </div>}
           </div>
           <div
-            className='next'
+            className="next"
             onClick={() => onSelectIndex(activeTabIndex + 1)}
           >
-            {activeTabIndex < (tabs.length - 1) && (
-              <div className='next-name'>
+            {activeTabIndex < tabs.length - 1 &&
+              <div className="next-name">
                 {tabs[activeTabIndex + 1]}
-              </div>
-            )}
-            {activeTabIndex < (tabs.length - 1) && (
+              </div>}
+            {activeTabIndex < tabs.length - 1 &&
               <Icon
                 src={require('../assets/icons/blue_arrow_left.svg')}
                 stroke
@@ -139,15 +139,20 @@ export default class PopupFooter extends React.Component<Props, null> {
                 width={13}
                 height={13}
                 rotate={180}
-              />
-            )}
+              />}
           </div>
-          {typeof getButtonForTab === 'function' && getButtonForTab(activeTabIndex)}
-          {((!create || (create && activeTabIndex === (tabs.length - 1) && tabs.length > 1))) && (
-            <div className={cn('button', {active: create ? true : changed})} onClick={onSubmit}>
+          {typeof getButtonForTab === 'function' &&
+            getButtonForTab(activeTabIndex)}
+          {(!create ||
+            (create &&
+              activeTabIndex === tabs.length - 1 &&
+              tabs.length > 1)) &&
+            <div
+              className={cn('button', { active: create ? true : changed })}
+              onClick={onSubmit}
+            >
               {create ? 'Create' : 'Update'} {entityName}
-            </div>
-          )}
+            </div>}
         </div>
       </div>
     )

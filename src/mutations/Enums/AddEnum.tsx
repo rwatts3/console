@@ -25,17 +25,19 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'enums',
-      edgeName: 'enumEdge',
-      rangeBehaviors: {
-        '': 'append',
+    variables: { input },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'enums',
+        edgeName: 'enumEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 

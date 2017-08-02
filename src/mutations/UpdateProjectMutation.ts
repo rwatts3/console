@@ -6,7 +6,7 @@ interface Project {
 }
 
 interface Props {
-  name: string,
+  name: string
   id: string
   alias?: string
 }
@@ -26,15 +26,17 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        project: input.id,
+    variables: { input },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          project: input.id,
+        },
       },
-    }],
+    ],
     optimisticResponse: {
-      updateProject: {project: {input}},
+      updateProject: { project: { input } },
     },
   })
 }

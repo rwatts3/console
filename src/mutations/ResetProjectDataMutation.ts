@@ -18,13 +18,15 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        viewer: 'cryptic',
+    variables: { input },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          viewer: 'cryptic',
+        },
       },
-    }],
+    ],
   })
 }
 

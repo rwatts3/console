@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../utils/modalStyle'
-import {Icon, $v} from 'graphcool-styles'
+import { fieldModalStyle } from '../utils/modalStyle'
+import { Icon, $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 
 export default class Popup extends React.Component<Props, null> {
   render() {
-    const {closeInside, darkBg} = this.props
+    const { closeInside, darkBg } = this.props
     const modalStyle = {
       overlay: {
         ...fieldModalStyle.overlay,
@@ -38,17 +38,20 @@ export default class Popup extends React.Component<Props, null> {
             @p: .absolute, .pointer, .pa10;
             top: -25px;
             right: -25px;
-            transform: translate(100%,-100%);
+            transform: translate(100%, -100%);
           }
           .close.inside {
             @p: .top0, .right0, .pa25;
             transform: none;
           }
         `}</style>
-        <div className='modal'>
+        <div className="modal">
           {this.props.children}
         </div>
-        <div className={cn('close', {inside: closeInside})} onClick={this.props.onRequestClose}>
+        <div
+          className={cn('close', { inside: closeInside })}
+          onClick={this.props.onRequestClose}
+        >
           <Icon
             src={require('graphcool-styles/icons/stroke/cross.svg')}
             stroke

@@ -37,14 +37,15 @@ const mutation = graphql`
 
 function commit(input: Props) {
   return makeMutation({
-      mutation,
-      variables: {
-        input: {
-          ...input,
-          isActive: true,
-        },
+    mutation,
+    variables: {
+      input: {
+        ...input,
+        isActive: true,
       },
-      configs: [{
+    },
+    configs: [
+      {
         type: 'RANGE_ADD',
         parentName: 'model',
         parentID: input.modelId,
@@ -53,9 +54,9 @@ function commit(input: Props) {
         rangeBehaviors: {
           '': 'append',
         },
-      }],
-    },
-  )
+      },
+    ],
+  })
 }
 
-export default {commit}
+export default { commit }

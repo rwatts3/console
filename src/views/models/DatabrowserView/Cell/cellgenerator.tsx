@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'test') {
   SelectNodesCell = require('./SelectNodesCell/SelectNodesCell').default
 }
 
-import {isScalar, isNonScalarList} from '../../../../utils/graphql'
+import { isScalar, isNonScalarList } from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
 import NullableCell from './NullableCell'
 
@@ -30,20 +30,24 @@ export interface CellRequirements {
   methods: {
     save: (val: any, keepEditing?: any) => void
     cancel: (reload?: boolean) => void
-    onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void,
+    onKeyDown: (
+      e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>,
+      what?: boolean,
+    ) => void
   }
   enums: Enum[]
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
-  if (reqs.field.isRequired || isNonScalarList(reqs.field) || reqs.field.isList) {
+  if (
+    reqs.field.isRequired ||
+    isNonScalarList(reqs.field) ||
+    reqs.field.isList
+  ) {
     return getSpecificEditCell(reqs)
   } else {
     return (
-      <NullableCell
-        save={reqs.methods.save}
-        cell={getSpecificEditCell(reqs)}
-      />
+      <NullableCell save={reqs.methods.save} cell={getSpecificEditCell(reqs)} />
     )
   }
 }
@@ -97,11 +101,7 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
 }
 
 function getScalarListEditCell(reqs: CellRequirements): JSX.Element {
-  return (
-    <ScalarListCell
-      {...reqs}
-    />
-  )
+  return <ScalarListCell {...reqs} />
 }
 
 export function getScalarEditCell(reqs: CellRequirements): JSX.Element {

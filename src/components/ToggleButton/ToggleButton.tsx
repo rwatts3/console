@@ -1,6 +1,6 @@
 import * as React from 'react'
 const classes: any = require('./ToggleButton.scss')
-import {classnames} from '../../utils/classnames'
+import { classnames } from '../../utils/classnames'
 
 export enum ToggleSide {
   Left,
@@ -24,15 +24,14 @@ interface State {
 }
 
 export default class ToggleButton extends React.Component<Props, State> {
-
   refs: {
     [key: string]: any
-    container: Element,
+    container: Element
   }
 
   rendered: number
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -54,11 +53,7 @@ export default class ToggleButton extends React.Component<Props, State> {
 
   render() {
     return (
-      <div
-        className={classes.root}
-        ref='container'
-        onBlur={this.props.onBlur}
-      >
+      <div className={classes.root} ref="container" onBlur={this.props.onBlur}>
         <span
           className={classnames(classes.label, {
             [classes.active]: this.state.currentSide === ToggleSide.Left,
@@ -79,7 +74,7 @@ export default class ToggleButton extends React.Component<Props, State> {
     )
   }
 
-  handle = (e) => {
+  handle = e => {
     if (!this.refs.container.contains(e.target) && this.props.onClickOutside) {
       this.props.onClickOutside(this.state.currentSide)
     }
@@ -102,13 +97,14 @@ export default class ToggleButton extends React.Component<Props, State> {
     }
 
     // fake event data, as the document doesn't have a value ...
-    e.target.value = this.state.currentSide === ToggleSide.Left ? 'true' : 'false' // tslint:disable-line
+    e.target.value =
+      this.state.currentSide === ToggleSide.Left ? 'true' : 'false' // tslint:disable-line
     if (typeof this.props.onKeyDown === 'function') {
       this.props.onKeyDown(e)
     }
   }
 
-  private onUpdateClick (side) {
+  private onUpdateClick(side) {
     // due to #332 it is important to ignore the first click
     if (Date.now() - this.rendered < 500) {
       return
@@ -117,15 +113,18 @@ export default class ToggleButton extends React.Component<Props, State> {
     this.onUpdateSide(side)
   }
 
-  private onUpdateSide (side) {
+  private onUpdateSide(side) {
     this.setState({ currentSide: side })
     if (this.props.onChange) {
       this.props.onChange(side)
     }
   }
 
-  private toggle () {
-    this.onUpdateSide(this.state.currentSide === ToggleSide.Left ? ToggleSide.Right : ToggleSide.Left)
+  private toggle() {
+    this.onUpdateSide(
+      this.state.currentSide === ToggleSide.Left
+        ? ToggleSide.Right
+        : ToggleSide.Left,
+    )
   }
-
 }

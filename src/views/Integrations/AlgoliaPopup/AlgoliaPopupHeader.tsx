@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as Relay from 'react-relay/classic'
-import {$p, $v} from 'graphcool-styles'
+import { $p, $v } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import {Viewer, SearchProviderAlgolia} from '../../../types/types'
+import { Viewer, SearchProviderAlgolia } from '../../../types/types'
 import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import FloatingInput from '../../../components/FloatingInput/FloatingInput'
 import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
@@ -20,9 +20,7 @@ interface Props {
   close: Function
 }
 
-const Paragraph = styled.p`
-  width: 350px;
-`
+const Paragraph = styled.p`width: 350px;`
 
 export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
   constructor(props) {
@@ -30,8 +28,16 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
   }
 
   render() {
-    const {isEnabledChange, apiKeyChange, applicationIdChange, apiKey, applicationId, isEnabled, connected, close}
-      = this.props
+    const {
+      isEnabledChange,
+      apiKeyChange,
+      applicationIdChange,
+      apiKey,
+      applicationId,
+      isEnabled,
+      connected,
+      close,
+    } = this.props
 
     return (
       <div className={cx($p.bgBlack04, $p.pa38, $p.relative)}>
@@ -44,11 +50,13 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
         </div>
         <div className={cx($p.flex, $p.flexColumn, $p.itemsCenter, $p.mt16)}>
           <img
-            src={require('../../../assets/graphics/algolia-logo.svg')} alt='Algolia'
+            src={require('../../../assets/graphics/algolia-logo.svg')}
+            alt="Algolia"
             className={$p.w30}
           />
           <Paragraph className={cx($p.black50, $p.mt38, $p.tc)}>
-            Hosted Search API that delivers instant and relevant results from the first keystroke
+            Hosted Search API that delivers instant and relevant results from
+            the first keystroke
           </Paragraph>
           <div
             className={cx(
@@ -80,7 +88,7 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
             width={25}
             height={25}
             strokeWidth={2}
-            className='algolia-popup-x'
+            className="algolia-popup-x"
             color={$v.gray50}
             onClick={close}
           />
@@ -89,16 +97,16 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
           <FloatingInput
             labelClassName={cx($p.f16, $p.pa16, $p.black50, $p.fw3)}
             className={cx($p.pa16, $p.br2, $p.bn, $p.mb10, $p.f25, $p.fw3)}
-            label='Application Id'
-            placeholder='xxxxxxxxxxxxx'
+            label="Application Id"
+            placeholder="xxxxxxxxxxxxx"
             value={applicationId || ''}
             onChange={applicationIdChange}
           />
           <FloatingInput
             labelClassName={cx($p.f16, $p.pa16, $p.black50, $p.fw3)}
             className={cx($p.pa16, $p.br2, $p.bn, $p.mb10, $p.f25, $p.fw3)}
-            label='API Key'
-            placeholder='xxxxxxxxxxxxx'
+            label="API Key"
+            placeholder="xxxxxxxxxxxxx"
             value={apiKey || ''}
             onChange={apiKeyChange}
           />
@@ -107,12 +115,11 @@ export default class AlgoliaPopupHeader extends React.Component<Props, {}> {
               @inherit: .f12, .orange;
             }
           `}</style>
-          {(!apiKey || apiKey.length === 0) && (
-            <div className='info'>
+          {(!apiKey || apiKey.length === 0) &&
+            <div className="info">
               Please create a new API Key and <b>do not use the Admin Key</b>.
               The new API Key needs the ACL "Add records" and "Delete records".
-            </div>
-          )}
+            </div>}
         </div>
       </div>
     )

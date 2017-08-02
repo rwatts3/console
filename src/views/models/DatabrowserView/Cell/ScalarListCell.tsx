@@ -1,15 +1,18 @@
 import * as React from 'react'
 import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
-import {getScalarEditCell, CellRequirements} from './cellgenerator'
-import {AtomicValue} from '../../../../types/utils'
-import {atomicValueToString, stringToValue} from '../../../../utils/valueparser'
-import {Field} from '../../../../types/types'
+import { getScalarEditCell, CellRequirements } from './cellgenerator'
+import { AtomicValue } from '../../../../types/utils'
+import {
+  atomicValueToString,
+  stringToValue,
+} from '../../../../utils/valueparser'
+import { Field } from '../../../../types/types'
 const classes: any = require('./ScalarListCell.scss')
 import * as Modal from 'react-modal'
 import styled from 'styled-components'
-import {variables, $p, Icon} from 'graphcool-styles'
+import { variables, $p, Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {isEqual} from 'lodash'
+import { isEqual } from 'lodash'
 import modalStyle from '../../../../utils/modalStyle'
 
 interface State {
@@ -20,19 +23,19 @@ interface State {
 }
 
 const Button = styled.button`
-      padding: ${variables.size16};
-      font-size: ${variables.size16};
-      border: none;
-      background: none;
-      color: ${variables.gray50};
-      border-radius: 2px;
-      cursor: pointer;
-      transition: color ${variables.duration} linear;
+  padding: ${variables.size16};
+  font-size: ${variables.size16};
+  border: none;
+  background: none;
+  color: ${variables.gray50};
+  border-radius: 2px;
+  cursor: pointer;
+  transition: color ${variables.duration} linear;
 
-      &:hover {
-        color: ${variables.gray70};
-      }
-    `
+  &:hover {
+    color: ${variables.gray70};
+  }
+`
 
 const CancelButton = styled(Button)`
       padding: 0;
@@ -102,9 +105,12 @@ const customModalStyle = {
   },
 }
 
-export default class ScalarListCell extends React.Component<CellRequirements, State> {
-
-  private atomicField: Field = Object.assign({}, this.props.field, {isList: false})
+export default class ScalarListCell extends React.Component<
+  CellRequirements,
+  State
+> {
+  private atomicField: Field = {...this.props.field, 
+    isList: false}
 
   constructor(props: CellRequirements) {
     super(props)
@@ -149,7 +155,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
       <Modal
         isOpen
         style={customModalStyle}
-        contentLabel='Edit scalar list'
+        contentLabel="Edit scalar list"
         onRequestClose={this.handleOutsideClick}
       >
         <style jsx global>{`
@@ -171,15 +177,8 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
             background: transparent;
           }
         `}</style>
-        <div className='scalar-list-cell'>
-          <div
-            className={cx(
-              $p.bgWhite,
-              $p.flex,
-              $p.flexColumn,
-              $p.relative,
-            )}
-          >
+        <div className="scalar-list-cell">
+          <div className={cx($p.bgWhite, $p.flex, $p.flexColumn, $p.relative)}>
             <div className={classes.header}>
               <div className={classes.filter}>
                 <Icon
@@ -189,8 +188,8 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   color={variables.blue}
                 />
                 <input
-                  type='text'
-                  placeholder='Filter...'
+                  type="text"
+                  placeholder="Filter..."
                   value={this.state.filter}
                   onChange={(e: any) => null}
                 />
@@ -206,11 +205,7 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                 />
               </div>
             </div>
-            <div
-              className={cx(
-                $p.flexAuto,
-              )}
-            >
+            <div className={cx($p.flexAuto)}>
               <div
                 className={cx(
                   $p.f14,
@@ -223,30 +218,32 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                   $p.pa25,
                   $p.itemsCenter,
                 )}
-                onClick={ () => this.setState({editingIndex: -1} as State)}
+                onClick={() => this.setState({ editingIndex: -1 } as State)}
               >
-                {this.state.editingIndex === -1 && (
-                  this.props.field.typeIdentifier === 'DateTime' ? (
-                    <NewDateInputWrapper className={$p.flexAuto}>
-                      {getScalarEditCell(newRequirements)}
-                    </NewDateInputWrapper>
-                  ) : (
-                    <NewInputWrapper className={$p.flexAuto}>
-                      {getScalarEditCell(newRequirements)}
-                    </NewInputWrapper>
-                  )
-                )}
-                {!(this.state.editingIndex === -1) && (
+                {this.state.editingIndex === -1 &&
+                  (this.props.field.typeIdentifier === 'DateTime'
+                    ? <NewDateInputWrapper className={$p.flexAuto}>
+                        {getScalarEditCell(newRequirements)}
+                      </NewDateInputWrapper>
+                    : <NewInputWrapper className={$p.flexAuto}>
+                        {getScalarEditCell(newRequirements)}
+                      </NewInputWrapper>)}
+                {!(this.state.editingIndex === -1) &&
                   <span className={classes.addNewText}>
-                    {this.state.newValue ? (
-                      <div>{atomicValueToString(this.state.newValue, this.props.field, true)}</div>
-                    ) : (
-                      'Add new item ...'
-                    )}
-                  </span>
-                )}
+                    {this.state.newValue
+                      ? <div>
+                          {atomicValueToString(
+                            this.state.newValue,
+                            this.props.field,
+                            true,
+                          )}
+                        </div>
+                      : 'Add new item ...'}
+                  </span>}
                 <Icon
-                  className={'add-icon ' + (this.state.newValue ? '' : classes.disabled)}
+                  className={
+                    'add-icon ' + (this.state.newValue ? '' : classes.disabled)
+                  }
                   onClick={() => this.addNewValue()}
                   src={require('graphcool-styles/icons/stroke/add.svg')}
                   stroke
@@ -258,9 +255,9 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
               </div>
               <div
                 className={cx($p.overflowYScroll, $p.flexAuto)}
-                style={{maxHeight: 'calc(100vh - 294px)'}}
+                style={{ maxHeight: 'calc(100vh - 294px)' }}
               >
-                {this.state.values.map((value, index) => (
+                {this.state.values.map((value, index) =>
                   <Item
                     key={index}
                     className={cx(
@@ -276,21 +273,19 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                     )}
                     onClick={() => this.setEditingIndex(index)}
                   >
-                    {this.state.editingIndex === index ? (
-                      this.props.field.typeIdentifier === 'DateTime' ? (
-                        <DateInputWrapper className={$p.flexAuto}>
-                          {getScalarEditCell(this.getEditRequirements(index))}
-                        </DateInputWrapper>
-                      ) : (
-                        <InputWrapper className={$p.flexAuto}>
-                          {getScalarEditCell(this.getEditRequirements(index))}
-                        </InputWrapper>
-                      )
-                    ) : (
-                      <div>{atomicValueToString(value, this.props.field, true)}</div>
-                    )}
+                    {this.state.editingIndex === index
+                      ? this.props.field.typeIdentifier === 'DateTime'
+                        ? <DateInputWrapper className={$p.flexAuto}>
+                            {getScalarEditCell(this.getEditRequirements(index))}
+                          </DateInputWrapper>
+                        : <InputWrapper className={$p.flexAuto}>
+                            {getScalarEditCell(this.getEditRequirements(index))}
+                          </InputWrapper>
+                      : <div>
+                          {atomicValueToString(value, this.props.field, true)}
+                        </div>}
                     <Icon
-                      className='remove-icon'
+                      className="remove-icon"
                       src={require('graphcool-styles/icons/stroke/cross.svg')}
                       stroke
                       strokeWidth={4}
@@ -299,24 +294,24 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
                       onClick={() => this.handleDeleteValue(index)}
                       color={variables.white}
                     />
-                  </Item>
-                ))}
+                  </Item>,
+                )}
               </div>
             </div>
-            <div className={cx(
-              $p.bgBlack04,
-              $p.pa25,
-              $p.flex,
-              $p.flexRow,
-              $p.justifyBetween,
-              $p.itemsCenter,
-            )}>
+            <div
+              className={cx(
+                $p.bgBlack04,
+                $p.pa25,
+                $p.flex,
+                $p.flexRow,
+                $p.justifyBetween,
+                $p.itemsCenter,
+              )}
+            >
               <CancelButton onClick={this.props.methods.cancel}>
                 Cancel
               </CancelButton>
-              <SaveButton onClick={this.handleClose}>
-                Save
-              </SaveButton>
+              <SaveButton onClick={this.handleClose}>Save</SaveButton>
             </div>
           </div>
         </div>
@@ -325,12 +320,14 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   }
 
   private setEditingIndex = (editingIndex: number) => {
-    this.setState({editingIndex} as State)
+    this.setState({ editingIndex } as State)
   }
 
   private onKeyDown = (e: any) => {
     if (e.keyCode === 13) {
-      this.addNewValue(stringToValue(e.target.value, this.props.field, true) as AtomicValue)
+      this.addNewValue(
+        stringToValue(e.target.value, this.props.field, true) as AtomicValue,
+      )
       e.stopPropagation()
       return
     }
@@ -344,16 +341,20 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     }
 
     // only ask, if there was change
-    graphcoolConfirm('This action could lead to data loss.', 'Unsaved Changes')
-      .then(() => {
-        this.props.methods.cancel()
-      })
+    graphcoolConfirm(
+      'This action could lead to data loss.',
+      'Unsaved Changes',
+    ).then(() => {
+      this.props.methods.cancel()
+    })
   }
 
   private handleClose = () => {
     let values = this.state.values
-    if (this.state.values.length === 0 && (
-      typeof this.state.newValue !== 'undefined' && this.state.newValue !== null)
+    if (
+      this.state.values.length === 0 &&
+      (typeof this.state.newValue !== 'undefined' &&
+        this.state.newValue !== null)
     ) {
       values = [this.state.newValue]
     }
@@ -363,25 +364,29 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
   private handleDeleteValue = (index: number) => {
     const result = this.state.values.slice(0)
     result.splice(index, 1)
-    this.setState({
-      values: result,
-    } as State)
+    this.setState(
+      {
+        values: result,
+      } as State,
+    )
   }
 
   private handleValueChange = (index: number, value: AtomicValue) => {
     if (index === -1) {
-      this.setState({newValue: value} as State)
+      this.setState({ newValue: value } as State)
     } else {
       const values = this.state.values
       values[index] = value
-      this.setState({values} as State)
+      this.setState({ values } as State)
     }
   }
 
   private addNewValue = (value: AtomicValue = null) => {
     // we need this complicated check, as the boolean field false should be allowed
-    if ((this.state.newValue === null || this.state.newValue === undefined)
-        && (value === null || value === undefined)) {
+    if (
+      (this.state.newValue === null || this.state.newValue === undefined) &&
+      (value === null || value === undefined)
+    ) {
       return
     }
 
@@ -389,9 +394,11 @@ export default class ScalarListCell extends React.Component<CellRequirements, St
     const newValue = value || this.state.newValue
 
     values.unshift(newValue)
-    this.setState({
-      newValue: '',
-      values,
-    } as State)
+    this.setState(
+      {
+        newValue: '',
+        values,
+      } as State,
+    )
   }
 }

@@ -1,14 +1,14 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import {connect} from 'react-redux'
-import {ReduxAction} from '../../types/reducers'
-import {closePopup} from '../../actions/popup'
+import { connect } from 'react-redux'
+import { ReduxAction } from '../../types/reducers'
+import { closePopup } from '../../actions/popup'
 import styled from 'styled-components'
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {validateModelName} from '../../utils/nameValidator'
+import { validateModelName } from '../../utils/nameValidator'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   id: string
@@ -23,9 +23,8 @@ interface State {
 }
 
 class EditModelPopup extends React.Component<Props, State> {
-
   refs: {
-    input: HTMLInputElement,
+    input: HTMLInputElement
   }
 
   state = {
@@ -33,16 +32,15 @@ class EditModelPopup extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    tracker.track(ConsoleEvents.Schema.Model.Popup.opened({type: 'Update'}))
+    tracker.track(ConsoleEvents.Schema.Model.Popup.opened({ type: 'Update' }))
   }
 
   render() {
-
     const NameInput = styled.input`
       &::-webkit-input-placeholder {
-      color: ${variables.gray20};
-      opacity: 1;
-    }
+        color: ${variables.gray20};
+        opacity: 1;
+      }
       &::-moz-placeholder {
         color: ${variables.gray20};
         opacity: 1;
@@ -57,9 +55,7 @@ class EditModelPopup extends React.Component<Props, State> {
       }
     `
 
-    const Warning = styled.div`
-      bottom: -44px
-    `
+    const Warning = styled.div`bottom: -44px;`
 
     const Button = styled.button`
       padding: ${variables.size16};
@@ -113,39 +109,26 @@ class EditModelPopup extends React.Component<Props, State> {
             max-width: 90%;
           }
         `}</style>
-        <div className='popup'>
+        <div className="popup">
           <div className={cx($p.relative, $p.pa60)}>
-
             <div className={cx($p.relative)}>
-              {this.state.showError && (
+              {this.state.showError &&
                 <Warning
-                  className={cx(
-                  $p.absolute,
-                  $p.left0,
-                  $p.orange,
-                  $p.f14,
-                )}
+                  className={cx($p.absolute, $p.left0, $p.orange, $p.f14)}
                 >
-                  Models must begin with an uppercase letter and only contain letters and numbers
-                </Warning>
-              )}
+                  Models must begin with an uppercase letter and only contain
+                  letters and numbers
+                </Warning>}
               <NameInput
-                className={cx(
-                  $p.fw3,
-                  $p.f38,
-                  $p.bNone,
-                  $p.lhSolid,
-                  $p.tl,
-                )}
-                type='text'
+                className={cx($p.fw3, $p.f38, $p.bNone, $p.lhSolid, $p.tl)}
+                type="text"
                 autoFocus
-                placeholder='Model Name...'
+                placeholder="Model Name..."
                 defaultValue={this.props.modelName}
                 onKeyDown={e => e.keyCode === 13 && this.saveModel()}
-                ref='input'
+                ref="input"
               />
             </div>
-
           </div>
           <div
             className={cx(
@@ -156,17 +139,19 @@ class EditModelPopup extends React.Component<Props, State> {
               $p.justifyBetween,
             )}
           >
-            <DeleteButton onClick={this.deleteModel}>
-              Delete
-            </DeleteButton>
+            <DeleteButton onClick={this.deleteModel}>Delete</DeleteButton>
             <div>
-              <SaveButton onClick={this.saveModel}>
-                Save
-              </SaveButton>
-              <Button onClick={() => {
-                this.props.closePopup(this.props.id)
-                tracker.track(ConsoleEvents.Schema.Model.Popup.canceled({type: 'Update'}))
-              }}>
+              <SaveButton onClick={this.saveModel}>Save</SaveButton>
+              <Button
+                onClick={() => {
+                  this.props.closePopup(this.props.id)
+                  tracker.track(
+                    ConsoleEvents.Schema.Model.Popup.canceled({
+                      type: 'Update',
+                    }),
+                  )
+                }}
+              >
                 Cancel
               </Button>
             </div>
@@ -179,27 +164,30 @@ class EditModelPopup extends React.Component<Props, State> {
   private deleteModel = () => {
     this.props.deleteModel()
     this.props.closePopup(this.props.id)
-    tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
+    tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({ type: 'Update' }))
   }
 
   private saveModel = () => {
-    const modelName = (ReactDOM.findDOMNode(this.refs.input) as HTMLInputElement).value
+    const modelName = (ReactDOM.findDOMNode(
+      this.refs.input,
+    ) as HTMLInputElement).value
 
-    tracker.track(ConsoleEvents.Schema.Model.Popup.submitted({type: 'Update', name: modelName}))
+    tracker.track(
+      ConsoleEvents.Schema.Model.Popup.submitted({
+        type: 'Update',
+        name: modelName,
+      }),
+    )
     if (modelName != null && !validateModelName(modelName)) {
-      this.setState({showError: true} as State)
+      this.setState({ showError: true } as State)
       return
     }
 
     this.props.saveModel(modelName)
     this.props.closePopup(this.props.id)
   }
-
 }
 
-export default connect(
-  null,
-  {
-    closePopup,
-  },
-)(EditModelPopup)
+export default connect(null, {
+  closePopup,
+})(EditModelPopup)

@@ -7,16 +7,17 @@ interface Props {
   style?: any
 }
 
-export default function StepMarker({active, children, style}: Props) {
+export default function StepMarker({ active, children, style }: Props) {
   return (
-    <div style={style} className='step-marker-wrapper'>
-      <div className={cn('step-marker', {active})}>
+    <div style={style} className="step-marker-wrapper">
+      <div className={cn('step-marker', { active })}>
         <style jsx={true}>{`
           .step-marker-wrapper {
             @p: .absolute;
           }
           .step-marker {
-            @p: .br2, .brLeft, .inlineFlex, .itemsCenter, .justifyCenter, .relative, .fw6, .darkBlue, .f14;
+            @p: .br2, .brLeft, .inlineFlex, .itemsCenter, .justifyCenter,
+              .relative, .fw6, .darkBlue, .f14;
             letter-spacing: 0.6px;
             background-color: #cdd0d4;
             height: 20px;

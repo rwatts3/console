@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Auth0LockWrapper from '../../components/Auth0LockWrapper/Auth0LockWrapper'
-import {Response} from '../../mutations/AuthenticateCustomerMutation'
+import { Response } from '../../mutations/AuthenticateCustomerMutation'
 import * as cookiestore from 'cookiestore'
 
 interface Props {
@@ -9,10 +9,12 @@ interface Props {
 }
 
 export default class AuthView extends React.Component<Props, {}> {
-
   render() {
     const successCallback = async (response: Response) => {
-      if ((new Date().getTime() - new Date(response.user.createdAt).getTime()) < 60000) {
+      if (
+        new Date().getTime() - new Date(response.user.createdAt).getTime() <
+        60000
+      ) {
         // this is a workaround instead of using the router to re-setup relay
         let signupSource = 'CONSOLE'
         if (this.props.location.query && this.props.location.query.email) {
@@ -22,7 +24,7 @@ export default class AuthView extends React.Component<Props, {}> {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
+            Authorization: `Bearer ${cookiestore.get('graphcool_auth_token')}`,
           },
           body: JSON.stringify({
             query: `mutation {

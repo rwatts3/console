@@ -1,8 +1,8 @@
-import {Step} from './gettingStarted'
-import {TypedValue} from './utils'
+import { Step } from './gettingStarted'
+import { TypedValue } from './utils'
 
 export interface RelayConnection<T> {
-  edges: RelayEdge<T>[]
+  edges: Array<RelayEdge<T>>
 }
 
 interface RelayEdge<T> {
@@ -26,7 +26,11 @@ export interface Customer {
   crm: CrmSystemBridge
 }
 
-export type SeatStatus = 'JOINED' | 'INVITED_PROJECT' | 'INVITED_CUSTOMER' | 'INVITED_TO_PROJECT'
+export type SeatStatus =
+  | 'JOINED'
+  | 'INVITED_PROJECT'
+  | 'INVITED_CUSTOMER'
+  | 'INVITED_TO_PROJECT'
 
 export interface Seat {
   name: string | null
@@ -52,7 +56,12 @@ export interface CrmCustomerInformation {
 export type Environment = 'Node' | 'Browser'
 export type GraphQLClient = 'fetch' | 'lokka' | 'relay' | 'apollo'
 
-export type Example = 'ReactRelay' | 'ReactNativeApollo' | 'ReactApollo' | 'AngularApollo' | 'VueApollo'
+export type Example =
+  | 'ReactRelay'
+  | 'ReactNativeApollo'
+  | 'ReactApollo'
+  | 'AngularApollo'
+  | 'VueApollo'
 
 export interface CrmOnboardingStatus {
   id: string
@@ -95,7 +104,7 @@ export interface ServerlessFunction {
   _inlineWebhookUrl?: string
   _webhookUrl?: string
   webhookHeaders: string
-  _webhookHeaders?: {[key: string]: string}
+  _webhookHeaders?: { [key: string]: string }
   inlineCode?: string
   auth0Id?: string
   logs: RelayConnection<Log>
@@ -136,7 +145,10 @@ export interface RequestPipelineMutationFunction extends ServerlessFunction {
 
 export type FunctionType = 'WEBHOOK' | 'AUTH0'
 
-export type FunctionBinding = 'TRANSFORM_ARGUMENT' | 'PRE_WRITE' | 'TRANSFORM_PAYLOAD'
+export type FunctionBinding =
+  | 'TRANSFORM_ARGUMENT'
+  | 'PRE_WRITE'
+  | 'TRANSFORM_PAYLOAD'
 
 export interface PackageDefinition {
   id: string
@@ -172,7 +184,7 @@ export interface AlgoliaSyncQuery {
 }
 
 export type IntegrationNameType =
-    'AUTH_PROVIDER_AUTH0'
+  | 'AUTH_PROVIDER_AUTH0'
   | 'AUTH_PROVIDER_DIGITS'
   | 'AUTH_PROVIDER_EMAIL'
   | 'SEARCH_PROVIDER_ALGOLIA'
@@ -180,7 +192,7 @@ export type IntegrationNameType =
 export type IntegrationTypeType = 'AUTH_PROVIDER' | 'SEARCH_PROVIDER'
 
 export type FieldType =
-    'Relation'
+  | 'Relation'
   | 'Int'
   | 'String'
   | 'Boolean'
@@ -317,7 +329,10 @@ export interface Action {
   handlerWebhook?: ActionHandlerWebhook
 }
 
-export type ActionTriggerMutationModelMutationType = 'CREATE' | 'UPDATE' | 'DELETE'
+export type ActionTriggerMutationModelMutationType =
+  | 'CREATE'
+  | 'UPDATE'
+  | 'DELETE'
 
 export interface ActionTriggerMutationModel {
   id: string
@@ -364,8 +379,11 @@ export interface AuthProvider {
   auth0: AuthProviderAuth0 | null
 }
 
-export type AuthProviderType = 'AUTH_PROVIDER_EMAIL' | 'AUTH_PROVIDER_DIGITS'
-  | 'AUTH_PROVIDER_AUTH0' | 'anonymous-auth-provider'
+export type AuthProviderType =
+  | 'AUTH_PROVIDER_EMAIL'
+  | 'AUTH_PROVIDER_DIGITS'
+  | 'AUTH_PROVIDER_AUTH0'
+  | 'anonymous-auth-provider'
 
 export interface AuthProviderAuth0 {
   domain: string
@@ -383,13 +401,7 @@ export interface OrderBy {
   order: 'ASC' | 'DESC'
 }
 
-export type FieldWidths = { [key: string]: number }
-
-declare global {
-  interface Element {
-    scrollIntoViewIfNeeded(centerIfNeeded: boolean): void
-  }
-}
+export interface FieldWidths { [key: string]: number }
 
 export interface TetherStep {
   step: Step
@@ -400,11 +412,21 @@ export interface TetherStep {
 }
 
 export type RelationPopupDisplayState = 'DEFINE_RELATION' | 'SET_MUTATIONS'
-export type Cardinality = 'ONE_TO_ONE' | 'ONE_TO_MANY' | 'MANY_TO_ONE' | 'MANY_TO_MANY'
+export type Cardinality =
+  | 'ONE_TO_ONE'
+  | 'ONE_TO_MANY'
+  | 'MANY_TO_ONE'
+  | 'MANY_TO_MANY'
 
 export type BreakingChangeIndicatorStyle = 'TOP' | 'RIGHT'
 
-export type ConstraintType = 'REGEX' | 'CONTAINS' | 'STARTS_WITH' | 'ENDS_WITH' | 'EQUALS' | 'LENGTH'
+export type ConstraintType =
+  | 'REGEX'
+  | 'CONTAINS'
+  | 'STARTS_WITH'
+  | 'ENDS_WITH'
+  | 'EQUALS'
+  | 'LENGTH'
 export type Operator = 'EQ' | 'GT' | 'LT' | 'GTE' | 'LTE'
 
 export interface Constraint {
@@ -413,7 +435,12 @@ export interface Constraint {
   lengthOperator?: Operator
 }
 
-export type PricingPlan = '2017-02-free' | '2017-02-project' | '2017-02-startup' | '2017-02-growth' | 'enterprise'
+export type PricingPlan =
+  | '2017-02-free'
+  | '2017-02-project'
+  | '2017-02-startup'
+  | '2017-02-growth'
+  | 'enterprise'
 
 export interface PricingPlanInfo {
   name: string

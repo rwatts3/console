@@ -1,28 +1,24 @@
 const classes: any = require('./ProjectSelection.scss')
 
-import * as React                   from 'react'
-import { Link }                     from 'found'
-import { connect }                  from 'react-redux'
-import ClickOutside                 from 'react-click-outside'
-import * as cx                      from 'classnames'
-import styled                       from 'styled-components'
-import {ConsoleEvents}              from 'graphcool-metrics'
-import * as cookiestore             from 'cookiestore'
-import cuid                         from 'cuid'
-import {
-  $p,
-  variables,
-  Icon,
-}                                   from 'graphcool-styles'
+import * as React from 'react'
+import { Link } from 'found'
+import { connect } from 'react-redux'
+import ClickOutside from 'react-click-outside'
+import * as cx from 'classnames'
+import styled from 'styled-components'
+import { ConsoleEvents } from 'graphcool-metrics'
+import * as cookiestore from 'cookiestore'
+import cuid from 'cuid'
+import { $p, variables, Icon } from 'graphcool-styles'
 
-import ScrollBox                    from '../../components/ScrollBox/ScrollBox'
-import tracker                      from '../../utils/metrics'
-import {Project, Model}             from '../../types/types'
-import {ShowNotificationCallback}   from '../../types/utils'
-import {Popup}                      from '../../types/popup'
-import {showNotification}           from '../../actions/notification'
-import {showPopup}                  from '../../actions/popup'
-import CloneProjectPopup            from '../../views/ProjectRootView/CloneProjectPopup'
+import ScrollBox from '../../components/ScrollBox/ScrollBox'
+import tracker from '../../utils/metrics'
+import { Project, Model } from '../../types/types'
+import { ShowNotificationCallback } from '../../types/utils'
+import { Popup } from '../../types/popup'
+import { showNotification } from '../../actions/notification'
+import { showPopup } from '../../actions/popup'
+import CloneProjectPopup from '../../views/ProjectRootView/CloneProjectPopup'
 
 interface Props {
   params: any
@@ -38,8 +34,8 @@ interface Props {
 }
 
 interface State {
-  expanded: boolean,
-  userDropdownVisible: boolean,
+  expanded: boolean
+  userDropdownVisible: boolean
 }
 
 const expandedRoot = `
@@ -50,10 +46,8 @@ const Root = styled.div`
   flex: 0 0 auto;
   height: 64px;
   &:hover {
-
   }
-  ${props => props.expanded && expandedRoot}
-
+  ${props => props.expanded && expandedRoot};
 `
 
 const turnedArrow = `
@@ -72,11 +66,11 @@ const Arrow = styled.div`
   }
 
   border-radius: 100%;
-  background-color: rgb(16,33,47);
+  background-color: rgb(16, 33, 47);
   width: 26px;
   height: 26px;
 
-  ${props => props.turned && turnedArrow }
+  ${props => props.turned && turnedArrow};
 `
 
 const SettingsLink = styled(Link)`
@@ -86,8 +80,8 @@ const SettingsLink = styled(Link)`
   font-weight: 600;
   letter-spacing: 1px;
   color: ${variables.white60};
-  width: ${props => props.small ? 'auto' : '50%'};
-  padding: ${props => props.small ? '6px' : '10px'};
+  width: ${props => (props.small ? 'auto' : '50%')};
+  padding: ${props => (props.small ? '6px' : '10px')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,14 +115,15 @@ const SettingsLinkDiv = styled.div`
   font-weight: 600;
   letter-spacing: 1px;
   color: ${variables.white60};
-  width: ${props => props.small ? 'auto' : '50%'};
-  padding: ${props => props.small ? '6px' : '10px'};
+  width: ${props => (props.small ? 'auto' : '50%')};
+  padding: ${props => (props.small ? '6px' : '10px')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 2px;
-  transition: color ${variables.duration} linear, background ${variables.duration} linear;
+  transition: color ${variables.duration} linear,
+    background ${variables.duration} linear;
 
   svg {
     fill: ${variables.white60};
@@ -193,7 +188,6 @@ const AddProject = styled.div`
 `
 
 class ProjectSelection extends React.PureComponent<Props, State> {
-
   state = {
     expanded: false,
     userDropdownVisible: false,
@@ -201,30 +195,44 @@ class ProjectSelection extends React.PureComponent<Props, State> {
 
   shouldComponentUpdate: any
 
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
 
-  render () {
-    const {sidebarExpanded} = this.props
-    const {expanded} = this.state
+  render() {
+    const { sidebarExpanded } = this.props
+    const { expanded } = this.state
     return (
       <ClickOutside
-        onClickOutside={(e) => {
+        onClickOutside={e => {
           this.close()
         }}
       >
         <Root
           expanded={expanded}
-          className={cx($p.relative, $p.w100, $p.h100, $p.white, $p.z5, $p.bgDarkBlue)}
+          className={cx(
+            $p.relative,
+            $p.w100,
+            $p.h100,
+            $p.white,
+            $p.z5,
+            $p.bgDarkBlue,
+          )}
         >
           <div
             onClick={this.toggle}
             className={cx($p.h100, $p.w100, $p.f20, $p.flex, $p.itemsCenter)}
-            data-test='logo'
+            data-test="logo"
           >
             <div
-            className={cx($p.bgGreen, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer, $p.flexFixed)}
+              className={cx(
+                $p.bgGreen,
+                $p.flex,
+                $p.itemsCenter,
+                $p.justifyCenter,
+                $p.pointer,
+                $p.flexFixed,
+              )}
               style={{
                 width: '67px',
                 height: '67px',
@@ -235,14 +243,21 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                 width={30}
                 height={35}
                 src={require('assets/icons/logo.svg')}
-                color='#fff'
+                color="#fff"
               />
             </div>
-            {sidebarExpanded && (
+            {sidebarExpanded &&
               <div
-                className={cx($p.flex, $p.itemsCenter, $p.ph16, $p.pointer, $p.w100, $p.flexAuto)}
+                className={cx(
+                  $p.flex,
+                  $p.itemsCenter,
+                  $p.ph16,
+                  $p.pointer,
+                  $p.w100,
+                  $p.flexAuto,
+                )}
               >
-                <div className={cx('project-name-wrapper', {expanded})}>
+                <div className={cx('project-name-wrapper', { expanded })}>
                   <style jsx>{`
                     .project-name-wrapper {
                       @p: .overflowHidden, .w100, .relative;
@@ -252,7 +267,11 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                       pointer-events: none;
                       content: "";
                       width: 20px;
-                      background: linear-gradient(to right, rgba(23,42,58, 0), rgba(23,42,58, 1));
+                      background: linear-gradient(
+                        to right,
+                        rgba(23, 42, 58, 0),
+                        rgba(23, 42, 58, 1)
+                      );
                     }
                     .project-name-wrapper.expanded:after {
                       background: linear-gradient(to right, $green0, $green);
@@ -261,14 +280,23 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                       @p: .nowrap, .overflowAuto;
                     }
                   `}</style>
-                  <div className='project-name' title={this.props.selectedProject.name}>
+                  <div
+                    className="project-name"
+                    title={this.props.selectedProject.name}
+                  >
                     {this.props.selectedProject.name}
                   </div>
                   {this.collaboratorElement()}
                 </div>
                 <Arrow
                   turned={expanded}
-                  className={cx($p.flex, $p.itemsCenter, $p.justifyCenter, $p.brPill, $p.flexFixed)}
+                  className={cx(
+                    $p.flex,
+                    $p.itemsCenter,
+                    $p.justifyCenter,
+                    $p.brPill,
+                    $p.flexFixed,
+                  )}
                   style={{
                     marginRight: '-3px',
                   }}
@@ -281,125 +309,134 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                     src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
                   />
                 </Arrow>
-              </div>
-            )}
+              </div>}
           </div>
           {expanded &&
-          <div className={cx($p.absolute, $p.w100, $p.vh100, $p.bgGreen, $p.flex, $p.flexColumn)}>
             <div
               className={cx(
+                $p.absolute,
+                $p.w100,
+                $p.vh100,
+                $p.bgGreen,
                 $p.flex,
-                $p.justifyBetween,
-                {
-                  [$p.pa25]: sidebarExpanded,
-                  [$p.pa6]: !sidebarExpanded,
-                },
+                $p.flexColumn,
               )}
             >
-              <SettingsLink
-                to={`/${this.props.params.projectName}/settings`}
-                small={!sidebarExpanded}
-                onClick={this.closeProjectsList}
+              <div
+                className={cx($p.flex, $p.justifyBetween, {
+                  [$p.pa25]: sidebarExpanded,
+                  [$p.pa6]: !sidebarExpanded,
+                })}
               >
-                <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/settings.svg')}/>
-                {sidebarExpanded && (
-                  <div>Settings</div>
-                )}
-              </SettingsLink>
-              <SettingsLinkDiv
-                className={cx(
-                  {
+                <SettingsLink
+                  to={`/${this.props.params.projectName}/settings`}
+                  small={!sidebarExpanded}
+                  onClick={this.closeProjectsList}
+                >
+                  <Icon
+                    width={16}
+                    height={16}
+                    src={require('graphcool-styles/icons/fill/settings.svg')}
+                  />
+                  {sidebarExpanded && <div>Settings</div>}
+                </SettingsLink>
+                <SettingsLinkDiv
+                  className={cx({
                     [$p.ml10]: sidebarExpanded,
-                  },
-                )}
-                onClick={this.openUserDropdown}
-                small={!sidebarExpanded}
-              >
-                <Icon width={16} height={16} src={require('graphcool-styles/icons/fill/user.svg')}/>
-                {sidebarExpanded && (
-                  <div>Account</div>
-                )}
-                {this.state.userDropdownVisible && (
-                  <ClickOutside
-                    onClickOutside={e => {
-                      e.stopPropagation()
-                      this.closeUserDropdown()
-                    }}
-                  >
-                    <div
-                      className={classes.userDropdown}
-                      style={{
-                        top: sidebarExpanded ? 56 : 40,
-                        right: sidebarExpanded ? 40 : -100,
+                  })}
+                  onClick={this.openUserDropdown}
+                  small={!sidebarExpanded}
+                >
+                  <Icon
+                    width={16}
+                    height={16}
+                    src={require('graphcool-styles/icons/fill/user.svg')}
+                  />
+                  {sidebarExpanded && <div>Account</div>}
+                  {this.state.userDropdownVisible &&
+                    <ClickOutside
+                      onClickOutside={e => {
+                        e.stopPropagation()
+                        this.closeUserDropdown()
                       }}
                     >
-                      <Link
-                        to={`/${this.props.params.projectName}/account`}
-                        onClick={this.closeUserDropdown}
+                      <div
+                        className={classes.userDropdown}
+                        style={{
+                          top: sidebarExpanded ? 56 : 40,
+                          right: sidebarExpanded ? 40 : -100,
+                        }}
                       >
-                        Account
-                      </Link>
-                      <div onClick={this.logout}>
-                        Logout
+                        <Link
+                          to={`/${this.props.params.projectName}/account`}
+                          onClick={this.closeUserDropdown}
+                        >
+                          Account
+                        </Link>
+                        <div onClick={this.logout}>Logout</div>
                       </div>
-                    </div>
-                  </ClickOutside>
-                )}
-              </SettingsLinkDiv>
-            </div>
-            <div
-              className={cx($p.relative, $p.bgBlack07)}
-              style={{
+                    </ClickOutside>}
+                </SettingsLinkDiv>
+              </div>
+              <div
+                className={cx($p.relative, $p.bgBlack07)}
+                style={{
                   flexGrow: 2,
                 }}
-            >
-              <ScrollBox
-                style={{
+              >
+                <ScrollBox
+                  style={{
                     height: 'calc(100vh - 155px)',
                   }}
-              >
-                {sidebarExpanded && (
-                  <div className={cx(
-                      $p.lhSolid,
-                      $p.flex,
-                      $p.itemsCenter,
-                      $p.tracked,
-                      $p.ttu,
-                      $p.fw6,
-                      $p.white80,
-                      $p.mt38,
-                      $p.ml25,
-                      $p.mb16,
-                    )}>
-                    All Projects
-                  </div>
-                )}
-                <AddProject
-                  className={cx(
-                    $p.lhSolid,
-                    $p.ba,
-                    $p.brPill,
-                    $p.bWhite,
-                    $p.pointer,
-                    $p.o80,
-                    $p.z2,
-                    {
-                      ['absolute top38 right25']: sidebarExpanded,
-                      ['inlineFlex ml25 mt16 mb10']: !sidebarExpanded,
-                    },
-                  )}
-                  onClick={() => {
-                    this.closeProjectsList()
-                    this.props.add()
-                  }}
-                  data-test='add-project-button'
                 >
-                  <Icon width={18} height={18} stroke src={require('graphcool-styles/icons/stroke/add.svg')}/>
-                </AddProject>
-                {this.props.projects.map((project, index) => (
-                  <ListItem
-                    key={project.id}
+                  {sidebarExpanded &&
+                    <div
+                      className={cx(
+                        $p.lhSolid,
+                        $p.flex,
+                        $p.itemsCenter,
+                        $p.tracked,
+                        $p.ttu,
+                        $p.fw6,
+                        $p.white80,
+                        $p.mt38,
+                        $p.ml25,
+                        $p.mb16,
+                      )}
+                    >
+                      All Projects
+                    </div>}
+                  <AddProject
                     className={cx(
+                      $p.lhSolid,
+                      $p.ba,
+                      $p.brPill,
+                      $p.bWhite,
+                      $p.pointer,
+                      $p.o80,
+                      $p.z2,
+                      {
+                        ['absolute top38 right25']: sidebarExpanded,
+                        ['inlineFlex ml25 mt16 mb10']: !sidebarExpanded,
+                      },
+                    )}
+                    onClick={() => {
+                      this.closeProjectsList()
+                      this.props.add()
+                    }}
+                    data-test="add-project-button"
+                  >
+                    <Icon
+                      width={18}
+                      height={18}
+                      stroke
+                      src={require('graphcool-styles/icons/stroke/add.svg')}
+                    />
+                  </AddProject>
+                  {this.props.projects.map((project, index) =>
+                    <ListItem
+                      key={project.id}
+                      className={cx(
                         $p.relative,
                         $p.f20,
                         $p.fw4,
@@ -414,29 +451,26 @@ class ProjectSelection extends React.PureComponent<Props, State> {
                           [$p.mb60]: index === this.props.projects.length - 1,
                         },
                       )}
-                    onClick={() => this.onSelectProject(project.id)}
-                    to={`/${project.name}`}
-                    active={project.id === this.props.selectedProject.id}
-                  >
-                    <div className={cx($p.ml10, $p.toe, $p.overflowHidden)}>
-                      {sidebarExpanded ? project.name : project.name.slice(0, 2).toUpperCase()}
-                    </div>
-                    {sidebarExpanded && (
-                      <Link
-                        to={`/${project.name}/clone`}
-                        title='Duplicate'
-                      >
-                        <Icon
-                          src={require('graphcool-styles/icons/fill/duplicate.svg')}
-                        />
-                      </Link>
-                    )}
-                  </ListItem>
-                ))}
-              </ScrollBox>
-            </div>
-          </div>
-          }
+                      onClick={() => this.onSelectProject(project.id)}
+                      to={`/${project.name}`}
+                      active={project.id === this.props.selectedProject.id}
+                    >
+                      <div className={cx($p.ml10, $p.toe, $p.overflowHidden)}>
+                        {sidebarExpanded
+                          ? project.name
+                          : project.name.slice(0, 2).toUpperCase()}
+                      </div>
+                      {sidebarExpanded &&
+                        <Link to={`/${project.name}/clone`} title="Duplicate">
+                          <Icon
+                            src={require('graphcool-styles/icons/fill/duplicate.svg')}
+                          />
+                        </Link>}
+                    </ListItem>,
+                  )}
+                </ScrollBox>
+              </div>
+            </div>}
         </Root>
       </ClickOutside>
     )
@@ -456,23 +490,23 @@ class ProjectSelection extends React.PureComponent<Props, State> {
     this.toggle()
     this.closeProjectsList()
 
-    tracker.track(ConsoleEvents.Project.selected({id}))
+    tracker.track(ConsoleEvents.Project.selected({ id }))
   }
 
   private closeProjectsList = () => {
-    this.setState({expanded: false} as State)
+    this.setState({ expanded: false } as State)
   }
 
-  private openUserDropdown = (e) => {
+  private openUserDropdown = e => {
     e.stopPropagation()
-    this.setState({userDropdownVisible: true} as State)
+    this.setState({ userDropdownVisible: true } as State)
   }
 
   private closeUserDropdown = () => {
-    this.setState({userDropdownVisible: false} as State)
+    this.setState({ userDropdownVisible: false } as State)
   }
 
-  private async logout () {
+  private async logout() {
     try {
       await tracker.track(ConsoleEvents.logout())
 
@@ -494,20 +528,27 @@ class ProjectSelection extends React.PureComponent<Props, State> {
       return (
         <Link
           to={`/${this.props.selectedProject.name}/settings/team`}
-          onClick={(e) => {
+          onClick={e => {
             this.closeProjectsList()
             e.stopPropagation() // don't toggle
           }}
         >
-          <div className='flex itemsCenter'>
+          <div className="flex itemsCenter">
             <Icon
-              src={this.state.expanded ?
-                require('' +
-                 'chrome../../assets/icons/add_member_white.svg') : require('../../assets/icons/add_member.svg')}
+              src={
+                this.state.expanded
+                  ? require('' +
+                      'chrome../../assets/icons/add_member_white.svg')
+                  : require('../../assets/icons/add_member.svg')
+              }
               width={13}
               height={13}
             />
-            <div className={`f12 pointer ml4 ${this.state.expanded ? 'white' : 'blue'}`}>
+            <div
+              className={`f12 pointer ml4 ${this.state.expanded
+                ? 'white'
+                : 'blue'}`}
+            >
               add collaborators
             </div>
           </div>
@@ -516,10 +557,10 @@ class ProjectSelection extends React.PureComponent<Props, State> {
     }
 
     return (
-      <div className='flex itemsCenter '>
+      <div className="flex itemsCenter ">
         <style jsx={true}>{`
           .white33 {
-            color: rgba(255,255,255,.33);
+            color: rgba(255, 255, 255, .33);
           }
         `}</style>
         <Icon
@@ -527,7 +568,9 @@ class ProjectSelection extends React.PureComponent<Props, State> {
           width={13}
           height={13}
         />
-        <div className='f12 white33 ml4 mt4'>{this.props.selectedProject.seats.edges.length} seats</div>
+        <div className="f12 white33 ml4 mt4">
+          {this.props.selectedProject.seats.edges.length} seats
+        </div>
       </div>
     )
   }

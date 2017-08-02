@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {getModelName} from '../../utils/namegetter'
-import {Model} from '../../types/types'
+import { getModelName } from '../../utils/namegetter'
+import { Model } from '../../types/types'
 const classes: any = require('./GeneratedMutations.scss')
 
 interface MutationStructure {
@@ -20,19 +20,23 @@ interface Props {
 }
 
 export default class GeneratedMutations extends React.Component<Props, {}> {
-
   render() {
     return (
       <div className={classes.root}>
-        {this.getMutations().map((mutation) =>
-        <div className={classes.mutation}>{mutation.name}({mutation.args.join(', ')})</div>,
+        {this.getMutations().map(mutation =>
+          <div className={classes.mutation}>
+            {mutation.name}({mutation.args.join(', ')})
+          </div>,
         )}
       </div>
     )
   }
 
   private getMutations = (): MutationStructure[] => {
-    if (this.props.fieldOnLeftModelIsList && this.props.fieldOnRightModelIsList) {
+    if (
+      this.props.fieldOnLeftModelIsList &&
+      this.props.fieldOnRightModelIsList
+    ) {
       const args = this.getUsualMutationArgs()
       return [
         {
@@ -44,7 +48,10 @@ export default class GeneratedMutations extends React.Component<Props, {}> {
           args,
         },
       ]
-    } else if (!this.props.fieldOnLeftModelIsList && !this.props.fieldOnRightModelIsList) {
+    } else if (
+      !this.props.fieldOnLeftModelIsList &&
+      !this.props.fieldOnRightModelIsList
+    ) {
       const args = this.getUsualMutationArgs()
       return [
         {
@@ -72,7 +79,8 @@ export default class GeneratedMutations extends React.Component<Props, {}> {
   }
 
   private getUsualMutationArgs = (): string[] => {
-    const sameField = this.props.fieldOnLeftModelName === this.props.fieldOnRightModelName
+    const sameField =
+      this.props.fieldOnLeftModelName === this.props.fieldOnRightModelName
     const sameModel = this.props.leftModelId === this.props.rightModelId
 
     if (sameModel && sameField) {
@@ -82,8 +90,14 @@ export default class GeneratedMutations extends React.Component<Props, {}> {
       ]
     } else if (!sameModel && sameField) {
       return [
-        `${this.props.fieldOnLeftModelName}${getModelName(this.props.leftModelId, this.props.models)}Id`,
-        `${this.props.fieldOnRightModelName}${getModelName(this.props.rightModelId, this.props.models)}Id`,
+        `${this.props.fieldOnLeftModelName}${getModelName(
+          this.props.leftModelId,
+          this.props.models,
+        )}Id`,
+        `${this.props.fieldOnRightModelName}${getModelName(
+          this.props.rightModelId,
+          this.props.models,
+        )}Id`,
       ]
     } else {
       return [

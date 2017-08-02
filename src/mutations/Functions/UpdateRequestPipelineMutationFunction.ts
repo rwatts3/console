@@ -18,7 +18,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateRequestPipelineMutationFunctionMutation($input: UpdateRequestPipelineMutationFunctionInput!) {
+  mutation UpdateRequestPipelineMutationFunctionMutation(
+    $input: UpdateRequestPipelineMutationFunctionInput!
+  ) {
     updateRequestPipelineMutationFunction(input: $input) {
       function {
         ...FunctionPopup_function
@@ -51,17 +53,28 @@ function commit(input: Props) {
     mutation,
     variables: {
       input: pick(input, [
-        'name', 'isActive', 'binding', 'modelId', 'operation',
-        'type', 'webhookUrl', 'webhookHeaders', 'inlineCode', 'auth0Id', 'functionId',
+        'name',
+        'isActive',
+        'binding',
+        'modelId',
+        'operation',
+        'type',
+        'webhookUrl',
+        'webhookHeaders',
+        'inlineCode',
+        'auth0Id',
+        'functionId',
       ]).filterNullAndUndefined(),
     },
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        function: input.functionId,
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          function: input.functionId,
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

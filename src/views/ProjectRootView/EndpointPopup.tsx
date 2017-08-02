@@ -1,14 +1,14 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {ReduxAction} from '../../types/reducers'
-import {closePopup} from '../../actions/popup'
-import styled, {keyframes} from 'styled-components'
-import {$p, variables, Icon} from 'graphcool-styles'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { ReduxAction } from '../../types/reducers'
+import { closePopup } from '../../actions/popup'
+import styled, { keyframes } from 'styled-components'
+import { $p, variables, Icon } from 'graphcool-styles'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import getSubscriptionEndpoint from '../../utils/region'
 
 interface Props {
@@ -27,7 +27,6 @@ interface State {
 type Endpoint = 'simple/v1' | 'relay/v1' | 'file/v1' | 'subscription/v1'
 
 class EndpointPopup extends React.Component<Props, State> {
-
   state = {
     endpoint: 'simple/v1' as Endpoint,
     copied: false,
@@ -44,14 +43,12 @@ class EndpointPopup extends React.Component<Props, State> {
   }
 
   render() {
-
     const Popup = styled.div`
       width: 600px;
       max-width: 90%;
     `
 
     const Separator = styled.div`
-
       position: relative;
       display: flex;
       justify-content: center;
@@ -86,7 +83,8 @@ class EndpointPopup extends React.Component<Props, State> {
       color: ${variables.gray30};
       letter-spacing: 1px;
       cursor: pointer;
-      transition: color ${variables.duration} linear, background ${variables.duration} linear;
+      transition: color ${variables.duration} linear,
+        background ${variables.duration} linear;
 
       &:first-child {
         border-top-left-radius: 2px;
@@ -103,7 +101,7 @@ class EndpointPopup extends React.Component<Props, State> {
         color: ${variables.gray50};
       }
 
-     ${props => props.active && activeEndpointType}
+      ${props => props.active && activeEndpointType};
     `
 
     const EndpointField = styled.div`
@@ -113,14 +111,19 @@ class EndpointPopup extends React.Component<Props, State> {
         right: 0;
         top: 0;
         height: 100%;
-        background: linear-gradient(to left, ${variables.white} 0%, rgba(255,255,255,0) 80%);
+        background: linear-gradient(
+          to left,
+          ${variables.white} 0%,
+          rgba(255, 255, 255, 0) 80%
+        );
         width: 25px;
       }
     `
 
     const Copy = styled.div`
       i {
-        transition: fill ${variables.duration} linear, background ${variables.duration} linear;
+        transition: fill ${variables.duration} linear,
+          background ${variables.duration} linear;
       }
 
       &:hover {
@@ -150,14 +153,14 @@ class EndpointPopup extends React.Component<Props, State> {
     const CopyIndicator = styled.div`
       top: -20px;
       left: 50%;
-      transform: translate(-50%,0);
-      animation: ${movingCopyIndicator} .7s linear
+      transform: translate(-50%, 0);
+      animation: ${movingCopyIndicator} .7s linear;
     `
 
-    const {endpoint, copied} = this.state
-    const {projectId, alias, region} = this.props
+    const { endpoint, copied } = this.state
+    const { projectId, alias, region } = this.props
 
-    const aliasOrId = (alias && alias.length > 0) ? alias : projectId
+    const aliasOrId = alias && alias.length > 0 ? alias : projectId
 
     let url = `https://api.graph.cool/${endpoint}/${aliasOrId}`
     if (endpoint.includes('subscription')) {
@@ -175,11 +178,12 @@ class EndpointPopup extends React.Component<Props, State> {
           $p.itemsCenter,
         )}
       >
-        <Popup className={cx($p.bgWhite, $p.br2)} style={{pointerEvents: 'all'}}>
+        <Popup
+          className={cx($p.bgWhite, $p.br2)}
+          style={{ pointerEvents: 'all' }}
+        >
           <header className={cx($p.relative, $p.pa60)}>
-            <h1 className={cx($p.fw3, $p.f38, $p.tc)}>
-              API Endpoints
-            </h1>
+            <h1 className={cx($p.fw3, $p.f38, $p.tc)}>API Endpoints</h1>
             <div
               className={cx(
                 $p.absolute,
@@ -252,8 +256,7 @@ class EndpointPopup extends React.Component<Props, State> {
             >
               {url}
             </EndpointField>
-            <CopyToClipboard text={url}
-                             onCopy={this.onCopy}>
+            <CopyToClipboard text={url} onCopy={this.onCopy}>
               <Copy
                 className={cx(
                   $p.relative,
@@ -264,19 +267,12 @@ class EndpointPopup extends React.Component<Props, State> {
                   $p.pointer,
                 )}
               >
-                {copied && (
+                {copied &&
                   <CopyIndicator
-                    className={cx(
-                      $p.o0,
-                      $p.absolute,
-                      $p.f14,
-                      $p.fw6,
-                      $p.blue,
-                    )}
+                    className={cx($p.o0, $p.absolute, $p.f14, $p.fw6, $p.blue)}
                   >
                     Copied
-                  </CopyIndicator>
-                )}
+                  </CopyIndicator>}
                 <Icon
                   width={38}
                   height={38}
@@ -286,18 +282,25 @@ class EndpointPopup extends React.Component<Props, State> {
               </Copy>
             </CopyToClipboard>
           </div>
-          <p
-            className={cx(
-              $p.bt,
-              $p.bBlack10,
-              $p.pa38,
-              $p.lhCopy,
-              $p.black50,
-            )}
-          >
-            {
-              // tslint:disable-next-line
-            }Please copy the endpoint URL and paste it into your app's GraphQL client code. You can <a className={$p.green} target='_blank' href='https://graph.cool/docs/reference/simple-api/overview-heshoov3ai#differences-to-the-relay-api'>read about the differences between the Simple and Relay API here</a> or <a className={$p.green} target='_blank' href='https://github.com/graphcool-examples'>check out some code examples</a>.
+          <p className={cx($p.bt, $p.bBlack10, $p.pa38, $p.lhCopy, $p.black50)}>
+            Please copy the endpoint URL and paste it into your app's GraphQL
+            client code. You can
+            <a
+              className={$p.green}
+              target="_blank"
+              href="https://graph.cool/docs/reference/simple-api/overview-heshoov3ai#differences-to-the-relay-api"
+            >
+              read about the differences between the Simple and Relay API here
+            </a>
+            or
+            <a
+              className={$p.green}
+              target="_blank"
+              href="https://github.com/graphcool-examples"
+            >
+              check out some code examples
+            </a>
+            .
           </p>
         </Popup>
       </div>
@@ -306,26 +309,23 @@ class EndpointPopup extends React.Component<Props, State> {
 
   private selectEndpoint = (endpoint: Endpoint) => {
     tracker.track(ConsoleEvents.Endpoints.selected())
-    this.setState({copied: false, endpoint} as State)
+    this.setState({ copied: false, endpoint } as State)
   }
 
   private onCopy: () => any = () => {
     tracker.track(ConsoleEvents.Endpoints.copied())
-    this.setState({copied: true} as State)
+    this.setState({ copied: true } as State)
     this.copyTimer = window.setTimeout(
-      () => this.setState({copied: false} as State),
+      () => this.setState({ copied: false } as State),
       1000,
     )
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = state => ({})
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({closePopup}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ closePopup }, dispatch)
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EndpointPopup)
+export default connect(mapStateToProps, mapDispatchToProps)(EndpointPopup)

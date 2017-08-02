@@ -20,14 +20,16 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        model: input.id,
+    variables: { input },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          model: input.id,
+        },
       },
-    }],
-    optimisticResponse: {updateModel: {model: input}},
+    ],
+    optimisticResponse: { updateModel: { model: input } },
   })
 }
 

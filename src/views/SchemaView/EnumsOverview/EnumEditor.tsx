@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {$v, Icon} from 'graphcool-styles'
+import { $v, Icon } from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -14,7 +14,6 @@ interface State {
 }
 
 export default class EnumEditor extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -25,51 +24,59 @@ export default class EnumEditor extends React.Component<Props, State> {
   }
 
   render() {
-    const {enums, onChange, readOnly} = this.props
-    const {addingEnum, enumValue} = this.state
+    const { enums, onChange, readOnly } = this.props
+    const { addingEnum, enumValue } = this.state
 
     return (
-      <div className='enum-editor'>
+      <div className="enum-editor">
         <style jsx={true}>{`
-        .enum-editor {
-          @p: .flex, .itemsCenter, .flexWrap;
-        }
-        .value {
-          @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10, .pointer, .flex, .itemsCenter, .mb6;
-        }
-        .value:hover {
-          @p: .bgBlack20, .black70;
-        }
-        .value:not(.readOnly):hover:after {
-          @p: .pl4, .f16, .fw7;
-          line-height: 1;
-          content: "×";
-        }
-        .plus {
-          @p: .bgBlue20, .flex, .itemsCenter, .justifyCenter, .br100, .ml10, .pointer;
-          height: 26px;
-          width: 26px;
-        }
-        input {
-          @p: .f14, .blue;
-        }
-      `}</style>
-        {enums.map(enumValue => (
-          <div key={enumValue} className={cn('value', {readOnly})} onClick={() => this.rmValue(enumValue)}>
-            <span>{enumValue}</span>
-          </div>
-        ))}
-        {addingEnum && !readOnly && (
+          .enum-editor {
+            @p: .flex, .itemsCenter, .flexWrap;
+          }
+          .value {
+            @p: .br2, .pv6, .ph10, .mr6, .black60, .fw6, .f14, .bgBlack10,
+              .pointer, .flex, .itemsCenter, .mb6;
+          }
+          .value:hover {
+            @p: .bgBlack20, .black70;
+          }
+          .value:not(.readOnly):hover:after {
+            @p: .pl4, .f16, .fw7;
+            line-height: 1;
+            content: "×";
+          }
+          .plus {
+            @p: .bgBlue20, .flex, .itemsCenter, .justifyCenter, .br100, .ml10,
+              .pointer;
+            height: 26px;
+            width: 26px;
+          }
+          input {
+            @p: .f14, .blue;
+          }
+        `}</style>
+        {enums.map(enumValue =>
+          <div
+            key={enumValue}
+            className={cn('value', { readOnly })}
+            onClick={() => this.rmValue(enumValue)}
+          >
+            <span>
+              {enumValue}
+            </span>
+          </div>,
+        )}
+        {addingEnum &&
+          !readOnly &&
           <input
-            type='text'
+            type="text"
             value={enumValue}
             onChange={this.handleChangeEnumValue}
-            placeholder='Add an enum value'
+            placeholder="Add an enum value"
             onKeyDown={this.keyDown}
-          />
-        )}
-        {!readOnly && (
-          <div className='plus' onClick={this.addEnum}>
+          />}
+        {!readOnly &&
+          <div className="plus" onClick={this.addEnum}>
             <Icon
               src={require('graphcool-styles/icons/stroke/add.svg')}
               width={20}
@@ -78,13 +85,12 @@ export default class EnumEditor extends React.Component<Props, State> {
               stroke
               strokeWidth={3}
             />
-          </div>
-        )}
+          </div>}
       </div>
     )
   }
 
-  private rmValue = (value) => {
+  private rmValue = value => {
     if (this.props.readOnly) {
       return
     }
@@ -94,15 +100,15 @@ export default class EnumEditor extends React.Component<Props, State> {
     this.props.onChange(newEnums)
   }
 
-  private handleChangeEnumValue = (e) => {
-    this.setState({enumValue: e.target.value.trim()} as State)
+  private handleChangeEnumValue = e => {
+    this.setState({ enumValue: e.target.value.trim() } as State)
   }
 
   private addEnum = () => {
     if (this.state.addingEnum) {
       this.submitCurrentValue()
     } else {
-      this.setState({addingEnum: true} as State)
+      this.setState({ addingEnum: true } as State)
     }
   }
 
@@ -116,7 +122,7 @@ export default class EnumEditor extends React.Component<Props, State> {
   private submitCurrentValue() {
     if (this.state.enumValue.length > 0) {
       this.props.onChange(this.props.enums.concat(this.state.enumValue))
-      this.setState({enumValue: ''} as State)
+      this.setState({ enumValue: '' } as State)
     }
   }
 }

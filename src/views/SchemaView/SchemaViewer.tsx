@@ -1,15 +1,12 @@
 import * as React from 'react'
-import {Voyager} from 'graphql-voyager'
+import { Voyager } from 'graphql-voyager'
 import fetch from 'isomorphic-fetch'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {Viewer} from '../../types/types'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { Viewer } from '../../types/types'
 import modalStyle from '../../utils/modalStyle'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import * as Modal from 'react-modal'
-import {withRouter} from 'found'
+import { withRouter } from 'found'
 
 interface Props {
   viewer: Viewer
@@ -29,19 +26,16 @@ const customModalStyle = {
 class SchemaViewer extends React.Component<Props, null> {
   render() {
     return (
-      <Modal
-        isOpen
-        style={customModalStyle}
-        contentLabel='Voyager'
-      >
-        <div className='schema-viewer'>
+      <Modal isOpen style={customModalStyle} contentLabel="Voyager">
+        <div className="schema-viewer">
           <style jsx>{`
             .schema-viewer {
               @p: .relative, .w100;
               height: 100vh;
             }
             .close {
-              @p: .absolute, .top0, .right0, .pa10, .ma10, .bgWhite, .z999, .pointer, .br100;
+              @p: .absolute, .top0, .right0, .pa10, .ma10, .bgWhite, .z999,
+                .pointer, .br100;
               box-shadow: 0 0 30px 30px white;
             }
             :global(#intercom-container) {
@@ -52,11 +46,14 @@ class SchemaViewer extends React.Component<Props, null> {
             introspection={this.introspectionProvider}
             displayOptions={{
               transformSchema: function(schema) {
-                const {types} = schema
-                const copy = Object.assign({}, types)
+                const { types } = schema
+                const copy = {...types}
 
                 Object.keys(copy).forEach(typeName => {
-                  if (typeName.startsWith('_all') || typeName.startsWith('all')) {
+                  if (
+                    typeName.startsWith('_all') ||
+                    typeName.startsWith('all')
+                  ) {
                     delete copy[typeName]
                   } else {
                     const type = copy[typeName]
@@ -72,16 +69,15 @@ class SchemaViewer extends React.Component<Props, null> {
                   }
                 })
 
-                return Object.assign({}, schema, {
+                return {...schema, 
                   queryType: 'Node',
-                  types: copy,
-                })
+                  types: copy}
               },
               hideDocs: true,
               hideRoot: true,
             }}
           />
-          <div className='close' onClick={this.close}>
+          <div className="close" onClick={this.close}>
             <Icon
               src={require('graphcool-styles/icons/stroke/cross.svg')}
               stroke
@@ -99,13 +95,15 @@ class SchemaViewer extends React.Component<Props, null> {
     this.props.router.go(-1)
   }
 
-  private introspectionProvider = (query) => {
-    return fetch(__BACKEND_ADDR__ + '/simple/v1/' + this.props.viewer.project.id, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({query}),
-    })
-    .then(res => res.json())
+  private introspectionProvider = query => {
+    return fetch(
+      __BACKEND_ADDR__ + '/simple/v1/' + this.props.viewer.project.id,
+      {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      },
+    ).then(res => res.json())
   }
 }
 

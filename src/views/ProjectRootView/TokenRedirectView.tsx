@@ -9,11 +9,10 @@ interface Props {
 }
 
 export default class TokenRedirectView extends React.Component<Props, {}> {
+  componentWillMount() {
+    const { query } = this.props.location
 
-  componentWillMount () {
-    const {query} = this.props.location
-
-    let {token, redirect, cli} = query
+    let { token, redirect, cli } = query
     if (token) {
       const data = jwtDecode(token)
       tracker.reset()
@@ -28,7 +27,7 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <style jsx={true}>{`
@@ -36,7 +35,7 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
             @p: .pa60, .f20;
           }
         `}</style>
-          Redirecting...
+        Redirecting...
       </div>
     )
   }

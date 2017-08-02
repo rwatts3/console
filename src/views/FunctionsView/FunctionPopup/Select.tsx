@@ -8,7 +8,12 @@ interface Props {
   className?: string
 }
 
-export default function Select({children, value, onChange, className}: Props) {
+export default function Select({
+  children,
+  value,
+  onChange,
+  className,
+}: Props) {
   return (
     <div className={cn('select', className)}>
       <style jsx={true}>{`
@@ -32,14 +37,15 @@ export default function Select({children, value, onChange, className}: Props) {
           top: 18px;
           right: 15px;
         }
-        select, .select  :global(option) {
+        select,
+        .select  :global(option) {
           font-family: 'Open Sans', sans-serif;
         }
       `}</style>
       <select value={value} onChange={onChange}>
         {children}
       </select>
-      <div className='triangle'>▼</div>
+      <div className="triangle">▼</div>
     </div>
   )
 }

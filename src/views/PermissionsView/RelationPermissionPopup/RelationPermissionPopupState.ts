@@ -1,5 +1,5 @@
-import {RelationPermissionPopupState} from './RelationPermissionPopup'
-import {RelationPermission} from '../../../types/types'
+import { RelationPermissionPopupState } from './RelationPermissionPopup'
+import { RelationPermission } from '../../../types/types'
 
 export interface RelationPermissionPopupErrors {
   invalidQuery: boolean
@@ -13,21 +13,28 @@ export function isValid(state: RelationPermissionPopupState) {
   }
 }
 
-export function didChange(state: RelationPermissionPopupState, permission?: RelationPermission) {
+export function didChange(
+  state: RelationPermissionPopupState,
+  permission?: RelationPermission,
+) {
   if (!permission) {
     return false
   }
-  return state.connect !== permission.connect ||
-      state.disconnect !== permission.disconnect ||
-      state.rule !== permission.rule ||
-      state.queryChanged ||
-      state.userType !== permission.userType ||
-      state.ruleName !== permission.ruleName
+  return (
+    state.connect !== permission.connect ||
+    state.disconnect !== permission.disconnect ||
+    state.rule !== permission.rule ||
+    state.queryChanged ||
+    state.userType !== permission.userType ||
+    state.ruleName !== permission.ruleName
+  )
 }
 
-export function errorInTab(errors: RelationPermissionPopupErrors, index: number) {
-
-  const {invalidQuery, nothingSelected} = errors
+export function errorInTab(
+  errors: RelationPermissionPopupErrors,
+  index: number,
+) {
+  const { invalidQuery, nothingSelected } = errors
 
   if (index === 0) {
     return nothingSelected

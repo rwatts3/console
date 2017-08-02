@@ -1,7 +1,7 @@
-import {ReduxAction} from '../types/reducers'
+import { ReduxAction } from '../types/reducers'
 import Constants from '../constants/popupSources'
-import {FieldPopupSource} from 'graphcool-metrics/dist'
-import {RelationsPopupSource} from 'graphcool-metrics/dist/events/Console'
+import { FieldPopupSource } from 'graphcool-metrics/dist'
+import { RelationsPopupSource } from 'graphcool-metrics/dist/events/Console'
 
 export const setFieldPopupSource = (source: FieldPopupSource) => ({
   type: Constants.SET_FIELD_POPUP_SOURCE,

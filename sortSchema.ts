@@ -1,6 +1,6 @@
-import {Model} from './src/types/types'
-import {parse} from 'graphql'
-import {print} from 'graphql/language'
+import { Model } from './src/types/types'
+import { parse } from 'graphql'
+import { print } from 'graphql/language'
 
 export function sortSchema(schema: string, models: Model[]) {
   const ast = parse(schema)

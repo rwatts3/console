@@ -1,6 +1,6 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
-import {Field, FieldType} from '../../../../types/types'
+import { Field, FieldType } from '../../../../types/types'
 
 interface Props {
   field: Field
@@ -12,19 +12,15 @@ interface Props {
 }
 
 const PermissionField = (props: Props) => {
-  const {field, disabled, selected, className, onClick, editable} = props
-  const {name} = field
+  const { field, disabled, selected, className, onClick, editable } = props
+  const { name } = field
   return (
     <div
-      className={cx(
-        'permission-tag',
-        className,
-        {
-          disabled,
-          selected,
-          editable,
-        },
-      )}
+      className={cx('permission-tag', className, {
+        disabled,
+        selected,
+        editable,
+      })}
       onClick={onClick}
     >
       <style jsx>{`
@@ -55,15 +51,19 @@ const PermissionField = (props: Props) => {
           @p: .bgWhite20, .white;
         }
       `}</style>
-      <div className='name'>{name}</div>
-      <div className='type'>{renderType(field)}</div>
+      <div className="name">
+        {name}
+      </div>
+      <div className="type">
+        {renderType(field)}
+      </div>
     </div>
   )
 }
 
 function renderType(field: Field) {
   const type = field.typeIdentifier + (field.isRequired ? '!' : '')
-  return (field.isList ? `[${type}]` : type)
+  return field.isList ? `[${type}]` : type
 }
 
 export default PermissionField

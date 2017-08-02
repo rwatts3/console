@@ -1,17 +1,14 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {PermanentAuthToken} from '../../types/types'
-import {Icon} from 'graphcool-styles'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { PermanentAuthToken } from '../../types/types'
+import { Icon } from 'graphcool-styles'
 import DeletePermanentAuthTokenMutation from '../../mutations/DeletePermanentAuthTokenMutation'
-import {ShowNotificationCallback} from '../../types/utils'
-import {connect} from 'react-redux'
-import {showNotification} from '../../actions/notification'
-import {bindActionCreators} from 'redux'
+import { ShowNotificationCallback } from '../../types/utils'
+import { connect } from 'react-redux'
+import { showNotification } from '../../actions/notification'
+import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import {onFailureShowNotification} from '../../utils/relay'
+import { onFailureShowNotification } from '../../utils/relay'
 
 const classes = require('./PermanentAuthTokenRow.scss')
 
@@ -27,7 +24,6 @@ interface State {
 }
 
 class PermanentAuthTokenRow extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -38,16 +34,15 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
   }
 
   render() {
-
     return (
       <CopyToClipboard
         text={this.props.permanentAuthToken.token}
-        onCopy={() => this.setState({isCopied: true} as State)}
+        onCopy={() => this.setState({ isCopied: true } as State)}
       >
         <div
           className={classes.root}
-          onMouseEnter={() => this.setState({showFullToken: true} as State)}
-          onMouseLeave={() => this.setState({showFullToken: false} as State)}
+          onMouseEnter={() => this.setState({ showFullToken: true } as State)}
+          onMouseLeave={() => this.setState({ showFullToken: false } as State)}
         >
           <div className={classes.content}>
             <div className={classes.name}>
@@ -55,11 +50,12 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
               {this.state.showFullToken &&
                 <span className={classes.hint}>
                   {this.state.isCopied ? '(copied)' : '(click to copy)'}
-                </span>
-              }
+                </span>}
             </div>
             <div className={classes.token}>
-              {this.state.showFullToken ? this.props.permanentAuthToken.token : this.getTokenSuffix()}
+              {this.state.showFullToken
+                ? this.props.permanentAuthToken.token
+                : this.getTokenSuffix()}
             </div>
           </div>
           <Icon
@@ -82,16 +78,19 @@ class PermanentAuthTokenRow extends React.Component<Props, State> {
     DeletePermanentAuthTokenMutation.commit({
       projectId: this.props.projectId,
       tokenId: this.props.permanentAuthToken.id,
-    })
-      .catch(transaction => onFailureShowNotification(transaction, this.props.showNotification))
+    }).catch(transaction =>
+      onFailureShowNotification(transaction, this.props.showNotification),
+    )
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ showNotification }, dispatch)
 }
 
-const MappedPermanentAuthTokenRow = connect(null, mapDispatchToProps)(PermanentAuthTokenRow)
+const MappedPermanentAuthTokenRow = connect(null, mapDispatchToProps)(
+  PermanentAuthTokenRow,
+)
 
 export default createFragmentContainer(MappedPermanentAuthTokenRow, {
   permanentAuthToken: graphql`

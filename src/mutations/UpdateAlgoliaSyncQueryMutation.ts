@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
-import {pick} from 'lodash'
+import { pick } from 'lodash'
 
 interface Props {
   algoliaSyncQueryId: string
@@ -10,7 +10,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation UpdateAlgoliaSyncQueryMutation($input: UpdateAlgoliaSyncQueryInput!) {
+  mutation UpdateAlgoliaSyncQueryMutation(
+    $input: UpdateAlgoliaSyncQueryInput!
+  ) {
     updateAlgoliaSyncQuery(input: $input) {
       searchProviderAlgolia {
         id
@@ -33,16 +35,25 @@ const mutation = graphql`
 `
 
 function commit(input: Props) {
-  const {algoliaSyncQueryId, isEnabled, indexName, fragment} = input
+  const { algoliaSyncQueryId, isEnabled, indexName, fragment } = input
   return makeMutation({
     mutation,
-    variables: {input: pick(input, ['algoliaSyncQueryId', 'indexName', 'fragment', 'isEnabled'])},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        algoliaSyncQuery: input.algoliaSyncQueryId,
+    variables: {
+      input: pick(input, [
+        'algoliaSyncQueryId',
+        'indexName',
+        'fragment',
+        'isEnabled',
+      ]),
+    },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          algoliaSyncQuery: input.algoliaSyncQueryId,
+        },
       },
-    }],
+    ],
     optimisticResponse: {
       updateAlgoliaSyncQuery: {
         algoliaSyncQuery: {

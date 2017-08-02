@@ -55,7 +55,7 @@ declare var __AUTH0_CLIENT_ID__: string
 declare var graphcoolAlert: any
 declare var graphcoolConfirm: any
 
-declare interface Window {
+interface Window {
   devToolsExtension?: () => any
   Intercom: any
 }
@@ -65,7 +65,6 @@ declare module 'cuid' {
 }
 
 declare module 'react-relay/classic' {
-
   // fragments are a hash of functions
   interface Fragments {
     [query: string]: ((variables?: RelayVariables) => string)
@@ -118,7 +117,10 @@ declare module 'react-relay/classic' {
   interface RelayQuery {
     query: string
   }
-  function createContainer<T>(component: React.ComponentClass<T>, params?: CreateContainerOpts): RelayContainerClass<any>
+  function createContainer<T>(
+    component: React.ComponentClass<T>,
+    params?: CreateContainerOpts,
+  ): RelayContainerClass<any>
   function injectNetworkLayer(networkLayer: RelayNetworkLayer)
   function isContainer(component: React.ComponentClass<any>): boolean
   function QL(...args: any[]): string
@@ -131,7 +133,7 @@ declare module 'react-relay/classic' {
   // Relay Mutation class, where T are the props it takes and S is the returned payload from Relay.Store.update.
   // S is typically dynamic as it depends on the data the app is currently using, but it's possible to always
   // return some data in the payload using REQUIRED_CHILDREN which is where specifying S is the most useful.
-  class Mutation<T,S> {
+  class Mutation<T, S> {
     props: T
 
     constructor(props: T)
@@ -149,16 +151,19 @@ declare module 'react-relay/classic' {
   }
 
   interface Store {
-    commitUpdate(mutation: Mutation<any,any>, callbacks?: StoreUpdateCallbacks<any>)
-    primeCache(query: RelayQuery, callback: (done: any, error: any)=>void)
+    commitUpdate(
+      mutation: Mutation<any, any>,
+      callbacks?: StoreUpdateCallbacks<any>,
+    )
+    primeCache(query: RelayQuery, callback: (done: any, error: any) => void)
     readQuery(query: string)
   }
 
   var Store: Store
 
-  class RootContainer extends React.Component<RootContainerProps,any> {}
+  class RootContainer extends React.Component<RootContainerProps, any> {}
 
-  interface RootContainerProps extends React.Props<RootContainer>{
+  interface RootContainerProps extends React.Props<RootContainer> {
     Component: RelayContainerClass<any>
     route: Route
     renderLoading?(): JSX.Element

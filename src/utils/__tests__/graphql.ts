@@ -1,9 +1,8 @@
-import {Field} from '../../types/types'
-import {isScalar, isNonScalarList} from '../graphql'
+import { Field } from '../../types/types'
+import { isScalar, isNonScalarList } from '../graphql'
 import '../polyfils'
 
 describe('isScalar', () => {
-
   const scalarTypes = [
     'String',
     'Int',
@@ -16,8 +15,8 @@ describe('isScalar', () => {
   ]
 
   it('checks if every item of scalarTypes is a valid ScalarType', () => {
-    for (let i = 0; i < scalarTypes.length; i++) {
-      expect(isScalar(scalarTypes[i])).toBe(true)
+    for (const type of scalarTypes) {
+      expect(isScalar(type)).toBe(true)
     }
   })
 
@@ -28,7 +27,6 @@ describe('isScalar', () => {
 })
 
 describe('isNonScalarList', () => {
-
   const testField: Field = {
     id: '',
     name: '',
@@ -39,38 +37,34 @@ describe('isNonScalarList', () => {
     isSystem: false,
     isReadonly: false,
     typeIdentifier: 'Int',
-    model: null,
+    model: undefined,
   }
 
   it('checks if a NonScalar List Field is a valid NonScalar List', () => {
-    const field: Field = Object.assign(testField, {
+    const field: Field = {...testField, 
       typeIdentifier: 'Relation',
-      isList: true,
-    })
+      isList: true}
     expect(isNonScalarList(field)).toBe(true)
   })
 
   it('checks if a Scalar List is not a NonScalar List', () => {
-    const field: Field = Object.assign(testField, {
+    const field: Field = {...testField, 
       typeIdentifier: 'String',
-      isList: true,
-    })
+      isList: true}
     expect(isNonScalarList(field)).toBe(false)
   })
 
   it('checks if a NonScalar Value is not a NonScalar List', () => {
-    const field: Field = Object.assign(testField, {
+    const field: Field = {...testField, 
       typeIdentifier: 'Hello World',
-      isList: false,
-    })
+      isList: false}
     expect(isNonScalarList(field)).toBe(false)
   })
 
   it('checks if a Scalar value is not a NonScalar List', () => {
-    const field: Field = Object.assign(testField, {
+    const field: Field = {...testField, 
       typeIdentifier: 'String',
-      isList: false,
-    })
+      isList: false}
     expect(isNonScalarList(field)).toBe(false)
   })
 })

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Info from '../../../components/Info'
 import * as cn from 'classnames'
-import {Link} from 'found'
+import { Link } from 'found'
 import DocsPopup from '../../../components/DocsPopup'
 
 interface Props {
@@ -11,11 +11,15 @@ interface Props {
 
 export default class PermissionsHeader extends React.Component<Props, {}> {
   render() {
-    const {params} = this.props
+    const { params } = this.props
     const pathname = decodeURIComponent(this.props.location.pathname)
-    const activeTab = pathname.startsWith(`/${params.projectName}/permissions/relations`) ? 1 : 0
+    const activeTab = pathname.startsWith(
+      `/${params.projectName}/permissions/relations`,
+    )
+      ? 1
+      : 0
     return (
-      <div className='permissions-header'>
+      <div className="permissions-header">
         <style jsx>{`
           .permissions-header {
             @p: .pt25, .br2, .flexColumn;
@@ -46,11 +50,11 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
           }
         `}</style>
 
-        <div className='flex justifyBetween'>
-          <div className='flex itemsCenter'>
+        <div className="flex justifyBetween">
+          <div className="flex itemsCenter">
             <h1>Permissions</h1>
           </div>
-          <div className='z999'>
+          <div className="z999">
             <DocsPopup
               offsetX={16}
               offsetY={16}
@@ -58,28 +62,37 @@ export default class PermissionsHeader extends React.Component<Props, {}> {
                 {
                   title: 'Overview over Permissions',
                   type: 'guide',
-                  link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+                  link:
+                    'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
                 },
                 {
                   title: 'How to define Permission Queries',
                   type: 'guide',
-                  link: 'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
+                  link:
+                    'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
                 },
                 {
                   title: 'Design Patterns',
                   type: 'article',
-                  link: 'https://www.graph.cool/docs/tutorials/authorization-content-management-system-miesho4goo/',
+                  link:
+                    'https://www.graph.cool/docs/tutorials/authorization-content-management-system-miesho4goo/',
                 },
               ]}
-              videoId='l1KEssmlhPA'
+              videoId="l1KEssmlhPA"
             />
           </div>
         </div>
-        <div className='tabs'>
-          <Link className={cn('tab', {active: activeTab === 0})} to={`/${params.projectName}/permissions`}>
+        <div className="tabs">
+          <Link
+            className={cn('tab', { active: activeTab === 0 })}
+            to={`/${params.projectName}/permissions`}
+          >
             Types
           </Link>
-          <Link className={cn('tab', {active: activeTab === 1})} to={`/${params.projectName}/permissions/relations`}>
+          <Link
+            className={cn('tab', { active: activeTab === 1 })}
+            to={`/${params.projectName}/permissions/relations`}
+          >
             Relations
           </Link>
         </div>

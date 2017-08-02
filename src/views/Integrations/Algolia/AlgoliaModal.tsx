@@ -1,12 +1,12 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
 import * as Relay from 'react-relay/classic'
-import {fieldModalStyle} from '../../../utils/modalStyle'
-import {SearchProviderAlgolia} from '../../../types/types'
+import { fieldModalStyle } from '../../../utils/modalStyle'
+import { SearchProviderAlgolia } from '../../../types/types'
 import UpdateSearchProviderAlgolia from '../../../mutations/UpdateSearchProviderAlgolia'
 import FloatingInput from '../../../components/FloatingInput/FloatingInput'
 import * as cx from 'classnames'
-import {$p, $v, Icon} from 'graphcool-styles'
+import { $p, $v, Icon } from 'graphcool-styles'
 
 interface Props {
   apiKey: string
@@ -19,13 +19,20 @@ interface Props {
 
 export default class AlgoliaModal extends React.Component<Props, null> {
   render() {
-    const {apiKey, applicationId, onChangeApiKey, onChangeApplicationId, onRequestClose, onSave} = this.props
+    const {
+      apiKey,
+      applicationId,
+      onChangeApiKey,
+      onChangeApplicationId,
+      onRequestClose,
+      onSave,
+    } = this.props
 
     return (
       <Modal
         isOpen={true}
         onRequestClose={onRequestClose}
-        contentLabel='Algolia Settings'
+        contentLabel="Algolia Settings"
         style={fieldModalStyle}
       >
         <style jsx={true} global>{`
@@ -39,8 +46,8 @@ export default class AlgoliaModal extends React.Component<Props, null> {
           }
           .header {
             @p: .pb25;
-            background: #EEF7F0;
-            border-bottom: 1px solid #D8F0DC;
+            background: #eef7f0;
+            border-bottom: 1px solid #d8f0dc;
           }
           .logo {
             @p: .mt25, .ml25;
@@ -68,7 +75,8 @@ export default class AlgoliaModal extends React.Component<Props, null> {
           .bottom {
             @p: .flex, .itemsCenter, .justifyBetween, .pa16, .bt, .bBlack10;
           }
-          .inputs, .bottom {
+          .inputs,
+          .bottom {
             @p: .bgBlack04;
           }
           .cancel {
@@ -76,7 +84,8 @@ export default class AlgoliaModal extends React.Component<Props, null> {
           }
           .intro {
             @p: .flex, .justifyCenter, .w100, .h100, .pa38, .itemsStart;
-            h1, h2 {
+            h1,
+            h2 {
               @p: .tc;
             }
             h1 {
@@ -93,13 +102,14 @@ export default class AlgoliaModal extends React.Component<Props, null> {
             @p: .mt38;
           }
         `}</style>
-        <div className='algolia-modal'>
-          <div className='header'>
-            <img className='logo' src={require('assets/graphics/algolia-logo.svg')} alt=''/>
-            <div
-              className='close'
-              onClick={onRequestClose}
-            >
+        <div className="algolia-modal">
+          <div className="header">
+            <img
+              className="logo"
+              src={require('assets/graphics/algolia-logo.svg')}
+              alt=""
+            />
+            <div className="close" onClick={onRequestClose}>
               <Icon
                 src={require('graphcool-styles/icons/stroke/cross.svg')}
                 stroke
@@ -110,56 +120,77 @@ export default class AlgoliaModal extends React.Component<Props, null> {
               />
             </div>
           </div>
-          {(applicationId.length === 0 || apiKey.length === 0) && (
-            <div className='intro'>
-              <div className='inner-intro'>
+          {(applicationId.length === 0 || apiKey.length === 0) &&
+            <div className="intro">
+              <div className="inner-intro">
                 <h1>Getting Started with the Algolia Integration</h1>
                 <h2>
-                  In this integration, Graphcool automatically syncs your data to Algolia,
-                  so you have a lightning fast search on your app's data.
+                  In this integration, Graphcool automatically syncs your data
+                  to Algolia, so you have a lightning fast search on your app's
+                  data.
                 </h2>
                 <h2>
-                  In order to use this integration,
-                  you have to create an API key in your Algolia Dashboard.
+                  In order to use this integration, you have to create an API
+                  key in your Algolia Dashboard.
                 </h2>
                 <a
-                  className='button green'
+                  className="button green"
                   href={
                     'https://www.graph.cool/docs/tutorials/algolia-auto-syncing-for-graphql-backends-aroozee9zu' +
                     '#creating-algolia-search-indices'
                   }
-                  target='_blank'
+                  target="_blank"
                 >
                   How to create an API key
                 </a>
               </div>
-            </div>
-          )}
-          <div className='inputs'>
+            </div>}
+          <div className="inputs">
             <FloatingInput
               labelClassName={cx($p.f16, $p.pa16, $p.black50, $p.fw3)}
-              className={cx($p.pa16, $p.br2, $p.bn, $p.mb10, $p.f25, $p.fw3, $p.lhTitle, 'input')}
-              label='Application Id'
-              placeholder='xxxxxxxxxxxxx'
+              className={cx(
+                $p.pa16,
+                $p.br2,
+                $p.bn,
+                $p.mb10,
+                $p.f25,
+                $p.fw3,
+                $p.lhTitle,
+                'input',
+              )}
+              label="Application Id"
+              placeholder="xxxxxxxxxxxxx"
               value={applicationId || ''}
               onChange={onChangeApplicationId}
             />
             <FloatingInput
               labelClassName={cx($p.f16, $p.pa16, $p.black50, $p.fw3)}
-              className={cx($p.pa16, $p.br2, $p.bn, $p.mb10, $p.f25, $p.fw3, $p.lhTitle, 'input')}
-              label='API Key'
-              placeholder='xxxxxxxxxxxxx'
+              className={cx(
+                $p.pa16,
+                $p.br2,
+                $p.bn,
+                $p.mb10,
+                $p.f25,
+                $p.fw3,
+                $p.lhTitle,
+                'input',
+              )}
+              label="API Key"
+              placeholder="xxxxxxxxxxxxx"
               value={apiKey || ''}
               onChange={onChangeApiKey}
             />
           </div>
-          <div className='bottom'>
-            <div className='button cancel' onClick={onRequestClose}>Cancel</div>
-            <div className='button save active' onClick={onSave}>Save</div>
+          <div className="bottom">
+            <div className="button cancel" onClick={onRequestClose}>
+              Cancel
+            </div>
+            <div className="button save active" onClick={onSave}>
+              Save
+            </div>
           </div>
         </div>
       </Modal>
     )
   }
-
 }

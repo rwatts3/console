@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 
 interface Props {
   projectId: string
@@ -15,7 +15,7 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
        rendering-right-in-chrome/30093139#30093139
        (if it should be like in the design)
        */
-      <div className='schema-overview-header'>
+      <div className="schema-overview-header">
         <style jsx>{`
           .schema-overview-header {
             @p: .flex, .itemsCenter, .pt16, .pl16, .pr16;
@@ -51,7 +51,7 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
             @p: .o100;
           }
         `}</style>
-        <div className='add-type' onClick={this.props.onOpenAddEnum}>
+        <div className="add-type" onClick={this.props.onOpenAddEnum}>
           <Icon
             src={require('assets/icons/roundAdd.svg')}
             stroke
@@ -60,7 +60,7 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
             width={14}
             height={14}
           />
-          <span className='text'>Add Enum</span>
+          <span className="text">Add Enum</span>
         </div>
       </div>
     )

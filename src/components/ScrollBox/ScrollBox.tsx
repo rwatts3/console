@@ -12,14 +12,13 @@ interface Props {
 let scrollBarWidth = null
 
 export default class ScrollBox extends React.Component<Props, {}> {
-
   refs: {
-    [key: string]: any;
+    [key: string]: any
     outerContainer: Element
     innerContainer: Element
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (scrollBarWidth === null) {
       const scrollDiv = document.createElement('div')
       scrollDiv.className = classes.measureElement
@@ -31,26 +30,30 @@ export default class ScrollBox extends React.Component<Props, {}> {
     }
   }
 
-  _onScroll (e: React.UIEvent<any>) {
+  _onScroll(e: React.UIEvent<any>) {
     if (e.target === this.refs.outerContainer) {
       this.props.onScroll(e)
     }
   }
 
-  render () {
-    const onScroll = this.props.onScroll ? this._onScroll.bind(this) : (() => undefined)
-    const {style} = this.props
+  render() {
+    const onScroll = this.props.onScroll
+      ? this._onScroll.bind(this)
+      : () => undefined
+    const { style } = this.props
     return (
       <div className={classes.rootContainer} style={style}>
         <div
-          className={`${classes.outerContainer} ${this.props.outerContainerClassName || ''}`}
-          style={{width: `calc(100% + ${scrollBarWidth}px)`}}
+          className={`${classes.outerContainer} ${this.props
+            .outerContainerClassName || ''}`}
+          style={{ width: `calc(100% + ${scrollBarWidth}px)` }}
           onScroll={onScroll}
-          ref='outerContainer'
+          ref="outerContainer"
         >
           <div
-            className={`${classes.innerContainer} ${this.props.innerContainerClassName || ''}`}
-            ref='innerContainer'
+            className={`${classes.innerContainer} ${this.props
+              .innerContainerClassName || ''}`}
+            ref="innerContainer"
           >
             {this.props.children}
           </div>

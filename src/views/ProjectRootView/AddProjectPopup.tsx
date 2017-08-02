@@ -1,22 +1,22 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../utils/modalStyle'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { fieldModalStyle } from '../../utils/modalStyle'
+import { ConsoleEvents } from 'graphcool-metrics'
 import FloatingInput from '../../components/FloatingInput/FloatingInput'
 import Loading from '../../components/Loading/Loading'
 import FieldHorizontalSelect from '../models/FieldPopup/FieldHorizontalSelect'
-import {$v} from 'graphcool-styles'
-import {validateProjectName} from '../../utils/nameValidator'
+import { $v } from 'graphcool-styles'
+import { validateProjectName } from '../../utils/nameValidator'
 import AddProjectMutation from '../../mutations/AddProjectMutation'
 import * as Relay from 'react-relay/classic'
 import tracker from '../../utils/metrics'
-import {onFailureShowNotification} from '../../utils/relay'
-import {connect} from 'react-redux'
-import {showNotification} from '../../actions/notification'
-import {withRouter} from 'found'
-import {ShowNotificationCallback} from '../../types/utils'
+import { onFailureShowNotification } from '../../utils/relay'
+import { connect } from 'react-redux'
+import { showNotification } from '../../actions/notification'
+import { withRouter } from 'found'
+import { ShowNotificationCallback } from '../../types/utils'
 import * as Bluebird from 'bluebird'
-import {Region} from '../../types/types'
+import { Region } from '../../types/types'
 import { RelayProp } from 'react-relay'
 
 interface Props {
@@ -59,38 +59,44 @@ class AddProjectPopup extends React.Component<Props, State> {
     }
   }
   componentDidMount() {
-    let times = []
+    const times = []
     Bluebird.map(
       regions,
       (region, index) => {
-        const randomString1 = btoa(String(Math.random() * 10000000 | 0))
-        const randomString2 = btoa(String(Math.random() * 10000000 | 0))
+        const randomString1 = btoa(String((Math.random() * 10000000) | 0))
+        const randomString2 = btoa(String((Math.random() * 10000000) | 0))
         // the first request is always slow, so send 2
-        return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`)
-          .then(() => {
-            const timer = performance.now()
-            return fetch(`https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`)
-              .then(() => {
-                const time = performance.now() - timer
-                return time
-              })
+        return fetch(
+          `https://dynamodb.${region}.amazonaws.com/ping?x=${randomString1}`,
+        ).then(() => {
+          const timer = performance.now()
+          return fetch(
+            `https://dynamodb.${region}.amazonaws.com/ping?x=${randomString2}`,
+          ).then(() => {
+            const time = performance.now() - timer
+            return time
           })
+        })
       },
       {
         concurrency: 1,
       },
-    )
-    .then(results => {
-      const minIndex = results.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
-      this.setState({
-        selectedIndex: minIndex,
-        times: results,
-      } as State)
+    ).then(results => {
+      const minIndex = results.reduce(
+        (iMin, x, i, arr) => (x < arr[iMin] ? i : iMin),
+        0,
+      )
+      this.setState(
+        {
+          selectedIndex: minIndex,
+          times: results,
+        } as State,
+      )
     })
   }
   render() {
-    const {onRequestClose} = this.props
-    const {showError, projectName, loading, times} = this.state
+    const { onRequestClose } = this.props
+    const { showError, projectName, loading, times } = this.state
     const error = !validateProjectName(this.state.projectName)
 
     const infos = regions.map((_, index) => {
@@ -105,7 +111,7 @@ class AddProjectPopup extends React.Component<Props, State> {
     return (
       <Modal
         isOpen
-        contentLabel='Alert'
+        contentLabel="Alert"
         style={modalStyling}
         onRequestClose={onRequestClose}
       >
@@ -118,7 +124,7 @@ class AddProjectPopup extends React.Component<Props, State> {
           }
           .footer {
             @p: .pa25, .flex, .justifyBetween, .itemsCenter, .bt, .bBlack10;
-            background: rgb(250,250,250);
+            background: rgb(250, 250, 250);
           }
           .button {
             @p: .br2, .pointer;
@@ -150,7 +156,8 @@ class AddProjectPopup extends React.Component<Props, State> {
             @p: .f14, .red;
           }
           .loading {
-            @p: .absolute, .top0, .left0, .right0, .bottom0, .z2, .bgWhite80, .flex, .justifyCenter, .itemsCenter;
+            @p: .absolute, .top0, .left0, .right0, .bottom0, .z2, .bgWhite80,
+              .flex, .justifyCenter, .itemsCenter;
           }
           .select-region {
             @p: .pt38, .bt, .bBlack10;
@@ -159,14 +166,14 @@ class AddProjectPopup extends React.Component<Props, State> {
             @p: .fw4, .tc, .black60, .mb38, .pb16;
           }
         `}</style>
-        <div className='add-project'>
-          <div className='body'>
-            <div className='title'>New Project</div>
+        <div className="add-project">
+          <div className="body">
+            <div className="title">New Project</div>
             <FloatingInput
-              labelClassName='label'
-              className='input'
-              label='Project Name'
-              placeholder='Choose a project name'
+              labelClassName="label"
+              className="input"
+              label="Project Name"
+              placeholder="Choose a project name"
               value={projectName}
               onChange={this.onChangeProjectName}
               onKeyDown={(e: any) => {
@@ -175,19 +182,19 @@ class AddProjectPopup extends React.Component<Props, State> {
                 }
               }}
               autoFocus
-              data-test='project-name-input'
+              data-test="project-name-input"
             />
-            {showError && error && (
-              <div className='error'>
+            {showError &&
+              error &&
+              <div className="error">
                 The project name must begin with an uppercase letter
-              </div>
-            )}
+              </div>}
           </div>
-          <div className='select-region'>
+          <div className="select-region">
             <h2>Choose a Region</h2>
             <FieldHorizontalSelect
               activeBackgroundColor={$v.blue}
-              inactiveBackgroundColor='#F5F5F5'
+              inactiveBackgroundColor="#F5F5F5"
               choices={choices}
               infos={infos}
               selectedIndex={this.state.selectedIndex}
@@ -195,61 +202,59 @@ class AddProjectPopup extends React.Component<Props, State> {
               onChange={this.onSelectIndex}
             />
           </div>
-          <div className='footer'>
-            <div className='button cancel' onClick={onRequestClose}>Cancel</div>
+          <div className="footer">
+            <div className="button cancel" onClick={onRequestClose}>
+              Cancel
+            </div>
             <div
               className={'button green' + (error ? ' disabled' : '')}
               onClick={this.addProject}
-              data-test='submit-add-project-button'
+              data-test="submit-add-project-button"
             >
               Ok
             </div>
           </div>
-          {loading && (
-            <div className='loading'>
+          {loading &&
+            <div className="loading">
               <Loading />
-            </div>
-          )}
+            </div>}
         </div>
       </Modal>
     )
   }
 
   private onChangeProjectName = e => {
-    this.setState({projectName: e.target.value} as State)
+    this.setState({ projectName: e.target.value } as State)
   }
 
   private onSelectIndex = i => {
-    this.setState({selectedIndex: i} as State)
+    this.setState({ selectedIndex: i } as State)
   }
 
   private addProject = () => {
-    const {projectName, selectedIndex} = this.state
+    const { projectName, selectedIndex } = this.state
     if (!validateProjectName(projectName)) {
-      return this.setState({showError: true} as State)
+      return this.setState({ showError: true } as State)
     }
-    this.setState(
-      {loading: true} as State,
-      () => {
-        if (projectName) {
-          AddProjectMutation.commit({
-            projectName,
-            customerId: this.props.customerId,
-            region: regionsEnum[selectedIndex],
-          })
+    this.setState({ loading: true } as State, () => {
+      if (projectName) {
+        AddProjectMutation.commit({
+          projectName,
+          customerId: this.props.customerId,
+          region: regionsEnum[selectedIndex],
+        })
           .then(() => {
-            tracker.track(ConsoleEvents.Project.created({name: projectName}))
-            this.setState({loading: false} as State)
+            tracker.track(ConsoleEvents.Project.created({ name: projectName }))
+            this.setState({ loading: false } as State)
             this.props.router.replace(`/${projectName}`)
           })
           .catch(transaction => {
-            this.setState({loading: false} as State)
+            this.setState({ loading: false } as State)
             onFailureShowNotification(transaction, this.props.showNotification)
           })
-        }
-      },
-    )
+      }
+    })
   }
 }
 
-export default connect(null, {showNotification})(withRouter(AddProjectPopup))
+export default connect(null, { showNotification })(withRouter(AddProjectPopup))

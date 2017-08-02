@@ -1,9 +1,9 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
-import {$p, Icon, variables} from 'graphcool-styles'
+import { $p, Icon, variables } from 'graphcool-styles'
 import styled from 'styled-components'
-import {Operation} from '../../../../types/types'
-import {icons} from '../../../../utils/permission'
+import { Operation } from '../../../../types/types'
+import { icons } from '../../../../utils/permission'
 
 function getIconSettings(operation: Operation) {
   switch (operation) {
@@ -62,11 +62,11 @@ const DisabledContainer = styled(Container)`
   }
 `
 
-const PermissionIcon = (props) => {
-  const {operation, isActive, className} = props
+const PermissionIcon = props => {
+  const { operation, isActive, className } = props
 
   const ContainerClass = isActive ? Container : DisabledContainer
-  let {icon, containerClass} = getIconSettings(operation)
+  let { icon, containerClass } = getIconSettings(operation)
 
   let inactiveColor = {}
   if (!isActive) {
@@ -80,9 +80,24 @@ const PermissionIcon = (props) => {
 
   return (
     <ContainerClass
-      className={cx($p.flex, $p.relative, $p.itemsCenter, $p.justifyCenter, $p.br100, containerClass, className)}
+      className={cx(
+        $p.flex,
+        $p.relative,
+        $p.itemsCenter,
+        $p.justifyCenter,
+        $p.br100,
+        containerClass,
+        className,
+      )}
     >
-      <Icon {...icon} {...inactiveColor} stroke={true} strokeWidth={2} width={24} height={24} />
+      <Icon
+        {...icon}
+        {...inactiveColor}
+        stroke={true}
+        strokeWidth={2}
+        width={24}
+        height={24}
+      />
     </ContainerClass>
   )
 }

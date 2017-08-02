@@ -1,14 +1,11 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
-import {SearchProviderAlgolia, Model} from '../../../types/types'
-import {withRouter} from 'found'
-import {buildClientSchema} from 'graphql'
-import {validate} from 'graphql/validation'
-import {parse} from 'graphql/language'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
+import { SearchProviderAlgolia, Model } from '../../../types/types'
+import { withRouter } from 'found'
+import { buildClientSchema } from 'graphql'
+import { validate } from 'graphql/validation'
+import { parse } from 'graphql/language'
 import AlgoliaQuery from './AlgoliaQuery'
 import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 
@@ -50,10 +47,11 @@ class AlgoliaQueryEditor extends React.Component<Props, State> {
       fragmentChanged,
     } = this.props
     return (
-      <div className='algolia-query-editor'>
+      <div className="algolia-query-editor">
         <style jsx>{`
           .algolia-query-editor {
-            @inherit: .overflowAuto, .bgDarkBlue, .flex, .flexColumn, .justifyBetween, .w100;
+            @inherit: .overflowAuto, .bgDarkBlue, .flex, .flexColumn,
+              .justifyBetween, .w100;
             height: 100vh;
           }
           .header {
@@ -85,16 +83,14 @@ class AlgoliaQueryEditor extends React.Component<Props, State> {
         `}</style>
         <style jsx global>{`
           .algolia-query-editor .CodeMirror {
-            background-color: #172A3A;
+            background-color: #172a3a;
           }
           .algolia-query-editor .CodeMirror-gutters {
-            background-color: #172A3A;
+            background-color: #172a3a;
           }
         `}</style>
         <div>
-          <div className='header'>
-            Search Query
-          </div>
+          <div className="header">Search Query</div>
           <AlgoliaQuery
             algolia={algolia}
             fragment={fragment}
@@ -102,21 +98,32 @@ class AlgoliaQueryEditor extends React.Component<Props, State> {
             selectedModel={selectedModel}
           />
         </div>
-        <div className='footer'>
-          <div className='button delete' onClick={onDelete}>Delete</div>
-          <div className='right'>
-            <div className='button cancel' onClick={onCancel}>Cancel</div>
-            <div className={'button save' + (fragmentValid ? ' active' : '')} onClick={this.update}>Save</div>
-            {fragmentValid && selectedModel.itemCount > 0 && fragmentChanged && this.state.saving && (
+        <div className="footer">
+          <div className="button delete" onClick={onDelete}>
+            Delete
+          </div>
+          <div className="right">
+            <div className="button cancel" onClick={onCancel}>
+              Cancel
+            </div>
+            <div
+              className={'button save' + (fragmentValid ? ' active' : '')}
+              onClick={this.update}
+            >
+              Save
+            </div>
+            {fragmentValid &&
+              selectedModel.itemCount > 0 &&
+              fragmentChanged &&
+              this.state.saving &&
               <ConfirmOperationsPopup
                 numOperations={selectedModel.itemCount}
                 onCancel={onCancel}
                 onConfirmBreakingChanges={onUpdate}
                 showReset={true}
-                saveLabel='Save'
+                saveLabel="Save"
                 resync
-              />
-            )}
+              />}
           </div>
         </div>
       </div>
@@ -125,7 +132,7 @@ class AlgoliaQueryEditor extends React.Component<Props, State> {
 
   private update = () => {
     if (this.props.selectedModel.itemCount > 0 && !this.state.saving) {
-      this.setState({saving: true})
+      this.setState({ saving: true })
     } else {
       this.props.onUpdate()
     }

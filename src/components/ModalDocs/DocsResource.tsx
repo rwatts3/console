@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {Resource} from './ModalDocs'
+import { Resource } from './ModalDocs'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
-import {$v} from 'graphcool-styles'
+import { $v } from 'graphcool-styles'
 
 interface Props {
   resource: Resource
@@ -21,9 +21,9 @@ const colors = {
   article: $v.blue,
 }
 
-const DocsResource = ({resource}: Props) => {
+const DocsResource = ({ resource }: Props) => {
   return (
-    <a className='docs-resource' href={resource.link} target='_blank'>
+    <a className="docs-resource" href={resource.link} target="_blank">
       <style jsx={true}>{`
         .docs-resource {
           @p: .relative, .flex, .itemsStart, .mt10;
@@ -80,8 +80,12 @@ const DocsResource = ({resource}: Props) => {
         />
       </div>
       <div>
-        <div className='title'>{resource.title}</div>
-        <div className='type'>{resource.type}</div>
+        <div className="title">
+          {resource.title}
+        </div>
+        <div className="type">
+          {resource.type}
+        </div>
       </div>
     </a>
   )

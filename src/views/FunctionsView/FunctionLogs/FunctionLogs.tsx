@@ -1,16 +1,12 @@
 import * as React from 'react'
 import mapProps from '../../../components/MapProps/MapProps'
-import {
-  createRefetchContainer,
-  graphql,
-  RelayProp,
-} from 'react-relay'
+import { createRefetchContainer, graphql, RelayProp } from 'react-relay'
 import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
-import {Log, ServerlessFunction} from '../../../types/types'
-import {withRouter} from 'found'
-import {range} from 'lodash'
-import {Icon, $v} from 'graphcool-styles'
+import { Log, ServerlessFunction } from '../../../types/types'
+import { withRouter } from 'found'
+import { range } from 'lodash'
+import { Icon, $v } from 'graphcool-styles'
 import LogComponent from './Log'
 
 interface Props {
@@ -20,9 +16,7 @@ interface Props {
   relay: RelayProp
 }
 
-interface State {
-
-}
+interface State {}
 
 const customModalStyle = {
   overlay: modalStyle.overlay,
@@ -33,20 +27,17 @@ const customModalStyle = {
 }
 
 class FunctionLogsComponent extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   render() {
-    const {logs, node} = this.props
+    const { logs, node } = this.props
     return (
       <Modal
-        contentLabel='Function Logs'
+        contentLabel="Function Logs"
         style={customModalStyle}
         isOpen
         onRequestClose={this.close}
@@ -55,7 +46,7 @@ class FunctionLogsComponent extends React.Component<Props, State> {
           .function-logs {
             @p: .overflowHidden, .pa60;
             height: 100vh;
-            background-color: rgba(23,42,58,.94)
+            background-color: rgba(23, 42, 58, .94);
           }
           .logs {
             @p: .overflowAuto;
@@ -100,19 +91,17 @@ class FunctionLogsComponent extends React.Component<Props, State> {
           .empty {
             @p: .white80, .tc, .pa25, .f20;
           }
-      `}</style>
-        <div className='function-logs'>
-          <div className='head'>
-            <div className='flex itemsCenter'>
+        `}</style>
+        <div className="function-logs">
+          <div className="head">
+            <div className="flex itemsCenter">
               <Icon
                 src={require('graphcool-styles/icons/fill/logs.svg')}
                 color={$v.white40}
                 width={24}
                 height={24}
               />
-              <div className='title'>
-                Logs
-              </div>
+              <div className="title">Logs</div>
             </div>
             <Icon
               src={require('graphcool-styles/icons/stroke/cross.svg')}
@@ -124,38 +113,36 @@ class FunctionLogsComponent extends React.Component<Props, State> {
               onClick={this.close}
             />
           </div>
-          <div className='logs'>
-            {logs.length > 0 ? (
-              <table>
-                <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Duration</th>
-                  <th>Output</th>
-                  <th>
-                    <div className='flex itemsCenter justifyBetween'>
-                      <span className='mr6'>Time Ago</span>
-                      <Icon
-                        src={require('graphcool-styles/icons/fill/reload.svg')}
-                        width={18}
-                        height={18}
-                        color={$v.white}
-                        onClick={this.reload}
-                        className='pointer'
-                      />
-                    </div>
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                {logs.map(log => (
-                  <LogComponent log={log} key={log.id} />
-                ))}
-                </tbody>
-              </table>
-            ) : (
-              <div className='empty'>There are no logs for this function yet</div>
-            )}
+          <div className="logs">
+            {logs.length > 0
+              ? <table>
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Duration</th>
+                      <th>Output</th>
+                      <th>
+                        <div className="flex itemsCenter justifyBetween">
+                          <span className="mr6">Time Ago</span>
+                          <Icon
+                            src={require('graphcool-styles/icons/fill/reload.svg')}
+                            width={18}
+                            height={18}
+                            color={$v.white}
+                            onClick={this.reload}
+                            className="pointer"
+                          />
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {logs.map(log => <LogComponent log={log} key={log.id} />)}
+                  </tbody>
+                </table>
+              : <div className="empty">
+                  There are no logs for this function yet
+                </div>}
           </div>
         </div>
       </Modal>

@@ -1,12 +1,9 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {Model, Relation} from '../../../../types/types'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { Model, Relation } from '../../../../types/types'
 import RelationPermissionHeader from './RelationPermissionHeader'
 import RelationPermissionList from './RelationPermissionList'
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 
@@ -30,9 +27,12 @@ const Container = styled.div`
 
 class RelationPermissionsList extends React.Component<Props, {}> {
   render() {
-    const {relation, params, style} = this.props
+    const { relation, params, style } = this.props
     return (
-      <Container className={cx($p.mt38, $p.mb16, $p.relative, $p.z5)} style={style}>
+      <Container
+        className={cx($p.mt38, $p.mb16, $p.relative, $p.z5)}
+        style={style}
+      >
         <div className={$p.ph16}>
           <RelationPermissionHeader params={params} relation={relation} />
           <RelationPermissionList params={params} relation={relation} />

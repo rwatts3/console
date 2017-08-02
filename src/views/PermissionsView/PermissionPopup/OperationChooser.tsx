@@ -1,10 +1,10 @@
 import * as React from 'react'
-import {Operation} from '../../../types/types'
+import { Operation } from '../../../types/types'
 import * as cx from 'classnames'
-import {$p, Icon, variables} from 'graphcool-styles'
+import { $p, Icon, variables } from 'graphcool-styles'
 import styled from 'styled-components'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
-import {PermissionPopupErrors} from './PermissionPopupState'
+import { PermissionPopupErrors } from './PermissionPopupState'
 
 interface Props {
   setOperation: (operation: Operation) => void
@@ -38,7 +38,7 @@ const operations = [
 
 export default class OperationChooser extends React.Component<Props, {}> {
   render() {
-    const {selectedOperation, setOperation} = this.props
+    const { selectedOperation, setOperation } = this.props
 
     return (
       <div className={$p.pb38}>
@@ -62,7 +62,8 @@ export default class OperationChooser extends React.Component<Props, {}> {
             right: -30px;
           }
           .operations {
-            @p: .bgBlack04, .inlineFlex, .flexRow, .justifyCenter, .ph16, .pv6, .relative, .itemsCenter, .w100;
+            @p: .bgBlack04, .inlineFlex, .flexRow, .justifyCenter, .ph16, .pv6,
+              .relative, .itemsCenter, .w100;
             height: 37px;
           }
           .operation-button {
@@ -80,24 +81,23 @@ export default class OperationChooser extends React.Component<Props, {}> {
             @p: .black50, .tl;
           }
         `}</style>
-        <div
-          className={cx($p.ph38, $p.pb38)}
-        >
+        <div className={cx($p.ph38, $p.pb38)}>
           <h2>Operation</h2>
-          <div className='description'>
+          <div className="description">
             The operation that will be allowed by this permission.
           </div>
         </div>
-        <div className='operations'>
-          {selectedOperation === null && (
-            <div className='placeholder'>
-              <div className='bar' />
-            </div>
-          )}
-          {operations.map(operation => (
+        <div className="operations">
+          {selectedOperation === null &&
+            <div className="placeholder">
+              <div className="bar" />
+            </div>}
+          {operations.map(operation =>
             <div
               key={operation.operation}
-              className={cx('operation-button', {active: operation.operation === selectedOperation})}
+              className={cx('operation-button', {
+                active: operation.operation === selectedOperation,
+              })}
               onClick={() => setOperation(operation.operation as Operation)}
               data-test={`choose-operation-${operation.operation}`}
             >
@@ -105,29 +105,32 @@ export default class OperationChooser extends React.Component<Props, {}> {
                 stroke={true}
                 strokeWidth={2}
                 src={operation.icon}
-                color={operation.operation === selectedOperation ? variables.white : variables.gray30}
+                color={
+                  operation.operation === selectedOperation
+                    ? variables.white
+                    : variables.gray30
+                }
                 width={23}
                 height={23}
               />
               <div
                 className={cx($p.ml6, $p.ttu, $p.fw6, $p.f14, {
-                    [$p.black30]: operation.operation !== selectedOperation,
-                    [$p.white]: operation.operation === selectedOperation,
-                  },
-                )}
+                  [$p.black30]: operation.operation !== selectedOperation,
+                  [$p.white]: operation.operation === selectedOperation,
+                })}
               >
                 {operation.text}
               </div>
-            </div>
-          ))}
+            </div>,
+          )}
         </div>
-        {this.props.errors.permissionTypeMissing && this.props.showErrors && (
-          <div className='operation-error'>
+        {this.props.errors.permissionTypeMissing &&
+          this.props.showErrors &&
+          <div className="operation-error">
             <ErrorInfo>
               Please specify the operation that this permission should affect.
             </ErrorInfo>
-          </div>
-        )}
+          </div>}
       </div>
     )
   }

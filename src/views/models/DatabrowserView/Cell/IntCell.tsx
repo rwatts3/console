@@ -1,9 +1,11 @@
 import * as React from 'react'
-import {CellProps, CellState} from './cells'
-import {stringToValue, valueToString} from '../../../../utils/valueparser'
+import { CellProps, CellState } from './cells'
+import { stringToValue, valueToString } from '../../../../utils/valueparser'
 
-export default class IntCell extends React.Component<CellProps<number>, CellState> {
-
+export default class IntCell extends React.Component<
+  CellProps<number>,
+  CellState
+> {
   constructor(props) {
     super(props)
 
@@ -14,8 +16,12 @@ export default class IntCell extends React.Component<CellProps<number>, CellStat
 
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      const valueString = valueToString(nextProps.value, this.props.field, false)
-      this.setState({valueString})
+      const valueString = valueToString(
+        nextProps.value,
+        this.props.field,
+        false,
+      )
+      this.setState({ valueString })
     }
   }
 
@@ -24,18 +30,19 @@ export default class IntCell extends React.Component<CellProps<number>, CellStat
     return (
       <input
         autoFocus
-        type='text'
-        ref='input'
+        type="text"
+        ref="input"
         value={this.state.valueString}
         onKeyDown={this.handleKeyDown}
         onChange={this.handleChange}
-        onBlur={(e: any) => this.props.save(stringToValue(e.target.value, this.props.field))}
-        placeholder='Enter an Integer...'
+        onBlur={(e: any) =>
+          this.props.save(stringToValue(e.target.value, this.props.field))}
+        placeholder="Enter an Integer..."
       />
     )
   }
 
-  private handleKeyDown = (e) => {
+  private handleKeyDown = e => {
     if (e.keyCode === 13) {
       this.props.save(stringToValue(e.target.value, this.props.field))
     }

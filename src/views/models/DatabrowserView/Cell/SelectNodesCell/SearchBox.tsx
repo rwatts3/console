@@ -1,6 +1,6 @@
 import * as React from 'react'
 import debounce from 'graphiql/dist/utility/debounce'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
 
 export interface Props {
@@ -28,8 +28,10 @@ export default class SearchBox extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.isShown !== this.props.isShown ||
+    return (
+      nextProps.isShown !== this.props.isShown ||
       nextState.value !== this.state.value
+    )
   }
 
   render() {
@@ -42,25 +44,27 @@ export default class SearchBox extends React.Component<Props, State> {
           .label {
             @p: .bgWhite, .bbox, .w100, .flex, .itemsCenter, .bgWhite;
             padding: 12px 14px 13px 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
           }
           .input {
             @p: .f16, .ml10;
           }
         `}</style>
-        {
-          this.props.isShown &&
-          <label className='label'>
-            <Icon src={require('graphcool-styles/icons/stroke/search.svg')} stroke={true} strokeWidth={3} />
+        {this.props.isShown &&
+          <label className="label">
+            <Icon
+              src={require('graphcool-styles/icons/stroke/search.svg')}
+              stroke={true}
+              strokeWidth={3}
+            />
             <input
-              className='input'
+              className="input"
               onChange={this.handleChange}
-              type='text'
+              type="text"
               value={this.state.value}
               placeholder={this.props.placeholder || 'Search the schema ...'}
             />
-          </label>
-        }
+          </label>}
       </div>
     )
   }
