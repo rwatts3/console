@@ -10,7 +10,7 @@ import Info from '../../components/Info'
 interface Props {
   relatedFieldName: string | null
   relatedFieldType: string | null
-  many: booleanF
+  many: boolean
   models: Model[]
   selectedModel?: Model
   didSelectedModel: Function
