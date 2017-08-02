@@ -19,7 +19,6 @@ import relayEnvironment from './relayEnvironment'
 import createStore from './createStore'
 import * as offline from 'offline-plugin/runtime'
 
-
 // save last referral
 if (!cookiestore.has('graphcool_last_referral')) {
   cookiestore.set('graphcool_last_referral', document.referrer)
