@@ -18,14 +18,6 @@ interface Props {
 
 class RootView extends React.Component<Props, {}> {
 
-  // rerender = throttle(
-  //   () => {
-  //     this.forceUpdate()
-  //     console.log('force update')
-  //   },
-  //   300,
-  // )
-
   refs: {
     [key: string]: any;
     notificationSystem: any

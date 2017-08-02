@@ -260,7 +260,7 @@ class FunctionRow extends React.Component<Props, State> {
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
         }).then(() => {
-            console.log('success at toggling')
+            // noop
           })
           .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -270,7 +270,7 @@ class FunctionRow extends React.Component<Props, State> {
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
         }).then(() => {
-            console.log('success at toggling')
+            // noop
           })
           .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)
@@ -280,7 +280,7 @@ class FunctionRow extends React.Component<Props, State> {
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
         }).then(() => {
-            console.log('success at toggling')
+
           })
           .catch(transaction => {
             onFailureShowNotification(transaction, this.props.showNotification)

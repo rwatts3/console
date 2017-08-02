@@ -26,7 +26,6 @@ export function fetchQuery(
 ) {
 
   return client.request(operation.text, variables).then(data => {
-    console.log('fetched', operation, data)
     return {data}
   })
 }

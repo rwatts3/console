@@ -471,7 +471,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         // The force fetching because authproviders are too complicated to selective choose the config
         // forceFetchRoot gets passed down from StuctureView/DatabrowserView
         // which is needed to reflect all affected data
-        console.log('Uninstalled Package', res)
         // this.props.forceFetchRoot()
         resolve(res)
       })
@@ -497,7 +496,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               // The force fetching because authproviders are too complicated to selective choose the config
               // forceFetchRoot gets passed down from StuctureView/DatabrowserView
               // which is needed to reflect all affected data
-              console.log('Installed Package', res)
               this.props.forceFetchRoot()
             })
             .catch(transaction => {

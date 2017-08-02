@@ -229,14 +229,6 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     }
   }
 
-  forceFetch = () => {
-// TODO props.relay.* APIs do not exist on compat containers
-    this.props.relay.forceFetch({}, () => {
-      // console.log('force fetched', this.props.model.namePlural, this.props.fields)
-      // this.reloadData()
-    })
-  }
-
   render() {
     const {model} = this.props
     const docsSuffix = model.name === 'User' ? '#user-model' : model.name === 'File' ? '#file-model' : ''

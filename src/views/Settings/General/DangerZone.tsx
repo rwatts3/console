@@ -205,17 +205,14 @@ class DangerZone extends React.Component<Props, State> {
     }
     graphcoolConfirm('You are deleting this project. All data and the schema will be lost.')
       .then(() => {
-      console.log('DangerZone: delete Project')
         DeleteProjectMutation.commit({
           projectId: this.props.project.id,
           customerId: this.props.viewer.user.id,
         }).then(() => {
           window.location.pathname = '/'
-          console.log('trying to redirect')
         })
           .catch(e => {
             window.location.pathname = '/'
-            console.error(e)
           })
       })
   }

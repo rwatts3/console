@@ -430,8 +430,7 @@ class CreditCardInputSection extends React.Component<Props, State> {
             })
       }
     } else {
-      console.log('Not valid')
-      console.log(this.state.creditCardDetailsValid && this.state.addressDataValid)
+      // noop
     }
   }
 

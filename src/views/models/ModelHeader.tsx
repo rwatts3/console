@@ -41,7 +41,6 @@ interface Props {
   router: any
   showNotification: ShowNotificationCallback
   showPopup: (popup: Popup) => void
-  forceFetchRoot: () => void
   buttonsClass?: string
 }
 
@@ -291,7 +290,6 @@ class ModelHeader extends React.Component<Props, State> {
             modelId: this.props.model.id,
           }).then(() => {
               tracker.track(ConsoleEvents.Schema.Model.Popup.deleted({type: 'Update'}))
-              this.props.forceFetchRoot()
             })
             .catch(transaction => {
               onFailureShowNotification(transaction, this.props.showNotification)

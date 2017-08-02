@@ -252,7 +252,6 @@ class AlgoliaView extends React.Component<Props, State> {
     }
 
     if (this.indexValid() && node) {
-      console.log('updating index')
         UpdateAlgoliaSyncQueryMutation.commit({
           algoliaSyncQueryId: node.id,
           fragment: currentFragment,
