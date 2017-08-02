@@ -8,6 +8,8 @@
     "outDir": "dist",
     "baseUrl": ".",
     "lib": ["ES2017", "DOM"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "paths": {
       "*": [
         "node_modules/*"
