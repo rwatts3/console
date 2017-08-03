@@ -4,6 +4,5 @@ exports[`test JsonCell renders 1`] = `
   className="mono"
   defaultValue="{}"
   onBlur={[Function]}
-  onKeyDown={[Function]}
-  type="text" />
+  onKeyDown={[Function]} />
 `;
