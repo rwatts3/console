@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import {
-  ModelPermission,
-  Model,
   Relation,
   RelationPermission,
 } from '../../../../types/types'

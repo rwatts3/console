@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { $v, Icon } from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import {
   numberWithCommas,
   numberWithCommasRounded,
@@ -91,13 +91,6 @@ export default class RequestUsageIndicator extends React.Component<Props, {}> {
     const daysLeftInCurrentMonth = daysInCurrentMonth - dd
     const estimateForRestOfMonth = daysLeftInCurrentMonth * avgRequestsPerDay
     return this.props.currentNumberOfRequests + estimateForRestOfMonth
-  }
-
-  private estimatedPercentageOfTotal = () => {
-    const total = billingInfo[this.props.plan].maxRequests
-    const estimated = this.calculateEstimatedRequests()
-    const ratio = total / estimated
-    return ratio
   }
 
   private barColor = (opacity: number) => {

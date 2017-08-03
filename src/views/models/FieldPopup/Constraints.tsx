@@ -1,7 +1,6 @@
 import * as React from 'react'
 import OptionInput from './OptionInput'
 import { Constraint } from '../../../types/types'
-import { $v, Icon } from 'graphcool-styles'
 
 interface Props {
   style?: any
@@ -55,12 +54,14 @@ export default class Constraints extends React.Component<Props, State> {
       style,
       isUnique,
       onToggleIsUnique,
+      /*
       constraints,
       onAddConstraint,
       onRemoveConstraint,
       onEditConstraint,
+      */
     } = this.props
-    const { selectorVisible } = this.state
+    // const { selectorVisible } = this.state
 
     return (
       <div style={style} className="constraints">
@@ -306,6 +307,7 @@ export default class Constraints extends React.Component<Props, State> {
     )
   }
 
+  /*
   private showSelector = () => {
     this.setState(
       {
@@ -321,6 +323,7 @@ export default class Constraints extends React.Component<Props, State> {
       } as State,
     )
   }
+  */
 }
 
 export type ConstraintType =
@@ -331,6 +334,7 @@ export type ConstraintType =
   | 'EQUALS'
   | 'LENGTH'
 
+/*
 interface SymbolMap {
   text?: string
   icon?: string
@@ -383,3 +387,5 @@ const operatorTextMap = {
   LTE: '<=',
   EQ: '=',
 }
+
+*/

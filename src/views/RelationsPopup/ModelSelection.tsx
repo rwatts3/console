@@ -2,7 +2,6 @@ import * as React from 'react'
 import ModelSelectionBox from './ModelSelectionBox'
 import CardinalitySelection from './CardinalitySelection'
 import { Cardinality, Model } from '../../types/types'
-import { lowercaseFirstLetter } from '../../utils/utils'
 import { Icon, $v } from 'graphcool-styles'
 
 interface Props {

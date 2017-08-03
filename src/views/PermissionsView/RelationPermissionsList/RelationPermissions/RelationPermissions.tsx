@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { Model, Relation } from '../../../../types/types'
+import { Relation } from '../../../../types/types'
 import RelationPermissionHeader from './RelationPermissionHeader'
 import RelationPermissionList from './RelationPermissionList'
 import { $p, variables } from 'graphcool-styles'
@@ -25,7 +25,7 @@ const Container = styled.div`
   }
 `
 
-class RelationPermissionsList extends React.Component<Props, {}> {
+class RelationPermissions extends React.Component<Props, {}> {
   render() {
     const { relation, params, style } = this.props
     return (
@@ -42,7 +42,7 @@ class RelationPermissionsList extends React.Component<Props, {}> {
   }
 }
 
-export default createFragmentContainer(RelationPermissionsList, {
+export default createFragmentContainer(RelationPermissions, {
   relation: graphql`
     fragment RelationPermissions_relation on Relation {
       id

@@ -5,8 +5,6 @@ import { Viewer } from '../../../types/types'
 import * as cookiestore from 'cookiestore'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
-import * as CodeMirror from 'react-codemirror'
-import EditorConfiguration = CodeMirror.EditorConfiguration
 import { showNotification } from '../../../actions/notification'
 import { connect } from 'react-redux'
 import { ShowNotificationCallback } from '../../../types/utils'

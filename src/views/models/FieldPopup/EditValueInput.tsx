@@ -2,7 +2,6 @@ import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import {
   CellRequirements,
-  getScalarEditCell,
   getEditCell,
 } from '../DatabrowserView/Cell/cellgenerator'
 import { TypedValue } from '../../../types/utils'
@@ -161,21 +160,5 @@ export default class EditValueInput extends React.Component<Props, State> {
     }
 
     return getEditCell(requirements)
-  }
-
-  private handleKeyDownOnFieldValue = e => {
-    if (e.keyCode === 13) {
-      this.setState(
-        {
-          isEnteringValue: false,
-        } as State,
-      )
-    } else if (e.keyCode === 27) {
-      this.setState(
-        {
-          isEnteringValue: false,
-        } as State,
-      )
-    }
   }
 }

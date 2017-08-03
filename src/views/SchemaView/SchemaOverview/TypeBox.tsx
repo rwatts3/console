@@ -1,11 +1,9 @@
 import * as React from 'react'
 import { Model } from '../../../types/types'
-import * as Relay from 'react-relay/classic'
 import FieldItem from './FieldItem'
 import { Link } from 'found'
 import { Icon, $v } from 'graphcool-styles'
 import { isScalar } from '../../../utils/graphql'
-import TypeBoxSettings from './TypeBoxSettings'
 import { idToBeginning } from '../../../utils/utils'
 import Tether from '../../../components/Tether/Tether'
 import { connect } from 'react-redux'
@@ -71,7 +69,7 @@ class TypeBox extends React.Component<Props, State> {
     }
   }
   render() {
-    const { model, projectName, highlighted } = this.props
+    const { model, projectName} = this.props
     const propsExtended = this.props.extended
     const stateExtended = this.state.extended
     const extended =

@@ -15,11 +15,6 @@ interface Props {
 
 export type Type = 'ADD' | 'EDIT'
 
-interface State {
-  modelName: string
-  modelDescription: string
-}
-
 class ModelModal extends React.Component<Props, {}> {
   constructor(props) {
     super(props)

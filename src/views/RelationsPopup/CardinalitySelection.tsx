@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { $v, Icon } from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import { Cardinality } from '../../types/types'
 
 interface Props {

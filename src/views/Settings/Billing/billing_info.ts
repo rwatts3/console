@@ -1,4 +1,4 @@
-import { PricingPlan, PricingPlanInfo } from '../../../types/types'
+import { PricingPlanInfo } from '../../../types/types'
 
 // should be: [key: PricingPlan]: PricingPlanInfo
 export const billingInfo: { [key: string]: PricingPlanInfo } = {

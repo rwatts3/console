@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FieldItem from './FieldItem'
-import { Field, Project, Model } from '../../../types/types'
+import { Field, Model } from '../../../types/types'
 import { connect } from 'react-redux'
 import { showDonePopup, nextStep } from '../../../actions/gettingStarted'
 import { showNotification } from '../../../actions/notification'
@@ -83,7 +83,6 @@ class AddType extends React.Component<Props, State> {
       editing,
       loading,
       editingDescription,
-      description,
       showDeletePopup,
     } = this.state
     const { model } = this.props

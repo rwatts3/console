@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { $v, Icon } from 'graphcool-styles'
-import { Relation, Model, Cardinality } from '../../types/types'
-import { lowercaseFirstLetter } from '../../utils/utils'
+import { Icon } from 'graphcool-styles'
+import { Model, Cardinality } from '../../types/types'
 
 interface Props {
   leftModel?: Model

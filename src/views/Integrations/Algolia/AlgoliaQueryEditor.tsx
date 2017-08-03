@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { SearchProviderAlgolia, Model } from '../../../types/types'
-import { withRouter } from 'found'
 import AlgoliaQuery from './AlgoliaQuery'
 import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 

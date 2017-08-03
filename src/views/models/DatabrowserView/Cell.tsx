@@ -1,14 +1,12 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { classnames } from '../../../utils/classnames'
 import { valueToString, stringToValue } from '../../../utils/valueparser'
+import * as classnames from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import { Enum, Field } from '../../../types/types'
-import NodeSelector from '../../../components/NodeSelector/NodeSelector'
-import RelationsPopup from './RelationsPopup'
 import { CellRequirements, getEditCell } from './Cell/cellgenerator'
 import { TypedValue, ShowNotificationCallback } from '../../../types/utils'
-import { isNonScalarList, isScalar } from '../../../utils/graphql'
+import { isScalar } from '../../../utils/graphql'
 import { Link } from 'found'
 import { connect } from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -24,7 +22,6 @@ import {
 } from '../../../actions/databrowser/ui'
 import { ReduxThunk, ReduxAction } from '../../../types/reducers'
 import { GridPosition } from '../../../types/databrowser/ui'
-import SelectNodesCell from './Cell/SelectNodesCell/SelectNodesCell'
 const classes: any = require('./Cell.scss')
 import { variables, particles } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -446,7 +443,7 @@ function isNewSingleScalarField(rowIndex, field) {
 
 const MappedCell = connect(
   (state, props) => {
-    const { rowIndex, field, addnew, selected } = props
+    const { rowIndex, field, selected } = props
     const {
       selectedCell,
       editing,

@@ -5,20 +5,15 @@ import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
 import {
   Field,
-  FieldType,
-  Constraint,
-  ConstraintType,
   Enum,
 } from '../../../types/types'
 import {
   ConsoleEvents,
-  MutationType,
-  FieldPopupSource,
 } from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
 import Constraints from './Constraints'
-import { emptyField, mockConstraints } from './constants'
+import { emptyField} from './constants'
 import mapProps from 'map-props'
 import { connect } from 'react-redux'
 import { createFragmentContainer, graphql } from 'react-relay'

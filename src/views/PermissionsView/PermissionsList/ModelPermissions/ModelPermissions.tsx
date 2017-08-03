@@ -25,7 +25,7 @@ const Container = styled.div`
   }
 `
 
-class PermissionsList extends React.Component<Props, {}> {
+class ModelPermissions extends React.Component<Props, {}> {
   render() {
     const { model, params, style } = this.props
     return (
@@ -42,7 +42,7 @@ class PermissionsList extends React.Component<Props, {}> {
   }
 }
 
-export default createFragmentContainer(PermissionsList, {
+export default createFragmentContainer(ModelPermissions, {
   model: graphql`
     fragment ModelPermissions_model on Model {
       ...ModelPermissionsHeader_model

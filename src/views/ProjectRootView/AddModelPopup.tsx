@@ -8,7 +8,6 @@ import { validateModelName } from '../../utils/nameValidator'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 import AddModelMutation from '../../mutations/AddModelMutation'
-import * as Relay from 'react-relay/classic'
 import * as Modal from 'react-modal'
 import { onFailureShowNotification } from '../../utils/relay'
 import { showNotification } from '../../actions/notification'
@@ -53,11 +52,6 @@ class AddModelPopup extends React.Component<Props, State> {
   }
 
   render() {
-    const Popup = styled.div`
-      width: 600px;
-      max-width: 90%;
-    `
-
     const NameInput = styled.input`
       &::-webkit-input-placeholder {
         color: ${$v.gray20};

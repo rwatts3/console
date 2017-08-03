@@ -1,17 +1,11 @@
 import * as React from 'react'
 import HorizontalSelect from './HorizontalSelect'
-import { $v, Icon } from 'graphcool-styles'
+import { $v} from 'graphcool-styles'
 import EditValueInput from './EditValueInput'
 import ErrorInfo from './ErrorInfo'
 import { FieldPopupErrors } from './FieldPopupState'
 import { TypedValue } from '../../../types/utils'
-import {
-  CellRequirements,
-  getEditCell,
-} from '../DatabrowserView/Cell/cellgenerator'
 import { Enum, Field } from '../../../types/types'
-import { valueToString } from '../../../utils/valueparser'
-import InfoBox from '../../FunctionsView/FunctionPopup/InfoBox'
 import Info from '../../../components/Info'
 
 interface Props {
@@ -48,7 +42,6 @@ export default class AdvancedSettings extends React.Component<Props, null> {
       projectId,
       migrationValue,
       onChangeMigrationValue,
-      enums,
       field,
     } = this.props
     const mandatoryClass = migrationOptional ? '' : 'mandatory'

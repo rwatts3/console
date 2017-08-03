@@ -13,7 +13,6 @@ export default function headerRenderer(field) {
     sortBy,
     sortDirection,
   }) => {
-    const showSortIndicator = sortBy === dataKey
 
     return (
       <div className="header-cell">

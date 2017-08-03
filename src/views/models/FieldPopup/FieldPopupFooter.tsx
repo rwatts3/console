@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Icon, $v } from 'graphcool-styles'
-import ConfirmPopup from './ConfirmFieldPopup'
+import { Icon} from 'graphcool-styles'
 import ConfirmFieldPopup from './ConfirmFieldPopup'
 import { Field } from '../../../types/types'
 import Tether from '../../../components/Tether/Tether'
@@ -57,7 +56,6 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
       onCancel,
       mutatedField,
       initialField,
-      nodeCount,
     } = this.props
     const { showDeletePopup } = this.state
 

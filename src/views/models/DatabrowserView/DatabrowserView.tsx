@@ -30,7 +30,6 @@ import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import { showNotification } from '../../../actions/notification'
 import { ShowNotificationCallback, TypedValue } from '../../../types/utils'
-import NewRow from './NewRow'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
@@ -183,7 +182,6 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   private lokka: any
   private fieldColumnWidths: FieldWidths
   private mounted: boolean
-  private ref: Element
   private wrapperRef: any
 
   private setSearchQueryThrottled = throttle(

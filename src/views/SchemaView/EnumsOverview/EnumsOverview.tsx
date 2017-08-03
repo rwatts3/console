@@ -35,7 +35,7 @@ class EnumsOverview extends React.Component<Props, State> {
   }
   render() {
     const { editingEnumName, blur } = this.props
-    const { activeFilter, addingEnum } = this.state
+    const { addingEnum } = this.state
     let selectedEnum
 
     if (
@@ -103,9 +103,6 @@ class EnumsOverview extends React.Component<Props, State> {
         />
       </div>
     )
-  }
-  private handleFilterChange = (filter: SchemaOverviewFilter) => {
-    this.setState({ activeFilter: filter } as State)
   }
   private closeAddEnum = () => {
     this.setState({ addingEnum: false, editingEnum: undefined } as State)

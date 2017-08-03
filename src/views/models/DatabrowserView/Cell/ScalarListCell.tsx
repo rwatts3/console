@@ -1,5 +1,4 @@
 import * as React from 'react'
-import PopupWrapper from '../../../../components/PopupWrapper/PopupWrapper'
 import { getScalarEditCell, CellRequirements } from './cellgenerator'
 import { AtomicValue } from '../../../../types/utils'
 import {

@@ -8,7 +8,6 @@ import StringCell from './StringCell'
 import JsonCell from './JsonCell'
 import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
-import NodeSelector from '../../../../components/NodeSelector/NodeSelector'
 let RelationsPopup = () => null
 let SelectNodesCell = () => null
 // needed for jest tests

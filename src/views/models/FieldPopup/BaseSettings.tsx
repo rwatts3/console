@@ -1,11 +1,10 @@
 import * as React from 'react'
 import FieldHorizontalSelect from './FieldHorizontalSelect'
-import { $v, Icon } from 'graphcool-styles'
+import { $v} from 'graphcool-styles'
 import { fieldTypes } from './constants'
 import FieldLabel from './FieldLabel'
 import OptionInput from './OptionInput'
 import { Enum, FieldType } from '../../../types/types'
-import * as TagsInput from 'react-tagsinput'
 import { FieldPopupErrors } from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
 import Tether from '../../../components/Tether/Tether'
@@ -41,7 +40,6 @@ interface State {
 }
 
 export default class BaseSettings extends React.Component<Props, State> {
-  tagInput: any
   constructor(props) {
     super(props)
 
@@ -64,8 +62,6 @@ export default class BaseSettings extends React.Component<Props, State> {
       errors,
       showErrors,
     } = this.props
-
-    const { editingEnumValues } = this.state
 
     return (
       <div style={style} className="base-settings">
@@ -211,71 +207,5 @@ export default class BaseSettings extends React.Component<Props, State> {
       }
       return type
     })
-  }
-
-  private renderTagInputElement = props => {
-    const { onChange, value, addTag, onBlur, placeholder, ...other } = props
-    const { showTagInput } = this.state
-
-    return (
-      <div className="tag-input">
-        <style jsx>{`
-          .tag-input {
-            @p: .inlineFlex, .itemsCenter, .relative;
-            height: 42px;
-            padding-bottom: 4px;
-          }
-          .input {
-            @p: .f16, .blue, .mr10;
-          }
-        `}</style>
-        {showTagInput &&
-          <input
-            autoFocus
-            type="text"
-            onChange={onChange}
-            value={value}
-            onBlur={onBlur}
-            placeholder="Add an enum value"
-            {...other}
-            className="input enum-input"
-          />}
-        <div
-          className="field-popup-plus"
-          onClick={() => this.handlePlusClick(onBlur, value)}
-        >
-          <Icon
-            src={require('graphcool-styles/icons/stroke/add.svg')}
-            stroke
-            strokeWidth={4}
-            color={$v.blue}
-            width={26}
-            height={26}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  private handlePlusClick = (onBlur, value) => {
-    if (this.state.showTagInput) {
-      onBlur({
-        target: { value },
-      })
-    } else {
-      this.showTagInput()
-    }
-  }
-
-  private showTagInput = () => {
-    this.setState(
-      {
-        showTagInput: true,
-      } as State,
-    )
-  }
-
-  private editEnumValues = () => {
-    this.setState({ editingEnumValues: true, showTagInput: true })
   }
 }

@@ -105,7 +105,6 @@ export default class FieldItem extends React.Component<Props, null> {
         </div>
       </div>
     )
-    const element = field.isSystem ? 'div' : Link
     let link = `/${projectName}/schema/${modelName}/edit/${field.name}`
     if (!isScalar(field.typeIdentifier)) {
       link = `/${projectName}/schema/relations/edit/${field.relation.name}`

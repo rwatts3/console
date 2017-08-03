@@ -68,7 +68,7 @@ class AlgoliaView extends React.Component<Props, State> {
     global.a = this
   }
   render() {
-    const { algolia, params, children, project } = this.props
+    const { algolia, params, project } = this.props
     const {
       selectedIndexIndex,
       showNewIndex,

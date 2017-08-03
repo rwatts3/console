@@ -19,8 +19,6 @@ class ModelRedirectView extends React.Component<Props, {}> {
       this.props.router.replace(`/${this.props.params.projectName}/models`)
     } else {
       // redirect to browser if model already has nodes
-      const subView =
-        model.itemCount === 0 && !model.isSystem ? 'schema' : 'databrowser'
       this.props.router.replace(
         `/${this.props.params.projectName}/models/${model.name}/databrowser`,
       )

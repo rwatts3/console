@@ -1,7 +1,6 @@
 import {
   FieldType,
   Field,
-  Constraint,
   ConstraintType,
 } from '../../../types/types'
 import { MigrationUIState } from './FieldPopup'

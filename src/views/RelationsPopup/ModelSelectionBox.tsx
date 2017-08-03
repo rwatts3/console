@@ -5,7 +5,6 @@ import FieldNameInput from './FieldNameInput'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 import { $v } from 'graphcool-styles'
 import FieldHorizontalSelect from '../models/FieldPopup/FieldHorizontalSelect'
-import Info from '../../components/Info'
 
 interface Props {
   relatedFieldName: string | null

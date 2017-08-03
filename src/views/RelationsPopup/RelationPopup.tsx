@@ -8,7 +8,6 @@ import {
   Relation,
 } from '../../types/types'
 import RelationHeader from './RelationHeader'
-import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
 import { withRouter } from 'found'
 import RelationFooter from './RelationFooter'
 import DefineRelation from './DefineRelation'
@@ -17,7 +16,6 @@ import AddRelationMutation from '../../mutations/AddRelationMutation'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
 import {
   lowercaseFirstLetter,
-  removeDuplicatesFromStringArray,
 } from '../../utils/utils'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 import DeleteRelationMutation from '../../mutations/DeleteRelationMutation'
@@ -208,8 +206,6 @@ class RelationPopup extends React.Component<Props, State> {
         leftTabHasBreakingChange) ||
         (displayState === ('SET_MUTATIONS' as RelationPopupDisplayState) &&
           rightTabHasBreakingChange))
-
-    const isBeta = this.props.viewer.user.crm.information.isBeta
 
     const breakingChangeMessageElements: JSX.Element[] =
       displayBreakingIndicator &&
@@ -442,7 +438,6 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   private didSelectLeftModel = (model: Model) => {
-    const { relation } = this.props.viewer
     this.setState(
       {
         leftSelectedModel: model,
@@ -454,7 +449,6 @@ class RelationPopup extends React.Component<Props, State> {
   }
 
   private didSelectRightModel = (model: Model) => {
-    const { relation } = this.props.viewer
     this.setState(
       {
         rightSelectedModel: model,

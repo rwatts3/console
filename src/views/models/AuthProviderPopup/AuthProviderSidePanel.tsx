@@ -11,7 +11,6 @@ import {
   Project,
   AuthProvider,
   AuthProviderType,
-  Model,
   PackageDefinition,
 } from '../../../types/types'
 import { ShowNotificationCallback } from '../../../types/utils'
@@ -542,7 +541,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private updateAnonymousAuthProvider = () => {
-    const { authProvider, selectedAnonymousModel } = this.state
+    const { authProvider} = this.state
     const { isEnabled } = authProvider
 
     const hack = () => {

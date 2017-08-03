@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as cn from 'classnames'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { Project } from '../../types/types'
-import { sortSchema } from '../../../sortSchema'
 import { Link } from 'found'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
 import MigrationMessages from './MigrationMessages'
@@ -64,11 +63,11 @@ class SchemaEditor extends React.Component<Props, State> {
   private editor: any
   private containerRef = null
   private handleScroll = debounce(() => {
-    const container = this.containerRef
-    const scrollPercentage =
-      100 *
-      container.scrollTop /
-      (container.scrollHeight - container.clientHeight)
+    // const container = this.containerRef
+    // const scrollPercentage =
+    //   100 *
+    //   container.scrollTop /
+    //   (container.scrollHeight - container.clientHeight)
   }, 100)
   constructor(props: Props) {
     super(props)
@@ -129,10 +128,10 @@ class SchemaEditor extends React.Component<Props, State> {
   }
   scrollToPercentage(scroll) {
     const container = this.containerRef
-    const scrollPercentage =
-      100 *
-      container.scrollTop /
-      (container.scrollHeight - container.clientHeight)
+    // const scrollPercentage =
+    //   100 *
+    //   container.scrollTop /
+    //   (container.scrollHeight - container.clientHeight)
     const newScrollTop =
       scroll * (container.scrollHeight - container.clientHeight) / 100
     smoothScrollTo(this.containerRef, newScrollTop, 300)
@@ -447,16 +446,3 @@ export default createFragmentContainer(SchemaEditorRedux, {
     }
   `,
 })
-
-const enumIdl = `enum Role {
-  Admin,
-  User,
-  Guest
-}
-
-enum Wood {
-  Beech,
-  Oak,
-  Fir,
-  Mahagony
-}`

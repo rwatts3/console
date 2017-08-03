@@ -1,6 +1,5 @@
 import * as React from 'react' // tslint:disable-line
 import { $p, Icon, $v } from 'graphcool-styles'
-import styled from 'styled-components'
 import * as cx from 'classnames'
 import { buildClientSchema } from 'graphql'
 import { CustomGraphiQL } from 'graphcool-graphiql'

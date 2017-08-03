@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Icon, $v } from 'graphcool-styles'
-import { A, Button } from '../../../components/Links'
+import { A} from '../../../components/Links'
 
 interface Props {
   nextStep: () => void
@@ -237,7 +237,7 @@ interface StepProps {
   to: string
 }
 
-function Step({ title, description, to }) {
+function Step({ title, description, to }: StepProps) {
   return (
     <a href={to} target="_blank" className="step">
       <style jsx>{`

@@ -57,59 +57,6 @@ interface State {
 
 // Section Heads
 
-const activeHead = `
-  color: ${$v.white};
-
-  svg {
-    fill: ${$v.white};
-    stroke: none !important;
-  }
-
-  &:hover {
-    color: inherit;
-
-    svg {
-      fill: ${$v.white};
-      stroke: none !important;
-    }
-  }
-
-`
-
-const Head = styled(ExcludeProps(Link, ['active']))`
-  letter-spacing: 1px;
-  line-height: 1;
-  padding: 0 ${$v.size25};
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: ${$v.white60};
-  transition: color ${$v.duration} linear;
-
-  &:hover {
-    color: ${$v.white80};
-
-    svg {
-      fill: ${$v.white80};
-      stroke: none !important;
-    }
-  }
-
-  > div {
-    line-height: 1;
-    margin-left: ${$v.size10};
-  }
-
-  svg {
-    fill: ${$v.white60};
-    stroke: none !important;
-    transition: fill ${$v.duration} linear;
-  }
-
-  ${props => props.active && activeHead}
-`
-
 const footerSectionStyle = `
   display: flex;
   align-items: center;
@@ -164,7 +111,7 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { isBetaCustomer, project, expanded, viewer } = this.props
+    const { project, expanded} = this.props
     return (
       <div
         className="side-nav"
@@ -275,9 +222,6 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   private renderPlayground = () => {
-    const playgroundPageActive =
-      `/${this.props.params.projectName}/playground` ===
-      this.props.location.pathname
     const showGettingStartedOnboardingPopup = () => {
       if (
         this.props.gettingStartedState.isCurrentStep('STEP3_OPEN_PLAYGROUND')
@@ -354,32 +298,6 @@ export class SideNav extends React.PureComponent<Props, State> {
         `/${this.props.params.projectName}/models/${model.name}/schema` ||
       this.props.location.pathname ===
         `/${this.props.params.projectName}/models/${model.name}/databrowser`
-
-    const turnedToggleMore = `
-      i {
-        transform: rotate(180deg) !important;
-        svg {
-          position: relative;
-          top: 1px;
-        }
-      }
-    `
-
-    const ToggleMore = styled.div`
-      height: ${$v.size60};
-      background: linear-gradient(
-        to bottom,
-        ${$v.darkerBlue0} 0%,
-        ${$v.darkerBlue} 80%
-      );
-
-      svg {
-        stroke-width: 4px;
-        fill: none;
-      }
-
-      ${props => props.turned && turnedToggleMore};
-    `
 
     const activeListElement = `
       color: ${$v.white} !important;
@@ -484,11 +402,6 @@ export class SideNav extends React.PureComponent<Props, State> {
         </div>
       </div>
     )
-  }
-
-  private toggleModels = () => {
-    const { modelsExpanded } = this.state
-    this.setState({ modelsExpanded: !modelsExpanded } as State)
   }
 
   private fetch = () => {

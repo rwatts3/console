@@ -7,15 +7,11 @@ import { bindActionCreators } from 'redux'
 import * as cx from 'classnames'
 import mapProps from '../../components/MapProps/MapProps'
 import PopupWrapper from '../../components/PopupWrapper/PopupWrapper'
-import OnboardingPopup from '../../components/onboarding/OnboardingPopup/OnboardingPopup'
 import { connect } from 'react-redux'
-import { validateProjectName } from '../../utils/nameValidator'
 import { retryUntilDone } from '../../utils/utils'
 import ProjectSelection from '../../components/ProjectSelection/ProjectSelection'
 import SideNav from '../../views/ProjectRootView/SideNav'
-import OnboardSideNav from './OnboardSideNav'
 import AuthView from '../AuthView/AuthView'
-import AddProjectMutation from '../../mutations/AddProjectMutation'
 import {
   fetchGettingStartedState,
   skip,
@@ -26,12 +22,8 @@ import { PopupState } from '../../types/popup'
 import { GettingStartedState } from '../../types/gettingStarted'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
-import drumstick from 'drumstick'
-import Alert from '../../components/Window/Alert'
-require('../../styles/core.scss')
 import AddProjectPopup from './AddProjectPopup'
 import { showNotification } from '../../actions/notification'
-import { onFailureShowNotification } from '../../utils/relay'
 import { ShowNotificationCallback } from '../../types/utils'
 import ResizableBox from '../../components/ResizableBox'
 import * as Dropzone from 'react-dropzone'
@@ -40,6 +32,7 @@ import IntroPopup from './Onboarding/IntroPopup'
 import FinalPopup from './Onboarding/FinalPopup'
 import { throttle } from 'lodash'
 import heartbeat from '../../utils/heartbeat'
+require('../../styles/core.scss')
 
 interface State {
   showCreateProjectModal: boolean
@@ -49,7 +42,7 @@ interface State {
 
 interface Props {
   location: any
-  router: ReactRouter.InjectedRouter
+  router: any
   children: Element
   isLoggedin: boolean
   viewer: Viewer
@@ -84,7 +77,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
     this.updateForceFetching()
 
-    Stripe.setPublishableKey(__STRIPE_PUBLISHABLE_KEY__)
+    (window as any).Stripe.setPublishableKey(__STRIPE_PUBLISHABLE_KEY__)
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
@@ -95,7 +88,6 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       createProjectModalLoading: false,
       sidebarExpanded: true,
     }
-    global.rv = this
   }
 
   componentWillMount() {
@@ -126,9 +118,9 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       if (
         this.props.location.search.includes('chat') &&
         window &&
-        window.Intercom
+        (window as any).Intercom
       ) {
-        Intercom('showNewMessage')
+        (window as any).Intercom('showNewMessage')
       }
     } else {
       // TODO migrate to tracker

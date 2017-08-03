@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Icon } from 'graphcool-styles'
-import Tooltip from 'rc-tooltip'
 import { BreakingChangeIndicatorStyle } from '../../types/types'
 import Info from '../../components/Info'
 

@@ -5,7 +5,6 @@ import WaitingIndicator from './WaitingIndicator'
 import { Button } from '../../../components/Links'
 import { connect } from 'react-redux'
 import { nextStep } from '../../../actions/gettingStarted'
-import { pre } from 'graphcool-styles/dist/particles.css'
 
 interface Props {
   step: Step

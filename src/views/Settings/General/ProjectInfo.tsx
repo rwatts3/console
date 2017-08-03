@@ -328,14 +328,6 @@ class ProjectInfo extends React.Component<Props, State> {
       1000,
     )
   }
-
-  private onCopyAlias: () => any = () => {
-    this.setState({ aliasCopied: true } as State)
-    this.copyTimer = window.setTimeout(
-      () => this.setState({ aliasCopied: false } as State),
-      1000,
-    )
-  }
 }
 
 const mapDispatchToProps = dispatch => {

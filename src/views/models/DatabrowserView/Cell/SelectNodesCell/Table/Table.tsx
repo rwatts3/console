@@ -52,7 +52,7 @@ class TableComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { rowCount, fields, rows, showOption } = this.props
+    const { rowCount, fields, showOption } = this.props
     const { height, rowHeight, overscanRowCount } = this.state
 
     return (
@@ -215,7 +215,6 @@ class TableComponent extends React.Component<Props, State> {
         return '[]'
       }
       if (value[0] && value[0].id) {
-        const values = value as any[]
         return `[${value.map(v => `"${v.id}"`).join(',')}]`
       }
     }

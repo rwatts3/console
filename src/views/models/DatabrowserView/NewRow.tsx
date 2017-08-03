@@ -7,10 +7,10 @@ import { GettingStartedState } from '../../../types/gettingStarted'
 import { StateTree, ReduxAction } from '../../../types/reducers'
 import Cell from './Cell'
 import { TypedValue } from '../../../types/utils'
-import { Model, Field, TetherStep, Project } from '../../../types/types'
+import { Model, Field, Project } from '../../../types/types'
 import { getFirstInputFieldIndex, getDefaultFieldValues } from '../utils'
 import { Icon } from 'graphcool-styles'
-import { classnames } from '../../../utils/classnames'
+import * as cn from 'classnames'
 import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')
 import Tether from '../../../components/Tether/Tether'
@@ -76,11 +76,10 @@ class NewRow extends React.Component<Props, State> {
 
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
-    const { step } = this.props.gettingStarted
 
     return (
       <div
-        className={classnames(classes.root, {
+        className={cn(classes.root, {
           [classes.loading]: loading,
         })}
         style={{
@@ -93,7 +92,7 @@ class NewRow extends React.Component<Props, State> {
           return this.renderCell(field, index, inputIndex, fields)
         })}
         <div
-          className={classnames(classes.buttons, {
+          className={cn(classes.buttons, {
             [classes.loading]: loading,
           })}
         >

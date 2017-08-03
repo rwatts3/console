@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Project, Model, Enum } from '../../../types/types'
+import { Project, Enum } from '../../../types/types'
 import { createFragmentContainer, graphql } from 'react-relay'
 import EnumBox from './EnumBox'
 import AddEnum from './AddEnum'
@@ -29,7 +29,6 @@ class EnumList extends React.Component<Props, null> {
   render() {
     const {
       opacity,
-      selectedEnum,
       editingEnumName,
       enums,
       project,

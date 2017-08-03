@@ -12,7 +12,7 @@ import mapProps from '../../../components/MapProps/MapProps'
 import { withRouter } from 'found'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
-import { connect } from 'react-redux'
+import { connect as reduxConnect } from 'react-redux'
 import * as Modal from 'react-modal'
 import { fieldModalStyle } from '../../../utils/modalStyle'
 import Loading from '../../../components/Loading/Loading'
@@ -360,10 +360,6 @@ class RelationPermissionPopup extends React.Component<
     this.setState({ selectedTabIndex: index } as RelationPermissionPopupState)
   }
 
-  private setRule = (rule: PermissionRuleType) => {
-    this.setState({ rule } as RelationPermissionPopupState)
-  }
-
   private setRuleGraphQuery = (ruleGraphQuery: string) => {
     this.setState(
       { ruleGraphQuery, queryChanged: true } as RelationPermissionPopupState,
@@ -466,7 +462,7 @@ class RelationPermissionPopup extends React.Component<
   }
 }
 
-const ReduxContainer = connect(null, { showNotification })(
+const ReduxContainer = reduxConnect(null, { showNotification })(
   RelationPermissionPopup,
 )
 

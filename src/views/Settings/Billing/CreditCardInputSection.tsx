@@ -8,8 +8,6 @@ import {
   creditCardNumberValid,
   expirationDateValid,
   cpcValid,
-  minCPCDigits,
-  minCreditCardDigits,
   maxCPCDigits,
   maxCreditCardDigits,
 } from '../../../utils/creditCardValidator'

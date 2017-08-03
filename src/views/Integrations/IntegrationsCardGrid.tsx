@@ -1,11 +1,9 @@
 import * as React from 'react'
 import * as cx from 'classnames'
 import { createFragmentContainer, graphql } from 'react-relay'
-import styled from 'styled-components'
 import { Project } from '../../types/types'
 import { $p } from 'graphcool-styles'
 import IntegrationsCard from './IntegrationsCard'
-import IntegrationsCardPlaceholder from './IntegrationsCardPlaceholder'
 import { Icon } from 'graphcool-styles'
 
 interface Props {
@@ -19,7 +17,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     const isEnabled =
       this.props.project.integrations.edges.length > 0 &&
       this.props.project.integrations.edges[0].node.isEnabled
-    const { params: { projectName }, isBeta } = this.props
+    const { params: { projectName }} = this.props
 
     const providers = this.props.project.authProviders.edges.map(
       edge => edge.node,

@@ -1,16 +1,10 @@
 import * as React from 'react'
 import { Enum } from '../../../types/types'
-import * as Relay from 'react-relay/classic'
 import { Link } from 'found'
 import { Icon, $v } from 'graphcool-styles'
-import { isScalar } from '../../../utils/graphql'
-import { idToBeginning } from '../../../utils/utils'
-import Tether from '../../../components/Tether/Tether'
 import { connect } from 'react-redux'
 import { nextStep } from '../../../actions/gettingStarted'
 import { GettingStartedState } from '../../../types/gettingStarted'
-import Info from '../../../components/Info'
-import { onFailureShowNotification } from '../../../utils/relay'
 import { showNotification } from '../../../actions/notification'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { withRouter } from 'found'
@@ -25,7 +19,7 @@ interface Props {
   gettingStartedState: GettingStartedState
   highlighted?: boolean
   showNotification: ShowNotificationCallback
-  router: ReactRouter.InjectedRouter
+  router: any
 }
 
 interface State {
@@ -71,9 +65,7 @@ class EnumBox extends React.Component<Props, State> {
     }
   }
   render() {
-    const { enumValue, projectName, highlighted } = this.props
-    const propsExtended = this.props.extended
-    const stateExtended = this.state.extended
+    const { enumValue, projectName } = this.props
     return (
       <div
         className={
@@ -305,16 +297,6 @@ class EnumBox extends React.Component<Props, State> {
     this.setState({ values } as State)
   }
 
-  private handleCreateFieldClick = () => {
-    if (
-      this.props.gettingStartedState.isCurrentStep(
-        'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
-      )
-    ) {
-      this.props.nextStep()
-    }
-  }
-
   private toggleExtended = () => {
     this.setState(({ extended, ...rest }) => {
       const newExtended =
@@ -346,11 +328,8 @@ class EnumBox extends React.Component<Props, State> {
     }
   }
 
-  private stopEditEnumName() {
-    this.setState({ editingEnumName: false } as State)
-  }
-
   private editEnum = (enumName: string) => {
+    // TODO check if this mutation is needed
     // Relay.Store.commitUpdate(
     //   new UpdateEnumNameMutation({
     //     name: enumName,

@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Field, Project, Model, Enum } from '../../../types/types'
-import * as Relay from 'react-relay/classic'
+import { Enum } from '../../../types/types'
 import { connect } from 'react-redux'
 import { showDonePopup, nextStep } from '../../../actions/gettingStarted'
 import { showNotification } from '../../../actions/notification'
@@ -8,12 +7,9 @@ import { ShowNotificationCallback } from '../../../types/utils'
 import { GettingStartedState } from '../../../types/gettingStarted'
 import { validateEnumName } from '../../../utils/nameValidator'
 import { onFailureShowNotification } from '../../../utils/relay'
-import tracker from '../../../utils/metrics'
-import { ConsoleEvents } from 'graphcool-metrics'
 import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
 import { withRouter } from 'found'
-import { idToBeginning } from '../../../utils/utils'
 import ConfirmEnum from './ConfirmEnum'
 import EnumEditor from './EnumEditor'
 import AddEnumMutation from '../../../mutations/Enums/AddEnum'
@@ -34,25 +30,12 @@ interface Props {
   onRequestClose?: () => void
   projectId: string
   enumValue: Enum
-  router: ReactRouter.InjectedRouter
+  router: any
   // injected by redux
   showNotification: ShowNotificationCallback
   showDonePopup: () => void
   nextStep: () => Promise<any>
   gettingStartedState: GettingStartedState
-}
-
-const idField = {
-  id: 'dummy',
-  name: 'id',
-  typeIdentifier: 'GraphQLID',
-  isList: false,
-  isRequired: true,
-  isSystem: true,
-  isUnique: true,
-  isReadonly: true,
-  relation: null,
-  relatedModel: null,
 }
 
 class AddEnum extends React.Component<Props, State> {

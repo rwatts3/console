@@ -3,11 +3,8 @@ import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import { default as mapProps } from 'map-props'
-import AddProjectMutation from '../../mutations/AddProjectMutation'
 import { Viewer } from '../../types/types'
-import tracker from '../../utils/metrics'
 const classes: any = require('./RootRedirectView.scss')
-import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   viewer: Viewer
@@ -51,7 +48,8 @@ class RootRedirectView extends React.Component<Props, {}> {
   }
 
   private addProject = (): void => {
-    const projectName = window.prompt('Project name')
+    // TODO reimplement project prompt here
+    // const projectName = window.prompt('Project name')
     // if (projectName) {
     //   Relay.Store.commitUpdate(
     //     new AddProjectMutation(

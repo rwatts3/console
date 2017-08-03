@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import { Field } from '../../../types/types'
-import { valuesMissing } from './FieldPopupState'
 
 interface State {
   enteredFieldName: string
@@ -35,7 +34,6 @@ export default class ConfirmFieldPopup extends React.Component<Props, State> {
     let onlyNullWilBeReplaced = false
     let allWillBeReplaced = false
     let fieldAndMutationNameWillChange = false
-    const enumValueRemoved = false
     let uniqueRemoved = false
     let willBeList = false
     let willBeScalar = false

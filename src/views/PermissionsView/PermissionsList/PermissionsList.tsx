@@ -5,8 +5,6 @@ import mapProps from '../../../components/MapProps/MapProps'
 import ModelPermissions from './ModelPermissions/ModelPermissions'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import ScrollBox from '../../../components/ScrollBox/ScrollBox'
-import styled from 'styled-components'
 
 interface Props {
   models: Model[]
