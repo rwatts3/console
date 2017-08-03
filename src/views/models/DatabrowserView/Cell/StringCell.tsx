@@ -4,22 +4,17 @@ import { stringToValue } from '../../../../utils/valueparser'
 import { connect } from 'react-redux'
 import { nextStep } from '../../../../actions/gettingStarted'
 
-// extend the interface for the onboarding functionality
-declare module './cells' {
-  interface CellProps<T> {
-    nextStep?: () => void
-    step?: string
-  }
-}
-
 interface State {
   value: string
 }
 
-export class StringCell extends React.Component<CellProps<string>, State> {
-  refs: {
-    input: HTMLInputElement
-  }
+interface Props {
+  step: string
+  nextStep: () => void
+}
+
+export class StringCell extends React.Component<CellProps<string> & Props, State> {
+  input: HTMLInputElement
 
   enterPressed: boolean
 
@@ -33,7 +28,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.value !== this.props.value) {
-      this.refs.input.value = nextProps.value
+      this.input.value = nextProps.value
     }
   }
 
@@ -45,8 +40,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
     return numLines > 1
       ? <textarea
           autoFocus
-          type="text"
-          ref="input"
+          ref={this.setRef}
           value={this.state.value}
           onKeyDown={this.onKeyDown}
           style={{
@@ -67,7 +61,7 @@ export class StringCell extends React.Component<CellProps<string>, State> {
       : <input
           autoFocus
           type="text"
-          ref="input"
+          ref={this.setRef}
           value={this.state.value}
           onKeyDown={this.onKeyDown}
           onBlur={(e: any) => {
@@ -81,6 +75,10 @@ export class StringCell extends React.Component<CellProps<string>, State> {
           onChange={this.onChange}
           placeholder="Enter a String..."
         />
+  }
+
+  private setRef = ref => {
+    this.input = ref
   }
 
   private stopEvent = (e: any) => {

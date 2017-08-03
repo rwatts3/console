@@ -47,7 +47,6 @@ export default class FloatCell extends React.Component<
         autoFocus
         type="text"
         step="any"
-        ref="input"
         value={this.state.valueString}
         onBlur={(e: any) =>
           this.props.save(stringToValue(e.target.value, this.props.field))}

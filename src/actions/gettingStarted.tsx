@@ -73,10 +73,10 @@ function updateReduxAndRelay(
 
           // refresh intercom messages once onboarding done/skipped
           if (
-            window.Intercom &&
+            (window as any).Intercom &&
             (gettingStarted === 'STEP6_CLOSED' || gettingStartedSkipped)
           ) {
-            setTimeout(() => Intercom('update'), 2000)
+            setTimeout(() => (window as any).Intercom('update'), 2000)
           }
 
           resolve()
@@ -98,11 +98,11 @@ export function nextStep(): ReduxThunk {
       selectedExample,
     } = getState().gettingStarted.gettingStartedState
     const currentStepIndex = GettingStartedState.steps.indexOf(step)
-    const nextStep = GettingStartedState.steps[currentStepIndex + 1]
+    const nextStepValue = GettingStartedState.steps[currentStepIndex + 1]
 
     return updateReduxAndRelay(
       dispatch,
-      nextStep,
+      nextStepValue,
       skipped,
       onboardingStatusId,
       selectedExample,
@@ -119,11 +119,11 @@ export function previousStep(): ReduxThunk {
       selectedExample,
     } = getState().gettingStarted.gettingStartedState
     const currentStepIndex = GettingStartedState.steps.indexOf(step)
-    const nextStep = GettingStartedState.steps[currentStepIndex - 1]
+    const nextStepValue = GettingStartedState.steps[currentStepIndex - 1]
 
     return updateReduxAndRelay(
       dispatch,
-      nextStep,
+      nextStepValue,
       skipped,
       onboardingStatusId,
       selectedExample,

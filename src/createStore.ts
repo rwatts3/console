@@ -64,7 +64,6 @@ export default function() {
 
     const lastState: any = store.getState()
     store.subscribe(() => {
-      console.log('subscribe')
       const state: any = store.getState()
       if (
         state.found.match.location.key !== lastState.found.match.location.key

@@ -39,7 +39,7 @@ export default class EnumCell extends React.Component<
           <Combobox
             ref={ref => (this.ref = ref)}
             value={this.state.value}
-            onKeyDown={this.onKeyDown.bind(this)}
+            onKeyDown={this.onKeyDown}
             options={enumValues}
             onSelect={(value: string) => {
               this.setState({ value })

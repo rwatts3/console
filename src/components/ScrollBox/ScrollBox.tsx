@@ -12,11 +12,8 @@ interface Props {
 let scrollBarWidth = null
 
 export default class ScrollBox extends React.Component<Props, {}> {
-  refs: {
-    [key: string]: any
-    outerContainer: Element
-    innerContainer: Element
-  }
+  outerContainer: Element
+  innerContainer: Element
 
   componentWillMount() {
     if (scrollBarWidth === null) {
@@ -48,17 +45,25 @@ export default class ScrollBox extends React.Component<Props, {}> {
             .outerContainerClassName || ''}`}
           style={{ width: `calc(100% + ${scrollBarWidth}px)` }}
           onScroll={onScroll}
-          ref="outerContainer"
+          ref={this.setOuterContainer}
         >
           <div
             className={`${classes.innerContainer} ${this.props
               .innerContainerClassName || ''}`}
-            ref="innerContainer"
+            ref={this.setInnerContainer}
           >
             {this.props.children}
           </div>
         </div>
       </div>
     )
+  }
+
+  private setInnerContainer = ref => {
+    this.innerContainer = ref
+  }
+
+  private setOuterContainer = ref => {
+    this.outerContainer = ref
   }
 }

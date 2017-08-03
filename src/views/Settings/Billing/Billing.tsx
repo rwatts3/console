@@ -290,8 +290,8 @@ class Billing extends React.Component<Props, State> {
     // pasting
     if (newValue.length > 4 && !newValue.includes(' ')) {
       const chunks = chunk(newValue, maxChunks, true)
-      const newCreditCardNumber = chunks.join(' ')
-      this.setState({ newCreditCardNumber } as State, () =>
+      const newCreditCardNumberValue = chunks.join(' ')
+      this.setState({ newCreditCardNumber: newCreditCardNumberValue } as State, () =>
         this.validateCreditCardDetails(),
       )
       return

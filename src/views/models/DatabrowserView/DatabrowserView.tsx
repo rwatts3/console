@@ -176,7 +176,7 @@ interface State {
   shouldLeaveRoute: boolean
 }
 
-class DatabrowserView extends React.PureComponent<Props, State> {
+class DatabrowserView extends React.Component<Props, State> {
   shouldComponentUpdate: any
 
   private lokka: any
@@ -386,9 +386,9 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                     onScroll={input => this.props.setScrollTop(input.scrollTop)}
                     newRowActive={this.props.newRowActive}
                     updateCalled={this.handleUpdateCalled}
-                    hideNewRow={this.props.hideNewRow.bind(this)}
-                    addNewNode={this.addNewNode.bind(this)}
-                    deleteSelectedNodes={this.deleteSelectedNodes.bind(this)}
+                    hideNewRow={this.props.hideNewRow}
+                    addNewNode={this.addNewNode}
+                    deleteSelectedNodes={this.deleteSelectedNodes}
                     project={this.props.project}
                     model={this.props.model}
                     headerHeight={74}
@@ -759,7 +759,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     )
   }
 
-  private addNewNode = (fieldValues: { [key: string]: any }): any => {
+  private addNewNode = (fieldValues?: { [key: string]: any }): any => {
     return this.props.addNodeAsync(
       this.lokka,
       this.props.model,

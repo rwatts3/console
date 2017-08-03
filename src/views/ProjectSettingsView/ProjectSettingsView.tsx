@@ -13,7 +13,7 @@ import DeleteProjectMutation from '../../mutations/DeleteProjectMutation'
 import UpdateProjectMutation from '../../mutations/UpdateProjectMutation'
 import { onFailureShowNotification } from '../../utils/relay'
 import { findDOMNode } from 'react-dom'
-import { classnames } from '../../utils/classnames'
+import * as cn from 'classnames'
 import PermanentAuthTokenRow from './PermanentAuthTokenRow'
 import AddPermanentAuthTokenRow from './AddPermanentAuthTokenRow'
 const classes = require('./ProjectSettingsView.scss')
@@ -22,7 +22,7 @@ interface Props {
   viewer: Viewer & { project: Project }
   params: any
   showNotification: ShowNotificationCallback
-  router: ReactRouter.InjectedRouter
+  router: any
 }
 
 interface State {
@@ -32,10 +32,7 @@ interface State {
 }
 
 class ProjectSettingsView extends React.Component<Props, State> {
-  refs: {
-    [key: string]: any
-    projectId: Element
-  }
+  projectIdRef: Element
 
   constructor(props) {
     super(props)
@@ -65,7 +62,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
               {this.state.nameChanged &&
                 <div
                   onClick={this.saveSettings}
-                  className={classnames(classes.button, classes.green)}
+                  className={cn(classes.button, classes.green)}
                 >
                   <span>Save</span>
                 </div>}
@@ -77,7 +74,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
               <span
                 onClick={this.selectProjectId}
                 className={classes.projectId}
-                ref="projectId"
+                ref={this.setProjectIdRef}
               >
                 {this.props.viewer.project.id}
               </span>
@@ -111,7 +108,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
           </div>
           <div className={classes.category}>
             <div
-              className={classnames(classes.button, classes.reset)}
+              className={cn(classes.button, classes.reset)}
               onClick={this.onClickResetProjectData}
             >
               Reset Project Data
@@ -123,7 +120,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
               Reset Project Data and Models
             </div>
             <div
-              className={classnames(classes.button, classes.red)}
+              className={cn(classes.button, classes.red)}
               onClick={this.onClickDeleteProject}
             >
               Delete Project
@@ -132,6 +129,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
         </div>
       </div>
     )
+  }
+
+  private setProjectIdRef = ref => {
+    this.projectIdRef = ref
   }
 
   private onClickResetProjectData = (): void => {
@@ -203,7 +204,7 @@ class ProjectSettingsView extends React.Component<Props, State> {
   }
 
   private selectProjectId = (): void => {
-    const projectId = findDOMNode(this.refs.projectId)
+    const projectId = findDOMNode(this.projectIdRef)
     const range = document.createRange()
     range.setStartBefore(projectId)
     range.setEndAfter(projectId)

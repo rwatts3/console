@@ -296,7 +296,6 @@ class SelectNodesCell extends React.Component<Props, State> {
     const { query, selectedTabIndex } = this.state
     const tab = tabs[selectedTabIndex]
     const fields = customFields || this.props.fields
-    const { firstQuery } = this
 
     if (fields.length === 0) {
       return
@@ -304,18 +303,18 @@ class SelectNodesCell extends React.Component<Props, State> {
 
     let filter = ''
     // either there must be a search query or the tab unequal all
-    if (!firstQuery && ((query && query.length > 0) || tab !== 'all')) {
+    if (!this.firstQuery && ((query && query.length > 0) || tab !== 'all')) {
       filter = ' filter: {'
       if (query && query.length) {
         filter += 'OR: ['
         const whiteList = ['GraphQLID', 'String']
 
-        const filtered = fields.filter((field: Field) => {
-          return whiteList.indexOf(field.typeIdentifier.toString()) > -1
+        const filtered = fields.filter((f: Field) => {
+          return whiteList.indexOf(f.typeIdentifier.toString()) > -1
         })
 
         filter += filtered
-          .map(field => `{${field.name}_contains: "${query}"}`)
+          .map(f => `{${f.name}_contains: "${query}"}`)
           .join(',\n')
 
         filter += ']'
@@ -333,19 +332,19 @@ class SelectNodesCell extends React.Component<Props, State> {
     }
 
     const { nodeId, field } = this.props
-    const getRelated = firstQuery
+    const getRelated = this.firstQuery
     const count = stopIndex - startIndex + 1
     const nodeSelector = getRelated
       ? `${field.model.name}(id: "${nodeId}") {`
       : ''
     const metaQuery =
-      !firstQuery || field.isList
+      !this.firstQuery || field.isList
         ? `${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
           count
         }`
         : ''
     const queryParams =
-      !firstQuery || field.isList
+      !this.firstQuery || field.isList
         ? `(skip: ${startIndex} first: ${count}${filter})`
         : ''
 
@@ -382,7 +381,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
         let meta
         let newItems
-        if (!firstQuery || field.isList) {
+        if (!this.firstQuery || field.isList) {
           meta = pointer[this.getAllNameMeta()]
           newItems = pointer[this.getAllName()]
         } else {
@@ -392,7 +391,7 @@ class SelectNodesCell extends React.Component<Props, State> {
 
         let { items, values } = this.state
 
-        if (firstQuery) {
+        if (this.firstQuery) {
           values = newItems.map(item => item.id)
         }
 
@@ -408,7 +407,7 @@ class SelectNodesCell extends React.Component<Props, State> {
           items = Immutable.set(items, i + startIndex, item)
         })
 
-        const newState = {
+        const newState: any = {
           items,
           values,
           count: meta.count,

@@ -387,8 +387,8 @@ class CreditCardInputSection extends React.Component<Props, State> {
     // pasting
     if (newValue.length > 4 && !newValue.includes(' ')) {
       const chunks = chunk(newValue, maxChunks, true)
-      const newCreditCardNumber = chunks.join(' ')
-      this.setState({ creditCardNumber: newCreditCardNumber } as State)
+      const newCreditCardNumberValue = chunks.join(' ')
+      this.setState({ creditCardNumber: newCreditCardNumberValue } as State)
       return
     }
 

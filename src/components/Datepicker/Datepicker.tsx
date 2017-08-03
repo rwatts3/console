@@ -39,11 +39,6 @@ interface State {
 }
 
 export default class DatePicker extends React.Component<Props, State> {
-  refs: {
-    [key: string]: any
-    container: Element
-  }
-
   constructor(props) {
     super(props)
 
@@ -77,7 +72,6 @@ export default class DatePicker extends React.Component<Props, State> {
       <div
         className={`${classes.root} ${this.props.className}`}
         onClick={() => this.markOpen()}
-        ref="container"
       >
         <ClickOutside
           onClickOutside={() => {

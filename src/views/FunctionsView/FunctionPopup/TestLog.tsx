@@ -163,7 +163,7 @@ export default function TestLog({ response }: Props) {
       </div>
       <div className="meta">
         {['timestamp', 'duration'].map(key =>
-          <div className="meta-entry">
+          <div className="meta-entry" key={key}>
             <div className="label">
               {key}
             </div>

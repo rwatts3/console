@@ -11,7 +11,6 @@ export default class DefaultCell extends React.Component<
       <input
         autoFocus
         type="text"
-        ref="input"
         defaultValue={this.props.value || ''}
         onKeyDown={this.props.onKeyDown}
         onBlur={(e: any) =>

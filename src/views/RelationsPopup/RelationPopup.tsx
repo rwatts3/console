@@ -213,7 +213,7 @@ class RelationPopup extends React.Component<Props, State> {
         </div>,
       )
     const infoMessageElement: JSX.Element[] = [
-      <div>
+      <div key="info-message-element">
         <div>
           <b>Breaking Changes:</b>
         </div>

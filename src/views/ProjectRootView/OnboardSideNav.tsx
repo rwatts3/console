@@ -179,16 +179,16 @@ class OnboardSideNav extends React.Component<Props, {}> {
   }
 
   private skipGettingStarted = () => {
-    const skip = () => {
+    const runSkip = () => {
       this.props.skip().then(() => {
         this.props.router.replace(`/${this.props.params.projectName}/models`)
       })
     }
     if (this.props.gettingStartedState.step === ('STEP5_DONE' as Step)) {
-      skip()
+      runSkip()
     }
     graphcoolConfirm('This will skip the getting started tour').then(() => {
-      skip()
+      runSkip()
     })
   }
 }

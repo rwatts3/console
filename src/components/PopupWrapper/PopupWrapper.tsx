@@ -18,9 +18,7 @@ const Container = styled.div`
 `
 
 class PopupWrapper extends React.Component<Props, {}> {
-  refs: {
-    container: Element
-  }
+  container: any
 
   componentDidMount() {
     document.addEventListener('keydown', this.keyDown)
@@ -50,15 +48,19 @@ class PopupWrapper extends React.Component<Props, {}> {
           overflow: 'scroll',
         }}
         onClick={this.handleClick}
-        ref="container"
+        ref={this.setRef}
       >
         {this.props.children}
       </Container>
     )
   }
 
+  private setRef = ref => {
+    this.container = ref
+  }
+
   private handleClick = (e: any) => {
-    const container: Element = ReactDOM.findDOMNode(this.refs.container)
+    const container: Element = ReactDOM.findDOMNode(this.container)
     if (!container.children) {
       return
     }

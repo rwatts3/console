@@ -2,8 +2,8 @@
  * Created by timsuchanek on 10/14/16.
  */
 
-export function query(query): Promise<any> {
-  if (query.match(/allArtists/)) {
+export function query(q): Promise<any> {
+  if (q.match(/allArtists/)) {
     return new Promise((resolve, reject) => {
       resolve({
         viewer: {

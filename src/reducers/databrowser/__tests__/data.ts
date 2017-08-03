@@ -146,12 +146,12 @@ describe('databrowser reducer', () => {
 })
 
 function reduceAndSnapshot(
-  initialState: DataBrowserDataState,
+  initState: DataBrowserDataState,
   reduce: Reducer<DataBrowserDataState>,
   actions: ReduxAction[],
   excludeActions: number[] = [],
 ) {
-  let lastState = initialState
+  let lastState = initState
   actions.forEach((action, index) => {
     lastState = reduce(lastState, action)
     if (excludeActions.includes(index)) {

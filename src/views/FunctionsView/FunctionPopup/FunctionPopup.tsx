@@ -459,16 +459,16 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private createExtendFunction = () => {
-    const { fn: { inlineCode } } = this.state
+    const code = this.state.fn.inlineCode
     const authToken = cookiestore.get('graphcool_auth_token')
 
-    this.lastInlineCode = inlineCode
+    this.lastInlineCode = code
 
     return fetch(
       'https://d0b5iw4041.execute-api.eu-west-1.amazonaws.com/prod/create/',
       {
         method: 'post',
-        body: JSON.stringify({ code: inlineCode, authToken }),
+        body: JSON.stringify({ code, authToken }),
       },
     ).then(res => res.json())
   }

@@ -26,7 +26,7 @@ export default class Step0 extends React.Component<Props, {}> {
       isBeta,
     } = this.props
     const choices: Array<JSX.Element | string> = [
-      <div className="flex itemsCenter" data-test="choose-sss">
+      <div className="flex itemsCenter" data-test="choose-sss" key="choose-sss">
         <Icon
           src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
           width={40}
@@ -35,7 +35,7 @@ export default class Step0 extends React.Component<Props, {}> {
         />
         <div className="ml16">Server-Side Subscription</div>
       </div>,
-      <div className="flex itemsCenter" data-test="choose-rp">
+      <div className="flex itemsCenter" data-test="choose-rp" key="choose-rp">
         <Icon
           src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
           width={40}
@@ -49,7 +49,7 @@ export default class Step0 extends React.Component<Props, {}> {
     ]
     if (isBeta) {
       choices.push(
-        <div className="flex itemsCenter" data-test="choose-rp">
+        <div className="flex itemsCenter" data-test="choose-se" key="choose-se">
           <Icon
             src={require('assets/icons/schema.svg')}
             width={16}

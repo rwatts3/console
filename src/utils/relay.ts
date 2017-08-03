@@ -233,8 +233,8 @@ export function queryNodes(
 
         return `${fieldName}_contains: "${sanitized}"`
       })
-      .map(query => {
-        return `{ ${query} }`
+      .map(q => {
+        return `{ ${q} }`
       })
       .join(', ')
 

@@ -11,7 +11,7 @@ interface Props {
 export default function Checkbox({ checked, onToggle, children }: Props) {
   return (
     <div className="option-cell" onClick={onToggle}>
-      <style jsx>{`
+      <style jsx={true}>{`
         .option-cell {
           @p: .inlineFlex, .itemsCenter, .pointer;
         }

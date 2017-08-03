@@ -193,7 +193,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                   value={this.state.selectedAnonymousModel}
                 >
                   {this.props.project.models.edges.map(edge =>
-                    <option value={edge.node.name}>
+                    <option value={edge.node.name} key={edge.node.id}>
                       {edge.node.name}
                     </option>,
                   )}

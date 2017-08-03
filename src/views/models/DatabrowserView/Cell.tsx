@@ -75,10 +75,7 @@ interface State {
 }
 
 export class Cell extends React.PureComponent<Props, State> {
-  refs: {
-    [key: string]: any
-    container: any // needs to be any, as scrollIntoViewIfNeeded is not yet there
-  }
+  container: any
 
   private escaped: boolean
   private saving: boolean
@@ -119,7 +116,7 @@ export class Cell extends React.PureComponent<Props, State> {
           this.stopEvent(e)
           this.startEditing()
         }}
-        ref="container"
+        ref={this.setRef}
         data-test={'cell-' + field.name}
       >
         <div className={cx(classes.border, particles.flexAuto)}>
@@ -131,8 +128,12 @@ export class Cell extends React.PureComponent<Props, State> {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected === true && this.props.selected === false) {
-      this.refs.container.scrollIntoViewIfNeeded()
+      this.container.scrollIntoViewIfNeeded()
     }
+  }
+
+  private setRef = ref => {
+    this.container = ref
   }
 
   private startEditing = (): void => {
@@ -334,7 +335,7 @@ export class Cell extends React.PureComponent<Props, State> {
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
     // Do not use 'defaultValue' because it won't force an update after value change
-    const CellLink = styled(Link)`
+    const CellLink = styled<Link>(Link)`
       padding: ${variables.size06};
       background: ${variables.blue};
       font-size: ${variables.size10};

@@ -48,6 +48,7 @@ export function isValidEnum(value: string): boolean {
 export function debounce(func, wait) {
   let timeout
   return (...args) => {
+    /* tslint:disable-next-line */
     const context = this
     const later = () => {
       timeout = null
@@ -115,8 +116,8 @@ export function chunk(
 ): string[] {
   const result: string[] = []
   while (n < str.length) {
-    const chunk = str.substring(0, n)
-    result.push(chunk)
+    const c = str.substring(0, n)
+    result.push(c)
     str = str.substring(n, str.length)
   }
   if (includeRemainder) {
@@ -145,8 +146,7 @@ export function todayString(): string {
   const dd = today.getDate()
   const mm = today.getMonth() + 1
   const yyyy = today.getFullYear()
-  const todayString = mm + '/' + dd + '/' + yyyy
-  return todayString
+  return mm + '/' + dd + '/' + yyyy
 }
 
 export const idToBeginning = (a: Field, b: Field) => {

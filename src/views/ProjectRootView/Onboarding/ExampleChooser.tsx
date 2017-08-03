@@ -59,6 +59,7 @@ export default function ExampleChooser({
         <div
           className={cn('example', { active: index === activeIndex })}
           onClick={() => onChangeExample(index, example)}
+          key={example.name}
         >
           <div className="logos">
             <Icon

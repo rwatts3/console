@@ -1,6 +1,6 @@
 import * as React from 'react'
 const classes: any = require('./ToggleButton.scss')
-import { classnames } from '../../utils/classnames'
+import * as cn from 'classnames'
 
 export enum ToggleSide {
   Left,
@@ -24,10 +24,7 @@ interface State {
 }
 
 export default class ToggleButton extends React.Component<Props, State> {
-  refs: {
-    [key: string]: any
-    container: Element
-  }
+  container: Element
 
   rendered: number
 
@@ -53,9 +50,13 @@ export default class ToggleButton extends React.Component<Props, State> {
 
   render() {
     return (
-      <div className={classes.root} ref="container" onBlur={this.props.onBlur}>
+      <div
+        className={classes.root}
+        ref={this.setRef}
+        onBlur={this.props.onBlur}
+      >
         <span
-          className={classnames(classes.label, {
+          className={cn(classes.label, {
             [classes.active]: this.state.currentSide === ToggleSide.Left,
           })}
           onClick={() => this.onUpdateClick(ToggleSide.Left)}
@@ -75,9 +76,13 @@ export default class ToggleButton extends React.Component<Props, State> {
   }
 
   handle = e => {
-    if (!this.refs.container.contains(e.target) && this.props.onClickOutside) {
+    if (!this.container.contains(e.target) && this.props.onClickOutside) {
       this.props.onClickOutside(this.state.currentSide)
     }
+  }
+
+  private setRef = ref => {
+    this.container = ref
   }
 
   private onKeyDown = (e: any) => {

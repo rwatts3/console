@@ -223,6 +223,8 @@ export interface Field {
   migrationValue?: TypedValue
   constraints?: Constraint[]
   interface?: Interface
+  // for code flow, used in Cell.tsx. But doesn't exist in the GraphQL type
+  enumValues?: string[]
 }
 
 interface Interface {

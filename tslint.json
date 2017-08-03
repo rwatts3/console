@@ -6,6 +6,7 @@
     "jsx-no-lambda": false,
     "no-namespace": false,
     "no-reference": false,
-    "no-var-requires": false
+    "no-var-requires": false,
+    "jsx-boolean-value": [false]
   }
 }

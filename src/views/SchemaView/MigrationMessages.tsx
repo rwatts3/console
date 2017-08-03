@@ -36,7 +36,7 @@ export default function MigrationMessages({ messages, errors }: Props) {
               </div>
               <div className="sub-messages">
                 {message.subDescriptions.map(subMessage =>
-                  <div className="description">
+                  <div className="description" key={subMessage.name}>
                     <b>{subMessage.name}</b>: {subMessage.description}
                   </div>,
                 )}
@@ -48,7 +48,7 @@ export default function MigrationMessages({ messages, errors }: Props) {
         <div className="errors">
           <h2>Errors</h2>
           {errors.map(error =>
-            <div className="message">
+            <div className="message" key={error.description + error.field}>
               <b>{error.field}</b>: {error.description}
             </div>,
           )}
