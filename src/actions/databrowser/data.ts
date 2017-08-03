@@ -95,7 +95,8 @@ function cleanServerData(dataNode, fields) {
   fields
     .filter(field => isNonScalarList(field))
     .forEach(
-      ({ name }) => (dataNode[name] = dataNode[name].edges.map(({ node }) => node)),
+      ({ name }) =>
+        (dataNode[name] = dataNode[name].edges.map(({ node }) => node)),
     )
   return dataNode
 }

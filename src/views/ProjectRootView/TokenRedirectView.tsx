@@ -12,8 +12,8 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
   componentWillMount() {
     const { query } = this.props.location
 
-    let {redirect} = query
-    const {token, cli} = query
+    let { redirect } = query
+    const { token, cli } = query
     if (token) {
       const data = jwtDecode(token)
       tracker.reset()

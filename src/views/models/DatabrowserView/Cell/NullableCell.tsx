@@ -42,9 +42,11 @@ export default class NullableCell extends React.Component<Props, State> {
       return this.props.cell
     }
 
-    const props = {...this.props.cell.props, 
+    const props = {
+      ...this.props.cell.props,
       save: () => null,
-      cancel: () => null}
+      cancel: () => null,
+    }
     return React.cloneElement(this.props.cell, props)
   }
 }

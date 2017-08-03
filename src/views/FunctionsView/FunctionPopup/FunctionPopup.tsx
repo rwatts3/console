@@ -379,7 +379,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private footerButtonForTab = (index: number) => {
-    const { editing} = this.state
+    const { editing } = this.state
     if (
       editing ||
       (this.state.eventType === 'RP' && index === 2) ||

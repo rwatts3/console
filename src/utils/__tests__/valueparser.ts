@@ -20,162 +20,202 @@ const testField: Field = {
 
 describe('stringToValue', () => {
   it('parses empty int', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(stringToValue('', field)).toBe(null)
   })
 
   it('parses int', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(stringToValue('23', field)).toBe(23)
   })
 
   it('parses negative int', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(stringToValue('-23', field)).toBe(-23)
   })
 
   it('parses empty float when required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(stringToValue('', field)).toBe(null)
   })
 
   it('parses float when required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(stringToValue('23.32', field)).toBe(23.32)
   })
 
   it('parses negative float when required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(stringToValue('-23.32', field)).toBe(-23.32)
   })
 
   it('parses empty float when not required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: false,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(stringToValue('', field)).toBe(null)
   })
 
   it('parses float when not required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: false,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(stringToValue('23.32', field)).toBe(23.32)
   })
 
   it('parses string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'String'}
+      typeIdentifier: 'String',
+    }
     expect(stringToValue('abc', field)).toBe('abc')
   })
 
   it('parses numeric string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'String'}
+      typeIdentifier: 'String',
+    }
     expect(stringToValue('12', field)).toBe('12')
   })
 
   it('parses empty string when not required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: false,
       isList: false,
-      typeIdentifier: 'String'}
+      typeIdentifier: 'String',
+    }
     expect(stringToValue('', field)).toBe('')
   })
 
   it('parses empty string when required', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'String'}
+      typeIdentifier: 'String',
+    }
     expect(stringToValue('', field)).toBe('')
   })
 
   it('parses empty boolean', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Boolean'}
+      typeIdentifier: 'Boolean',
+    }
     expect(stringToValue('', field)).toBe(null)
   })
 
   it('parses boolean true', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Boolean'}
+      typeIdentifier: 'Boolean',
+    }
     expect(stringToValue('true', field)).toBe(true)
   })
 
   it('parses boolean false', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Boolean'}
+      typeIdentifier: 'Boolean',
+    }
     expect(stringToValue('false', field)).toBe(false)
   })
 
   it('parses empty int list', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: true,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(stringToValue('[]', field)).toEqual([])
   })
 
   it('parses int list', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: true,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(stringToValue('[1,3]', field)).toEqual([1, 3])
   })
 
   it('parses relation id', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Relation'}
+      typeIdentifier: 'Relation',
+    }
     expect(stringToValue('someId', field)).toEqual({ id: 'someId' })
   })
 
   it('parses GraphQLID', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'GraphQLID'}
+      typeIdentifier: 'GraphQLID',
+    }
     expect(stringToValue('someId', field)).toBe('someId')
   })
 
   it('parses GraphQLID list', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: true,
-      typeIdentifier: 'GraphQLID'}
+      typeIdentifier: 'GraphQLID',
+    }
     expect(stringToValue('["id","id2"]', field)).toEqual(['id', 'id2'])
   })
 
@@ -211,7 +251,7 @@ describe('stringToValue', () => {
 })
 
 describe('valueToString', () => {
-  const listTestField = {...testField,  isList: true}
+  const listTestField = { ...testField, isList: true }
 
   it('parses a null atomic value and should return a "null" string', () => {
     expect(valueToString(null, testField, true)).toBe('null')
@@ -234,47 +274,59 @@ describe('valueToString', () => {
   })
 
   it('parses an int array and exports it as a JSON array', () => {
-    const field = {...listTestField, 
-      typeIdentifier: 'Int'}
+    const field = {
+      ...listTestField,
+      typeIdentifier: 'Int',
+    }
     expect(valueToString([1, 3, 4], field, true)).toBe('[1, 3, 4]')
   })
 
   it('parses a float array and exports it as a JSON array', () => {
-    const field = {...listTestField, 
-      typeIdentifier: 'Float'}
+    const field = {
+      ...listTestField,
+      typeIdentifier: 'Float',
+    }
     expect(valueToString([1.123, 3.14, 4.2], field, true)).toBe(
       '[1.123, 3.14, 4.2]',
     )
   })
 
   it('parses a string array and exports it as a JSON array', () => {
-    const field = {...listTestField, 
-      typeIdentifier: 'String'}
+    const field = {
+      ...listTestField,
+      typeIdentifier: 'String',
+    }
     expect(valueToString(['Hello', 'World', 'What?'], field, true)).toBe(
       '["Hello", "World", "What?"]',
     )
   })
 
   it('parses an boolean array and exports it as a JSON array', () => {
-    const field = {...listTestField, 
-      typeIdentifier: 'Boolean'}
+    const field = {
+      ...listTestField,
+      typeIdentifier: 'Boolean',
+    }
     expect(valueToString([true, false, true], field, true)).toBe(
       '[true, false, true]',
     )
   })
 
   it('parses an enum array and exports it as a JSON array', () => {
-    const field = {...listTestField, 
+    const field = {
+      ...listTestField,
       typeIdentifier: 'Enum',
-      enumValues: ['AMAZING', 'ADMIN', 'COOL', 'BASIC']}
+      enumValues: ['AMAZING', 'ADMIN', 'COOL', 'BASIC'],
+    }
     expect(valueToString(['ADMIN', 'COOL', 'AMAZING'], field, true)).toBe(
       '[ADMIN, COOL, AMAZING]',
     )
   })
 
   it('parses an date array and exports it as a JSON array', () => {
-    const field = {...listTestField, 
-      typeIdentifier: 'DateTime'}
+    const field = {
+      ...listTestField,
+      typeIdentifier: 'DateTime',
+    }
     const date1 = Date.now()
     const date2 = new Date(0)
     expect(valueToString([date1, date2], field, true)).toBe(
@@ -287,78 +339,96 @@ describe('valueToString', () => {
 
 describe('identities', () => {
   it('is an identity to convert an int value to a string and back to int', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(stringToValue(valueToString(12, field, true), field)).toBe(12)
   })
 
   it('is an identity to convert a Float value to a string and back to Float', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(stringToValue(valueToString(23.23, field, true), field)).toBe(23.23)
   })
 
   it('is an identity to convert a string value to a string back to string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'String'}
+      typeIdentifier: 'String',
+    }
     expect(stringToValue(valueToString('12', field, true), field)).toBe('12')
   })
 
   it('is an identity to convert a Boolean value to a string and back to Boolean', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Boolean'}
+      typeIdentifier: 'Boolean',
+    }
     expect(stringToValue(valueToString(true, field, true), field)).toBe(true)
   })
 
   it('is an identity to convert a string to an Int value and back to string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Int'}
+      typeIdentifier: 'Int',
+    }
     expect(valueToString(stringToValue('12', field), field, true)).toBe('12')
   })
 
   it('is an identity to convert a string to a Float value and back to string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Float'}
+      typeIdentifier: 'Float',
+    }
     expect(valueToString(stringToValue('23.23', field), field, true)).toBe(
       '23.23',
     )
   })
 
   it('is an identity to convert a string value to a string back to string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'String'}
+      typeIdentifier: 'String',
+    }
     expect(valueToString(stringToValue('12', field), field, true)).toBe('12')
   })
 
   it('is an identity to convert a string to a Boolean value and back to string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: false,
-      typeIdentifier: 'Boolean'}
+      typeIdentifier: 'Boolean',
+    }
     expect(valueToString(stringToValue('true', field), field, true)).toBe(
       'true',
     )
   })
 
   it('is an identity to convert a string to Enum list and back to string', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       isRequired: true,
       isList: true,
-      typeIdentifier: 'Enum'}
+      typeIdentifier: 'Enum',
+    }
 
     const input = '[AMAZING, AWESOME, HELLO]'
 

@@ -192,7 +192,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
       if (q.length > 0) {
         queryObject.query = { q }
       }
-      const newLocation = {...this.props.location, ...queryObject}
+      const newLocation = { ...this.props.location, ...queryObject }
       this.props.router.replace(newLocation)
       tracker.track(ConsoleEvents.Databrowser.Search.entered())
     },
@@ -590,7 +590,13 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           projectId={this.props.project.id}
           projectName={this.props.params.projectName}
           update={(updatingValue, updatingField, callback) =>
-            this.updateEditingNode(updatingValue, updatingField, callback, nodeId, rowIndex)}
+            this.updateEditingNode(
+              updatingValue,
+              updatingField,
+              callback,
+              nodeId,
+              rowIndex,
+            )}
           reload={() => this.loadData(rowIndex, 1)}
           nodeId={nodeId}
           rowIndex={rowIndex}

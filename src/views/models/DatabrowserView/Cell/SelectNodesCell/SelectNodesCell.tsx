@@ -66,14 +66,20 @@ class SelectNodesCell extends React.Component<Props, State> {
 
     this.getItems({ startIndex: 0, stopIndex: 50 }, props.fields)
 
-    this.style = {...modalStyle, 
-      overlay: {...modalStyle.overlay, 
-        backgroundColor: 'rgba(255,255,255,.4)'},
-      content: {...modalStyle.content, 
+    this.style = {
+      ...modalStyle,
+      overlay: {
+        ...modalStyle.overlay,
+        backgroundColor: 'rgba(255,255,255,.4)',
+      },
+      content: {
+        ...modalStyle.content,
         width: 'auto',
         minWidth: '600px',
         maxWidth: window.innerWidth - 100 + 'px',
-        overflow: 'visible'}}
+        overflow: 'visible',
+      },
+    }
 
     global.s = this
   }
@@ -231,8 +237,8 @@ class SelectNodesCell extends React.Component<Props, State> {
   private handleRowSelection = ({ index, rowData }) => {
     this.setState(state => {
       const { multiSelect } = this.props
-      let { items} = state
-      const {values} = state
+      let { items } = state
+      const { values } = state
       const row = items[index]
 
       if (!multiSelect && values && values.length > 0 && row.id !== values[0]) {

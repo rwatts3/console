@@ -12,7 +12,7 @@ interface Props {
 
 class FunctionsList extends React.Component<Props, {}> {
   render() {
-    const { functions} = this.props
+    const { functions } = this.props
     return (
       <div className="functions">
         <style jsx={true}>{`

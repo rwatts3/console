@@ -167,10 +167,8 @@ class Tokens extends React.Component<Props, State> {
         )
       })
       .catch(transaction => {
-
         // no op
-        }
-      )
+      })
   }
 
   private deleteSystemToken = (token): void => {

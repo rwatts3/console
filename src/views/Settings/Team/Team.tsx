@@ -73,9 +73,7 @@ class Team extends React.Component<Props, {}> {
     const projects = this.props.viewer.user.crm.customer.projects.edges.map(
       edge => edge.node,
     )
-    const project = projects.find(
-      p => p.name === this.props.params.projectName,
-    )
+    const project = projects.find(p => p.name === this.props.params.projectName)
     if (!project) {
       return freeId
     }

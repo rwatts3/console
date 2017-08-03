@@ -19,7 +19,7 @@ export default class FloatingLabel extends React.Component<Props, State> {
   }
 
   render() {
-    const restProps = {...this.props}
+    const restProps = { ...this.props }
     delete restProps.labelClassName
 
     return (

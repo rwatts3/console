@@ -330,10 +330,7 @@ function shallowEqual(objA, objB) {
 
   // Test for A's keys different from B.
   for (const a of keysA) {
-    if (
-      !global.hasOwnProperty.call(objB, a) ||
-      !is(objA[a], objB[a])
-    ) {
+    if (!global.hasOwnProperty.call(objB, a) || !is(objA[a], objB[a])) {
       return false
     }
   }

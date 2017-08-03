@@ -29,7 +29,9 @@ class EmptyRow extends React.Component<Props, State> {
   }
 
   render() {
-    const borderColor = this.state.isEnteringEmail ? 'blueBorder' : this.props.hasAddFunctionality ? $p.bBlack20 : $p.bBlack10
+    const borderColor = this.state.isEnteringEmail
+      ? 'blueBorder'
+      : this.props.hasAddFunctionality ? $p.bBlack20 : $p.bBlack10
 
     return (
       <div className={`container borderStyle ${borderColor}`}>

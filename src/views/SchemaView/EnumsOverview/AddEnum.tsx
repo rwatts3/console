@@ -356,7 +356,7 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private close = () => {
-    const { onRequestClose, router} = this.props
+    const { onRequestClose, router } = this.props
     if (typeof onRequestClose === 'function') {
       onRequestClose()
     }

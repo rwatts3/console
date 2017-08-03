@@ -25,17 +25,17 @@ declare var graphcoolAlert: any
 declare var graphcoolConfirm: any
 declare var graphcoolNotification: any
 
-declare interface Window {
+interface Window {
   devToolsExtension?: () => any
   Intercom: any
 }
 
-import 'react';
+import 'react'
 
 declare module 'react' {
   interface StyleHTMLAttributes<T> extends React.HTMLAttributes<T> {
-    jsx?: boolean;
-    global?: boolean;
+    jsx?: boolean
+    global?: boolean
   }
   interface HTMLProps<T> {
     jsx?: boolean

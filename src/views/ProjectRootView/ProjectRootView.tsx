@@ -168,9 +168,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
 
     if (step !== prevStep) {
       this.updateForceFetching()
-      tracker.track(
-        ConsoleEvents.Onboarding.gettingStarted({ step, skipped }),
-      )
+      tracker.track(ConsoleEvents.Onboarding.gettingStarted({ step, skipped }))
     } else if (this.props.pollGettingStartedOnboarding) {
       this.updateForceFetching()
     }

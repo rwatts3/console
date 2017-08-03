@@ -57,7 +57,7 @@ class Tether extends React.Component<Props, {}> {
     }
 
     if (this.props.style) {
-      style = {...style, ...this.props.style}
+      style = { ...style, ...this.props.style }
     }
 
     return (

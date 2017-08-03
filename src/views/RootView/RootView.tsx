@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { clearNotification, showNotification } from '../../actions/notification'
 import { Notification, ShowNotificationCallback } from '../../types/utils'
 import NotificationSystem from 'react-notification-system'
@@ -17,7 +17,6 @@ interface Props {
 }
 
 class RootView extends React.Component<Props, {}> {
-
   notificationSystem: any
 
   componentWillUpdate(nextProps: Props) {
@@ -28,7 +27,7 @@ class RootView extends React.Component<Props, {}> {
   }
 
   componentDidMount() {
-    (global as any).graphcoolNotification = (message: string) => {
+    ;(global as any).graphcoolNotification = (message: string) => {
       this.props.showNotification({
         message,
         level: 'info',
@@ -37,7 +36,7 @@ class RootView extends React.Component<Props, {}> {
     }
   }
 
-  render () {
+  render() {
     return (
       <div style={{ height: '100%' }}>
         <Alert />
@@ -63,7 +62,7 @@ class RootView extends React.Component<Props, {}> {
     )
   }
 
-  private setRef = (ref) => {
+  private setRef = ref => {
     this.notificationSystem = ref
   }
 }
@@ -74,8 +73,8 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({clearNotification, showNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ clearNotification, showNotification }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootView)

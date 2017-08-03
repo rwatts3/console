@@ -116,7 +116,7 @@ Object.defineProperty(Object.prototype, 'mapToArray', {
 
 Object.defineProperty(Object.prototype, 'filterNullAndUndefined', {
   value: function() {
-    const o = {...this}
+    const o = { ...this }
     Object.keys(o).forEach(k => {
       if (o[k] === undefined || o[k] === null) {
         delete o[k]

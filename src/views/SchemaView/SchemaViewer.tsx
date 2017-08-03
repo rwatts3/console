@@ -47,7 +47,7 @@ class SchemaViewer extends React.Component<Props, null> {
             displayOptions={{
               transformSchema(schema) {
                 const { types } = schema
-                const copy = {...types}
+                const copy = { ...types }
 
                 Object.keys(copy).forEach(typeName => {
                   if (
@@ -69,9 +69,11 @@ class SchemaViewer extends React.Component<Props, null> {
                   }
                 })
 
-                return {...schema, 
+                return {
+                  ...schema,
                   queryType: 'Node',
-                  types: copy}
+                  types: copy,
+                }
               },
               hideDocs: true,
               hideRoot: true,

@@ -29,8 +29,10 @@ if (process.env.NODE_ENV === 'production') {
     onUpdateReady: () => offline.applyUpdate(),
     onUpdated: () => {
       if (typeof graphcoolNotification !== 'undefined') {
-        graphcoolNotification('We just deployed a new version of the Console.' +
-          ' Please refresh to see the latest version.')
+        graphcoolNotification(
+          'We just deployed a new version of the Console.' +
+            ' Please refresh to see the latest version.',
+        )
       }
     },
   })

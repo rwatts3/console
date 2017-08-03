@@ -13,11 +13,15 @@ export default function reduce(
 ): PopupSourcesState {
   switch (action.type) {
     case Constants.SET_FIELD_POPUP_SOURCE:
-      return {...state, 
-        fieldPopup: action.payload}
+      return {
+        ...state,
+        fieldPopup: action.payload,
+      }
     case Constants.SET_RELATIONS_POPUP_SOURCE:
-      return {...state, 
-        relationsPopup: action.payload}
+      return {
+        ...state,
+        relationsPopup: action.payload,
+      }
     default:
       return state
   }

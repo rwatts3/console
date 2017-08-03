@@ -401,7 +401,9 @@ export interface OrderBy {
   order: 'ASC' | 'DESC'
 }
 
-export interface FieldWidths { [key: string]: number }
+export interface FieldWidths {
+  [key: string]: number
+}
 
 export interface TetherStep {
   step: Step

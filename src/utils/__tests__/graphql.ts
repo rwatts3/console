@@ -41,30 +41,38 @@ describe('isNonScalarList', () => {
   }
 
   it('checks if a NonScalar List Field is a valid NonScalar List', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       typeIdentifier: 'Relation',
-      isList: true}
+      isList: true,
+    }
     expect(isNonScalarList(field)).toBe(true)
   })
 
   it('checks if a Scalar List is not a NonScalar List', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       typeIdentifier: 'String',
-      isList: true}
+      isList: true,
+    }
     expect(isNonScalarList(field)).toBe(false)
   })
 
   it('checks if a NonScalar Value is not a NonScalar List', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       typeIdentifier: 'Hello World',
-      isList: false}
+      isList: false,
+    }
     expect(isNonScalarList(field)).toBe(false)
   })
 
   it('checks if a Scalar value is not a NonScalar List', () => {
-    const field: Field = {...testField, 
+    const field: Field = {
+      ...testField,
       typeIdentifier: 'String',
-      isList: false}
+      isList: false,
+    }
     expect(isNonScalarList(field)).toBe(false)
   })
 })

@@ -29,7 +29,9 @@ function generateTestData(definition) {
   const fields = extractFields(definition)
   const result = {}
   fields.forEach(field => {
-    result[field.name] = dummyData.hasOwnProperty(field.type) ? dummyData[field.type] : ''
+    result[field.name] = dummyData.hasOwnProperty(field.type)
+      ? dummyData[field.type]
+      : ''
   })
   return result
 }

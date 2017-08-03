@@ -28,9 +28,11 @@ export function reduceGettingStartedState(
         gettingStartedState.selectedExample =
           state.gettingStartedState.selectedExample
       }
-      return {...state, 
+      return {
+        ...state,
         gettingStartedState,
-        poll: gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE')}
+        poll: gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE'),
+      }
     default:
       return state
   }

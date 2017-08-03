@@ -109,8 +109,10 @@ export default class ScalarListCell extends React.Component<
   CellRequirements,
   State
 > {
-  private atomicField: Field = {...this.props.field, 
-    isList: false}
+  private atomicField: Field = {
+    ...this.props.field,
+    isList: false,
+  }
 
   constructor(props: CellRequirements) {
     super(props)

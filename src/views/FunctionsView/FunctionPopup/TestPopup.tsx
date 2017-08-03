@@ -3,7 +3,7 @@ import * as Modal from 'react-modal'
 import { fieldModalStyle } from '../../../utils/modalStyle'
 import { Icon, $v } from 'graphcool-styles'
 import TestLog from './TestLog'
-import { FunctionBinding} from '../../../types/types'
+import { FunctionBinding } from '../../../types/types'
 import { smoothScrollTo } from '../../../utils/smooth'
 import DummyTestLog from './DummyTestLog'
 import {

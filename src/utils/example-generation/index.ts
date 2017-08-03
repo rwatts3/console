@@ -1,12 +1,6 @@
 import fakeIDL from './fake_idl'
 import { fakeSchema } from './fake_schema'
-import {
-  parse,
-  concatAST,
-  buildASTSchema,
-  execute,
-  printSchema,
-} from 'graphql'
+import { parse, concatAST, buildASTSchema, execute, printSchema } from 'graphql'
 import { typeFakers } from './fake'
 
 const fakerIDL = parse(fakeIDL)
@@ -64,7 +58,9 @@ export function getCustomMutationExampleEvent(sdl: string) {
       .definition.fields[0].arguments.map(getType)
       .map(({ type, name }) => {
         const typeFaker = typeFakers[type]
-        const value = typeFaker ? typeFaker.generator(typeFaker.defaultOptions)() : `<${type.name}>`
+        const value = typeFaker
+          ? typeFaker.generator(typeFaker.defaultOptions)()
+          : `<${type.name}>`
         return {
           [name]: value,
         }
@@ -82,7 +78,10 @@ export function getCustomMutationExampleEvent(sdl: string) {
 }
 
 function getType(inputType) {
-  const type = inputType.type.kind === 'NonNullType' ? inputType.type.type.name.value : inputType.type.name.value
+  const type =
+    inputType.type.kind === 'NonNullType'
+      ? inputType.type.type.name.value
+      : inputType.type.name.value
 
   return {
     type,

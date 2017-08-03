@@ -5,12 +5,11 @@ export default function mapProps(mapping: {
 }) {
   return DecoratedComponent => {
     class MapProps extends React.Component<{}, {}> {
-
       render() {
         let mapped
 
         try {
-          mapped = Object.keys((mapping as any)).reduce(
+          mapped = Object.keys(mapping as any).reduce(
             (acc, key) => ({
               ...acc,
               [key]: mapping[key](this.props),
@@ -21,11 +20,9 @@ export default function mapProps(mapping: {
           return null
         }
 
-        const newProps = {...this.props, ...mapped}
+        const newProps = { ...this.props, ...mapped }
 
-        return (
-          <DecoratedComponent {...newProps} />
-        )
+        return <DecoratedComponent {...newProps} />
       }
     }
 

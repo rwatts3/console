@@ -64,7 +64,7 @@ export default class DatePicker extends React.Component<Props, State> {
   }
 
   render() {
-    const passThroughProps: any = {...this.props}
+    const passThroughProps: any = { ...this.props }
 
     delete passThroughProps.onChange
     delete passThroughProps.dateFormat

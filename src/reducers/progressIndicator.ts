@@ -13,10 +13,10 @@ export function reduceProgress(
   // tslint:disable-line
   switch (action.type) {
     case Constants.START_PROGRESS:
-      return {...initialState}
+      return { ...initialState }
     case Constants.INCREMENT_PROGRESS:
       return {
-          progress: state.progress + 1,
+        progress: state.progress + 1,
       }
     default:
       return state

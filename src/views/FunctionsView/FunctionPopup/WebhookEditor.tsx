@@ -213,7 +213,7 @@ export default class WebhookEditor extends React.Component<Props, State> {
   }
 
   private removeRow = (name: string) => {
-    const copy = {...this.props.headers}
+    const copy = { ...this.props.headers }
     delete copy[name]
     this.props.onChangeHeaders(copy)
   }

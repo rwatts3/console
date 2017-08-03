@@ -2,10 +2,7 @@ import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {
-  SearchProviderAlgolia,
-  AlgoliaSyncQuery,
-} from '../../../types/types'
+import { SearchProviderAlgolia, AlgoliaSyncQuery } from '../../../types/types'
 import { withRouter } from 'found'
 import { Link } from 'found'
 import UpdateAlgoliaSyncQueryMutation from '../../../mutations/UpdateAlgoliaSyncQueryMutation'

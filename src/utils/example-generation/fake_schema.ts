@@ -79,7 +79,10 @@ export function fakeSchema(schema) {
     const isMutation = objectType.name === mutationTypeName
 
     for (const field of Object.values(objectType.getFields())) {
-      field.resolve = isMutation && isRelayMutation(field) ? getRelayMutationResolver() : getFieldResolver(field)
+      field.resolve =
+        isMutation && isRelayMutation(field)
+          ? getRelayMutationResolver()
+          : getFieldResolver(field)
     }
   }
 

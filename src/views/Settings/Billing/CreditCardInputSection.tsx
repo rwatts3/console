@@ -403,7 +403,10 @@ class CreditCardInputSection extends React.Component<Props, State> {
       return
     }
 
-    const newLastComponent = (creditCardComponents.length < maxChunks && lastComponent.length === 4) ? lastComponent + ' ' : lastComponent
+    const newLastComponent =
+      creditCardComponents.length < maxChunks && lastComponent.length === 4
+        ? lastComponent + ' '
+        : lastComponent
 
     creditCardComponents[creditCardComponents.length - 1] = newLastComponent
     const newCreditCardNumber = creditCardComponents.join(' ')

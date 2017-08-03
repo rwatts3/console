@@ -18,11 +18,15 @@ export function reduceCodeGeneration(
 ): CodeGenerationState {
   switch (action.type) {
     case Constants.SET_CODE_GENERATION_CLIENT:
-      return {...state, 
-        client: action.payload}
+      return {
+        ...state,
+        client: action.payload,
+      }
     case Constants.SET_CODE_GENERATION_ENVIRONMENT:
-      return {...state, 
-        environment: action.payload}
+      return {
+        ...state,
+        environment: action.payload,
+      }
     default:
       return state
   }

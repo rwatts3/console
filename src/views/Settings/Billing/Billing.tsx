@@ -269,10 +269,11 @@ class Billing extends React.Component<Props, State> {
   }
 
   private updateCPC = newValue => {
-    const newCPC = newValue.length > maxCPCDigits ? newValue.substr(0, maxCPCDigits) : newValue
-    this.setState({ newCPC } as State, () =>
-      this.validateCreditCardDetails(),
-    )
+    const newCPC =
+      newValue.length > maxCPCDigits
+        ? newValue.substr(0, maxCPCDigits)
+        : newValue
+    this.setState({ newCPC } as State, () => this.validateCreditCardDetails())
   }
 
   private updateExpirationDate = newValue => {
@@ -308,8 +309,9 @@ class Billing extends React.Component<Props, State> {
     }
 
     const newLastComponent =
-      (creditCardComponents.length <= maxChunks &&
-      lastComponent.length === 4) ? lastComponent + ' ' : lastComponent
+      creditCardComponents.length <= maxChunks && lastComponent.length === 4
+        ? lastComponent + ' '
+        : lastComponent
 
     creditCardComponents[creditCardComponents.length - 1] = newLastComponent
     const newCreditCardNumber = creditCardComponents.join(' ')

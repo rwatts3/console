@@ -51,9 +51,7 @@ export default class MutationsInfoBox extends React.Component<Props, {}> {
   }
 
   private generateMutationInfo = (set: boolean): JSX.Element => {
-    let {
-      relationName,
-    } = this.props
+    let { relationName } = this.props
     const {
       fieldOnLeftModelName,
       fieldOnRightModelName,
