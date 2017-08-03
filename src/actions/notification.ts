@@ -4,10 +4,7 @@ import Constants from '../constants/notification'
 export function showNotification(notification: Notification) {
   return {
     type: Constants.SHOW_NOTIFICATION,
-    payload: {
-      message: notification.message,
-      level: notification.level,
-    },
+    payload: notification,
   }
 }
 

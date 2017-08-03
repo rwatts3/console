@@ -303,9 +303,12 @@ class FunctionRow extends React.Component<Props, State> {
         return UpdateSchemaExtensionFunction.commit({
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
-        }).catch(transaction => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        })
+        }).then(() => {
+            // noop
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
     }
   }
 }

@@ -17,6 +17,7 @@ import createRender from 'found/lib/createRender'
 import { Resolver } from 'found-relay'
 import relayEnvironment from './relayEnvironment'
 import createStore from './createStore'
+import * as offline from 'offline-plugin/runtime'
 
 // save last referral
 if (!cookiestore.has('graphcool_last_referral')) {
@@ -24,7 +25,15 @@ if (!cookiestore.has('graphcool_last_referral')) {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  require('offline-plugin/runtime').install()
+  offline.install({
+    onUpdateReady: () => offline.applyUpdate(),
+    onUpdated: () => {
+      if (typeof graphcoolNotification !== 'undefined') {
+        graphcoolNotification('We just deployed a new version of the Console.' +
+          ' Please refresh to see the latest version.')
+      }
+    },
+  })
 }
 
 if (typeof Raven !== 'undefined' && process.env.NODE_ENV === 'production') {

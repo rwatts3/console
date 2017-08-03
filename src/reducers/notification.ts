@@ -13,10 +13,7 @@ export function reduceNotification(
 ): NotificationState {
   switch (action.type) {
     case Constants.SHOW_NOTIFICATION:
-      return {
-        message: action.payload.message,
-        level: action.payload.level,
-      }
+      return action.payload
     case Constants.CLEAR_NOTIFICATION:
       return {
         message: null,

@@ -10,14 +10,17 @@ export default async (cookies: any[]): Promise<any> =>  {
   const screenshot = await chromeless
     .cookiesSet(cookies)
     .goto(CONSOLE_URL)
-    .wait(3600)
-    .wait('div[data-test="start-onboarding"]')
+    .wait(5000)
     .click('div[data-test="start-onboarding"]')
-    .wait(2100)
+    .wait(4100)
     .click('.add-type')
-    .wait(700)
+    .wait(3000)
+    .screenshot()
+    console.log(screenshot)
+
+    await chromeless
     .type('Post', '.name-input')
-    .wait(700)
+    .wait(2000)
     .wait('.button.save')
     .click('.button.save')
     .wait(2000)

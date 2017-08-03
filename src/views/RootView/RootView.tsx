@@ -1,35 +1,43 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { clearNotification } from '../../actions/notification'
-import { Notification } from '../../types/utils'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import { clearNotification, showNotification } from '../../actions/notification'
+import { Notification, ShowNotificationCallback } from '../../types/utils'
 import NotificationSystem from 'react-notification-system'
 import * as MediaQuery from 'react-responsive'
 import MobileScreen from './MobileScreen'
-import { throttle } from 'lodash'
 import Alert from '../../components/Window/Alert'
 
 interface Props {
   children: Element
   notification: Notification
   clearNotification: () => any
+  showNotification: ShowNotificationCallback
 }
 
 class RootView extends React.Component<Props, {}> {
-  refs: {
-    [key: string]: any
-    notificationSystem: any
-  }
+
+  notificationSystem: any
 
   componentWillUpdate(nextProps: Props) {
     if (nextProps.notification.level && nextProps.notification.message) {
-      this.refs.notificationSystem.addNotification(nextProps.notification)
+      this.notificationSystem.addNotification(nextProps.notification)
       this.props.clearNotification()
     }
   }
 
-  render() {
+  componentDidMount() {
+    (global as any).graphcoolNotification = (message: string) => {
+      this.props.showNotification({
+        message,
+        level: 'info',
+        autoDismiss: 0,
+      })
+    }
+  }
+
+  render () {
     return (
       <div style={{ height: '100%' }}>
         <Alert />
@@ -50,9 +58,13 @@ class RootView extends React.Component<Props, {}> {
         <MediaQuery minWidth={720}>
           {matches => (matches ? this.props.children : <MobileScreen />)}
         </MediaQuery>
-        <NotificationSystem ref="notificationSystem" />
+        <NotificationSystem ref={this.setRef} />
       </div>
     )
+  }
+
+  private setRef = (ref) => {
+    this.notificationSystem = ref
   }
 }
 
@@ -62,8 +74,8 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ clearNotification }, dispatch)
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({clearNotification, showNotification}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootView)
