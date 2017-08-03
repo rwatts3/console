@@ -1,8 +1,6 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
 import {
-  PermissionVariable,
-  Field,
   PermissionQueryArgument,
 } from '../../../types/types'
 import { renderType } from './ast'

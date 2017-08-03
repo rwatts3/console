@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Link } from 'found'
 import * as cx from 'classnames'
-import { $p, Icon } from 'graphcool-styles'
+import { $p} from 'graphcool-styles'
 
 interface Integration {
   isEnabled: boolean
@@ -16,15 +16,9 @@ interface Props {
   integration: Integration
 }
 
-const LinkCard = styled(Link)`
+const LinkCard = styled<Link>(Link)`
   width: 317px;
   height: 322px;
-`
-
-const ConnectionCheckmark = styled.div`
-  width: 30px;
-  height: 30px;
-  background-color: #27ae60;
 `
 
 const Logo = styled.img`height: 54px;`

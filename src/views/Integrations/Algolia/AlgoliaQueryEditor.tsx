@@ -1,11 +1,7 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
 import { SearchProviderAlgolia, Model } from '../../../types/types'
 import { withRouter } from 'found'
-import { buildClientSchema } from 'graphql'
-import { validate } from 'graphql/validation'
-import { parse } from 'graphql/language'
 import AlgoliaQuery from './AlgoliaQuery'
 import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 

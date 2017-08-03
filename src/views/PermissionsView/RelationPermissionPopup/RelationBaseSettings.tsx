@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Relation } from '../../../types/types'
-import NewToggleButton from '../../../components/NewToggleButton/NewToggleButton'
 import RelationPermissionLabel from '../RelationPermissionsList/RelationPermissions/RelationPermissionLabel'
 
 interface Props {

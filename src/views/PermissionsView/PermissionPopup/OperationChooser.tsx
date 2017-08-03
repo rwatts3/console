@@ -2,7 +2,6 @@ import * as React from 'react'
 import { Operation } from '../../../types/types'
 import * as cx from 'classnames'
 import { $p, Icon, variables } from 'graphcool-styles'
-import styled from 'styled-components'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 import { PermissionPopupErrors } from './PermissionPopupState'
 

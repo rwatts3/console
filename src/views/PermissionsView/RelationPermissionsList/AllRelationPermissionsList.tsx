@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { Model, Relation } from '../../../types/types'
+import { Relation } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import RelationPermissions from './RelationPermissions/RelationPermissions'
 import { $p } from 'graphcool-styles'

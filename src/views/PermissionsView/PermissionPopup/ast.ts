@@ -2,7 +2,6 @@ import { parse, visit } from 'graphql'
 import { validate } from 'graphql/validation'
 
 import {
-  PermissionVariable,
   PermissionQueryArgument,
 } from '../../../types/types'
 export function putVariablesToQuery(

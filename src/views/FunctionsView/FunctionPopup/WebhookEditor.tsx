@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { smoothScrollTo } from '../../../utils/smooth'
 import { webhookUrlValid } from './functionPopupState'
 import HeaderRow from './HeaderRow'
 

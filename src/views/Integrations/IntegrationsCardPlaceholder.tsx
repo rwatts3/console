@@ -8,11 +8,6 @@ const Card = styled.div`
   height: 322px;
 `
 
-const LogoPlaceholder = styled.div`
-  width: 173px;
-  height: 30px;
-`
-
 const IntegrationsCardPlaceholder = () => {
   return (
     <Card

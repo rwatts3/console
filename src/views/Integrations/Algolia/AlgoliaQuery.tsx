@@ -41,7 +41,7 @@ function extractSchema({
 class AlgoliaQuery extends React.Component<Props, State> {
   constructor(props) {
     super(props)
-    const { schema, valid } = extractSchema({
+    const { schema } = extractSchema({
       schemaString: props.algolia.algoliaSchema,
       query: props.fragment,
     })
@@ -70,7 +70,7 @@ class AlgoliaQuery extends React.Component<Props, State> {
 
     if (nextProps.algolia.algoliaSchema !== this.props.algolia.algoliaSchema) {
       const { algolia, fragment } = nextProps
-      const { schema, valid } = extractSchema({
+      const { schema} = extractSchema({
         schemaString: algolia.algoliaSchema,
         query: fragment,
       })
@@ -78,7 +78,7 @@ class AlgoliaQuery extends React.Component<Props, State> {
     }
   }
   render() {
-    const { fragment, onFragmentChange } = this.props
+    const { fragment} = this.props
     const { schema } = this.state
     return (
       <QueryEditor schema={schema} value={fragment} onEdit={this.handleEdit} />
@@ -88,7 +88,7 @@ class AlgoliaQuery extends React.Component<Props, State> {
   private handleEdit = (fragment: string) => {
     const { algolia } = this.props
 
-    const { schema, valid } = extractSchema({
+    const { valid } = extractSchema({
       schemaString: algolia.algoliaSchema,
       query: fragment,
     })

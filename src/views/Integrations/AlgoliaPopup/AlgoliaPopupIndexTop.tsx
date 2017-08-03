@@ -1,5 +1,5 @@
 import * as React from 'react' // tslint:disable-line
-import { $p, Icon, variables } from 'graphcool-styles'
+import { $p} from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import { Link } from 'found'

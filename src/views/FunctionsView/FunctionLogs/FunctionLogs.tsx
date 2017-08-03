@@ -31,7 +31,7 @@ class FunctionLogsComponent extends React.Component<Props, {}> {
   }
 
   render() {
-    const { logs, node } = this.props
+    const {logs} = this.props
     return (
       <Modal
         contentLabel="Function Logs"

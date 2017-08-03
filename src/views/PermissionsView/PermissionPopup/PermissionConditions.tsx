@@ -8,30 +8,17 @@ import {
   UserType,
   PermissionRuleType,
   Operation,
-  Field,
-  FieldType,
-  PermissionVariable,
   PermissionQueryArgument,
   Relation,
 } from '../../../types/types'
-import { texts } from '../../../utils/permission'
-import PermissionField from '../PermissionsList/ModelPermissions/PermissionField'
 import VariableTag from './VariableTag'
 import { flatMap, groupBy } from 'lodash'
 import { putVariablesToQuery, getVariableNamesFromQuery } from './ast'
 import { debounce } from '../../../utils/utils'
 import * as Modal from 'react-modal'
 import { fieldModalStyle } from '../../../utils/modalStyle'
-import { PermissionPopupErrors } from './PermissionPopupState'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 import Checkbox from '../../../components/Checkbox'
-import { sortBy } from 'lodash'
-
-const ConditionButton = styled.div`
-  &:not(.${$p.bgBlue}):hover {
-    background-color: ${$v.gray10};
-  }
-`
 
 const modalStyling = {
   ...fieldModalStyle,
@@ -105,22 +92,16 @@ export default class PermissionConditions extends React.Component<
   render() {
     const {
       rule,
-      permissionSchema,
-      ruleGraphQuery,
-      setRuleGraphQuery,
       operation,
-      setUserType,
       userType,
-      permissionQueryArguments,
       relation,
       connect,
       disconnect,
       toggleUserType,
       toggleRuleType,
     } = this.props
-    const { selectedVariableNames, fullscreen } = this.state
+    const { fullscreen } = this.state
 
-    const variables = this.getVariables()
     const disabled = rule !== 'GRAPH'
 
     return (

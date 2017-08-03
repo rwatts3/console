@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Info from '../../../components/Info'
 import * as cn from 'classnames'
 import { Link } from 'found'
 import DocsPopup from '../../../components/DocsPopup'

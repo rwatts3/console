@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
-import ReactElement = React.ReactElement
 import { createFragmentContainer, graphql } from 'react-relay'
 import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
@@ -21,7 +20,7 @@ import { ShowNotificationCallback } from '../../../types/utils'
 interface Props {
   viewer: Viewer
   params: any
-  router: ReactRouter.InjectedRouter
+  router: any
   algolia: SearchProviderAlgolia
   projectId: string
   showNotification: ShowNotificationCallback
@@ -54,7 +53,7 @@ class AlgoliaPopup extends React.Component<Props, State> {
     }
   }
   render() {
-    const { algolia, params, children } = this.props
+    const { algolia, params } = this.props
     const { valid, apiKey, applicationId, isEnabled } = this.state
     return (
       <PopupWrapper onClickOutside={this.close}>
@@ -130,7 +129,7 @@ class AlgoliaPopup extends React.Component<Props, State> {
   }
 
   private update = () => {
-    const { valid, apiKey, applicationId, isEnabled } = this.state
+    const { apiKey, applicationId, isEnabled } = this.state
     const { algolia, projectId } = this.props
     UpdateSearchProviderAlgolia.commit({
       id: algolia.id,

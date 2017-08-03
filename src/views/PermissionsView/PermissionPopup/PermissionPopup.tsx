@@ -183,7 +183,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       (acc, curr) => acc || errors[curr],
       false,
     )
-    const fields = model.fields.edges.map(edge => edge.node)
     const changed = didChange(this.state, this.props.permission)
 
     return (
@@ -445,10 +444,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         this.updateRelayVariables()
       },
     )
-  }
-
-  private setRule = (rule: PermissionRuleType) => {
-    this.setState({ rule } as PermissionPopupState)
   }
 
   private setRuleGraphQuery = (ruleGraphQuery: string) => {

@@ -1,7 +1,5 @@
 import * as React from 'react'
-import { Icon, $v } from 'graphcool-styles'
-import { Field } from '../../../types/types'
-import Tether from '../../../components/Tether/Tether'
+import { Icon} from 'graphcool-styles'
 
 interface Props {
   onSelectIndex: (index: number) => void

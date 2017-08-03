@@ -1,11 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
 import { SearchProviderAlgolia, Model } from '../../../types/types'
-import { withRouter } from 'found'
-import { buildClientSchema } from 'graphql'
-import { validate } from 'graphql/validation'
-import { parse } from 'graphql/language'
 import AlgoliaQuery from './AlgoliaQuery'
 import mapProps from '../../../components/MapProps/MapProps'
 import { $v, Icon } from 'graphcool-styles'
@@ -14,7 +9,6 @@ import { showNotification } from '../../../actions/notification'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { connect } from 'react-redux'
-import ConfirmOperartionsPopup from './ConfirmOperationsPopup'
 import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 import Loading from '../../../components/Loading/Loading'
 
@@ -265,7 +259,6 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
   private create = () => {
     const {
       fragment,
-      fragmentValid,
       title,
       selectedModel,
       loading,

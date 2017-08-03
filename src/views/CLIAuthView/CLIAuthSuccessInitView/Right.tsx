@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Link } from 'found'
 import { A } from '../../../components/Links'
 const QueryEditor: any = require('../../SchemaView/Editor/QueryEditor')
   .QueryEditor

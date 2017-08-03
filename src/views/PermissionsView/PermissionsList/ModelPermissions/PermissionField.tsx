@@ -1,6 +1,6 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
-import { Field, FieldType } from '../../../../types/types'
+import { Field} from '../../../../types/types'
 
 interface Props {
   field: Field

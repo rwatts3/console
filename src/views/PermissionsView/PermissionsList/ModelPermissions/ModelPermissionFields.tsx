@@ -6,7 +6,6 @@ import * as cx from 'classnames'
 import mapProps from '../../../../components/MapProps/MapProps'
 import PermissionField from './PermissionField'
 import styled from 'styled-components'
-import ScrollBox from '../../../../components/ScrollBox/ScrollBox'
 import { validPermissionField } from '../../../../utils/valueparser'
 
 interface Props {

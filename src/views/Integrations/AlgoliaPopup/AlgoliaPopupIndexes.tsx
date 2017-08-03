@@ -1,19 +1,14 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { $p } from 'graphcool-styles'
-import * as cx from 'classnames'
-import styled from 'styled-components'
 import { Viewer, SearchProviderAlgolia } from '../../../types/types'
-import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { withRouter } from 'found'
 import AlgoliaPopupIndexTop from './AlgoliaPopupIndexTop'
 import AlgoliaPopupIndex from './AlgoliaPopupIndex'
-import mapProps from '../../../components/MapProps/MapProps'
 
 interface Props {
   viewer: Viewer
   params: any
-  router: ReactRouter.InjectedRouter
+  router: any
   algolia: SearchProviderAlgolia
 }
 

@@ -1,20 +1,14 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { buildClientSchema } from 'graphql'
-import { $p } from 'graphcool-styles'
-import * as cx from 'classnames'
 import {
   Project,
-  Operation,
   UserType,
-  Model,
-  ModelPermission,
   PermissionRuleType,
   RelationPermission,
   Relation,
 } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
-import PopupWrapper from '../../../components/PopupWrapper/PopupWrapper'
 import { withRouter } from 'found'
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
@@ -41,7 +35,7 @@ interface Props {
   params: any
   project: Project
   children: JSX.Element
-  router: ReactRouter.InjectedRouter
+  router: any
   relation?: Relation
   permission?: RelationPermission
   showNotification: ShowNotificationCallback

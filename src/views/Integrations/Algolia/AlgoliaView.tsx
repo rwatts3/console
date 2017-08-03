@@ -1,9 +1,6 @@
 import * as React from 'react'
 import Helmet from 'react-helmet'
-import ReactElement = React.ReactElement
 import { createFragmentContainer, graphql } from 'react-relay'
-import { $p } from 'graphcool-styles'
-import * as cx from 'classnames'
 import {
   Viewer,
   SearchProviderAlgolia,
@@ -11,9 +8,6 @@ import {
   Project,
 } from '../../../types/types'
 import { withRouter } from 'found'
-import AlgoliaPopupHeader from '../AlgoliaPopup/AlgoliaPopupHeader'
-import AlgoliaPopupIndexes from '../AlgoliaPopup/AlgoliaPopupIndexes'
-import AlgoliaPopupFooter from '../AlgoliaPopup/AlgoliaPopupFooter'
 import mapProps from '../../../components/MapProps/MapProps'
 import UpdateSearchProviderAlgolia from '../../../mutations/UpdateSearchProviderAlgolia'
 import { connect } from 'react-redux'
@@ -255,12 +249,6 @@ class AlgoliaView extends React.Component<Props, State> {
     )
   }
 
-  private updateValid() {
-    const { apiKey, applicationId } = this.state
-    const valid = apiKey.length > 0 && applicationId.length > 0
-    this.setState({ valid } as State)
-  }
-
   private close = () => {
     const { router, params: { projectName } } = this.props
     router.push(`/${projectName}/integrations`)
@@ -303,7 +291,7 @@ class AlgoliaView extends React.Component<Props, State> {
   }
 
   private update = () => {
-    const { apiKey, applicationId, isEnabled } = this.state
+    const { apiKey, applicationId } = this.state
     const { algolia, projectId } = this.props
     UpdateSearchProviderAlgolia.commit({
       id: algolia.id,
