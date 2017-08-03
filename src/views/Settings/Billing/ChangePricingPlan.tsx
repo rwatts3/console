@@ -6,7 +6,7 @@ import { withRouter } from 'found'
 import { Icon } from 'graphcool-styles'
 
 interface Props {
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   params: any
   location: any
 }

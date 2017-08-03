@@ -3,6 +3,7 @@ import { withRouter } from 'found'
 import { AuthTrigger } from '../types'
 import { Response } from '../../../mutations/AuthenticateCustomerMutation'
 import * as cookiestore from 'cookiestore'
+import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrapper'
 
 interface Props {
   updateAuth: (cliToken: string) => Promise<void>

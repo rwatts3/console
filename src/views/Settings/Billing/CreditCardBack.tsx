@@ -6,7 +6,7 @@ interface Props {
   style?: any
   cpc: string
   didChangeCPC: (value: string) => void
-  setEditingState?: () => void
+  setEditingState?: (editing: boolean, saveChanges: boolean) => void
   onKeyDown?: (e: any) => void
   close?: () => void
 }

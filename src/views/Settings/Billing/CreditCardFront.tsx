@@ -8,7 +8,7 @@ interface Props {
   expirationDate: string
   isEditing: boolean
   shouldDisplayVisaLogo?: boolean
-  setEditingState?: (editing: boolean) => void
+  setEditingState?: (editing: boolean, saveChanges: boolean) => void
   onCreditCardNumberChange?: (num: string) => void
   onCardHolderNameChange?: (name: string) => void
   onExpirationDateChange?: (expiration: string) => void
@@ -44,7 +44,7 @@ export default class CreditCardFront extends React.Component<Props, {}> {
               height: 110px;
             }
           `}</style>
-          <div onClick={() => this.props.setEditingState(true)}>
+          <div onClick={() => this.props.setEditingState(true, false)}>
             {this.props.setEditingState &&
               <Icon
                 className="pointer"

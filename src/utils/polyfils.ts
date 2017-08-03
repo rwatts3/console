@@ -152,7 +152,7 @@ if (typeof Object.assign !== 'function') {
 }
 
 if (!Element.prototype.hasOwnProperty('scrollIntoViewIfNeeded')) {
-  Element.prototype.scrollIntoViewIfNeeded = function(centerIfNeeded) {
+  (Element.prototype as any).scrollIntoViewIfNeeded = function(centerIfNeeded) {
     centerIfNeeded = arguments.length === 0 ? true : !!centerIfNeeded
 
     const parent = this.parentNode

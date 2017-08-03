@@ -37,7 +37,7 @@ interface Props {
   nextStep: () => Promise<any>
   skip: () => Promise<any>
   showNotification: ShowNotificationCallback
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   showDonePopup: () => void
   showPopup: (popup: Popup) => void
   itemCount: number
@@ -89,9 +89,7 @@ const footerSectionStyle = `
 const FooterSection = styled.div`${footerSectionStyle};`
 const FooterLink = styled.a`${footerSectionStyle};`
 
-export class SideNav extends React.PureComponent<Props, State> {
-  shouldComponentUpdate: any
-
+export class SideNav extends React.Component<Props, State> {
   constructor(props) {
     super(props)
     this.state = {

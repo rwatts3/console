@@ -1,12 +1,11 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-import { ReactNode } from 'react'
 
 interface Props {
-  children?: JSX.Element | string
+  children?: any
   slim?: boolean
   bright?: boolean
-  customTip?: ReactNode
+  customTip?: any
   offsetX?: number
   width?: number | string
   cursorOffset?: number

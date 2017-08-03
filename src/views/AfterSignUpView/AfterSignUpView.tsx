@@ -53,7 +53,7 @@ const WelcomeIcon = styled(Icon)`
 
 interface Props {
   viewer: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 interface State {
@@ -85,7 +85,7 @@ class AfterSignUpView extends React.Component<Props, State> {
     this.activateTimeout = window.setTimeout(this.activateButton, 10000)
 
     retryUntilDone(done => {
-      if (window.Intercom) {
+      if ((window as any).Intercom) {
         Intercom('boot', {
           app_id: __INTERCOM_ID__,
           user_id: this.props.viewer.user.id,
@@ -214,7 +214,7 @@ class AfterSignUpView extends React.Component<Props, State> {
   }
 
   private openIntercom = () => {
-    if (window.Intercom) {
+    if ((window as any).Intercom) {
       Intercom('show')
     }
   }

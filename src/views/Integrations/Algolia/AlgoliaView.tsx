@@ -25,7 +25,7 @@ import AlgoliaModal from './AlgoliaModal'
 interface Props {
   viewer: Viewer
   params: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   algolia: SearchProviderAlgolia
   projectId: string
   showNotification: ShowNotificationCallback
@@ -65,7 +65,6 @@ class AlgoliaView extends React.Component<Props, State> {
       fragmentValid: true,
       showModal: applicationId.length === 0 && apiKey.length === 0,
     }
-    global.a = this
   }
   render() {
     const { algolia, params, project } = this.props

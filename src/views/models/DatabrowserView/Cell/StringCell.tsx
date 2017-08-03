@@ -9,8 +9,8 @@ interface State {
 }
 
 interface Props {
-  step: string
-  nextStep: () => void
+  step?: string
+  nextStep?: () => void
 }
 
 export class StringCell extends React.Component<CellProps<string> & Props, State> {

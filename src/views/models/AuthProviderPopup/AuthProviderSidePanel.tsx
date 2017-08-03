@@ -64,7 +64,6 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         ? this.getSelectedType(props.anonymousPackage.definition)
         : firstModel.name,
     }
-    global.a = this
   }
 
   componentWillReceiveProps(props: Props) {

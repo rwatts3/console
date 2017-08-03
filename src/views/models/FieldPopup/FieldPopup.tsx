@@ -49,7 +49,7 @@ interface Props {
   enums: Enum[]
   nodeCount: number
   params: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   modelId: string
   projectId: string
   showNotification: ShowNotificationCallback
@@ -222,7 +222,7 @@ class FieldPopup extends React.Component<Props, State> {
     const breaking =
       isBreaking(nodeCount, this.state.field, this.props.field) && !deleting
 
-    let modalStyling = {
+    let modalStyling: any = {
       ...fieldModalStyle,
       content: {
         ...fieldModalStyle.content,

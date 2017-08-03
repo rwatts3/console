@@ -123,7 +123,7 @@ export default FieldPopupHeader
 
 interface TabProps {
   active?: boolean
-  children?: JSX.Element
+  children?: JSX.Element | string
   onClick: any
   hasError: boolean
 }

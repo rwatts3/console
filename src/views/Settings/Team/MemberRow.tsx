@@ -8,7 +8,7 @@ interface State {
 
 interface Props {
   seat: Seat
-  onDelete: () => void
+  onDelete: (seat: Seat) => void
 }
 
 export default class MemberRow extends React.Component<Props, State> {

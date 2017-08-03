@@ -62,8 +62,7 @@ interface Props {
 
 const MIN_SIDEBAR_WIDTH = 67
 
-class ProjectRootView extends React.PureComponent<Props, State> {
-  shouldComponentUpdate: any
+class ProjectRootView extends React.Component<Props, State> {
 
   private refreshInterval: any
   private stopHeartbeat: () => void
@@ -75,9 +74,13 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.updateForceFetching()(window as any).Stripe.setPublishableKey(
-      __STRIPE_PUBLISHABLE_KEY__,
-    )
+    this.updateForceFetching()
+
+    if (typeof Stripe !== 'undefined') {
+      Stripe.setPublishableKey(
+        __STRIPE_PUBLISHABLE_KEY__,
+      )
+    }
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
@@ -95,7 +98,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
       tracker.identify(this.props.user.id, this.props.project.id)
 
       retryUntilDone(done => {
-        if (window.Intercom) {
+        if (typeof Intercom !== 'undefined') {
           Intercom('boot', {
             app_id: __INTERCOM_ID__,
             user_id: this.props.user.id,

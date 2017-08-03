@@ -18,7 +18,7 @@ interface Props {
   onCardHolderNameChange: (name: string) => void
   onExpirationDateChange: (expiration: string) => void
   onCPCChange: (cpc: string) => void
-  setEditingState: (editing: boolean) => void
+  setEditingState: (editing: boolean, saveChanges: boolean) => void
 
   addressLine1: string
   addressLine2: string

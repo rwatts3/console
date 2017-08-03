@@ -16,7 +16,7 @@ import { ConsoleEvents } from 'graphcool-metrics'
 interface Props {
   query?: string
   params: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   closePopup: (id: string) => void
   id: string
   endpointUrl: string

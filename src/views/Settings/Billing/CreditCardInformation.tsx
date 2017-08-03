@@ -15,7 +15,7 @@ interface Props {
   onCPCChange: (cpc: string) => void
 
   isEditing: boolean
-  setEditingState: (editing: boolean) => void
+  setEditingState: (editing: boolean, saveChanges: boolean) => void
 
   addressLine1: string
   addressLine2: string

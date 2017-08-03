@@ -18,7 +18,7 @@ interface Props {
   viewer: Viewer & { project: Project }
   params: any
   relay: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   route: any
 }
 
@@ -33,7 +33,7 @@ class ActionsView extends React.Component<Props, State> {
     editableActionId: null,
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     tracker.track(ConsoleEvents.MutationCallbacks.viewed())
     graphcoolConfirm(
       `Mutation callbacks are deprecated. Please use the new and more powerful server-side-subscriptions instead.

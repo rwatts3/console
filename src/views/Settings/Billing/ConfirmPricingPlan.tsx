@@ -12,7 +12,7 @@ interface State {
 }
 
 interface Props {
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   viewer: Viewer
   projectName: string
   params: any

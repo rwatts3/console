@@ -10,7 +10,7 @@ import { withRouter } from 'found'
 
 interface Props {
   viewer: Viewer
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 const customModalStyle = {

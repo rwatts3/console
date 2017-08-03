@@ -49,7 +49,7 @@ interface Props {
   updateFunction: () => Promise<any>
   location: any
   params: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 interface State {
@@ -134,7 +134,6 @@ class FunctionInput extends React.Component<Props, State> {
       responses: [],
       loading: false,
     }
-    global.i = this
   }
   render() {
     const fullscreen = this.props.location.pathname.endsWith('fullscreen')
@@ -221,7 +220,7 @@ class FunctionInput extends React.Component<Props, State> {
         return response.json()
       })
       .then((res: any) => {
-        const ssschema = buildClientSchema(res.data)
+        const ssschema: any = buildClientSchema(res.data)
         // trim out mutationType and queryType
         ssschema._mutationType._fields = {}
         ssschema._queryType._fields = {}

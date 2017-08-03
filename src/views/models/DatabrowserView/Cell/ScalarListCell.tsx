@@ -309,7 +309,7 @@ export default class ScalarListCell extends React.Component<
                 $p.itemsCenter,
               )}
             >
-              <CancelButton onClick={this.props.methods.cancel}>
+              <CancelButton onClick={() => this.props.methods.cancel()}>
                 Cancel
               </CancelButton>
               <SaveButton onClick={this.handleClose}>Save</SaveButton>

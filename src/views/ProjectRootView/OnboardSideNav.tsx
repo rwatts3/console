@@ -14,12 +14,12 @@ import { Icon } from 'graphcool-styles'
 
 interface Props {
   params: any
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   gettingStartedState: GettingStartedState
   nextStep: () => Promise<any>
   previousStep: () => Promise<any>
   skip: () => Promise<any>
-  showCurrentStep: (router: FoundRouter.InjectedRouter, params: any) => void
+  showCurrentStep: (router: InjectedFoundRouter, params: any) => void
 }
 
 interface StepData {

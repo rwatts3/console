@@ -81,7 +81,6 @@ class SchemaEditor extends React.Component<Props, State> {
       errors: [],
       loading: false,
     }
-    global.s = this
   }
   // componentDidMount() {
   //   document.addEventListener('keydown', (e) => {

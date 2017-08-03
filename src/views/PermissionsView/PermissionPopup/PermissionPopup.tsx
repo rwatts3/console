@@ -37,7 +37,7 @@ interface Props {
   params: any
   project: Project
   children: JSX.Element
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   model?: Model
   permission?: ModelPermission
   showNotification: ShowNotificationCallback
@@ -138,7 +138,6 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       queryChanged: false,
       ruleName: '',
     }
-    global.p = this
   }
 
   updateRelayVariables() {

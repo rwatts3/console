@@ -4,12 +4,12 @@ import { debounce } from 'lodash'
 
 interface Props {
   to: string
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 // using lastMount to prevent infinite instant reloading
 const replace = debounce(
-  (router: FoundRouter.InjectedRouter, to: string) => {
+  (router: InjectedFoundRouter, to: string) => {
     router.replace(to)
   },
   30000,

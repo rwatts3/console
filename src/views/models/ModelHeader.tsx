@@ -12,16 +12,12 @@ import { GettingStartedState } from '../../types/gettingStarted'
 import { Icon, particles, variables } from 'graphcool-styles'
 import * as cx from 'classnames'
 import styled from 'styled-components'
-import UpdateModelMutation from '../../mutations/UpdateModelMutation'
-import DeleteModelMutation from '../../mutations/DeleteModelMutation'
 import { ShowNotificationCallback } from '../../types/utils'
-import { onFailureShowNotification } from '../../utils/relay'
 import { Popup } from '../../types/popup'
 import { showPopup } from '../../actions/popup'
 import { SYSTEM_MODELS } from '../../constants/system'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
-import cuid from 'cuid'
 
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
@@ -98,7 +94,7 @@ class ModelHeader extends React.Component<Props, State> {
       }
     `
 
-    const BlueSettingsLink = styled(SettingsLink)`
+    const BlueSettingsLink = styled<Link>(SettingsLink)`
       background: ${variables.blue};
       color: ${variables.white};
 
@@ -261,62 +257,63 @@ class ModelHeader extends React.Component<Props, State> {
       return
     }
 
-    const id = cuid()
-    this.props.showPopup({
-      element: (
-        <EditModelPopup
-          id={id}
-          projectId={this.props.project.id}
-          modelName={this.props.model.name}
-          saveModel={this.renameModel}
-          deleteModel={this.deleteModel}
-        />
-      ),
-      id,
-    })
+    // const id = cuid()
+    // TODO redirect to model in schema
+    // this.props.showPopup({
+    //   element: (
+    //     <EditModelPopup
+    //       id={id}
+    //       projectId={this.props.project.id}
+    //       modelName={this.props.model.name}
+    //       saveModel={this.renameModel}
+    //       deleteModel={this.deleteModel}
+    //     />
+    //   ),
+    //   id,
+    // })
   }
 
-  private renameModel = (modelName: string) => {
-    const redirect = () => {
-      this.props.router.replace(
-        `/${this.props.params.projectName}/models/${modelName}`,
-      )
-    }
-
-    if (modelName) {
-      UpdateModelMutation.commit({
-        name: modelName,
-        id: this.props.model.id,
-      })
-        .then(() => {
-          tracker.track(
-            ConsoleEvents.Schema.Model.renamed({ id: this.props.model.id }),
-          )
-          redirect()
-        })
-        .catch(transaction => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        })
-    }
-  }
-
-  private deleteModel = () => {
-    graphcoolConfirm('You are deleting this model.').then(() => {
-      this.props.router.replace(`/${this.props.params.projectName}/models`)
-      DeleteModelMutation.commit({
-        projectId: this.props.project.id,
-        modelId: this.props.model.id,
-      })
-        .then(() => {
-          tracker.track(
-            ConsoleEvents.Schema.Model.Popup.deleted({ type: 'Update' }),
-          )
-        })
-        .catch(transaction => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-        })
-    })
-  }
+  // private renameModel = (modelName: string) => {
+  //   const redirect = () => {
+  //     this.props.router.replace(
+  //       `/${this.props.params.projectName}/models/${modelName}`,
+  //     )
+  //   }
+  //
+  //   if (modelName) {
+  //     UpdateModelMutation.commit({
+  //       name: modelName,
+  //       id: this.props.model.id,
+  //     })
+  //       .then(() => {
+  //         tracker.track(
+  //           ConsoleEvents.Schema.Model.renamed({ id: this.props.model.id }),
+  //         )
+  //         redirect()
+  //       })
+  //       .catch(transaction => {
+  //         onFailureShowNotification(transaction, this.props.showNotification)
+  //       })
+  //   }
+  // }
+  //
+  // private deleteModel = () => {
+  //   graphcoolConfirm('You are deleting this model.').then(() => {
+  //     this.props.router.replace(`/${this.props.params.projectName}/models`)
+  //     DeleteModelMutation.commit({
+  //       projectId: this.props.project.id,
+  //       modelId: this.props.model.id,
+  //     })
+  //       .then(() => {
+  //         tracker.track(
+  //           ConsoleEvents.Schema.Model.Popup.deleted({ type: 'Update' }),
+  //         )
+  //       })
+  //       .catch(transaction => {
+  //         onFailureShowNotification(transaction, this.props.showNotification)
+  //       })
+  //   })
+  // }
 }
 
 const ReduxContainer = connect(

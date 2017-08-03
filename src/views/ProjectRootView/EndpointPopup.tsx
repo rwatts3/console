@@ -77,7 +77,7 @@ class EndpointPopup extends React.Component<Props, State> {
       }
     `
 
-    const EndpointType = styled.div`
+    const EndpointType: any = styled.div`
       background: ${variables.gray07};
       padding: ${variables.size10};
       color: ${variables.gray30};
@@ -101,7 +101,7 @@ class EndpointPopup extends React.Component<Props, State> {
         color: ${variables.gray50};
       }
 
-      ${props => props.active && activeEndpointType};
+      ${(props: any) => props.active && activeEndpointType};
     `
 
     const EndpointField = styled.div`

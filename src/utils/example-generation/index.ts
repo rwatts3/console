@@ -51,7 +51,7 @@ export function getSSSExampleEvent(schema, query: string) {
 
 export function getCustomMutationExampleEvent(sdl: string) {
   try {
-    const ast = parse(sdl)
+    const ast: any = parse(sdl)
 
     const data = ast.definitions
       .find(def => def.kind === 'TypeExtensionDefinition')

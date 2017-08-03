@@ -43,6 +43,7 @@ declare global {
   var graphcoolConfirm: any
   var graphcoolNotification: any
   type InjectedFoundRouter = any
+  type FoundRouterRoute = any
 }
 
 

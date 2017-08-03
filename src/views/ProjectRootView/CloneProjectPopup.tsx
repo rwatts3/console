@@ -22,7 +22,7 @@ import { fieldModalStyle } from '../../utils/modalStyle'
 import { createFragmentContainer, graphql } from 'react-relay'
 
 interface Props {
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   params: any
   projectId: string
   customerId: string

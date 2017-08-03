@@ -20,7 +20,7 @@ import { onFailureShowNotification } from '../../../utils/relay'
 interface Props {
   project: Project
   showNotification: ShowNotificationCallback
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 interface State {

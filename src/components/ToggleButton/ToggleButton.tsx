@@ -64,7 +64,7 @@ export default class ToggleButton extends React.Component<Props, State> {
           {this.props.leftText}
         </span>
         <span
-          className={classnames(classes.label, {
+          className={cn(classes.label, {
             [classes.active]: this.state.currentSide === ToggleSide.Right,
           })}
           onClick={() => this.onUpdateClick(ToggleSide.Right)}

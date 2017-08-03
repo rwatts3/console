@@ -58,7 +58,7 @@ interface State {
 }
 
 interface Props {
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
   viewer: any
   relay: RelayProp
   showNotification: ShowNotificationCallback

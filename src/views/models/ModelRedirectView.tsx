@@ -8,7 +8,7 @@ import { Model } from '../../types/types'
 interface Props {
   params: any
   model?: Model
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 class ModelRedirectView extends React.Component<Props, {}> {

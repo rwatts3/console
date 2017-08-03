@@ -6,7 +6,7 @@ import { withRouter } from 'found'
 
 interface Props {
   projectId: string
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 class CliInfoPopup extends React.Component<Props, null> {

@@ -46,7 +46,7 @@ class ActionTrigger extends React.Component<Props, {}> {
       <div>
         <select
           style={{ width: modelWidth }}
-          className={classnames(classes.selector, classes.modelselector)}
+          className={cn(classes.selector, classes.modelselector)}
           value={
             this.props.triggerMutationModelModelId
               ? this.props.triggerMutationModelModelId

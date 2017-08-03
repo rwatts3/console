@@ -42,7 +42,6 @@ class TableComponent extends React.Component<Props, State> {
       selectedRow: -1,
     }
 
-    global.t = this
     // due to the nature of how this component is used, we can safely assume that the field props won't change
     this.widths = calculateFieldColumnWidths(
       window.innerWidth - 200,

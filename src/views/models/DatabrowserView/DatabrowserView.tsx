@@ -176,7 +176,6 @@ interface State {
 }
 
 class DatabrowserView extends React.Component<Props, State> {
-  shouldComponentUpdate: any
 
   private lokka: any
   private fieldColumnWidths: FieldWidths
@@ -213,11 +212,11 @@ class DatabrowserView extends React.Component<Props, State> {
     }
   }
 
-  componentWillMount = () => {
+  componentWillMount() {
     this.reloadData()
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.mounted = true
@@ -254,13 +253,13 @@ class DatabrowserView extends React.Component<Props, State> {
     document.addEventListener('keydown', this.documentKeyDown)
   }
 
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     this.props.resetDataAndUI()
     document.removeEventListener('keydown', this.documentKeyDown)
     this.mounted = false
   }
 
-  componentWillReceiveProps = (nextProps: Props) => {
+  componentWillReceiveProps(nextProps: Props) {
     // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
     if (
       this.props.location.pathname !== nextProps.location.pathname ||

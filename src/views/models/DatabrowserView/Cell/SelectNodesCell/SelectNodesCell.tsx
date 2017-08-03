@@ -80,8 +80,6 @@ class SelectNodesCell extends React.Component<Props, State> {
         overflow: 'visible',
       },
     }
-
-    global.s = this
   }
 
   componentWillReceiveProps(nextProps) {

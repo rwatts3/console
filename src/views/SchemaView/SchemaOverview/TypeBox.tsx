@@ -25,7 +25,7 @@ interface Props {
   gettingStartedState: GettingStartedState
   highlighted?: boolean
   showNotification: ShowNotificationCallback
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 interface State {

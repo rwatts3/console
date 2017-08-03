@@ -15,7 +15,7 @@ interface Props {
   viewer: Viewer
   showNotification: ShowNotificationCallback
   project: Project
-  router: FoundRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 interface State {

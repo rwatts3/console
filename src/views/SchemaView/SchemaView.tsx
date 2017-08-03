@@ -15,7 +15,7 @@ interface Props {
   params: any
   relay: any
   router: any
-  route: FoundRouter.Route
+  route: FoundRouterRoute
 }
 
 interface State {
@@ -44,7 +44,6 @@ class SchemaView extends React.Component<Props, State> {
       blur: false,
       scroll: 0,
     }
-    global.relayProps = props.relay
   }
 
   componentDidMount() {
