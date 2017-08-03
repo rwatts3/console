@@ -18,6 +18,7 @@ import { getEventTypeFromFunction } from '../../utils/functions'
 import UpdateServerSideSubscriptionFunction from '../../mutations/Functions/UpdateServerSideSubscriptionFunction'
 import UpdateSchemaExtensionFunction from '../../mutations/Functions/UpdateSchemaExtensionFunction'
 import { RelayProp } from 'react-relay/classic'
+import { dummy } from '../../utils/dummy'
 
 interface Props {
   fn: ServerlessFunction
@@ -358,3 +359,5 @@ const mutationFragments = graphql`
     }
   }
 `
+
+dummy(mutationFragments)

@@ -44,6 +44,7 @@ import { getEventTypeFromFunction } from '../../../utils/functions'
 import TestButton from './TestButton'
 import AddSchemaExtensionFunction from '../../../mutations/Functions/AddSchemaExtensionFunction'
 import UpdateSchemaExtensionFunction from '../../../mutations/Functions/UpdateSchemaExtensionFunction'
+import { dummy } from '../../../utils/dummy'
 
 export type EventType = 'SSS' | 'RP' | 'SCHEMA_EXTENSION'
 export const eventTypes: EventType[] = ['SSS', 'RP', 'SCHEMA_EXTENSION']
@@ -835,6 +836,8 @@ const mutationFragments = graphql`
     webhookUrl
   }
 `
+
+dummy(mutationFragments)
 
 /*
  TODO: add this again when we use relay modern

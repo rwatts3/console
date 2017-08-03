@@ -5,6 +5,7 @@ import { createFragmentContainer, graphql } from 'react-relay'
 import TypeBox from './TypeBox'
 import AddType from './AddType'
 import { debounce } from 'lodash'
+import { dummy } from '../../../utils/dummy'
 
 interface Props {
   project: Project
@@ -186,3 +187,5 @@ const mutationFragments = graphql`
     }
   }
 `
+
+dummy(mutationFragments)

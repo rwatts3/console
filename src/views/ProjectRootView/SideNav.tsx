@@ -23,6 +23,7 @@ import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 import SideNavElement from './SideNavElement'
 import { RelayProp } from 'react-relay'
+import { dummy } from '../../utils/dummy'
 
 interface Props {
   params: any
@@ -506,7 +507,6 @@ export default createRefetchContainer(
   `,
 )
 
-/* tslint:disable */
 const mutationFragments = graphql`
   fragment SideNav_model on Model {
     id
@@ -515,3 +515,5 @@ const mutationFragments = graphql`
     isSystem
   }
 `
+
+dummy(mutationFragments)
