@@ -12,7 +12,7 @@ interface State {
 }
 
 interface Props {
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   viewer: Viewer
   projectName: string
   params: any

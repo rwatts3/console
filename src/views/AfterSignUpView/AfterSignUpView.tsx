@@ -53,7 +53,7 @@ const WelcomeIcon = styled(Icon)`
 
 interface Props {
   viewer: any
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
 }
 
 interface State {

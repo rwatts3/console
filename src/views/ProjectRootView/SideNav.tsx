@@ -37,7 +37,7 @@ interface Props {
   nextStep: () => Promise<any>
   skip: () => Promise<any>
   showNotification: ShowNotificationCallback
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   showDonePopup: () => void
   showPopup: (popup: Popup) => void
   itemCount: number

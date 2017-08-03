@@ -33,7 +33,7 @@ interface Props {
   onRequestClose?: () => void
   projectId: string
   model: Model
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   // injected by redux
   showNotification: ShowNotificationCallback
   showDonePopup: () => void

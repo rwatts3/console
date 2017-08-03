@@ -72,7 +72,6 @@
     "@types/react-dom": "^15.5.1",
     "@types/react-ga": "^2.1.1",
     "@types/react-modal": "^1.6.8",
-    "@types/react-router": "^4.0.14",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "2.1.32",
     "@types/whatwg-fetch": "^0.0.33",

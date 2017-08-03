@@ -49,7 +49,7 @@ interface Props {
   enums: Enum[]
   nodeCount: number
   params: any
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   modelId: string
   projectId: string
   showNotification: ShowNotificationCallback

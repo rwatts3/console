@@ -162,7 +162,6 @@ export default class PermissionConditions extends React.Component<
             width: 26px;
             height: 26px;
           }
-          .;
         `}</style>
         <div className={cx($p.ph38)}>
           {operation &&

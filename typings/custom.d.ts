@@ -1,4 +1,3 @@
-declare module 'react-router'
 declare module 'graphql'
 declare module 'graphql/*'
 declare module 'react-datetime'
@@ -8,7 +7,6 @@ declare var Raven: any
 declare var Intercom: any
 declare var Stripe: any
 declare var analytics: any
-declare var __BACKEND_ADDR__: string
 declare var __EXAMPLE_ADDR__: string
 declare var __SUBSCRIPTIONS_EU_WEST_1__: any
 declare var __SUBSCRIPTIONS_US_WEST_2__: any
@@ -41,4 +39,8 @@ declare module 'react' {
     jsx?: boolean
     global?: boolean
   }
+}
+
+declare global {
+  var __BACKEND_ADDR__: string
 }

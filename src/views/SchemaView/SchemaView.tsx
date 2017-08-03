@@ -15,7 +15,7 @@ interface Props {
   params: any
   relay: any
   router: any
-  route: ReactRouter.Route
+  route: FoundRouter.Route
 }
 
 interface State {

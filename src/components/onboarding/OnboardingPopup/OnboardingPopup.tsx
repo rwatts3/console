@@ -7,7 +7,7 @@ import { nextStep, skip } from '../../../actions/gettingStarted'
 
 interface Props {
   params: any
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   nextStep: () => any
   skip: any
   gettingStartedState: GettingStartedState

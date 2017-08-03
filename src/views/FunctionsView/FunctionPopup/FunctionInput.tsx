@@ -49,7 +49,7 @@ interface Props {
   updateFunction: () => Promise<any>
   location: any
   params: any
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
 }
 
 interface State {

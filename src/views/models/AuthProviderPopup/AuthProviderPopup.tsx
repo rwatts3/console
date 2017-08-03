@@ -16,7 +16,7 @@ interface Props {
   forceFetchRoot: () => void
   params: any
   location: any
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   isBeta: boolean
 }
 

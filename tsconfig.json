@@ -20,7 +20,7 @@
   "include": [
     "./src/**/*.ts",
     "./src/**/*.tsx",
-    "./custom.d.ts"
+    "./typings/custom.d.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,

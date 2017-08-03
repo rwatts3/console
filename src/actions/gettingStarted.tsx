@@ -239,7 +239,7 @@ export function fetchGettingStartedState(): (
 // -> route: http://domain/projectName/playground
 
 export function showCurrentStep(
-  router: ReactRouter.InjectedRouter,
+  router: FoundRouter.InjectedRouter,
   params: any,
 ) {
   return (dispatch, getState) => {

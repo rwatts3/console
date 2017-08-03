@@ -9,7 +9,7 @@ const classes: any = require('./RootRedirectView.scss')
 interface Props {
   viewer: Viewer
   projectName: string
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   location: any
 }
 

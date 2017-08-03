@@ -9,7 +9,7 @@ import { withRouter } from 'found'
 interface Props {
   gettingStartedState: GettingStartedState
   skip: () => void
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   params: any
 }
 

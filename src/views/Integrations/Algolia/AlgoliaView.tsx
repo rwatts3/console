@@ -25,7 +25,7 @@ import AlgoliaModal from './AlgoliaModal'
 interface Props {
   viewer: Viewer
   params: any
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   algolia: SearchProviderAlgolia
   projectId: string
   showNotification: ShowNotificationCallback

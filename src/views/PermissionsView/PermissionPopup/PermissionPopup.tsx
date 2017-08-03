@@ -37,7 +37,7 @@ interface Props {
   params: any
   project: Project
   children: JSX.Element
-  router: ReactRouter.InjectedRouter
+  router: FoundRouter.InjectedRouter
   model?: Model
   permission?: ModelPermission
   showNotification: ShowNotificationCallback
