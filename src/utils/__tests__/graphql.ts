@@ -61,7 +61,7 @@ describe('isNonScalarList', () => {
   it('checks if a NonScalar Value is not a NonScalar List', () => {
     const field: Field = {
       ...testField,
-      typeIdentifier: 'Hello World',
+      typeIdentifier: 'Hello World' as any,
       isList: false,
     }
     expect(isNonScalarList(field)).toBe(false)

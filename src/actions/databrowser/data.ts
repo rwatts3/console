@@ -109,7 +109,7 @@ export function loadDataAsync(
   first: number,
   searchQuery: string = '',
 ): ReduxThunk {
-  return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
+  return (dispatch: Dispatch, getState: () => StateTree): Promise<any> => {
     const { data } = getState().databrowser
     // as we have optimistic ui updates, they trigger an unwanted reload to the InfiniteLoader
     // so disable loading while doing the mutations
@@ -182,7 +182,7 @@ export function addNodeAsync(
   fieldValues: { [key: string]: any },
 ): ReduxThunk {
   // tslint:disable-line
-  return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
+  return (dispatch: Dispatch, getState: () => StateTree): Promise<any> => {
     dispatch(mutationRequest())
 
     dispatch(hideNewRow())
@@ -237,7 +237,7 @@ export function updateNodeAsync(
   nodeId: string,
   rowIndex: number,
 ): ReduxThunk {
-  return (dispatch: Dispatch, getState: () => StateTree): Promise<{}> => {
+  return (dispatch: Dispatch, getState: () => StateTree): Promise<any> => {
     if (field.isReadonly) {
       return Promise.reject({})
     }

@@ -22,7 +22,6 @@ import { SYSTEM_MODELS } from '../../constants/system'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 import cuid from 'cuid'
-import EditModelPopup from '../ProjectRootView/EditModelPopup'
 
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
@@ -59,7 +58,7 @@ class ModelHeader extends React.Component<Props, State> {
     const isSystem =
       model && (model.isSystem || SYSTEM_MODELS.includes(model.name))
 
-    const SettingsLink = styled(Link)`
+    const SettingsLink = styled<Link>(Link)`
       padding: ${variables.size10};
       background: ${variables.gray04};
       font-size: ${variables.size14};

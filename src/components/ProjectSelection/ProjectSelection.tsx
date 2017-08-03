@@ -40,12 +40,12 @@ const expandedRoot = `
   background: ${variables.green} !important
 `
 
-const Root = styled.div`
+const Root: any = styled.div`
   flex: 0 0 auto;
   height: 64px;
   &:hover {
   }
-  ${props => props.expanded && expandedRoot};
+  ${(props: any) => props.expanded && expandedRoot};
 `
 
 const turnedArrow = `
@@ -57,7 +57,7 @@ const turnedArrow = `
   }
 `
 
-const Arrow = styled.div`
+const Arrow: any = styled.div`
   svg {
     stroke: ${variables.white};
     stroke-width: 4px;
@@ -68,18 +68,18 @@ const Arrow = styled.div`
   width: 26px;
   height: 26px;
 
-  ${props => props.turned && turnedArrow};
+  ${(props: any) => props.turned && turnedArrow};
 `
 
-const SettingsLink = styled(Link)`
+const SettingsLink: any = styled(Link)`
   background: ${variables.gray10};
   font-size: ${variables.size14};
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 1px;
   color: ${variables.white60};
-  width: ${props => (props.small ? 'auto' : '50%')};
-  padding: ${props => (props.small ? '6px' : '10px')};
+  width: ${(props: any) => (props.small ? 'auto' : '50%')};
+  padding: ${(props: any) => (props.small ? '6px' : '10px')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,15 +106,15 @@ const SettingsLink = styled(Link)`
   }
 `
 
-const SettingsLinkDiv = styled.div`
+const SettingsLinkDiv: any = styled.div`
   background: ${variables.gray10};
   font-size: ${variables.size14};
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 1px;
   color: ${variables.white60};
-  width: ${props => (props.small ? 'auto' : '50%')};
-  padding: ${props => (props.small ? '6px' : '10px')};
+  width: ${(props: any) => (props.small ? 'auto' : '50%')};
+  padding: ${(props: any) => (props.small ? '6px' : '10px')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,7 +157,7 @@ const activeListItem = `
   }
 `
 
-const ListItem = styled(Link)`
+const ListItem: any = styled(Link)`
   transition: color ${variables.duration} linear;
 
   svg {
@@ -173,7 +173,7 @@ const ListItem = styled(Link)`
     }
   }
 
-  ${props => props.active && activeListItem}
+  ${(props: any) => props.active && activeListItem}
 `
 
 const AddProject = styled.div`
@@ -185,13 +185,11 @@ const AddProject = styled.div`
   }
 `
 
-class ProjectSelection extends React.PureComponent<Props, State> {
+class ProjectSelection extends React.Component<Props, State> {
   state = {
     expanded: false,
     userDropdownVisible: false,
   }
-
-  shouldComponentUpdate: any
 
   constructor(props) {
     super(props)

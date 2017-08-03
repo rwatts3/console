@@ -51,7 +51,7 @@ export default function() {
       }),
       createMatchEnhancer(new Matcher(routes)),
       applyMiddleware(...middlewares),
-      window.devToolsExtension ? window.devToolsExtension() : f => f,
+      (window as any).devToolsExtension ? (window as any).devToolsExtension() : f => f,
     ),
   )
 

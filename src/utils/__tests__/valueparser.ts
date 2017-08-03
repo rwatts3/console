@@ -224,7 +224,6 @@ describe('stringToValue', () => {
       ...testField,
       isRequired: true,
       isList: true,
-      typeIdentifier: 'User',
     }
 
     const input =
@@ -274,7 +273,7 @@ describe('valueToString', () => {
   })
 
   it('parses an int array and exports it as a JSON array', () => {
-    const field = {
+    const field: Field = {
       ...listTestField,
       typeIdentifier: 'Int',
     }
@@ -282,7 +281,7 @@ describe('valueToString', () => {
   })
 
   it('parses a float array and exports it as a JSON array', () => {
-    const field = {
+    const field: Field = {
       ...listTestField,
       typeIdentifier: 'Float',
     }
@@ -292,7 +291,7 @@ describe('valueToString', () => {
   })
 
   it('parses a string array and exports it as a JSON array', () => {
-    const field = {
+    const field: Field = {
       ...listTestField,
       typeIdentifier: 'String',
     }
@@ -302,7 +301,7 @@ describe('valueToString', () => {
   })
 
   it('parses an boolean array and exports it as a JSON array', () => {
-    const field = {
+    const field: Field = {
       ...listTestField,
       typeIdentifier: 'Boolean',
     }
@@ -312,7 +311,7 @@ describe('valueToString', () => {
   })
 
   it('parses an enum array and exports it as a JSON array', () => {
-    const field = {
+    const field: Field = {
       ...listTestField,
       typeIdentifier: 'Enum',
       enumValues: ['AMAZING', 'ADMIN', 'COOL', 'BASIC'],
@@ -323,7 +322,7 @@ describe('valueToString', () => {
   })
 
   it('parses an date array and exports it as a JSON array', () => {
-    const field = {
+    const field: Field = {
       ...listTestField,
       typeIdentifier: 'DateTime',
     }

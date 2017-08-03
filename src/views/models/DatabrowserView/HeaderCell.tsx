@@ -5,7 +5,7 @@ import { Link } from 'found'
 import { getFieldTypeName } from '../../../utils/valueparser'
 import { isScalar } from '../../../utils/graphql'
 import { Field } from '../../../types/types'
-import { classnames } from '../../../utils/classnames'
+import * as cn from 'classnames'
 import { connect } from 'react-redux'
 import tracker from '../../../utils/metrics'
 const classes: any = require('./HeaderCell.scss')
@@ -67,7 +67,7 @@ class HeaderCell extends React.Component<Props, {}> {
               </div>}
           </div>
           <div
-            className={classnames(classes.fieldName, {
+            className={cn(classes.fieldName, {
               [classes.nonsystem]: !field.isSystem,
             })}
           >

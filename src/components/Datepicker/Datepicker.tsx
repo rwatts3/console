@@ -3,7 +3,7 @@ import { ISO8601 } from '../../utils/constants'
 import * as moment from 'moment'
 import { Moment } from 'moment'
 import ClickOutside from 'react-click-outside'
-import Datetime from 'react-datetime'
+import * as Datetime from 'react-datetime'
 const classes: any = require('./Datepicker.scss')
 
 if (Datetime) {

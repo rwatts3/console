@@ -1,6 +1,6 @@
 import * as React from 'react'
 const classes: any = require('./CheckboxCell.scss')
-import { classnames } from '../../../utils/classnames'
+import * as cn from 'classnames'
 
 interface Props {
   onChange: (checked: boolean) => void
@@ -28,7 +28,7 @@ export default class CheckboxCell extends React.Component<Props, {}> {
       >
         <div className={classes.border}>
           <div
-            className={classnames(classes.dot, {
+            className={cn(classes.dot, {
               [classes.active]: checked,
             })}
           />

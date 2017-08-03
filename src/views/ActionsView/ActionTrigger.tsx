@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { classnames } from '../../utils/classnames'
+import * as cn from 'classnames'
 import {
   Project,
   ActionTriggerMutationModelMutationType,
@@ -21,11 +21,11 @@ class ActionTrigger extends React.Component<Props, {}> {
     const modelSelected = !!this.props.triggerMutationModelModelId
     const mutationSelected = !!this.props.triggerMutationModelMutationType
 
-    let triggerClass = classnames(classes.selector, classes.typeselector)
+    let triggerClass = cn(classes.selector, classes.typeselector)
     if (mutationSelected) {
-      triggerClass = classnames(triggerClass, this.getMutationClass())
+      triggerClass = cn(triggerClass, this.getMutationClass())
     } else if (modelSelected) {
-      triggerClass = classnames(triggerClass, classes.selecting)
+      triggerClass = cn(triggerClass, classes.selecting)
     }
 
     const fontOptions = {

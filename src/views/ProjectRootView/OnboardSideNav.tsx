@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { classnames } from '../../utils/classnames'
+import * as cn from 'classnames'
 import { withRouter } from 'found'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -131,7 +131,7 @@ class OnboardSideNav extends React.Component<Props, {}> {
     const isComplete = progress.index > data.index
     return (
       <div
-        className={classnames(
+        className={cn(
           'flex black-30 mb-16 items-center w-100 pointer',
           {
             'white pointer': isActive,
@@ -144,7 +144,7 @@ class OnboardSideNav extends React.Component<Props, {}> {
       >
         <div
           style={{ width: 23, height: 23, borderRadius: 11.5, fontSize: 12 }}
-          className={classnames('flex items-center justify-center ', {
+          className={cn('flex items-center justify-center ', {
             accent: isActive || isComplete,
             'o-40': !isActive,
             'bg-white': isActive,

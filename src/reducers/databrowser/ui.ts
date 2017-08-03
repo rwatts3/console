@@ -91,7 +91,7 @@ export function reduceUI(
         const nodes = state.selectedNodeIds.filter(x => x !== id)
         return {
           ...state,
-          selectedNodeIds: nodes,
+          selectedNodeIds: nodes as any,
           actionRow:
             nodes.size > 0 ? ActionRowState.DeleteNode : ActionRowState.NewNode,
         }

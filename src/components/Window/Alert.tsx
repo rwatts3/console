@@ -31,8 +31,13 @@ export default class Alert extends React.Component<null, State> {
       text: '',
       title: '',
     }
-    global.graphcoolAlert = this.showAlert
-    global.graphcoolConfirm = this.showConfirm
+
+    this.setGlobal()
+  }
+  
+  setGlobal() {
+    (global as any).graphcoolAlert = this.showAlert as any
+    (global as any).graphcoolConfirm = this.showConfirm as any
   }
 
   showAlert = (text: string, title?: string) => {

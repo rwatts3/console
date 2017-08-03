@@ -24,14 +24,14 @@ const Info = (props: Props) => {
     offsetY = `calc(-100% - 40px + ${offsetY})`
   }
 
-  const tooltipStyle = {
+  const tooltipStyle: any = {
     transform: `translate(${offsetX},${offsetY})`,
   }
   if (props.width) {
     tooltipStyle.width = props.width
   }
 
-  const tooltipContentStyle = {}
+  const tooltipContentStyle: any = {}
   if (props.padding) {
     tooltipContentStyle.padding = props.padding
   }

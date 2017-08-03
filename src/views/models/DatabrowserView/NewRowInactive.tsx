@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import * as cn from 'classnames'
 import { toggleNewRow } from '../../../actions/databrowser/ui'
 import { Model, Field } from '../../../types/types'
 import { Icon } from 'graphcool-styles'
-import { classnames } from '../../../utils/classnames'
 import { SYSTEM_MODELS } from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 import Tether from '../../../components/Tether/Tether'
@@ -46,7 +46,7 @@ class NewRowInactive extends React.Component<Props, State> {
 
     return (
       <div
-        className={classnames(classes.root, {
+        className={cn(classes.root, {
           [classes.active]: this.state.active,
         })}
       >
@@ -59,7 +59,7 @@ class NewRowInactive extends React.Component<Props, State> {
               }}
             />
           : <div
-              className={classnames(classes.root, {
+              className={cn(classes.root, {
                 [classes.active]: this.state.active,
               })}
               onClick={(e: any) => {
@@ -120,7 +120,7 @@ class NewRowInactive extends React.Component<Props, State> {
             (index === fields.length - 1 ? 1 : 0),
           height: this.props.height,
         }}
-        className={classnames(classes.cell, {
+        className={cn(classes.cell, {
           [classes.last]: index === fields.length - 1,
         })}
       >

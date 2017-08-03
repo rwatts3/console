@@ -166,7 +166,7 @@ export function fetchGettingStartedState(): (
       }`
     const variables = {}
 
-    return fetchQuery({ text: query }, variables).then(({ data }) => {
+    return fetchQuery({ text: query }, variables).then(({ data }: any) => {
       const {
         id,
         gettingStarted,
@@ -239,7 +239,7 @@ export function fetchGettingStartedState(): (
 // -> route: http://domain/projectName/playground
 
 export function showCurrentStep(
-  router: FoundRouter.InjectedRouter,
+  router: InjectedFoundRouter,
   params: any,
 ) {
   return (dispatch, getState) => {

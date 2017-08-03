@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { classnames } from '../../../../utils/classnames'
+import * as cn from 'classnames'
 
 const classes = require('./NullableCell.scss')
 
@@ -26,7 +26,7 @@ export default class NullableCell extends React.Component<Props, State> {
       <div className={classes.root}>
         {this.getSubCell()}
         <div
-          className={classnames(classes.button, classes.blue)}
+          className={cn(classes.button, classes.blue)}
           onMouseEnter={() => this.setState({ isOverNullButton: true })}
           onMouseLeave={() => this.setState({ isOverNullButton: false })}
           onClick={() => this.props.save(null)}

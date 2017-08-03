@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Icon } from 'graphcool-styles'
-import { classnames } from '../../utils/classnames'
+import * as cn from 'classnames'
 import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionHandlerBox.scss')
 
@@ -19,13 +19,13 @@ export default class ActionHandlerBox extends React.Component<Props, {}> {
   render() {
     return (
       <div
-        className={classnames(
+        className={cn(
           classes.root,
           this.props.disabled ? classes.disabled : '',
         )}
       >
         <div className={classes.head}>
-          <div className={classnames(classes.title)}>Handler</div>
+          <div className={cn(classes.title)}>Handler</div>
           {!this.props.disabled &&
             !this.props.valid &&
             <Tooltip

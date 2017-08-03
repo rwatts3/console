@@ -129,12 +129,12 @@ export function reduceData(
         ...state,
         nodes: state.nodes.filter(
           (node, index) => action.payload.indexOf(node.get('id')) === -1,
-        ),
+        ) as any,
         itemCount: state.itemCount - action.payload.length,
         loaded: state.loaded.slice(
           0,
           state.loaded.size - action.payload.length,
-        ),
+        ) as any,
       }
       return newState
     case Constants.UPDATE_CELL:
@@ -148,6 +148,5 @@ export function reduceData(
     case SharedConstants.RESET:
       return initialState
   }
-  global.state = state
   return state
 }

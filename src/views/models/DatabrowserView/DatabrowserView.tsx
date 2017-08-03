@@ -53,7 +53,6 @@ import Cell from './Cell'
 import LoadingCell from './LoadingCell'
 import { getLokka } from './../../../utils/relay'
 import { $p } from 'graphcool-styles'
-import * as cx from 'classnames'
 import {
   startProgress,
   incrementProgress,
@@ -69,7 +68,7 @@ import {
   setDataBrowserViewRef,
 } from '../../../actions/databrowser/ui'
 import { GridPosition } from '../../../types/databrowser/ui'
-import { classnames } from '../../../utils/classnames'
+import * as cn from 'classnames'
 import { throttle } from 'lodash'
 import { LightCell } from './LightCell'
 import tracker from '../../../utils/metrics'
@@ -289,7 +288,7 @@ class DatabrowserView extends React.Component<Props, State> {
           project={this.props.project}
         >
           <div
-            className={classnames(classes.button, classes.search, {
+            className={cn(classes.button, classes.search, {
               [classes.active]: this.props.searchVisible,
             })}
           >
@@ -413,14 +412,14 @@ class DatabrowserView extends React.Component<Props, State> {
           this.props.itemCount === 0 &&
           <div className={classes.loadingOverlay}>
             <div
-              className={cx($p.mt25, $p.flex, $p.flexColumn, $p.justifyCenter)}
+              className={cn($p.mt25, $p.flex, $p.flexColumn, $p.justifyCenter)}
             >
-              <h2 className={cx($p.fw3, $p.mb16)}>
+              <h2 className={cn($p.fw3, $p.mb16)}>
                 This is a system type. Nodes can only be added via the API.
               </h2>
-              <div className={cx($p.flex, $p.flexRow)}>
-                <div className={cx($p.flexAuto)}>
-                  <div className={cx($p.black50)}>
+              <div className={cn($p.flex, $p.flexRow)}>
+                <div className={cn($p.flexAuto)}>
+                  <div className={cn($p.black50)}>
                     This model also includes system fields, that are generated
                     by graphcool.
                   </div>
@@ -431,7 +430,7 @@ class DatabrowserView extends React.Component<Props, State> {
                 </div>
                 <div>
                   <a
-                    className={cx(
+                    className={cn(
                       $p.pa16,
                       $p.f16,
                       $p.white,
