@@ -1,6 +1,6 @@
 import * as React from 'react'
 import HorizontalSelect from './HorizontalSelect'
-import { $v} from 'graphcool-styles'
+import { $v } from 'graphcool-styles'
 import EditValueInput from './EditValueInput'
 import ErrorInfo from './ErrorInfo'
 import { FieldPopupErrors } from './FieldPopupState'

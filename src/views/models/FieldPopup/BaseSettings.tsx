@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FieldHorizontalSelect from './FieldHorizontalSelect'
-import { $v} from 'graphcool-styles'
+import { $v } from 'graphcool-styles'
 import { fieldTypes } from './constants'
 import FieldLabel from './FieldLabel'
 import OptionInput from './OptionInput'

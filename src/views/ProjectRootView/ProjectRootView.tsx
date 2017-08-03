@@ -75,9 +75,9 @@ class ProjectRootView extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.updateForceFetching()
-
-    (window as any).Stripe.setPublishableKey(__STRIPE_PUBLISHABLE_KEY__)
+    this.updateForceFetching()(window as any).Stripe.setPublishableKey(
+      __STRIPE_PUBLISHABLE_KEY__,
+    )
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
 
@@ -120,7 +120,7 @@ class ProjectRootView extends React.PureComponent<Props, State> {
         window &&
         (window as any).Intercom
       ) {
-        (window as any).Intercom('showNewMessage')
+        ;(window as any).Intercom('showNewMessage')
       }
     } else {
       // TODO migrate to tracker

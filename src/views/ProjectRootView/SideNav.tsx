@@ -112,7 +112,7 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { project, expanded} = this.props
+    const { project, expanded } = this.props
     return (
       <div
         className="side-nav"

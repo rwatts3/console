@@ -14,9 +14,7 @@ import DefineRelation from './DefineRelation'
 import SetMutation from './SetMutation'
 import AddRelationMutation from '../../mutations/AddRelationMutation'
 import UpdateRelationMutation from '../../mutations/UpdateRelationMutation'
-import {
-  lowercaseFirstLetter,
-} from '../../utils/utils'
+import { lowercaseFirstLetter } from '../../utils/utils'
 import BreakingChangeIndicator from './BreakingChangeIndicator'
 import DeleteRelationMutation from '../../mutations/DeleteRelationMutation'
 import { ShowNotificationCallback } from '../../types/utils'

@@ -27,12 +27,7 @@ class EnumList extends React.Component<Props, null> {
     this.props.setScroll(scrollPercentage)
   }, 100)
   render() {
-    const {
-      opacity,
-      editingEnumName,
-      enums,
-      project,
-    } = this.props
+    const { opacity, editingEnumName, enums, project } = this.props
     let style = {}
     if (typeof opacity === 'number' && !isNaN(opacity)) {
       style = { opacity }

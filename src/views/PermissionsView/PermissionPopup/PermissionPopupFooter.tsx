@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 
 interface Props {
   onSelectIndex: (index: number) => void

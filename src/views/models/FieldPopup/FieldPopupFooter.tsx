@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import ConfirmFieldPopup from './ConfirmFieldPopup'
 import { Field } from '../../../types/types'
 import Tether from '../../../components/Tether/Tether'

@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Link } from 'found'
 import * as cx from 'classnames'
-import { $p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 
 interface Integration {
   isEnabled: boolean

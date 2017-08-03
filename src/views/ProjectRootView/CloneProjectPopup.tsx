@@ -4,7 +4,7 @@ import { ConsoleEvents } from 'graphcool-metrics'
 import * as cx from 'classnames'
 import styled from 'styled-components'
 import { withRouter } from 'found'
-import { $p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 
 import { validateProjectName } from '../../utils/nameValidator'
 import tracker from '../../utils/metrics'

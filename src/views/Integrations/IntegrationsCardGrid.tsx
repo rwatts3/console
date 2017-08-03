@@ -17,7 +17,7 @@ class IntegrationsCardGrid extends React.Component<Props, {}> {
     const isEnabled =
       this.props.project.integrations.edges.length > 0 &&
       this.props.project.integrations.edges[0].node.isEnabled
-    const { params: { projectName }} = this.props
+    const { params: { projectName } } = this.props
 
     const providers = this.props.project.authProviders.edges.map(
       edge => edge.node,

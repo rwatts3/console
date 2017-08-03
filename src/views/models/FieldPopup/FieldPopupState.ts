@@ -1,8 +1,4 @@
-import {
-  FieldType,
-  Field,
-  ConstraintType,
-} from '../../../types/types'
+import { FieldType, Field, ConstraintType } from '../../../types/types'
 import { MigrationUIState } from './FieldPopup'
 import { TypedValue } from '../../../types/utils'
 

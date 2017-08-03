@@ -541,7 +541,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private updateAnonymousAuthProvider = () => {
-    const { authProvider} = this.state
+    const { authProvider } = this.state
     const { isEnabled } = authProvider
 
     const hack = () => {

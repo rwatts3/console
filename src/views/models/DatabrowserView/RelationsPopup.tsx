@@ -12,7 +12,7 @@ import { updateCell } from '../../../actions/databrowser/data'
 const classes: any = require('./RelationsPopup.scss')
 import { connect } from 'react-redux'
 import { GridPosition } from '../../../types/databrowser/ui'
-import { TypedValue} from '../../../types/utils'
+import { TypedValue } from '../../../types/utils'
 import { unionBy } from 'lodash'
 
 interface Props {

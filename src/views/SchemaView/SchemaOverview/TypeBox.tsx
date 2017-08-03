@@ -69,7 +69,7 @@ class TypeBox extends React.Component<Props, State> {
     }
   }
   render() {
-    const { model, projectName} = this.props
+    const { model, projectName } = this.props
     const propsExtended = this.props.extended
     const stateExtended = this.state.extended
     const extended =

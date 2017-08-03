@@ -3,17 +3,12 @@ import * as Modal from 'react-modal'
 import { fieldModalStyle } from '../../../utils/modalStyle'
 import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
-import {
-  Field,
-  Enum,
-} from '../../../types/types'
-import {
-  ConsoleEvents,
-} from 'graphcool-metrics'
+import { Field, Enum } from '../../../types/types'
+import { ConsoleEvents } from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
 import Constraints from './Constraints'
-import { emptyField} from './constants'
+import { emptyField } from './constants'
 import mapProps from 'map-props'
 import { connect } from 'react-redux'
 import { createFragmentContainer, graphql } from 'react-relay'

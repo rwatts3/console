@@ -257,12 +257,7 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
   }
 
   private create = () => {
-    const {
-      fragment,
-      title,
-      selectedModel,
-      loading,
-    } = this.state
+    const { fragment, title, selectedModel, loading } = this.state
     const { algolia } = this.props
 
     if (this.valid() && !loading) {

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import { $p, variables, Icon} from 'graphcool-styles'
+import { $p, variables, Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
 import { Operation, Field } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'

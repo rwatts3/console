@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Icon, $v } from 'graphcool-styles'
-import { A} from '../../../components/Links'
+import { A } from '../../../components/Links'
 
 interface Props {
   nextStep: () => void

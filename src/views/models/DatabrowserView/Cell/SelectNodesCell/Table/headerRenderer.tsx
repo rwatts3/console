@@ -13,7 +13,6 @@ export default function headerRenderer(field) {
     sortBy,
     sortDirection,
   }) => {
-
     return (
       <div className="header-cell">
         <style jsx>{`

@@ -1,9 +1,6 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
-import {
-  Relation,
-  RelationPermission,
-} from '../../../../types/types'
+import { Relation, RelationPermission } from '../../../../types/types'
 import { $p, variables, Icon } from 'graphcool-styles'
 import * as cx from 'classnames'
 import NewToggleButton from '../../../../components/NewToggleButton/NewToggleButton'

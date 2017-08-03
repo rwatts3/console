@@ -15,7 +15,7 @@ interface Props {
 
 class IntegrationsView extends React.Component<Props, {}> {
   render() {
-    const { viewer: { project, user }, params} = this.props
+    const { viewer: { project, user }, params } = this.props
 
     return (
       <div className={cx($p.overflowScroll, $p.h100, $p.bgBlack04)}>
