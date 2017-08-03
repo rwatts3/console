@@ -39,7 +39,7 @@ class Tether extends React.Component<Props, {}> {
       this.refs.container &&
       typeof (this.refs.container as any).scrollIntoViewIfNeeded === 'function'
     ) {
-      (this.refs.container as any).scrollIntoViewIfNeeded()
+      ;(this.refs.container as any).scrollIntoViewIfNeeded()
     }
   }
 

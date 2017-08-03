@@ -238,10 +238,7 @@ export function fetchGettingStartedState(): (
 //   'STEP6_CLOSED',
 // -> route: http://domain/projectName/playground
 
-export function showCurrentStep(
-  router: InjectedFoundRouter,
-  params: any,
-) {
+export function showCurrentStep(router: InjectedFoundRouter, params: any) {
   return (dispatch, getState) => {
     const { step } = getState().gettingStarted.gettingStartedState
 

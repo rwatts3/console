@@ -176,7 +176,6 @@ interface State {
 }
 
 class DatabrowserView extends React.Component<Props, State> {
-
   private lokka: any
   private fieldColumnWidths: FieldWidths
   private mounted: boolean

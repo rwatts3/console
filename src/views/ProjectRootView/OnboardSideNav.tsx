@@ -131,13 +131,10 @@ class OnboardSideNav extends React.Component<Props, {}> {
     const isComplete = progress.index > data.index
     return (
       <div
-        className={cn(
-          'flex black-30 mb-16 items-center w-100 pointer',
-          {
-            'white pointer': isActive,
-            strike: isComplete,
-          },
-        )}
+        className={cn('flex black-30 mb-16 items-center w-100 pointer', {
+          'white pointer': isActive,
+          strike: isComplete,
+        })}
         onClick={() =>
           isActive &&
           this.props.showCurrentStep(this.props.router, this.props.params)}

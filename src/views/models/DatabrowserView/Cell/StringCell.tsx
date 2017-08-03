@@ -13,7 +13,10 @@ interface Props {
   nextStep?: () => void
 }
 
-export class StringCell extends React.Component<CellProps<string> & Props, State> {
+export class StringCell extends React.Component<
+  CellProps<string> & Props,
+  State
+> {
   input: HTMLInputElement
 
   enterPressed: boolean

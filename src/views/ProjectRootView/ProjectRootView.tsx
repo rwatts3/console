@@ -63,7 +63,6 @@ interface Props {
 const MIN_SIDEBAR_WIDTH = 67
 
 class ProjectRootView extends React.Component<Props, State> {
-
   private refreshInterval: any
   private stopHeartbeat: () => void
 
@@ -77,9 +76,7 @@ class ProjectRootView extends React.Component<Props, State> {
     this.updateForceFetching()
 
     if (typeof Stripe !== 'undefined') {
-      Stripe.setPublishableKey(
-        __STRIPE_PUBLISHABLE_KEY__,
-      )
+      Stripe.setPublishableKey(__STRIPE_PUBLISHABLE_KEY__)
     }
 
     cookiestore.set('graphcool_last_used_project_id', props.project.id)
