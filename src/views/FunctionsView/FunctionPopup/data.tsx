@@ -1,6 +1,3 @@
-import * as React from 'react'
-import { FunctionBinding } from '../../../types/types'
-
 export type FunctionBinding =
   | 'TRANSFORM_ARGUMENT'
   | 'PRE_WRITE'

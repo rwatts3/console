@@ -1,5 +1,4 @@
 import * as React from 'react'
-import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrapper'
 import { withRouter } from 'found'
 import { AuthTrigger } from '../types'
 import { Response } from '../../../mutations/AuthenticateCustomerMutation'

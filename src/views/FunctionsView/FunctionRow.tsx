@@ -22,7 +22,7 @@ import { RelayProp } from 'react-relay/classic'
 interface Props {
   fn: ServerlessFunction
   params: any
-  router: ReactRouter.InjectedRouter
+  router: any
   showNotification: ShowNotificationCallback
   relay: RelayProp
 }
@@ -47,7 +47,7 @@ class FunctionRow extends React.Component<Props, State> {
   }
 
   render() {
-    const { fn, params: { projectName } } = this.props
+    const { fn } = this.props
     const eventType = getEventTypeFromFunction(fn)
     const link = `/${this.props.params.projectName}/functions/${this.props.fn
       .id}/edit`

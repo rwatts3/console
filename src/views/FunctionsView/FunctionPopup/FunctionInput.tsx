@@ -13,7 +13,6 @@ import StepMarker from './StepMarker'
 import { EventType } from './FunctionPopup'
 import { buildClientSchema, introspectionQuery } from 'graphql'
 import { CustomGraphiQL } from 'graphcool-graphiql'
-import { getEventInput } from './TestPopup'
 import TestButton from './TestButton'
 import { FunctionType } from '../../../types/types'
 import {
@@ -94,7 +93,6 @@ export interface TestError {
 
 class FunctionInput extends React.Component<Props, State> {
   private logsRef: any
-  private lastQuery: string
   private firstTest: boolean = true
   private updateSSSExampleEvent = throttle(
     (fakeSchema: any, query?: string) => {
@@ -265,17 +263,15 @@ class FunctionInput extends React.Component<Props, State> {
     }
   }
   renderComponent() {
-    const { inputWidth, showExample, responses } = this.state
+    const { showExample, responses } = this.state
     const {
       schema,
       value,
       onChange,
       onTypeChange,
       isInline,
-      onChangeUrl,
       webhookUrl,
       eventType,
-      sssModelName,
       location,
     } = this.props
     const { onChangeQuery } = this.props

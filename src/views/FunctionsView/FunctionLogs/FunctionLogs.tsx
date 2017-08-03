@@ -5,14 +5,13 @@ import * as Modal from 'react-modal'
 import modalStyle from '../../../utils/modalStyle'
 import { Log, ServerlessFunction } from '../../../types/types'
 import { withRouter } from 'found'
-import { range } from 'lodash'
 import { Icon, $v } from 'graphcool-styles'
 import LogComponent from './Log'
 
 interface Props {
   logs: Log[]
   node: ServerlessFunction
-  router: ReactRouter.InjectedRouter
+  router: any
   relay: RelayProp
 }
 

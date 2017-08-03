@@ -3,7 +3,6 @@ import FieldHorizontalSelect from '../../models/FieldPopup/FieldHorizontalSelect
 import { Icon, $v } from 'graphcool-styles'
 import { EventType, eventTypes } from './FunctionPopup'
 import InfoBox from './InfoBox'
-import Info from '../../../components/Info'
 import Select from './Select'
 import { Model } from '../../../types/types'
 

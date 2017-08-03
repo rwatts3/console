@@ -212,13 +212,6 @@ export default class WebhookEditor extends React.Component<Props, State> {
     this.ref = ref
   }
 
-  private scrollDown = () => {
-    if (this.ref) {
-      const target = this.ref.scrollHeight - this.ref.clientHeight
-      smoothScrollTo(this.ref, target, 50)
-    }
-  }
-
   private removeRow = (name: string) => {
     const copy = {...this.props.headers}
     delete copy[name]
@@ -252,12 +245,6 @@ export default class WebhookEditor extends React.Component<Props, State> {
 
   private urlChange = e => {
     this.props.onChangeUrl(e.target.value)
-  }
-
-  private valueKeyDown = e => {
-    if (e.keyCode === 13) {
-      this.addRow()
-    }
   }
 
   private keyDown = e => {

@@ -1,7 +1,4 @@
 import * as React from 'react'
-import * as Relay from 'react-relay/classic'
-import { Viewer, SearchProviderAlgolia } from '../../../types/types'
-import { withRouter } from 'found'
 
 interface Props {
   params: any
@@ -12,7 +9,7 @@ interface Props {
 
 export default class AlgoliaIndexes extends React.Component<Props, {}> {
   render() {
-    const { indexes, params, selectedIndexIndex, onSelectIndex } = this.props
+    const { indexes, selectedIndexIndex, onSelectIndex } = this.props
 
     return (
       <div>

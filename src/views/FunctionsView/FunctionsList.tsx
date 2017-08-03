@@ -2,8 +2,6 @@ import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import mapProps from '../../components/MapProps/MapProps'
 import { Project, ServerlessFunction } from '../../types/types'
-import { Link } from 'found'
-import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
 import FunctionRow from './FunctionRow'
 
 interface Props {
@@ -14,7 +12,7 @@ interface Props {
 
 class FunctionsList extends React.Component<Props, {}> {
   render() {
-    const { functions, project } = this.props
+    const { functions} = this.props
     return (
       <div className="functions">
         <style jsx={true}>{`

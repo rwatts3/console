@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Icon, $v } from 'graphcool-styles'
-import ModalDocs from '../../components/ModalDocs/ModalDocs'
 import { Link } from 'found'
 import DocsPopup from '../../components/DocsPopup'
 

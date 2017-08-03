@@ -14,11 +14,6 @@ export function getEmptyFunction(
 ): ServerlessFunction {
   const modelId = models[0].id
 
-  const bindings: FunctionBinding[] = [
-    'TRANSFORM_ARGUMENT',
-    'PRE_WRITE',
-    'TRANSFORM_PAYLOAD',
-  ]
   // TODO continue when backend is ready
   // const takenBindings = bindings
   //   .map(binding => bindingTaken(modelId, binding, functions))

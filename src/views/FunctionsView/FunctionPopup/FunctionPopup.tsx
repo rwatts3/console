@@ -15,7 +15,6 @@ import {
   getWebhookUrl,
   inlineCode,
   isValid,
-  updateAuth0Id,
   updateBinding,
   updateInlineCode,
   updateModel,
@@ -26,7 +25,6 @@ import {
   updateWebhookHeaders,
   updateWebhookUrl,
 } from './functionPopupState'
-import * as Codemirror from 'react-codemirror'
 import Step0 from './Step0'
 import * as cookiestore from 'cookiestore'
 import Trigger from './Trigger'
@@ -40,8 +38,6 @@ import { ShowNotificationCallback } from '../../../types/utils'
 import Loading from '../../../components/Loading/Loading'
 import UpdateRequestPipelineMutationFunction from '../../../mutations/Functions/UpdateRequestPipelineMutationFunction'
 import DeleteFunction from '../../../mutations/Functions/DeleteFunction'
-import { Icon, $v } from 'graphcool-styles'
-import TestPopup from './TestPopup'
 import AddServerSideSubscriptionFunction from '../../../mutations/Functions/AddServerSideSubscriptionFunction'
 import UpdateServerSideSubscriptionFunction from '../../../mutations/Functions/UpdateServerSideSubscriptionFunction'
 import { getEventTypeFromFunction } from '../../../utils/functions'
@@ -54,7 +50,7 @@ export const eventTypes: EventType[] = ['SSS', 'RP', 'SCHEMA_EXTENSION']
 
 interface Props {
   params: any
-  router: ReactRouter.InjectedRouter
+  router: any
   models: Model[]
   relay: RelayProp
   schema: string
@@ -120,7 +116,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       if (props.node.type === 'WEBHOOK') {
         newNode = {
           ...newNode,
-          _webhookURL: newNode.webhookUrl,
+          _webhookUrl: newNode.webhookUrl,
         }
       }
       if (props.node.webhookHeaders && props.node.webhookHeaders.length > 0) {
@@ -218,7 +214,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   render() {
-    const { models, schema, functions, location, isBeta } = this.props
+    const { models, schema, functions, isBeta } = this.props
     const {
       activeTabIndex,
       editing,
@@ -226,7 +222,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       fn,
       eventType,
       loading,
-      showTest,
       sssModelName,
     } = this.state
 
@@ -383,12 +378,8 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
     this.setState({ sssModelName: e.target.value } as FunctionPopupState)
   }
 
-  private closeTestPopup = () => {
-    this.setState({ showTest: false } as FunctionPopupState)
-  }
-
   private footerButtonForTab = (index: number) => {
-    const { editing, eventType } = this.state
+    const { editing} = this.state
     if (
       editing ||
       (this.state.eventType === 'RP' && index === 2) ||

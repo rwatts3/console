@@ -2,7 +2,6 @@ import * as React from 'react'
 import {
   FunctionBinding,
   FunctionType,
-  Model,
   RequestPipelineMutationOperation,
 } from '../../../types/types'
 import FunctionInput from './FunctionInput'
@@ -52,7 +51,6 @@ export default class FunctionEditor extends React.Component<Props, {}> {
       name,
       inlineCode,
       onInlineCodeChange,
-      onNameChange,
       binding,
       isInline,
       onTypeChange,
@@ -61,10 +59,7 @@ export default class FunctionEditor extends React.Component<Props, {}> {
       schema,
       editing,
       eventType,
-      onChangeQuery,
-      query,
       showErrors,
-      location,
     } = this.props
     return (
       <div className="request-pipeline-function">

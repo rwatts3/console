@@ -25,12 +25,6 @@ const CustomInput = styled.input`
   }
 `
 
-const CommunicationIcon = styled(Icon)`
-  g g path:first-child {
-    fill: ${$v.gray30};
-  }
-`
-
 const pulse = keyframes`
   0% { opacity: 1; }
   49% { opacity: 1; }

@@ -3,7 +3,7 @@ import * as cn from 'classnames'
 import { ReactNode } from 'react'
 
 interface Props {
-  children?: JSX.Element
+  children?: JSX.Element | string
   slim?: boolean
   bright?: boolean
   customTip?: ReactNode

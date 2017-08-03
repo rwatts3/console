@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Icon, $v } from 'graphcool-styles'
 
 export default function InfoBox(props) {
   return (
