@@ -147,7 +147,6 @@ module.exports = {
       threads: 2,
       loaders: [ 'babel-loader' ],
     }),
-    new webpack.optimize.ModuleConcatenationPlugin()
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],

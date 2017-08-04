@@ -151,6 +151,12 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-notification-system@^0.2.35":
+  version "0.2.35"
+  resolved "https://registry.yarnpkg.com/@types/react-notification-system/-/react-notification-system-0.2.35.tgz#8db7cf4ded5c5cf5a1f2287820b820ac77c4bdec"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^16.0.0":
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.0.tgz#fec7e6302e11c1cd307129d8ce1e6d5dca4a0283"
@@ -2467,7 +2473,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2:
     create-hash "^1.1.0"
     inherits "^2.0.1"
 
-create-react-class@^15.5.3:
+create-react-class@^15.5.1, create-react-class@^15.5.3:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.0.tgz#ab448497c26566e1e29413e883207d57cfe7bed4"
   dependencies:
@@ -7869,11 +7875,13 @@ react-motion@^0.4.4:
     performance-now "^0.2.0"
     raf "^3.1.0"
 
-react-notification-system@^0.2.7:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/react-notification-system/-/react-notification-system-0.2.11.tgz#c954ab7f3c355b34ca5f85d6b3fc4236070e7788"
+react-notification-system@^0.2.15:
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/react-notification-system/-/react-notification-system-0.2.15.tgz#132bc4bdac55a0abcb0969e3110c955927b9f5da"
   dependencies:
+    create-react-class "^15.5.1"
     object-assign "^4.0.1"
+    prop-types "^15.5.6"
 
 react-onclickoutside@^4.1.0:
   version "4.9.0"

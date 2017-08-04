@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { clearNotification, showNotification } from '../../actions/notification'
 import { Notification, ShowNotificationCallback } from '../../types/utils'
-import NotificationSystem from 'react-notification-system'
+import * as NotificationSystem from 'react-notification-system'
 import * as MediaQuery from 'react-responsive'
 import MobileScreen from './MobileScreen'
 import Alert from '../../components/Window/Alert'
@@ -21,7 +21,12 @@ class RootView extends React.Component<Props, {}> {
 
   componentWillUpdate(nextProps: Props) {
     if (nextProps.notification.level && nextProps.notification.message) {
-      this.notificationSystem.addNotification(nextProps.notification)
+      const autoDismiss = nextProps.notification.autoDismiss
+      this.notificationSystem.addNotification({
+        ...nextProps.notification,
+        autoDismiss: typeof autoDismiss === 'number' ? autoDismiss : 7,
+        dismissible: false,
+      })
       this.props.clearNotification()
     }
   }
