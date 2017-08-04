@@ -18,6 +18,7 @@ import * as Modal from 'react-modal'
 import { fieldModalStyle } from '../../../utils/modalStyle'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 import Checkbox from '../../../components/Checkbox'
+import { dummyStorage } from '../../../utils/dummyStorage'
 
 const modalStyling = {
   ...fieldModalStyle,
@@ -381,6 +382,7 @@ export default class PermissionConditions extends React.Component<
             fetcher={() => {
               return null
             }}
+            storage={dummyStorage}
             disableQueryHeader
             queryOnly
             showDocs

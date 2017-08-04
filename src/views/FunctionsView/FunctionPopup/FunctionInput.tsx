@@ -28,6 +28,7 @@ import DummyTestLog from './DummyTestLog'
 import ResizableBox from '../../../components/ResizableBox'
 import Loading from '../../../components/Loading/Loading'
 import { withRouter } from 'found'
+import { dummyStorage } from '../../../utils/dummyStorage'
 
 interface Props {
   schema: string
@@ -491,6 +492,7 @@ class FunctionInput extends React.Component<Props, State> {
                   fetcher={() => {
                     return Promise.resolve()
                   }}
+                  storage={dummyStorage}
                   disableQueryHeader
                   queryOnly
                   showDocs
