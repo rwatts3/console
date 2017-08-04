@@ -57,6 +57,9 @@ class RootView extends React.Component<Props, {}> {
           .butn * + * {
             @p: .ml10;
           }
+          .bgAccent {
+            @p: .bgGreen;
+          }
         `}</style>
         <Helmet titleTemplate="%s | Graphcool" />
         <MediaQuery minWidth={600}>

@@ -80,12 +80,20 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     const text = texts[this.props.selectedType]
 
     return (
-      <div className="flex flex-column justify-between w-100">
-        <div className="flex flex-column">
-          <div className="w-100 white pa-25 fw1 bg-black-80 relative">
+      <div className="auth-provider-sidepanel">
+        <style jsx={true}>{`
+          .auth-provider-sidepanel {
+            @p: .flex, .flexColumn, .justifyBetween, .w100;
+          }
+          .btn {
+            @p: .ph16, .pv10, .br2, .bgGreen, .white, .f16, .pointer, .dib;
+          }
+        `}</style>
+        <div className="flex flexColumn">
+          <div className="w100 white pa25 fw1 bgBlack80 relative">
             {authProvider.isEnabled &&
               <div
-                className="absolute pa-6 bg-accent white ttu br-1 fw5"
+                className="absolute pa6 bgAccent white ttu br1 fw5"
                 style={{
                   top: 16,
                   right: 16,
@@ -95,13 +103,13 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               >
                 Active
               </div>}
-            <div className="f-25 b">
+            <div className="f25 b">
               {text.title}
             </div>
-            <div className="f-16 mv-16">
+            <div className="f16 mv16">
               {text.description}
             </div>
-            <div className="f-16">
+            <div className="f16">
               <a
                 target="_blank"
                 href={text.link.href}
@@ -112,12 +120,12 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
             </div>
           </div>
           {authProvider.type === 'AUTH_PROVIDER_EMAIL' &&
-            <div className="flex w-100 bg-black-70 justify-between white pa-25">
-              <div className="w-30 pr2 flex flex-column">
-                <div className="b mb-16 white-50">Generated Fields</div>
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     email
@@ -125,18 +133,18 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                 </div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     password
                   </span>
                 </div>
               </div>
-              <div className="w-70 flex flex-column">
-                <div className="b mb-16 white-50">Generated Mutations</div>
+              <div className="w70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     {`createUser(authProvider: { email: { email, password } })`}
@@ -144,7 +152,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                 </div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     {`signinUser(email: { email, password })`}
@@ -153,23 +161,23 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
             </div>}
           {authProvider.type === 'anonymous-auth-provider' &&
-            <div className="flex w-100 bg-black-70 justify-between white pa-25">
-              <div className="w-30 pr2 flex flex-column">
-                <div className="b mb-16 white-50">Generated Fields</div>
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     secret
                   </span>
                 </div>
               </div>
-              <div className="w-70 flex flex-column">
-                <div className="b mb-16 white-50">Generated Mutations</div>
+              <div className="w70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     {`authenticateAnonymous${this.state
@@ -179,14 +187,9 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
             </div>}
           {authProvider.type === 'anonymous-auth-provider' &&
-            <div className="pa-25 flex flex-column fw1">
-              <style jsx={true}>{`
-                .btn {
-                  @p: .ph16, .pv10, .br2, .bgGreen, .white, .f16, .pointer, .dib;
-                }
-              `}</style>
+            <div className="pa25 flex flexColumn fw1">
               <span>Select the Type the Secret should be added to</span>
-              <div className="flex items-center mt-25 justify-between">
+              <div className="flex itemsCenter mt25 justifyBetween">
                 <select
                   onChange={this.handleAnonymousTypeChange}
                   value={this.state.selectedAnonymousModel}
@@ -207,23 +210,23 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
             </div>}
           {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
-            <div className="flex w-100 bg-black-70 justify-between white pa-25">
-              <div className="w-30 pr2 flex flex-column">
-                <div className="b mb-16 white-50">Generated Fields</div>
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     digitsId
                   </span>
                 </div>
               </div>
-              <div className="w-70 flex flex-column">
-                <div className="b mb-16 white-50">Generated Mutations</div>
+              <div className="w70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     {`createUser(authProvider: { digits: { apiUrl, credentials } })`}
@@ -231,7 +234,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                 </div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     {`signinUser(digits: { apiUrl, credentials })`}
@@ -240,10 +243,10 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
             </div>}
           {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
-            <div className="pa-25 flex flex-column fw1">
+            <div className="pa25 flex flexColumn fw1">
               <FloatingInput
-                labelClassName="f-25 pa-16 black-50"
-                className="pa-16 bg-black-05 br-2 bn mb-10 f-25"
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
                 label="Consumer Key"
                 placeholder="xxxxxxxxxxxxx"
                 value={authProvider.digits!.consumerKey}
@@ -256,8 +259,8 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                   The Consumer Key is required
                 </div>}
               <FloatingInput
-                labelClassName="f-25 pa-16 black-50"
-                className="pa-16 bg-black-05 br-2 bn f-25"
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn f25"
                 label="Consumer Secret"
                 placeholder="xxxxxxxxxxxxx"
                 value={authProvider.digits!.consumerSecret}
@@ -271,23 +274,23 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                 </div>}
             </div>}
           {authProvider.type === 'AUTH_PROVIDER_AUTH0' &&
-            <div className="flex w-100 bg-black-70 justify-between white pa-25">
-              <div className="w-30 pr2 flex flex-column">
-                <div className="b mb-16 white-50">Generated Fields</div>
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     auth0UserId
                   </span>
                 </div>
               </div>
-              <div className="w-70 flex flex-column">
-                <div className="b mb-16 white-50">Generated Mutations</div>
+              <div className="w-70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
                 <div>
                   <span
-                    className="pa-6 mb-10 br-2 dib bg-white-10"
+                    className="pa6 mb10 br2 dib bgWhite10"
                     style={{ fontSize: 13 }}
                   >
                     {`createUser(authProvider: { auth0: { idToken } })`}
@@ -296,10 +299,10 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
               </div>
             </div>}
           {authProvider.type === 'AUTH_PROVIDER_AUTH0' &&
-            <div className="pa-38 flex flex-column">
+            <div className="pa38 flex flexColumn">
               <FloatingInput
-                labelClassName="f-25 pa-16 black-50"
-                className="pa-16 bg-black-05 br-2 bn mb-10 f-25"
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
                 label="Domain"
                 placeholder="xxxxxxxxxxxxx"
                 value={authProvider.auth0!.domain}
@@ -312,8 +315,8 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                   The Domain is required
                 </div>}
               <FloatingInput
-                labelClassName="f-25 pa-16 black-50"
-                className="pa-16 bg-black-05 br-2 bn mb-10 f-25"
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
                 label="Client Id"
                 placeholder="xxxxxxxxxxxxx"
                 value={authProvider.auth0!.clientId}
@@ -326,8 +329,8 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                   The Client ID is required
                 </div>}
               <FloatingInput
-                labelClassName="f-25 pa-16 black-50"
-                className="pa-16 bg-black-05 br-2 bn mb-10 f-25"
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
                 label="Client Secret"
                 placeholder="xxxxxxxxxxxxx"
                 value={authProvider.auth0!.clientSecret}
@@ -341,10 +344,10 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
                 </div>}
             </div>}
         </div>
-        <div className="flex justify-between pa-25 bt b--light-gray">
+        <div className="flex justifyBetween pa25 bt bDarkBlue10">
           {authProvider.isEnabled &&
             <div
-              className="ph-25 pv-16 f-25 white pointer"
+              className="ph25 pv16 f25 white pointer"
               style={{
                 backgroundColor: '#F5A623',
               }}
@@ -354,7 +357,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
             </div>}
           {!authProvider.isEnabled &&
             <div
-              className="ph-25 pv-16 f-25 white bg-accent pointer"
+              className="ph25 pv16 f25 white bgAccent pointer"
               onClick={this.enable}
             >
               Enable
@@ -362,7 +365,7 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
           {authProvider.isEnabled &&
             this.state.hasChanged &&
             <div
-              className="ph-25 pv-16 f-25 white bg-accent pointer"
+              className="ph25 pv16 f25 white bgAccent pointer"
               onClick={this.enable}
             >
               Update
