@@ -168,8 +168,8 @@ class SelectNodesCell extends React.Component<Props, State> {
                 (this.state.values.length > 1 ||
                   this.state.values.length === 0))
                 ? 's'
-                : ''}{' '}
-              selected
+                : ''}
+              &nbsp;selected
             </div>
           </div>
           <Icon
@@ -272,7 +272,10 @@ class SelectNodesCell extends React.Component<Props, State> {
       const { values } = state
       const row = items[index]
 
-      if (!multiSelect && values && values.length > 0 && row.id !== values[0]) {
+      let newValues = values ? values.slice() : []
+
+      if (!multiSelect && values && values.length > 0 && values[0] !== row.id) {
+        newValues = []
         const itemIndex = items.findIndex(item => item.id === values[0])
         items = Immutable.setIn(items, [itemIndex, 'selected'], false)
       }
@@ -281,7 +284,6 @@ class SelectNodesCell extends React.Component<Props, State> {
       const newValue = !items[index].selected
       items = Immutable.setIn(items, [index, 'selected'], newValue)
 
-      const newValues = values ? values.slice() : []
       // either remove or add the id to the list of values
       if (newValues.includes(row.id)) {
         const i = newValues.indexOf(row.id)

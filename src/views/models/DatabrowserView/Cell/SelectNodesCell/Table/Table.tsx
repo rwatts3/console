@@ -16,6 +16,7 @@ interface Props {
   scrollToIndex?: number
   model: Model
   showOption: boolean
+  values: string[]
 }
 
 interface State {
@@ -67,9 +68,12 @@ class TableComponent extends React.Component<Props, State> {
               outline: none;
             }
           }
-          .popup-table .ReactVirtualized__Table__row.selected,
-          .popup-table .ReactVirtualized__Table__row:not(.selected):hover {
+          .popup-table .ReactVirtualized__Table__row.selected {
             @p: .bgBlue, .white;
+          }
+          .popup-table .ReactVirtualized__Table__row:hover {
+            @p: .white;
+            background: $blue80;
           }
           .table-row.selected .ReactVirtualized__Table__rowColumn,
           .popup-table .ReactVirtualized__Table__row:not(.selected):hover .ReactVirtualized__Table__rowColumn {
