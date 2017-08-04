@@ -16,8 +16,6 @@ import { ShowNotificationCallback } from '../../types/utils'
 import { Popup } from '../../types/popup'
 import { showPopup } from '../../actions/popup'
 import { SYSTEM_MODELS } from '../../constants/system'
-import tracker from '../../utils/metrics'
-import { ConsoleEvents } from 'graphcool-metrics'
 
 const classes: any = require('./ModelHeader.scss')
 const headerClasses: any = require('../../components/Header/Header.scss')
@@ -127,22 +125,7 @@ class ModelHeader extends React.Component<Props, State> {
                 <div className={classes.title}>
                   {this.props.model.name}
                   <div className={classes.type}>{`(${schemaTypeText})`}</div>
-                  {isSystem
-                    ? <span className={classes.system}>System</span>
-                    : <Icon
-                        width={38}
-                        height={38}
-                        src={require('graphcool-styles/icons/stroke/editSpaced.svg')}
-                        stroke
-                        strokeWidth={2}
-                        color={variables.gray20}
-                        onClick={this.openEditModelModal}
-                        className={cx(
-                          particles.ml6,
-                          particles.mt6,
-                          particles.pointer,
-                        )}
-                      />}
+                  {isSystem && <span className={classes.system}>System</span>}
                 </div>
                 <div className={classes.titleDescription}>
                   <ModelDescription model={this.props.model} />
@@ -181,7 +164,6 @@ class ModelHeader extends React.Component<Props, State> {
                     to={`/${this.props.params
                       .projectName}/schema?selectedModel=${this.props.params
                       .modelName}`}
-                    onClick={this.onClickEditSchema}
                   >
                     <Icon
                       width={20}
@@ -233,87 +215,9 @@ class ModelHeader extends React.Component<Props, State> {
             {this.props.children}
           </div>
         </div>
-        {/*<EditModelModal*/}
-        {/*isOpen={this.state.editModelModalOpen}*/}
-        {/*onRequestClose={this.handleModelModalClose}*/}
-        {/*contentLabel="Edit Model"*/}
-        {/*model={model}*/}
-        {/*width={500}*/}
-        {/*></EditModelModal>*/}
       </div>
     )
   }
-
-  private onClickEditSchema = () => {
-    tracker.track(ConsoleEvents.Databrowser.editSchemaClicked())
-  }
-
-  private openEditModelModal = () => {
-    // this.setState({
-    //   editModelModalOpen: true,
-    // } as State)
-    const { model } = this.props
-    if (model.isSystem || SYSTEM_MODELS.includes(model.name)) {
-      return
-    }
-
-    // const id = cuid()
-    // TODO redirect to model in schema
-    // this.props.showPopup({
-    //   element: (
-    //     <EditModelPopup
-    //       id={id}
-    //       projectId={this.props.project.id}
-    //       modelName={this.props.model.name}
-    //       saveModel={this.renameModel}
-    //       deleteModel={this.deleteModel}
-    //     />
-    //   ),
-    //   id,
-    // })
-  }
-
-  // private renameModel = (modelName: string) => {
-  //   const redirect = () => {
-  //     this.props.router.replace(
-  //       `/${this.props.params.projectName}/models/${modelName}`,
-  //     )
-  //   }
-  //
-  //   if (modelName) {
-  //     UpdateModelMutation.commit({
-  //       name: modelName,
-  //       id: this.props.model.id,
-  //     })
-  //       .then(() => {
-  //         tracker.track(
-  //           ConsoleEvents.Schema.Model.renamed({ id: this.props.model.id }),
-  //         )
-  //         redirect()
-  //       })
-  //       .catch(transaction => {
-  //         onFailureShowNotification(transaction, this.props.showNotification)
-  //       })
-  //   }
-  // }
-  //
-  // private deleteModel = () => {
-  //   graphcoolConfirm('You are deleting this model.').then(() => {
-  //     this.props.router.replace(`/${this.props.params.projectName}/models`)
-  //     DeleteModelMutation.commit({
-  //       projectId: this.props.project.id,
-  //       modelId: this.props.model.id,
-  //     })
-  //       .then(() => {
-  //         tracker.track(
-  //           ConsoleEvents.Schema.Model.Popup.deleted({ type: 'Update' }),
-  //         )
-  //       })
-  //       .catch(transaction => {
-  //         onFailureShowNotification(transaction, this.props.showNotification)
-  //       })
-  //   })
-  // }
 }
 
 const ReduxContainer = connect(

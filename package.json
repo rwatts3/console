@@ -19,6 +19,7 @@
     "watch-relay-compiler": "relay-compiler --watch --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx",
     "relay-compiler": "relay-compiler --transform relay-compiler-typescript --schema ./build/schema.graphql --src ./src --extensions ts tsx js jsx",
     "prettier": "prettier --single-quote --no-semi --trailing-comma all --write '*.{ts,tsx}' 'src/**/*.{ts,tsx}'",
+    "precommit": "lint-staged",
     "tsc": "tsc"
   },
   "pre-push": [

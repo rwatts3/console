@@ -1,10 +1,10 @@
 import * as React from 'react'
-// import {withRouter} from 'found'
 import { createFragmentContainer, graphql } from 'react-relay'
 import * as cookiestore from 'cookiestore'
 import { default as mapProps } from 'map-props'
 import { Viewer } from '../../types/types'
 const classes: any = require('./RootRedirectView.scss')
+import AddProjectMutation from '../../mutations/AddProjectMutation'
 
 interface Props {
   viewer: Viewer
@@ -49,22 +49,18 @@ class RootRedirectView extends React.Component<Props, {}> {
 
   private addProject = (): void => {
     // TODO reimplement project prompt here
-    // const projectName = window.prompt('Project name')
-    // if (projectName) {
-    //   Relay.Store.commitUpdate(
-    //     new AddProjectMutation(
-    //       {
-    //         projectName,
-    //         customerId: this.props.viewer.user.id,
-    //         region: 'US_WEST_2',
-    //       }),
-    //     {
-    //       onSuccess: () => {
-    //         tracker.track(ConsoleEvents.Project.created({name: projectName}))
-    //         this.props.router.replace(`/${projectName}${this.props.location.search}`)
-    //       },
-    //     })
-    // }
+    const projectName = window.prompt('Project name')
+    if (projectName) {
+      AddProjectMutation.commit({
+        projectName,
+        customerId: this.props.viewer.user.id,
+        region: 'US_WEST_2',
+      }).then(() => {
+        this.props.router.replace(
+          `/${projectName}${this.props.location.search}`,
+        )
+      })
+    }
   }
 }
 

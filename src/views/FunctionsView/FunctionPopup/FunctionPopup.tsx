@@ -168,8 +168,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       prevState.fn.operation !== this.state.fn.operation ||
       prevState.fn.binding !== this.state.fn.binding
     ) {
-      // TODO props.relay.* APIs do not exist on compat containers
-      // TODO needs manual handling
       this.props.relay.refetch(fragmentVariables => ({
         ...fragmentVariables,
         modelSelected: true,
@@ -838,15 +836,3 @@ const mutationFragments = graphql`
 `
 
 dummy(mutationFragments)
-
-/*
- TODO: add this again when we use relay modern
- ... on RequestPipelineMutationFunction @include(if: $includesFunctions) {
- id
- binding
- model {
- id
- name
- }
- }
- */

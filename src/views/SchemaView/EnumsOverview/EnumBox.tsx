@@ -25,7 +25,6 @@ interface Props {
 interface State {
   extended?: boolean
   greenBackground: boolean
-  editingEnumName: boolean
   enumName: string
   values: string[]
 }
@@ -38,7 +37,6 @@ class EnumBox extends React.Component<Props, State> {
     this.state = {
       extended: undefined,
       greenBackground: Boolean(props.highlighted),
-      editingEnumName: false,
       enumName: props.enumValue.name,
       values: props.enumValue.values,
     }
@@ -255,19 +253,9 @@ class EnumBox extends React.Component<Props, State> {
               />
             </div>
             <div className="title">
-              {this.state.editingEnumName
-                ? <input
-                    type="text"
-                    value={this.state.enumName}
-                    className="enum-name"
-                    onChange={this.onChangeEnumName}
-                    onKeyDown={this.handleKeyDown}
-                    onBlur={this.handleOnBlur}
-                    autoFocus
-                  />
-                : <div className="enum-name" onDoubleClick={this.editEnumName}>
-                    {enumValue.name}
-                  </div>}
+              <div className="enum-name">
+                {enumValue.name}
+              </div>
             </div>
           </div>
           <div className="flexy">
@@ -306,49 +294,6 @@ class EnumBox extends React.Component<Props, State> {
         extended: newExtended,
       }
     })
-  }
-
-  private editEnumName = e => {
-    // if (this.props.enumValue.itemCount === 0) {
-    //   this.setState({editingEnumName: true} as State)
-    // } else {
-    //   const {projectName, enumValue} = this.props
-    //   this.props.router.push(`/${projectName}/schema/${enum.name}/edit`)
-    // }
-    // e.stopPropagation()
-  }
-
-  private handleOnBlur = e => {
-    this.editEnum(this.state.enumName)
-  }
-
-  private handleKeyDown = e => {
-    if (e.keyCode === 13) {
-      this.editEnum(this.state.enumName)
-    }
-  }
-
-  private editEnum = (enumName: string) => {
-    // TODO check if this mutation is needed
-    // Relay.Store.commitUpdate(
-    //   new UpdateEnumNameMutation({
-    //     name: enumName,
-    //     enumId: this.props.enumValue.id,
-    //   }),
-    //   {
-    //     onSuccess: () => {
-    //       this.stopEditEnumName()
-    //     },
-    //     onFailure: (transaction) => {
-    //       onFailureShowNotification(transaction, this.props.showNotification)
-    //       this.stopEditEnumName()
-    //     },
-    //   },
-    // )
-  }
-
-  private onChangeEnumName = e => {
-    this.setState({ enumName: e.target.value } as State)
   }
 }
 

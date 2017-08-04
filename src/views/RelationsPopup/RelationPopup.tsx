@@ -867,9 +867,6 @@ class RelationPopup extends React.Component<Props, State> {
       fieldOnRightModelIsRequired: this.state.fieldOnRightModelIsRequired,
     })
       .then(() => {
-        // The force fetching because relations are too complicated to selective choose the config
-        // TODO props.relay.* APIs do not exist on compat containers
-        // this.props.relay.forceFetch()
         this.close()
       })
       .catch((transaction: Transaction) => {
@@ -905,18 +902,6 @@ const mappedCreateRelationPopup = connect(null, mapDispatchToProps)(
 )
 
 export default createFragmentContainer(withRouter(mappedCreateRelationPopup), {
-  /* TODO manually deal with:
-  initialVariables: {
-    projectName: null, // injected from router
-    relationName: null, // injected from router
-    relationExists: false,
-  }
-  */
-  /* TODO manually deal with:
-  prepareVariables: (prevVariables: any) => (Object.assign({}, prevVariables, {
-    relationExists: !!prevVariables.relationName,
-  }))
-  */
   viewer: graphql`
     fragment RelationPopup_viewer on Viewer {
       relation: relationByName(
