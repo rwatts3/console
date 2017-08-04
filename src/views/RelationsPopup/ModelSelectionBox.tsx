@@ -124,7 +124,7 @@ export default class ModelSelectionBox extends React.Component<Props, State> {
                       .selectedModel
                       ? 'white'
                       : 'blue'}`}
-                    placeholder="Select Model"
+                    placeholder="Select Type"
                   />}
               </Combobox>
             </div>

@@ -27,11 +27,6 @@ module.exports = {
   },
   module: {
     rules: [{
-      enforce: 'pre',
-      test: /\.ts(x?)$/,
-      loader: 'tslint-loader',
-      exclude: /node_modules/,
-    }, {
       test: /\.json$/, // TODO check if still needed
       loader: 'json-loader',
     }, {
@@ -152,6 +147,7 @@ module.exports = {
       threads: 2,
       loaders: [ 'babel-loader' ],
     }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],
