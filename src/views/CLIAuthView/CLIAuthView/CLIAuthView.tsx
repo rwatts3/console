@@ -5,7 +5,7 @@ import Left from './Left'
 import Right from './Right'
 import Loading from '../../../components/Loading/Loading'
 import { AuthTrigger } from '../types'
-import { updateNetworkLayer } from '../../../utils/relay'
+import { updateNetworkLayer } from '../../../relayEnvironment'
 
 interface State {
   loading: boolean

@@ -4,18 +4,27 @@ import { GraphQLClient } from 'graphql-request'
 
 // Define a function that fetches the results of an operation (query/mutation/etc)
 // and returns its results as a Promise:
-const isLoggedin =
-  cookiestore.has('graphcool_auth_token') &&
-  cookiestore.has('graphcool_customer_id')
-const headers = isLoggedin
-  ? {
-      Authorization: `Bearer ${cookiestore.get('graphcool_auth_token')}`,
-    }
-  : undefined
 
-const client = new GraphQLClient(`${__BACKEND_ADDR__}/system`, {
-  headers,
-})
+function getClient() {
+  const isLoggedin =
+    cookiestore.has('graphcool_auth_token') &&
+    cookiestore.has('graphcool_customer_id')
+  const headers = isLoggedin
+    ? {
+        Authorization: `Bearer ${cookiestore.get('graphcool_auth_token')}`,
+      }
+    : undefined
+
+  return new GraphQLClient(`${__BACKEND_ADDR__}/system`, {
+    headers,
+  })
+}
+
+let client = getClient()
+
+export function updateNetworkLayer() {
+  client = getClient()
+}
 
 export function fetchQuery(operation, variables) {
   return client.request(operation.text, variables).then(data => {

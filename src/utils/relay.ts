@@ -1,8 +1,3 @@
-import {
-  injectNetworkLayer,
-  DefaultNetworkLayer,
-  Transaction,
-} from 'react-relay/classic'
 import { ShowNotificationCallback } from '../types/utils'
 import * as cookiestore from 'cookiestore'
 import { Lokka } from 'lokka'
@@ -12,45 +7,28 @@ import { isScalar, isNonScalarList } from './graphql'
 import { Field, OrderBy } from '../types/types'
 import { TypedValue } from '../types/utils'
 
-export function updateNetworkLayer(): void {
-  try {
-    const isLoggedin =
-      cookiestore.has('graphcool_auth_token') &&
-      cookiestore.has('graphcool_customer_id')
-    const headers = isLoggedin
-      ? {
-          Authorization: `Bearer ${cookiestore.get('graphcool_auth_token')}`,
-        }
-      : null
-    const api = `${__BACKEND_ADDR__}/system`
-    const layer = new DefaultNetworkLayer(api, { headers, retryDelays: [] })
-
-    injectNetworkLayer(layer)
-  } catch (e) {
-    // noop
-  }
-}
-
 export function onFailureShowNotification(
-  transaction: Transaction,
+  error: any,
   showNotification: ShowNotificationCallback,
 ): void {
-  // TODO add proper error handling again
-  // console.error(transaction)
-  // const error = transaction.getError() as any
-  // // NOTE if error returns non-200 response, there is no `source` provided (probably because of fetch)
-  // if (typeof Raven !== 'undefined') {
-  //   Raven.captureException(error, {
-  //     tags: {url: location.pathname},
-  //   })
-  // }
-  // if (error.source && error.source.errors) {
-  //   return error.source.errors
-  //     .map(error => ({message: error.message, level: 'error'}))
-  //     .forEach(notification => showNotification(notification))
-  // } else {
-  //   console.error(error)
-  // }
+  if (
+    error.response &&
+    error.response.errors &&
+    error.response.errors.length > 0
+  ) {
+    error.response.errors
+      .map(err => ({ message: err.message, level: 'error' }))
+      .forEach(notification => showNotification(notification))
+    if (error.response.code > 500 && typeof Raven !== 'undefined') {
+      Raven.captureException(error, {
+        tags: { url: location.pathname },
+      })
+    }
+  } else if (typeof Raven !== 'undefined') {
+    Raven.captureException(error, {
+      tags: { url: location.pathname },
+    })
+  }
 }
 
 export function getLokka(projectId: string): any {

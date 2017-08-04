@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { updateNetworkLayer } from '../../utils/relay'
 import tracker from '../../utils/metrics'
 import * as cookiestore from 'cookiestore'
 import jwtDecode from 'jwt-decode'
+import { updateNetworkLayer } from '../../relayEnvironment'
 
 interface Props {
   location: any
