@@ -17,12 +17,7 @@ interface Props {
   params: any
 }
 
-const Container = styled.div`
-  height: 60px;
-  &:not(:last-child) {
-    border-bottom: 1px solid ${variables.gray07};
-  }
-`
+const Container = styled.div`height: 60px;`
 
 const PermissionType = styled.div`
   width: 170px;
@@ -45,72 +40,72 @@ class RelationPermissionComponent extends React.Component<Props, {}> {
   render() {
     const { permission, relation, params: { projectName } } = this.props
     return (
-      <Container
-        className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}
-      >
-        <Link
-          className={cx(
-            $p.flex,
-            $p.flexRow,
-            $p.overflowHidden,
-            $p.flex1,
-            $p.itemsCenter,
-          )}
-          to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
+      <div>
+        <Container
+          className={cx($p.flex, $p.flexRow, $p.justifyBetween, $p.itemsCenter)}
         >
-          <PermissionType
+          <Link
             className={cx(
               $p.flex,
               $p.flexRow,
+              $p.overflowHidden,
+              $p.flex1,
               $p.itemsCenter,
-              $p.justifyBetween,
-              $p.relative,
             )}
+            to={`/${projectName}/permissions/relations/${relation.name}/edit/${permission.id}`}
           >
-            <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
-              {permission.ruleName
-                ? permission.ruleName
-                : permission.userType === 'EVERYONE'
-                  ? 'Everyone'
-                  : 'Authenticated'}
-            </h3>
-            <Arrow
+            <PermissionType
               className={cx(
-                $p.justifyEnd,
                 $p.flex,
                 $p.flexRow,
-                $p.flexAuto,
+                $p.itemsCenter,
+                $p.justifyBetween,
                 $p.relative,
               )}
             >
-              <Icon
-                src={require('graphcool-styles/icons/fill/triangle.svg')}
-                color={variables.gray20}
-                width={6}
-                height={7}
-              />
-            </Arrow>
-          </PermissionType>
-          {permission.connect &&
-            <RelationPermissionLabel
-              isActive={permission.isActive}
-              operation="connect"
-              className={$p.ml10}
-            />}
-          {permission.disconnect &&
-            <RelationPermissionLabel
-              isActive={permission.isActive}
-              operation="disconnect"
-              className={$p.ml10}
-            />}
-        </Link>
-        <div>
-          <NewToggleButton
-            defaultChecked={permission.isActive}
-            onChange={this.toggleActiveState}
-          />
-        </div>
-      </Container>
+              <Arrow
+                className={cx(
+                  $p.justifyEnd,
+                  $p.flex,
+                  $p.flexRow,
+                  $p.flexAuto,
+                  $p.relative,
+                )}
+              >
+                <Icon
+                  src={require('graphcool-styles/icons/fill/triangle.svg')}
+                  color={variables.gray20}
+                  width={6}
+                  height={7}
+                />
+              </Arrow>
+            </PermissionType>
+            {permission.connect &&
+              <RelationPermissionLabel
+                isActive={permission.isActive}
+                operation="connect"
+                className={$p.ml10}
+              />}
+            {permission.disconnect &&
+              <RelationPermissionLabel
+                isActive={permission.isActive}
+                operation="disconnect"
+                className={$p.ml10}
+              />}
+          </Link>
+          <div>
+            <NewToggleButton
+              defaultChecked={permission.isActive}
+              onChange={this.toggleActiveState}
+            />
+          </div>
+        </Container>
+        <h3 className={cx($p.black50, $p.f16, $p.fw6)}>
+          {permission.ruleName
+            ? permission.ruleName
+            : permission.userType === 'EVERYONE' ? 'Everyone' : 'Authenticated'}
+        </h3>
+      </div>
     )
   }
 
