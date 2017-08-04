@@ -82,21 +82,6 @@ class SchemaEditor extends React.Component<Props, State> {
       loading: false,
     }
   }
-  // componentDidMount() {
-  //   document.addEventListener('keydown', (e) => {
-  //     if (e.keyCode === 27) {
-  //       let splitted =  this.state.schema.split('\n')
-  //       splitted[14] += ' # @rename(oldName: "oldName")'
-  //       const cursor = this.editor.getCursor()
-  //       this.setState(
-  //         {schema: splitted.join('\n')} as State,
-  //         () => {
-  //           this.editor.setCursor(cursor)
-  //         },
-  //       )
-  //     }
-  //   })
-  // }
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.scroll !== nextProps.scroll) {
       this.scrollToPercentage(nextProps.scroll)
@@ -360,65 +345,18 @@ class SchemaEditor extends React.Component<Props, State> {
     )
   }
 
-  private patchSchemaRemarks(schema) {
-    const oldSchema = this.props.showEnums
-      ? this.state.enumSchema
-      : this.state.typeSchema
-    const splittedOld = oldSchema.split('\n')
-    const splittedNew = schema.split('\n')
-    const cursor = this.editor.getCursor()
-
-    const oldLine = splittedOld[cursor.line]
-    const newLine = splittedNew[cursor.line]
-    const oldFieldName = this.getFieldName(oldLine)
-    const newFieldName = this.getFieldName(newLine)
-    let changed = false
-
-    if (
-      oldLine !== newLine &&
-      this.isField(oldLine) &&
-      this.isField(newLine) &&
-      !oldLine.includes('@rename') &&
-      !newLine.includes('@rename') &&
-      oldFieldName !== newFieldName
-    ) {
-      splittedNew[cursor.line] += ` @rename(oldName: "${oldFieldName}")`
-      changed = true
-    }
-    return {
-      schema: splittedNew.join('\n'),
-      changed,
-      cursor,
-    }
-  }
-
-  private isField(line) {
-    return /.+?:.+?/.test(line)
-  }
-
-  private getFieldName(line) {
-    const res = /(.+?):.*/.exec(line)
-    return res ? res[1].trim() : ''
-  }
-
   private handleSchemaChange = newSchema => {
     if (!this.state.beta) {
       return
     }
-    const { schema, changed, cursor } = this.patchSchemaRemarks(newSchema)
     const schemaName = this.props.showEnums ? 'enumSchema' : 'typeSchema'
     this.setState(
       {
-        [schemaName]: schema,
+        [schemaName]: newSchema,
         errors: [],
         messages: [],
         isDryRun: true,
       } as State,
-      () => {
-        if (changed) {
-          this.editor.setCursor(cursor)
-        }
-      },
     )
   }
 }
