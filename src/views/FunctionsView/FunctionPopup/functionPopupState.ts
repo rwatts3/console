@@ -192,7 +192,7 @@ export function updateWebhookUrl(
   const key = state.type === 'WEBHOOK' ? '_webhookUrl' : '_inlineWebhookUrl'
   return {
     ...state,
-    [key]: webhookUrl,
+    [key]: webhookUrl.trim(),
   }
 }
 

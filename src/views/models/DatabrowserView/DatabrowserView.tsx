@@ -349,7 +349,7 @@ class DatabrowserView extends React.Component<Props, State> {
           ref={ref => (this.wrapperRef = ref)}
         >
           <div
-            className={`${classes.tableContainer} w-100`}
+            className={`${classes.tableContainer} w100`}
             id="data-browser-view"
             tabIndex={100}
           >

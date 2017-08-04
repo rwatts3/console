@@ -67,8 +67,13 @@ class TableComponent extends React.Component<Props, State> {
               outline: none;
             }
           }
-          .popup-table .table-row.selected {
+          .popup-table .ReactVirtualized__Table__row.selected,
+          .popup-table .ReactVirtualized__Table__row:not(.selected):hover {
             @p: .bgBlue, .white;
+          }
+          .table-row.selected .ReactVirtualized__Table__rowColumn,
+          .popup-table .ReactVirtualized__Table__row:not(.selected):hover .ReactVirtualized__Table__rowColumn {
+            @p: .bn;
           }
           .ReactVirtualized__Table__Grid {
             @p: .bgWhite;
@@ -86,9 +91,6 @@ class TableComponent extends React.Component<Props, State> {
           .ReactVirtualized__Table__rowColumn
             + .ReactVirtualized__Table__rowColumn {
             @p: .ph25, .pv16;
-          }
-          .table-row.selected .ReactVirtualized__Table__rowColumn {
-            @p: .bn;
           }
           .popup-table.single .ReactVirtualized__Table__rowColumn {
             @p: .ph25, .pv16;
@@ -232,33 +234,6 @@ class TableComponent extends React.Component<Props, State> {
     }
     return String(value)
   }
-
-  // private cellRenderer = ({key, style, columnIndex, rowIndex}) => {
-  //   const field = this.props.fields[columnIndex]
-  //   const {selectedRow} = this.state
-  //   return (
-  //     <div
-  //       key={key}
-  //       style={style}
-  //       className={`cell ${selectedRow === rowIndex ? 'selected' : ''}`}
-  //       onClick={() => this.selectRow(rowIndex)}
-  //     >
-  //       <style jsx>{`
-  //         .cell {
-  //           @p: .bbox, .pv16, .ph25, .f16;
-  //           &.selected {
-  //             @p: .bgBlue, .white;
-  //           }
-  //         }
-  //       `}</style>
-  //       {this.textToString(this.props.rows[rowIndex][field])}
-  //     </div>
-  //   )
-  // }
-
-  // private selectRow(rowIndex: number) {
-  //   this.setState({selectedRow: rowIndex} as State)
-  // }
 
   private isRowLoaded = ({ index }) => {
     const loaded = Boolean(this.props.rows[index])

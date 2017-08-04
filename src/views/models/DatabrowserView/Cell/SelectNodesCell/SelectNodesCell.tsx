@@ -80,6 +80,12 @@ class SelectNodesCell extends React.Component<Props, State> {
         overflow: 'visible',
       },
     }
+
+    this.setGlobalState()
+  }
+
+  setGlobalState() {
+    ;(window as any).__s = this
   }
 
   componentWillReceiveProps(nextProps) {
@@ -102,7 +108,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         style={this.style}
       >
         <style jsx>{`
-          .select-user-popup {
+          .select-nodes-cell {
             @p: .bgWhite, .relative;
           }
           .title-wrapper {
@@ -129,19 +135,41 @@ class SelectNodesCell extends React.Component<Props, State> {
             font-family: 'Source Code Pro', 'Consolas', 'Inconsolata',
               'Droid Sans Mono', 'Monaco', monospace;
           }
+          .filter {
+            @p: .f16, .mb25, .black30, .absolute;
+            margin-top: -40px;
+          }
+          .selected {
+            @p: .ml25, .black30, .flex;
+          }
+          .n {
+            @p: .black60, .fw6, .mh4;
+          }
         `}</style>
         <style jsx global>{`
           .popup-x {
             @p: .absolute, .right0, .top0, .pointer, .pt25, .pr25;
           }
         `}</style>
-        <div className="select-user-popup">
+        <div className="select-nodes-cell">
           <div className="title-wrapper">
             <div className="title">
               <span>
                 {field.name}
               </span>
               <TypeTag field={field} big />
+            </div>
+            <div className="selected">
+              <div className="n">
+                {this.state.values ? this.state.values.length : 0}
+              </div>
+              node{this.props.multiSelect &&
+              (this.state.values &&
+                (this.state.values.length > 1 ||
+                  this.state.values.length === 0))
+                ? 's'
+                : ''}{' '}
+              selected
             </div>
           </div>
           <Icon
@@ -155,11 +183,14 @@ class SelectNodesCell extends React.Component<Props, State> {
             onClick={this.props.cancel}
           />
           <div className="header">
-            <Tabs
-              options={tabs}
-              activeIndex={selectedTabIndex}
-              onChangeIndex={this.handleTabChange}
-            />
+            <div className="">
+              <span className="filter">Filter by</span>
+              <Tabs
+                options={tabs}
+                activeIndex={selectedTabIndex}
+                onChangeIndex={this.handleTabChange}
+              />
+            </div>
             <div className="search-box">
               <SearchBox
                 placeholder={`Search for a ${model.name} ...`}
@@ -186,6 +217,8 @@ class SelectNodesCell extends React.Component<Props, State> {
             field={this.props.field}
             changed={this.state.changed}
             values={this.state.values}
+            model={this.props.model}
+            nodeId={this.props.nodeId}
           />
         </div>
       </Modal>
