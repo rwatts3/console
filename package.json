@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "npm run relay-compiler; rm -rf dist && NODE_ENV=production GRAPHQL_ENDPOINT=$BACKEND_ADDR/system node --max-old-space-size=8192 node_modules/.bin/webpack --config webpack.config.build.js -p && cp -r static/* dist",
+    "build": "npm run relay-compiler; rm -rf dist && NODE_ENV=production GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack --config webpack.config.build.js -p && cp -r static/* dist",
     "pre-deploy": "npm run dll && npm run build && cp dll/vendor.bundle.js dist/vendor.bundle.js && cp dist/index.html dist/200.html ",
     "deploy-production": "netlify deploy -p dist -s $NETLIFY_ID -t $NETLIFY_TOKEN",
     "deploy-integration": "netlify deploy -p dist -s $INTEGRATION_NETLIFY_ID -t $INTEGRATION_NETLIFY_TOKEN",
