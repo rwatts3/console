@@ -680,7 +680,19 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private close = () => {
     const { router, params } = this.props
-    router.push(`/${params.projectName}/functions`)
+    const { fn } = this.state
+    const isInline = fn.type === 'AUTH0'
+    const changed = didChange(this.state.fn, isInline, this.props.node)
+
+    if (changed) {
+      graphcoolConfirm(
+        `You have unsaved changes in your function "${fn.name}". Do you want to proceed?`,
+      ).then(() => {
+        router.push(`/${params.projectName}/functions`)
+      })
+    } else {
+      router.push(`/${params.projectName}/functions`)
+    }
   }
 
   private errorInTab = (index: number) => false
