@@ -182,13 +182,17 @@ class DatabrowserView extends React.Component<Props, State> {
   private wrapperRef: any
 
   private setSearchQueryThrottled = throttle(
-    (q: string) => {
+    (q: string, push?: boolean) => {
       const queryObject = { query: {} }
       if (q.length > 0) {
         queryObject.query = { q }
       }
       const newLocation = { ...this.props.location, ...queryObject }
-      this.props.router.replace(newLocation)
+      if (push) {
+        this.props.router.push(newLocation)
+      } else {
+        this.props.router.replace(newLocation)
+      }
       tracker.track(ConsoleEvents.Databrowser.Search.entered())
     },
     1000,
@@ -312,6 +316,7 @@ class DatabrowserView extends React.Component<Props, State> {
                 src={require('assets/new_icons/close.svg')}
                 className={classes.closeicon}
                 onClick={() => {
+                  this.setSearchQueryThrottled('', true)
                   this.props.toggleSearch()
                   tracker.track(ConsoleEvents.Databrowser.Search.toggled())
                 }}
