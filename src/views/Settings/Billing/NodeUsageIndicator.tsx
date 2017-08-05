@@ -29,23 +29,28 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
 
     return (
       <div className="flex flexColumn">
+        <div className="bt bBlack05 w100 mv38" />
+        <style jsx={true}>{`
+          .title {
+            @p: .black30, .fw6, .f14;
+          }
+          .columns {
+            @p: .flex, .itemsEnd, .relative;
+            height: 100px;
+          }
+
+          .column {
+            @p: .br2, .mr4, .bb;
+            width: 20px;
+          }
+
+          .circularTodayIndicator {
+            @p: .br100, .hS06, .wS06, .mt4, .mr4;
+            margin-bottom: -10px;
+          }
+        `}</style>
+        <div className="title">Storage Usage</div>
         <div className="columns">
-          <style jsx={true}>{`
-            .columns {
-              @p: .flex, .itemsEnd, .relative;
-              height: 160px;
-            }
-
-            .column {
-              @p: .br2, .mr4, .bb;
-              width: 20px;
-            }
-
-            .circularTodayIndicator {
-              @p: .br100, .hS06, .wS06, .mt4, .mr4;
-              margin-bottom: -10px;
-            }
-          `}</style>
           {columnHeights.map((height, i) => {
             if (i === columnHeights.length - 1) {
               return (
@@ -60,12 +65,6 @@ export default class NodeUsageIndicator extends React.Component<Props, {}> {
             }
             return this.generateColumn(height, i)
           })}
-          <div
-            className="absolute bt bBlack05 w100"
-            style={{
-              top: '60px',
-            }}
-          />
         </div>
         <div className="flex itemsCenter justifyBetween mt25">
           <div className="flex itemsCenter">

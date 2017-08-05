@@ -36,7 +36,7 @@ export default class Usage extends React.Component<Props, {}> {
           }
 
           .title {
-            @p: .black30, .fw6, .f14, .ttu;
+            @p: .black50, .fw6, .f16, .ttu;
           }
         `}</style>
         <div className="title">
@@ -70,9 +70,7 @@ export default class Usage extends React.Component<Props, {}> {
             </div>
           </div>}
         <Seats
-          className={`mb38 ${this.calculateAdditionalCostsForRequests() > 0
-            ? 'mt25'
-            : 'mt96'}`}
+          className="mb38 mt25"
           seats={this.props.usedSeats}
           maxSeats={maxSeats}
         />
