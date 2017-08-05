@@ -297,7 +297,7 @@ class EnumBox extends React.Component<Props, State> {
   }
 }
 
-const ConnectedTypebox = connect(
+const ConnectedEnumBox = connect(
   state => {
     return {
       gettingStartedState: state.gettingStarted.gettingStartedState,
@@ -306,4 +306,4 @@ const ConnectedTypebox = connect(
   { nextStep, showNotification },
 )(withRouter(EnumBox))
 
-export default ConnectedTypebox
+export default ConnectedEnumBox

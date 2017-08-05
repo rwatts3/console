@@ -1,5 +1,4 @@
 import * as React from 'react'
-const classes: any = require('./CheckboxCell.scss')
 import * as cn from 'classnames'
 
 interface Props {
@@ -19,22 +18,46 @@ export default class CheckboxCell extends React.Component<Props, {}> {
     const { height, checked, onChange, ...rest } = this.props
     return (
       <div
-        className={classes.root}
+        className="checkbox-cell"
         style={{
           height,
         }}
         onClick={() => this._toggle()}
         {...rest}
       >
-        <div className={classes.border}>
-          <div
-            className={cn(classes.dot, {
-              [classes.active]: checked,
-            })}
-          />
+        <style jsx={true}>{`
+          .checkbox-cell {
+            @p: .flex, .itemsCenter, .justifyCenter, .pointer;
+          }
+          .border {
+            @p: .ba, .br100, .bBlack20, .flex, .itemsCenter, .justifyCenter;
+            width: 16px;
+            height: 16px;
+            transition: $duration border-color;
+          }
+          .dot {
+            @p: .ba, .bBlue, .br100, .bgBlue, .o0;
+            height: 16px;
+            width: 16px;
+            transition: $duration opacity;
+          }
+          .checkbox-cell:hover .border,
+          .border.active {
+            @p: .bBlue;
+          }
+          .checkbox-cell:hover .dot,
+          .active .dot {
+            @p: .o100;
+          }
+        `}</style>
+        <div
+          className={cn('border', {
+            active: checked,
+          })}
+        >
+          <div className="dot" />
         </div>
       </div>
     )
   }
 }
-/*backgroundColor: this.props.checked ? '#EEF9FF' : this.props.backgroundColor,*/

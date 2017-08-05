@@ -13,10 +13,22 @@ const mutation = graphql`
       enumEdge {
         node {
           id
+          name
+          values
         }
       }
       project {
         id
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+        enumSchema
+        typeSchema
+        schema
       }
     }
   }

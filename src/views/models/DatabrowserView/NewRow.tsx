@@ -57,7 +57,9 @@ class NewRow extends React.Component<Props, State> {
 
   keyDown = (e: any) => {
     if (e.keyCode === 13) {
-      this.add()
+      setTimeout(() => {
+        this.add()
+      }, 20)
     }
   }
 

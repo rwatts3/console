@@ -18,13 +18,13 @@ class DeleteNodeRow extends React.Component<Props, {}> {
     const nodes = this.props.selectedNodeIds.size
     return (
       <div
-        className={`flex items-center bg-light-gray ${classes.red}`}
+        className={`flex itemsCenter ${classes.red}`}
         style={{
           overflow: 'visible',
           position: 'fixed',
-          paddingLeft: 10,
-          left: 40 + 300,
-          width: window.innerWidth - 300 - 40,
+          paddingLeft: 16,
+          left: 30 + 300,
+          width: window.innerWidth - 300 - 30,
           top: this.props.headerHeight + 66 + 60 + 1,
           height: this.props.height,
         }}
@@ -33,7 +33,7 @@ class DeleteNodeRow extends React.Component<Props, {}> {
           width={16}
           height={16}
           src={require('assets/icons/delete.svg')}
-          className="mr1"
+          className="mr6"
         />
         <span>
           Delete {nodes} node{nodes > 1 ? 's' : ''}?

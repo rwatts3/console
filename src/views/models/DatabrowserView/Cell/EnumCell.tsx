@@ -37,14 +37,12 @@ export default class EnumCell extends React.Component<
       <ClickOutside onClickOutside={this.props.cancel}>
         <div className={classes.root}>
           <Combobox
-            ref={ref => (this.ref = ref)}
+            ref={this.setRef}
             value={this.state.value}
-            onKeyDown={this.onKeyDown}
+            onKeyDown={this.handleKeyDown}
+            onSelect={this.handleSelect}
             options={enumValues}
-            onSelect={(value: string) => {
-              this.setState({ value })
-              this.props.save(stringToValue(value, this.props.field))
-            }}
+            autocomplete
             autosize
             className={classes.root}
           >
@@ -64,7 +62,17 @@ export default class EnumCell extends React.Component<
     )
   }
 
-  private onKeyDown = (e: any) => {
+  private setRef = ref => {
+    this.ref = ref
+  }
+
+  private handleSelect = (value: string) => {
+    this.setState({ value }, () => {
+      this.props.save(stringToValue(value, this.props.field))
+    })
+  }
+
+  private handleKeyDown = (e: any) => {
     // filter arrow keys
     if ([38, 40].includes(e.keyCode)) {
       return
