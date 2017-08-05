@@ -146,7 +146,7 @@ export default class FieldHorizontalSelect extends React.Component<Props, {}> {
               onFocus={() => onChange(i, choice)}
               onClick={() => !disabled && onChange(i, choice)}
               data-test={choice === 'String' ? 'string-type' : ''}
-              key={String(choice)}
+              key={typeof choice === 'string' ? choice : choice.key}
             >
               <div
                 className={cn('element', { selected: selectedIndex === i })}
