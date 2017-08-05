@@ -296,7 +296,15 @@ export class SideNav extends React.Component<Props, State> {
       this.props.location.pathname ===
         `/${this.props.params.projectName}/models/${model.name}/schema` ||
       this.props.location.pathname ===
-        `/${this.props.params.projectName}/models/${model.name}/databrowser`
+        `/${this.props.params.projectName}/models/${model.name}/databrowser` ||
+      this.props.location.pathname ===
+        `/${encodeURIComponent(
+          this.props.params.projectName,
+        )}/models/${model.name}/schema` ||
+      this.props.location.pathname ===
+        `/${encodeURIComponent(
+          this.props.params.projectName,
+        )}/models/${model.name}/databrowser`
 
     const activeListElement = `
       color: ${$v.white} !important;
