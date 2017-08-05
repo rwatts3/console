@@ -7837,9 +7837,9 @@ react-helmet@^3.1.0:
     object-assign "^4.0.1"
     react-side-effect "^1.1.0"
 
-"react-input-enhancements@git+https://github.com/timsuchanek/react-input-enhancements#build":
+"react-input-enhancements@git+https://github.com/timsuchanek/react-input-enhancements#build-4":
   version "0.5.3"
-  resolved "git+https://github.com/timsuchanek/react-input-enhancements#69b56f5c0ab114196e64eec56f2c2535e14473af"
+  resolved "git+https://github.com/timsuchanek/react-input-enhancements#408b9ceeb8a9dd9dbb5800227a441ef0e3e14788"
   dependencies:
     babel-runtime "^6.11.6"
     inline-style-prefixer "^2.0.1"
