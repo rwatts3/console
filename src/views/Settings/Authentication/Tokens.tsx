@@ -10,10 +10,12 @@ import { onFailureShowNotification } from '../../../utils/relay'
 import { connect } from 'react-redux'
 import { showNotification } from '../../../actions/notification'
 import { bindActionCreators } from 'redux'
+import Loading from '../../../components/Loading/Loading'
 
 interface State {
   isEnteringTokenName: boolean
   newTokenName: string
+  loading: boolean
 }
 
 interface Props {
@@ -28,6 +30,7 @@ class Tokens extends React.Component<Props, State> {
     this.state = {
       isEnteringTokenName: false,
       newTokenName: '',
+      loading: false,
     }
   }
 
@@ -82,27 +85,31 @@ class Tokens extends React.Component<Props, State> {
                 onChange={(e: any) =>
                   this.setState({ newTokenName: e.target.value } as State)}
               />
-              <div className="flex itemsCenter">
-                <Icon
-                  className="mh10 pointer"
-                  src={require('../../../assets/icons/cross_red.svg')}
-                  width={15}
-                  height={15}
-                  onClick={() =>
-                    this.setState(
-                      {
-                        isEnteringTokenName: false,
-                      } as State,
-                    )}
-                />
-                <Icon
-                  className="mh10 pointer"
-                  src={require('../../../assets/icons/confirm.svg')}
-                  width={35}
-                  height={35}
-                  onClick={this.addPermanentAuthToken}
-                />
-              </div>
+              {this.state.loading
+                ? <div className="flex itemsCenter justifyCenter">
+                    <Loading />
+                  </div>
+                : <div className="flex itemsCenter">
+                    <Icon
+                      className="mh10 pointer"
+                      src={require('../../../assets/icons/cross_red.svg')}
+                      width={15}
+                      height={15}
+                      onClick={() =>
+                        this.setState(
+                          {
+                            isEnteringTokenName: false,
+                          } as State,
+                        )}
+                    />
+                    <Icon
+                      className="mh10 pointer"
+                      src={require('../../../assets/icons/confirm.svg')}
+                      width={35}
+                      height={35}
+                      onClick={this.addPermanentAuthToken}
+                    />
+                  </div>}
             </div>
           : <div
               className="flex pointer pl25"
@@ -138,6 +145,10 @@ class Tokens extends React.Component<Props, State> {
     )
   }
 
+  private setLoading = (loading: boolean = true) => {
+    this.setState(state => ({ ...state, loading }))
+  }
+
   private handleKeyDown = e => {
     if (e.keyCode === 13) {
       this.addPermanentAuthToken()
@@ -154,6 +165,7 @@ class Tokens extends React.Component<Props, State> {
     if (!this.state.newTokenName) {
       return
     }
+    this.setLoading()
     AddPermanentAuthTokenMutation.commit({
       projectId: this.props.project.id,
       tokenName: this.state.newTokenName,
@@ -165,8 +177,10 @@ class Tokens extends React.Component<Props, State> {
             isEnteringTokenName: false,
           } as State,
         )
+        this.setLoading(false)
       })
       .catch(transaction => {
+        this.setLoading(false)
         // no op
       })
   }
