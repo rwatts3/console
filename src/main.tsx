@@ -30,8 +30,8 @@ if (process.env.NODE_ENV === 'production') {
     onUpdated: () => {
       if (typeof graphcoolNotification !== 'undefined') {
         graphcoolNotification(
-          'We just deployed a new version of the Console.' +
-            ' Please refresh to see the latest version.',
+          'We just deployed a new version of the Console 🚀.' +
+            ' Please refresh.',
         )
       }
     },
