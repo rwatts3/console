@@ -69,6 +69,8 @@ export interface TestResponse {
   timestamp: string
   inline?: {
     errors: TestError[]
+    returnValue: any
+    error: any
     event: string
     logs: string
   }

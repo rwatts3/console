@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { TestResponse } from './TestPopup'
 const ResultViewer: any = require('../FunctionLogs/ResultViewer').ResultViewer
 import { Icon, $v } from 'graphcool-styles'
 import * as moment from 'moment'
 import * as cn from 'classnames'
+import { TestResponse } from './FunctionInput'
 
 interface Props {
   response: TestResponse
@@ -31,7 +31,7 @@ function extractDataFromResponse(response: TestResponse) {
       returnValue = JSON.stringify(inline.returnValue, null, 2)
     }
     logs = inline.logs
-    error = inline.errors
+    error = inline.errors || inline.error
   }
 
   if (response.webhook) {
@@ -139,7 +139,7 @@ export default function TestLog({ response }: Props) {
           @p: .red;
         }
         h2 {
-          @p: .mb10, .mt16;
+          @p: .mb10, .mt16, .red;
         }
       `}</style>
       <div className="header">

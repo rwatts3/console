@@ -72,6 +72,7 @@ export interface FunctionPopupState {
   eventType: EventType
   showTest: boolean
   sssModelName: string
+  didChange: boolean
 }
 
 const customModalStyle = {
@@ -149,6 +150,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       eventType,
       showTest: false,
       sssModelName: props.models[0].name,
+      didChange: false,
     }
 
     this.props.relay.refetch(fragmentVariables => ({
@@ -242,7 +244,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
           ) {
             return
           }
-          this.close()
+          this.close(true)
         }}
       >
         <ModalDocs
@@ -435,7 +437,10 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
   private handleEventTypeChange = (eventType: EventType) => {
     this.setState({ eventType } as FunctionPopupState)
-    this.update(updateInlineCode)(inlineCode(eventType))
+    this.update(updateInlineCode, () => {
+      // do not ask for unsaved changes when still in Step0
+      this.setState({ didChange: false })
+    })(inlineCode(eventType))
   }
 
   private update = (func: any, done?: (...args: any[]) => void) => {
@@ -444,6 +449,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
         ({ fn, ...state }) => {
           return {
             ...state,
+            didChange: true,
             fn: func(fn, ...params),
           }
         },
@@ -505,7 +511,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   private cancel = () => {
-    this.close()
+    this.close(true)
   }
 
   private delete = () => {
@@ -678,13 +684,12 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
       })
   }
 
-  private close = () => {
+  private close = (checkClose: boolean = false) => {
     const { router, params } = this.props
     const { fn } = this.state
-    const isInline = fn.type === 'AUTH0'
-    const changed = didChange(this.state.fn, isInline, this.props.node)
+    const changed = this.state.didChange
 
-    if (changed) {
+    if (changed && checkClose) {
       graphcoolConfirm(
         `You have unsaved changes in your function "${fn.name}". Do you want to proceed?`,
       ).then(() => {
