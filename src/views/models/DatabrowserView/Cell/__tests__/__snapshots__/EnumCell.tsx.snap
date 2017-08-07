@@ -4,6 +4,7 @@ exports[`test EnumCell renders 1`] = `
   <div
     className="root">
     <Combobox
+      autocomplete={true}
       autosize={true}
       className="root"
       onKeyDown={[Function]}
