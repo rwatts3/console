@@ -84,12 +84,15 @@ class AddProjectPopup extends React.Component<Props, State> {
         (iMin, x, i, arr) => (x < arr[iMin] ? i : iMin),
         0,
       )
-      this.setState(
-        {
-          selectedIndex: minIndex,
+      this.setState(state => {
+        const selectedIndex =
+          state.selectedIndex !== 0 ? state.selectedIndex : minIndex
+        return {
+          ...state,
           times: results,
-        } as State,
-      )
+          selectedIndex,
+        }
+      })
     })
   }
   render() {
