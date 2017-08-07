@@ -1,7 +1,7 @@
 export type NotificationLevel = 'success' | 'error' | 'warning' | 'info'
 
 export interface Notification {
-  message: string
+  message: string | JSX.Element
   level: NotificationLevel
   autoDismiss?: number
 }

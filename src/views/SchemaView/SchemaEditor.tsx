@@ -308,6 +308,22 @@ class SchemaEditor extends React.Component<Props, State> {
             } as State,
           )
         } else {
+          if (
+            res.migrateProject.errors &&
+            res.migrateProject.errors.length > 0
+          ) {
+            res.migrateProject.errors.forEach(error => {
+              this.props.showNotification({
+                level: 'error',
+                message: (
+                  <div>
+                    <span className="fw6">{error.type}:</span>{' '}
+                    {error.description}
+                  </div>
+                ),
+              })
+            })
+          }
           this.setState(
             {
               messages: [],
