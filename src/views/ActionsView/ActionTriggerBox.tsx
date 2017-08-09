@@ -1,15 +1,15 @@
 import * as React from 'react'
+import { createFragmentContainer, graphql } from 'react-relay'
 import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
-import {Icon} from 'graphcool-styles'
+  Project,
+  ActionTriggerMutationModelMutationType,
+} from '../../types/types'
+import { Icon } from 'graphcool-styles'
 const QueryEditor: any = require('../SchemaView/Editor/QueryEditor').QueryEditor
 import ActionTrigger from './ActionTrigger'
 import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionTriggerBox.scss')
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 
 interface Props {
@@ -29,7 +29,6 @@ export interface UpdateTriggerPayload {
 }
 
 class ActionTriggerBox extends React.Component<Props, {}> {
-
   render() {
     let queryEditor = null
     if (this.props.schema) {
@@ -37,62 +36,62 @@ class ActionTriggerBox extends React.Component<Props, {}> {
         <QueryEditor
           schema={this.props.schema}
           value={this.props.triggerMutationModelFragment}
-          onEdit={(query) => this.props.update({ triggerMutationModelFragment: query })}
+          onEdit={query =>
+            this.props.update({ triggerMutationModelFragment: query })}
         />
       )
     } else {
       queryEditor = (
         <div className={classes.noQuery}>
           {'After you selected your trigger and mutation, ' +
-           'you need to specify a GraphQL fragment from it to use for the handler.'}
+            'you need to specify a GraphQL fragment from it to use for the handler.'}
         </div>
       )
     }
 
     return (
       <div className={classes.root}>
-
         <div className={classes.head}>
           <div className={classes.title}>Trigger</div>
           {!this.props.valid &&
-          <Tooltip
-            placement={'bottom'}
-            overlay={
-              <span onClick={(e) => e.stopPropagation()}>
-                Please specify the model and the mutation type.
-              </span>
-            }
-          >
-            <Icon
-              width={24}
-              height={24}
-              src={require('assets/new_icons/warning.svg')}
-              color={'#F5A623'}
-            />
-          </Tooltip>
-          }
+            <Tooltip
+              placement={'bottom'}
+              overlay={
+                <span onClick={e => e.stopPropagation()}>
+                  Please specify the model and the mutation type.
+                </span>
+              }
+            >
+              <Icon
+                width={24}
+                height={24}
+                src={require('assets/new_icons/warning.svg')}
+                color={'#F5A623'}
+              />
+            </Tooltip>}
           {this.props.valid &&
             <Icon
               width={24}
               height={24}
               src={require('assets/new_icons/check.svg')}
               color={'#7ED321'}
-            />
-          }
+            />}
         </div>
 
         <div className={classes.trigger}>
           <ActionTrigger
             project={this.props.project}
             update={this.handleUpdate}
-            triggerMutationModelMutationType={this.props.triggerMutationModelMutationType}
+            triggerMutationModelMutationType={
+              this.props.triggerMutationModelMutationType
+            }
             triggerMutationModelModelId={this.props.triggerMutationModelModelId}
           />
         </div>
         {this.props.schema &&
-        <div className={classes.info}>
-          Specify a query for your action handler payload
-        </div>}
+          <div className={classes.info}>
+            Specify a query for your action handler payload
+          </div>}
         <div className={cx(classes.query, $p.bgDarkerBlue)}>
           {queryEditor}
         </div>
@@ -101,8 +100,11 @@ class ActionTriggerBox extends React.Component<Props, {}> {
   }
 
   private handleUpdate = (payload: UpdateTriggerPayload) => {
-    if (this.props.triggerMutationModelModelId && payload.triggerMutationModelMutationType &&
-       !this.props.triggerMutationModelFragment) {
+    if (
+      this.props.triggerMutationModelModelId &&
+      payload.triggerMutationModelMutationType &&
+      !this.props.triggerMutationModelFragment
+    ) {
       payload.triggerMutationModelFragment = this.getDefaultSchema(payload)
     }
     this.props.update(payload)

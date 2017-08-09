@@ -1,28 +1,19 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
-import {ModelPermission, Model, Relation} from '../../../../types/types'
+import { ModelPermission, Relation } from '../../../../types/types'
 import RelationPermissionComponent from './RelationPermissionComponent'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 
 interface Props {
   permissions: ModelPermission[]
   relation: Relation
   params: any
 }
-// const sort = {
-//   READ: 0,
-//   CREATE: 1,
-//   UPDATE: 2,
-//   DELETE: 3,
-// }
 
-class ModelPermissionsList extends React.Component<Props, {}> {
+class RelationPermissionList extends React.Component<Props, {}> {
   render() {
-    const {permissions, relation, params} = this.props
+    const { permissions, relation, params } = this.props
     return (
       <div className={$p.pa16}>
         {permissions.map(permission =>
@@ -42,7 +33,7 @@ class ModelPermissionsList extends React.Component<Props, {}> {
 const MappedPermissionsList = mapProps({
   permissions: props => props.relation.permissions.edges.map(edge => edge.node),
   relation: props => props.relation,
-})(ModelPermissionsList)
+})(RelationPermissionList)
 
 export default createFragmentContainer(MappedPermissionsList, {
   relation: graphql`

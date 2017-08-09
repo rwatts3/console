@@ -1,14 +1,11 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import Helmet from 'react-helmet'
 import IntegrationsCardGrid from './IntegrationsCardGrid'
 import IntegrationsHeader from './IntegrationsHeader'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {Viewer} from '../../types/types'
+import { Viewer } from '../../types/types'
 
 interface Props {
   viewer: Viewer
@@ -18,13 +15,17 @@ interface Props {
 
 class IntegrationsView extends React.Component<Props, {}> {
   render() {
-    const {viewer: {project, user}, params, location} = this.props
+    const { viewer: { project, user }, params } = this.props
 
     return (
       <div className={cx($p.overflowScroll, $p.h100, $p.bgBlack04)}>
-        <Helmet title='Integrations' />
+        <Helmet title="Integrations" />
         <IntegrationsHeader />
-        <IntegrationsCardGrid isBeta={user.crm.information.isBeta} project={project} params={params} />
+        <IntegrationsCardGrid
+          isBeta={user.crm.information.isBeta}
+          project={project}
+          params={params}
+        />
         {this.props.children}
       </div>
     )

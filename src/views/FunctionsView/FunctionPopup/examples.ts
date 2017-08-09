@@ -1,5 +1,5 @@
 export const examples = {
-  'weather': {
+  weather: {
     sdl: `type WeatherPayload {
   temperature: Float!
   pressure: Float!
@@ -32,7 +32,7 @@ function getApiUrl(query) {
 	return \`http://samples.openweathermap.org/data/2.5/weather?q=$\{query\}&appid=b1b15e88fa797225412429c1c50c122a1\`
   }`,
   },
-  'cuid': {
+  cuid: {
     sdl: `type CuidPayload {
   cuid: String!
 }
@@ -51,7 +51,7 @@ module.exports = function (event) {
   }
 }`,
   },
-  'sendgrid': {
+  sendgrid: {
     sdl: `type EmailPayload {
   success: Boolean!
 }

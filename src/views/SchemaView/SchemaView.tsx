@@ -2,10 +2,7 @@ import * as React from 'react'
 import SchemaOverview from './SchemaOverview/SchemaOverview'
 import SchemaEditor from './SchemaEditor'
 import SchemaHeader from './SchemaHeader'
-import {
-  createRefetchContainer,
-  graphql,
-} from 'react-relay'
+import { createRefetchContainer, graphql } from 'react-relay'
 import { Viewer, Enum } from '../../types/types'
 import ResizableBox from '../../components/ResizableBox'
 import { throttle } from 'lodash'
@@ -18,7 +15,7 @@ interface Props {
   params: any
   relay: any
   router: any
-  route: ReactRouter.Route
+  route: FoundRouterRoute
 }
 
 interface State {
@@ -31,24 +28,22 @@ interface State {
 
 class SchemaView extends React.Component<Props, State> {
   private forceLeaveRoute: boolean = false
-  private handleResize = throttle(
-    (_, {size}) => {
-      localStorage.setItem('schema-editor-width', size.width)
-    },
-    300,
-  )
+  private handleResize = throttle((_, { size }) => {
+    localStorage.setItem('schema-editor-width', size.width)
+  }, 300)
 
   constructor(props) {
     super(props)
 
     this.state = {
-      editorWidth: parseInt(localStorage.getItem('schema-editor-width'), 10) || (window.innerWidth - 290) / 2,
+      editorWidth:
+        parseInt(localStorage.getItem('schema-editor-width'), 10) ||
+        (window.innerWidth - 290) / 2,
       typesChanged: false,
       enumsChanged: false,
       blur: false,
       scroll: 0,
     }
-    global['relayProps'] = props.relay
   }
 
   componentDidMount() {
@@ -61,13 +56,18 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   addLeaveHook() {
-    this.props.router.addTransitionHook((nextLocation) => {
-      if ((this.state.typesChanged || this.state.enumsChanged) && !this.forceLeaveRoute) {
-        graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
-          .then(() => {
-            this.forceLeaveRoute = true
-            this.props.router.push(nextLocation)
-          })
+    this.props.router.addTransitionHook(nextLocation => {
+      if (
+        (this.state.typesChanged || this.state.enumsChanged) &&
+        !this.forceLeaveRoute
+      ) {
+        graphcoolConfirm(
+          'This action could lead to massive data loss.',
+          'Unsaved Changes',
+        ).then(() => {
+          this.forceLeaveRoute = true
+          this.props.router.push(nextLocation)
+        })
         return false
       } else {
         return true
@@ -80,20 +80,28 @@ class SchemaView extends React.Component<Props, State> {
   }
 
   render() {
-    const {viewer, location, params} = this.props
-    const {editorWidth, typesChanged, enumsChanged} = this.state
-    const editingModelName = location.pathname.endsWith(`${params.modelName}/edit`) ? params.modelName : undefined
-    const editingEnumName = location.pathname.endsWith(`edit/${params.enumName}`) ? params.enumName : undefined
+    const { viewer, location, params } = this.props
+    const { editorWidth, typesChanged, enumsChanged } = this.state
+    const editingModelName = location.pathname.endsWith(
+      `${params.modelName}/edit`,
+    )
+      ? params.modelName
+      : undefined
+    const editingEnumName = location.pathname.endsWith(
+      `edit/${params.enumName}`,
+    )
+      ? params.enumName
+      : undefined
     const isBeta = viewer.user.crm.information.isBeta
     const showEnums = location.pathname.includes('schema/enums')
     // scroll={this.state.scroll}
     return (
-      <div className='schema-view'>
+      <div className="schema-view">
         <style jsx>{`
           .schema-view {
             @p: .flex, .flexColumn, .h100, .itemsStretch;
-            background-color: rgb(11,20,28);
-            border-left: 6px solid #08131B;
+            background-color: rgb(11, 20, 28);
+            border-left: 6px solid #08131b;
           }
           .schema-wrapper {
             @p: .flex, .h100, .pt6, .bgDarkBlue, .flexAuto;
@@ -105,14 +113,14 @@ class SchemaView extends React.Component<Props, State> {
           typesChanged={typesChanged}
           enumsChanged={enumsChanged}
         />
-        <div className='schema-wrapper'>
+        <div className="schema-wrapper">
           <ResizableBox
-            id='schema-view'
+            id="schema-view"
             width={editorWidth}
             height={window.innerHeight - 64}
             hideArrow
             onResize={this.handleResize}
-            axis='x'
+            axis="x"
           >
             <SchemaEditor
               project={viewer.project}
@@ -123,49 +131,47 @@ class SchemaView extends React.Component<Props, State> {
               showEnums={showEnums}
             />
           </ResizableBox>
-          {showEnums ? (
-            <EnumsOverview
-              enums={mockEnums}
-              location={location}
-              project={viewer.project}
-              editingEnumName={editingEnumName}
-              blur={false}
-              setScroll={() => {
-                // comment for tslint
-              }}
-            />
-          ) : (
-            <SchemaOverview
-              location={location}
-              project={viewer.project}
-              editingModelName={editingModelName}
-              blur={isBeta ? this.state.blur : false}
-              setScroll={this.scroll}
-              params={this.props.params}
-            />
-          )}
+          {showEnums
+            ? <EnumsOverview
+                enums={mockEnums}
+                location={location}
+                project={viewer.project}
+                editingEnumName={editingEnumName}
+                blur={false}
+                setScroll={() => {
+                  // comment for tslint
+                }}
+              />
+            : <SchemaOverview
+                location={location}
+                project={viewer.project}
+                editingModelName={editingModelName}
+                blur={isBeta ? this.state.blur : false}
+                setScroll={this.scroll}
+                params={this.props.params}
+              />}
         </div>
-        {
-          this.props.children &&
-          React.cloneElement(this.props.children as any, {projectId: this.props.viewer.project.id})
-        }
+        {this.props.children &&
+          React.cloneElement(this.props.children as any, {
+            projectId: this.props.viewer.project.id,
+          })}
       </div>
     )
   }
 
   private handleTypesChange = typesChanged => {
-    this.setState({typesChanged} as State)
+    this.setState({ typesChanged } as State)
   }
   private handleEnumsChange = enumsChanged => {
-    this.setState({enumsChanged} as State)
+    this.setState({ enumsChanged } as State)
   }
 
   private setBlur = (blur: boolean) => {
-    this.setState({blur} as State)
+    this.setState({ blur } as State)
   }
 
   private scroll = (n: number) => {
-    this.setState({scroll: n} as State)
+    this.setState({ scroll: n } as State)
   }
 }
 

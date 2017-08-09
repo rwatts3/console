@@ -7,7 +7,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation DeleteAlgoliaSyncQueryMutation($input: DeleteAlgoliaSyncQueryInput!) {
+  mutation DeleteAlgoliaSyncQueryMutation(
+    $input: DeleteAlgoliaSyncQueryInput!
+  ) {
     deleteAlgoliaSyncQuery(input: $input) {
       searchProviderAlgolia {
         id
@@ -32,13 +34,15 @@ function commit(input: Props) {
         algoliaSyncQueryId: input.algoliaSyncQueryId,
       },
     },
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'searchProviderAlgolia',
-      parentID: input.searchProviderAlgoliaId,
-      connectionName: 'algoliaSyncQueries',
-      deletedIDFieldName: 'deletedId',
-    }],
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'searchProviderAlgolia',
+        parentID: input.searchProviderAlgoliaId,
+        connectionName: 'algoliaSyncQueries',
+        deletedIDFieldName: 'deletedId',
+      },
+    ],
   })
 }
 

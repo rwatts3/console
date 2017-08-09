@@ -1,12 +1,9 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {Model, Relation} from '../../../types/types'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { Relation } from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import RelationPermissions from './RelationPermissions/RelationPermissions'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 
 interface Props {
@@ -16,7 +13,7 @@ interface Props {
 
 class AllRelationPermissionsList extends React.Component<Props, {}> {
   render() {
-    const {relations, params} = this.props
+    const { relations, params } = this.props
     return (
       <div className={cx($p.bgWhite, $p.bt, $p.bBlack10, $p.b)}>
         {relations.map((relation, index) =>
@@ -25,10 +22,12 @@ class AllRelationPermissionsList extends React.Component<Props, {}> {
             key={relation.id}
             relation={relation}
             style={
-                index === relations.length - 1 ? {
-                  marginBottom: 100,
-                } : {}
-              }
+              index === relations.length - 1
+                ? {
+                    marginBottom: 100,
+                  }
+                : {}
+            }
           />,
         )}
         {this.props.children}

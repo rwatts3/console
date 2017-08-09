@@ -1,13 +1,11 @@
 import * as React from 'react'
-import {Project, Model} from '../../../types/types'
-import {SchemaOverviewFilter} from './SchemaOverview'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { Project, Model } from '../../../types/types'
+import { SchemaOverviewFilter } from './SchemaOverview'
+import { createFragmentContainer, graphql } from 'react-relay'
 import TypeBox from './TypeBox'
 import AddType from './AddType'
-import {debounce} from 'lodash'
+import { debounce } from 'lodash'
+import { dummy } from '../../../utils/dummy'
 
 interface Props {
   project: Project
@@ -20,29 +18,33 @@ interface Props {
   params: any
 }
 
-class TypeList extends React.Component<Props,null> {
+class TypeList extends React.Component<Props, null> {
   private containerRef = null
-  private handleScroll = debounce(
-    () => {
-      const container = this.containerRef
-      const scrollPercentage = 100 * container.scrollTop / (container.scrollHeight - container.clientHeight)
-      this.props.setScroll(scrollPercentage)
-    },
-    100,
-  )
+  private handleScroll = debounce(() => {
+    const container = this.containerRef
+    const scrollPercentage =
+      100 *
+      container.scrollTop /
+      (container.scrollHeight - container.clientHeight)
+    this.props.setScroll(scrollPercentage)
+  }, 100)
   render() {
-    const {activeFilter, project, opacity, selectedModel, editingModelName} = this.props
+    const {
+      activeFilter,
+      project,
+      opacity,
+      selectedModel,
+      editingModelName,
+    } = this.props
     const models = project.models.edges
       .map(edge => edge.node)
-      .sort((a, b) => a.id < b.id ? 1 : -1)
+      .sort((a, b) => (a.id < b.id ? 1 : -1))
     let style = {}
     if (typeof opacity === 'number' && !isNaN(opacity)) {
-      style = {opacity}
+      style = { opacity }
     }
     return (
-      <div
-        className='type-list-wrapper'
-      >
+      <div className="type-list-wrapper">
         <style jsx>{`
           .type-list-wrapper {
             @p: .flex, .flexColumn, .relative, .flex1;
@@ -51,39 +53,44 @@ class TypeList extends React.Component<Props,null> {
             @p: .absolute, .top0, .left0, .right0, .z2;
             content: "";
             height: 16px;
-            background: linear-gradient(to bottom, rgba(23, 42, 58, 1), rgba(23, 42, 58, 0));
+            background: linear-gradient(
+              to bottom,
+              rgba(23, 42, 58, 1),
+              rgba(23, 42, 58, 0)
+            );
           }
           .type-list {
             @p: .pl16, .pb16, .pr16, .overflowAuto, .nosb, .flexAuto;
           }
         `}</style>
         <div
-          className='type-list'
+          className="type-list"
           style={style}
           onScroll={this.handleScroll}
           ref={ref => {
             this.containerRef = ref
           }}
         >
-          {models.map(model => (
-            model.name === editingModelName ? (
-              <AddType
-                key={model.id}
-                projectId={this.props.project.id}
-                model={model}
-                params={this.props.params}
-              />
-            ) : (
-              <TypeBox
-                key={model.id}
-                model={model}
-                projectName={project.name}
-                extended={activeFilter === 'detail'}
-                onEditModel={this.props.onEditModel}
-                highlighted={selectedModel ? model.name === selectedModel : undefined}
-              />
-            )
-          ))}
+          {models.map(
+            model =>
+              model.name === editingModelName
+                ? <AddType
+                    key={model.id}
+                    projectId={this.props.project.id}
+                    model={model}
+                    params={this.props.params}
+                  />
+                : <TypeBox
+                    key={model.id}
+                    model={model}
+                    projectName={project.name}
+                    extended={activeFilter === 'detail'}
+                    onEditModel={this.props.onEditModel}
+                    highlighted={
+                      selectedModel ? model.name === selectedModel : undefined
+                    }
+                  />,
+          )}
         </div>
       </div>
     )
@@ -180,3 +187,5 @@ const mutationFragments = graphql`
     }
   }
 `
+
+dummy(mutationFragments)

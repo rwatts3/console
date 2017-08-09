@@ -1,11 +1,14 @@
 import * as React from 'react'
-import {buildClientSchema} from 'graphql'
+import { buildClientSchema } from 'graphql'
+import { createRefetchContainer, graphql, RelayProp } from 'react-relay'
 import {
-  createRefetchContainer,
-  graphql,
-  RelayProp,
-} from 'react-relay'
-import { Project, Operation, UserType, Model, ModelPermission, PermissionRuleType } from '../../../types/types'
+  Project,
+  Operation,
+  UserType,
+  Model,
+  ModelPermission,
+  PermissionRuleType,
+} from '../../../types/types'
 import mapProps from '../../../components/MapProps/MapProps'
 import { withRouter } from 'found'
 import PermissionPopupHeader from './PermissionPopupHeader'
@@ -18,15 +21,15 @@ import UpdateModelPermissionMutation from '../../../mutations/ModelPermission/Up
 import tracker from '../../../utils/metrics'
 import { ConsoleEvents, MutationType } from 'graphcool-metrics'
 import DeleteModelPermissionMutation from '../../../mutations/ModelPermission/DeleteModelPermissionMutation'
-import {isValid, didChange} from './PermissionPopupState'
-import {connect} from 'react-redux'
+import { isValid, didChange } from './PermissionPopupState'
+import { connect } from 'react-redux'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../../utils/modalStyle'
+import { fieldModalStyle } from '../../../utils/modalStyle'
 import Loading from '../../../components/Loading/Loading'
-import {extractSelection, addVarsAndName} from './ast'
-import {showNotification} from '../../../actions/notification'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {ShowNotificationCallback} from '../../../types/utils'
+import { extractSelection, addVarsAndName } from './ast'
+import { showNotification } from '../../../actions/notification'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 import { getEmptyPermissionQuery } from './data'
 
@@ -34,7 +37,7 @@ interface Props {
   params: any
   project: Project
   children: JSX.Element
-  router: ReactRouter.InjectedRouter
+  router: InjectedFoundRouter
   model?: Model
   permission?: ModelPermission
   showNotification: ShowNotificationCallback
@@ -74,9 +77,19 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
     this.mutationType = props.permission ? 'Update' : 'Create'
 
-    const schema = buildClientSchema(JSON.parse(this.props.model.permissionSchema))
+    const schema = buildClientSchema(
+      JSON.parse(this.props.model.permissionSchema),
+    )
     if (props.permission) {
-      const {operation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery, ruleName} = props.permission
+      const {
+        operation,
+        fieldIds,
+        userType,
+        applyToWholeModel,
+        rule,
+        ruleGraphQuery,
+        ruleName,
+      } = props.permission
       this.state = {
         selectedOperation: operation,
         fieldIds,
@@ -84,9 +97,15 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         applyToWholeModel,
         ruleName,
         rule,
-        ruleGraphQuery: (!ruleGraphQuery || ruleGraphQuery === '') ?
-          getEmptyPermissionQuery(props.model.name, operation, userType) :
-          addVarsAndName(props.model.namePlural, ruleGraphQuery, props.model.permissionQueryArguments, schema),
+        ruleGraphQuery:
+          !ruleGraphQuery || ruleGraphQuery === ''
+            ? getEmptyPermissionQuery(props.model.name, operation, userType)
+            : addVarsAndName(
+                props.model.namePlural,
+                ruleGraphQuery,
+                props.model.permissionQueryArguments,
+                schema,
+              ),
         queryValid: true,
         tabs: ['Select affected Fields', 'Define Rules'],
         selectedTabIndex: 0,
@@ -105,7 +124,11 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       userType: 'EVERYONE' as UserType,
       applyToWholeModel: false,
       rule: 'NONE' as PermissionRuleType,
-      ruleGraphQuery: getEmptyPermissionQuery(props.model.name, 'CREATE', 'EVERYONE'),
+      ruleGraphQuery: getEmptyPermissionQuery(
+        props.model.name,
+        'CREATE',
+        'EVERYONE',
+      ),
       queryValid: true,
       tabs: ['Select Operation', 'Select affected Fields', 'Define Rules'],
       selectedTabIndex: 0,
@@ -115,13 +138,11 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       queryChanged: false,
       ruleName: '',
     }
-    global['p'] = this
   }
 
   updateRelayVariables() {
     if (this.state.selectedOperation) {
       this.props.relay.refetch(fragmentVariables => {
-        console.log(`fragmentVariables`, fragmentVariables)
         return {
           ...fragmentVariables,
           operation: this.state.selectedOperation,
@@ -131,11 +152,13 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   }
 
   componentDidMount() {
-    tracker.track(ConsoleEvents.Permissions.Popup.opened({type: this.mutationType}))
+    tracker.track(
+      ConsoleEvents.Permissions.Popup.opened({ type: this.mutationType }),
+    )
   }
 
   render() {
-    const {params, model} = this.props
+    const { params, model } = this.props
     const {
       selectedOperation,
       fieldIds,
@@ -155,22 +178,31 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     }
 
     const errors = isValid(this.state)
-    const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
-    const fields = model.fields.edges.map(edge => edge.node)
+    const valid = !Object.keys(errors).reduce(
+      (acc, curr) => acc || errors[curr],
+      false,
+    )
     const changed = didChange(this.state, this.props.permission)
 
     return (
       <Modal
-        onRequestClose={(e) => {
-          if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) {
+        onRequestClose={e => {
+          if (
+            e.target instanceof HTMLTextAreaElement ||
+            e.target instanceof HTMLInputElement
+          ) {
             return
           }
           this.closePopup()
-          tracker.track(ConsoleEvents.Permissions.Popup.canceled({type: this.mutationType}))
+          tracker.track(
+            ConsoleEvents.Permissions.Popup.canceled({
+              type: this.mutationType,
+            }),
+          )
         }}
         isOpen={true}
         style={modalStyling}
-        contentLabel='Permission Popup'
+        contentLabel="Permission Popup"
       >
         <style jsx>{`
           .permission-popup {
@@ -183,37 +215,39 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
             @p: .pa38, .brown;
           }
           .loading {
-            @p: .absolute, .top0, .bottom0, .flex, .itemsCenter, .justifyCenter, .bgWhite80, .z999;
+            @p: .absolute, .top0, .bottom0, .flex, .itemsCenter, .justifyCenter,
+              .bgWhite80, .z999;
             left: -20px;
             right: -20px;
-            box-shadow: 0 0 10px rgba(255,255,255,.8);
+            box-shadow: 0 0 10px rgba(255, 255, 255, .8);
           }
         `}</style>
         <ModalDocs
-          title='How do permissions work?'
-          id='type-type-permission-popup'
+          title="How do permissions work?"
+          id="type-type-permission-popup"
           resources={[
             {
               title: 'Overview over Permissions',
               type: 'guide',
-              link: 'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
+              link:
+                'https://www.graph.cool/docs/reference/platform/authorization/overview-iegoo0heez/',
             },
             {
               title: 'How to define Permission Queries',
               type: 'guide',
-              link: 'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
+              link:
+                'https://www.graph.cool/docs/reference/platform/authorization/permission-queries-iox3aqu0ee/',
             },
             {
               title: 'Design Patterns',
               type: 'article',
-              link: 'https://www.graph.cool/docs/tutorials/authorization-content-management-system-miesho4goo/',
+              link:
+                'https://www.graph.cool/docs/tutorials/authorization-content-management-system-miesho4goo/',
             },
           ]}
-          videoId='l1KEssmlhPA'
+          videoId="l1KEssmlhPA"
         >
-          <div
-            className='permission-popup'
-          >
+          <div className="permission-popup">
             <PermissionPopupHeader
               operation={this.state.selectedOperation}
               errors={errors}
@@ -225,36 +259,34 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
               showErrors={showErrors}
               editing={editing}
             />
-            <div className='popup-body'>
-              {(editing ? false : selectedTabIndex === 0) && (
+            <div className="popup-body">
+              {(editing ? false : selectedTabIndex === 0) &&
                 <OperationChooser
                   selectedOperation={selectedOperation}
                   setOperation={this.setOperation}
                   errors={errors}
                   showErrors={showErrors}
-                />
-              )}
-              {(editing ? selectedTabIndex === 0 : selectedTabIndex === 1) && (
-                (selectedOperation !== null && ['CREATE', 'READ', 'UPDATE'].includes(selectedOperation)) ? (
-                  <AffectedFields
-                    selectedOperation={selectedOperation}
-                    model={model}
-                    fieldIds={fieldIds}
-                    toggleField={this.toggleField}
-                    toggleApplyToWholeModel={this.toggleApplyToWholeModel}
-                    applyToWholeModel={applyToWholeModel}
-                    onSelectAll={this.handleSelectAll}
-                    onReset={this.handleReset}
-                    errors={errors}
-                    showErrors={showErrors}
-                  />
-                ) : (
-                  <div className='no-delete'>
-                    A delete Mutation doesn't affect any particular fields as the whole node gets deleted at once.
-                  </div>
-                )
-              )}
-              {(editing ? selectedTabIndex === 1 : selectedTabIndex === 2) && (
+                />}
+              {(editing ? selectedTabIndex === 0 : selectedTabIndex === 1) &&
+                (selectedOperation !== null &&
+                ['CREATE', 'READ', 'UPDATE'].includes(selectedOperation)
+                  ? <AffectedFields
+                      selectedOperation={selectedOperation}
+                      model={model}
+                      fieldIds={fieldIds}
+                      toggleField={this.toggleField}
+                      toggleApplyToWholeModel={this.toggleApplyToWholeModel}
+                      applyToWholeModel={applyToWholeModel}
+                      onSelectAll={this.handleSelectAll}
+                      onReset={this.handleReset}
+                      errors={errors}
+                      showErrors={showErrors}
+                    />
+                  : <div className="no-delete">
+                      A delete Mutation doesn't affect any particular fields as
+                      the whole node gets deleted at once.
+                    </div>)}
+              {(editing ? selectedTabIndex === 1 : selectedTabIndex === 2) &&
                 <PermissionConditions
                   userType={userType}
                   rule={rule}
@@ -271,8 +303,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
                   onRuleNameChange={this.handleRuleNameChange}
                   toggleUserType={this.handleToggleUserType}
                   toggleRuleType={this.handleToggleRuleType}
-                />
-              )}
+                />}
             </div>
             <PermissionPopupFooter
               valid={valid}
@@ -285,11 +316,10 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
               changed={changed}
               tabs={tabs}
             />
-            {this.state.loading && (
-              <div className='loading'>
+            {this.state.loading &&
+              <div className="loading">
                 <Loading />
-              </div>
-            )}
+              </div>}
           </div>
         </ModalDocs>
       </Modal>
@@ -300,14 +330,22 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     this.setState(state => {
       const oldUserType = state.userType
       const userType = oldUserType === 'EVERYONE' ? 'AUTHENTICATED' : 'EVERYONE'
-      let {ruleGraphQuery} = state
-      const emptyDefault = getEmptyPermissionQuery(this.props.model.name, state.selectedOperation, state.userType)
+      let { ruleGraphQuery } = state
+      const emptyDefault = getEmptyPermissionQuery(
+        this.props.model.name,
+        state.selectedOperation,
+        state.userType,
+      )
       if (
         !ruleGraphQuery ||
         ruleGraphQuery === '' ||
         ruleGraphQuery === emptyDefault
       ) {
-        ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, state.selectedOperation, userType)
+        ruleGraphQuery = getEmptyPermissionQuery(
+          this.props.model.name,
+          state.selectedOperation,
+          userType,
+        )
       }
       return {
         ...state,
@@ -328,23 +366,30 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   }
 
   private handleRuleNameChange = e => {
-    this.setState({
-      ruleName: e.target.value,
-    } as PermissionPopupState)
+    this.setState(
+      {
+        ruleName: e.target.value,
+      } as PermissionPopupState,
+    )
   }
 
   private handleQueryValidityChange = (valid: boolean) => {
-    this.setState({queryValid: valid} as PermissionPopupState)
+    this.setState({ queryValid: valid } as PermissionPopupState)
   }
 
   private handleSubmit = () => {
     const errors = isValid(this.state)
-    const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
+    const valid = !Object.keys(errors).reduce(
+      (acc, curr) => acc || errors[curr],
+      false,
+    )
 
     if (!valid) {
-      return this.setState({
-        showErrors: true,
-      } as PermissionPopupState)
+      return this.setState(
+        {
+          showErrors: true,
+        } as PermissionPopupState,
+      )
     }
 
     if (this.state.editing) {
@@ -356,29 +401,37 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
   private handleSelectAll = () => {
     const fieldIds = this.props.model.fields.edges.map(edge => edge.node.id)
-    this.setState({
-      applyToWholeModel: false,
-      fieldIds,
-    } as PermissionPopupState)
+    this.setState(
+      {
+        applyToWholeModel: false,
+        fieldIds,
+      } as PermissionPopupState,
+    )
   }
 
   private handleReset = () => {
-    this.setState({
-      applyToWholeModel: false,
-      fieldIds: [],
-    } as PermissionPopupState)
+    this.setState(
+      {
+        applyToWholeModel: false,
+        fieldIds: [],
+      } as PermissionPopupState,
+    )
   }
 
   private handleSelectTab = (index: number) => {
-    this.setState({selectedTabIndex: index} as PermissionPopupState)
+    this.setState({ selectedTabIndex: index } as PermissionPopupState)
   }
 
   private setOperation = (operation: Operation) => {
     this.setState(
       state => {
-        let {ruleGraphQuery} = state
+        let { ruleGraphQuery } = state
         if (!ruleGraphQuery || ruleGraphQuery === '') {
-          ruleGraphQuery = getEmptyPermissionQuery(this.props.model.name, operation, state.userType)
+          ruleGraphQuery = getEmptyPermissionQuery(
+            this.props.model.name,
+            operation,
+            state.userType,
+          )
         }
         return {
           ...state,
@@ -392,41 +445,48 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     )
   }
 
-  private setRule = (rule: PermissionRuleType) => {
-    this.setState({rule} as PermissionPopupState)
-  }
-
   private setRuleGraphQuery = (ruleGraphQuery: string) => {
-    this.setState({ruleGraphQuery, queryChanged: true} as PermissionPopupState)
+    this.setState(
+      { ruleGraphQuery, queryChanged: true } as PermissionPopupState,
+    )
   }
 
   private toggleField = (id: string) => {
     const applyToWholeModel = false
     if (!this.state.fieldIds.includes(id)) {
       const fieldIds = this.state.fieldIds.concat(id)
-      this.setState({fieldIds, applyToWholeModel} as PermissionPopupState)
+      this.setState({ fieldIds, applyToWholeModel } as PermissionPopupState)
     } else {
       const i = this.state.fieldIds.indexOf(id)
 
       const fieldIds = this.state.fieldIds.slice()
       fieldIds.splice(i, 1)
 
-      this.setState({fieldIds, applyToWholeModel} as PermissionPopupState)
+      this.setState({ fieldIds, applyToWholeModel } as PermissionPopupState)
     }
   }
 
   private setUserType = (userType: UserType) => {
-    this.setState({userType} as PermissionPopupState)
+    this.setState({ userType } as PermissionPopupState)
   }
 
   private toggleApplyToWholeModel = () => {
-    const {applyToWholeModel} = this.state
-    this.setState({applyToWholeModel: !applyToWholeModel} as PermissionPopupState)
+    const { applyToWholeModel } = this.state
+    this.setState(
+      { applyToWholeModel: !applyToWholeModel } as PermissionPopupState,
+    )
   }
 
   private updatePermission = () => {
-    const {permission: {isActive, id}} = this.props
-    const {selectedOperation, fieldIds, userType, applyToWholeModel, rule, ruleGraphQuery} = this.state
+    const { permission: { isActive, id } } = this.props
+    const {
+      selectedOperation,
+      fieldIds,
+      userType,
+      applyToWholeModel,
+      rule,
+      ruleGraphQuery,
+    } = this.state
 
     const updatedNode = {
       id,
@@ -434,28 +494,40 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       fieldIds,
       userType,
       applyToWholeModel,
-      rule: rule,
+      rule,
       ruleGraphQuery: extractSelection(ruleGraphQuery),
       isActive,
     }
-    tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
+    tracker.track(
+      ConsoleEvents.Permissions.Popup.submitted({ type: this.mutationType }),
+    )
 
-    this.setState({loading: true} as PermissionPopupState, () => {
-        UpdateModelPermissionMutation.commit(updatedNode)
-          .then(() => this.closePopup())
-          .catch(transaction => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as PermissionPopupState)
-          })
+    this.setState({ loading: true } as PermissionPopupState, () => {
+      UpdateModelPermissionMutation.commit(updatedNode)
+        .then(() => this.closePopup())
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({ loading: false } as PermissionPopupState)
+        })
     })
   }
 
   private createPermission = () => {
-    const {model} = this.props
-    const {selectedOperation, fieldIds, userType, applyToWholeModel, rule, ruleName, ruleGraphQuery} = this.state
+    const { model } = this.props
+    const {
+      selectedOperation,
+      fieldIds,
+      userType,
+      applyToWholeModel,
+      rule,
+      ruleName,
+      ruleGraphQuery,
+    } = this.state
 
-    tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
-    this.setState({loading: true} as PermissionPopupState, () => {
+    tracker.track(
+      ConsoleEvents.Permissions.Popup.submitted({ type: this.mutationType }),
+    )
+    this.setState({ loading: true } as PermissionPopupState, () => {
       const input = {
         modelId: model.id,
         operation: selectedOperation,
@@ -466,41 +538,45 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
         ruleName,
         ruleGraphQuery: extractSelection(ruleGraphQuery),
       }
-        AddModelPermissionMutation.commit(input).then(() => this.closePopup())
-          .catch(transaction => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as PermissionPopupState)
-          })
+      AddModelPermissionMutation.commit(input)
+        .then(() => this.closePopup())
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({ loading: false } as PermissionPopupState)
+        })
     })
   }
 
   private deletePermission = () => {
-    const {permission: {id}, model} = this.props
+    const { permission: { id }, model } = this.props
 
-    tracker.track(ConsoleEvents.Permissions.Popup.submitted({type: this.mutationType}))
-    this.setState({loading: true} as PermissionPopupState, () => {
-        DeleteModelPermissionMutation.commit({
-          modelPermissionId: id,
-          modelId: model.id,
-        }).then(() => this.closePopup())
+    tracker.track(
+      ConsoleEvents.Permissions.Popup.submitted({ type: this.mutationType }),
+    )
+    this.setState({ loading: true } as PermissionPopupState, () => {
+      DeleteModelPermissionMutation.commit({
+        modelPermissionId: id,
+        modelId: model.id,
+      })
+        .then(() => this.closePopup())
         .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as PermissionPopupState)
+          this.setState({ loading: false } as PermissionPopupState)
         })
     })
   }
 
   private closePopup = () => {
-    const {router, params} = this.props
+    const { router, params } = this.props
     router.push(`/${params.projectName}/permissions`)
   }
 }
 
-const ReduxContainer = connect(null, {showNotification})(PermissionPopup)
+const ReduxContainer = connect(null, { showNotification })(PermissionPopup)
 
 const MappedPermissionPopup = mapProps({
   permission: props => props.node || null,
-  model: props => (props.viewer && props.viewer.model),
+  model: props => props.viewer && props.viewer.model,
 })(ReduxContainer)
 
 export default createRefetchContainer(
@@ -522,9 +598,10 @@ export default createRefetchContainer(
       }
     `,
     viewer: graphql.experimental`
-      fragment PermissionPopup_viewer on Viewer @argumentDefinitions(
-        operation: {type: "Operation!", defaultValue: READ}
-      ) {
+      fragment PermissionPopup_viewer on Viewer
+        @argumentDefinitions(
+          operation: { type: "Operation!", defaultValue: READ }
+        ) {
         model: modelByName(projectName: $projectName, modelName: $modelName) {
           id
           name
@@ -551,7 +628,11 @@ export default createRefetchContainer(
     `,
   },
   graphql.experimental`
-    query PermissionPopupRefetchQuery($operation: Operation!, $projectName: String!, $modelName: String!) {
+    query PermissionPopupRefetchQuery(
+      $operation: Operation!
+      $projectName: String!
+      $modelName: String!
+    ) {
       viewer {
         ...PermissionPopup_viewer @arguments(operation: $operation)
       }

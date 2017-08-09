@@ -1,21 +1,18 @@
 import * as React from 'react'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../../utils/modalStyle'
+import { fieldModalStyle } from '../../../utils/modalStyle'
 import FieldPopupHeader from './FieldPopupHeader'
 import FieldPopupFooter from './FieldPopupFooter'
-import {Field, FieldType, Constraint, ConstraintType, Enum} from '../../../types/types'
-import {ConsoleEvents, MutationType, FieldPopupSource} from 'graphcool-metrics'
+import { Field, Enum } from '../../../types/types'
+import { ConsoleEvents } from 'graphcool-metrics'
 import BaseSettings from './BaseSettings'
 import AdvancedSettings from './AdvancedSettings'
 import Constraints from './Constraints'
-import {emptyField, mockConstraints} from './constants'
+import { emptyField } from './constants'
 import mapProps from 'map-props'
-import {connect} from 'react-redux'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {withRouter} from 'found'
+import { connect } from 'react-redux'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { withRouter } from 'found'
 import {
   toggleIsList,
   updateName,
@@ -30,21 +27,20 @@ import {
   getMigrationUI,
   isValid,
   didChange,
-  isBreaking, updateMigrationValue, updateEnumId,
+  isBreaking,
+  updateMigrationValue,
+  updateEnumId,
 } from './FieldPopupState'
-import {showNotification} from '../../../actions/notification'
-import {
-  showDonePopup,
-  nextStep,
-} from '../../../actions/gettingStarted'
+import { showNotification } from '../../../actions/notification'
+import { showDonePopup, nextStep } from '../../../actions/gettingStarted'
 import UpdateFieldMutation from '../../../mutations/UpdateFieldMutation'
-import {valueToString, stringToValue} from '../../../utils/valueparser'
+import { valueToString, stringToValue } from '../../../utils/valueparser'
 import AddFieldMutation from '../../../mutations/AddFieldMutation'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {ShowNotificationCallback} from '../../../types/utils'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
 import DeleteFieldMutation from '../../../mutations/DeleteFieldMutation'
 import Loading from '../../../components/Loading/Loading'
-import {GettingStartedState} from '../../../types/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
 import tracker from '../../../utils/metrics'
 import ModalDocs from '../../../components/ModalDocs/ModalDocs'
 
@@ -53,7 +49,7 @@ interface Props {
   enums: Enum[]
   nodeCount: number
   params: any
-  router: ReactRouter.InjectedRouter
+  router: InjectedFoundRouter
   modelId: string
   projectId: string
   showNotification: ShowNotificationCallback
@@ -83,10 +79,9 @@ export interface MigrationUIState {
 }
 
 class FieldPopup extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
-    const {field} = props
+    const { field } = props
 
     if (field) {
       // if there's a field, just passthrough the field to the stateG
@@ -98,12 +93,15 @@ class FieldPopup extends React.Component<Props, State> {
         })
       }
       if (field.enum) {
-        field['enumId'] = field.enum.id
+        field.enumId = field.enum.id
       }
       this.state = {
         field: {
           ...field,
-          defaultValue: field.defaultValue === null ? null : stringToValue(field.defaultValue as string, field),
+          defaultValue:
+            field.defaultValue === null
+              ? null
+              : stringToValue(field.defaultValue as string, field),
         },
 
         activeTabIndex: 0,
@@ -129,34 +127,51 @@ class FieldPopup extends React.Component<Props, State> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
-    tracker.track(ConsoleEvents.Schema.Field.Popup.opened({
-      type: this.state.create ? 'Create' : 'Update',
-      source: 'databrowser',
-    }))
+    tracker.track(
+      ConsoleEvents.Schema.Field.Popup.opened({
+        type: this.state.create ? 'Create' : 'Update',
+        source: 'databrowser',
+      }),
+    )
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown)
-    tracker.track(ConsoleEvents.Schema.Field.Popup.canceled({
-      type: this.state.create ? 'Create' : 'Update',
-    }))
+    tracker.track(
+      ConsoleEvents.Schema.Field.Popup.canceled({
+        type: this.state.create ? 'Create' : 'Update',
+      }),
+    )
   }
 
   componentDidUpdate() {
-    if (this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase() &&
-      this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_IMAGEURL')) {
+    if (
+      this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase() &&
+      this.props.gettingStartedState.isCurrentStep(
+        'STEP2_ENTER_FIELD_NAME_IMAGEURL',
+      )
+    ) {
       this.props.nextStep()
     }
 
-    if (this.state.field.name.toLowerCase() === 'description'.toLowerCase() &&
-      this.props.gettingStartedState.isCurrentStep('STEP2_ENTER_FIELD_NAME_DESCRIPTION')) {
+    if (
+      this.state.field.name.toLowerCase() === 'description'.toLowerCase() &&
+      this.props.gettingStartedState.isCurrentStep(
+        'STEP2_ENTER_FIELD_NAME_DESCRIPTION',
+      )
+    ) {
       this.props.nextStep()
     }
 
-    if (this.state.field.typeIdentifier === 'String' && (
-      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_IMAGEURL') ||
-      this.props.gettingStartedState.isCurrentStep('STEP2_SELECT_TYPE_DESCRIPTION')
-    )) {
+    if (
+      this.state.field.typeIdentifier === 'String' &&
+      (this.props.gettingStartedState.isCurrentStep(
+        'STEP2_SELECT_TYPE_IMAGEURL',
+      ) ||
+        this.props.gettingStartedState.isCurrentStep(
+          'STEP2_SELECT_TYPE_DESCRIPTION',
+        ))
+    ) {
       this.props.nextStep()
     }
   }
@@ -184,16 +199,30 @@ class FieldPopup extends React.Component<Props, State> {
       loading,
     } = this.state
 
-    const {nodeCount, projectId, enums, isGlobalEnumsEnabled, params} = this.props
+    const {
+      nodeCount,
+      projectId,
+      enums,
+      isGlobalEnumsEnabled,
+      params,
+    } = this.props
 
-    const migrationUI = getMigrationUI(nodeCount, this.state.field, this.props.field)
+    const migrationUI = getMigrationUI(
+      nodeCount,
+      this.state.field,
+      this.props.field,
+    )
     const errors = isValid(nodeCount, this.state.field, this.props.field)
     // if there is an error, it's not valid
-    const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
+    const valid = !Object.keys(errors).reduce(
+      (acc, curr) => acc || errors[curr],
+      false,
+    )
     const changed = didChange(this.state.field, this.props.field)
-    const breaking = isBreaking(nodeCount, this.state.field, this.props.field) && !deleting
+    const breaking =
+      isBreaking(nodeCount, this.state.field, this.props.field) && !deleting
 
-    let modalStyling = {
+    let modalStyling: any = {
       ...fieldModalStyle,
       content: {
         ...fieldModalStyle.content,
@@ -215,7 +244,7 @@ class FieldPopup extends React.Component<Props, State> {
       <Modal
         isOpen={true}
         onRequestClose={this.close}
-        contentLabel='Field Popup'
+        contentLabel="Field Popup"
         style={modalStyling}
       >
         <style jsx>{`
@@ -228,22 +257,24 @@ class FieldPopup extends React.Component<Props, State> {
             max-height: calc(100vh - 200px);
           }
           .loading {
-            @p: .fixed, .top0, .left0, .right0, .bottom0, .bgWhite50, .flex, .justifyCenter, .itemsCenter;
+            @p: .fixed, .top0, .left0, .right0, .bottom0, .bgWhite50, .flex,
+              .justifyCenter, .itemsCenter;
           }
         `}</style>
         <ModalDocs
-          title='How to define Fields'
-          id='field-popup'
+          title="How to define Fields"
+          id="field-popup"
           resources={[
             {
               title: 'An introduction to Fields',
               type: 'guide',
-              link: 'https://www.graph.cool/docs/reference/platform/fields-teizeit5se/',
+              link:
+                'https://www.graph.cool/docs/reference/platform/fields-teizeit5se/',
             },
           ]}
-          videoId='e_sotn1uGqk'
+          videoId="e_sotn1uGqk"
         >
-          <div className='field-popup'>
+          <div className="field-popup">
             <FieldPopupHeader
               tabs={tabs}
               activeTabIndex={activeTabIndex}
@@ -254,9 +285,9 @@ class FieldPopup extends React.Component<Props, State> {
               create={create}
               modelName={params.modelName}
             />
-            <div className='popup-body'>
-              {activeTabIndex === 0 ? (
-                  <BaseSettings
+            <div className="popup-body">
+              {activeTabIndex === 0
+                ? <BaseSettings
                     name={name}
                     enums={enums}
                     enumId={enumId}
@@ -268,20 +299,26 @@ class FieldPopup extends React.Component<Props, State> {
                     onChangeName={this.updateField(updateName)}
                     onChangeDescription={this.updateField(updateDescription)}
                     onToggleIsList={this.updateField(toggleIsList)}
-                    onChangeTypeIdentifier={this.updateField(updateTypeIdentifier)}
+                    onChangeTypeIdentifier={this.updateField(
+                      updateTypeIdentifier,
+                    )}
                     onChangeEnumId={this.updateField(updateEnumId)}
                     errors={errors}
                     showErrors={showErrors}
                     showNotification={this.props.showNotification}
                   />
-                ) : activeTabIndex === 1 ? (
-                    <AdvancedSettings
+                : activeTabIndex === 1
+                  ? <AdvancedSettings
                       isRequired={isRequired}
                       onToggleIsRequired={this.updateField(toggleIsRequired)}
                       defaultValue={defaultValue}
                       migrationValue={migrationValue}
-                      onChangeDefaultValue={this.updateField(updateDefaultValue)}
-                      onChangeMigrationValue={this.updateField(updateMigrationValue)}
+                      onChangeDefaultValue={this.updateField(
+                        updateDefaultValue,
+                      )}
+                      onChangeMigrationValue={this.updateField(
+                        updateMigrationValue,
+                      )}
                       showMigration={migrationUI.showMigration}
                       migrationOptional={migrationUI.migrationOptional}
                       showErrors={showErrors}
@@ -290,7 +327,7 @@ class FieldPopup extends React.Component<Props, State> {
                       field={this.state.field}
                       enums={this.props.enums}
                     />
-                  ) : activeTabIndex === 2 && (
+                  : activeTabIndex === 2 &&
                     <Constraints
                       isUnique={isUnique}
                       onToggleIsUnique={this.updateField(toggleIsUnique)}
@@ -298,8 +335,7 @@ class FieldPopup extends React.Component<Props, State> {
                       onRemoveConstraint={this.updateField(removeConstraint)}
                       onAddConstraint={this.updateField(addConstraint)}
                       onEditConstraint={this.updateField(editConstraint)}
-                    />
-                  )}
+                    />}
             </div>
             <FieldPopupFooter
               create={create}
@@ -315,7 +351,9 @@ class FieldPopup extends React.Component<Props, State> {
               onReset={this.handleReset}
               onConfirmBreakingChanges={this.handleSubmit}
               onDelete={this.handleDelete}
-              onDeletePopupVisibilityChange={this.handleDeletePopupVisibilityChange}
+              onDeletePopupVisibilityChange={
+                this.handleDeletePopupVisibilityChange
+              }
               onCancel={this.close}
               initialField={this.props.field}
               mutatedField={this.state.field}
@@ -323,32 +361,36 @@ class FieldPopup extends React.Component<Props, State> {
             />
           </div>
         </ModalDocs>
-        {loading && (
-          <div className='loading'>
+        {loading &&
+          <div className="loading">
             <Loading />
-          </div>
-        )}
+          </div>}
       </Modal>
     )
   }
 
   private onKeyDown = (e: any) => {
     // if it is an input, only if it has the enter-event class
-    if (e.keyCode === 13 && (
-        e.target instanceof HTMLInputElement ? [].includes.call(e.target.classList, 'enter-event') : true)
+    if (
+      e.keyCode === 13 &&
+      (e.target instanceof HTMLInputElement
+        ? [].includes.call(e.target.classList, 'enter-event')
+        : true)
     ) {
       this.handleSubmit()
     }
   }
 
   private handleDeletePopupVisibilityChange = (deletePopupVisible: boolean) => {
-    this.setState({
-      deletePopupVisible,
-    } as State)
+    this.setState(
+      {
+        deletePopupVisible,
+      } as State,
+    )
   }
 
   private handleDelete = () => {
-    this.setState({deleting: true, loading: true} as State, () => {
+    this.setState({ deleting: true, loading: true } as State, () => {
       DeleteFieldMutation.commit({
         fieldId: this.state.field.id,
         modelId: this.props.modelId,
@@ -363,13 +405,13 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private handleReset = () => {
-    this.setState({field: this.props.field || emptyField} as State)
+    this.setState({ field: this.props.field || emptyField } as State)
   }
 
-  private updateField = (fn: Function, done?: Function) => {
+  private updateField = (fn: any, done?: () => void) => {
     return (...params) => {
       this.setState(
-        ({field, ...state}) => {
+        ({ field, ...state }) => {
           return {
             ...state,
             field: fn(field, ...params),
@@ -386,26 +428,43 @@ class FieldPopup extends React.Component<Props, State> {
 
   private handleSelectTab = (activeTabIndex: number) => {
     if (!this.state.field.typeIdentifier && activeTabIndex === 1) {
-      this.setState({
-        showErrors: true,
-      } as State)
+      this.setState(
+        {
+          showErrors: true,
+        } as State,
+      )
       return
     }
-    this.setState({
-      activeTabIndex,
-    } as State)
+    this.setState(
+      {
+        activeTabIndex,
+      } as State,
+    )
   }
 
   private handleSubmit = () => {
-    const errors = isValid(this.props.nodeCount, this.state.field, this.props.field)
+    const errors = isValid(
+      this.props.nodeCount,
+      this.state.field,
+      this.props.field,
+    )
     // if there is an error, it's not valid
-    const valid = !Object.keys(errors).reduce((acc, curr) => acc || errors[curr], false)
-    tracker.track(ConsoleEvents.Schema.Field.Popup.submitted({type: this.state.create ? 'Create' : 'Update'}))
+    const valid = !Object.keys(errors).reduce(
+      (acc, curr) => acc || errors[curr],
+      false,
+    )
+    tracker.track(
+      ConsoleEvents.Schema.Field.Popup.submitted({
+        type: this.state.create ? 'Create' : 'Update',
+      }),
+    )
 
     if (!valid) {
-      this.setState({
-        showErrors: true,
-      } as State)
+      this.setState(
+        {
+          showErrors: true,
+        } as State,
+      )
     } else {
       if (this.state.create) {
         this.create()
@@ -421,14 +480,20 @@ class FieldPopup extends React.Component<Props, State> {
     if (typeof field.defaultValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        defaultValue: field.defaultValue === null ? null : valueToString(field.defaultValue, field, true, true),
+        defaultValue:
+          field.defaultValue === null
+            ? null
+            : valueToString(field.defaultValue, field, true, true),
       }
     }
 
     if (typeof field.migrationValue !== 'undefined') {
       patchedField = {
         ...patchedField,
-        migrationValue: field.migrationValue === null ? null : valueToString(field.migrationValue, field, true, true),
+        migrationValue:
+          field.migrationValue === null
+            ? null
+            : valueToString(field.migrationValue, field, true, true),
       }
     }
 
@@ -436,11 +501,11 @@ class FieldPopup extends React.Component<Props, State> {
   }
 
   private create() {
-    const _create = () => {
-      this.setState({loading: true} as State)
+    const creator = () => {
+      this.setState({ loading: true } as State)
 
-      const {modelId} = this.props
-      const {field} = this.state
+      const { modelId } = this.props
+      const { field } = this.state
 
       let input: any = this.patchDefaultAndMigrationValue(field)
 
@@ -455,50 +520,64 @@ class FieldPopup extends React.Component<Props, State> {
         })
         .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
+          this.setState({ loading: false } as State)
         })
     }
 
-    if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CONFIRM_IMAGEURL')) {
-      if (this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase()
-        && this.state.field.typeIdentifier === 'String') {
+    if (
+      this.props.gettingStartedState.isCurrentStep(
+        'STEP2_CLICK_CONFIRM_IMAGEURL',
+      )
+    ) {
+      if (
+        this.state.field.name.toLowerCase() === 'imageUrl'.toLowerCase() &&
+        this.state.field.typeIdentifier === 'String'
+      ) {
         // correct the field name to imageUrl, because many people type in imageurl or imageURL and get stuck here
         // seconds argument of updateField is a callback which gets executed AFTER the state has been mutated
         // by setState
         this.updateField(updateName, () => {
           this.props.showDonePopup()
           this.props.nextStep()
-          _create()
+          creator()
         })('imageUrl')
       } else {
         this.props.showNotification({
           level: 'warning',
-          message: 'Make sure that the name is "imageUrl" and the type is "String".',
+          message:
+            'Make sure that the name is "imageUrl" and the type is "String".',
         })
         return
       }
     } else {
-      if (this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CONFIRM_DESCRIPTION')) {
-        if (this.state.field.name === 'description' && this.state.field.typeIdentifier === 'String') {
+      if (
+        this.props.gettingStartedState.isCurrentStep(
+          'STEP2_CLICK_CONFIRM_DESCRIPTION',
+        )
+      ) {
+        if (
+          this.state.field.name === 'description' &&
+          this.state.field.typeIdentifier === 'String'
+        ) {
           this.props.showDonePopup()
           this.props.nextStep()
         } else {
           this.props.showNotification({
             level: 'warning',
-            message: 'Make sure that the name is "description" and the type is "String".',
+            message:
+              'Make sure that the name is "description" and the type is "String".',
           })
           return
         }
       }
-      _create()
+      creator()
     }
-
   }
 
   private update() {
-    const {field} = this.state
-    let updatedField: any = this.patchDefaultAndMigrationValue(field)
-    this.setState({loading: true} as State)
+    const { field } = this.state
+    const updatedField: any = this.patchDefaultAndMigrationValue(field)
+    this.setState({ loading: true } as State)
 
     UpdateFieldMutation.commit(updatedField)
       .then(() => {
@@ -506,7 +585,7 @@ class FieldPopup extends React.Component<Props, State> {
       })
       .catch(transaction => {
         onFailureShowNotification(transaction, this.props.showNotification)
-        this.setState({loading: false} as State)
+        this.setState({ loading: false } as State)
       })
   }
 
@@ -515,11 +594,7 @@ class FieldPopup extends React.Component<Props, State> {
   }
 }
 
-const tabs = [
-  'Base Settings',
-  'Advanced Options',
-  'Constraints',
-]
+const tabs = ['Base Settings', 'Advanced Options', 'Constraints']
 
 const ReduxContainer = connect(
   state => ({
@@ -527,7 +602,9 @@ const ReduxContainer = connect(
     source: state.popupSources.fieldPopup,
   }),
   {
-    nextStep, showDonePopup, showNotification,
+    nextStep,
+    showDonePopup,
+    showNotification,
   },
 )(withRouter(FieldPopup))
 
@@ -535,10 +612,12 @@ const MappedFieldPopup = mapProps({
   params: props => props.params,
   field: props => props.viewer.field,
   enumValues: props => {
-    const {field} = props.viewer
+    const { field } = props.viewer
     let enumValues = []
     if (field && field.typeIdentifier === 'Enum') {
-      const enums: Enum[] = props.viewer.project.enums.edges.map(edge => edge.node)
+      const enums: Enum[] = props.viewer.project.enums.edges.map(
+        edge => edge.node,
+      )
       enumValues = enums.find(en => field.enum.id === en.id).values
     }
     return enumValues
@@ -558,9 +637,9 @@ export default createFragmentContainer(MappedFieldPopup, {
         itemCount
       }
       field: fieldByName(
-      projectName: $projectName
-      modelName: $modelName
-      fieldName: $fieldName
+        projectName: $projectName
+        modelName: $modelName
+        fieldName: $fieldName
       ) @include(if: $fieldExists) {
         id
         name

@@ -1,19 +1,15 @@
 import * as React from 'react'
-import {Field, Project, Model, Enum} from '../../../types/types'
-import * as Relay from 'react-relay/classic'
-import {connect} from 'react-redux'
-import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
-import {showNotification} from '../../../actions/notification'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {validateEnumName} from '../../../utils/nameValidator'
-import {onFailureShowNotification} from '../../../utils/relay'
-import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { Enum } from '../../../types/types'
+import { connect } from 'react-redux'
+import { showDonePopup, nextStep } from '../../../actions/gettingStarted'
+import { showNotification } from '../../../actions/notification'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { validateEnumName } from '../../../utils/nameValidator'
+import { onFailureShowNotification } from '../../../utils/relay'
 import Loading from '../../../components/Loading/Loading'
 import Tether from '../../../components/Tether/Tether'
-import {withRouter} from 'found'
-import {idToBeginning} from '../../../utils/utils'
+import { withRouter } from 'found'
 import ConfirmEnum from './ConfirmEnum'
 import EnumEditor from './EnumEditor'
 import AddEnumMutation from '../../../mutations/Enums/AddEnum'
@@ -34,25 +30,12 @@ interface Props {
   onRequestClose?: () => void
   projectId: string
   enumValue: Enum
-  router: ReactRouter.InjectedRouter
+  router: any
   // injected by redux
   showNotification: ShowNotificationCallback
   showDonePopup: () => void
   nextStep: () => Promise<any>
   gettingStartedState: GettingStartedState
-}
-
-const idField = {
-  'id': 'dummy',
-  'name': 'id',
-  'typeIdentifier': 'GraphQLID',
-  'isList': false,
-  'isRequired': true,
-  'isSystem': true,
-  'isUnique': true,
-  'isReadonly': true,
-  'relation': null,
-  'relatedModel': null,
 }
 
 class AddEnum extends React.Component<Props, State> {
@@ -78,10 +61,14 @@ class AddEnum extends React.Component<Props, State> {
     document.removeEventListener('keydown', this.handleEsc)
   }
   render() {
-    const {showError, editing, loading, showDeletePopup, name, values, showValuesError} = this.state
-    const {enumValue} = this.props
-    let fields
-    let permissions
+    const {
+      showError,
+      editing,
+      loading,
+      showDeletePopup,
+      showValuesError,
+    } = this.state
+    const { enumValue } = this.props
 
     const breaking = false
 
@@ -99,7 +86,8 @@ class AddEnum extends React.Component<Props, State> {
             @p: .pv16, .flex, .itemsCenter, .bb, .bBlack10;
           }
           .badge {
-            @p: .bgLightOrange, .white, .relative, .f12, .fw6, .ttu, .top0, .br2, .selfStart, .nowrap;
+            @p: .bgLightOrange, .white, .relative, .f12, .fw6, .ttu, .top0, .br2,
+              .selfStart, .nowrap;
             padding: 2px 4px;
             left: -4px;
           }
@@ -124,7 +112,8 @@ class AddEnum extends React.Component<Props, State> {
             @p: .w100;
           }
           .footer {
-            @p: .flex, .justifyBetween, .bgBlack04, .pa16, .bt, .bBlack10, .relative;
+            @p: .flex, .justifyBetween, .bgBlack04, .pa16, .bt, .bBlack10,
+              .relative;
           }
           .button {
             @p: .f14, .pointer, .br2;
@@ -143,7 +132,8 @@ class AddEnum extends React.Component<Props, State> {
             @p: .orange, .f14, .mr10;
           }
           .loading {
-            @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70, .flex, .itemsCenter, .justifyCenter;
+            @p: .z2, .absolute, .top0, .left0, .bottom0, .right0, .bgWhite70,
+              .flex, .itemsCenter, .justifyCenter;
           }
           .underline {
             @p: .underline;
@@ -161,98 +151,95 @@ class AddEnum extends React.Component<Props, State> {
             @p: .pa16;
           }
         `}</style>
-        <div className='header'>
-          {editing ? (
-              <div className='badge update'>Update Enum</div>
-            ) : (
-              <div className='badge'>New Enum</div>
-            )}
-          <div className='input-wrapper'>
+        <div className="header">
+          {editing
+            ? <div className="badge update">Update Enum</div>
+            : <div className="badge">New Enum</div>}
+          <div className="input-wrapper">
             <input
-              type='text'
-              className='name-input'
-              placeholder='Choose a name...'
+              type="text"
+              className="name-input"
+              placeholder="Choose a name..."
               autoFocus
               value={this.state.name}
               onChange={this.onNameChange}
               onKeyDown={this.handleKeyDown}
             />
-            {showError && (
-              <div className='error'>
-                Enums must begin with an uppercase letter and only contain letters, underscores and numbers.
-              </div>
-            )}
+            {showError &&
+              <div className="error">
+                Enums must begin with an uppercase letter and only contain
+                letters, underscores and numbers.
+              </div>}
           </div>
         </div>
-        <div className='values'>
+        <div className="values">
           <EnumEditor
             enums={this.state.values}
             onChange={this.handleValuesChange}
           />
-          {showValuesError && (
-            <div className='error'>
-              Please add Enum Values
-            </div>
-          )}
+          {showValuesError &&
+            <div className="error">Please add Enum Values</div>}
         </div>
-        <div className='footer'>
-          {editing ? (
-              showDeletePopup ? (
-                  <ConfirmEnum
-                    delete
-                    onConfirmDeletion={this.delete}
-                    onCancel={this.hideDeletePopup}
-                    initialModelName={''}
-                    mutatedModelName={''}
-                  />
-                ) : (
-                  <div className='button delete' onClick={this.showDeletePopup}>Delete</div>
-                )
-            ) : (
-              <div className='button cancel' onClick={this.close}>Cancel</div>
-            )}
-          <div className='flexy'>
-            {editing && (
-              <div className='button cancel mr16' onClick={this.close}>Cancel</div>
-            )}
-            {breaking ? (
-                <ConfirmEnum
+        <div className="footer">
+          {editing
+            ? showDeletePopup
+              ? <ConfirmEnum
+                  delete
+                  onConfirmDeletion={this.delete}
+                  onCancel={this.hideDeletePopup}
+                  initialModelName={''}
+                  mutatedModelName={''}
+                />
+              : <div className="button delete" onClick={this.showDeletePopup}>
+                  Delete
+                </div>
+            : <div className="button cancel" onClick={this.close}>
+                Cancel
+              </div>}
+          <div className="flexy">
+            {editing &&
+              <div className="button cancel mr16" onClick={this.close}>
+                Cancel
+              </div>}
+            {breaking
+              ? <ConfirmEnum
                   onConfirmBreakingChanges={this.save}
                   onResetBreakingChanges={this.reset}
                   initialModelName={''}
                   mutatedModelName={''}
                 />
-              ) : (
-                <Tether
+              : <Tether
                   style={{
-                  pointerEvents: 'none',
-                }}
-                  steps={[{
-                  step: 'STEP1_CREATE_POST_MODEL',
-                  title: `Save the Model "Post"`,
-                }]}
+                    pointerEvents: 'none',
+                  }}
+                  steps={[
+                    {
+                      step: 'STEP1_CREATE_POST_MODEL',
+                      title: `Save the Model "Post"`,
+                    },
+                  ]}
                   offsetX={15}
                   offsetY={5}
                   width={300}
-                  horizontal='right'
-                  key='STEP1_CREATE_POST_MODEL'
+                  horizontal="right"
+                  key="STEP1_CREATE_POST_MODEL"
                 >
-                  <div className='button save' onClick={this.save}>Save</div>
-                </Tether>
-              )}
+                  <div className="button save" onClick={this.save}>
+                    Save
+                  </div>
+                </Tether>}
           </div>
         </div>
-        {loading && (
-          <div className='loading'>
+        {loading &&
+          <div className="loading">
             <Loading />
-          </div>
-        )}
+          </div>}
       </div>
     )
   }
 
   private handleValuesChange = (values: string[]) => {
-    this.setState({values} as State)
+    this.setState({ values } as State)
   }
 
   private handleEsc = e => {
@@ -262,15 +249,15 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private showDeletePopup = () => {
-    this.setState({showDeletePopup: true} as State)
+    this.setState({ showDeletePopup: true } as State)
   }
 
   private hideDeletePopup = () => {
-    this.setState({showDeletePopup: false} as State)
+    this.setState({ showDeletePopup: false } as State)
   }
 
   private reset = () => {
-    this.setState({name: this.props.enumValue.name} as State)
+    this.setState({ name: this.props.enumValue.name } as State)
   }
 
   private handleKeyDown = e => {
@@ -280,19 +267,19 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private onNameChange = e => {
-    this.setState({name: e.target.value} as State)
+    this.setState({ name: e.target.value } as State)
   }
 
   private save = () => {
-    const {name, editing, values} = this.state
+    const { name, editing, values } = this.state
     if (values.length === 0) {
-      return this.setState({showValuesError: true} as State)
+      return this.setState({ showValuesError: true } as State)
     }
     if (name !== null && !validateEnumName(name)) {
-      return this.setState({showError: true} as State)
+      return this.setState({ showError: true } as State)
     }
 
-    this.setState({loading: true} as State, () => {
+    this.setState({ loading: true } as State, () => {
       if (editing) {
         this.editEnum()
       } else {
@@ -302,56 +289,57 @@ class AddEnum extends React.Component<Props, State> {
   }
 
   private delete = () => {
-    this.setState({loading: true} as State, () => {
-        DeleteEnumMutation.commit({
-          enumId: this.props.enumValue.id,
-          projectId: this.props.projectId,
-        })
-          .then(() => {
-            this.close()
-          })
-          .catch(transaction => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as State)
-          })
-        })
-    }
-
-  private addEnum = () => {
-    const {name, values} = this.state
-    if (name && values.length > 0) {
-        AddEnumMutation.commit({
-          name,
-          values,
-          projectId: this.props.projectId,
-        }).then(() => {
-            this.close()
-          })
-          .catch(transaction => {
-            onFailureShowNotification(transaction, this.props.showNotification)
-            this.setState({loading: false} as State)
-          })
-      }
-  }
-
-  private editEnum = () => {
-    const {name, values} = this.state
-      UpdateEnumMutation.commit({
-        name,
-        values,
+    this.setState({ loading: true } as State, () => {
+      DeleteEnumMutation.commit({
         enumId: this.props.enumValue.id,
+        projectId: this.props.projectId,
       })
         .then(() => {
           this.close()
         })
         .catch(transaction => {
           onFailureShowNotification(transaction, this.props.showNotification)
-          this.setState({loading: false} as State)
+          this.setState({ loading: false } as State)
         })
+    })
+  }
+
+  private addEnum = () => {
+    const { name, values } = this.state
+    if (name && values.length > 0) {
+      AddEnumMutation.commit({
+        name,
+        values,
+        projectId: this.props.projectId,
+      })
+        .then(() => {
+          this.close()
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+          this.setState({ loading: false } as State)
+        })
+    }
+  }
+
+  private editEnum = () => {
+    const { name, values } = this.state
+    UpdateEnumMutation.commit({
+      name,
+      values,
+      enumId: this.props.enumValue.id,
+    })
+      .then(() => {
+        this.close()
+      })
+      .catch(transaction => {
+        onFailureShowNotification(transaction, this.props.showNotification)
+        this.setState({ loading: false } as State)
+      })
   }
 
   private close = () => {
-    const {onRequestClose, router, projectId} = this.props
+    const { onRequestClose, router } = this.props
     if (typeof onRequestClose === 'function') {
       onRequestClose()
     }
@@ -364,8 +352,10 @@ class AddEnum extends React.Component<Props, State> {
 }
 
 export default connect(
-  state => ({gettingStartedState: state.gettingStarted.gettingStartedState}),
+  state => ({ gettingStartedState: state.gettingStarted.gettingStartedState }),
   {
-    showNotification, nextStep, showDonePopup,
+    showNotification,
+    nextStep,
+    showDonePopup,
   },
 )(withRouter(AddEnum))

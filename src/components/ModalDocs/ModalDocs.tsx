@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as cx from 'classnames'
-import {$g} from 'graphcool-styles'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import DocsResource from './DocsResource'
 import VideoPopup from './VideoPopup'
@@ -29,7 +28,6 @@ interface State {
 }
 
 export default class ModalDocs extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -47,10 +45,10 @@ export default class ModalDocs extends React.Component<Props, State> {
 
   render() {
     const active = this.state.firstTime || this.state.open
-    const {boring} = this.props
+    const { boring } = this.props
 
     return (
-      <div className={cx('modal-docs', {boring, active})}>
+      <div className={cx('modal-docs', { boring, active })}>
         <style jsx>{`
           .modal-docs {
             @p: .relative;
@@ -59,7 +57,8 @@ export default class ModalDocs extends React.Component<Props, State> {
             @p: .flex, .itemsCenter;
           }
           .icon {
-            @p: .br100, .flex, .itemsCenter, .justifyCenter, .f25, .fw6, .tc, .bgBlack07, .black30, .pointer;
+            @p: .br100, .flex, .itemsCenter, .justifyCenter, .f25, .fw6, .tc,
+              .bgBlack07, .black30, .pointer;
             width: 38px;
             height: 38px;
           }
@@ -96,7 +95,7 @@ export default class ModalDocs extends React.Component<Props, State> {
           .button {
             @p: .bgWhite, .pv10, .ph16, .lhSolid, .br2, .f20, .pointer, .nowrap;
             @p: .inlineFlex, .buttonShadow, .itemsCenter, .noUnderline;
-            color: rgba(23,42,58,.7);
+            color: rgba(23, 42, 58, .7);
           }
           .button:hover {
             @p: .bgBlack10;
@@ -105,62 +104,58 @@ export default class ModalDocs extends React.Component<Props, State> {
             @p: .ml10;
           }
           .button:hover :global(svg) {
-            fill: rgba(23,42,58,.5);
+            fill: rgba(23, 42, 58, .5);
           }
-          .title  {
+          .title {
             @p: .green, .f16, .fw6, .ttu, .ml10;
           }
         `}</style>
         {this.props.children}
-        <div className={cx('docs', {active})}>
-          <div className='header'>
-            <div className={cx('icon', {active})} onClick={this.toggle}>
+        <div className={cx('docs', { active })}>
+          <div className="header">
+            <div className={cx('icon', { active })} onClick={this.toggle}>
               <span>?</span>
             </div>
-            {this.state.open && (
-              <div className='title'>{this.props.title}</div>
-            )}
+            {this.state.open &&
+              <div className="title">
+                {this.props.title}
+              </div>}
           </div>
-          {this.props.videoId && this.state.open && (
-            <div className='content'>
-              <div className='button' onClick={this.openVideo}>
+          {this.props.videoId &&
+            this.state.open &&
+            <div className="content">
+              <div className="button" onClick={this.openVideo}>
                 <Icon
                   src={require('graphcool-styles/icons/fill/triangle.svg')}
-                  color='rgba(23,42,58,.4)'
+                  color="rgba(23,42,58,.4)"
                   width={15}
                   height={13}
                 />
                 <span>Watch an introduction</span>
               </div>
-            </div>
-          )}
-          {this.state.open && (
-            <div className='content'>
-              {this.props.resources.map(resource => (
-                <DocsResource
-                  key={resource.link}
-                  resource={resource}
-                />
-              ))}
-            </div>
-          )}
+            </div>}
+          {this.state.open &&
+            <div className="content">
+              {this.props.resources.map(resource =>
+                <DocsResource key={resource.link} resource={resource} />,
+              )}
+            </div>}
         </div>
-        {this.state.videoOpen && (
+        {this.state.videoOpen &&
           <VideoPopup
             videoId={this.props.videoId || ''}
             onRequestClose={this.closeVideo}
-          />
-        )}
+          />}
       </div>
     )
   }
 
   private openVideo = () => {
-    this.setState({videoOpen: true} as State)
+    this.setState({ videoOpen: true } as State)
   }
 
   private closeVideo = () => {
-    this.setState({videoOpen: false} as State)
+    this.setState({ videoOpen: false } as State)
   }
 
   private toggle = () => {

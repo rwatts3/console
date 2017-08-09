@@ -1,31 +1,29 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import {
-  createRefetchContainer,
-  graphql,
-} from 'react-relay'
-import {withRouter, Link} from 'found'
-import {connect} from 'react-redux'
+import { createRefetchContainer, graphql } from 'react-relay'
+import { withRouter, Link } from 'found'
+import { connect } from 'react-redux'
 import cuid from 'cuid'
 import mapProps from '../../components/MapProps/MapProps'
 import Tether from '../../components/Tether/Tether'
-import {sideNavSyncer} from '../../utils/sideNavSyncer'
-import {nextStep, showDonePopup} from '../../actions/gettingStarted'
-import {showPopup} from '../../actions/popup'
-import {Project, Viewer, Model} from '../../types/types'
-import {ShowNotificationCallback} from '../../types/utils'
-import {showNotification} from '../../actions/notification'
-import {Popup} from '../../types/popup'
-import {GettingStartedState} from '../../types/gettingStarted'
+import { sideNavSyncer } from '../../utils/sideNavSyncer'
+import { nextStep, showDonePopup } from '../../actions/gettingStarted'
+import { showPopup } from '../../actions/popup'
+import { Project, Viewer, Model } from '../../types/types'
+import { ShowNotificationCallback } from '../../types/utils'
+import { showNotification } from '../../actions/notification'
+import { Popup } from '../../types/popup'
+import { GettingStartedState } from '../../types/gettingStarted'
 import EndpointPopup from './EndpointPopup'
 import styled from 'styled-components'
 import * as cx from 'classnames'
-import {$p, $v, Icon} from 'graphcool-styles'
+import { $p, $v, Icon } from 'graphcool-styles'
 import { ExcludeProps } from '../../utils/components'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import SideNavElement from './SideNavElement'
 import { RelayProp } from 'react-relay'
+import { dummy } from '../../utils/dummy'
 
 interface Props {
   params: any
@@ -39,7 +37,7 @@ interface Props {
   nextStep: () => Promise<any>
   skip: () => Promise<any>
   showNotification: ShowNotificationCallback
-  router: ReactRouter.InjectedRouter
+  router: InjectedFoundRouter
   showDonePopup: () => void
   showPopup: (popup: Popup) => void
   itemCount: number
@@ -59,59 +57,6 @@ interface State {
 // Section (Models, Relations, Permissions, etc.)
 
 // Section Heads
-
-const activeHead = `
-  color: ${$v.white};
-
-  svg {
-    fill: ${$v.white};
-    stroke: none !important;
-  }
-
-  &:hover {
-    color: inherit;
-
-    svg {
-      fill: ${$v.white};
-      stroke: none !important;
-    }
-  }
-
-`
-
-const Head = styled(ExcludeProps(Link, ['active']))`
-  letter-spacing: 1px;
-  line-height: 1;
-  padding: 0 ${$v.size25};
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: ${$v.white60};
-  transition: color ${$v.duration} linear;
-
-  &:hover {
-    color: ${$v.white80};
-
-    svg {
-      fill: ${$v.white80};
-      stroke: none !important;
-    }
-  }
-
-  > div {
-    line-height: 1;
-    margin-left: ${$v.size10};
-  }
-
-  svg {
-    fill: ${$v.white60};
-    stroke: none !important;
-    transition: fill ${$v.duration} linear;
-  }
-
-  ${props => props.active && activeHead}
-`
 
 const footerSectionStyle = `
   display: flex;
@@ -141,13 +86,10 @@ const footerSectionStyle = `
     }
   }
 `
-const FooterSection = styled.div`${footerSectionStyle}`
-const FooterLink = styled.a`${footerSectionStyle}`
+const FooterSection = styled.div`${footerSectionStyle};`
+const FooterLink = styled.a`${footerSectionStyle};`
 
-export class SideNav extends React.PureComponent<Props, State> {
-
-  shouldComponentUpdate: any
-
+export class SideNav extends React.Component<Props, State> {
   constructor(props) {
     super(props)
     this.state = {
@@ -168,24 +110,27 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {isBetaCustomer, project, expanded, viewer} = this.props
+    const { project, expanded } = this.props
     return (
       <div
-        className='side-nav'
-        onMouseLeave={() => this.setState({forceShowModels: false} as State)}
+        className="side-nav"
+        onMouseLeave={() => this.setState({ forceShowModels: false } as State)}
       >
         <style jsx>{`
           .side-nav {
-            @p: .relative, .h100, .white, .bgDarkerBlue, .f14, .flex, .flexColumn, .overflowHidden;
+            @p: .relative, .h100, .white, .bgDarkerBlue, .f14, .flex,
+              .flexColumn, .overflowHidden;
           }
           .scrollable {
-            @p: .flex1, .h100, .flexColumn, .justifyBetween, .pt16, .overflowAuto, .nosb;
+            @p: .flex1, .h100, .flexColumn, .justifyBetween, .pt16,
+              .overflowAuto, .nosb;
           }
           .scrollable.thin {
             @p: .overflowXHidden;
           }
           .footer {
-            @p: .w100, .flexFixed, .bgDarkBlue, .flex, .itemsCenter, .justifyBetween, .white60;
+            @p: .w100, .flexFixed, .bgDarkBlue, .flex, .itemsCenter,
+              .justifyBetween, .white60;
             height: 70px;
           }
           .f {
@@ -195,71 +140,80 @@ export class SideNav extends React.PureComponent<Props, State> {
             width: 24px;
           }
         `}</style>
-        <div className={cx('scrollable', $p.h100, {thin: !expanded})} style={{ paddingBottom: '70px' }}>
+        <div
+          className={cx('scrollable', $p.h100, { thin: !expanded })}
+          style={{ paddingBottom: '70px' }}
+        >
           <SideNavElement
             link={`/${project.name}/schema`}
             iconSrc={require('assets/icons/schema.svg')}
-            text='Schema'
+            text="Schema"
             size={18}
-            active={this.props.location.pathname.includes(`/schema`) && this.props.params.projectName}
+            active={
+              this.props.location.pathname.includes(`/schema`) &&
+              this.props.params.projectName
+            }
             small={!this.props.expanded}
           />
           <SideNavElement
             active={this.props.location.pathname.endsWith('databrowser')}
-            link={`/${this.props.params.projectName}/models/${this.props.models[0].name}/databrowser`}
+            link={`/${this.props.params.projectName}/models/${this.props
+              .models[0].name}/databrowser`}
             iconSrc={require('assets/icons/databrowser.svg')}
-            text='Data'
+            text="Data"
             size={16}
             minimalHighlight
             small={!this.props.expanded}
-            data-test='sidenav-databrowser'
+            data-test="sidenav-databrowser"
           />
-          {location.pathname.endsWith('databrowser') && (
-            this.renderModels()
-          )}
+          {location.pathname.endsWith('databrowser') && this.renderModels()}
           <SideNavElement
             link={`/${project.name}/permissions`}
             iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
-            text='Permissions'
+            text="Permissions"
             active={this.props.location.pathname.includes('/permissions')}
             small={!this.props.expanded}
-            data-test='sidenav-permissions'
+            data-test="sidenav-permissions"
           />
           <SideNavElement
             link={`/${project.name}/integrations`}
             iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
-            text='Integrations'
+            text="Integrations"
             active={this.props.location.pathname.endsWith('/integrations')}
             small={!this.props.expanded}
           />
           <SideNavElement
             link={`/${project.name}/functions`}
             iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
-            text='Functions'
+            text="Functions"
             active={this.props.location.pathname.includes('/functions')}
             small={!this.props.expanded}
-            data-test='sidenav-functions'
+            data-test="sidenav-functions"
           />
         </div>
         {this.renderPlayground()}
-        <div className='footer'>
+        <div className="footer">
           <FooterSection onClick={this.showEndpointPopup}>
-            <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/endpoints.svg')}/>
-            {this.props.expanded && (
-              <div>Endpoints</div>
-            )}
+            <Icon
+              width={20}
+              height={20}
+              src={require('graphcool-styles/icons/fill/endpoints.svg')}
+            />
+            {this.props.expanded && <div>Endpoints</div>}
           </FooterSection>
           <FooterLink
-            href='https://www.graph.cool/docs/'
-            target='_blank'
+            href="https://www.graph.cool/docs/"
+            target="_blank"
             onClick={() => {
               tracker.track(ConsoleEvents.Sidenav.docsOpened())
             }}
           >
-            <Icon width={20} height={20} src={require('graphcool-styles/icons/fill/docs.svg')}/>
-            {this.props.expanded && (
-              <div>Docs</div>
-            )}
+            <Icon
+              width={20}
+              height={20}
+              src={require('graphcool-styles/icons/fill/docs.svg')}
+            />
+            {this.props.expanded && <div>Docs</div>}
           </FooterLink>
         </div>
       </div>
@@ -267,23 +221,25 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   private renderPlayground = () => {
-    const playgroundPageActive = `/${this.props.params.projectName}/playground` === this.props.location.pathname
     const showGettingStartedOnboardingPopup = () => {
-      if (this.props.gettingStartedState.isCurrentStep('STEP3_OPEN_PLAYGROUND')) {
+      if (
+        this.props.gettingStartedState.isCurrentStep('STEP3_OPEN_PLAYGROUND')
+      ) {
         this.props.nextStep()
       }
     }
 
     return (
-      <div className={cx('playground', {small: !this.props.expanded})}>
+      <div className={cx('playground', { small: !this.props.expanded })}>
         <style jsx>{`
           .playground {
             @p: .mt16;
           }
           .playground-button {
-            @p: .br2, .darkBlue, .f14, .fw6, .inlineFlex, .ttu, .ml25, .mb25, .itemsCenter;
+            @p: .br2, .darkBlue, .f14, .fw6, .inlineFlex, .ttu, .ml25, .mb25,
+              .itemsCenter;
             letter-spacing: 0.53px;
-            background-color: rgb(185,191,196);
+            background-color: rgb(185, 191, 196);
             padding: 7px 10px 8px 10px;
             transition: $duration all;
           }
@@ -300,14 +256,14 @@ export class SideNav extends React.PureComponent<Props, State> {
             transform: translateX(20px);
           }
           .playground.small :global(svg) {
-            fill: rgb(185,191,196) !important;
+            fill: rgb(185, 191, 196) !important;
           }
         `}</style>
         <Link
           to={`/${this.props.params.projectName}/playground`}
           onClick={showGettingStartedOnboardingPopup}
         >
-          <div className='playground-button'>
+          <div className="playground-button">
             <Icon
               width={20}
               height={20}
@@ -315,16 +271,19 @@ export class SideNav extends React.PureComponent<Props, State> {
               color={$v.darkBlue}
             />
             <Tether
-              side='top'
-              steps={[{
-                step: 'STEP3_OPEN_PLAYGROUND',
-                title: 'Open the Playground',
-                description: 'Now that we have defined our Post type it\'s time to use the GraphQL API!', // tslint:disable-line
-              }]}
+              side="top"
+              steps={[
+                {
+                  step: 'STEP3_OPEN_PLAYGROUND',
+                  title: 'Open the Playground',
+                  description:
+                    "Now that we have defined our Post type it's time to use the GraphQL API!", // tslint:disable-line
+                },
+              ]}
               offsetY={-20}
               width={280}
             >
-              <div className='text'>Playground</div>
+              <div className="text">Playground</div>
             </Tether>
           </div>
         </Link>
@@ -333,32 +292,19 @@ export class SideNav extends React.PureComponent<Props, State> {
   }
 
   private renderModels = () => {
-    const modelActive = (model) => (
-      this.props.location.pathname === `/${this.props.params.projectName}/models/${model.name}/schema` ||
-      this.props.location.pathname === `/${this.props.params.projectName}/models/${model.name}/databrowser`
-    )
-
-    const turnedToggleMore = `
-      i {
-        transform: rotate(180deg) !important;
-        svg {
-          position: relative;
-          top: 1px;
-        }
-      }
-    `
-
-    const ToggleMore = styled.div`
-      height: ${$v.size60};
-      background: linear-gradient(to bottom, ${$v.darkerBlue0} 0%, ${$v.darkerBlue} 80%);
-
-      svg {
-        stroke-width: 4px;
-        fill: none;
-      }
-
-      ${props => props.turned && turnedToggleMore}
-    `
+    const modelActive = model =>
+      this.props.location.pathname ===
+        `/${this.props.params.projectName}/models/${model.name}/schema` ||
+      this.props.location.pathname ===
+        `/${this.props.params.projectName}/models/${model.name}/databrowser` ||
+      this.props.location.pathname ===
+        `/${encodeURIComponent(
+          this.props.params.projectName,
+        )}/models/${model.name}/schema` ||
+      this.props.location.pathname ===
+        `/${encodeURIComponent(
+          this.props.params.projectName,
+        )}/models/${model.name}/databrowser`
 
     const activeListElement = `
       color: ${$v.white} !important;
@@ -391,9 +337,7 @@ export class SideNav extends React.PureComponent<Props, State> {
     `
 
     return (
-      <div className={cx(
-        $p.relative,
-      )}>
+      <div className={cx($p.relative)}>
         <div
           className={cx($p.overflowHidden)}
           style={{
@@ -401,53 +345,75 @@ export class SideNav extends React.PureComponent<Props, State> {
             transition: 'height .5s ease',
           }}
         >
-          <div
-            className={cx($p.flex, $p.flexColumn, $p.mt10, $p.mb16)}
-          >
-            {this.props.models && this.props.models.map((model) => (
-              <ListElement
-                key={model.name}
-                to={`/${this.props.params.projectName}/models/${model.name}/databrowser`}
-                active={modelActive(model)}
-                className={cx(
-                  $p.relative, $p.fw6, $p.white30, $p.ph25, $p.flex, $p.justifyBetween, $p.itemsCenter, $p.mb6,
-                  {
-                    [$p.bgWhite07]: modelActive(model),
-                  },
-                )}
-                data-test={`sidenav-databrowser-model-${model.name}`}
-              >
-                <div className={cx($p.pl6, $p.mra, $p.flex, $p.flexRow, $p.itemsCenter)}>
-                  <div title={model.name}>
-                    {this.props.expanded ? model.name : model.name.slice(0, 2).toUpperCase()}
-                  </div>
-                  {this.props.expanded && (
-                    model.isSystem && (
-                      <div
-                        className={cx($p.ph4, $p.br2, $p.bgWhite20, $p.darkerBlue, $p.ttu, $p.f12, $p.ml10)}
-                      >System</div>
-                    )
+          <div className={cx($p.flex, $p.flexColumn, $p.mt10, $p.mb16)}>
+            {this.props.models &&
+              this.props.models.map(model =>
+                <ListElement
+                  key={model.name}
+                  to={`/${this.props.params
+                    .projectName}/models/${model.name}/databrowser`}
+                  active={modelActive(model)}
+                  className={cx(
+                    $p.relative,
+                    $p.fw6,
+                    $p.white30,
+                    $p.ph25,
+                    $p.flex,
+                    $p.justifyBetween,
+                    $p.itemsCenter,
+                    $p.mb6,
+                    {
+                      [$p.bgWhite07]: modelActive(model),
+                    },
                   )}
-                </div>
-                {this.props.expanded && (
-                  <div>{model.itemCount + (this.props.countChanges.get(model.id) || 0)}</div>
-                )}
-              </ListElement>
-            ))}
+                  data-test={`sidenav-databrowser-model-${model.name}`}
+                >
+                  <div
+                    className={cx(
+                      $p.pl6,
+                      $p.mra,
+                      $p.flex,
+                      $p.flexRow,
+                      $p.itemsCenter,
+                    )}
+                  >
+                    <div title={model.name}>
+                      {this.props.expanded
+                        ? model.name
+                        : model.name.slice(0, 2).toUpperCase()}
+                    </div>
+                    {this.props.expanded &&
+                      (model.isSystem &&
+                        <div
+                          className={cx(
+                            $p.ph4,
+                            $p.br2,
+                            $p.bgWhite20,
+                            $p.darkerBlue,
+                            $p.ttu,
+                            $p.f12,
+                            $p.ml10,
+                          )}
+                        >
+                          System
+                        </div>)}
+                  </div>
+                  {this.props.expanded &&
+                    <div>
+                      {model.itemCount +
+                        (this.props.countChanges.get(model.id) || 0)}
+                    </div>}
+                </ListElement>,
+              )}
           </div>
         </div>
       </div>
     )
   }
 
-  private toggleModels = () => {
-    const { modelsExpanded } = this.state
-    this.setState({modelsExpanded: !modelsExpanded} as State)
-  }
-
   private fetch = () => {
     // the backend might cache the force fetch requests, resulting in potentially inconsistent responses
-    const {projectName} = this.props.params
+    const { projectName } = this.props.params
     this.props.relay.refetch({
       projectName,
     })
@@ -484,18 +450,20 @@ const ReduxContainer = connect(
 )(withRouter(SideNav))
 
 const MappedSideNav = mapProps({
-  params: (props) => props.params,
-  project: (props) => props.project,
-  relay: (props) => props.relay,
-  models: (props) => props.project.models.edges
-    .map((edge) => edge.node)
-    .sort((a, b) => a.name.localeCompare(b.name)),
+  params: props => props.params,
+  project: props => props.project,
+  relay: props => props.relay,
+  models: props =>
+    props.project.models.edges
+      .map(edge => edge.node)
+      .sort((a, b) => a.name.localeCompare(b.name)),
   isBetaCustomer: props =>
-    props.viewer &&
-    props.viewer.user &&
-    props.viewer.user.crm &&
-    props.viewer.user.crm.information &&
-    props.viewer.user.crm.information.isBeta || false,
+    (props.viewer &&
+      props.viewer.user &&
+      props.viewer.user.crm &&
+      props.viewer.user.crm.information &&
+      props.viewer.user.crm.information.isBeta) ||
+    false,
 })(ReduxContainer)
 
 export default createRefetchContainer(
@@ -545,7 +513,6 @@ export default createRefetchContainer(
   `,
 )
 
-/* tslint:disable */
 const mutationFragments = graphql`
   fragment SideNav_model on Model {
     id
@@ -554,3 +521,5 @@ const mutationFragments = graphql`
     isSystem
   }
 `
+
+dummy(mutationFragments)

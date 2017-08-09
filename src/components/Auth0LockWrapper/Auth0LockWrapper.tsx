@@ -7,7 +7,9 @@ import { ShowNotificationCallback } from '../../types/utils'
 import { onFailureShowNotification } from '../../utils/relay'
 import Auth0Lock from 'auth0-lock'
 import * as cookiestore from 'cookiestore'
-import AuthenticateCustomerMutation, { Response } from '../../mutations/AuthenticateCustomerMutation'
+import AuthenticateCustomerMutation, {
+  Response,
+} from '../../mutations/AuthenticateCustomerMutation'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 
@@ -21,28 +23,26 @@ interface Props {
 
 const ELEMENT_ID = 'auth0-lock'
 
-interface State {
-}
-
-class Auth0LockWrapper extends React.Component<Props, State> {
-
-  _lock: any
+class Auth0LockWrapper extends React.Component<Props, {}> {
+  lock: any
 
   componentDidMount() {
-    let prefill = undefined
+    let prefill
     if (this.props.location.query && this.props.location.query.email) {
       prefill = {
         email: this.props.location.query.email,
       }
     }
 
-    this._lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
+    this.lock = new Auth0Lock(__AUTH0_CLIENT_ID__, __AUTH0_DOMAIN__, {
       closable: false,
-      additionalSignUpFields: [{
-        name: 'name',
-        icon: 'http://i.imgur.com/JlNtkke.png',
-        placeholder: 'enter your full name',
-      }],
+      additionalSignUpFields: [
+        {
+          name: 'name',
+          icon: 'http://i.imgur.com/JlNtkke.png',
+          placeholder: 'enter your full name',
+        },
+      ],
       theme: {
         logo: require('../../assets/graphics/logo-auth0.png'),
         primaryColor: $v.green,
@@ -52,57 +52,65 @@ class Auth0LockWrapper extends React.Component<Props, State> {
         emailInputPlaceholder: 'your@companymail.com',
       },
       auth: {
-        params: {scope: 'openid email name user_metadata'},
+        params: { scope: 'openid email name user_metadata' },
       },
       initialScreen: this.props.initialScreen,
       container: this.props.renderInElement ? ELEMENT_ID : null,
       prefill,
     })
 
-    this._lock.on('authenticated', (authResult) => {
-      this._lock.hide()
+    this.lock.on('authenticated', authResult => {
+      this.lock.hide()
 
-      window.localStorage.setItem('graphcool_auth_provider', authResult.idTokenPayload.sub)
+      window.localStorage.setItem(
+        'graphcool_auth_provider',
+        authResult.idTokenPayload.sub,
+      )
 
-      AuthenticateCustomerMutation.commit({auth0IdToken: authResult.idToken})
-        .then(async (response) => {
-
-          cookiestore.set('graphcool_auth_token', response.authenticateCustomer.token)
-          cookiestore.set('graphcool_customer_id', response.authenticateCustomer.user.id)
+      AuthenticateCustomerMutation.commit({ auth0IdToken: authResult.idToken })
+        .then(async response => {
+          cookiestore.set(
+            'graphcool_auth_token',
+            response.authenticateCustomer.token,
+          )
+          cookiestore.set(
+            'graphcool_customer_id',
+            response.authenticateCustomer.user.id,
+          )
 
           tracker.track(ConsoleEvents.Authentication.completed())
 
           this.props.successCallback(response.authenticateCustomer)
-
         })
         .catch(transaction => {
-          this._lock.show()
+          this.lock.show()
 
           onFailureShowNotification(transaction, this.props.showNotification)
 
-          tracker.track(ConsoleEvents.Authentication.failed({idToken: authResult.idToken}))
+          tracker.track(
+            ConsoleEvents.Authentication.failed({
+              idToken: authResult.idToken,
+            }),
+          )
         })
-
     })
 
-    this._lock.show()
+    this.lock.show()
   }
 
   componentWillUnmount() {
-    this._lock.hide()
+    this.lock.hide()
   }
 
   render() {
-    return this.props.renderInElement ? (
-      <div id={ELEMENT_ID} className=''/>
-    ) : (
-      <div className={$p.dn}/>
-    )
+    return this.props.renderInElement
+      ? <div id={ELEMENT_ID} className="" />
+      : <div className={$p.dn} />
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ showNotification }, dispatch)
 }
 
 export default connect(null, mapDispatchToProps)(Auth0LockWrapper)

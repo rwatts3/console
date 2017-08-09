@@ -1,6 +1,6 @@
-import {FieldType, Field, Constraint, ConstraintType} from '../../../types/types'
-import {MigrationUIState} from './FieldPopup'
-import {TypedValue} from '../../../types/utils'
+import { FieldType, Field, ConstraintType } from '../../../types/types'
+import { MigrationUIState } from './FieldPopup'
+import { TypedValue } from '../../../types/utils'
 
 // Validation
 
@@ -12,7 +12,12 @@ export interface FieldPopupErrors {
 }
 
 export function errorInTab(errors: FieldPopupErrors, index: number) {
-  const {typeMissing, invalidName, migrationValueMissing, enumValueMissing} = errors
+  const {
+    typeMissing,
+    invalidName,
+    migrationValueMissing,
+    enumValueMissing,
+  } = errors
 
   if (index === 0) {
     return typeMissing || invalidName || enumValueMissing
@@ -25,21 +30,29 @@ export function errorInTab(errors: FieldPopupErrors, index: number) {
   return false
 }
 
-export function isValid(nodeCount: number, mutatedField: Field, initialField?: Field): FieldPopupErrors {
-  let errors: FieldPopupErrors = {
+export function isValid(
+  nodeCount: number,
+  mutatedField: Field,
+  initialField?: Field,
+): FieldPopupErrors {
+  const errors: FieldPopupErrors = {
     typeMissing: false,
     invalidName: false,
     migrationValueMissing: false,
     enumValueMissing: false,
   }
 
-  errors.typeMissing = !mutatedField.typeIdentifier || (mutatedField.typeIdentifier as string === '')
+  errors.typeMissing =
+    !mutatedField.typeIdentifier ||
+    (mutatedField.typeIdentifier as string) === ''
 
   errors.invalidName = !validateFieldName(mutatedField.name)
 
   const migrationUI = getMigrationUI(nodeCount, mutatedField, initialField)
-  errors.migrationValueMissing = (!migrationUI.migrationOptional && migrationUI.showMigration)
-    && (typeof mutatedField.migrationValue === 'undefined')
+  errors.migrationValueMissing =
+    !migrationUI.migrationOptional &&
+    migrationUI.showMigration &&
+    typeof mutatedField.migrationValue === 'undefined'
 
   // errors.enumValueMissing = mutatedField.typeIdentifier === 'Enum' && mutatedField.enumValues.length === 0
   errors.enumValueMissing = false
@@ -47,7 +60,11 @@ export function isValid(nodeCount: number, mutatedField: Field, initialField?: F
   return errors
 }
 
-export function isBreaking(nodeCount: number, mutatedField: Field, initialField?: Field): boolean {
+export function isBreaking(
+  nodeCount: number,
+  mutatedField: Field,
+  initialField?: Field,
+): boolean {
   if (nodeCount === 0) {
     return false
   }
@@ -90,7 +107,10 @@ export function didChange(mutatedField: Field, initialField?: Field): boolean {
 
 // State Transitions
 
-export function updateTypeIdentifier(state: Field, typeIdentifier: FieldType): Field {
+export function updateTypeIdentifier(
+  state: Field,
+  typeIdentifier: FieldType,
+): Field {
   return {
     ...state,
     defaultValue: null,
@@ -143,14 +163,20 @@ export function updateEnumId(state: Field, enumId: string): Field {
   }
 }
 
-export function updateDefaultValue(state: Field, defaultValue: TypedValue): Field {
+export function updateDefaultValue(
+  state: Field,
+  defaultValue: TypedValue,
+): Field {
   return {
     ...state,
     defaultValue,
   }
 }
 
-export function updateMigrationValue(state: Field, migrationValue: TypedValue): Field {
+export function updateMigrationValue(
+  state: Field,
+  migrationValue: TypedValue,
+): Field {
   return {
     ...state,
     migrationValue,
@@ -168,7 +194,7 @@ export function addConstraint(state: Field, type: ConstraintType): Field {
 }
 
 export function removeConstraint(state: Field, index: number): Field {
-  const constraints  = state.constraints.slice()
+  const constraints = state.constraints.slice()
   constraints.splice(index, 1)
 
   return {
@@ -177,8 +203,12 @@ export function removeConstraint(state: Field, index: number): Field {
   }
 }
 
-export function editConstraint(state: Field, index: number, value: string): Field {
-  const {constraints} = state
+export function editConstraint(
+  state: Field,
+  index: number,
+  value: string,
+): Field {
+  const { constraints } = state
   const constraint = constraints[index]
   return {
     ...state,
@@ -193,7 +223,11 @@ export function editConstraint(state: Field, index: number, value: string): Fiel
   }
 }
 
-export function getMigrationUI(nodeCount: number, mutatedField: Field, initialField?: Field): MigrationUIState {
+export function getMigrationUI(
+  nodeCount: number,
+  mutatedField: Field,
+  initialField?: Field,
+): MigrationUIState {
   if (nodeCount === 0) {
     return {
       showMigration: false,
@@ -220,9 +254,7 @@ export function getMigrationUI(nodeCount: number, mutatedField: Field, initialFi
   // it depends on a node-by-node basis if a migration value is needed
   // this is something the backend has to figure out, so we're accepting switching to required
   // even without checking
-  if (
-    (!initialField.isRequired && mutatedField.isRequired)
-  ) {
+  if (!initialField.isRequired && mutatedField.isRequired) {
     return {
       showMigration: true,
       migrationOptional: true,
@@ -230,8 +262,8 @@ export function getMigrationUI(nodeCount: number, mutatedField: Field, initialFi
   }
 
   if (
-    (initialField.typeIdentifier !== mutatedField.typeIdentifier) ||
-    (initialField.isList !== mutatedField.isList)
+    initialField.typeIdentifier !== mutatedField.typeIdentifier ||
+    initialField.isList !== mutatedField.isList
   ) {
     return {
       showMigration: true,
@@ -245,7 +277,7 @@ export function getMigrationUI(nodeCount: number, mutatedField: Field, initialFi
   }
 }
 
-export function validateFieldName (fieldName: string): boolean {
+export function validateFieldName(fieldName: string): boolean {
   return /^[a-z]/.test(fieldName) && /^[a-zA-Z0-9]+$/.test(fieldName)
 }
 
@@ -275,20 +307,25 @@ function shallowEqual(objA, objB) {
     return true
   }
 
-  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
     return false
   }
 
-  let keysA = Object.keys(objA)
-  let keysB = Object.keys(objB)
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
 
   if (keysA.length !== keysB.length) {
     return false
   }
 
   // Test for A's keys different from B.
-  for (let i = 0; i < keysA.length; i++) {
-    if (!global.hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
+  for (const a of keysA) {
+    if (!global.hasOwnProperty.call(objB, a) || !is(objA[a], objB[a])) {
       return false
     }
   }

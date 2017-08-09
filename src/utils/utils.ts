@@ -1,10 +1,11 @@
 import * as moment from 'moment'
-import {ISO8601} from './constants'
-import {Field} from '../types/types'
+import { ISO8601 } from './constants'
+import { Field } from '../types/types'
 
 export function randomString(length: number): string {
   let text = ''
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
   for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length))
@@ -19,13 +20,12 @@ export function isValidUrl(str: string): boolean {
 }
 
 export function isValidMutationCallbackUrl(str: string): boolean {
-  const blackList = [
-    '127.0.0.1',
-    '0.0.0.0',
-    'localhost',
-  ]
+  const blackList = ['127.0.0.1', '0.0.0.0', 'localhost']
   const withoutProtocol = str.replace(/http(s)?:\/\//, '')
-  return !blackList.includes(withoutProtocol) && (isValidUrl(str) || isValidIp(withoutProtocol))
+  return (
+    !blackList.includes(withoutProtocol) &&
+    (isValidUrl(str) || isValidIp(withoutProtocol))
+  )
 }
 
 export function isValidIp(str: string): boolean {
@@ -48,6 +48,7 @@ export function isValidEnum(value: string): boolean {
 export function debounce(func, wait) {
   let timeout
   return (...args) => {
+    /* tslint:disable-next-line */
     const context = this
     const later = () => {
       timeout = null
@@ -63,28 +64,26 @@ interface RetryUntilDoneOptions {
   timeout?: number
 }
 
-export function retryUntilDone(fn: (done: () => void) => void, options: RetryUntilDoneOptions = {}): void {
+export function retryUntilDone(
+  fn: (done: () => void) => void,
+  options: RetryUntilDoneOptions = {},
+): void {
   const maxRetries = options.maxRetries || 100
   const timeout = options.timeout || 100
 
   let tries = 0
-  let shouldBreak = false
 
-  let interval = setInterval(
-    () => {
-      tries++
+  const interval = setInterval(() => {
+    tries++
 
-        fn(() => {
-        clearInterval(interval)
-      })
+    fn(() => {
+      clearInterval(interval)
+    })
 
-      if (tries < maxRetries) {
-        clearInterval(interval)
-      }
-    },
-    timeout,
-  )
-
+    if (tries < maxRetries) {
+      clearInterval(interval)
+    }
+  }, timeout)
 }
 
 export function lowercaseFirstLetter(str: string): string {
@@ -96,8 +95,8 @@ export function uppercaseFirstLetter(str: string): string {
 }
 
 export function removeDuplicatesFromStringArray(arr: string[]): string[] {
-  let s = new Set(arr)
-  let it = s.values()
+  const s = new Set(arr)
+  const it = s.values()
   return Array.from(it)
 }
 
@@ -110,11 +109,15 @@ export function numberWithCommasRounded(x, digits) {
   return x.toFixed(digits).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-export function chunk(str: string, n: number, includeRemainder: boolean): string[] {
-  let result: string[] = []
+export function chunk(
+  str: string,
+  n: number,
+  includeRemainder: boolean,
+): string[] {
+  const result: string[] = []
   while (n < str.length) {
-    let chunk = str.substring(0, n)
-    result.push(chunk)
+    const c = str.substring(0, n)
+    result.push(c)
     str = str.substring(n, str.length)
   }
   if (includeRemainder) {
@@ -124,7 +127,7 @@ export function chunk(str: string, n: number, includeRemainder: boolean): string
 }
 
 // month is 1 based
-export function daysInMonth(month,year) {
+export function daysInMonth(month, year) {
   return new Date(year, month, 0).getDate()
 }
 
@@ -132,7 +135,7 @@ export function daysInMonth(month,year) {
 export function mmDDyyyyFromTimestamp(timestamp: string): string {
   const components = timestamp.split('T')
   const dateString = components[0]
-  let dateComponents = dateString.split('-')
+  const dateComponents = dateString.split('-')
   const yyyy = dateComponents.shift()
   dateComponents.push(yyyy)
   return dateComponents.join('/')
@@ -143,8 +146,7 @@ export function todayString(): string {
   const dd = today.getDate()
   const mm = today.getMonth() + 1
   const yyyy = today.getFullYear()
-  const todayString = mm + '/' + dd + '/' + yyyy
-  return todayString
+  return mm + '/' + dd + '/' + yyyy
 }
 
 export const idToBeginning = (a: Field, b: Field) => {

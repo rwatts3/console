@@ -1,10 +1,10 @@
 import * as React from 'react'
+import { createFragmentContainer, graphql } from 'react-relay'
+import * as cn from 'classnames'
 import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import { classnames } from '../../utils/classnames'
-import { Project, ActionTriggerMutationModelMutationType } from '../../types/types'
+  Project,
+  ActionTriggerMutationModelMutationType,
+} from '../../types/types'
 import { UpdateTriggerPayload } from './ActionTriggerBox'
 import calculateSize from 'calculate-size'
 const classes = require('./ActionTrigger.scss')
@@ -17,16 +17,15 @@ interface Props {
 }
 
 class ActionTrigger extends React.Component<Props, {}> {
-
   render() {
     const modelSelected = !!this.props.triggerMutationModelModelId
     const mutationSelected = !!this.props.triggerMutationModelMutationType
 
-    let triggerClass = classnames(classes.selector, classes.typeselector)
+    let triggerClass = cn(classes.selector, classes.typeselector)
     if (mutationSelected) {
-      triggerClass = classnames(triggerClass, this.getMutationClass())
+      triggerClass = cn(triggerClass, this.getMutationClass())
     } else if (modelSelected) {
-      triggerClass = classnames(triggerClass, classes.selecting)
+      triggerClass = cn(triggerClass, classes.selecting)
     }
 
     const fontOptions = {
@@ -34,58 +33,73 @@ class ActionTrigger extends React.Component<Props, {}> {
       fontSize: '16px',
     }
 
-    const selectedModel = this.getModelNameFromId(this.props.triggerMutationModelModelId)
-      || 'Select a Model/Relation...'
+    const selectedModel =
+      this.getModelNameFromId(this.props.triggerMutationModelModelId) ||
+      'Select a Model/Relation...'
     const modelWidth = calculateSize(selectedModel, fontOptions).width + 24
 
-    const selectedType = this.getTypeTextFromEnum(this.props.triggerMutationModelMutationType) || 'Select a Mutation...'
+    const selectedType =
+      this.getTypeTextFromEnum(this.props.triggerMutationModelMutationType) ||
+      'Select a Mutation...'
     const typeWidth = calculateSize(selectedType, fontOptions).width + 24
     return (
       <div>
         <select
-          style={{width: modelWidth}}
-          className={classnames(classes.selector, classes.modelselector)}
-          value={this.props.triggerMutationModelModelId
-            ? this.props.triggerMutationModelModelId
-            : 'default value'}
-          onChange={(e: any) => this.props.update({ triggerMutationModelModelId: e.target.value })}
+          style={{ width: modelWidth }}
+          className={cn(classes.selector, classes.modelselector)}
+          value={
+            this.props.triggerMutationModelModelId
+              ? this.props.triggerMutationModelModelId
+              : 'default value'
+          }
+          onChange={(e: any) =>
+            this.props.update({ triggerMutationModelModelId: e.target.value })}
         >
-          <option value={'default value'} disabled>Select a Model/Relation...</option>
-          {this.props.project.models.edges.map((edge) => (
-            <option
-              value={edge.node.id}
-              key={edge.node.id}
-            >
+          <option value={'default value'} disabled>
+            Select a Model/Relation...
+          </option>
+          {this.props.project.models.edges.map(edge =>
+            <option value={edge.node.id} key={edge.node.id}>
               {edge.node.name}
-            </option>
-          ))}
+            </option>,
+          )}
         </select>
         <select
-          style={{width: typeWidth}}
+          style={{ width: typeWidth }}
           disabled={!modelSelected}
           className={triggerClass}
-          value={this.props.triggerMutationModelMutationType
-            ? this.props.triggerMutationModelMutationType
-            : 'default value'}
-          onChange={(e: any) => this.props.update({
-            triggerMutationModelMutationType: e.target.value as ActionTriggerMutationModelMutationType,
-          })}
+          value={
+            this.props.triggerMutationModelMutationType
+              ? this.props.triggerMutationModelMutationType
+              : 'default value'
+          }
+          onChange={(e: any) =>
+            this.props.update({
+              triggerMutationModelMutationType: e.target
+                .value as ActionTriggerMutationModelMutationType,
+            })}
         >
-          <option value={'default value'} disabled>Select a Mutation...</option>
-          <option value='CREATE'>is created</option>
-          <option value='UPDATE'>is updated</option>
-          <option value='DELETE'>is deleted</option>
+          <option value={'default value'} disabled>
+            Select a Mutation...
+          </option>
+          <option value="CREATE">is created</option>
+          <option value="UPDATE">is updated</option>
+          <option value="DELETE">is deleted</option>
         </select>
       </div>
     )
   }
 
   private getModelNameFromId = (id: string): string => {
-    const model = this.props.project.models.edges.map((edge) => edge.node).find((node) => node.id === id)
+    const model = this.props.project.models.edges
+      .map(edge => edge.node)
+      .find(node => node.id === id)
     return model ? model.name : null
   }
 
-  private getTypeTextFromEnum = (type: ActionTriggerMutationModelMutationType) => {
+  private getTypeTextFromEnum = (
+    type: ActionTriggerMutationModelMutationType,
+  ) => {
     switch (type) {
       case 'CREATE':
         return 'is created'
@@ -115,7 +129,7 @@ class ActionTrigger extends React.Component<Props, {}> {
 export default createFragmentContainer(ActionTrigger, {
   project: graphql`
     fragment ActionTrigger_project on Project {
-      models (first: 1000) {
+      models(first: 1000) {
         edges {
           node {
             id
@@ -125,5 +139,4 @@ export default createFragmentContainer(ActionTrigger, {
       }
     }
   `,
-},
-)
+})

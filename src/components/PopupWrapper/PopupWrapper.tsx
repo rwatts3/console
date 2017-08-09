@@ -1,9 +1,8 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
-import {closePopup} from '../../actions/popup'
-import {ReduxAction} from '../../types/reducers'
-import styled from 'styled-components'
+import { closePopup } from '../../actions/popup'
+import { ReduxAction } from '../../types/reducers'
 
 interface Props {
   id?: string
@@ -11,16 +10,8 @@ interface Props {
   onClickOutside?: (e: any) => void
 }
 
-const Container = styled.div`
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`
-
 class PopupWrapper extends React.Component<Props, {}> {
-  refs: {
-    container: Element,
-  }
+  container: any
 
   componentDidMount() {
     document.addEventListener('keydown', this.keyDown)
@@ -31,29 +22,43 @@ class PopupWrapper extends React.Component<Props, {}> {
   }
 
   keyDown = (e: KeyboardEvent) => {
-    if (e.keyCode === 27 && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+    if (
+      e.keyCode === 27 &&
+      !(
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+    ) {
       this.close(e)
     }
   }
 
   render() {
     return (
-      <Container
-        className='fixed left-0 right-0 top-0 bottom-0 z-999'
+      <div
+        className="popup-wrapper"
         style={{
           overflow: 'scroll',
         }}
         onClick={this.handleClick}
-        ref='container'
+        ref={this.setRef}
       >
+        <style jsx={true}>{`
+          .popup-wrapper {
+            @p: .fixed, .left0, .right0, .top0, .bottom0, .z999;
+          }
+        `}</style>
         {this.props.children}
-      </Container>
+      </div>
     )
   }
 
-  private handleClick = (e: any) => {
+  private setRef = ref => {
+    this.container = ref
+  }
 
-    const container: Element = ReactDOM.findDOMNode(this.refs.container)
+  private handleClick = (e: any) => {
+    const container: Element = ReactDOM.findDOMNode(this.container)
     if (!container.children) {
       return
     }

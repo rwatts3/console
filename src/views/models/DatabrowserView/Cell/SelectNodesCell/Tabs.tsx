@@ -7,8 +7,8 @@ interface Props {
   onChangeIndex: (index: number) => void
 }
 
-const Tabs = ({options, activeIndex, onChangeIndex}: Props) => (
-  <div className='tabs'>
+const Tabs = ({ options, activeIndex, onChangeIndex }: Props) =>
+  <div className="tabs">
     <style jsx={true}>{`
       .tabs {
         @p: .flexFixed, .buttonShadow, .flex, .bgWhite;
@@ -24,12 +24,15 @@ const Tabs = ({options, activeIndex, onChangeIndex}: Props) => (
         @p: .bgBlue, .white;
       }
     `}</style>
-    {options.map((option, index) => (
-      <div key={option} className={cn('tab', {active: index === activeIndex})} onClick={() => onChangeIndex(index)}>
+    {options.map((option, index) =>
+      <div
+        key={option}
+        className={cn('tab', { active: index === activeIndex })}
+        onClick={() => onChangeIndex(index)}
+      >
         {option}
-      </div>
-    ))}
+      </div>,
+    )}
   </div>
-)
 
 export default Tabs

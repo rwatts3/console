@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {FunctionBinding} from '../../../types/types'
-import {Icon, $v} from 'graphcool-styles'
+import { FunctionBinding } from '../../../types/types'
+import { Icon, $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 import Info from '../../../components/Info'
 
@@ -12,14 +12,19 @@ interface Props {
   payloadTaken: boolean
 }
 
-export default function RequestPipeline({binding, onChange, argTaken, preTaken, payloadTaken}: Props) {
-
-  const argActive = binding === 'TRANSFORM_ARGUMENT' as FunctionBinding
-  const preActive = binding === 'PRE_WRITE' as FunctionBinding
-  const payloadActive = binding === 'TRANSFORM_PAYLOAD' as FunctionBinding
+export default function RequestPipeline({
+  binding,
+  onChange,
+  argTaken,
+  preTaken,
+  payloadTaken,
+}: Props) {
+  const argActive = binding === ('TRANSFORM_ARGUMENT' as FunctionBinding)
+  const preActive = binding === ('PRE_WRITE' as FunctionBinding)
+  const payloadActive = binding === ('TRANSFORM_PAYLOAD' as FunctionBinding)
 
   return (
-    <div className='request-pipeline'>
+    <div className="request-pipeline">
       <style jsx={true}>{`
         .request-pipeline {
           @p: .w100, .flex, .itemsCenter, .justifyBetween, .mb60;
@@ -56,20 +61,26 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
         }
       `}</style>
       <Arrow />
-      <Info top customTip={
-        <div className='step'>
-          <Circle disabled />
-          <div className='label disabled'>TRANSFORM _REQUEST</div>
-        </div>
-      }>This step includes the raw input without any GraphQL Type checking.</Info>
-      <div className='step'>
+      <Info
+        top
+        customTip={
+          <div className="step">
+            <Circle disabled />
+            <div className="label disabled">TRANSFORM _REQUEST</div>
+          </div>
+        }
+      >
+        This step includes the raw input without any GraphQL Type checking.
+      </Info>
+      <div className="step">
         <Info
           top
           cursorOffset={20}
           offsetY={-30}
           customTip={<Tip>Schema Validation</Tip>}
         >
-          Graphcool executes the GraphQL Schema validation on the request payload at this point.
+          Graphcool executes the GraphQL Schema validation on the request
+          payload at this point.
         </Info>
         <Arrow />
       </div>
@@ -77,108 +88,133 @@ export default function RequestPipeline({binding, onChange, argTaken, preTaken, 
         top
         customTip={
           <div
-            className='step'
+            className="step"
             onClick={() => onChange('TRANSFORM_ARGUMENT' as FunctionBinding)}
-            data-test='transform-argument-circle'
+            data-test="transform-argument-circle"
           >
-            <Circle active={argActive}/>
-            <div className={cn('label', {active: argActive, taken: argTaken})}>TRANSFORM _ARGUMENT</div>
+            <Circle active={argActive} />
+            <div
+              className={cn('label', { active: argActive, taken: argTaken })}
+            >
+              TRANSFORM _ARGUMENT
+            </div>
           </div>
         }
       >
-        {argTaken ? (
-          'This hook is already being used by another function.'
-        ) : (
-          <div>
-            In this hook you can transform the input data. <br/>
-            You can for example <br/>
-            <ul>
-              <li>validating email address</li>
-              <li>normalizing phone number</li>
-              <li>remove spaces from credit card number</li>
-            </ul>
-          </div>
-        )}
+        {argTaken
+          ? 'This hook is already being used by another function.'
+          : <div>
+              In this hook you can transform the input data. <br />
+              You can for example <br />
+              <ul>
+                <li>validating email address</li>
+                <li>normalizing phone number</li>
+                <li>remove spaces from credit card number</li>
+              </ul>
+            </div>}
       </Info>
-      <div className='step'>
+      <div className="step">
         <Info
           top
           cursorOffset={20}
           offsetY={-30}
-          customTip={
-            <Tip>Graphcool Check</Tip>
-          }
+          customTip={<Tip>Graphcool Check</Tip>}
         >
-          In this step Graphcool checks for Constraints like Uniqueness
-          and checks if the permissions even allow this request.
+          In this step Graphcool checks for Constraints like Uniqueness and
+          checks if the permissions even allow this request.
         </Info>
         <Arrow />
       </div>
-      <Info top customTip={
-        <div
-          className='step'
-          onClick={() => onChange('PRE_WRITE')}
-          data-test='pre-write-circle'
-        >
-          <Circle active={preActive}/>
-          <div className={cn('label', {active: preActive, taken: preTaken})}>PRE_WRITE</div>
-        </div>
-      }>
-        {argTaken ? (
-          'This hook is already being used by another function.'
-        ) : (
-          <div>
-            In this step the checks of Graphcool already have been executed. <br/>
-            It's useful for calling external services: <br/>
-            <ul>
-              <li>charge a customer on Stripe</li>
-              <li>write a message on Twilio</li>
-            </ul>
+      <Info
+        top
+        customTip={
+          <div
+            className="step"
+            onClick={() => onChange('PRE_WRITE')}
+            data-test="pre-write-circle"
+          >
+            <Circle active={preActive} />
+            <div
+              className={cn('label', { active: preActive, taken: preTaken })}
+            >
+              PRE_WRITE
+            </div>
           </div>
-        )}
+        }
+      >
+        {argTaken
+          ? 'This hook is already being used by another function.'
+          : <div>
+              In this step the checks of Graphcool already have been executed.{' '}
+              <br />
+              It's useful for calling external services: <br />
+              <ul>
+                <li>charge a customer on Stripe</li>
+                <li>write a message on Twilio</li>
+              </ul>
+            </div>}
       </Info>
       <Arrow />
-      <Info top customTip={
-        <div className='step'>
-          <Tip bottom={35}>Data Write</Tip>
-          <Icon
-            src={require('graphcool-styles/icons/fill/writedatabase.svg')}
-            width={34}
-            height={34}
-            color={$v.darkBlue30}
-          />
-        </div>
-      }>Here the data is actually written to the database.</Info>
-      <Arrow />
-      <Info top customTip={
-        <div
-          className='step'
-          onClick={() => onChange('TRANSFORM_PAYLOAD')}
-          data-test='transform-payload-circle'
-        >
-          <Circle active={payloadActive}/>
-          <div className={cn('label', {active: payloadActive, taken: payloadTaken})}>TRANSFORM _PAYLOAD</div>
-        </div>
-      }>
-        {argTaken ? (
-          'This hook is already being used by another function.'
-        ) : (
-          <div>
-            This step allows you to transform the payload<br/>
-            You can for example
-            <ul>
-              <li>remove the content of secret fields</li>
-            </ul>
+      <Info
+        top
+        customTip={
+          <div className="step">
+            <Tip bottom={35}>Data Write</Tip>
+            <Icon
+              src={require('graphcool-styles/icons/fill/writedatabase.svg')}
+              width={34}
+              height={34}
+              color={$v.darkBlue30}
+            />
           </div>
-        )}
+        }
+      >
+        Here the data is actually written to the database.
       </Info>
       <Arrow />
-      <Info top customTip={
-        <div className='step'>
-          <Circle disabled/>
-          <div className='label disabled'>TRANSFORM _RESPONSE</div>
-        </div>
-      }>This hook would allow manipulating the raw output without any GraphQL Checks</Info>
+      <Info
+        top
+        customTip={
+          <div
+            className="step"
+            onClick={() => onChange('TRANSFORM_PAYLOAD')}
+            data-test="transform-payload-circle"
+          >
+            <Circle active={payloadActive} />
+            <div
+              className={cn('label', {
+                active: payloadActive,
+                taken: payloadTaken,
+              })}
+            >
+              TRANSFORM _PAYLOAD
+            </div>
+          </div>
+        }
+      >
+        {argTaken
+          ? 'This hook is already being used by another function.'
+          : <div>
+              This step allows you to transform the payload<br />
+              You can for example
+              <ul>
+                <li>remove the content of secret fields</li>
+              </ul>
+            </div>}
+      </Info>
+      <Arrow />
+      <Info
+        top
+        customTip={
+          <div className="step">
+            <Circle disabled />
+            <div className="label disabled">TRANSFORM _RESPONSE</div>
+          </div>
+        }
+      >
+        This hook would allow manipulating the raw output without any GraphQL
+        Checks
+      </Info>
       <Arrow disableArrow />
     </div>
   )
@@ -189,12 +225,13 @@ interface TipProps {
   bottom?: number
 }
 
-function Tip({children, bottom}: TipProps) {
+function Tip({ children, bottom }: TipProps) {
   return (
-    <div className='tip' style={{bottom}}>
+    <div className="tip" style={{ bottom }}>
       <style jsx={true}>{`
         .tip {
-          @p: .absolute, .f12, .darkBlue40, .flex, .flexColumn, .itemsCenter, .justifyStart, .tc;
+          @p: .absolute, .f12, .darkBlue40, .flex, .flexColumn, .itemsCenter,
+            .justifyStart, .tc;
           bottom: 7px;
           width: 60px;
         }
@@ -205,8 +242,10 @@ function Tip({children, bottom}: TipProps) {
           width: 1px;
         }
       `}</style>
-      <div>{children}</div>
-      <div className='line'></div>
+      <div>
+        {children}
+      </div>
+      <div className="line" />
     </div>
   )
 }
@@ -218,39 +257,43 @@ interface CircleProps {
   taken?: boolean
 }
 
-function Circle({active, disabled, onClick, taken}: CircleProps) {
+function Circle({ active, disabled, onClick, taken }: CircleProps) {
   return (
-    <div className={cn('circle', {active, disabled, taken})} onClick={onClick}>
+    <div
+      className={cn('circle', { active, disabled, taken })}
+      onClick={onClick}
+    >
       <style jsx>{`
-      .circle {
-        @p: .br100, .ba, .bw2, .bBlue, .o50, .flex, .itemsCenter, .justifyCenter, .pointer;
-        width: 29px;
-        height: 29px;
-      }
-      .circle.active {
-        @p: .bgBlue, .o100;
-      }
-      .circle:not(.active):not(.disabled):not(.taken):hover {
-        @p: .bgBlue;
-      }
-      .circle.disabled {
-        @p: .o100, .bDarkBlue10;
-        cursor: no-drop;
-      }
-      .circle.taken {
-        @p: .o100;
-        border-color: $lightOrange !important;
-        cursor: no-drop;
-      }
-      .circle :global(i) {
-        @p: .o0;
-      }
-      .circle.active :global(i) {
-        @p: .o100;
-      }
-      .circle:not(.disabled):not(.active):not(.taken):hover :global(i) {
-        @p: .o60;
-      }
+        .circle {
+          @p: .br100, .ba, .bw2, .bBlue, .o50, .flex, .itemsCenter,
+            .justifyCenter, .pointer;
+          width: 29px;
+          height: 29px;
+        }
+        .circle.active {
+          @p: .bgBlue, .o100;
+        }
+        .circle:not(.active):not(.disabled):not(.taken):hover {
+          @p: .bgBlue;
+        }
+        .circle.disabled {
+          @p: .o100, .bDarkBlue10;
+          cursor: no-drop;
+        }
+        .circle.taken {
+          @p: .o100;
+          border-color: $lightOrange !important;
+          cursor: no-drop;
+        }
+        .circle :global(i) {
+          @p: .o0;
+        }
+        .circle.active :global(i) {
+          @p: .o100;
+        }
+        .circle:not(.disabled):not(.active):not(.taken):hover :global(i) {
+          @p: .o60;
+        }
       `}</style>
       <Icon
         src={require('graphcool-styles/icons/fill/check.svg')}
@@ -266,13 +309,13 @@ interface ArrowProps {
   disableArrow?: boolean
 }
 
-function Arrow({disableArrow}: ArrowProps) {
+function Arrow({ disableArrow }: ArrowProps) {
   return (
-    <div className='arrow'>
+    <div className="arrow">
       <style jsx>{`
         .arrow {
           @p: .relative, .flex, .itemsCenter;
-          background: #CCD0D3;
+          background: #ccd0d3;
           width: 46.6px;
           height: 2px;
         }
@@ -281,14 +324,13 @@ function Arrow({disableArrow}: ArrowProps) {
           right: -6px;
         }
       `}</style>
-      {!disableArrow && (
+      {!disableArrow &&
         <Icon
           src={require('graphcool-styles/icons/fill/arrowhead.svg')}
-          color='#CCD0D3'
+          color="#CCD0D3"
           width={12}
           height={12}
-        />
-      )}
+        />}
     </div>
   )
 }

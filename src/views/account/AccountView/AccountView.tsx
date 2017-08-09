@@ -1,8 +1,5 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { Viewer, Project } from '../../../types/types'
 import Header from '../../../components/Header/Header'
 const classes: any = require('./AccountView.scss')
@@ -14,8 +11,7 @@ interface Props {
 }
 
 class AccountView extends React.Component<Props, {}> {
-
-  render () {
+  render() {
     return (
       <div className={classes.root}>
         <Header

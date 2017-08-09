@@ -2,18 +2,15 @@ import * as React from 'react'
 import * as cookiestore from 'cookiestore'
 import * as fetch from 'isomorphic-fetch'
 import * as Modal from 'react-modal'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import Table from './Table/Table'
 import SearchBox from './SearchBox'
 import * as Immutable from 'seamless-immutable'
 import modalStyle from '../../../../../utils/modalStyle'
-import {Model, Field} from '../../../../../types/types'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { Model, Field } from '../../../../../types/types'
+import { createFragmentContainer, graphql } from 'react-relay'
 import * as mapProps from 'map-props'
-import {isScalar} from '../../../../../utils/graphql'
+import { isScalar } from '../../../../../utils/graphql'
 import TypeTag from '../../../../SchemaView/SchemaOverview/TypeTag'
 import Tabs from './Tabs'
 import SelectNodesCellFooter from './SelectNodesCellFooter'
@@ -44,7 +41,6 @@ interface Props {
 }
 
 class SelectNodesCell extends React.Component<Props, State> {
-
   private style: any
   private lastQuery: string
 
@@ -62,39 +58,47 @@ class SelectNodesCell extends React.Component<Props, State> {
       scrollToIndex: undefined,
       selectedTabIndex: 1,
       values: null,
-      adminAuthToken: cookiestore.has('graphcool_auth_token') && cookiestore.get('graphcool_auth_token'),
+      adminAuthToken:
+        cookiestore.has('graphcool_auth_token') &&
+        cookiestore.get('graphcool_auth_token'),
       changed: false,
     }
 
-    this.getItems({startIndex: 0, stopIndex: 50}, props.fields)
+    this.getItems({ startIndex: 0, stopIndex: 50 }, props.fields)
 
-    this.style = Object.assign({}, modalStyle, {
-      overlay: Object.assign({}, modalStyle.overlay, {
+    this.style = {
+      ...modalStyle,
+      overlay: {
+        ...modalStyle.overlay,
         backgroundColor: 'rgba(255,255,255,.4)',
-      }),
-      content: Object.assign({}, modalStyle.content, {
+      },
+      content: {
+        ...modalStyle.content,
         width: 'auto',
         minWidth: '600px',
         maxWidth: window.innerWidth - 100 + 'px',
         overflow: 'visible',
-      }),
-    })
+      },
+    }
 
-    global['s'] = this
+    this.setGlobalState()
+  }
+
+  setGlobalState() {
+    ;(window as any).__s = this
   }
 
   componentWillReceiveProps(nextProps) {
-    const {startIndex, stopIndex} = this.state
+    const { startIndex, stopIndex } = this.state
 
     if (nextProps.fields.length !== this.props.fields.length) {
-      this.getItems({startIndex, stopIndex}, nextProps.fields)
+      this.getItems({ startIndex, stopIndex }, nextProps.fields)
     }
   }
 
   render() {
-
-    const {model, fields, field} = this.props
-    const {selectedTabIndex} = this.state
+    const { model, fields, field } = this.props
+    const { selectedTabIndex } = this.state
     // put id to beginning
     return (
       <Modal
@@ -104,7 +108,7 @@ class SelectNodesCell extends React.Component<Props, State> {
         style={this.style}
       >
         <style jsx>{`
-          .select-user-popup {
+          .select-nodes-cell {
             @p: .bgWhite, .relative;
           }
           .title-wrapper {
@@ -116,7 +120,8 @@ class SelectNodesCell extends React.Component<Props, State> {
             letter-spacing: 0.54px;
           }
           .header {
-            @p: .absolute, .w100, .bbox, .ph25, .z2, .flex, .justifyBetween, .itemsCenter;
+            @p: .absolute, .w100, .bbox, .ph25, .z2, .flex, .justifyBetween,
+              .itemsCenter;
             margin-top: -24px;
           }
           .search-box {
@@ -127,28 +132,44 @@ class SelectNodesCell extends React.Component<Props, State> {
           }
           .selected-user-id {
             @p: .bgBlack04, .pa6, .br2, .black60, .f14, .fw3, .mt10;
-            font-family:
-              'Source Code Pro',
-              'Consolas',
-              'Inconsolata',
-              'Droid Sans Mono',
-              'Monaco',
-              monospace;
+            font-family: 'Source Code Pro', 'Consolas', 'Inconsolata',
+              'Droid Sans Mono', 'Monaco', monospace;
           }
-      `}</style>
+          .filter {
+            @p: .f16, .mb25, .black30, .absolute;
+            margin-top: -40px;
+          }
+          .selected {
+            @p: .ml25, .black30, .flex;
+          }
+          .n {
+            @p: .black60, .fw6, .mh4;
+          }
+        `}</style>
         <style jsx global>{`
           .popup-x {
             @p: .absolute, .right0, .top0, .pointer, .pt25, .pr25;
           }
         `}</style>
-        <div className='select-user-popup'>
-          <div className='title-wrapper'>
-            <div className='title'>
-              <span>{field.name}</span>
-              <TypeTag
-                field={field}
-                big
-              />
+        <div className="select-nodes-cell">
+          <div className="title-wrapper">
+            <div className="title">
+              <span>
+                {field.name}
+              </span>
+              <TypeTag field={field} big />
+            </div>
+            <div className="selected">
+              <div className="n">
+                {this.state.values ? this.state.values.length : 0}
+              </div>
+              node{this.props.multiSelect &&
+              (this.state.values &&
+                (this.state.values.length > 1 ||
+                  this.state.values.length === 0))
+                ? 's'
+                : ''}
+              &nbsp;selected
             </div>
           </div>
           <Icon
@@ -157,17 +178,20 @@ class SelectNodesCell extends React.Component<Props, State> {
             width={25}
             height={25}
             strokeWidth={2}
-            className='popup-x'
+            className="popup-x"
             color={$v.gray50}
             onClick={this.props.cancel}
           />
-          <div className='header'>
-            <Tabs
-              options={tabs}
-              activeIndex={selectedTabIndex}
-              onChangeIndex={this.handleTabChange}
-            />
-            <div className='search-box'>
+          <div className="header">
+            <div className="">
+              <span className="filter">Filter by</span>
+              <Tabs
+                options={tabs}
+                activeIndex={selectedTabIndex}
+                onChangeIndex={this.handleTabChange}
+              />
+            </div>
+            <div className="search-box">
               <SearchBox
                 placeholder={`Search for a ${model.name} ...`}
                 onSearch={this.handleSearch}
@@ -193,6 +217,8 @@ class SelectNodesCell extends React.Component<Props, State> {
             field={this.props.field}
             changed={this.state.changed}
             values={this.state.values}
+            model={this.props.model}
+            nodeId={this.props.nodeId}
           />
         </div>
       </Modal>
@@ -202,7 +228,7 @@ class SelectNodesCell extends React.Component<Props, State> {
   private save = () => {
     let values: string | string[] = this.state.values
     if (!this.props.multiSelect) {
-      values = (values && values.length > 0) ? values[0] : null
+      values = values && values.length > 0 ? values[0] : null
     }
     if (values) {
       values = this.mapNodes(values)
@@ -224,7 +250,6 @@ class SelectNodesCell extends React.Component<Props, State> {
 
   private handleSetNull = () => {
     this.setState(state => {
-
       const values = this.props.field.isList ? [] : null
       return {
         ...state,
@@ -240,13 +265,17 @@ class SelectNodesCell extends React.Component<Props, State> {
     })
   }
 
-  private handleRowSelection = ({index, rowData}) => {
+  private handleRowSelection = ({ index, rowData }) => {
     this.setState(state => {
-      const {multiSelect} = this.props
-      let {items, values} = state
+      const { multiSelect } = this.props
+      let { items } = state
+      const { values } = state
       const row = items[index]
 
-      if (!multiSelect && values && values.length > 0 && row.id !== values[0]) {
+      let newValues = values ? values.slice() : []
+
+      if (!multiSelect && values && values.length > 0 && values[0] !== row.id) {
+        newValues = []
         const itemIndex = items.findIndex(item => item.id === values[0])
         items = Immutable.setIn(items, [itemIndex, 'selected'], false)
       }
@@ -255,7 +284,6 @@ class SelectNodesCell extends React.Component<Props, State> {
       const newValue = !items[index].selected
       items = Immutable.setIn(items, [index, 'selected'], newValue)
 
-      let newValues = values ? values.slice() : []
       // either remove or add the id to the list of values
       if (newValues.includes(row.id)) {
         const i = newValues.indexOf(row.id)
@@ -275,16 +303,16 @@ class SelectNodesCell extends React.Component<Props, State> {
   }
 
   private handleTabChange = index => {
-    this.setState({selectedTabIndex: index} as State, this.getItemsFromState)
+    this.setState({ selectedTabIndex: index } as State, this.getItemsFromState)
   }
 
-  private handleSearch = (value) => {
-    this.setState({query: value} as State, this.getItemsFromState)
+  private handleSearch = value => {
+    this.setState({ query: value } as State, this.getItemsFromState)
   }
 
   private getItemsFromState = () => {
-    const {startIndex, stopIndex} = this.state
-    this.getItems({startIndex, stopIndex})
+    const { startIndex, stopIndex } = this.state
+    this.getItems({ startIndex, stopIndex })
   }
 
   /**
@@ -294,11 +322,13 @@ class SelectNodesCell extends React.Component<Props, State> {
    * @param customFields As we run this function in the constructor (where the props are not yet avilable on this),
    *        we make this available as a parameter
    */
-  private getItems = ({startIndex, stopIndex}: {startIndex: number, stopIndex: number}, customFields?: Field[]) => {
-    const {query, selectedTabIndex} = this.state
+  private getItems = (
+    { startIndex, stopIndex }: { startIndex: number; stopIndex: number },
+    customFields?: Field[],
+  ) => {
+    const { query, selectedTabIndex } = this.state
     const tab = tabs[selectedTabIndex]
     const fields = customFields || this.props.fields
-    let {firstQuery} = this
 
     if (fields.length === 0) {
       return
@@ -306,38 +336,50 @@ class SelectNodesCell extends React.Component<Props, State> {
 
     let filter = ''
     // either there must be a search query or the tab unequal all
-    if (!firstQuery && ((query && query.length > 0) || tab !== 'all')) {
+    if (!this.firstQuery && ((query && query.length > 0) || tab !== 'all')) {
       filter = ' filter: {'
       if (query && query.length) {
         filter += 'OR: ['
         const whiteList = ['GraphQLID', 'String']
 
-        const filtered = fields.filter((field: Field) => {
-          return whiteList.indexOf(field.typeIdentifier.toString()) > -1
+        const filtered = fields.filter((f: Field) => {
+          return whiteList.indexOf(f.typeIdentifier.toString()) > -1
         })
 
-        filter += filtered.map(field => `{${field.name}_contains: "${query}"}`).join(',\n')
+        filter += filtered
+          .map(f => `{${f.name}_contains: "${query}"}`)
+          .join(',\n')
 
         filter += ']'
       }
 
       if (tab !== 'all') {
-        const {values} = this.state
+        const { values } = this.state
         const not = tab === 'unrelated' ? '_not' : ''
-        filter += `id${not}_in: [${values ? values.map(value => `"${value}"`).join(',') : ''}]`
+        filter += `id${not}_in: [${values
+          ? values.map(value => `"${value}"`).join(',')
+          : ''}]`
       }
 
       filter += '}'
     }
 
-    const {nodeId, field} = this.props
-    const getRelated = firstQuery
+    const { nodeId, field } = this.props
+    const getRelated = this.firstQuery
     const count = stopIndex - startIndex + 1
-    const nodeSelector = getRelated ? `${field.model.name}(id: "${nodeId}") {` : ''
-    const metaQuery = (!firstQuery || field.isList) ? `${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
+    const nodeSelector = getRelated
+      ? `${field.model.name}(id: "${nodeId}") {`
+      : ''
+    const metaQuery =
+      !this.firstQuery || field.isList
+        ? `${this.getAllNameMeta()}${filter ? `(${filter})` : ''} {
           count
-        }` : ''
-    const queryParams = (!firstQuery || field.isList) ? `(skip: ${startIndex} first: ${count}${filter})` : ''
+        }`
+        : ''
+    const queryParams =
+      !this.firstQuery || field.isList
+        ? `(skip: ${startIndex} first: ${count}${filter})`
+        : ''
 
     // continue: remove query arguments for single relation
     const itemsQuery = `
@@ -345,27 +387,25 @@ class SelectNodesCell extends React.Component<Props, State> {
         ${nodeSelector}
         ${metaQuery}
         ${this.getAllName()}${queryParams}{
-          ${fields.map(f => f.name + (isScalar(f.typeIdentifier) ? '' : ' {id} ')).join('\n')}
+          ${fields
+            .map(f => f.name + (isScalar(f.typeIdentifier) ? '' : ' {id} '))
+            .join('\n')}
         }
         ${getRelated ? '}' : ''}
       }
     `
 
-    fetch(
-      this.props.endpointUrl,
-      {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.state.adminAuthToken}`,
-          'X-GraphCool-Source': 'playground',
-        },
-        body: JSON.stringify({query: itemsQuery}),
+    fetch(this.props.endpointUrl, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.state.adminAuthToken}`,
+        'X-GraphCool-Source': 'playground',
       },
-    )
+      body: JSON.stringify({ query: itemsQuery }),
+    })
       .then(res => res.json())
       .then(res => {
-
         let pointer = res.data
 
         if (getRelated) {
@@ -374,17 +414,17 @@ class SelectNodesCell extends React.Component<Props, State> {
 
         let meta
         let newItems
-        if (!firstQuery || field.isList) {
+        if (!this.firstQuery || field.isList) {
           meta = pointer[this.getAllNameMeta()]
           newItems = pointer[this.getAllName()]
         } else {
           newItems = pointer[field.name] ? [pointer[field.name]] : []
-          meta = {count: newItems.length}
+          meta = { count: newItems.length }
         }
 
-        let {items, values} = this.state
+        let { items, values } = this.state
 
-        if (firstQuery) {
+        if (this.firstQuery) {
           values = newItems.map(item => item.id)
         }
 
@@ -395,12 +435,12 @@ class SelectNodesCell extends React.Component<Props, State> {
 
         newItems.forEach((item, i) => {
           if (values && values.includes(item.id)) {
-            item['selected'] = true
+            item.selected = true
           }
-          items = Immutable.set(items, (i + startIndex), item)
+          items = Immutable.set(items, i + startIndex, item)
         })
 
-        let newState = {
+        const newState: any = {
           items,
           values,
           count: meta.count,
@@ -408,42 +448,43 @@ class SelectNodesCell extends React.Component<Props, State> {
 
         let goingforAll = false
         if (this.firstQuery && meta.count === 0) {
-          newState['selectedTabIndex'] = 0
+          newState.selectedTabIndex = 0
           this.firstQuery = false
           goingforAll = true
         }
 
         if (this.lastQuery !== this.state.query) {
+          newState.scrollToIndex = 0
 
-          newState['scrollToIndex'] = 0
-
-          setTimeout(
-            () => {
-              this.setState({
+          setTimeout(() => {
+            this.setState(
+              {
                 scrollToIndex: undefined,
-              } as State)
-            },
-            150,
-          )
+              } as State,
+            )
+          }, 150)
         }
 
-        this.setState(
-          newState as State,
-          () => {
-            if (goingforAll) {
-              this.getItemsFromState()
-            }
-          },
-        )
+        this.setState(newState as State, () => {
+          if (goingforAll) {
+            this.getItemsFromState()
+          }
+        })
 
         this.lastQuery = query
         this.firstQuery = false
       })
-      .catch(e => console.error(e))
+      .catch(e => {
+        // noop
+      })
   }
 
   private getAllName() {
-    if (this.props.nodeId && this.state.selectedTabIndex === 1 && this.firstQuery) {
+    if (
+      this.props.nodeId &&
+      this.state.selectedTabIndex === 1 &&
+      this.firstQuery
+    ) {
       return this.props.field.name
     }
     return `all${this.props.model.namePlural}`

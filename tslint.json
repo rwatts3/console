@@ -1,17 +1,12 @@
 {
   "extends": [
-    "tslint-config-standard"
+    "tslint-graphcool-frontend"
   ],
   "rules": {
-    "no-multi-spaces": {
-      "exceptions": { "ImportDeclaration": true }
-    },
-    "trailing-comma": [
-      true,
-      {
-        "multiline": "always",
-        "singleline": "never"
-      }
-    ]
+    "jsx-no-lambda": false,
+    "no-namespace": false,
+    "no-reference": false,
+    "no-var-requires": false,
+    "jsx-boolean-value": [false]
   }
 }

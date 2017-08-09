@@ -7,7 +7,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation DeletePermanentAuthTokenMutation($input: DeletePermanentAuthTokenInput!) {
+  mutation DeletePermanentAuthTokenMutation(
+    $input: DeletePermanentAuthTokenInput!
+  ) {
     deletePermanentAuthToken(input: $input) {
       deletedId
       project {
@@ -25,13 +27,15 @@ function commit(input: Props) {
         deletedId: input.tokenId,
       },
     },
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'permanentAuthTokens',
-      deletedIDFieldName: 'deletedId',
-    }],
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'permanentAuthTokens',
+        deletedIDFieldName: 'deletedId',
+      },
+    ],
   })
 }
 

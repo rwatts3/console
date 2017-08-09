@@ -1,4 +1,4 @@
-import {pick} from 'lodash'
+import { pick } from 'lodash'
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
@@ -49,18 +49,20 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input: pick(input, ['modelId', 'indexName', 'fragment'])},
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'searchProviderAlgolia',
-      parentID: input.searchProviderAlgoliaId,
-      connectionName: 'algoliaSyncQueries',
-      edgeName: 'algoliaSyncQueryEdge',
-      rangeBehaviors: {
-        '': 'append',
+    variables: { input: pick(input, ['modelId', 'indexName', 'fragment']) },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'searchProviderAlgolia',
+        parentID: input.searchProviderAlgoliaId,
+        connectionName: 'algoliaSyncQueries',
+        edgeName: 'algoliaSyncQueryEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

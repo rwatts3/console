@@ -1,14 +1,11 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { Model } from '../../types/types'
 import { isScalar } from '../../utils/graphql'
-import {NonScalarValue} from '../../types/utils'
+import { NonScalarValue } from '../../types/utils'
 import ClickOutside from 'react-click-outside'
 import Autocomplete from 'react-autocomplete'
-import {getLokka, queryNodes} from '../../utils/simpleapi'
+import { getLokka, queryNodes } from '../../utils/simpleapi'
 const classes: any = require('./NodeSelector.scss')
 
 interface Props {
@@ -27,10 +24,9 @@ interface State {
 }
 
 class NodeSelector extends React.Component<Props, State> {
-
   private mounted: boolean
 
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -42,19 +38,17 @@ class NodeSelector extends React.Component<Props, State> {
 
     const lokka = getLokka(this.props.projectId)
 
-    const fields = props.relatedModel.fields.edges
-      .map(({ node }) => node)
+    const fields = props.relatedModel.fields.edges.map(({ node }) => node)
 
-    queryNodes(lokka, props.relatedModel.namePlural, fields)
-      .then((results) => {
-        const nodes = results[`all${props.relatedModel.namePlural}`]
-        if (this.mounted) {
-          this.setState({ nodes } as State)
-        }
-      })
+    queryNodes(lokka, props.relatedModel.namePlural, fields).then(results => {
+      const nodes = results[`all${props.relatedModel.namePlural}`]
+      if (this.mounted) {
+        this.setState({ nodes } as State)
+      }
+    })
   }
 
-  componentWillReceiveProps (nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props) {
     this.setState({ value: nextProps.value } as State)
   }
 
@@ -66,36 +60,34 @@ class NodeSelector extends React.Component<Props, State> {
     this.mounted = false
   }
 
-  render () {
+  render() {
     return (
       <ClickOutside
         onClickOutside={() => this.props.cancel()}
         style={{ width: '100%' }}
       >
-        <div
-          onKeyDown={this.onKeyDown}
-        >
-            <Autocomplete
-              wrapperProps={{className: classes.wrapper}}
-              menuStyle={{
-                padding: 0,
-                position: 'absolute',
-                maxHeight: 300,
-                top: '100%',
-                left: 0,
-                background: '#fff',
-                overflow: 'auto',
-                zIndex: 100,
-              }}
-              value={this.state.value || ''}
-              items={this.state.nodes}
-              shouldItemRender={this.shouldNodeRender}
-              inputProps={{autoFocus: true}}
-              getItemValue={(node: NonScalarValue) => node.id}
-              onChange={(event, value) => this.setState({ value } as State)}
-              onSelect={(value, node) => this.props.save(node)}
-              renderItem={this.renderNode}
-            />
+        <div onKeyDown={this.onKeyDown}>
+          <Autocomplete
+            wrapperProps={{ className: classes.wrapper }}
+            menuStyle={{
+              padding: 0,
+              position: 'absolute',
+              maxHeight: 300,
+              top: '100%',
+              left: 0,
+              background: '#fff',
+              overflow: 'auto',
+              zIndex: 100,
+            }}
+            value={this.state.value || ''}
+            items={this.state.nodes}
+            shouldItemRender={this.shouldNodeRender}
+            inputProps={{ autoFocus: true }}
+            getItemValue={(node: NonScalarValue) => node.id}
+            onChange={(event, value) => this.setState({ value } as State)}
+            onSelect={(value, node) => this.props.save(node)}
+            renderItem={this.renderNode}
+          />
         </div>
       </ClickOutside>
     )
@@ -123,11 +115,10 @@ class NodeSelector extends React.Component<Props, State> {
 
   private shouldNodeRender = (node, value) => {
     return this.props.relatedModel.fields.edges
-      .map((edge) => edge.node)
-      .filter((field) => isScalar(field.typeIdentifier) && node[field.name])
-      .some((field) => node[field.name].toString().toLowerCase().includes(value))
+      .map(edge => edge.node)
+      .filter(field => isScalar(field.typeIdentifier) && node[field.name])
+      .some(field => node[field.name].toString().toLowerCase().includes(value))
   }
-
 }
 
 export default createFragmentContainer(NodeSelector, {

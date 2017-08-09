@@ -1,14 +1,19 @@
 import {
-  FunctionBinding, FunctionType, Model, RequestPipelineMutationOperation,
+  FunctionBinding,
+  FunctionType,
+  Model,
+  RequestPipelineMutationOperation,
   ServerlessFunction,
 } from '../../../types/types'
-import {EventType, FunctionPopupState} from './FunctionPopup'
-import {keysChanged} from '../../../utils/change'
-export function getEmptyFunction(models: Model[], functions: ServerlessFunction[], eventType: EventType):
- ServerlessFunction {
+import { EventType, FunctionPopupState } from './FunctionPopup'
+import { keysChanged } from '../../../utils/change'
+export function getEmptyFunction(
+  models: Model[],
+  functions: ServerlessFunction[],
+  eventType: EventType,
+): ServerlessFunction {
   const modelId = models[0].id
 
-  const bindings: FunctionBinding[] = ['TRANSFORM_ARGUMENT', 'PRE_WRITE', 'TRANSFORM_PAYLOAD']
   // TODO continue when backend is ready
   // const takenBindings = bindings
   //   .map(binding => bindingTaken(modelId, binding, functions))
@@ -82,8 +87,14 @@ subscription {
 }`
 }
 
-export function bindingTaken(modelId: string, binding: FunctionBinding, functions: ServerlessFunction[]) {
-  return functions.filter(fn => fn.model.id === modelId && fn.binding === binding)
+export function bindingTaken(
+  modelId: string,
+  binding: FunctionBinding,
+  functions: ServerlessFunction[],
+) {
+  return functions.filter(
+    fn => fn.model.id === modelId && fn.binding === binding,
+  )
 }
 
 export const inlineCode = (eventType: EventType) => {
@@ -114,35 +125,50 @@ module.exports = function (event) {
 `
 }
 
-export function updateInlineCode(state: ServerlessFunction, inlineCode: string): ServerlessFunction {
+export function updateInlineCode(
+  state: ServerlessFunction,
+  inlineCodeString: string,
+): ServerlessFunction {
   return {
     ...state,
-    inlineCode,
+    inlineCode: inlineCodeString,
   }
 }
 
-export function updateName(state: ServerlessFunction, name: string): ServerlessFunction {
+export function updateName(
+  state: ServerlessFunction,
+  name: string,
+): ServerlessFunction {
   return {
     ...state,
     name,
   }
 }
 
-export function updateBinding(state: ServerlessFunction, binding: FunctionBinding): ServerlessFunction {
+export function updateBinding(
+  state: ServerlessFunction,
+  binding: FunctionBinding,
+): ServerlessFunction {
   return {
     ...state,
     binding,
   }
 }
 
-export function updateModel(state: ServerlessFunction, modelId: string): ServerlessFunction {
+export function updateModel(
+  state: ServerlessFunction,
+  modelId: string,
+): ServerlessFunction {
   return {
     ...state,
     modelId,
   }
 }
 
-export function updateAuth0Id(state: ServerlessFunction, auth0Id: string): ServerlessFunction {
+export function updateAuth0Id(
+  state: ServerlessFunction,
+  auth0Id: string,
+): ServerlessFunction {
   return {
     ...state,
     auth0Id,
@@ -159,23 +185,32 @@ export function updateOperation(
   }
 }
 
-export function updateWebhookUrl(state: ServerlessFunction, webhookUrl: string): ServerlessFunction {
+export function updateWebhookUrl(
+  state: ServerlessFunction,
+  webhookUrl: string,
+): ServerlessFunction {
   const key = state.type === 'WEBHOOK' ? '_webhookUrl' : '_inlineWebhookUrl'
   return {
     ...state,
-    [key]: webhookUrl,
+    [key]: webhookUrl.trim(),
   }
 }
 
-export function updateWebhookHeaders(state: ServerlessFunction, _webhookHeaders: {[key: string]: string}):
-ServerlessFunction {
+export function updateWebhookHeaders(
+  state: ServerlessFunction,
+  webhookHeaders: { [key: string]: string },
+): ServerlessFunction {
   return {
     ...state,
-    _webhookHeaders,
+    _webhookHeaders: webhookHeaders,
   }
 }
 
-export function updateQuery(eventType: EventType, state: ServerlessFunction, query: string): ServerlessFunction {
+export function updateQuery(
+  eventType: EventType,
+  state: ServerlessFunction,
+  query: string,
+): ServerlessFunction {
   if (eventType === 'SSS') {
     return {
       ...state,
@@ -192,7 +227,10 @@ export function updateQuery(eventType: EventType, state: ServerlessFunction, que
 
   throw new Error('invalid event type for updateQuery function')
 }
-export function updateType(state: ServerlessFunction, type: FunctionType): ServerlessFunction {
+export function updateType(
+  state: ServerlessFunction,
+  type: FunctionType,
+): ServerlessFunction {
   return {
     ...state,
     type,
@@ -207,7 +245,10 @@ export function getWebhookUrl(state: FunctionPopupState) {
 }
 
 export function isValid(state: FunctionPopupState) {
-  if (state.fn.type === 'AUTH0' && (!state.fn.inlineCode || state.fn.inlineCode.length === 0)) {
+  if (
+    state.fn.type === 'AUTH0' &&
+    (!state.fn.inlineCode || state.fn.inlineCode.length === 0)
+  ) {
     return false
   }
   if (state.fn.type === 'WEBHOOK' && !webhookUrlValid(getWebhookUrl(state))) {
@@ -219,23 +260,44 @@ export function isValid(state: FunctionPopupState) {
   return true
 }
 
-export function didChange(after: ServerlessFunction, isInline: boolean, before?: ServerlessFunction) {
+export function didChange(
+  after: ServerlessFunction,
+  isInline: boolean,
+  before?: ServerlessFunction,
+) {
   if (!before) {
     return true
   }
 
   let keys = [
-    'name', 'isActive', 'binding', 'operation',
-    'type', 'url', 'headers', 'inlineCode', 'auth0Id', 'query',
+    'name',
+    'isActive',
+    'binding',
+    'operation',
+    'type',
+    'url',
+    'headers',
+    'inlineCode',
+    'auth0Id',
+    'query',
   ]
 
   if (!isInline) {
     keys = keys.concat('_webhookUrl')
   }
 
-  return keysChanged(before, after, keys) || JSON.stringify(after._webhookHeaders) !== before.webhookHeaders
+  return (
+    keysChanged(before, after, keys) ||
+    JSON.stringify(after._webhookHeaders) !== before.webhookHeaders
+  )
 }
 
 export function webhookUrlValid(url: string) {
-  return url && url.length > 0 && url.includes('http') && url.includes('://') && url.includes('.')
+  return (
+    url &&
+    url.length > 0 &&
+    url.includes('http') &&
+    url.includes('://') &&
+    url.includes('.')
+  )
 }

@@ -1,4 +1,4 @@
-import {NotificationLevel} from '../types/utils'
+import { NotificationLevel } from '../types/utils'
 
 export interface NotificationState {
   message: string

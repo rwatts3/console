@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import * as cn from 'classnames'
 
 interface Props {
@@ -15,82 +15,89 @@ interface Props {
 }
 
 const PopupHeader = ({
-                      activeTabIndex,
-                      onSelectTab,
-                      tabs,
-                      onRequestClose,
-                      errorInTab,
-                      showErrors,
-                      editing,
-                      editingTitle,
-                      creatingTitle,
-                     }: Props) => {
+  activeTabIndex,
+  onSelectTab,
+  tabs,
+  onRequestClose,
+  errorInTab,
+  showErrors,
+  editing,
+  editingTitle,
+  creatingTitle,
+}: Props) => {
   return (
-    <div className='field-popup-header'>
+    <div className="field-popup-header">
       <style jsx>{`
-      .field-popup-header {
-        @p: .flex, .relative, .itemsStart, .overflowVisible;
-        height: 70px;
-      }
-
-      .badge {
-        @p: .bgGreen, .white, .relative, .f12, .fw6, .ttu, .top0, .br2;
-        padding: 2px 4px;
-        left: -4px;
-        &>span>* + * {
-          @p: .ml4;
+        .field-popup-header {
+          @p: .flex, .relative, .itemsStart, .overflowVisible;
+          height: 70px;
         }
-      }
-      .badge .lower {
-        @p: .ttl;
-      }
-      .badge .bold {
-        @p: .fw7;
-      }
-      .badge.editing {
-        @p: .bgBlue;
-      }
-      .top {
-        @p: .bb, .bBlack10, .overflowVisible, .flex, .itemsCenter, .pointer, .w100;
-        height: 43px;
-      }
-      .tabs {
-        @p: .flex1, .bbox, .overflowVisible, .flex, .itemsCenter, .pointer, .pl25;
-        height: 43px;
-        margin-right: 72px;
-      }
-      .close {
-        @p: .absolute, .pointer, .bgWhite;
-        top: 0;
-        right: 0;
-        padding-top: 23px;
-        padding-right: 24px;
-        padding-left: 25px;
-      }
-    `}</style>
-      <div className='top'>
-        <div className={cn('badge', {editing})}>
-          {editing ? (
-            editingTitle
-          ) : (
-            creatingTitle
-          )}
+
+        .badge {
+          @p: .bgGreen, .white, .relative, .f12, .fw6, .ttu, .top0, .br2;
+          padding: 2px 4px;
+          left: -4px;
+          & > span > * + * {
+            @p: .ml4;
+          }
+        }
+        .badge .lower {
+          @p: .ttl;
+        }
+        .badge .bold {
+          @p: .fw7;
+        }
+        .badge.editing {
+          @p: .bgBlue;
+        }
+        .top {
+          @p: .bb,
+            .bBlack10,
+            .overflowVisible,
+            .flex,
+            .itemsCenter,
+            .pointer,
+            .w100;
+          height: 43px;
+        }
+        .tabs {
+          @p: .flex1,
+            .bbox,
+            .overflowVisible,
+            .flex,
+            .itemsCenter,
+            .pointer,
+            .pl25;
+          height: 43px;
+          margin-right: 72px;
+        }
+        .close {
+          @p: .absolute, .pointer, .bgWhite;
+          top: 0;
+          right: 0;
+          padding-top: 23px;
+          padding-right: 24px;
+          padding-left: 25px;
+        }
+      `}</style>
+      <div className="top">
+        <div className={cn('badge', { editing })}>
+          {editing ? editingTitle : creatingTitle}
         </div>
-        <div className='tabs'>
-          {tabs.map((tab, index) => (
+        <div className="tabs">
+          {tabs.map((tab, index) =>
             <Tab
               key={tab}
               active={index === activeTabIndex}
               hasError={showErrors && errorInTab(index)}
               onClick={() => onSelectTab(index)}
-            >{tab}</Tab>
-          ))}
+            >
+              {tab}
+            </Tab>,
+          )}
         </div>
       </div>
-      <div
-        className='close'
-        onClick={onRequestClose}
-      >
+      <div className="close" onClick={onRequestClose}>
         <Icon
           src={require('graphcool-styles/icons/stroke/cross.svg')}
           stroke
@@ -108,21 +115,18 @@ export default PopupHeader
 
 interface TabProps {
   active?: boolean
-  children?: JSX.Element
+  children?: JSX.Element | string
   onClick: any
   hasError: boolean
 }
 
-const Tab = ({active, children, onClick, hasError}: TabProps) => {
+const Tab = ({ active, children, onClick, hasError }: TabProps) => {
   return (
     <div
-      className={cn(
-        'tab',
-        {
-          'active': active,
-          'error': hasError,
-        },
-      )}
+      className={cn('tab', {
+        active,
+        error: hasError,
+      })}
       onClick={onClick}
     >
       <style jsx>{`
@@ -173,11 +177,10 @@ const Tab = ({active, children, onClick, hasError}: TabProps) => {
         }
       `}</style>
       {children}
-      {active && (
-        <div className='after-active'>
-          <div className='bar'></div>
-        </div>
-      )}
+      {active &&
+        <div className="after-active">
+          <div className="bar" />
+        </div>}
     </div>
   )
 }

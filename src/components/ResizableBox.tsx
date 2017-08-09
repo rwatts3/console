@@ -1,13 +1,13 @@
 // @flow
 import * as React from 'react'
-const {PropTypes} = React
-import {Resizable} from 'react-resizable'
-import {Icon, $v} from 'graphcool-styles'
+const { PropTypes } = React
+import { Resizable } from 'react-resizable'
+import { Icon, $v } from 'graphcool-styles'
 import LeftResizable from './Resizable/LeftResizable'
 import * as cn from 'classnames'
 
 // An example use of Resizable.
-export default class ResizableBox extends React.Component<any,any> {
+export default class ResizableBox extends React.Component<any, any> {
   static propTypes = {
     height: PropTypes.any,
     width: PropTypes.number,
@@ -16,7 +16,7 @@ export default class ResizableBox extends React.Component<any,any> {
   }
 
   static defaultProps = {
-    handleSize: [20,20],
+    handleSize: [20, 20],
     hideArrow: false,
     left: false,
   }
@@ -27,21 +27,22 @@ export default class ResizableBox extends React.Component<any,any> {
     height: this.props.height,
   }
 
-  onResize = (e: any, {element, size, ...rest}: any) => {
-    const {width, height} = size
-
+  onResize = (e: any, { element, size, ...rest }: any) => {
     if (this.props.onResize) {
       if (typeof e.persist === 'function') {
         e.persist()
       }
-      this.setState(size, () => this.props.onResize(e, {element, size}))
+      this.setState(size, () => this.props.onResize(e, { element, size }))
     } else {
       this.setState(size)
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.width !== this.props.width || nextProps.height !== this.props.height) {
+    if (
+      nextProps.width !== this.props.width ||
+      nextProps.height !== this.props.height
+    ) {
       this.setState({
         width: nextProps.width,
         height: nextProps.height,
@@ -53,22 +54,37 @@ export default class ResizableBox extends React.Component<any,any> {
     // Basic wrapper around a Resizable instance.
     // If you use Resizable directly, you are responsible for updating the child component
     // with a new width and height.
-    const {handleSize, onResize, onResizeStart, onResizeStop, draggableOpts, left,
-      minConstraints, maxConstraints, lockAspectRatio, axis, width, height, hideArrow, ...props} = this.props
+    const {
+      handleSize,
+      onResize,
+      onResizeStart,
+      onResizeStop,
+      draggableOpts,
+      left,
+      minConstraints,
+      maxConstraints,
+      lockAspectRatio,
+      axis,
+      width,
+      height,
+      hideArrow,
+      ...props,
+    } = this.props
 
     const ResizableComponent = left ? LeftResizable : Resizable
     return (
-      <div className={cn('box', {left})}>
+      <div className={cn('box', { left })}>
         <style jsx>{`
           .box {
             @p: .relative, .flexFixed;
           }
           .resizer {
-            @p: .br100, .bgDarkBlue, .absolute, .right0, .flex, .itemsCenter, .justifyCenter, .pointer, .o0;
+            @p: .br100, .bgDarkBlue, .absolute, .right0, .flex, .itemsCenter,
+              .justifyCenter, .pointer, .o0;
             z-index: 12;
             pointer-events: none;
             top: 50%;
-            transform: translate(50%,-50%);
+            transform: translate(50%, -50%);
             width: 28px;
             height: 28px;
             transition: $duration all;
@@ -99,28 +115,36 @@ export default class ResizableBox extends React.Component<any,any> {
           onResizeStart={onResizeStart}
           onResize={this.onResize}
           onResizeStop={onResizeStop}
-          draggableOpts={{offsetParent: document.body, offsetParentRect: {left: 0, top: 0}}}
+          draggableOpts={{
+            offsetParent: document.body,
+            offsetParentRect: { left: 0, top: 0 },
+          }}
           minConstraints={minConstraints}
           maxConstraints={maxConstraints}
           lockAspectRatio={lockAspectRatio}
           axis={axis || 'x'}
         >
-          <div style={{width: this.state.width + 'px', height: this.state.height + 'px'}} {...props} />
+          <div
+            style={{
+              width: this.state.width + 'px',
+              height: this.state.height + 'px',
+            }}
+            {...props}
+          />
         </ResizableComponent>
-        {!hideArrow && (
-          <div className='resizer' onClick={this.toggle}>
+        {!hideArrow &&
+          <div className="resizer" onClick={this.toggle}>
             <Icon
               src={
-                this.state.width === 67 ?
-                require('graphcool-styles/icons/stroke/arrowRight.svg') :
-                require('graphcool-styles/icons/stroke/arrowLeft.svg')
+                this.state.width === 67
+                  ? require('graphcool-styles/icons/stroke/arrowRight.svg')
+                  : require('graphcool-styles/icons/stroke/arrowLeft.svg')
               }
               color={$v.white60}
               strokeWidth={4}
               stroke
             />
-          </div>
-        )}
+          </div>}
       </div>
     )
   }
@@ -134,7 +158,7 @@ export default class ResizableBox extends React.Component<any,any> {
         }
       },
       () => {
-        this.props.onResize(null, {size: {width: this.state.width}})
+        this.props.onResize(null, { size: { width: this.state.width } })
       },
     )
   }

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
-import {SchemaOverviewFilter} from './SchemaOverview'
+import { Icon, $v } from 'graphcool-styles'
+import { SchemaOverviewFilter } from './SchemaOverview'
 
 interface Props {
   activeFilter: SchemaOverviewFilter
@@ -11,7 +11,7 @@ interface Props {
 
 export default class SchemaOverviewHeader extends React.Component<Props, null> {
   render() {
-    const {activeFilter, onChangeFilter} = this.props
+    const { activeFilter, onChangeFilter } = this.props
 
     return (
       /*
@@ -20,7 +20,7 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
         rendering-right-in-chrome/30093139#30093139
         (if it should be like in the design)
       */
-      <div className='schema-overview-header'>
+      <div className="schema-overview-header">
         <style jsx>{`
           .schema-overview-header {
             @p: .flex, .itemsCenter, .pt16, .pl16, .pr16;
@@ -56,7 +56,7 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
             @p: .o100;
           }
         `}</style>
-        <div className='add-type' onClick={this.props.onOpenAddType}>
+        <div className="add-type" onClick={this.props.onOpenAddType}>
           <Icon
             src={require('assets/icons/roundAdd.svg')}
             stroke
@@ -65,9 +65,9 @@ export default class SchemaOverviewHeader extends React.Component<Props, null> {
             width={14}
             height={14}
           />
-          <span className='text'>Add Type</span>
+          <span className="text">Add Type</span>
         </div>
-        <div className='switches'>
+        <div className="switches">
           <Icon
             src={require('assets/icons/schema/overview.svg')}
             className={activeFilter === 'detail' ? 'active' : ''}

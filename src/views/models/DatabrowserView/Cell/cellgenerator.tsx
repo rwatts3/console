@@ -8,7 +8,6 @@ import StringCell from './StringCell'
 import JsonCell from './JsonCell'
 import DateTimeCell from './DateTimeCell'
 import DefaultCell from './DefaultCell'
-import NodeSelector from '../../../../components/NodeSelector/NodeSelector'
 let RelationsPopup = () => null
 let SelectNodesCell = () => null
 // needed for jest tests
@@ -17,7 +16,7 @@ if (process.env.NODE_ENV !== 'test') {
   SelectNodesCell = require('./SelectNodesCell/SelectNodesCell').default
 }
 
-import {isScalar, isNonScalarList} from '../../../../utils/graphql'
+import { isScalar, isNonScalarList } from '../../../../utils/graphql'
 import ScalarListCell from './ScalarListCell'
 import NullableCell from './NullableCell'
 
@@ -30,20 +29,24 @@ export interface CellRequirements {
   methods: {
     save: (val: any, keepEditing?: any) => void
     cancel: (reload?: boolean) => void
-    onKeyDown: (e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>, what?: boolean) => void,
+    onKeyDown: (
+      e: React.KeyboardEvent<HTMLSelectElement | HTMLInputElement>,
+      what?: boolean,
+    ) => void
   }
   enums: Enum[]
 }
 
 export function getEditCell(reqs: CellRequirements): JSX.Element {
-  if (reqs.field.isRequired || isNonScalarList(reqs.field) || reqs.field.isList) {
+  if (
+    reqs.field.isRequired ||
+    isNonScalarList(reqs.field) ||
+    reqs.field.isList
+  ) {
     return getSpecificEditCell(reqs)
   } else {
     return (
-      <NullableCell
-        save={reqs.methods.save}
-        cell={getSpecificEditCell(reqs)}
-      />
+      <NullableCell save={reqs.methods.save} cell={getSpecificEditCell(reqs)} />
     )
   }
 }
@@ -60,28 +63,7 @@ function getSpecificEditCell(reqs: CellRequirements): JSX.Element {
   return getScalarEditCell(reqs)
 }
 
-function getNonScalarListEditCell(reqs: CellRequirements): JSX.Element {
-  return (
-    <RelationsPopup
-      originField={reqs.field}
-      originNodeId={reqs.nodeId}
-      onCancel={() => reqs.methods.cancel(true)}
-      projectId={reqs.projectId}
-    />
-  )
-}
-
 function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
-  const isList = reqs.field.isList
-  let values
-
-  if (isList) {
-    values = reqs.value
-  } else {
-    // if it is null, don't add []
-    values = reqs.value ? [reqs.value] : reqs.value
-  }
-
   return (
     <SelectNodesCell
       endpointUrl={`${__BACKEND_ADDR__}/simple/v1/${reqs.projectId}`}
@@ -97,11 +79,7 @@ function getNonScalarEditCell(reqs: CellRequirements): JSX.Element {
 }
 
 function getScalarListEditCell(reqs: CellRequirements): JSX.Element {
-  return (
-    <ScalarListCell
-      {...reqs}
-    />
-  )
+  return <ScalarListCell {...reqs} />
 }
 
 export function getScalarEditCell(reqs: CellRequirements): JSX.Element {

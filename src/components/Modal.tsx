@@ -4,12 +4,11 @@ const ReactModal: any = require('react-modal')
 interface Props {
   isOpen: boolean
   contentLabel: string
-  onRequestClose: Function
+  onRequestClose: () => void
   width?: number
 }
 
 export default class Modal extends React.Component<Props, {}> {
-
   constructor(props) {
     super(props)
   }
@@ -17,7 +16,8 @@ export default class Modal extends React.Component<Props, {}> {
   render() {
     // const width = this.props.width || '500px'
     return (
-      <ReactModal {...this.props}
+      <ReactModal
+        {...this.props}
         style={{
           overlay: {
             zIndex: 999,
@@ -40,7 +40,10 @@ export default class Modal extends React.Component<Props, {}> {
             background: 'none',
             boxShadow: '0 1px 7px rgba(0,0,0,.2)',
           },
-        }}>{this.props.children}</ReactModal>
+        }}
+      >
+        {this.props.children}
+      </ReactModal>
     )
   }
 }

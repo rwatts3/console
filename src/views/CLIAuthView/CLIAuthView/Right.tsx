@@ -1,9 +1,9 @@
 import * as React from 'react'
-import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrapper'
-import {withRouter} from 'found'
-import {AuthTrigger} from '../types'
-import {Response} from '../../../mutations/AuthenticateCustomerMutation'
+import { withRouter } from 'found'
+import { AuthTrigger } from '../types'
+import { Response } from '../../../mutations/AuthenticateCustomerMutation'
 import * as cookiestore from 'cookiestore'
+import Auth0LockWrapper from '../../../components/Auth0LockWrapper/Auth0LockWrapper'
 
 interface Props {
   updateAuth: (cliToken: string) => Promise<void>
@@ -14,7 +14,10 @@ interface Props {
   location: any
 }
 
-const redirectURL = (authTrigger: AuthTrigger, showAfterSignup: boolean): string => {
+const redirectURL = (
+  authTrigger: AuthTrigger,
+  showAfterSignup: boolean,
+): string => {
   const afterSignupAddition = showAfterSignup ? '?afterSignup=1' : ''
   switch (authTrigger) {
     case 'auth':
@@ -27,19 +30,20 @@ const redirectURL = (authTrigger: AuthTrigger, showAfterSignup: boolean): string
 }
 
 class Right extends React.Component<Props, {}> {
-
   render() {
     const successCallback = async (response: Response) => {
       await this.props.updateAuth(this.props.cliToken)
 
-      const justSignedUp = (new Date().getTime() - new Date(response.user.createdAt).getTime()) < 60000
+      const justSignedUp =
+        new Date().getTime() - new Date(response.user.createdAt).getTime() <
+        60000
 
       if (justSignedUp) {
         await fetch(`${__BACKEND_ADDR__}/system`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${cookiestore.get('graphcool_auth_token')}`,
+            Authorization: `Bearer ${cookiestore.get('graphcool_auth_token')}`,
           },
           body: JSON.stringify({
             query: `mutation {
@@ -58,26 +62,23 @@ class Right extends React.Component<Props, {}> {
     }
 
     return (
-      <div
-        className={`authenticate-right ml60`}
-      >
+      <div className={`authenticate-right ml60`}>
         <style jsx>{`
           .authenticate-right :global(.auth0-lock-header) {
             @p: .dn;
           }
         `}</style>
-        <div style={{display: this.props.loading ? 'none' : undefined}}>
+        <div style={{ display: this.props.loading ? 'none' : undefined }}>
           <Auth0LockWrapper
             renderInElement
             successCallback={successCallback}
-            initialScreen='signUp'
+            initialScreen="signUp"
             location={this.props.location}
           />
         </div>
       </div>
     )
   }
-
 }
 
 export default withRouter(Right)

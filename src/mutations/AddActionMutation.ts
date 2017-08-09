@@ -1,7 +1,10 @@
-import * as Relay from 'react-relay/classic'
-import {graphql} from 'react-relay'
+import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
-import { ActionTriggerType, ActionHandlerType, ActionTriggerMutationModelMutationType } from '../types/types'
+import {
+  ActionTriggerType,
+  ActionHandlerType,
+  ActionTriggerMutationModelMutationType,
+} from '../types/types'
 
 interface Props {
   projectId: string
@@ -48,18 +51,20 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'actions',
-      edgeName: 'actionEdge',
-      rangeBehaviors: {
-        '': 'append',
+    variables: { input },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'actions',
+        edgeName: 'actionEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

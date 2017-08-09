@@ -38,17 +38,19 @@ function commit(input: Props) {
         region: input.region,
       },
     },
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'user',
-      parentID: input.customerId,
-      connectionName: 'projects',
-      edgeName: 'projectEdge',
-      rangeBehaviors: {
-        '': 'append',
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'user',
+        parentID: input.customerId,
+        connectionName: 'projects',
+        edgeName: 'projectEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

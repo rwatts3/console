@@ -1,8 +1,5 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { Project } from '../../types/types'
 const classes: any = require('./Header.scss')
 
@@ -20,13 +17,12 @@ interface State {
 }
 
 class Header extends React.Component<Props, State> {
-
   state = {
     userDropdownVisible: false,
     endpointLayoverVisible: false,
   }
 
-  render () {
+  render() {
     let { left } = this.props
 
     if (typeof left !== 'boolean') {
@@ -34,13 +30,11 @@ class Header extends React.Component<Props, State> {
     }
     return (
       <div className={classes.root}>
-        {left ? (
-          <div className={classes.left}>
-            {this.props.children}
-          </div>
-        ) : (
-          this.props.children
-        )}
+        {left
+          ? <div className={classes.left}>
+              {this.props.children}
+            </div>
+          : this.props.children}
       </div>
     )
   }

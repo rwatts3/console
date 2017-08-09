@@ -1,17 +1,7 @@
-import * as React            from 'react' // tslint:disable-line
-import {
-  $p,
-  variables,
-  Icon,
-}                            from 'graphcool-styles'
-import styled                from 'styled-components'
-import * as cx               from 'classnames'
-
-const ConditionButton = styled.div`
-  &:not(.${$p.bgBlue}):hover {
-    background-color: ${variables.gray10};
-  }
-`
+import * as React from 'react' // tslint:disable-line
+import { $p, variables, Icon } from 'graphcool-styles'
+import styled from 'styled-components'
+import * as cx from 'classnames'
 
 const CheckIcon = styled(Icon)`
   background-color: #4990E2;
@@ -60,22 +50,25 @@ interface Props {
 }
 
 export default (props: Props) => {
-  const nestedLines = props.nested && ([
-    <NestedCheckboxVerticalLine key={0} className={cx({
-       [$p.bBlue]: props.checked || props.forceHighlightVerticalLine,
-       [$p.bBlack20]: !props.checked,
-    })}/>,
-    <NestedCheckboxHorizontalLine key={1} className={cx({
-       [$p.bBlue]: props.checked,
-       [$p.bBlack20]: !props.checked,
-    })}/>,
-  ])
+  const nestedLines = props.nested && [
+    <NestedCheckboxVerticalLine
+      key={0}
+      className={cx({
+        [$p.bBlue]: props.checked || props.forceHighlightVerticalLine,
+        [$p.bBlack20]: !props.checked,
+      })}
+    />,
+    <NestedCheckboxHorizontalLine
+      key={1}
+      className={cx({
+        [$p.bBlue]: props.checked,
+        [$p.bBlack20]: !props.checked,
+      })}
+    />,
+  ]
 
   const icon = props.checked
-    ? <CheckIcon
-        color='white'
-        src={require('../../assets/icons/check.svg')}
-      />
+    ? <CheckIcon color="white" src={require('../../assets/icons/check.svg')} />
     : <CheckIconDisabled />
 
   return (
@@ -85,13 +78,15 @@ export default (props: Props) => {
         [$p.z2]: !props.nested,
       })}
       onClick={props.onClick}
-     >
-      { nestedLines }
-      { icon }
-      <span className={cx($p.dib, $p.vMid, {
-        [$p.black30]: !props.checked,
-      })}>
-        { props.label }
+    >
+      {nestedLines}
+      {icon}
+      <span
+        className={cx($p.dib, $p.vMid, {
+          [$p.black30]: !props.checked,
+        })}
+      >
+        {props.label}
       </span>
     </div>
   )

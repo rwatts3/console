@@ -1,16 +1,15 @@
 import * as React from 'react'
 import FieldHorizontalSelect from './FieldHorizontalSelect'
-import {$v, Icon} from 'graphcool-styles'
-import {fieldTypes} from './constants'
+import { $v } from 'graphcool-styles'
+import { fieldTypes } from './constants'
 import FieldLabel from './FieldLabel'
 import OptionInput from './OptionInput'
-import {Enum, FieldType} from '../../../types/types'
-import * as TagsInput from 'react-tagsinput'
-import {FieldPopupErrors} from './FieldPopupState'
+import { Enum, FieldType } from '../../../types/types'
+import { FieldPopupErrors } from './FieldPopupState'
 import ErrorInfo from './ErrorInfo'
 import Tether from '../../../components/Tether/Tether'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {Combobox} from 'react-input-enhancements'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { Combobox } from 'react-input-enhancements'
 import * as cn from 'classnames'
 
 require('./react-tagsinput.css')
@@ -21,8 +20,8 @@ interface Props {
   description: string
   typeIdentifier: string
   isList: boolean
-  onChangeName: Function
-  onChangeDescription: Function
+  onChangeName: (name: string) => void
+  onChangeDescription: (description: string) => void
   onChangeTypeIdentifier: (type: FieldType) => void
   onToggleIsList: () => void
   onChangeEnumId: (id: string) => void
@@ -40,8 +39,7 @@ interface State {
   showTagInput: boolean
 }
 
-export default class BaseSettings extends React.Component<Props,State> {
-  tagInput: any
+export default class BaseSettings extends React.Component<Props, State> {
   constructor(props) {
     super(props)
 
@@ -63,12 +61,10 @@ export default class BaseSettings extends React.Component<Props,State> {
       onToggleIsList,
       errors,
       showErrors,
-    }  = this.props
-
-    const {editingEnumValues} = this.state
+    } = this.props
 
     return (
-      <div style={style} className='base-settings'>
+      <div style={style} className="base-settings">
         <style jsx={true}>{`
           .base-settings {
             @p: .w100;
@@ -133,23 +129,22 @@ export default class BaseSettings extends React.Component<Props,State> {
         >
           <FieldHorizontalSelect
             activeBackgroundColor={$v.blue}
-            inactiveBackgroundColor='#F5F5F5'
+            inactiveBackgroundColor="#F5F5F5"
             choices={this.mapEnumComponent(fieldTypes)}
             selectedIndex={fieldTypes.indexOf(typeIdentifier || '')}
             inactiveTextColor={$v.gray30}
-            onChange={(index) => onChangeTypeIdentifier(fieldTypes[index] as FieldType)}
+            onChange={index =>
+              onChangeTypeIdentifier(fieldTypes[index] as FieldType)}
           />
         </Tether>
-        {showErrors && errors.typeMissing && (
-          <div className='type-error'>
-            <ErrorInfo>
-              You must specify a Field Type.
-            </ErrorInfo>
-          </div>
-        )}
-        <div className='list-settings'>
+        {showErrors &&
+          errors.typeMissing &&
+          <div className="type-error">
+            <ErrorInfo>You must specify a Field Type.</ErrorInfo>
+          </div>}
+        <div className="list-settings">
           <OptionInput
-            label='Store multiple values in this field'
+            label="Store multiple values in this field"
             checked={isList}
             onToggle={onToggleIsList}
           />
@@ -164,7 +159,7 @@ export default class BaseSettings extends React.Component<Props,State> {
       if (type === 'Enum' && this.props.isGlobalEnumsEnabled) {
         const value = this.props.enums.find(e => e.id === this.props.enumId)
         return (
-          <div className={cn('enum', {active})}>
+          <div className={cn('enum', { active })}>
             <style jsx>{`
               .enum :global(input) {
                 @p: .f14, .fw6, .black30;
@@ -175,7 +170,7 @@ export default class BaseSettings extends React.Component<Props,State> {
               }
             `}</style>
             <style jsx global>{`
-              .enum .dropdown>div:nth-child(3) {
+              .enum .dropdown > div:nth-child(3) {
                 width: 100% !important;
                 left: 0 !important;
               }
@@ -185,24 +180,26 @@ export default class BaseSettings extends React.Component<Props,State> {
               dropdownProps={{
                 className: `dropdown`,
               }}
-              options={this.props.enums.map(value => value.name)}
+              options={this.props.enums.map(e => e.name)}
               onSelect={(name: string) => {
                 const enumId = this.props.enums.find(e => e.name === name).id
                 this.props.onChangeEnumId(enumId)
               }}
               disabled={!active}
             >
-              {({style, ...inputProps}) => {
+              {({ style, ...inputProps }) => {
                 const newStyle = {
                   ...style,
                   width: 130,
                 }
-                return <input
-                  {...inputProps}
-                  style={newStyle}
-                  type='text'
-                  placeholder='Choose an enum...'
-                />
+                return (
+                  <input
+                    {...inputProps}
+                    style={newStyle}
+                    type="text"
+                    placeholder="Choose an enum..."
+                  />
+                )
               }}
             </Combobox>
           </div>
@@ -210,67 +207,5 @@ export default class BaseSettings extends React.Component<Props,State> {
       }
       return type
     })
-  }
-
-  private renderTagInputElement = (props) => {
-    let {onChange, value, addTag, onBlur, placeholder, ...other} = props
-    const {showTagInput} = this.state
-
-    return (
-      <div className='tag-input'>
-        <style jsx>{`
-          .tag-input {
-            @p: .inlineFlex, .itemsCenter, .relative;
-            height: 42px;
-            padding-bottom: 4px;
-          }
-          .input {
-            @p: .f16, .blue, .mr10;
-          }
-        `}</style>
-        {showTagInput && (
-          <input
-            autoFocus
-            type='text'
-            onChange={onChange}
-            value={value}
-            onBlur={onBlur}
-            placeholder='Add an enum value'
-            {...other}
-            className='input enum-input'
-          />
-        )}
-        <div className='field-popup-plus' onClick={() => this.handlePlusClick(onBlur, value)}>
-          <Icon
-            src={require('graphcool-styles/icons/stroke/add.svg')}
-            stroke
-            strokeWidth={4}
-            color={$v.blue}
-            width={26}
-            height={26}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  private handlePlusClick = (onBlur, value) => {
-    if (this.state.showTagInput) {
-      onBlur({
-        target: {value},
-      })
-    } else {
-      this.showTagInput()
-    }
-  }
-
-  private showTagInput = () => {
-    this.setState({
-      showTagInput: true,
-    } as State)
-  }
-
-  private editEnumValues = () => {
-    this.setState({editingEnumValues: true, showTagInput: true})
   }
 }

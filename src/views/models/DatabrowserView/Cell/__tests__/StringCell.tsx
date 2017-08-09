@@ -1,13 +1,14 @@
 import * as React from 'react' // tslint:disable-line
-import {StringCell} from '../StringCell'
+import { StringCell } from '../StringCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import {FieldType} from '../../../../../types/types'
-import {TypedValue} from '../../../../../types/utils'
+import { FieldType } from '../../../../../types/types'
+import { TypedValue } from '../../../../../types/utils'
 
 test('StringCell renders', () => {
-
-  const save = jest.fn((value: TypedValue) => { /* */ })
+  const save = jest.fn((value: TypedValue) => {
+    /* */
+  })
   const cancel = jest.fn()
   const onKeyDown = jest.fn()
   const field = {
@@ -27,7 +28,7 @@ test('StringCell renders', () => {
 
   const component = shallow(
     <StringCell
-      value='some string'
+      value="some string"
       save={save}
       cancel={cancel}
       onKeyDown={onKeyDown}
@@ -36,5 +37,4 @@ test('StringCell renders', () => {
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()
-
 })

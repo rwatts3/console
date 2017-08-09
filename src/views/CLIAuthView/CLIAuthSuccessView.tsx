@@ -7,17 +7,22 @@ interface Props {
 }
 
 export default class CLIAuthSuccessView extends React.Component<Props, {}> {
-
   render() {
-    const {query} = this.props.location
-    const redirectUrl = query.hasOwnProperty('afterSignup') ? '/after-signup' : '/'
+    const { query } = this.props.location
+    const redirectUrl = query.hasOwnProperty('afterSignup')
+      ? '/after-signup'
+      : '/'
 
     return (
-      <div className='already-authenticated'>
+      <div className="already-authenticated">
         <style jsx={true}>{`
           .already-authenticated {
             @p: .flex, .fixed, .top0, .left0, .right0, .bottom0, .w100;
-            background-image: radial-gradient(circle at 49% 49%, #172a3a, #0f202d);
+            background-image: radial-gradient(
+              circle at 49% 49%,
+              #172a3a,
+              #0f202d
+            );
           }
 
           .logo {
@@ -25,7 +30,8 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
           }
 
           .content {
-            @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .white, .w100, .mh60;
+            @p: .flex, .flexColumn, .itemsCenter, .justifyCenter, .white, .w100,
+              .mh60;
             width: 530px;
           }
 
@@ -44,8 +50,8 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
           }
 
           .call-to-action {
-            @p: .flex, .flexRow, .itemsCenter, .justifyCenter, .mt25, .bgGreen, .white,
-              .ttu, .fw6, .pv10, .ph16, .br2, .pointer;
+            @p: .flex, .flexRow, .itemsCenter, .justifyCenter, .mt25, .bgGreen,
+              .white, .ttu, .fw6, .pv10, .ph16, .br2, .pointer;
             max-width: 200px;
           }
 
@@ -53,7 +59,7 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
             @p: .f16, .white60;
           }
         `}</style>
-        <div className='logo'>
+        <div className="logo">
           <Icon
             color={$v.green}
             width={34}
@@ -61,16 +67,15 @@ export default class CLIAuthSuccessView extends React.Component<Props, {}> {
             src={require('../../assets/icons/logo.svg')}
           />
         </div>
-        <div className='content'>
+        <div className="content">
           <div>
-            <div className='title'>Successfully authenticated ✅</div>
-            <div className='subtitle'>You can now close this tab.</div>
-            <div className='line'/>
-            <div className='info'>You can also continue in the Console to see your projects.</div>
-            <Button
-              target={redirectUrl}
-              green
-              className='mt25'>
+            <div className="title">Successfully authenticated ✅</div>
+            <div className="subtitle">You can now close this tab.</div>
+            <div className="line" />
+            <div className="info">
+              You can also continue in the Console to see your projects.
+            </div>
+            <Button target={redirectUrl} green className="mt25">
               Open Console
             </Button>
           </div>

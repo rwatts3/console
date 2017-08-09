@@ -1,7 +1,6 @@
 import * as React from 'react'
 import OptionInput from './OptionInput'
-import {Constraint} from '../../../types/types'
-import {$v, Icon} from 'graphcool-styles'
+import { Constraint } from '../../../types/types'
 
 interface Props {
   style?: any
@@ -17,7 +16,7 @@ interface State {
   selectorVisible: boolean
 }
 
-export default class Constraints extends React.Component<Props,State> {
+export default class Constraints extends React.Component<Props, State> {
   private selectorButton: HTMLDivElement
 
   constructor(props) {
@@ -41,9 +40,11 @@ export default class Constraints extends React.Component<Props,State> {
     if (e.target !== this.selectorButton) {
       // make sure, react gets the click first
       setImmediate(() => {
-        this.setState({
-          selectorVisible: false,
-        } as State)
+        this.setState(
+          {
+            selectorVisible: false,
+          } as State,
+        )
       })
     }
   }
@@ -53,15 +54,17 @@ export default class Constraints extends React.Component<Props,State> {
       style,
       isUnique,
       onToggleIsUnique,
+      /*
       constraints,
       onAddConstraint,
       onRemoveConstraint,
       onEditConstraint,
+      */
     } = this.props
-    const {selectorVisible} = this.state
+    // const { selectorVisible } = this.state
 
     return (
-      <div style={style} className='constraints'>
+      <div style={style} className="constraints">
         <style jsx>{`
           .constraints {
             @p: .w100, .pb38, .bbox;
@@ -75,7 +78,8 @@ export default class Constraints extends React.Component<Props,State> {
             padding: 5px 9.86px 6px 9.14px;
           }
           .type-constraints-title-wrapper {
-            @p: .bb, .bBlack10, .flex, .justifyBetween, .mb38, .w100, .mt16, .pt4;
+            @p: .bb, .bBlack10, .flex, .justifyBetween, .mb38, .w100, .mt16,
+              .pt4;
           }
           .type-constraints-title {
             @p: .bgWhite, .ph10, .black50, .flex, .relative, .itemsCenter, .ml25;
@@ -86,11 +90,13 @@ export default class Constraints extends React.Component<Props,State> {
           }
           .type {
             @p: .bgBlack04, .br2, .f12, .fw6;
-            font-family: Source Code Pro,Consolas,Inconsolata,Droid Sans Mono,Monaco,monospace;
+            font-family: Source Code Pro, Consolas, Inconsolata, Droid Sans Mono,
+              Monaco, monospace;
             padding: 3px 5px 4px 5px;
           }
           .button-add-constraint {
-            @p: .f14, .black50, .fw6, .ttu, .buttonShadow, .mr25, .relative, .bgWhite, .pointer;
+            @p: .f14, .black50, .fw6, .ttu, .buttonShadow, .mr25, .relative,
+              .bgWhite, .pointer;
             padding: 7px 10px;
             letter-spacing: 0.52px;
             bottom: -18px;
@@ -109,7 +115,8 @@ export default class Constraints extends React.Component<Props,State> {
             flex-direction: row-reverse;
           }
 
-          .symbol, .name {
+          .symbol,
+          .name {
             @p: .black30, .f14;
           }
 
@@ -125,7 +132,7 @@ export default class Constraints extends React.Component<Props,State> {
 
           .constraint + .constraint {
             @p: .bt, .bBlack05;
-            border-top: 1px
+            border-top: 1px;
           }
 
           .constraint-input {
@@ -138,7 +145,7 @@ export default class Constraints extends React.Component<Props,State> {
           }
 
           .constraint-input::placeholder {
-            color: rgba(74,144,226,.3);
+            color: rgba(74, 144, 226, .3);
           }
 
           .remove {
@@ -160,7 +167,7 @@ export default class Constraints extends React.Component<Props,State> {
 
           .add-constraint-selector {
             @p: .absolute, .bgWhite, .z2;
-            box-shadow: 0 1px 7px rgba(0,0,0,.2);
+            box-shadow: 0 1px 7px rgba(0, 0, 0, .2);
             top: 10px;
             left: -2px;
           }
@@ -178,7 +185,8 @@ export default class Constraints extends React.Component<Props,State> {
             @p: .bt, .bBlack10;
           }
 
-          .selector-item:hover .name, .selector-item:hover .symbol {
+          .selector-item:hover .name,
+          .selector-item:hover .symbol {
             @p: .white;
           }
         `}</style>
@@ -195,16 +203,14 @@ export default class Constraints extends React.Component<Props,State> {
             fill: $blue !important;
           }
         `}</style>
-        <div className='is-unique'>
+        <div className="is-unique">
           <OptionInput
             checked={isUnique}
-            label='This field is unique'
+            label="This field is unique"
             onToggle={onToggleIsUnique}
             scale={1.2}
           />
-          {isUnique && (
-            <div className='constraint-badge'>Unique</div>
-          )}
+          {isUnique && <div className="constraint-badge">Unique</div>}
         </div>
         {/*
         <div className='type-constraints-title-wrapper'>
@@ -301,21 +307,34 @@ export default class Constraints extends React.Component<Props,State> {
     )
   }
 
+  /*
   private showSelector = () => {
-    this.setState({
-      selectorVisible: true,
-    } as State)
+    this.setState(
+      {
+        selectorVisible: true,
+      } as State,
+    )
   }
 
   private hideSelector = () => {
-    this.setState({
-      selectorVisible: false,
-    } as State)
+    this.setState(
+      {
+        selectorVisible: false,
+      } as State,
+    )
   }
+  */
 }
 
-export type ConstraintType = 'REGEX' | 'CONTAINS' | 'STARTS_WITH' | 'ENDS_WITH' | 'EQUALS' | 'LENGTH'
+export type ConstraintType =
+  | 'REGEX'
+  | 'CONTAINS'
+  | 'STARTS_WITH'
+  | 'ENDS_WITH'
+  | 'EQUALS'
+  | 'LENGTH'
 
+/*
 interface SymbolMap {
   text?: string
   icon?: string
@@ -328,24 +347,24 @@ interface TypeSymbolMap {
 }
 
 const typeSymbolMap: TypeSymbolMap = {
-  'REGEX': {
+  REGEX: {
     text: '(.*)',
   },
-  'CONTAINS': {
+  CONTAINS: {
     text: '..|..',
   },
-  'STARTS_WITH': {
+  STARTS_WITH: {
     text: '|…',
   },
-  'ENDS_WITH': {
+  ENDS_WITH: {
     text: '…|',
   },
-  'EQUALS': {
+  EQUALS: {
     icon: require('../../../assets/icons/equals.svg'),
     width: 11,
     height: 11,
   },
-  'LENGTH': {
+  LENGTH: {
     icon: require('../../../assets/icons/length.svg'),
     width: 17,
     height: 17,
@@ -353,18 +372,20 @@ const typeSymbolMap: TypeSymbolMap = {
 }
 
 const typeTextMap = {
-  'REGEX': 'Regex',
-  'CONTAINS': 'Contains',
-  'STARTS_WITH': 'Starts With',
-  'ENDS_WITH': 'Ends With',
-  'EQUALS': 'Equals',
-  'LENGTH': 'Length',
+  REGEX: 'Regex',
+  CONTAINS: 'Contains',
+  STARTS_WITH: 'Starts With',
+  ENDS_WITH: 'Ends With',
+  EQUALS: 'Equals',
+  LENGTH: 'Length',
 }
 
 const operatorTextMap = {
-  'GT': '>',
-  'GTE': '>=',
-  'LT': '<',
-  'LTE': '<=',
-  'EQ': '=',
+  GT: '>',
+  GTE: '>=',
+  LT: '<',
+  LTE: '<=',
+  EQ: '=',
 }
+
+*/

@@ -1,31 +1,32 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {classnames} from '../../../utils/classnames'
-import {valueToString, stringToValue} from '../../../utils/valueparser'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { valueToString, stringToValue } from '../../../utils/valueparser'
+import * as classnames from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import { Enum, Field } from '../../../types/types'
-import NodeSelector from '../../../components/NodeSelector/NodeSelector'
-import RelationsPopup from './RelationsPopup'
-import {CellRequirements, getEditCell} from './Cell/cellgenerator'
-import {TypedValue, ShowNotificationCallback} from '../../../types/utils'
-import {isNonScalarList, isScalar} from '../../../utils/graphql'
+import { CellRequirements, getEditCell } from './Cell/cellgenerator'
+import { TypedValue, ShowNotificationCallback } from '../../../types/utils'
+import { isScalar } from '../../../utils/graphql'
 import { Link } from 'found'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
-  nextCell, previousCell, nextRow, previousRow, stopEditCell, editCell, unselectCell, selectCell,
+  nextCell,
+  previousCell,
+  nextRow,
+  previousRow,
+  stopEditCell,
+  editCell,
+  unselectCell,
+  selectCell,
 } from '../../../actions/databrowser/ui'
-import {ReduxThunk, ReduxAction} from '../../../types/reducers'
-import {GridPosition} from '../../../types/databrowser/ui'
-import SelectNodesCell from './Cell/SelectNodesCell/SelectNodesCell'
+import { ReduxThunk, ReduxAction } from '../../../types/reducers'
+import { GridPosition } from '../../../types/databrowser/ui'
 const classes: any = require('./Cell.scss')
 import { variables, particles } from 'graphcool-styles'
 import * as cx from 'classnames'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 export type UpdateCallback = (success: boolean) => void
 
@@ -74,11 +75,7 @@ interface State {
 }
 
 export class Cell extends React.PureComponent<Props, State> {
-
-  refs: {
-    [key: string]: any
-    container: any, // needs to be any, as scrollIntoViewIfNeeded is not yet there
-  }
+  container: any
 
   private escaped: boolean
   private saving: boolean
@@ -101,7 +98,7 @@ export class Cell extends React.PureComponent<Props, State> {
       [classes.rowselected]: this.props.rowSelected,
       [classes.rowhascursor]: this.props.rowHasCursor && !this.props.addnew,
     })
-    const {rowIndex, field} = this.props
+    const { rowIndex, field } = this.props
 
     const newSingleScalarField = isNewSingleScalarField(rowIndex, field)
     return (
@@ -111,13 +108,15 @@ export class Cell extends React.PureComponent<Props, State> {
           overflow: 'visible',
         }}
         className={rootClassnames}
-        onClick={() => (newSingleScalarField || this.props.selected)
-          ? this.startEditing() : this.props.selectCell(this.props.position)}
-        onDoubleClick={(e) => {
+        onClick={() =>
+          newSingleScalarField || this.props.selected
+            ? this.startEditing()
+            : this.props.selectCell(this.props.position)}
+        onDoubleClick={e => {
           this.stopEvent(e)
           this.startEditing()
         }}
-        ref='container'
+        ref={this.setRef}
         data-test={'cell-' + field.name}
       >
         <div className={cx(classes.border, particles.flexAuto)}>
@@ -129,8 +128,12 @@ export class Cell extends React.PureComponent<Props, State> {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected === true && this.props.selected === false) {
-      this.refs.container.scrollIntoViewIfNeeded()
+      this.container.scrollIntoViewIfNeeded()
     }
+  }
+
+  private setRef = ref => {
+    this.container = ref
   }
 
   private startEditing = (): void => {
@@ -169,7 +172,8 @@ export class Cell extends React.PureComponent<Props, State> {
     if (this.props.field.isRequired && value === null) {
       const valueString = valueToString(value, this.props.field, true)
       this.props.showNotification({
-        message: `'${valueString}' is not a valid value for field ${this.props.field.name}`,
+        message: `'${valueString}' is not a valid value for field ${this.props
+          .field.name}`,
         level: 'error',
       })
       if (keepEditing) {
@@ -233,13 +237,17 @@ export class Cell extends React.PureComponent<Props, State> {
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
         this.props.previousCell(this.props.fields)
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 37}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 37 } }),
+        )
         break
       case 38:
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
         this.props.previousRow(this.props.fields, this.props.modelNamePlural)
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 38}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 38 } }),
+        )
         break
       case 9:
       case 39:
@@ -248,17 +256,25 @@ export class Cell extends React.PureComponent<Props, State> {
         // go back for shift+tab
         if (e.shiftKey) {
           this.props.previousCell(this.props.fields)
-          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 9}}))
+          tracker.track(
+            ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 9 } }),
+          )
         } else {
           this.props.nextCell(this.props.fields)
-          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 39}}))
+          tracker.track(
+            ConsoleEvents.Databrowser.Cell.selected({
+              source: { keyCode: 39 },
+            }),
+          )
         }
         break
       case 40:
         this.stopEvent(e)
         this.save(stringToValue(e.target.value, this.props.field))
         this.props.nextRow(this.props.fields, this.props.modelNamePlural)
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 40}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 40 } }),
+        )
         break
       case 13:
         // in the new row case, the row needs the event, so let it bubble up
@@ -279,14 +295,14 @@ export class Cell extends React.PureComponent<Props, State> {
     const invalidStyle = classnames([classes.value, classes.id])
     if (this.props.field.isReadonly) {
       return (
-        <span className={invalidStyle}>{this.props.field.name} will be generated</span>
+        <span className={invalidStyle}>
+          {this.props.field.name} will be generated
+        </span>
       )
     }
 
     if (!isScalar(this.props.field.typeIdentifier)) {
-      return (
-        <span className={invalidStyle}>Should be added later</span>
-      )
+      return <span className={invalidStyle}>Should be added later</span>
     }
 
     return this.renderExisting()
@@ -295,9 +311,10 @@ export class Cell extends React.PureComponent<Props, State> {
   private renderExisting = (): JSX.Element => {
     if (this.props.editing) {
       let enumValues: any = []
-      const {field} = this.props
+      const { field } = this.props
       if (field && field.typeIdentifier === 'Enum') {
-        enumValues = this.props.enums.filter(en => field.enum.id === en.id).values
+        enumValues = this.props.enums.filter(en => field.enum.id === en.id)
+          .values
       }
       const reqs: CellRequirements = {
         field: {
@@ -318,7 +335,7 @@ export class Cell extends React.PureComponent<Props, State> {
     }
     const valueString = valueToString(this.props.value, this.props.field, true)
     // Do not use 'defaultValue' because it won't force an update after value change
-    const CellLink = styled(Link)`
+    const CellLink = styled<Link>(Link)`
       padding: ${variables.size06};
       background: ${variables.blue};
       font-size: ${variables.size10};
@@ -359,9 +376,11 @@ export class Cell extends React.PureComponent<Props, State> {
     const CopyIndicator = styled.div`
       position: fixed;
       transform: translate(420%, 0);
-      animation: ${movingCopyIndicator} .7s linear
+      animation: ${movingCopyIndicator} .7s linear;
     `
-    const cellLinkUrl = () => `/${this.props.projectName}/models/${this.props.field.relatedModel.name}/databrowser?q=${valueString}` // tslint:disable-line
+    const cellLinkUrl = () =>
+      `/${this.props.projectName}/models/${this.props.field.relatedModel
+        .name}/databrowser?q=${valueString}` // tslint:disable-line
 
     return (
       <span
@@ -373,30 +392,27 @@ export class Cell extends React.PureComponent<Props, State> {
       >
         {valueString}
         {this.props.field.typeIdentifier === 'Relation' &&
-        !this.props.field.isList &&
+          !this.props.field.isList &&
           this.props.value !== null &&
           this.props.selected &&
-          (
-            <CellLink to={cellLinkUrl()}>
-              {`Go to ${this.props.field.relatedModel.name}`}
-            </CellLink>
-        )}
+          <CellLink to={cellLinkUrl()}>
+            {`Go to ${this.props.field.relatedModel.name}`}
+          </CellLink>}
         {this.props.field.isReadonly &&
-         this.props.selected &&
-          (
+          this.props.selected &&
           <div>
-            <CopyToClipboard text={valueString} onCopy={() => {
-              this.setState({copied: true} as State)
-              tracker.track(ConsoleEvents.Databrowser.Cell.copied())
-            }}>
-              <CellLink
-                onClick={e => e.preventDefault()}
-                to=''
-              >
+            <CopyToClipboard
+              text={valueString}
+              onCopy={() => {
+                this.setState({ copied: true } as State)
+                tracker.track(ConsoleEvents.Databrowser.Cell.copied())
+              }}
+            >
+              <CellLink onClick={e => e.preventDefault()} to="">
                 {'Copy'}
               </CellLink>
             </CopyToClipboard>
-            {this.state.copied && (
+            {this.state.copied &&
               <CopyIndicator
                 className={cx(
                   particles.o0,
@@ -407,10 +423,8 @@ export class Cell extends React.PureComponent<Props, State> {
                 )}
               >
                 Copied
-              </CopyIndicator>
-            )}
-          </div>
-        )}
+              </CopyIndicator>}
+          </div>}
       </span>
     )
   }
@@ -430,11 +444,17 @@ function isNewSingleScalarField(rowIndex, field) {
 
 const MappedCell = connect(
   (state, props) => {
-    const {rowIndex, field, addnew, selected} = props
-    const { selectedCell, editing, newRowActive, writing } = state.databrowser.ui
+    const { rowIndex, field, selected } = props
+    const {
+      selectedCell,
+      editing,
+      newRowActive,
+      writing,
+    } = state.databrowser.ui
 
     const newSingleScalarField = isNewSingleScalarField(rowIndex, field)
-    const cellEditing = selected && !writing && (editing || newSingleScalarField)
+    const cellEditing =
+      selected && !writing && (editing || newSingleScalarField)
 
     return {
       editing: cellEditing,

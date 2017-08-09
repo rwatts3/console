@@ -24,7 +24,6 @@ interface State {
 }
 
 export default class DocsPopup extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -34,11 +33,11 @@ export default class DocsPopup extends React.Component<Props, State> {
   }
 
   render() {
-    const {videoId, resources, offsetX, offsetY} = this.props
-    const {isOpen} = this.state
+    const { videoId, resources, offsetX, offsetY } = this.props
+    const { isOpen } = this.state
 
     return (
-      <div className='docs-popup-wrapper'>
+      <div className="docs-popup-wrapper">
         <style jsx>{`
           .docs-popup-bg {
             @p: .fixed, .top0, .left0, .right0, .bottom0, .bgDarkBlue80, .o0;
@@ -55,7 +54,8 @@ export default class DocsPopup extends React.Component<Props, State> {
             transition: .6s ease all;
           }
           .docs-popup.closed {
-            @p: .bgLightgreen20, .ttu, .fw6, .f16, .inlineFlex, .brPill, .justifyCenter, .itemsCenter, .pointer;
+            @p: .bgLightgreen20, .ttu, .fw6, .f16, .inlineFlex, .brPill,
+              .justifyCenter, .itemsCenter, .pointer;
             width: 38px;
             height: 38px;
           }
@@ -100,28 +100,26 @@ export default class DocsPopup extends React.Component<Props, State> {
           }
         `}</style>
         <div
-          className={cn('docs-popup-bg', {open: isOpen, closed: !isOpen})}
+          className={cn('docs-popup-bg', { open: isOpen, closed: !isOpen })}
           onClick={this.toggle}
         />
         <div
-          className={cn('docs-popup', {open: isOpen, closed: !isOpen})}
+          className={cn('docs-popup', { open: isOpen, closed: !isOpen })}
           style={{
             top: isOpen ? '50%' : offsetY,
             right: isOpen ? '50%' : offsetX,
           }}
           onClick={!isOpen ? this.toggle : null}
         >
-          <div
-            className='icon'
-          >?</div>
+          <div className="icon">?</div>
           <CSSTransitionGroup
-            transitionName='docs-popup'
+            transitionName="docs-popup"
             transitionEnterTimeout={900}
             transitionLeaveTimeout={20}
           >
-            {isOpen && (
-              <div className='flex'>
-                <div className='video'>
+            {isOpen &&
+              <div className="flex">
+                <div className="video">
                   <Youtube
                     videoId={videoId}
                     opts={{
@@ -130,20 +128,15 @@ export default class DocsPopup extends React.Component<Props, State> {
                       playerVars: {
                         autoplay: 0,
                       },
-
                     }}
                   />
                 </div>
-                <div className='resources'>
-                  {resources.map(resource => (
-                    <DocsResource
-                      key={resource.link}
-                      resource={resource}
-                    />
-                  ))}
+                <div className="resources">
+                  {resources.map(resource =>
+                    <DocsResource key={resource.link} resource={resource} />,
+                  )}
                 </div>
-              </div>
-            )}
+              </div>}
           </CSSTransitionGroup>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {EditorConfiguration} from 'codemirror'
+import { EditorConfiguration } from 'codemirror'
 const Codemirror: any = require('../FunctionLogs/Codemirror').default
 
 interface Props {
@@ -12,9 +12,15 @@ interface Props {
 
 require('codemirror/theme/base16-dark.css')
 
-export default function JsEditor({value, onChange, onKeyDown, onFocusChange, onRun}: Props) {
+export default function JsEditor({
+  value,
+  onChange,
+  onKeyDown,
+  onFocusChange,
+  onRun,
+}: Props) {
   return (
-    <div className='js-editor'>
+    <div className="js-editor">
       <style jsx={true}>{`
         .js-editor {
           @p: .flex, .flexAuto, .overflowAuto;
@@ -22,35 +28,38 @@ export default function JsEditor({value, onChange, onKeyDown, onFocusChange, onR
         .js-editor :global(.CodeMirror) {
           height: 100%;
         }
-        .js-editor :global(.CodeMirror), .js-editor :global(.CodeMirror-gutters) {
+        .js-editor :global(.CodeMirror),
+        .js-editor :global(.CodeMirror-gutters) {
           background: transparent;
         }
       `}</style>
       <Codemirror
-        options={{
-          mode: 'javascript',
-          theme: 'base16-dark',
-          lineNumbers: true,
-          keyMap: 'sublime',
-          extraKeys: {
-            'Cmd-Enter': () => {
-              if (onRun) {
-                onRun()
-              }
-            },
-            'Ctrl-Enter': () => {
-              if (onRun) {
-                onRun()
-              }
-            },
+        options={
+          {
+            mode: 'javascript',
+            theme: 'base16-dark',
+            lineNumbers: true,
+            keyMap: 'sublime',
+            extraKeys: {
+              'Cmd-Enter': () => {
+                if (onRun) {
+                  onRun()
+                }
+              },
+              'Ctrl-Enter': () => {
+                if (onRun) {
+                  onRun()
+                }
+              },
 
-            // Editor improvements
-            'Ctrl-Left': 'goSubwordLeft',
-            'Ctrl-Right': 'goSubwordRight',
-            'Alt-Left': 'goGroupLeft',
-            'Alt-Right': 'goGroupRight',
-          },
-        } as EditorConfiguration}
+              // Editor improvements
+              'Ctrl-Left': 'goSubwordLeft',
+              'Ctrl-Right': 'goSubwordRight',
+              'Alt-Left': 'goGroupLeft',
+              'Alt-Right': 'goGroupRight',
+            },
+          } as EditorConfiguration
+        }
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}

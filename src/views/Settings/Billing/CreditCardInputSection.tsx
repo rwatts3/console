@@ -1,24 +1,26 @@
 import * as React from 'react'
-import {PricingPlan, Viewer} from '../../../types/types'
+import { PricingPlan, Viewer } from '../../../types/types'
 import PricingColumn from '../PricingColumn'
 import CreditCardFront from './CreditCardFront'
 import CreditCardBack from './CreditCardBack'
-import {chunk} from '../../../utils/utils'
-import {creditCardNumberValid, expirationDateValid, cpcValid,
-  minCPCDigits, minCreditCardDigits, maxCPCDigits, maxCreditCardDigits} from '../../../utils/creditCardValidator'
-import {Icon} from 'graphcool-styles'
-import {ESCAPE_KEY, ENTER_KEY} from '../../../utils/constants'
+import { chunk } from '../../../utils/utils'
 import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {connect} from 'react-redux'
-import {showNotification} from '../../../actions/notification'
-import {bindActionCreators} from 'redux'
+  creditCardNumberValid,
+  expirationDateValid,
+  cpcValid,
+  maxCPCDigits,
+  maxCreditCardDigits,
+} from '../../../utils/creditCardValidator'
+import { Icon } from 'graphcool-styles'
+import { ESCAPE_KEY, ENTER_KEY } from '../../../utils/constants'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { connect } from 'react-redux'
+import { showNotification } from '../../../actions/notification'
+import { bindActionCreators } from 'redux'
 import SetCreditCardMutation from '../../../mutations/Billing/SetCreditCardMutation'
 import SetPlanMutation from '../../../mutations/Billing/SetPlanMutation'
-import {onFailureShowNotification} from '../../../utils/relay'
+import { onFailureShowNotification } from '../../../utils/relay'
 
 interface State {
   creditCardNumber: string
@@ -42,21 +44,22 @@ interface Props {
   plan: PricingPlan
   projectId: string
   projectName: string
-  goBack?: Function
-  setLoading?: Function
-  close?: Function
+  goBack?: () => void
+  setLoading?: (loading: boolean) => void
+  close?: () => void
   showNotification: ShowNotificationCallback
   viewer: Viewer
 }
 
 class CreditCardInputSection extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
-    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
-      return edge.node.name === this.props.projectName
-    }).node
+    const project = this.props.viewer.crm.crm.customer.projects.edges.find(
+      edge => {
+        return edge.node.name === this.props.projectName
+      },
+    ).node
 
     const creditCard = project.projectBillingInformation.creditCard
 
@@ -79,22 +82,26 @@ class CreditCardInputSection extends React.Component<Props, State> {
   }
 
   render() {
-
-    const project = this.props.viewer.crm.crm.customer.projects.edges.find(edge => {
-      return edge.node.name === this.props.projectName
-    }).node
+    const project = this.props.viewer.crm.crm.customer.projects.edges.find(
+      edge => {
+        return edge.node.name === this.props.projectName
+      },
+    ).node
 
     const creditCard = project.projectBillingInformation.creditCard
-    const expirationYear = creditCard ? creditCard.expYear.toString().substr(2,2) : ''
-    const expirationDate = creditCard ? creditCard.expMonth + '/' + expirationYear : ''
+    const expirationYear = creditCard
+      ? creditCard.expYear.toString().substr(2, 2)
+      : ''
+    const expirationDate = creditCard
+      ? creditCard.expMonth + '/' + expirationYear
+      : ''
 
     return (
-      <div className='creditCardInputSectionContainer'>
+      <div className="creditCardInputSectionContainer">
         <style global jsx={true}>{`
-
           .creditCardInputSectionContainer {
             @p: .flex, .bgBlack02, .w100, .bt;
-            border-color: rgb(229,229,229);
+            border-color: rgb(229, 229, 229);
             height: 400px;
           }
 
@@ -108,13 +115,13 @@ class CreditCardInputSection extends React.Component<Props, State> {
           }
 
           .purchaseButton {
-            @p: .white, .bgGreen, .br2, .buttonShadow, .mb25, .ph16, .pv10, .pointer;
+            @p: .white, .bgGreen, .br2, .buttonShadow, .mb25, .ph16, .pv10,
+              .pointer;
           }
-
         `}</style>
 
         <PricingColumn
-          className='pricingColumnMargin ml38 buttonShadow'
+          className="pricingColumnMargin ml38 buttonShadow"
           plan={this.props.plan}
           isCurrentPlan={false}
           isSelected={true}
@@ -123,37 +130,40 @@ class CreditCardInputSection extends React.Component<Props, State> {
         />
 
         {creditCard &&
-        <div className='flex flexColumn itemsEnd pt60 pl96'>
-          <CreditCardFront
-            creditCardNumber={`XXXX XXXX XXXX ${creditCard.last4}`}
-            cardHolderName={creditCard.name}
-            expirationDate={expirationDate}
-            isEditing={false}
-            shouldDisplayVisaLogo={true}
-          />
-          <div
-            className={`mt38 purchaseButton`}
-            onClick={() => this.onConfirm(false)}
-          >
-            Purchase
-          </div>
-        </div>}
+          <div className="flex flexColumn itemsEnd pt60 pl96">
+            <CreditCardFront
+              creditCardNumber={`XXXX XXXX XXXX ${creditCard.last4}`}
+              cardHolderName={creditCard.name}
+              expirationDate={expirationDate}
+              isEditing={false}
+              shouldDisplayVisaLogo={true}
+            />
+            <div
+              className={`mt38 purchaseButton`}
+              onClick={() => this.onConfirm(false)}
+            >
+              Purchase
+            </div>
+          </div>}
 
-        {!this.state.displayAddressDataInput && !creditCard &&
-        this.creditCardInput()}
+        {!this.state.displayAddressDataInput &&
+          !creditCard &&
+          this.creditCardInput()}
 
-        {!this.state.displayAddressDataInput && !creditCard &&
-        this.moveToAddressInputButtons()}
+        {!this.state.displayAddressDataInput &&
+          !creditCard &&
+          this.moveToAddressInputButtons()}
 
-        {this.state.displayAddressDataInput && !creditCard &&
-        this.fullAddressDataInput()}
+        {this.state.displayAddressDataInput &&
+          !creditCard &&
+          this.fullAddressDataInput()}
       </div>
     )
   }
 
   private fullAddressDataInput = (): JSX.Element => {
     return (
-      <div className='flex flexColumn justifyBetween w100'>
+      <div className="flex flexColumn justifyBetween w100">
         {this.addressDataInput()}
         {this.confirmButtons()}
       </div>
@@ -162,9 +172,9 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   private creditCardInput = (): JSX.Element => {
     return (
-      <div className='relative creditCardInputContainer'>
+      <div className="relative creditCardInputContainer">
         <CreditCardFront
-          className='z1 absolute'
+          className="z1 absolute"
           cardHolderName={this.state.cardHolderName}
           creditCardNumber={this.state.creditCardNumber}
           expirationDate={this.state.expirationDate}
@@ -176,10 +186,10 @@ class CreditCardInputSection extends React.Component<Props, State> {
           onKeyDown={this.handleKeyDown}
         />
         <CreditCardBack
-          className='absolute'
+          className="absolute"
           cpc={this.state.cpc}
           didChangeCPC={this.onCPCChange}
-          style={{left: '140px', top: '20px'}}
+          style={{ left: '140px', top: '20px' }}
           onKeyDown={this.handleKeyDown}
         />
       </div>
@@ -188,9 +198,8 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   private addressDataInput = (): JSX.Element => {
     return (
-      <div className='pl60 pt16'>
+      <div className="pl60 pt16">
         <style jsx={true}>{`
-
           .title {
             @p: .ttu, .f12, .fw6, .black30, .mb10, .mt16, .nowrap;
           }
@@ -206,72 +215,89 @@ class CreditCardInputSection extends React.Component<Props, State> {
           .narrowInput {
             width: 150px;
           }
-
         `}</style>
-        <div className='title'>Address Line 1</div>
+        <div className="title">Address Line 1</div>
         <input
-          className='inputField'
+          className="inputField"
           value={this.state.addressLine1}
-          placeholder='Enter address line 1'
-          onChange={(e: any) => this.setState({addressLine1: e.target.value} as State, () =>
-            this.validateAddressDetails())}
-          type='text'
+          placeholder="Enter address line 1"
+          onChange={(e: any) =>
+            this.setState({ addressLine1: e.target.value } as State, () =>
+              this.validateAddressDetails(),
+            )}
+          type="text"
           onKeyDown={this.handleKeyDown}
-          autoFocus={true}/>
-        <div className='title'>Address Line 2</div>
+          autoFocus={true}
+        />
+        <div className="title">Address Line 2</div>
         <input
-          className='wideInput inputField'
-          placeholder='Enter address line 2 (optional)'
+          className="wideInput inputField"
+          placeholder="Enter address line 2 (optional)"
           value={this.state.addressLine2}
-          onChange={(e: any) => this.setState({addressLine2: e.target.value} as State, () =>
-            this.validateAddressDetails())}
+          onChange={(e: any) =>
+            this.setState({ addressLine2: e.target.value } as State, () =>
+              this.validateAddressDetails(),
+            )}
           onKeyDown={this.handleKeyDown}
-          type='text'/>
-        <div className='flex'>
+          type="text"
+        />
+        <div className="flex">
           <div>
-            <div className='title'>Zipcode</div>
+            <div className="title">Zipcode</div>
             <input
-              className='narrowInput inputField'
-              placeholder='Enter zipcode'
+              className="narrowInput inputField"
+              placeholder="Enter zipcode"
               value={this.state.zipCode}
-              onChange={(e: any) => this.setState({zipCode: e.target.value} as State, () =>
-                this.validateAddressDetails())}
-              type='text'/>
+              onChange={(e: any) =>
+                this.setState({ zipCode: e.target.value } as State, () =>
+                  this.validateAddressDetails(),
+                )}
+              type="text"
+            />
           </div>
           <div>
-            <div className='title'>State</div>
+            <div className="title">State</div>
             <input
-              className='wideInput inputField'
-              placeholder='Enter state (optional)'
+              className="wideInput inputField"
+              placeholder="Enter state (optional)"
               value={this.state.state}
-              onChange={(e: any) => this.setState({state: e.target.value} as State, () =>
-                this.validateAddressDetails())}
+              onChange={(e: any) =>
+                this.setState({ state: e.target.value } as State, () =>
+                  this.validateAddressDetails(),
+                )}
               onKeyDown={this.handleKeyDown}
-              type='text'/>
+              type="text"
+            />
           </div>
         </div>
-        <div className='flex'>
+        <div className="flex">
           <div>
-            <div className='title'>City</div>
+            <div className="title">City</div>
             <input
-              className='narrowInput inputField'
-              placeholder='Enter city'
+              className="narrowInput inputField"
+              placeholder="Enter city"
               value={this.state.city}
-              onChange={(e: any) => this.setState({city: e.target.value} as State, () =>
-                this.validateAddressDetails())}
+              onChange={(e: any) =>
+                this.setState({ city: e.target.value } as State, () =>
+                  this.validateAddressDetails(),
+                )}
               onKeyDown={this.handleKeyDown}
-              type='text'/>
+              type="text"
+            />
           </div>
           <div>
-            <div className='title'>Country</div>
+            <div className="title">Country</div>
             <input
-              className='narrowInput inputField'
-              placeholder='Enter country'
+              className="narrowInput inputField"
+              placeholder="Enter country"
               value={this.state.country}
-              onChange={(e: any) => this.setState({country: e.target.value} as State, () =>
-                this.validateAddressDetails())}
+              onChange={(e: any) =>
+                this.setState({ country: e.target.value } as State, () =>
+                  this.validateAddressDetails(),
+                )}
               onKeyDown={this.handleKeyDown}
-              type='text'/>
+              type="text"
+            />
           </div>
         </div>
       </div>
@@ -280,20 +306,23 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   private moveToAddressInputButtons = () => {
     return (
-      <div className='flex justifyEnd itemsEnd w100'>
+      <div className="flex justifyEnd itemsEnd w100">
         <div
-          className='black50 mb25 mr38 pv10 pointer'
+          className="black50 mb25 mr38 pv10 pointer"
           onClick={() => this.props.goBack()}
-        >Cancel</div>
+        >
+          Cancel
+        </div>
         <div
-          className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer ${!this.state.creditCardDetailsValid && 'o50'}`}
+          className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer ${!this
+            .state.creditCardDetailsValid && 'o50'}`}
           onClick={() => {
             if (this.state.creditCardDetailsValid) {
-              this.setState({displayAddressDataInput: true} as State)
+              this.setState({ displayAddressDataInput: true } as State)
             }
           }}
         >
-          <div className='mr6'>Continue</div>
+          <div className="mr6">Continue</div>
           <Icon
             src={require('../../../assets/icons/blue_arrow_left.svg')}
             rotate={180}
@@ -307,16 +336,17 @@ class CreditCardInputSection extends React.Component<Props, State> {
 
   private confirmButtons = (): JSX.Element => {
     return (
-      <div className='flex justifyEnd itemsEnd w100'>
+      <div className="flex justifyEnd itemsEnd w100">
         <style jsx={true}>{`
-           .purchaseButton {
-             @p: .white, .bgGreen, .br2, .buttonShadow, .mr25, .mb25, .ph16, .pv10, .pointer;
-           }
+          .purchaseButton {
+            @p: .white, .bgGreen, .br2, .buttonShadow, .mr25, .mb25, .ph16,
+              .pv10, .pointer;
+          }
         `}</style>
         <div
           className={`flex itemsCenter blue mr25 mb25 ph16 pv10 pointer`}
           onClick={() => {
-            this.setState({displayAddressDataInput: false} as State)
+            this.setState({ displayAddressDataInput: false } as State)
           }}
         >
           <Icon
@@ -324,11 +354,12 @@ class CreditCardInputSection extends React.Component<Props, State> {
             width={17}
             height={12}
           />
-          <div className='ml6 nowrap'>Credit card details</div>
+          <div className="ml6 nowrap">Credit card details</div>
         </div>
 
         <div
-          className={`purchaseButton mr25 ${!this.state.addressDataValid && 'o50'}`}
+          className={`purchaseButton mr25 ${!this.state.addressDataValid &&
+            'o50'}`}
           onClick={() => this.onConfirm(true)}
         >
           Purchase
@@ -337,31 +368,32 @@ class CreditCardInputSection extends React.Component<Props, State> {
     )
   }
 
-  private updateExpirationDate = (newValue) => {
+  private updateExpirationDate = newValue => {
     if (newValue.length > 5) {
       return
     }
     if (newValue.length === 4 && /^\d{4,4}$/.test(newValue)) {
       newValue = newValue.slice(0, 2) + '/' + newValue.slice(-2)
     }
-    this.setState({expirationDate: newValue} as State, () => this.validateCreditCardDetails())
+    this.setState({ expirationDate: newValue } as State, () =>
+      this.validateCreditCardDetails(),
+    )
   }
 
-  private updateCreditCardNumber = (newValue) => {
-
+  private updateCreditCardNumber = newValue => {
     // max chunks is 5 since a credit card can have up to 19 digits
     const maxChunks = 5
 
     // pasting
     if (newValue.length > 4 && !newValue.includes(' ')) {
       const chunks = chunk(newValue, maxChunks, true)
-      const newCreditCardNumber = chunks.join(' ')
-      this.setState({creditCardNumber: newCreditCardNumber} as State)
+      const newCreditCardNumberValue = chunks.join(' ')
+      this.setState({ creditCardNumber: newCreditCardNumberValue } as State)
       return
     }
 
     // regular typing
-    let creditCardComponents = newValue.split(' ')
+    const creditCardComponents = newValue.split(' ')
     const lastComponent = creditCardComponents[creditCardComponents.length - 1]
 
     const newValueWithoutSpaces = creditCardComponents.join('')
@@ -369,26 +401,29 @@ class CreditCardInputSection extends React.Component<Props, State> {
       return
     }
 
-    let newLastComponent
-    if (creditCardComponents.length < maxChunks && lastComponent.length === 4) {
-      newLastComponent = lastComponent + ' '
-    } else {
-      newLastComponent = lastComponent
-    }
+    const newLastComponent =
+      creditCardComponents.length < maxChunks && lastComponent.length === 4
+        ? lastComponent + ' '
+        : lastComponent
 
     creditCardComponents[creditCardComponents.length - 1] = newLastComponent
     const newCreditCardNumber = creditCardComponents.join(' ')
-    this.setState({creditCardNumber: newCreditCardNumber} as State, () => this.validateCreditCardDetails())
+    this.setState({ creditCardNumber: newCreditCardNumber } as State, () =>
+      this.validateCreditCardDetails(),
+    )
   }
 
-  private onCardHolderNameChange = (newValue) => {
-    this.setState({cardHolderName: newValue} as State, () => this.validateCreditCardDetails())
-
+  private onCardHolderNameChange = newValue => {
+    this.setState({ cardHolderName: newValue } as State, () =>
+      this.validateCreditCardDetails(),
+    )
   }
 
-  private onCPCChange = (newValue) => {
+  private onCPCChange = newValue => {
     if (newValue.length <= maxCPCDigits) {
-      this.setState({cpc: newValue} as State, () => this.validateCreditCardDetails())
+      this.setState({ cpc: newValue } as State, () =>
+        this.validateCreditCardDetails(),
+      )
     }
   }
 
@@ -401,33 +436,34 @@ class CreditCardInputSection extends React.Component<Props, State> {
         const expirationMonth = expirationDateComponents[0]
         const expirationYear = expirationDateComponents[1]
 
-          Stripe.card.createToken(
-            {
-              number: this.state.creditCardNumber,
-              cvc: this.state.cpc,
-              exp_month: expirationMonth,
-              exp_year: expirationYear,
-              name: this.state.cardHolderName,
-              address_line1: this.state.addressLine1,
-              address_line2: this.state.addressLine2,
-              address_city: this.state.city,
-              address_state: this.state.state,
-              address_zip: this.state.zipCode,
-              address_country: this.state.country,
-            },
-            this.stripeResponseHandler,
-          )
+        Stripe.card.createToken(
+          {
+            number: this.state.creditCardNumber,
+            cvc: this.state.cpc,
+            exp_month: expirationMonth,
+            exp_year: expirationYear,
+            name: this.state.cardHolderName,
+            address_line1: this.state.addressLine1,
+            address_line2: this.state.addressLine2,
+            address_city: this.state.city,
+            address_state: this.state.state,
+            address_zip: this.state.zipCode,
+            address_country: this.state.country,
+          },
+          this.stripeResponseHandler,
+        )
       } else {
-          SetPlanMutation.commit({
-            projectId: this.props.projectId,
-            plan: this.props.plan,
-          }).then(() => {
-              this.props.close()
-            })
-            .catch(transaction => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-              this.props.setLoading(false)
-            })
+        SetPlanMutation.commit({
+          projectId: this.props.projectId,
+          plan: this.props.plan,
+        })
+          .then(() => {
+            this.props.close()
+          })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.props.setLoading(false)
+          })
       }
     } else {
       // noop
@@ -435,34 +471,32 @@ class CreditCardInputSection extends React.Component<Props, State> {
   }
 
   private stripeResponseHandler = (status, response) => {
-
     if (response.error) {
-      console.error(response.error)
       this.props.setLoading(false)
       return
     }
 
     const token = response.id
 
-      SetCreditCardMutation.commit({
-        projectId: this.props.projectId,
-        token: token,
-      }).then(() => {
+    SetCreditCardMutation.commit({
+      projectId: this.props.projectId,
+      token,
+    })
+      .then(() => {
         SetPlanMutation.commit({
           projectId: this.props.projectId,
           plan: this.props.plan,
         })
-        .then(() => this.props.close())
-        .catch(transaction => {
-          onFailureShowNotification(transaction, this.props.showNotification)
-          this.props.setLoading(false)
-        })
+          .then(() => this.props.close())
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+            this.props.setLoading(false)
+          })
       })
       .catch(transaction => {
         onFailureShowNotification(transaction, this.props.showNotification)
         this.props.setLoading(false)
       })
-
   }
 
   private validateAddressDetails = () => {
@@ -471,25 +505,31 @@ class CreditCardInputSection extends React.Component<Props, State> {
     // const stateValid = this.state.state.length > 0
     const cityValid = this.state.city.length > 0
     const countryValid = this.state.country.length > 0
-    const addressValid = addressLine1Valid && zipcodeValid && cityValid && countryValid
+    const addressValid =
+      addressLine1Valid && zipcodeValid && cityValid && countryValid
 
-    this.setState({addressDataValid: addressValid} as State)
+    this.setState({ addressDataValid: addressValid } as State)
   }
 
   private validateCreditCardDetails = () => {
-    const isCreditCardNumberValid = creditCardNumberValid(this.state.creditCardNumber)
+    const isCreditCardNumberValid = creditCardNumberValid(
+      this.state.creditCardNumber,
+    )
     const isExpirationDateValid = expirationDateValid(this.state.expirationDate)
     const isCPCValid = cpcValid(this.state.cpc)
-    this.setState({creditCardDetailsValid: isCreditCardNumberValid && isExpirationDateValid && isCPCValid} as State)
-
+    this.setState(
+      {
+        creditCardDetailsValid:
+          isCreditCardNumberValid && isExpirationDateValid && isCPCValid,
+      } as State,
+    )
   }
 
-  private handleKeyDown = (e) => {
-
+  private handleKeyDown = e => {
     if (e.keyCode === ENTER_KEY) {
       if (!this.state.displayAddressDataInput) {
         if (this.state.creditCardDetailsValid) {
-          this.setState({displayAddressDataInput: true} as State)
+          this.setState({ displayAddressDataInput: true } as State)
         }
       } else {
         if (this.state.addressDataValid) {
@@ -498,18 +538,19 @@ class CreditCardInputSection extends React.Component<Props, State> {
       }
     } else if (e.keyCode === ESCAPE_KEY) {
       if (this.state.displayAddressDataInput) {
-        this.setState({displayAddressDataInput: false} as State)
+        this.setState({ displayAddressDataInput: false } as State)
       }
     }
   }
-
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ showNotification }, dispatch)
 }
 
-const mappedCreditCardInputSection = connect(null, mapDispatchToProps)(CreditCardInputSection)
+const mappedCreditCardInputSection = connect(null, mapDispatchToProps)(
+  CreditCardInputSection,
+)
 
 export default createFragmentContainer(mappedCreditCardInputSection, {
   viewer: graphql`
@@ -543,5 +584,6 @@ export default createFragmentContainer(mappedCreditCardInputSection, {
           }
         }
       }
-    }`,
+    }
+  `,
 })

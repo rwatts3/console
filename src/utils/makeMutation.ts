@@ -1,4 +1,4 @@
-import { commitMutation, Environment, MutationConfig } from 'react-relay'
+import { commitMutation, MutationConfig } from 'react-relay'
 import environment from '../relayEnvironment'
 
 export function makeMutation(mutationConfig: MutationConfig): Promise<any> {

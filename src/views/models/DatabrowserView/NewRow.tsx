@@ -1,8 +1,5 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { nextStep } from '../../../actions/gettingStarted'
@@ -10,10 +7,10 @@ import { GettingStartedState } from '../../../types/gettingStarted'
 import { StateTree, ReduxAction } from '../../../types/reducers'
 import Cell from './Cell'
 import { TypedValue } from '../../../types/utils'
-import { Model, Field, TetherStep, Project } from '../../../types/types'
+import { Model, Field, Project } from '../../../types/types'
 import { getFirstInputFieldIndex, getDefaultFieldValues } from '../utils'
 import { Icon } from 'graphcool-styles'
-import { classnames } from '../../../utils/classnames'
+import * as cn from 'classnames'
 import * as Immutable from 'immutable'
 const classes: any = require('./NewRow.scss')
 import Tether from '../../../components/Tether/Tether'
@@ -51,7 +48,7 @@ class NewRow extends React.Component<Props, State> {
     super(props)
     this.state = {
       fieldValues: getDefaultFieldValues(
-        props.model.fields.edges.map((edge) => edge.node),
+        props.model.fields.edges.map(edge => edge.node),
         props.project.enums.edges.map(edge => edge.node),
       ),
       shouldFocus: true,
@@ -60,13 +57,15 @@ class NewRow extends React.Component<Props, State> {
 
   keyDown = (e: any) => {
     if (e.keyCode === 13) {
-      this.add()
+      setTimeout(() => {
+        this.add()
+      }, 20)
     }
   }
 
   getFields = () => {
     return this.props.model.fields.edges
-      .map((edge) => edge.node)
+      .map(edge => edge.node)
       .sort(idToBeginning)
   }
 
@@ -79,13 +78,10 @@ class NewRow extends React.Component<Props, State> {
 
     const inputIndex = getFirstInputFieldIndex(fields)
     const loading = this.props.writing
-    const {step} = this.props.gettingStarted
-
-    console.log(this.props.project)
 
     return (
       <div
-        className={classnames(classes.root, {
+        className={cn(classes.root, {
           [classes.loading]: loading,
         })}
         style={{
@@ -95,19 +91,19 @@ class NewRow extends React.Component<Props, State> {
         onKeyDown={this.keyDown}
       >
         {fields.map((field, index) => {
-          return (
-            this.renderCell(field, index, inputIndex, fields)
-          )
+          return this.renderCell(field, index, inputIndex, fields)
         })}
         <div
-          className={classnames(classes.buttons, {
+          className={cn(classes.buttons, {
             [classes.loading]: loading,
           })}
         >
-          <button onClick={(e: any) => {
-            this.props.cancel(e)
-            tracker.track(ConsoleEvents.Databrowser.AddNode.canceled())
-          }}>
+          <button
+            onClick={(e: any) => {
+              this.props.cancel(e)
+              tracker.track(ConsoleEvents.Databrowser.AddNode.canceled())
+            }}
+          >
             <Icon
               width={24}
               height={24}
@@ -117,17 +113,19 @@ class NewRow extends React.Component<Props, State> {
           </button>
 
           <Tether
-            steps={[{
-              step: 'STEP3_CLICK_SAVE_NODE1',
-              title: 'Save the node',
-            }]}
+            steps={[
+              {
+                step: 'STEP3_CLICK_SAVE_NODE1',
+                title: 'Save the node',
+              },
+            ]}
             width={280}
             offsetX={5}
             offsetY={-10}
             zIndex={2000}
-            horizontal='right'
+            horizontal="right"
           >
-            <button onClick={this.add} data-test='add-node'>
+            <button onClick={this.add} data-test="add-node">
               <Icon
                 width={24}
                 height={24}
@@ -141,21 +139,28 @@ class NewRow extends React.Component<Props, State> {
     )
   }
 
-  private renderCell = (field, index, inputIndex, fields) => (
+  private renderCell = (field, index, inputIndex, fields) =>
     <div
       key={field.id}
-      style={{width: this.props.columnWidths[field.name]}}
+      style={{ width: this.props.columnWidths[field.name] }}
       data-test={`new-row-cell-${field.name}`}
     >
       <Cell
         needsFocus={this.state.shouldFocus ? index === inputIndex : false}
-        selected={this.props.selectedCell.row === -1 && this.props.selectedCell.field === field.name}
+        selected={
+          this.props.selectedCell.row === -1 &&
+          this.props.selectedCell.field === field.name
+        }
         addnew={true}
         field={field}
         fields={fields}
         width={this.props.columnWidths[field.name]}
         update={this.update}
-        value={this.state.fieldValues[field.name] ? this.state.fieldValues[field.name].value : ''}
+        value={
+          this.state.fieldValues[field.name]
+            ? this.state.fieldValues[field.name].value
+            : ''
+        }
         cancel={this.props.cancel}
         projectId={this.props.projectId}
         modelNamePlural={this.props.model.namePlural}
@@ -165,7 +170,6 @@ class NewRow extends React.Component<Props, State> {
         enums={this.props.project.enums.edges.map(edge => edge.node)}
       />
     </div>
-  )
 
   private add = () => {
     // don't add when we're loading already new data
@@ -174,7 +178,10 @@ class NewRow extends React.Component<Props, State> {
     }
     const allRequiredFieldsGiven = this.state.fieldValues
       .mapToArray((fieldName, obj) => obj)
-      .reduce((acc, {field, value}) => acc && (value !== null || !field.isRequired), true)
+      .reduce(
+        (acc, { field, value }) => acc && (value !== null || !field.isRequired),
+        true,
+      )
     if (allRequiredFieldsGiven) {
       tracker.track(ConsoleEvents.Databrowser.AddNode.submitted())
       this.props.add(this.state.fieldValues)
@@ -184,9 +191,9 @@ class NewRow extends React.Component<Props, State> {
   private update = (value: TypedValue, field: Field, callback) => {
     this.props.updateCalled()
 
-    const {fieldValues} = this.state
+    const { fieldValues } = this.state
     fieldValues[field.name].value = value
-    this.setState({fieldValues, shouldFocus: false} as State)
+    this.setState({ fieldValues, shouldFocus: false } as State)
     callback()
   }
 }
@@ -199,8 +206,8 @@ const mapStateToProps = (state: StateTree) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({nextStep, nextCell}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ nextStep, nextCell }, dispatch)
 }
 
 const MappedNewRow = connect(mapStateToProps, mapDispatchToProps)(NewRow)

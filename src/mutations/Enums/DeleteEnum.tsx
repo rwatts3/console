@@ -24,13 +24,15 @@ function commit(input: Props) {
         enumId: input.enumId,
       },
     },
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'enums',
-      deletedIDFieldName: 'enum { id }',
-    }],
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'enums',
+        deletedIDFieldName: 'enum { id }',
+      },
+    ],
   })
 }
 

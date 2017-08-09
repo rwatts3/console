@@ -2,7 +2,7 @@ import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
 interface Props {
-  projectId: string,
+  projectId: string
   customerId: string
 }
 
@@ -31,13 +31,15 @@ function commit(input: Props) {
         projectId: input.projectId,
       },
     },
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'user',
-      parentID: input.customerId,
-      connectionName: 'projects',
-      deletedIDFieldName: 'deletedId',
-    }],
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'user',
+        parentID: input.customerId,
+        connectionName: 'projects',
+        deletedIDFieldName: 'deletedId',
+      },
+    ],
   })
 }
 

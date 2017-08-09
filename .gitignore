@@ -18,3 +18,4 @@ dll
 .happypack
 test.tsx
 **/__generated__
+dist*

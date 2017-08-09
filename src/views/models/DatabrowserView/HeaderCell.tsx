@@ -1,20 +1,17 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {Icon} from 'graphcool-styles'
-import {Link} from 'found'
-import {getFieldTypeName} from '../../../utils/valueparser'
-import {isScalar} from '../../../utils/graphql'
-import {Field} from '../../../types/types'
-import {classnames} from '../../../utils/classnames'
-import {connect} from 'react-redux'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { Icon } from 'graphcool-styles'
+import { Link } from 'found'
+import { getFieldTypeName } from '../../../utils/valueparser'
+import { isScalar } from '../../../utils/graphql'
+import { Field } from '../../../types/types'
+import * as cn from 'classnames'
+import { connect } from 'react-redux'
 import tracker from '../../../utils/metrics'
 const classes: any = require('./HeaderCell.scss')
-import {ConsoleEvents, SortOrder} from 'graphcool-metrics'
-import {setFieldPopupSource} from '../../../actions/popupSources'
-import {FieldPopupSource} from 'graphcool-metrics/dist'
+import { ConsoleEvents, SortOrder } from 'graphcool-metrics'
+import { setFieldPopupSource } from '../../../actions/popupSources'
+import { FieldPopupSource } from 'graphcool-metrics/dist'
 
 interface Props {
   field: Field
@@ -25,13 +22,12 @@ interface Props {
 }
 
 class HeaderCell extends React.Component<Props, {}> {
-
   constructor(props) {
     super(props)
   }
 
   render() {
-    const {field, sortOrder, params} = this.props
+    const { field, sortOrder, params } = this.props
 
     let type = getFieldTypeName(field)
     if (field.isList) {
@@ -43,22 +39,21 @@ class HeaderCell extends React.Component<Props, {}> {
 
     let editUrl = `/${params.projectName}/schema/${params.modelName}/edit/${field.name}`
     if (!isScalar(field.typeIdentifier)) {
-      editUrl = `/${params.projectName}/schema/relations/edit/${field.relation.name}`
+      editUrl = `/${params.projectName}/schema/relations/edit/${field.relation
+        .name}`
     }
 
     return (
-      <div
-        style={{ width: '100%' }}
-        className={classes.root}
-      >
+      <div style={{ width: '100%' }} className={classes.root}>
         <div className={classes.row}>
-          <div className='sort-wrapper'>
+          <div className="sort-wrapper">
             <style jsx>{`
               .sort-wrapper {
                 width: 31px;
               }
             `}</style>
-            {isScalar(field.typeIdentifier) && !field.isList && (
+            {isScalar(field.typeIdentifier) &&
+              !field.isList &&
               <div
                 onClick={this.toggleSortOrder}
                 className={`${classes.sort} ${sortOrder ? classes.active : ''}`}
@@ -69,30 +64,32 @@ class HeaderCell extends React.Component<Props, {}> {
                   height={6}
                   rotate={sortOrder === 'DESC' ? 180 : 0}
                 />
-              </div>
-            )}
+              </div>}
           </div>
-          <div className={classnames(classes.fieldName, {
-            [classes.nonsystem]: !field.isSystem,
-          })}>
+          <div
+            className={cn(classes.fieldName, {
+              [classes.nonsystem]: !field.isSystem,
+            })}
+          >
             {field.name}
-            <span className={classes.type}>{type}</span>
+            <span className={classes.type}>
+              {type}
+            </span>
             {!field.isSystem &&
-            <Link
-              to={editUrl}
-              className={classes.edit}
-              onClick={() => {
-                this.props.setFieldPopupSource('databrowser')
-                tracker.track(ConsoleEvents.Databrowser.editFieldClicked())
-              }}
-            >
-              <Icon
-                width={16}
-                height={16}
-                src={require('assets/icons/edit.svg')}
-              />
-            </Link>
-            }
+              <Link
+                to={editUrl}
+                className={classes.edit}
+                onClick={() => {
+                  this.props.setFieldPopupSource('databrowser')
+                  tracker.track(ConsoleEvents.Databrowser.editFieldClicked())
+                }}
+              >
+                <Icon
+                  width={16}
+                  height={16}
+                  src={require('assets/icons/edit.svg')}
+                />
+              </Link>}
           </div>
         </div>
       </div>
@@ -102,13 +99,14 @@ class HeaderCell extends React.Component<Props, {}> {
   private toggleSortOrder = () => {
     if (isScalar(this.props.field.typeIdentifier)) {
       this.props.toggleSortOrder()
-      tracker.track(ConsoleEvents.Databrowser.sorted({
-        order: this.props.sortOrder as SortOrder,
-        fieldName: this.props.field.name,
-      }))
+      tracker.track(
+        ConsoleEvents.Databrowser.sorted({
+          order: this.props.sortOrder as SortOrder,
+          fieldName: this.props.field.name,
+        }),
+      )
     }
   }
-
 }
 
 const ConnectedHeaderCell = connect(null, {
@@ -116,20 +114,20 @@ const ConnectedHeaderCell = connect(null, {
 })(HeaderCell)
 
 export default createFragmentContainer(ConnectedHeaderCell, {
-    field: graphql`
-      fragment HeaderCell_field on Field {
-        id
+  field: graphql`
+    fragment HeaderCell_field on Field {
+      id
+      name
+      isList
+      typeIdentifier
+      isSystem
+      isRequired
+      relatedModel {
         name
-        isList
-        typeIdentifier
-        isSystem
-        isRequired
-        relatedModel {
-          name
-        }
-        relation {
-          name
-        }
       }
-    `,
+      relation {
+        name
+      }
+    }
+  `,
 })

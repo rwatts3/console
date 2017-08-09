@@ -1,6 +1,9 @@
-import {ReduxAction} from '../types/reducers'
+import { ReduxAction } from '../types/reducers'
 import Constants from '../constants/gettingStarted'
-import {GettingStartedState, GettingStartedReducerState} from './../types/gettingStarted'
+import {
+  GettingStartedState,
+  GettingStartedReducerState,
+} from './../types/gettingStarted'
 
 const initialState: GettingStartedReducerState = {
   poll: false,
@@ -12,17 +15,24 @@ const initialState: GettingStartedReducerState = {
   }),
 }
 
-export function reduceGettingStartedState(state: GettingStartedReducerState = initialState, action: ReduxAction): GettingStartedReducerState { // tslint:disable-line
+export function reduceGettingStartedState(
+  state: GettingStartedReducerState = initialState,
+  action: ReduxAction,
+): GettingStartedReducerState {
+  // tslint:disable-line
   switch (action.type) {
     case Constants.UPDATE:
-      const gettingStartedState: GettingStartedState = action.payload.gettingStartedState
+      const gettingStartedState: GettingStartedState =
+        action.payload.gettingStartedState
       if (!gettingStartedState.selectedExample) {
-        gettingStartedState.selectedExample = state.gettingStartedState.selectedExample
+        gettingStartedState.selectedExample =
+          state.gettingStartedState.selectedExample
       }
-      return Object.assign({}, state, {
+      return {
+        ...state,
         gettingStartedState,
         poll: gettingStartedState.isCurrentStep('STEP5_SELECT_EXAMPLE'),
-      })
+      }
     default:
       return state
   }

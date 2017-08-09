@@ -1,10 +1,8 @@
-import {ITracker, Tracker, MockTracker} from 'graphcool-metrics'
+import { ITracker, Tracker, MockTracker } from 'graphcool-metrics'
 
 let tracker: ITracker
-if (__METRICS_ENDPOINT__) {
-  tracker = new Tracker(__METRICS_ENDPOINT__)
-} else {
-  tracker = new MockTracker()
-}
+tracker = __METRICS_ENDPOINT__
+  ? new Tracker(__METRICS_ENDPOINT__)
+  : new MockTracker()
 
 export default tracker

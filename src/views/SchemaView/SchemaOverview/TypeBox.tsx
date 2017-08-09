@@ -1,22 +1,20 @@
 import * as React from 'react'
-import {Model} from '../../../types/types'
-import * as Relay from 'react-relay/classic'
+import { Model } from '../../../types/types'
 import FieldItem from './FieldItem'
-import {Link} from 'found'
-import {Icon, $v} from 'graphcool-styles'
-import {isScalar} from '../../../utils/graphql'
-import TypeBoxSettings from './TypeBoxSettings'
-import {idToBeginning} from '../../../utils/utils'
+import { Link } from 'found'
+import { Icon, $v } from 'graphcool-styles'
+import { isScalar } from '../../../utils/graphql'
+import { idToBeginning } from '../../../utils/utils'
 import Tether from '../../../components/Tether/Tether'
-import {connect} from 'react-redux'
-import {nextStep} from '../../../actions/gettingStarted'
-import {GettingStartedState} from '../../../types/gettingStarted'
+import { connect } from 'react-redux'
+import { nextStep } from '../../../actions/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
 import Info from '../../../components/Info'
 import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {showNotification} from '../../../actions/notification'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {withRouter} from 'found'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { showNotification } from '../../../actions/notification'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { withRouter } from 'found'
 
 interface Props {
   projectName: string
@@ -27,7 +25,7 @@ interface Props {
   gettingStartedState: GettingStartedState
   highlighted?: boolean
   showNotification: ShowNotificationCallback
-  router: ReactRouter.InjectedRouter
+  router: InjectedFoundRouter
 }
 
 interface State {
@@ -37,7 +35,7 @@ interface State {
   modelName: string
 }
 
-class TypeBox extends React.Component<Props,State> {
+class TypeBox extends React.Component<Props, State> {
   ref: any
   constructor(props) {
     super(props)
@@ -51,41 +49,41 @@ class TypeBox extends React.Component<Props,State> {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.extended !== nextProps.extended) {
-      this.setState({extended: undefined} as State)
+      this.setState({ extended: undefined } as State)
     }
   }
   componentDidMount() {
     this.scrollIntoView()
-    setTimeout(
-      () => {
-        this.setState({greenBackground: false} as State)
-      },
-      2500,
-    )
+    setTimeout(() => {
+      this.setState({ greenBackground: false } as State)
+    }, 2500)
   }
   componentDidUpdate() {
     this.scrollIntoView()
   }
   scrollIntoView() {
     if (typeof this.props.highlighted === 'boolean' && this.props.highlighted) {
-      setTimeout(
-        () => {
-          this.ref.scrollIntoView()
-        },
-        100,
-      )
+      setTimeout(() => {
+        this.ref.scrollIntoView()
+      }, 100)
     }
   }
   render() {
-    const {model, projectName, highlighted} = this.props
+    const { model, projectName } = this.props
     const propsExtended = this.props.extended
     const stateExtended = this.state.extended
-    const extended = typeof stateExtended === 'boolean' ? stateExtended : propsExtended
+    const extended =
+      typeof stateExtended === 'boolean' ? stateExtended : propsExtended
     const fields = model.fields.edges.map(edge => edge.node).sort(idToBeginning)
 
     const permissions = model.permissions.edges.map(edge => edge.node)
     return (
-      <div className={'type-box' + (this.state.greenBackground ? ' highlighted' : '')} ref={ref => this.ref = ref}>
+      <div
+        className={
+          'type-box' + (this.state.greenBackground ? ' highlighted' : '')
+        }
+        ref={ref => (this.ref = ref)}
+      >
         <style jsx>{`
           .type-box {
             @p: .br2, .bgWhite, .mb16, .relative, .w100;
@@ -96,10 +94,16 @@ class TypeBox extends React.Component<Props,State> {
             @p: .mt16;
           }
           .type-box.highlighted {
-            background-color: #E9F9EC;
+            background-color: #e9f9ec;
           }
           .type-box-head {
-            @p: .flex, .itemsCenter, .bb, .bBlack10, .relative, .justifyBetween, .cbox;
+            @p: .flex,
+              .itemsCenter,
+              .bb,
+              .bBlack10,
+              .relative,
+              .justifyBetween,
+              .cbox;
             height: 65px;
           }
           .type-box-head.extended {
@@ -119,7 +123,13 @@ class TypeBox extends React.Component<Props,State> {
             letter-spacing: 0.53px;
           }
           .extend-button {
-            @p: .bgGreen, .br2, .relative, .flex, .itemsCenter, .justifyCenter, .pointer;
+            @p: .bgGreen,
+              .br2,
+              .relative,
+              .flex,
+              .itemsCenter,
+              .justifyCenter,
+              .pointer;
             left: -4px;
             width: 16px;
             height: 16px;
@@ -137,7 +147,18 @@ class TypeBox extends React.Component<Props,State> {
             @p: .w100;
           }
           .add-button {
-            @p: .bgWhite, .relative, .br2, .buttonShadow, .black60, .ttu, .fw6, .f12, .pa6, .flex, .ml10, .pointer;
+            @p: .bgWhite,
+              .relative,
+              .br2,
+              .buttonShadow,
+              .black60,
+              .ttu,
+              .fw6,
+              .f12,
+              .pa6,
+              .flex,
+              .ml10,
+              .pointer;
             :global(i) {
             }
             span {
@@ -145,7 +166,7 @@ class TypeBox extends React.Component<Props,State> {
             }
           }
           .add-button :global(i) {
-              @p: .o30;
+            @p: .o30;
           }
           .add-button:hover {
             @p: .blue;
@@ -177,7 +198,17 @@ class TypeBox extends React.Component<Props,State> {
             fill: $gray50 !important;
           }
           .system-tag {
-            @p: .bgBlack04, .br2, .black40, .dib, .ml12, .f12, .flex, .itemsCenter, .ph4, .ttu, .fw6;
+            @p: .bgBlack04,
+              .br2,
+              .black40,
+              .dib,
+              .ml12,
+              .f12,
+              .flex,
+              .itemsCenter,
+              .ph4,
+              .ttu,
+              .fw6;
           }
           a.underline {
             @p: .underline;
@@ -194,8 +225,8 @@ class TypeBox extends React.Component<Props,State> {
           }
         `}</style>
         <div className={'type-box-head' + (extended ? ' extended' : '')}>
-          <div className='flexy'>
-            <div className='extend-button' onClick={this.toggleExtended}>
+          <div className="flexy">
+            <div className="extend-button" onClick={this.toggleExtended}>
               <Icon
                 src={require('graphcool-styles/icons/stroke/arrowDown.svg')}
                 stroke
@@ -206,66 +237,69 @@ class TypeBox extends React.Component<Props,State> {
                 width={16}
               />
             </div>
-            <div className='title'>
-              {this.state.editingModelName ? (
-                <input
-                  type='text'
-                  value={this.state.modelName}
-                  className='model-name'
-                  onChange={this.onChangeModelName}
-                  onKeyDown={this.handleKeyDown}
-                  onBlur={this.handleOnBlur}
-                  autoFocus
-                />
-              ) : (
-                <div
-                  className='model-name'
-                  title={model.description || ''}
-                  onDoubleClick={this.editModelName}
-                >
-                  {model.name}
-                </div>
-              )}
-              {model.isSystem && (
+            <div className="title">
+              {this.state.editingModelName
+                ? <input
+                    type="text"
+                    value={this.state.modelName}
+                    className="model-name"
+                    onChange={this.onChangeModelName}
+                    onKeyDown={this.handleKeyDown}
+                    onBlur={this.handleOnBlur}
+                    autoFocus
+                  />
+                : <div
+                    className="model-name"
+                    title={model.description || ''}
+                    onDoubleClick={this.editModelName}
+                  >
+                    {model.name}
+                  </div>}
+              {model.isSystem &&
                 <Info
-                  customTip={(
+                  customTip={
                     <Icon
                       src={require('assets/icons/lock.svg')}
-                      className='lock'
+                      className="lock"
                     />
-                  )}
+                  }
                 >
-                  <span>This is a system type, generated by Graphcool. You can read more about system types </span>
+                  <span>
+                    This is a system type, generated by Graphcool. You can read
+                    more about system types{' '}
+                  </span>
                   <a
-                    href='https://www.graph.cool/docs/reference/platform/system-artifacts-uhieg2shio/'
-                    about='_blank'
-                    className='underline'
+                    href="https://www.graph.cool/docs/reference/platform/system-artifacts-uhieg2shio/"
+                    about="_blank"
+                    className="underline"
                   >
                     here
                   </a>
-                </Info>
-              )}
+                </Info>}
             </div>
           </div>
-          <div className='flexy'>
-            {model.name === 'Post' ? (
-              <Tether
-                steps={[{
-                  step: 'STEP3_CLICK_DATA_BROWSER',
-                  title: 'Switch to Data Browser',
-                  description: 'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
-                }]}
-                width={280}
-                offsetX={10}
-                offsetY={-5}
-                zIndex={2000}
-                style={{
-                  pointerEvents: 'none',
-                }}
-              >
+          <div className="flexy">
+            {model.name === 'Post'
+              ? <Tether
+                  steps={[
+                    {
+                      step: 'STEP3_CLICK_DATA_BROWSER',
+                      title: 'Switch to Data Browser',
+                      description:
+                        'In the Data Browser you can view and manage your data ("Post" nodes in our case).',
+                    },
+                  ]}
+                  width={280}
+                  offsetX={10}
+                  offsetY={-5}
+                  zIndex={2000}
+                  style={{
+                    pointerEvents: 'none',
+                  }}
+                >
                   <Link
                     to={`/${projectName}/models/${model.name}/databrowser`}
-                    className='simple-button'
+                    className="simple-button"
                   >
                     <Icon
                       src={require('assets/icons/databrowser.svg')}
@@ -274,21 +308,19 @@ class TypeBox extends React.Component<Props,State> {
                     <span>Data</span>
                   </Link>
                 </Tether>
-            ) : (
+              : <Link
+                  to={`/${projectName}/models/${model.name}/databrowser`}
+                  className="simple-button"
+                >
+                  <Icon
+                    src={require('assets/icons/databrowser.svg')}
+                    color={$v.gray30}
+                  />
+                  <span>Data</span>
+                </Link>}
+            {!model.isSystem &&
               <Link
-                to={`/${projectName}/models/${model.name}/databrowser`}
-                className='simple-button'
-              >
-                <Icon
-                  src={require('assets/icons/databrowser.svg')}
-                  color={$v.gray30}
-                />
-                <span>Data</span>
-              </Link>
-            )}
-            {!model.isSystem && (
-              <Link
-                className='settings'
+                className="settings"
                 to={`/${projectName}/schema/${model.name}/edit`}
               >
                 <Icon
@@ -296,7 +328,7 @@ class TypeBox extends React.Component<Props,State> {
                   color={$v.gray20}
                 />
               </Link>
-              /*
+            /*
               <TypeBoxSettings>
                 <div className='setting' onClick={() => this.props.onEditModel(model)}>
                   <Icon
@@ -307,25 +339,29 @@ class TypeBox extends React.Component<Props,State> {
                 </div>
               </TypeBoxSettings>
                */
-            )}
+            }
           </div>
         </div>
-        {extended && (
-          <div className='add-buttons' onClick={e => e.stopPropagation()}>
-            {model.name === 'Post' ? (
-                <Tether
-                  steps={[{
+        {extended &&
+          <div className="add-buttons" onClick={e => e.stopPropagation()}>
+            {model.name === 'Post'
+              ? <Tether
+                  steps={[
+                    {
                       step: 'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
                       title: 'Create a field for the image URL',
-                    }, {
+                    },
+                    {
                       step: 'STEP2_CREATE_FIELD_DESCRIPTION',
                       title: 'Good job!',
-                      description: 'Create another field called "description" which is of type "String"',
-                    }]}
+                      description:
+                        'Create another field called "description" which is of type "String"',
+                    },
+                  ]}
                   offsetX={1}
                   offsetY={-1}
                   width={240}
-                  horizontal='left'
+                  horizontal="left"
                   zIndex={2}
                 >
                   <Link
@@ -333,7 +369,7 @@ class TypeBox extends React.Component<Props,State> {
                     onClick={this.handleCreateFieldClick}
                     data-test={model.name === 'Post' ? 'add-post-field' : ''}
                   >
-                    <div className='add-button'>
+                    <div className="add-button">
                       <Icon
                         src={require('assets/icons/addField.svg')}
                         strokeWidth={1.5}
@@ -346,9 +382,8 @@ class TypeBox extends React.Component<Props,State> {
                     </div>
                   </Link>
                 </Tether>
-              ) : (
-                <Link to={`/${projectName}/schema/${model.name}/create`}>
-                  <div className='add-button'>
+              : <Link to={`/${projectName}/schema/${model.name}/create`}>
+                  <div className="add-button">
                     <Icon
                       src={require('assets/icons/addField.svg')}
                       strokeWidth={1.5}
@@ -359,40 +394,44 @@ class TypeBox extends React.Component<Props,State> {
                     />
                     <span>Add Field</span>
                   </div>
-                </Link>
-              )}
-            <Link to={`/${projectName}/schema/relations/create?leftModelName=${model.name}`}>
-              <div className='add-button'>
-                <Icon src={require('assets/icons/addRelation.svg')} strokeWidth={1.5} stroke color={$v.black} />
+                </Link>}
+            <Link
+              to={`/${projectName}/schema/relations/create?leftModelName=${model.name}`}
+            >
+              <div className="add-button">
+                <Icon
+                  src={require('assets/icons/addRelation.svg')}
+                  strokeWidth={1.5}
+                  stroke
+                  color={$v.black}
+                />
                 <span>Add Relation</span>
               </div>
             </Link>
-          </div>
-        )}
+          </div>}
         <div className={'type-box-body' + (extended ? ' extended' : '')}>
-          {!extended && (
-            <div className='flat-field-list'>
+          {!extended &&
+            <div className="flat-field-list">
               {fields.map((field, index) => {
-                const text = field.name + (index < (fields.length - 1) ? ', ' : '')
+                const text =
+                  field.name + (index < fields.length - 1 ? ', ' : '')
                 let link = `/${projectName}/schema/${model.name}/edit/${field.name}`
                 if (!isScalar(field.typeIdentifier)) {
-                  link = `/${projectName}/schema/relations/edit/${field.relation.name}`
+                  link = `/${projectName}/schema/relations/edit/${field.relation
+                    .name}`
                 }
-                return (
-                  field.isSystem ? (
-                    <span key={field.id}>{text}</span>
-                  ) : (
-                    <Link key={field.id} to={link}>
+                return field.isSystem
+                  ? <span key={field.id}>
+                      {text}
+                    </span>
+                  : <Link key={field.id} to={link}>
                       {text}
                     </Link>
-                  )
-                )
               })}
-            </div>
-          )}
-          {extended && (
-            <div className='big-field-list'>
-              {fields.map((field, index) => (
+            </div>}
+          {extended &&
+            <div className="big-field-list">
+              {fields.map((field, index) =>
                 <FieldItem
                   key={field.id}
                   field={field}
@@ -400,10 +439,9 @@ class TypeBox extends React.Component<Props,State> {
                   hideBorder={index === 0}
                   projectName={this.props.projectName}
                   modelName={model.name}
-                />
-              ))}
-            </div>
-          )}
+                />,
+              )}
+            </div>}
         </div>
       </div>
     )
@@ -411,16 +449,21 @@ class TypeBox extends React.Component<Props,State> {
 
   private handleCreateFieldClick = () => {
     if (
-      this.props.gettingStartedState.isCurrentStep('STEP2_CLICK_CREATE_FIELD_IMAGEURL') ||
-      this.props.gettingStartedState.isCurrentStep('STEP2_CREATE_FIELD_DESCRIPTION')
+      this.props.gettingStartedState.isCurrentStep(
+        'STEP2_CLICK_CREATE_FIELD_IMAGEURL',
+      ) ||
+      this.props.gettingStartedState.isCurrentStep(
+        'STEP2_CREATE_FIELD_DESCRIPTION',
+      )
     ) {
       this.props.nextStep()
     }
   }
 
   private toggleExtended = () => {
-    this.setState(({extended, ...rest}) => {
-      const newExtended = typeof extended === 'boolean' ? !extended : !this.props.extended
+    this.setState(({ extended, ...rest }) => {
+      const newExtended =
+        typeof extended === 'boolean' ? !extended : !this.props.extended
       return {
         ...rest,
         extended: newExtended,
@@ -433,9 +476,9 @@ class TypeBox extends React.Component<Props,State> {
       return
     }
     if (this.props.model.itemCount === 0) {
-      this.setState({editingModelName: true} as State)
+      this.setState({ editingModelName: true } as State)
     } else {
-      const {projectName, model} = this.props
+      const { projectName, model } = this.props
       this.props.router.push(`/${projectName}/schema/${model.name}/edit`)
     }
     e.stopPropagation()
@@ -452,14 +495,15 @@ class TypeBox extends React.Component<Props,State> {
   }
 
   private stopEditModelName() {
-    this.setState({editingModelName: false} as State)
+    this.setState({ editingModelName: false } as State)
   }
 
   private editModel = (modelName: string) => {
     UpdateModelNameMutation.commit({
       name: modelName,
       id: this.props.model.id,
-    }).then(() => {
+    })
+      .then(() => {
         this.stopEditModelName()
       })
       .catch(transaction => {
@@ -469,7 +513,7 @@ class TypeBox extends React.Component<Props,State> {
   }
 
   private onChangeModelName = e => {
-    this.setState({modelName: e.target.value} as State)
+    this.setState({ modelName: e.target.value } as State)
   }
 }
 

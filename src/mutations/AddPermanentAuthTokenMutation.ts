@@ -38,17 +38,19 @@ function commit(input: Props) {
         name: input.tokenName,
       },
     },
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'permanentAuthTokens',
-      edgeName: 'permanentAuthTokenEdge',
-      rangeBehaviors: {
-        '': 'append',
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'permanentAuthTokens',
+        edgeName: 'permanentAuthTokenEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 
-export default {commit}
+export default { commit }

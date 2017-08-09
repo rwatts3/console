@@ -1,26 +1,19 @@
 import * as React from 'react'
-// import {withRouter} from 'found'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import * as cookiestore from 'cookiestore'
-import {default as mapProps} from 'map-props'
-import AddProjectMutation from '../../mutations/AddProjectMutation'
-import {Viewer} from '../../types/types'
-import tracker from '../../utils/metrics'
+import { default as mapProps } from 'map-props'
+import { Viewer } from '../../types/types'
 const classes: any = require('./RootRedirectView.scss')
-import {ConsoleEvents} from 'graphcool-metrics'
+import AddProjectMutation from '../../mutations/AddProjectMutation'
 
 interface Props {
-  viewer: Viewer,
-  projectName: string,
-  router: ReactRouter.InjectedRouter
+  viewer: Viewer
+  projectName: string
+  router: InjectedFoundRouter
   location: any
 }
 
 class RootRedirectView extends React.Component<Props, {}> {
-
   constructor(props: Props) {
     super(props)
   }
@@ -42,7 +35,7 @@ class RootRedirectView extends React.Component<Props, {}> {
     return true
   }
 
-  render () {
+  render() {
     if (!this.props.projectName) {
       return (
         <div className={classes.addProject} onClick={this.addProject}>
@@ -51,43 +44,40 @@ class RootRedirectView extends React.Component<Props, {}> {
       )
     }
 
-    return (
-      <div>Redirecting...</div>
-    )
+    return <div>Redirecting...</div>
   }
 
   private addProject = (): void => {
+    // TODO reimplement project prompt here
     const projectName = window.prompt('Project name')
-    // if (projectName) {
-    //   Relay.Store.commitUpdate(
-    //     new AddProjectMutation(
-    //       {
-    //         projectName,
-    //         customerId: this.props.viewer.user.id,
-    //         region: 'US_WEST_2',
-    //       }),
-    //     {
-    //       onSuccess: () => {
-    //         tracker.track(ConsoleEvents.Project.created({name: projectName}))
-    //         this.props.router.replace(`/${projectName}${this.props.location.search}`)
-    //       },
-    //     })
-    // }
+    if (projectName) {
+      AddProjectMutation.commit({
+        projectName,
+        customerId: this.props.viewer.user.id,
+        region: 'US_WEST_2',
+      }).then(() => {
+        this.props.router.replace(
+          `/${projectName}${this.props.location.search}`,
+        )
+      })
+    }
   }
 }
 
 const MappedRootRedirectView = mapProps({
-  viewer: (props) => props.viewer,
-  projectName: (props) => {
+  viewer: props => props.viewer,
+  projectName: props => {
     if (!props.viewer.user || props.viewer.user.projects.edges.length === 0) {
       return null
     }
 
-    const projects = props.viewer.user.projects.edges.map((edge) => edge.node)
+    const projects = props.viewer.user.projects.edges.map(edge => edge.node)
     let project
 
     if (cookiestore.has('graphcool_last_used_project_id')) {
-      project = projects.find((p) => p.id === cookiestore.get('graphcool_last_used_project_id'))
+      project = projects.find(
+        p => p.id === cookiestore.get('graphcool_last_used_project_id'),
+      )
     }
 
     if (!project) {

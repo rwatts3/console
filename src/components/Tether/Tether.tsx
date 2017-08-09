@@ -1,10 +1,9 @@
 import * as React from 'react'
 import TetherComponent from 'react-tether'
-import {connect} from 'react-redux'
-import {GettingStartedState} from '../../types/gettingStarted'
+import { connect } from 'react-redux'
+import { GettingStartedState } from '../../types/gettingStarted'
 import * as cn from 'classnames'
-import {TetherStep} from '../../types/types'
-const classes: any = require('./Tether.scss')
+import { TetherStep } from '../../types/types'
 
 interface Props {
   steps: TetherStep[]
@@ -24,7 +23,6 @@ interface Props {
 }
 
 class Tether extends React.Component<Props, {}> {
-
   static defaultProps = {
     offsetX: 0,
     offsetY: 0,
@@ -33,19 +31,22 @@ class Tether extends React.Component<Props, {}> {
     horizontal: 'left',
   }
 
-  refs: {
-    container: any,
-  }
+  container: any
 
   componentDidMount() {
     // assure that tether is in screen
-    if (this.refs.container && typeof this.refs.container.scrollIntoViewIfNeeded === 'function') {
-      this.refs.container.scrollIntoViewIfNeeded()
+    if (
+      this.refs.container &&
+      typeof (this.refs.container as any).scrollIntoViewIfNeeded === 'function'
+    ) {
+      ;(this.refs.container as any).scrollIntoViewIfNeeded()
     }
   }
 
   render() {
-    const step = this.props.steps.find((s) => this.props.gettingStartedState.isCurrentStep(s.step))
+    const step = this.props.steps.find(s =>
+      this.props.gettingStartedState.isCurrentStep(s.step),
+    )
     const bottom = this.props.side === 'bottom'
     const left = this.props.horizontal === 'left'
 
@@ -54,7 +55,7 @@ class Tether extends React.Component<Props, {}> {
     }
 
     if (this.props.style) {
-      style = Object.assign({}, style, this.props.style)
+      style = { ...style, ...this.props.style }
     }
 
     return (
@@ -62,20 +63,27 @@ class Tether extends React.Component<Props, {}> {
         style={style}
         targetOffset={`${this.props.offsetY}px ${this.props.offsetX}px`}
         attachment={`${bottom ? 'top' : 'bottom'} ${this.props.horizontal}`}
-        targetAttachment={`${bottom ? 'bottom' : 'top'} ${this.props.horizontal}`}
+        targetAttachment={`${bottom ? 'bottom' : 'top'} ${this.props
+          .horizontal}`}
       >
         {this.props.children}
-        {step && (
+        {step &&
           <div
-            className={cn('tether', {bottom, top: !bottom, left, right: !left})}
-            style={{width: this.props.width, zIndex: 9}}
+            className={cn('tether', {
+              bottom,
+              top: !bottom,
+              left,
+              right: !left,
+            })}
+            style={{ width: this.props.width, zIndex: 9 }}
             onMouseEnter={this.props.onMouseEnter}
             onMouseLeave={this.props.onMouseLeave}
-            ref='container'
+            ref={this.setContainer}
           >
             <style jsx>{`
               .tether {
-                @p: .bgBlue, .white, .f16, .flex, .flexColumn, .overlayShadow, .br2;
+                @p: .bgBlue, .white, .f16, .flex, .flexColumn, .overlayShadow,
+                  .br2;
                 margin-top: 20px;
                 line-height: 20px;
               }
@@ -123,34 +131,36 @@ class Tether extends React.Component<Props, {}> {
               }
 
               .btn {
-                @p: .buttonShadow, .bgWhite, .blue, .ttu, .f12, .br2, .mt16, .fw6, .dib, .pointer;
+                @p: .buttonShadow, .bgWhite, .blue, .ttu, .f12, .br2, .mt16,
+                  .fw6, .dib, .pointer;
                 letter-spacing: 0.5px;
                 padding: 8px 11px;
               }
             `}</style>
-            <div className='tether-content'>
+            <div className="tether-content">
               <h2>
                 {step.title}
               </h2>
-              {step.description && (
+              {step.description &&
                 <p>
                   {step.description}
-                </p>
-              )}
-              {step.buttonText && (
-                <div className='btn' onClick={(e) => this.props.onClick(e, step)}>
+                </p>}
+              {step.buttonText &&
+                <div className="btn" onClick={e => this.props.onClick(e, step)}>
                   {step.buttonText}
-                </div>
-              )}
+                </div>}
             </div>
-          </div>
-        )}
+          </div>}
       </TetherComponent>
     )
   }
+
+  private setContainer = ref => {
+    this.container = ref
+  }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     gettingStartedState: state.gettingStarted.gettingStartedState,
   }

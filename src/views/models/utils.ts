@@ -1,18 +1,19 @@
-import {isScalar} from '../../utils/graphql'
+import { isScalar } from '../../utils/graphql'
 import { Enum, Field, FieldWidths } from '../../types/types'
-import {TypedValue, NonScalarValue, ScalarValue} from '../../types/utils'
-import {stringToValue, valueToString, getFieldTypeName} from '../../utils/valueparser'
+import { TypedValue, NonScalarValue, ScalarValue } from '../../types/utils'
+import {
+  stringToValue,
+  valueToString,
+  getFieldTypeName,
+} from '../../utils/valueparser'
 import calculateSize from 'calculate-size'
-import * as Immutable from 'immutable'
-import {isNonScalarList} from '../../utils/graphql'
+import { isNonScalarList } from '../../utils/graphql'
 
 export function emptyDefault(field: Field, enums: Enum[]): TypedValue {
-
   if (field.isRequired) {
     return null
   }
-
-  const value = function (): any {
+  const value = (function getValue(): any {
     switch (field.typeIdentifier) {
       case 'Int':
         return 0
@@ -30,7 +31,7 @@ export function emptyDefault(field: Field, enums: Enum[]): TypedValue {
       default:
         return null
     }
-  }()
+  })()
 
   if (!field.isList) {
     return value
@@ -67,7 +68,9 @@ function valueToGQL(value: TypedValue, field: Field): string {
 }
 
 export function toGQL(value: TypedValue, field: Field): string {
-  let key = isScalar(field.typeIdentifier) ? field.name : field.isList ? `${field.name}Ids` : `${field.name}Id`
+  const key = isScalar(field.typeIdentifier)
+    ? field.name
+    : field.isList ? `${field.name}Ids` : `${field.name}Id`
 
   if (value === null && field.isRequired) {
     return ''
@@ -105,21 +108,25 @@ export function getFirstInputFieldIndex(fields: Field[]): number {
   }
 }
 
-export function getDefaultFieldValues(fields: Field[], enums: Enum[]): { [key: string]: any } {
-  return fields.filter((f) => f.name !== 'id')
-    .mapToObject(
-      (field) => field.name,
-      (field) => ({
-        value: stringToValue(field.defaultValue, field) || emptyDefault(field, enums),
-        field: field,
-      }),
-    )
+export function getDefaultFieldValues(
+  fields: Field[],
+  enums: Enum[],
+): { [key: string]: any } {
+  return fields.filter(f => f.name !== 'id').mapToObject(
+    field => field.name,
+    field => ({
+      value:
+        stringToValue(field.defaultValue, field) || emptyDefault(field, enums),
+      field,
+    }),
+  )
 }
 
-export function calculateFieldColumnWidths (width: number,
-                                            fields: Field[],
-                                            nodes: any,
-                                           ): FieldWidths {
+export function calculateFieldColumnWidths(
+  width: number,
+  fields: Field[],
+  nodes: any,
+): FieldWidths {
   const cellFontOptions = {
     font: 'Open Sans',
     fontSize: '12px',
@@ -131,8 +138,8 @@ export function calculateFieldColumnWidths (width: number,
   }
 
   const widths = fields.mapToObject(
-    (field) => field.name,
-    (field) => {
+    field => field.name,
+    field => {
       switch (field.name) {
         case 'id':
           return 220
@@ -142,15 +149,24 @@ export function calculateFieldColumnWidths (width: number,
       }
 
       let cellWidths = nodes
-      .filter(node => !!node)
-      .map(node => node.hasOwnProperty('get') ? node.get(field.name) : node[field.name])
-      .map(value => valueToString(value, field, false))
-      .map(str => calculateSize(str, cellFontOptions).width + 41)
+        .filter(node => !!node)
+        .map(
+          node =>
+            node.hasOwnProperty('get')
+              ? node.get(field.name)
+              : node[field.name],
+        )
+        .map(value => valueToString(value, field, false))
+        .map(str => calculateSize(str, cellFontOptions).width + 41)
       if (cellWidths.hasOwnProperty('toArray')) {
         cellWidths = cellWidths.toArray()
       }
 
-      const headerWidth = calculateSize(`${field.name} ${getFieldTypeName(field)}`, headerFontOptions).width + 90
+      const headerWidth =
+        calculateSize(
+          `${field.name} ${getFieldTypeName(field)}`,
+          headerFontOptions,
+        ).width + 90
 
       const maxWidth = Math.max(...cellWidths, headerWidth)
       const lowerLimit = field.typeIdentifier === 'DateTime' ? 250 : 150
@@ -160,19 +176,21 @@ export function calculateFieldColumnWidths (width: number,
       const relationExtra = field.typeIdentifier === 'Relation' ? 50 : 0
 
       return (
-        maxWidth > upperLimit ?
-        upperLimit :
-        (maxWidth < lowerLimit ? lowerLimit : maxWidth)
-      ) + idExtra + relationExtra
+        (maxWidth > upperLimit
+          ? upperLimit
+          : maxWidth < lowerLimit ? lowerLimit : maxWidth) +
+        idExtra +
+        relationExtra
+      )
     },
   )
 
-  const totalWidth = fields.reduce((sum, {name}) => sum + widths[name], 0)
+  const totalWidth = fields.reduce((sum, { name }) => sum + widths[name], 0)
   const fieldWidth = width - 34 - 250
   if (totalWidth < fieldWidth) {
-    fields.forEach(({name}) => {
+    fields.forEach(({ name }) => {
       if (!['id', 'createdAt', 'updatedAt'].includes(name)) {
-        widths[name] = (widths[name] / totalWidth) * fieldWidth
+        widths[name] = widths[name] / totalWidth * fieldWidth
       }
     })
   }

@@ -16,7 +16,7 @@ const Overlay = styled.span`
     position: absolute;
     top: -6px;
     left: 50%;
-    transform: translate(-50%,0);
+    transform: translate(-50%, 0);
     width: 0;
     height: 0;
     border-style: solid;
@@ -41,26 +41,33 @@ interface State {
 }
 
 export default class Hint extends React.Component<Props, State> {
-
   state: State = {
     showOverlay: false,
   }
 
   render() {
-
     return (
       <div
         className={cx($p.relative, this.props.className, $p.dib)}
-        onMouseEnter={() => this.setState({showOverlay: true} as State)}
-        onMouseLeave={() => this.setState({showOverlay: false} as State)}
-        onClick={() => this.setState({showOverlay: !this.state.showOverlay} as State)}
+        onMouseEnter={() => this.setState({ showOverlay: true } as State)}
+        onMouseLeave={() => this.setState({ showOverlay: false } as State)}
+        onClick={() =>
+          this.setState({ showOverlay: !this.state.showOverlay } as State)}
       >
         {this.props.children}
         {this.state.showOverlay &&
-        <Overlay className={cx($g.overlay, $p.absolute, $p.fw4, $p.left50, $p.tlHCenter, $p.tc)}>
-          {this.props.text}
-        </Overlay>
-        }
+          <Overlay
+            className={cx(
+              $g.overlay,
+              $p.absolute,
+              $p.fw4,
+              $p.left50,
+              $p.tlHCenter,
+              $p.tc,
+            )}
+          >
+            {this.props.text}
+          </Overlay>}
       </div>
     )
   }

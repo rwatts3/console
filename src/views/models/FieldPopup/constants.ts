@@ -1,4 +1,4 @@
-import {Constraint, Field} from '../../../types/types'
+import { Constraint, Field } from '../../../types/types'
 export const fieldTypes = [
   'String',
   'Int',

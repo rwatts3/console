@@ -1,21 +1,23 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import * as Immutable from 'immutable'
 import FloatingInput from '../../../components/FloatingInput/FloatingInput'
 import UpdateAuthProviderMutation from '../../../mutations/UpdateAuthProviderMutation'
-import {connect} from 'react-redux'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {showNotification} from '../../../actions/notification'
-import {bindActionCreators} from 'redux'
-import {Project, AuthProvider, AuthProviderType, Model, PackageDefinition} from '../../../types/types'
-import {ShowNotificationCallback} from '../../../types/utils'
+import { connect } from 'react-redux'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { showNotification } from '../../../actions/notification'
+import { bindActionCreators } from 'redux'
+import {
+  Project,
+  AuthProvider,
+  AuthProviderType,
+  PackageDefinition,
+} from '../../../types/types'
+import { ShowNotificationCallback } from '../../../types/utils'
 import * as cx from 'classnames'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 import InstallPackage from '../../../mutations/Packages/InstallPackage'
 import getAnonymousPackage from './auth'
 import mapProps from '../../../components/MapProps/MapProps'
@@ -33,11 +35,11 @@ interface AuthProviderErrors {
   auth0: {
     clientId: boolean
     domain: boolean
-    clientSecret: boolean,
+    clientSecret: boolean
   }
   digits: {
     consumerKey: boolean
-    consumerSecret: boolean,
+    consumerSecret: boolean
   }
 }
 
@@ -49,7 +51,6 @@ interface State {
 }
 
 class AuthProviderSidePanel extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props)
 
@@ -59,276 +60,323 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       authProvider: this.getAuthProvider(props),
       hasChanged: false,
       errors: this.initErrors(),
-      selectedAnonymousModel: props.anonymousPackage ?
-        this.getSelectedType(props.anonymousPackage.definition) : firstModel.name,
+      selectedAnonymousModel: props.anonymousPackage
+        ? this.getSelectedType(props.anonymousPackage.definition)
+        : firstModel.name,
     }
-    global['a'] = this
   }
 
   componentWillReceiveProps(props: Props) {
-    this.setState({
-      authProvider: this.getAuthProvider(props),
-      hasChanged: false,
-    } as State)
+    this.setState(
+      {
+        authProvider: this.getAuthProvider(props),
+        hasChanged: false,
+      } as State,
+    )
   }
 
   render() {
-    const {authProvider, errors} = this.state
+    const { authProvider, errors } = this.state
     const text = texts[this.props.selectedType]
 
     return (
-      <div className='flex flex-column justify-between w-100'>
-        <div className='flex flex-column'>
-          <div className='w-100 white pa-25 fw1 bg-black-80 relative'>
+      <div className="auth-provider-sidepanel">
+        <style jsx={true}>{`
+          .auth-provider-sidepanel {
+            @p: .flex, .flexColumn, .justifyBetween, .w100;
+          }
+          .btn {
+            @p: .ph16, .pv10, .br2, .bgGreen, .white, .f16, .pointer, .dib;
+          }
+        `}</style>
+        <div className="flex flexColumn">
+          <div className="w100 white pa25 fw1 bgBlack80 relative">
             {authProvider.isEnabled &&
               <div
-                className='absolute pa-6 bg-accent white ttu br-1 fw5'
-                style={{ top: 16, right: 16, background: '#7ED321', fontSize: 14 }}
+                className="absolute pa6 bgAccent white ttu br1 fw5"
+                style={{
+                  top: 16,
+                  right: 16,
+                  background: '#7ED321',
+                  fontSize: 14,
+                }}
               >
                 Active
-              </div>
-            }
-            <div className='f-25 b'>
+              </div>}
+            <div className="f25 b">
               {text.title}
             </div>
-            <div className='f-16 mv-16'>
+            <div className="f16 mv16">
               {text.description}
             </div>
-            <div className='f-16'>
-              <a target='_blank' href={text.link.href} className='white underline'>
+            <div className="f16">
+              <a
+                target="_blank"
+                href={text.link.href}
+                className="white underline"
+              >
                 {text.link.content}
               </a>
             </div>
           </div>
           {authProvider.type === 'AUTH_PROVIDER_EMAIL' &&
-          <div className='flex w-100 bg-black-70 justify-between white pa-25'>
-            <div className='w-30 pr2 flex flex-column'>
-              <div className='b mb-16 white-50'>
-                Generated Fields
-              </div>
-              <div>
-                <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                  email
-                </span>
-              </div>
-              <div>
-                <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                  password
-                </span>
-              </div>
-            </div>
-            <div className='w-70 flex flex-column'>
-              <div className='b mb-16 white-50'>
-                Generated Mutations
-              </div>
-              <div>
-              <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                {`createUser(authProvider: { email: { email, password } })`}
-              </span>
-              </div>
-              <div>
-              <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                {`signinUser(email: { email, password })`}
-              </span>
-              </div>
-            </div>
-          </div>
-          }
-          {authProvider.type === 'anonymous-auth-provider' &&
-            <div className='flex w-100 bg-black-70 justify-between white pa-25'>
-              <div className='w-30 pr2 flex flex-column'>
-                <div className='b mb-16 white-50'>
-                  Generated Fields
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    email
+                  </span>
                 </div>
                 <div>
-                    <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                      secret
-                    </span>
-                </div>
-              </div>
-              <div className='w-70 flex flex-column'>
-                <div className='b mb-16 white-50'>
-                  Generated Mutations
-                </div>
-                <div>
-                  <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                    {`authenticateAnonymous${this.state.selectedAnonymousModel}(secret: String!)`}
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    password
                   </span>
                 </div>
               </div>
-            </div>
-          }
-          {authProvider.type === 'anonymous-auth-provider' && (
-            <div className='pa-25 flex flex-column fw1'>
-              <style jsx={true}>{`
-                .btn {
-                  @p: .ph16, .pv10, .br2, .bgGreen, .white, .f16, .pointer, .dib;
-                }
-              `}</style>
-              <span>Select the Type the Secret should be added to</span>
-            <div className='flex items-center mt-25 justify-between'>
-                <select onChange={this.handleAnonymousTypeChange} value={this.state.selectedAnonymousModel}>
-                  {this.props.project.models.edges.map(edge => (
-                    <option value={edge.node.name}>{edge.node.name}</option>
-                  ))}
-                </select>
-                {authProvider.isEnabled && (
-                  <div className='btn' onClick={this.updateAnonymousAuthProvider}>Update Type</div>
-                )}
-              </div>
-            </div>
-          )}
-          {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
-            <div className='flex w-100 bg-black-70 justify-between white pa-25'>
-              <div className='w-30 pr2 flex flex-column'>
-                <div className='b mb-16 white-50'>
-                  Generated Fields
+              <div className="w70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    {`createUser(authProvider: { email: { email, password } })`}
+                  </span>
                 </div>
                 <div>
-                  <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    {`signinUser(email: { email, password })`}
+                  </span>
+                </div>
+              </div>
+            </div>}
+          {authProvider.type === 'anonymous-auth-provider' &&
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    secret
+                  </span>
+                </div>
+              </div>
+              <div className="w70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    {`authenticateAnonymous${this.state
+                      .selectedAnonymousModel}(secret: String!)`}
+                  </span>
+                </div>
+              </div>
+            </div>}
+          {authProvider.type === 'anonymous-auth-provider' &&
+            <div className="pa25 flex flexColumn fw1">
+              <span>Select the Type the Secret should be added to</span>
+              <div className="flex itemsCenter mt25 justifyBetween">
+                <select
+                  onChange={this.handleAnonymousTypeChange}
+                  value={this.state.selectedAnonymousModel}
+                >
+                  {this.props.project.models.edges.map(edge =>
+                    <option value={edge.node.name} key={edge.node.id}>
+                      {edge.node.name}
+                    </option>,
+                  )}
+                </select>
+                {authProvider.isEnabled &&
+                  <div
+                    className="btn"
+                    onClick={this.updateAnonymousAuthProvider}
+                  >
+                    Update Type
+                  </div>}
+              </div>
+            </div>}
+          {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
                     digitsId
                   </span>
                 </div>
               </div>
-              <div className='w-70 flex flex-column'>
-                <div className='b mb-16 white-50'>
-                  Generated Mutations
-                </div>
+              <div className="w70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
                 <div>
-                  <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
                     {`createUser(authProvider: { digits: { apiUrl, credentials } })`}
                   </span>
                 </div>
                 <div>
-                  <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
                     {`signinUser(digits: { apiUrl, credentials })`}
                   </span>
                 </div>
               </div>
-            </div>
-          }
+            </div>}
           {authProvider.type === 'AUTH_PROVIDER_DIGITS' &&
-            <div className='pa-25 flex flex-column fw1'>
+            <div className="pa25 flex flexColumn fw1">
               <FloatingInput
-                labelClassName='f-25 pa-16 black-50'
-                className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
-                label='Consumer Key'
-                placeholder='xxxxxxxxxxxxx'
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
+                label="Consumer Key"
+                placeholder="xxxxxxxxxxxxx"
                 value={authProvider.digits!.consumerKey}
-                onChange={(e: any) => this.setIn(['digits', 'consumerKey'], e.target.value)}
+                onChange={(e: any) =>
+                  this.setIn(['digits', 'consumerKey'], e.target.value)}
                 onKeyDown={e => e.keyCode === 13 && this.enable()}
               />
               {errors.digits.consumerKey &&
-                <div className={cx($p.f12, $p.orange)}>The Consumer Key is required</div>
-              }
+                <div className={cx($p.f12, $p.orange)}>
+                  The Consumer Key is required
+                </div>}
               <FloatingInput
-                labelClassName='f-25 pa-16 black-50'
-                className='pa-16 bg-black-05 br-2 bn f-25'
-                label='Consumer Secret'
-                placeholder='xxxxxxxxxxxxx'
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn f25"
+                label="Consumer Secret"
+                placeholder="xxxxxxxxxxxxx"
                 value={authProvider.digits!.consumerSecret}
-                onChange={(e: any) => this.setIn(['digits', 'consumerSecret'], e.target.value)}
+                onChange={(e: any) =>
+                  this.setIn(['digits', 'consumerSecret'], e.target.value)}
                 onKeyDown={e => e.keyCode === 13 && this.enable()}
               />
               {errors.digits.consumerSecret &&
-                <div className={cx($p.f12, $p.orange)}>The Consumer Secret is required</div>
-              }
-            </div>
-          }
+                <div className={cx($p.f12, $p.orange)}>
+                  The Consumer Secret is required
+                </div>}
+            </div>}
           {authProvider.type === 'AUTH_PROVIDER_AUTH0' &&
-          <div className='flex w-100 bg-black-70 justify-between white pa-25'>
-            <div className='w-30 pr2 flex flex-column'>
-              <div className='b mb-16 white-50'>
-                Generated Fields
+            <div className="flex w100 bgBlack70 justifyBetween white pa25">
+              <div className="w30 pr2 flex flexColumn">
+                <div className="b mb16 white50">Generated Fields</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    auth0UserId
+                  </span>
+                </div>
               </div>
-              <div>
-                <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                  auth0UserId
-                </span>
+              <div className="w-70 flex flexColumn">
+                <div className="b mb16 white50">Generated Mutations</div>
+                <div>
+                  <span
+                    className="pa6 mb10 br2 dib bgWhite10"
+                    style={{ fontSize: 13 }}
+                  >
+                    {`createUser(authProvider: { auth0: { idToken } })`}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className='w-70 flex flex-column'>
-              <div className='b mb-16 white-50'>
-                Generated Mutations
-              </div>
-              <div>
-                <span className='pa-6 mb-10 br-2 dib bg-white-10' style={{ fontSize: 13 }}>
-                  {`createUser(authProvider: { auth0: { idToken } })`}
-                </span>
-              </div>
-            </div>
-          </div>
-          }
+            </div>}
           {authProvider.type === 'AUTH_PROVIDER_AUTH0' &&
-          <div className='pa-38 flex flex-column'>
-            <FloatingInput
-              labelClassName='f-25 pa-16 black-50'
-              className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
-              label='Domain'
-              placeholder='xxxxxxxxxxxxx'
-              value={authProvider.auth0!.domain}
-              onChange={(e: any) => this.setIn(['auth0', 'domain'], e.target.value)}
-              onKeyDown={e => e.keyCode === 13 && this.enable()}
-            />
-            {errors.auth0.domain &&
-            <div className={cx($p.f12, $p.orange)}>The Domain is required</div>
-            }
-            <FloatingInput
-              labelClassName='f-25 pa-16 black-50'
-              className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
-              label='Client Id'
-              placeholder='xxxxxxxxxxxxx'
-              value={authProvider.auth0!.clientId}
-              onChange={(e: any) => this.setIn(['auth0', 'clientId'], e.target.value)}
-              onKeyDown={e => e.keyCode === 13 && this.enable()}
-            />
-            {errors.auth0.clientId &&
-            <div className={cx($p.f12, $p.orange)}>The Client ID is required</div>
-            }
-            <FloatingInput
-              labelClassName='f-25 pa-16 black-50'
-              className='pa-16 bg-black-05 br-2 bn mb-10 f-25'
-              label='Client Secret'
-              placeholder='xxxxxxxxxxxxx'
-              value={authProvider.auth0!.clientSecret}
-              onChange={(e: any) => this.setIn(['auth0', 'clientSecret'], e.target.value)}
-              onKeyDown={e => e.keyCode === 13 && this.enable()}
-            />
-            {errors.auth0.clientSecret &&
-            <div className={cx($p.f12, $p.orange)}>The Client Secret is required</div>
-            }
-          </div>
-          }
+            <div className="pa38 flex flexColumn">
+              <FloatingInput
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
+                label="Domain"
+                placeholder="xxxxxxxxxxxxx"
+                value={authProvider.auth0!.domain}
+                onChange={(e: any) =>
+                  this.setIn(['auth0', 'domain'], e.target.value)}
+                onKeyDown={e => e.keyCode === 13 && this.enable()}
+              />
+              {errors.auth0.domain &&
+                <div className={cx($p.f12, $p.orange)}>
+                  The Domain is required
+                </div>}
+              <FloatingInput
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
+                label="Client Id"
+                placeholder="xxxxxxxxxxxxx"
+                value={authProvider.auth0!.clientId}
+                onChange={(e: any) =>
+                  this.setIn(['auth0', 'clientId'], e.target.value)}
+                onKeyDown={e => e.keyCode === 13 && this.enable()}
+              />
+              {errors.auth0.clientId &&
+                <div className={cx($p.f12, $p.orange)}>
+                  The Client ID is required
+                </div>}
+              <FloatingInput
+                labelClassName="f25 pa16 black50"
+                className="pa16 bgBlack05 br2 bn mb10 f25"
+                label="Client Secret"
+                placeholder="xxxxxxxxxxxxx"
+                value={authProvider.auth0!.clientSecret}
+                onChange={(e: any) =>
+                  this.setIn(['auth0', 'clientSecret'], e.target.value)}
+                onKeyDown={e => e.keyCode === 13 && this.enable()}
+              />
+              {errors.auth0.clientSecret &&
+                <div className={cx($p.f12, $p.orange)}>
+                  The Client Secret is required
+                </div>}
+            </div>}
         </div>
-        <div className='flex justify-between pa-25 bt b--light-gray'>
+        <div className="flex justifyBetween pa25 bt bDarkBlue10">
           {authProvider.isEnabled &&
             <div
-              className='ph-25 pv-16 f-25 white pointer'
+              className="ph25 pv16 f25 white pointer"
               style={{
                 backgroundColor: '#F5A623',
               }}
               onClick={this.disable}
             >
               Disable
-            </div>
-          }
+            </div>}
           {!authProvider.isEnabled &&
-            <div className='ph-25 pv-16 f-25 white bg-accent pointer' onClick={this.enable}>
+            <div
+              className="ph25 pv16 f25 white bgAccent pointer"
+              onClick={this.enable}
+            >
               Enable
-            </div>
-          }
-          {authProvider.isEnabled && this.state.hasChanged &&
-            <div className='ph-25 pv-16 f-25 white bg-accent pointer' onClick={this.enable}>
+            </div>}
+          {authProvider.isEnabled &&
+            this.state.hasChanged &&
+            <div
+              className="ph25 pv16 f25 white bgAccent pointer"
+              onClick={this.enable}
+            >
               Update
-            </div>
-          }
+            </div>}
         </div>
       </div>
     )
   }
 
   private handleAnonymousTypeChange = e => {
-    this.setState({selectedAnonymousModel: e.target.value} as State)
+    this.setState({ selectedAnonymousModel: e.target.value } as State)
   }
 
   private initErrors = () => {
@@ -346,9 +394,9 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
   }
 
   private validateAuthProvider = () => {
-    const {type, digits, auth0} = this.state.authProvider
+    const { type, digits, auth0 } = this.state.authProvider
 
-    let errors = this.initErrors()
+    const errors = this.initErrors()
     let valid = true
 
     if (type === 'AUTH_PROVIDER_DIGITS') {
@@ -377,16 +425,20 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       }
     }
 
-    this.setState({errors} as State)
+    this.setState({ errors } as State)
 
     return valid
   }
 
   private setIn = (keyPath: string[], value: any): void => {
-    this.setState({
-      authProvider: Immutable.fromJS(this.state.authProvider).setIn(keyPath, value).toJS(),
-      hasChanged: true,
-    } as State)
+    this.setState(
+      {
+        authProvider: Immutable.fromJS(this.state.authProvider)
+          .setIn(keyPath, value)
+          .toJS(),
+        hasChanged: true,
+      } as State,
+    )
   }
 
   private getAuthProvider(props: Props): AuthProvider {
@@ -399,11 +451,13 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
         auth0: null,
       }
     }
-    return props.project.authProviders.edges.map(e => e.node).find(a => a.type === props.selectedType)!
+    return props.project.authProviders.edges
+      .map(e => e.node)
+      .find(a => a.type === props.selectedType)!
   }
 
   private getSelectedType(definition) {
-    const line = definition.split('\n').find(line => line.includes('onType:'))
+    const line = definition.split('\n').find(l => l.includes('onType:'))
     if (line) {
       const regex = /.+?:\s{0,1}(.+)/
       const result = regex.exec(line)
@@ -425,36 +479,42 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
     tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
     this.setState(
       {
-        authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', true).toJS(),
+        authProvider: Immutable.fromJS(this.state.authProvider)
+          .set('isEnabled', true)
+          .toJS(),
       } as State,
       this.update,
     )
   }
 
   private disable = () => {
-    graphcoolConfirm('You\'re disabling an Auth Provider. It will delete all auth provider related data.')
-      .then(() => {
-        tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
-        this.setState(
-          {
-            authProvider: Immutable.fromJS(this.state.authProvider).set('isEnabled', false).toJS(),
-          } as State,
-          this.update,
-        )
-      })
+    graphcoolConfirm(
+      "You're disabling an Auth Provider. It will delete all auth provider related data.",
+    ).then(() => {
+      tracker.track(ConsoleEvents.AuthProvider.Popup.toggled())
+      this.setState(
+        {
+          authProvider: Immutable.fromJS(this.state.authProvider)
+            .set('isEnabled', false)
+            .toJS(),
+        } as State,
+        this.update,
+      )
+    })
   }
 
   private update = () => {
-    const {authProvider} = this.state
+    const { authProvider } = this.state
     if (authProvider.type === 'anonymous-auth-provider') {
       return this.updateAnonymousAuthProvider()
     }
-      UpdateAuthProviderMutation.commit({
-        authProviderId: authProvider.id,
-        isEnabled: authProvider.isEnabled,
-        digits: authProvider.digits,
-        auth0: authProvider.auth0,
-      }).then(() => {
+    UpdateAuthProviderMutation.commit({
+      authProviderId: authProvider.id,
+      isEnabled: authProvider.isEnabled,
+      digits: authProvider.digits,
+      auth0: authProvider.auth0,
+    })
+      .then(() => {
         this.props.forceFetchRoot()
       })
       .catch(transaction => {
@@ -467,50 +527,52 @@ class AuthProviderSidePanel extends React.Component<Props, State> {
       UninstallPackage.commit({
         projectId: this.props.project.id,
         name: 'anonymous-auth-provider',
-      }).then((res) => {
-        // The force fetching because authproviders are too complicated to selective choose the config
-        // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-        // which is needed to reflect all affected data
-        // this.props.forceFetchRoot()
-        resolve(res)
       })
-      .catch(transaction => {
-        reject(transaction)
-        onFailureShowNotification(transaction, this.props.showNotification)
-      })
+        .then(res => {
+          // The force fetching because authproviders are too complicated to selective choose the config
+          // forceFetchRoot gets passed down from StuctureView/DatabrowserView
+          // which is needed to reflect all affected data
+          // this.props.forceFetchRoot()
+          resolve(res)
+        })
+        .catch(transaction => {
+          reject(transaction)
+          onFailureShowNotification(transaction, this.props.showNotification)
+        })
     })
   }
 
   private updateAnonymousAuthProvider = () => {
-    const {authProvider, selectedAnonymousModel} = this.state
-    const {isEnabled} = authProvider
+    const { authProvider } = this.state
+    const { isEnabled } = authProvider
 
     const hack = () => {
       if (isEnabled) {
-        const definition = getAnonymousPackage(this.state.selectedAnonymousModel)
+        const definition = getAnonymousPackage(
+          this.state.selectedAnonymousModel,
+        )
 
-          InstallPackage.commit({
-            projectId: this.props.project.id,
-            definition,
-          }).then(res => {
-              // The force fetching because authproviders are too complicated to selective choose the config
-              // forceFetchRoot gets passed down from StuctureView/DatabrowserView
-              // which is needed to reflect all affected data
-              this.props.forceFetchRoot()
-            })
-            .catch(transaction => {
-              onFailureShowNotification(transaction, this.props.showNotification)
-            })
-      } else {
-        this.uninstallAnonymousAuthProvider()
-          .then(() => {
+        InstallPackage.commit({
+          projectId: this.props.project.id,
+          definition,
+        })
+          .then(res => {
+            // The force fetching because authproviders are too complicated to selective choose the config
+            // forceFetchRoot gets passed down from StuctureView/DatabrowserView
+            // which is needed to reflect all affected data
             this.props.forceFetchRoot()
           })
+          .catch(transaction => {
+            onFailureShowNotification(transaction, this.props.showNotification)
+          })
+      } else {
+        this.uninstallAnonymousAuthProvider().then(() => {
+          this.props.forceFetchRoot()
+        })
       }
     }
     if (this.props.anonymousPackage) {
-      this.uninstallAnonymousAuthProvider()
-        .then(hack)
+      this.uninstallAnonymousAuthProvider().then(hack)
     } else {
       hack()
     }
@@ -525,11 +587,13 @@ const MappedAuthProviderSidePanel = mapProps({
   },
 })(AuthProviderSidePanel)
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({showNotification}, dispatch)
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ showNotification }, dispatch)
 }
 
-export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedAuthProviderSidePanel), {
+export default createFragmentContainer(
+  connect(null, mapDispatchToProps)(MappedAuthProviderSidePanel),
+  {
     project: graphql`
       fragment AuthProviderSidePanel_project on Project {
         id
@@ -570,29 +634,33 @@ export default createFragmentContainer(connect(null, mapDispatchToProps)(MappedA
         }
       }
     `,
-})
+  },
+)
 
 interface AuthText {
   title: string
   description: string
   link: {
     href: string
-    content: string,
+    content: string
   }
 }
 
-const texts: {[key: string]: AuthText} = {
+const texts: { [key: string]: AuthText } = {
   AUTH_PROVIDER_EMAIL: {
     title: 'Graphcool Email + Password',
-    description: 'Use our built-in auth system that authenticates users with email and password',
+    description:
+      'Use our built-in auth system that authenticates users with email and password',
     link: {
-      href: 'https://graph.cool/docs/reference/platform/authentication-wejileech9',
+      href:
+        'https://graph.cool/docs/reference/platform/authentication-wejileech9',
       content: 'graph.cool/docs',
     },
   },
   AUTH_PROVIDER_DIGITS: {
     title: 'Digits - Two-Step Phone Authentication',
-    description: 'Digits offers two-step authentification via a phone number and a code that is send to respective number.', // tslint:disable-line
+    description:
+      'Digits offers two-step authentification via a phone number and a code that is send to respective number.', // tslint:disable-line
     link: {
       href: 'https://www.digits.com',
       content: 'www.digits.com',
@@ -600,7 +668,8 @@ const texts: {[key: string]: AuthText} = {
   },
   AUTH_PROVIDER_AUTH0: {
     title: 'Auth0 – Broad Authentication Solution',
-    description: 'Auth0 combines a variety of authentification methods and a dashboard to organize them.',
+    description:
+      'Auth0 combines a variety of authentification methods and a dashboard to organize them.',
     link: {
       href: 'https://www.auth0.com',
       content: 'www.auth0.com',
@@ -608,9 +677,11 @@ const texts: {[key: string]: AuthText} = {
   },
   'anonymous-auth-provider': {
     title: 'Graphcool Anonymous Auth',
-    description: 'The anonymous auth provider can be used if you need temporary sessions.',
+    description:
+      'The anonymous auth provider can be used if you need temporary sessions.',
     link: {
-      href: 'https://graph.cool/docs/reference/platform/authentication-wejileech9',
+      href:
+        'https://graph.cool/docs/reference/platform/authentication-wejileech9',
       content: 'graph.cool/docs',
     },
   },

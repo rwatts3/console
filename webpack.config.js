@@ -5,8 +5,6 @@ const cssnano = require('cssnano')
 const path = require('path')
 const cheerio = require('cheerio')
 const fs = require('fs')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-const HappyPack = require('happypack')
 
 module.exports = {
   devtool: 'source-map',
@@ -33,21 +31,14 @@ module.exports = {
       loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader!sass-loader',
       exclude: /node_modules/,
     },
-      {
+    {
       test: /\.ts(x?)$/,
       include: __dirname + '/src',
-      use: [
-        {
-          loader: 'happypack/loader?id=babel',
-        },
-        {
-          loader: 'happypack/loader?id=ts',
-        }
-      ],
+      loader: 'babel-loader!awesome-typescript-loader',
     },
     {
       test: /\.js$/,
-      loader: 'happypack/loader?id=babel',
+      loader: 'babel-loader',
       exclude: /node_modules/,
     }, {
       test: /\.mp3$/,
@@ -64,9 +55,6 @@ module.exports = {
     }],
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin({
-      // watch: './src',
-    }),
     new webpack.DefinePlugin({
       __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
       __SUBSCRIPTIONS_EU_WEST_1__: JSON.stringify(process.env.SUBSCRIPTIONS_EU_WEST_1 || "wss://dev.subscriptions.graph.cool"),
@@ -119,17 +107,6 @@ module.exports = {
       context: '.',
       manifest: require('./dll/vendor-manifest.json'),
     }),
-    new HappyPack({
-      id: 'ts',
-      threads: 2,
-      loaders: [ 'ts-loader?' + JSON.stringify({happyPackMode: true}) ],
-    }),
-    new HappyPack({
-      id: 'babel',
-      threads: 2,
-      loaders: [ 'babel-loader' ],
-    }),
-    // new BundleAnalyzerPlugin(),
   ],
   resolve: {
     modules: [path.resolve('./src'), 'node_modules'],

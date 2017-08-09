@@ -1,9 +1,8 @@
-// import * as faker from 'faker'
-const faker = require('faker/locale/en_US')
+import * as faker from 'faker/locale/en_US'
 import cuid from 'cuid'
 
 export function getRandomInt(min: number, max: number) {
-  return faker.random.number({min, max})
+  return faker.random.number({ min, max })
 }
 
 export function getRandomItem(array: any[]) {
@@ -11,38 +10,38 @@ export function getRandomItem(array: any[]) {
 }
 
 export const typeFakers = {
-  'Int': {
-    defaultOptions: {min: 0, max: 99999},
-    generator: (options) => {
+  Int: {
+    defaultOptions: { min: 0, max: 99999 },
+    generator: options => {
       options.precision = 1
       return () => faker.random.number(options)
     },
   },
-  'Float': {
-    defaultOptions: {min: 0, max: 99999, precision: 0.01},
-    generator: (options) => {
+  Float: {
+    defaultOptions: { min: 0, max: 99999, precision: 0.01 },
+    generator: options => {
       return () => faker.random.number(options)
     },
   },
-  'String': {
+  String: {
     defaultOptions: {},
     generator: () => {
       return () => 'string'
     },
   },
-  'Boolean': {
+  Boolean: {
     defaultOptions: {},
     generator: () => {
       return () => faker.random.boolean()
     },
   },
-  'ID': {
+  ID: {
     defaultOptions: {},
     generator: () => {
       return () => cuid()
     },
   },
-  'DateTime': {
+  DateTime: {
     defaultOptions: {},
     generator: () => {
       return () => new Date().toISOString()
@@ -57,7 +56,7 @@ const fakeFunctions = {
   streetName: () => faker.address.streetName(),
   streetAddress: {
     args: ['useFullAddress'],
-    func: (useFullAddress) => faker.address.streetAddress(useFullAddress),
+    func: useFullAddress => faker.address.streetAddress(useFullAddress),
   },
   county: () => faker.address.county(),
   country: () => faker.address.country(),
@@ -113,7 +112,7 @@ const fakeFunctions = {
   avatarUrl: () => faker.internet.avatar(),
   email: {
     args: ['emailProvider'],
-    func: (provider) => faker.internet.email(undefined, undefined, provider),
+    func: provider => faker.internet.email(undefined, undefined, provider),
   },
   url: () => faker.internet.url(),
   domainName: () => faker.internet.domainName(),
@@ -124,12 +123,12 @@ const fakeFunctions = {
   macAddress: () => faker.internet.mac(),
   password: {
     args: ['passwordLenth'],
-    func: (len) => faker.internet.password(len),
+    func: len => faker.internet.password(len),
   },
 
   lorem: {
     args: ['loremSize'],
-    func: (size) => faker.lorem[size || 'paragraphs'](),
+    func: size => faker.lorem[size || 'paragraphs'](),
   },
 
   firstName: () => faker.name.firstName(),
@@ -151,9 +150,9 @@ const fakeFunctions = {
 }
 
 Object.keys(fakeFunctions).forEach(key => {
-  let value = fakeFunctions[key]
+  const value = fakeFunctions[key]
   if (typeof fakeFunctions[key] === 'function') {
-    fakeFunctions[key] = {args: [], func: value}
+    fakeFunctions[key] = { args: [], func: value }
   }
 })
 

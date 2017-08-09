@@ -1,12 +1,9 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import mapProps from '../../../../components/MapProps/MapProps'
-import {ModelPermission, Model} from '../../../../types/types'
+import { ModelPermission, Model } from '../../../../types/types'
 import ModelPermissionComponent from './ModelPermissionComponent'
-import {$p} from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 
 interface Props {
   permissions: ModelPermission[]
@@ -22,7 +19,7 @@ interface Props {
 
 class ModelPermissionList extends React.Component<Props, {}> {
   render() {
-    const {permissions, model, params} = this.props
+    const { permissions, model, params } = this.props
     return (
       <div className={$p.pa16}>
         {permissions.map(permission =>

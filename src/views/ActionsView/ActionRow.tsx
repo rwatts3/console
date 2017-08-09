@@ -1,16 +1,13 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import Toggle from 'react-toggle-button'
 import { Action } from '../../types/types'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import UpdateActionMutation from '../../mutations/UpdateActionMutation'
 import DeleteActionMutation from '../../mutations/DeleteActionMutation'
 import tracker from '../../utils/metrics'
 const classes: any = require('./ActionRow.scss')
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   action: Action
@@ -23,7 +20,6 @@ interface State {
 }
 
 class ActionRow extends React.Component<Props, State> {
-
   constructor() {
     super()
     this.state = {
@@ -32,26 +28,29 @@ class ActionRow extends React.Component<Props, State> {
   }
 
   render() {
-
     let trigger
     if (this.props.action.triggerType === 'MUTATION_MODEL') {
       const verb = {
-        'CREATE': 'created',
-        'UPDATE': 'updated',
-        'DELETE': 'deleted',
+        CREATE: 'created',
+        UPDATE: 'updated',
+        DELETE: 'deleted',
       }[this.props.action.triggerMutationModel.mutationType]
 
       const color = {
-        'CREATE': 'green',
-        'UPDATE': 'blue',
-        'DELETE': 'red',
+        CREATE: 'green',
+        UPDATE: 'blue',
+        DELETE: 'red',
       }[this.props.action.triggerMutationModel.mutationType]
 
       trigger = (
         <div>
           <div className={classes.label}>
-            <div>{this.props.action.triggerMutationModel.model.name}</div>
-            <div className={classes[color]}>is {verb}</div>
+            <div>
+              {this.props.action.triggerMutationModel.model.name}
+            </div>
+            <div className={classes[color]}>
+              is {verb}
+            </div>
           </div>
         </div>
       )
@@ -70,15 +69,15 @@ class ActionRow extends React.Component<Props, State> {
       <div className={classes.root} onClick={this.rootClick}>
         <div className={classes.row}>
           <div
-            onMouseEnter={() => this.setState({mouseOverToggle: true})}
-            onMouseLeave={() => this.setState({mouseOverToggle: false})}
+            onMouseEnter={() => this.setState({ mouseOverToggle: true })}
+            onMouseLeave={() => this.setState({ mouseOverToggle: false })}
           >
             <Toggle
               value={this.props.action.isActive}
               onClick={this.toggleIsActive}
               inactiveLabel={''}
               activeLabel={''}
-              thumbStyle={{boxShadow: 'none'}}
+              thumbStyle={{ boxShadow: 'none' }}
               colors={{
                 activeThumb: {
                   base: '#7ED321',
@@ -109,8 +108,9 @@ class ActionRow extends React.Component<Props, State> {
           </span>
         </div>
         {this.props.action.description &&
-          <div className={classes.description}>{this.props.action.description}</div>
-        }
+          <div className={classes.description}>
+            {this.props.action.description}
+          </div>}
       </div>
     )
   }
@@ -132,16 +132,14 @@ class ActionRow extends React.Component<Props, State> {
   private deleteAction = (e: React.MouseEvent<any>) => {
     e.stopPropagation()
 
-    graphcoolConfirm('You\'re deleting this Mutation Callback')
-      .then(() => {
-        tracker.track(ConsoleEvents.MutationCallbacks.deleted())
-        DeleteActionMutation.commit({
-          actionId: this.props.action.id,
-          projectId: this.props.projectId,
-        })
+    graphcoolConfirm("You're deleting this Mutation Callback").then(() => {
+      tracker.track(ConsoleEvents.MutationCallbacks.deleted())
+      DeleteActionMutation.commit({
+        actionId: this.props.action.id,
+        projectId: this.props.projectId,
       })
+    })
   }
-
 }
 
 export default createFragmentContainer(ActionRow, {

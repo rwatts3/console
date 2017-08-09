@@ -1,19 +1,19 @@
 import * as React from 'react'
-import { updateNetworkLayer } from '../../utils/relay'
 import tracker from '../../utils/metrics'
 import * as cookiestore from 'cookiestore'
 import jwtDecode from 'jwt-decode'
+import { updateNetworkLayer } from '../../relayEnvironment'
 
 interface Props {
   location: any
 }
 
 export default class TokenRedirectView extends React.Component<Props, {}> {
+  componentWillMount() {
+    const { query } = this.props.location
 
-  componentWillMount () {
-    const {query} = this.props.location
-
-    let {token, redirect, cli} = query
+    let { redirect } = query
+    const { token, cli } = query
     if (token) {
       const data = jwtDecode(token)
       tracker.reset()
@@ -28,7 +28,7 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
     }
   }
 
-  render () {
+  render() {
     return (
       <div>
         <style jsx={true}>{`
@@ -36,7 +36,7 @@ export default class TokenRedirectView extends React.Component<Props, {}> {
             @p: .pa60, .f20;
           }
         `}</style>
-          Redirecting...
+        Redirecting...
       </div>
     )
   }

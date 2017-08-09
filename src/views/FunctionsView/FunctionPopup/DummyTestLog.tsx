@@ -1,12 +1,8 @@
 import * as React from 'react'
 
-interface Props {
-
-}
-
-export default function DummyTestLog({}: Props) {
+export default function DummyTestLog() {
   return (
-    <div className='dummy-test-log'>
+    <div className="dummy-test-log">
       <style jsx>{`
         .dummy-test-log {
           @p: .w100, .overflowAuto, .mb38;
@@ -33,7 +29,7 @@ export default function DummyTestLog({}: Props) {
           @p: .flexFixed;
         }
         .head {
-          @p: .flex, .itemsCenter
+          @p: .flex, .itemsCenter;
         }
         .row {
           @p: .flex, .mt10;
@@ -42,26 +38,28 @@ export default function DummyTestLog({}: Props) {
           width: 30%;
         }
       `}</style>
-      <div className='head'>
-        <div className='sides'><div className='circle'></div></div>
-        <div className='line'></div>
-        <div className='sides'>
-          <div className='stripe' style={{width: 60}}></div>
+      <div className="head">
+        <div className="sides">
+          <div className="circle" />
+        </div>
+        <div className="line" />
+        <div className="sides">
+          <div className="stripe" style={{ width: 60 }} />
         </div>
       </div>
-      <div className='row'>
-        <div className='flex'>
-          <div className='stripe' style={{width: '86%'}} />
+      <div className="row">
+        <div className="flex">
+          <div className="stripe" style={{ width: '86%' }} />
         </div>
-        <div className='stripe' style={{width: '60%'}} />
+        <div className="stripe" style={{ width: '60%' }} />
       </div>
-      <div className='row'>
-        <div className='flex'>
-          <div className='stripe' style={{width: '62%'}} />
+      <div className="row">
+        <div className="flex">
+          <div className="stripe" style={{ width: '62%' }} />
         </div>
-        <div className='stripe' style={{width: '50%'}} />
+        <div className="stripe" style={{ width: '50%' }} />
       </div>
-      <div className='stripe' style={{width: '70%', marginTop: 20}} />
+      <div className="stripe" style={{ width: '70%', marginTop: 20 }} />
     </div>
   )
 }

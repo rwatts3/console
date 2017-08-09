@@ -7,7 +7,10 @@ const initialState: NotificationState = {
   level: null,
 }
 
-export function reduceNotification(state: NotificationState = initialState, action: ReduxAction): NotificationState {
+export function reduceNotification(
+  state: NotificationState = initialState,
+  action: ReduxAction,
+): NotificationState {
   switch (action.type) {
     case Constants.SHOW_NOTIFICATION:
       return action.payload

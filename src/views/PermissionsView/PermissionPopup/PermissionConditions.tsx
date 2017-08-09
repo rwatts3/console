@@ -1,31 +1,24 @@
 import * as React from 'react' // tslint:disable-line
-import {$p, Icon, $v} from 'graphcool-styles'
-import styled from 'styled-components'
+import { $p, Icon, $v } from 'graphcool-styles'
 import * as cx from 'classnames'
-import {buildClientSchema} from 'graphql'
-import {CustomGraphiQL} from 'graphcool-graphiql'
+import { buildClientSchema } from 'graphql'
+import { CustomGraphiQL } from 'graphcool-graphiql'
 import {
-  UserType, PermissionRuleType, Operation, Field, FieldType, PermissionVariable,
-  PermissionQueryArgument, Relation,
+  UserType,
+  PermissionRuleType,
+  Operation,
+  PermissionQueryArgument,
+  Relation,
 } from '../../../types/types'
-import {texts} from '../../../utils/permission'
-import PermissionField from '../PermissionsList/ModelPermissions/PermissionField'
 import VariableTag from './VariableTag'
-import {flatMap, groupBy} from 'lodash'
-import {putVariablesToQuery, getVariableNamesFromQuery} from './ast'
-import {debounce} from '../../../utils/utils'
+import { flatMap, groupBy } from 'lodash'
+import { putVariablesToQuery, getVariableNamesFromQuery } from './ast'
+import { debounce } from '../../../utils/utils'
 import * as Modal from 'react-modal'
-import {fieldModalStyle} from '../../../utils/modalStyle'
-import {PermissionPopupErrors} from './PermissionPopupState'
+import { fieldModalStyle } from '../../../utils/modalStyle'
 import ErrorInfo from '../../models/FieldPopup/ErrorInfo'
 import Checkbox from '../../../components/Checkbox'
-import {sortBy} from 'lodash'
-
-const ConditionButton = styled.div`
-  &:not(.${$p.bgBlue}):hover {
-    background-color: ${$v.gray10};
-  }
-`
+import { dummyStorage } from '../../../utils/dummyStorage'
 
 const modalStyling = {
   ...fieldModalStyle,
@@ -66,20 +59,21 @@ interface State {
   editingRuleName: boolean
 }
 
-export default class PermissionConditions extends React.Component<Props, State> {
-
+export default class PermissionConditions extends React.Component<
+  Props,
+  State
+> {
   private firstTyping: boolean = true
-  private reflectQueryVariablesToUI = debounce(
-    (query: string) => {
-      const schema = buildClientSchema(JSON.parse(this.props.permissionSchema))
-      const {variables, valid} = getVariableNamesFromQuery(query, true, schema)
-      this.setState({
+  private reflectQueryVariablesToUI = debounce((query: string) => {
+    const schema = buildClientSchema(JSON.parse(this.props.permissionSchema))
+    const { variables, valid } = getVariableNamesFromQuery(query, true, schema)
+    this.setState(
+      {
         selectedVariableNames: variables,
-      } as State)
-      this.props.onQueryValidityChange(valid)
-    },
-    150,
-  )
+      } as State,
+    )
+    this.props.onQueryValidityChange(valid)
+  }, 150)
 
   constructor(props) {
     super(props)
@@ -98,26 +92,20 @@ export default class PermissionConditions extends React.Component<Props, State> 
   render() {
     const {
       rule,
-      permissionSchema,
-      ruleGraphQuery,
-      setRuleGraphQuery,
       operation,
-      setUserType,
       userType,
-      permissionQueryArguments,
       relation,
       connect,
       disconnect,
       toggleUserType,
       toggleRuleType,
     } = this.props
-    const {selectedVariableNames, fullscreen} = this.state
+    const { fullscreen } = this.state
 
-    const variables = this.getVariables()
     const disabled = rule !== 'GRAPH'
 
     return (
-      <div className='permission-conditions'>
+      <div className="permission-conditions">
         <style jsx={true}>{`
           .permission-conditions {
             @p: .overflowAuto;
@@ -175,31 +163,34 @@ export default class PermissionConditions extends React.Component<Props, State> 
             width: 26px;
             height: 26px;
           }
-          .
         `}</style>
-        <div
-          className={cx($p.ph38)}
-        >
-          {operation && (
+        <div className={cx($p.ph38)}>
+          {operation &&
             <div className={$p.black50}>
               Restrict who can
-              <span className='whocan'>{(operation ? operation.toLowerCase() : 'access') + ' data'}</span>
+              <span className="whocan">
+                {(operation ? operation.toLowerCase() : 'access') + ' data'}
+              </span>
               in the selected fields.
-            </div>
-          )}
-          {relation && (
+            </div>}
+          {relation &&
             <div className={$p.black50}>
               {'Restrict who can '}
               {connect && 'connect'}
               {connect && disconnect && ' / '}
               {disconnect && 'disconnect'}
-              <span className='whocan'>{relation.leftModel.name}</span> nodes with
-              <span className='whocan'>{relation.rightModel.name}</span> nodes.
-            </div>
-          )}
-          <div className='setting'>
-            <Checkbox checked={userType === 'AUTHENTICATED'} onToggle={toggleUserType}>
-              <div className='label' data-test='button-auth-required'>Authentication required</div>
+              <span className="whocan">{relation.leftModel.name}</span> nodes
+              with
+              <span className="whocan">{relation.rightModel.name}</span> nodes.
+            </div>}
+          <div className="setting">
+            <Checkbox
+              checked={userType === 'AUTHENTICATED'}
+              onToggle={toggleUserType}
+            >
+              <div className="label" data-test="button-auth-required">
+                Authentication required
+              </div>
               <Icon
                 src={require('graphcool-styles/icons/stroke/lock.svg')}
                 color={$v.gray40}
@@ -210,76 +201,72 @@ export default class PermissionConditions extends React.Component<Props, State> 
               />
             </Checkbox>
           </div>
-          <div className='divider'>
-            <div className='divider-text'>Permission Query (optional)</div>
+          <div className="divider">
+            <div className="divider-text">Permission Query (optional)</div>
           </div>
-          <div className='setting'>
+          <div className="setting">
             <Checkbox checked={rule === 'GRAPH'} onToggle={toggleRuleType}>
-              <div className='label'>Use Permission Query</div>
+              <div className="label">Use Permission Query</div>
             </Checkbox>
           </div>
-          <div className={cx('description-wrapper', {disabled})}>
-            {(this.state.editingRuleName || (this.props.ruleName && this.props.ruleName.length > 0)) ? (
-                <input
-                  type='text'
-                  className='description-input'
-                  placeholder='Choose a description...'
+          <div className={cx('description-wrapper', { disabled })}>
+            {this.state.editingRuleName ||
+            (this.props.ruleName && this.props.ruleName.length > 0)
+              ? <input
+                  type="text"
+                  className="description-input"
+                  placeholder="Choose a description..."
                   value={this.props.ruleName || ''}
                   onChange={this.props.onRuleNameChange}
                   onKeyDown={this.handleRuleNameKeyDown}
                   autoFocus
                 />
-              ) : (
-                <div className='edit-description' onClick={this.editRuleName}>
+              : <div className="edit-description" onClick={this.editRuleName}>
                   <Icon
                     src={require('assets/icons/edit_circle_gray.svg')}
                     color={$v.gray40}
                     height={26}
                     width={26}
                   />
-                  <span className='underline ml16'>{' add description '}</span>
-                  <span className='ml6 black30'> (optional)</span>
-                </div>
-              )}
+                  <span className="underline ml16">
+                    {' add description '}
+                  </span>
+                  <span className="ml6 black30"> (optional)</span>
+                </div>}
           </div>
 
-          {fullscreen ? (
-            <Modal
-              isOpen={true}
-              style={modalStyling}
-              contentLabel='Permission Query Editor'
-              onRequestClose={this.toggleFullscreen}
-            >
-              {this.renderQuery()}
-            </Modal>
-          ) : (
-            this.renderQuery()
-          )}
-
+          {fullscreen
+            ? <Modal
+                isOpen={true}
+                style={modalStyling}
+                contentLabel="Permission Query Editor"
+                onRequestClose={this.toggleFullscreen}
+              >
+                {this.renderQuery()}
+              </Modal>
+            : this.renderQuery()}
         </div>
-        {!this.props.queryValid && this.props.showErrors && (
-          <div className='query-error'>
-            <ErrorInfo>
-              The Query is invalid
-            </ErrorInfo>
-          </div>
-        )}
+        {!this.props.queryValid &&
+          this.props.showErrors &&
+          <div className="query-error">
+            <ErrorInfo>The Query is invalid</ErrorInfo>
+          </div>}
       </div>
     )
   }
 
   private editRuleName = () => {
-    this.setState({editingRuleName: true} as State)
+    this.setState({ editingRuleName: true } as State)
   }
 
   private handleRuleNameKeyDown = e => {
     if (e.keyCode === 13) {
-      this.setState({editingRuleName: false} as State)
+      this.setState({ editingRuleName: false } as State)
     }
   }
 
   private getVariables() {
-    const {permissionQueryArguments, userType, operation} = this.props
+    const { permissionQueryArguments, userType, operation } = this.props
     let args = permissionQueryArguments
     if (userType === 'EVERYONE') {
       args = args.filter(arg => arg.group !== 'Authenticated User')
@@ -303,14 +290,14 @@ export default class PermissionConditions extends React.Component<Props, State> 
   }
 
   private renderQuery() {
-    const {fullscreen, selectedVariableNames} = this.state
-    const {ruleGraphQuery, permissionSchema, rule} = this.props
+    const { fullscreen, selectedVariableNames } = this.state
+    const { ruleGraphQuery, permissionSchema, rule } = this.props
     const variables = this.getVariables()
     const inactive = rule !== 'GRAPH'
     const schema = buildClientSchema(JSON.parse(permissionSchema))
 
     return (
-      <div className={cx('permission-query-wrapper', {fullscreen, inactive})}>
+      <div className={cx('permission-query-wrapper', { fullscreen, inactive })}>
         <style jsx={true}>{`
           .permission-query-wrapper :global(.star) {
             @p: .mr6;
@@ -334,7 +321,8 @@ export default class PermissionConditions extends React.Component<Props, State> 
             margin-right: -45px;
           }
           .permission-query-wrapper.inactive .after {
-            @p: .bgWhite80, .top0, .left0, .bottom0, .right0, .absolute, .z999, .pointer;
+            @p: .bgWhite80, .top0, .left0, .bottom0, .right0, .absolute, .z999,
+              .pointer;
           }
           .permission-query-wrapper.fullscreen {
             @p: .bbox, .ma60;
@@ -373,26 +361,28 @@ export default class PermissionConditions extends React.Component<Props, State> 
             box-shadow: 0 0 8px $darkBlue;
           }
         `}</style>
-        <div
-          className='extend'
-          onClick={this.toggleFullscreen}
-        >
+        <div className="extend" onClick={this.toggleFullscreen}>
           <Icon
             src={
-              fullscreen ? require('assets/icons/compress.svg') : require('assets/icons/extend.svg')
+              fullscreen
+                ? require('assets/icons/compress.svg')
+                : require('assets/icons/extend.svg')
             }
             stroke
             strokeWidth={1.5}
             color={$v.white50}
           />
         </div>
-        <div className='query'>
+        <div className="query">
           <CustomGraphiQL
             rerenderQuery={true}
             schema={schema}
             variables={''}
             query={ruleGraphQuery}
-            fetcher={() => { return null }}
+            fetcher={() => {
+              return null
+            }}
+            storage={dummyStorage}
             disableQueryHeader
             queryOnly
             showDocs
@@ -400,11 +390,13 @@ export default class PermissionConditions extends React.Component<Props, State> 
           />
         </div>
         <div className={'variables' + (fullscreen ? ' fullscreen' : '')}>
-          {this.sortVariables(Object.keys(variables)).map(group => (
-            <div className='variable-category' key={group}>
-              <div className='variable-title'>
-                <span>{group}</span>
-                {group === 'Authenticated User' && (
+          {this.sortVariables(Object.keys(variables)).map(group =>
+            <div className="variable-category" key={group}>
+              <div className="variable-title">
+                <span>
+                  {group}
+                </span>
+                {group === 'Authenticated User' &&
                   <Icon
                     src={require('graphcool-styles/icons/stroke/lock.svg')}
                     color={$v.white40}
@@ -412,26 +404,23 @@ export default class PermissionConditions extends React.Component<Props, State> 
                     strokeWidth={2.5}
                     height={18}
                     width={18}
-                    className='ml10'
-                  />
-                )}
+                    className="ml10"
+                  />}
               </div>
-              {variables[group].map(variable => (
+              {variables[group].map(variable =>
                 <VariableTag
                   key={variable.name}
                   active={selectedVariableNames.includes(variable.name)}
                   onClick={() => this.toggleVariableSelection(variable)}
-                  className='tag'
+                  className="tag"
                   variable={variable}
-                />
-              ))}
-            </div>
-          ))}
+                />,
+              )}
+            </div>,
+          )}
         </div>
-        {inactive && (
-          <div className='after' onClick={this.props.toggleRuleType}>
-          </div>
-        )}
+        {inactive &&
+          <div className="after" onClick={this.props.toggleRuleType} />}
       </div>
     )
   }
@@ -460,7 +449,7 @@ export default class PermissionConditions extends React.Component<Props, State> 
   private toggleVariableSelection = (variable: PermissionQueryArgument) => {
     this.setState(
       state => {
-        const {selectedVariableNames} = state
+        const { selectedVariableNames } = state
 
         if (selectedVariableNames.includes(variable.name)) {
           const index = selectedVariableNames.indexOf(variable.name)
@@ -469,7 +458,10 @@ export default class PermissionConditions extends React.Component<Props, State> 
             ...state,
             selectedVariableNames: [
               ...selectedVariableNames.slice(0, index),
-              ...selectedVariableNames.slice(index + 1, selectedVariableNames.length),
+              ...selectedVariableNames.slice(
+                index + 1,
+                selectedVariableNames.length,
+              ),
             ],
           }
         }
@@ -481,17 +473,22 @@ export default class PermissionConditions extends React.Component<Props, State> 
       },
       () => {
         const variables = this.getSelectedVariables()
-        const newQuery = putVariablesToQuery(this.props.ruleGraphQuery, variables)
+        const newQuery = putVariablesToQuery(
+          this.props.ruleGraphQuery,
+          variables,
+        )
         this.props.setRuleGraphQuery(newQuery)
       },
     )
   }
 
   private getSelectedVariables() {
-    const {selectedVariableNames} = this.state
+    const { selectedVariableNames } = this.state
     const variables = this.getVariables()
 
-    return flatMap(Object.keys(variables), group => variables[group])
-      .filter(variable => selectedVariableNames.includes(variable.name))
+    return flatMap(
+      Object.keys(variables),
+      group => variables[group],
+    ).filter(variable => selectedVariableNames.includes(variable.name))
   }
 }

@@ -31,13 +31,15 @@ function commit(input: Props) {
         functionId: input.functionId,
       },
     },
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'functions',
-      deletedIDFieldName: 'deletedId',
-    }],
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'functions',
+        deletedIDFieldName: 'deletedId',
+      },
+    ],
   })
 }
 

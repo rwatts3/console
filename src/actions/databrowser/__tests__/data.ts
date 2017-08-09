@@ -1,10 +1,16 @@
-import {reloadDataAsync, loadDataAsync, addNodeAsync, updateNodeAsync, deleteSelectedNodes} from '../data'
+import {
+  reloadDataAsync,
+  loadDataAsync,
+  addNodeAsync,
+  updateNodeAsync,
+  deleteSelectedNodes,
+} from '../data'
 import mockStore from 'redux-mock-store'
 import * as lokka from 'lokka'
 import * as Immutable from 'immutable'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {ActionRowState} from '../../../types/databrowser/actionrow'
-import {Model, FieldType} from '../../../types/types'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { ActionRowState } from '../../../types/databrowser/actionrow'
+import { Model, FieldType } from '../../../types/types'
 
 describe('async data actions', () => {
   const store = mockStore({
@@ -120,7 +126,7 @@ describe('async data actions', () => {
         itemCount: 5,
         description: '',
         isSystem: false,
-        permissions: {edges: []},
+        permissions: { edges: [] },
         permissionSchema: '',
         permissionQueryArguments: [],
       },
@@ -130,7 +136,7 @@ describe('async data actions', () => {
   ]
 
   const fieldEdges = {
-    edges: fields.map(node => ({node})),
+    edges: fields.map(node => ({ node })),
   }
 
   const model = {
@@ -142,7 +148,7 @@ describe('async data actions', () => {
     unconnectedReverseRelationFieldsFrom: [],
     description: '',
     isSystem: false,
-    permissions: {edges: []},
+    permissions: { edges: [] },
     permissionSchema: '',
     permissionQueryArguments: [],
   }
@@ -179,8 +185,7 @@ describe('async data actions', () => {
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()
       })
-      .catch((e) => {
-        console.error(e)
+      .catch(e => {
         expect(false).toBe(true)
       })
   })
@@ -191,46 +196,45 @@ describe('async data actions', () => {
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()
       })
-      .catch((e) => {
-        console.error(e)
+      .catch(e => {
         expect(false).toBe(true)
       })
   })
 
   it('should update a node async', () => {
     return store
-      .dispatch(updateNodeAsync(
-        lokka,
-        model,
-        fields,
-        'somedescription',
-        fields[1],
-        () => {/* */},
-        'ciu9st9820sgt0128cviki4sf',
-        0,
-      ))
+      .dispatch(
+        updateNodeAsync(
+          lokka,
+          model,
+          fields,
+          'somedescription',
+          fields[1],
+          () => {
+            /* */
+          },
+          'ciu9st9820sgt0128cviki4sf',
+          0,
+        ),
+      )
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()
       })
-      .catch((e) => {
+      .catch(e => {
         expect(false).toBe(true)
       })
   })
 
   it('should delete a node async', () => {
     return store
-      .dispatch(deleteSelectedNodes(
-        lokka,
-        'some project',
-        'Artist',
-        model as Model,
-      ))
+      .dispatch(
+        deleteSelectedNodes(lokka, 'some project', 'Artist', model as Model),
+      )
       .then(() => {
         expect(store.getActions()).toMatchSnapshot()
       })
-      .catch((e) => {
+      .catch(e => {
         expect(false).toBe(true)
       })
   })
-
 })

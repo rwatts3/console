@@ -1,6 +1,6 @@
-import {ReduxAction} from '../types/reducers'
+import { ReduxAction } from '../types/reducers'
 import Constants from '../constants/codeGeneration'
-import {Environment, GraphQLClient} from '../types/types'
+import { Environment, GraphQLClient } from '../types/types'
 
 interface CodeGenerationState {
   environment: Environment
@@ -18,13 +18,15 @@ export function reduceCodeGeneration(
 ): CodeGenerationState {
   switch (action.type) {
     case Constants.SET_CODE_GENERATION_CLIENT:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         client: action.payload,
-      })
+      }
     case Constants.SET_CODE_GENERATION_ENVIRONMENT:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         environment: action.payload,
-      })
+      }
     default:
       return state
   }

@@ -29,15 +29,19 @@ if (process.env.NODE_ENV === 'production') {
     onUpdateReady: () => offline.applyUpdate(),
     onUpdated: () => {
       if (typeof graphcoolNotification !== 'undefined') {
-        graphcoolNotification('We just deployed a new version of the Console.' +
-          ' Please refresh to see the latest version.')
+        graphcoolNotification(
+          'We just deployed a new version of the Console 🚀' +
+            ' Please refresh.',
+        )
       }
     },
   })
 }
 
 if (typeof Raven !== 'undefined' && process.env.NODE_ENV === 'production') {
-  Raven.config('https://f4b2d5e7865742e290a3bf77849d5e4a@sentry.io/135786').install()
+  Raven.config(
+    'https://f4b2d5e7865742e290a3bf77849d5e4a@sentry.io/135786',
+  ).install()
 }
 
 const environment = relayEnvironment
@@ -46,17 +50,13 @@ const store = createStore()
 
 const ConnectedRouter = createConnectedRouter({
   render: createRender({
-    renderError: ({ error }) => (
-      <RedirectOnMount to={`/`} />
-    ),
+    renderError: ({ error }) => <RedirectOnMount to={`/`} />,
   }),
 })
 
 ReactDOM.render(
-  (
-    <Provider store={store}>
-      <ConnectedRouter resolver={new Resolver(environment)} />
-    </Provider>
-  ),
+  <Provider store={store}>
+    <ConnectedRouter resolver={new Resolver(environment)} />
+  </Provider>,
   document.getElementById('root'),
 )

@@ -1,12 +1,7 @@
 import * as React from 'react'
-import {
-  createRefetchContainer,
-  graphql,
-  RelayProp,
-} from 'react-relay'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
-import {Model, SearchProviderAlgolia} from '../../../types/types'
-import {withRouter} from 'found'
+import { createRefetchContainer, graphql, RelayProp } from 'react-relay'
+import { QueryEditor } from 'graphiql/dist/components/QueryEditor'
+import { Model, SearchProviderAlgolia } from '../../../types/types'
 import { buildClientSchema } from 'graphql'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
@@ -14,7 +9,7 @@ import { parse } from 'graphql/language'
 interface Props {
   algolia: SearchProviderAlgolia
   fragment: string
-  onFragmentChange: (fragment: String, valid: boolean) => void
+  onFragmentChange: (fragment: string, valid: boolean) => void
   relay: RelayProp
   selectedModel: Model
 }
@@ -23,7 +18,10 @@ interface State {
   schema: any
 }
 
-function extractSchema ({ schemaString, query }): { schema: any, valid: boolean } {
+function extractSchema({
+  schemaString,
+  query,
+}): { schema: any; valid: boolean } {
   const schema = schemaString
     ? buildClientSchema(JSON.parse(schemaString))
     : null
@@ -43,7 +41,7 @@ function extractSchema ({ schemaString, query }): { schema: any, valid: boolean 
 class AlgoliaQuery extends React.Component<Props, State> {
   constructor(props) {
     super(props)
-    const { schema, valid } = extractSchema({
+    const { schema } = extractSchema({
       schemaString: props.algolia.algoliaSchema,
       query: props.fragment,
     })
@@ -53,52 +51,44 @@ class AlgoliaQuery extends React.Component<Props, State> {
     }
   }
   componentDidMount() {
-    const {relay, selectedModel} = this.props
-    relay.refetch(
-      fragmentVariables => ({
-        ...fragmentVariables,
-        selectedModelId: selectedModel.id,
-        modelIdExists: true,
-      }),
-    )
+    const { relay, selectedModel } = this.props
+    relay.refetch(fragmentVariables => ({
+      ...fragmentVariables,
+      selectedModelId: selectedModel.id,
+      modelIdExists: true,
+    }))
   }
   componentWillReceiveProps(nextProps) {
-    const {relay} = this.props
+    const { relay } = this.props
     if (nextProps.selectedModel !== this.props.selectedModel) {
-      relay.refetch(
-        fragmentVariables => ({
-          ...fragmentVariables,
-          selectedModelId: nextProps.selectedModel.id,
-          modelIdExists: true,
-        }),
-      )
+      relay.refetch(fragmentVariables => ({
+        ...fragmentVariables,
+        selectedModelId: nextProps.selectedModel.id,
+        modelIdExists: true,
+      }))
     }
 
     if (nextProps.algolia.algoliaSchema !== this.props.algolia.algoliaSchema) {
-      const {algolia, fragment} = nextProps
-      const { schema, valid } = extractSchema({
+      const { algolia, fragment } = nextProps
+      const { schema } = extractSchema({
         schemaString: algolia.algoliaSchema,
         query: fragment,
       })
-      this.setState({schema})
+      this.setState({ schema })
     }
   }
   render() {
-    const {fragment, onFragmentChange} = this.props
-    const {schema} = this.state
+    const { fragment } = this.props
+    const { schema } = this.state
     return (
-      <QueryEditor
-        schema={schema}
-        value={fragment}
-        onEdit={this.handleEdit}
-      />
+      <QueryEditor schema={schema} value={fragment} onEdit={this.handleEdit} />
     )
   }
 
   private handleEdit = (fragment: string) => {
-    const {algolia} = this.props
+    const { algolia } = this.props
 
-    const { schema, valid } = extractSchema({
+    const { valid } = extractSchema({
       schemaString: algolia.algoliaSchema,
       query: fragment,
     })
@@ -112,16 +102,20 @@ export default createRefetchContainer(
   {
     algolia: graphql.experimental`
       fragment AlgoliaQuery_algolia on SearchProviderAlgolia
-      @argumentDefinitions(
-        selectedModelId: {type: "ID!", defaultValue: ""}
-        modelIdExists: {type: "Boolean!", defaultValue: false}
-      ) {
+        @argumentDefinitions(
+          selectedModelId: { type: "ID!", defaultValue: "" }
+          modelIdExists: { type: "Boolean!", defaultValue: false }
+        ) {
         algoliaSchema(modelId: $selectedModelId) @include(if: $modelIdExists)
       }
     `,
   },
   graphql.experimental`
-    query AlgoliaQueryRefetchQuery($selectedModelId: ID!, $modelIdExists: Boolean!, $projectName: String!) {
+    query AlgoliaQueryRefetchQuery(
+      $selectedModelId: ID!
+      $modelIdExists: Boolean!
+      $projectName: String!
+    ) {
       viewer {
         projectByName(projectName: $projectName) {
           id
@@ -132,7 +126,11 @@ export default createRefetchContainer(
                 name
                 type
                 ... on SearchProviderAlgolia {
-                  ...AlgoliaQuery_algolia @arguments(selectedModelId: $selectedModelId, modelIdExists: $modelIdExists)
+                  ...AlgoliaQuery_algolia
+                    @arguments(
+                      selectedModelId: $selectedModelId
+                      modelIdExists: $modelIdExists
+                    )
                 }
               }
             }

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 
-const ErrorInfo = (props) => (
-  <div className='info'>
+const ErrorInfo = props =>
+  <div className="info">
     <style jsx>{`
       .tooltip {
         @inherit: .dn, .absolute;
@@ -12,7 +12,8 @@ const ErrorInfo = (props) => (
         left: -150px;
       }
       .tooltip-content {
-        @inherit: .br2, .bgWhite, .pa16, .black50, .f14, .fw4, .relative, .buttonShadow;
+        @inherit: .br2, .bgWhite, .pa16, .black50, .f14, .fw4, .relative,
+          .buttonShadow;
         &:before {
           @inherit: .absolute, .bgWhite;
           content: "";
@@ -29,19 +30,17 @@ const ErrorInfo = (props) => (
           @inherit: .db;
         }
       }
-
     `}</style>
     <Icon
       src={require('../../../assets/icons/warning_red.svg')}
       width={22}
       height={22}
     />
-    <div className='tooltip'>
-      <div className='tooltip-content'>
+    <div className="tooltip">
+      <div className="tooltip-content">
         {props.children}
       </div>
     </div>
   </div>
-)
 
 export default ErrorInfo

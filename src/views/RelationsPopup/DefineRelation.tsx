@@ -1,16 +1,16 @@
 import * as React from 'react'
 import ModelSelection from './ModelSelection'
 import RelationInfo from './RelationInfo'
-import {Model, Cardinality} from '../../types/types'
+import { Model, Cardinality } from '../../types/types'
 
 interface Props {
   models: Model[]
   leftSelectedModel: Model | null
   rightSelectedModel: Model | null
   selectedCardinality: Cardinality
-  didSelectLeftModel: Function
-  didSelectRightModel: Function
-  didSelectCardinality: Function
+  didSelectLeftModel: (m: Model) => void
+  didSelectRightModel: (m: Model) => void
+  didSelectCardinality: (c: Cardinality) => void
   rightFieldName: string
   rightFieldType: string
   leftFieldName: string
@@ -32,10 +32,9 @@ interface Props {
 }
 
 export default class DefineRelation extends React.Component<Props, {}> {
-
   render() {
     return (
-      <div className='bgBlack02'>
+      <div className="bgBlack02">
         <ModelSelection
           models={this.props.models}
           leftSelectedModel={this.props.leftSelectedModel}
@@ -48,20 +47,32 @@ export default class DefineRelation extends React.Component<Props, {}> {
           rightFieldType={this.props.rightFieldType}
           leftFieldName={this.props.leftFieldName}
           leftFieldType={this.props.leftFieldType}
-          didChangeFieldNameOnLeftModel={this.props.didChangeFieldNameOnLeftModel}
-          didChangeFieldNameOnRightModel={this.props.didChangeFieldNameOnRightModel}
+          didChangeFieldNameOnLeftModel={
+            this.props.didChangeFieldNameOnLeftModel
+          }
+          didChangeFieldNameOnRightModel={
+            this.props.didChangeFieldNameOnRightModel
+          }
           fieldOnLeftModelName={this.props.fieldOnLeftModelName}
           fieldOnRightModelName={this.props.fieldOnRightModelName}
           leftInputIsBreakingChange={this.props.leftInputIsBreakingChange}
           rightInputIsBreakingChange={this.props.rightInputIsBreakingChange}
           leftModelIsBreakingChange={this.props.leftModelIsBreakingChange}
           rightModelIsBreakingChange={this.props.rightModelIsBreakingChange}
-          forbiddenFieldNamesForLeftModel={this.props.forbiddenFieldNamesForLeftModel}
-          forbiddenFieldNamesForRightModel={this.props.forbiddenFieldNamesForRightModel}
+          forbiddenFieldNamesForLeftModel={
+            this.props.forbiddenFieldNamesForLeftModel
+          }
+          forbiddenFieldNamesForRightModel={
+            this.props.forbiddenFieldNamesForRightModel
+          }
           fieldOnLeftModelIsRequired={this.props.fieldOnLeftModelIsRequired}
           fieldOnRightModelIsRequired={this.props.fieldOnRightModelIsRequired}
-          didChangeFieldOnLeftModelIsRequired={this.props.didChangeFieldOnLeftModelIsRequired}
-          didChangeFieldOnRightModelIsRequired={this.props.didChangeFieldOnRightModelIsRequired}
+          didChangeFieldOnLeftModelIsRequired={
+            this.props.didChangeFieldOnLeftModelIsRequired
+          }
+          didChangeFieldOnRightModelIsRequired={
+            this.props.didChangeFieldOnRightModelIsRequired
+          }
         />
         <RelationInfo
           leftModel={this.props.leftSelectedModel}
@@ -73,5 +84,4 @@ export default class DefineRelation extends React.Component<Props, {}> {
       </div>
     )
   }
-
 }

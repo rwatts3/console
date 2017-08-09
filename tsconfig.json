@@ -7,9 +7,11 @@
     "sourceMap": true,
     "target": "es2015",
     "outDir": "lib",
+    "strictNullChecks": false,
     "moduleResolution": "node",
     "allowJs": true,
-    "lib": ["ES2017", "DOM"]
+    "lib": ["ES2017", "DOM"],
+    "noUnusedLocals": true
   },
   "exclude": [
     "node_modules",
@@ -18,7 +20,7 @@
   "include": [
     "./src/**/*.ts",
     "./src/**/*.tsx",
-    "./custom.d.ts"
+    "./typings/custom.d.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,

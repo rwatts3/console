@@ -1,5 +1,5 @@
-import {isValid, toggleIsList, getMigrationUI} from '../FieldPopupState'
-import {emptyField} from '../constants'
+import { isValid, toggleIsList, getMigrationUI } from '../FieldPopupState'
+import { emptyField } from '../constants'
 
 test('should invalidate empty field', () => {
   const valid = isValid(0, emptyField(), undefined)
@@ -38,7 +38,7 @@ describe('show proper migration ui state', () => {
     expect(migrationUI.showMigration).toBe(true)
     expect(migrationUI.migrationOptional).toBe(false)
   })
-  test('show migration and but don\'t make it mandatory when field changed to required', () => {
+  test("show migration and but don't make it mandatory when field changed to required", () => {
     const migrationUI = getMigrationUI(
       5,
       {
@@ -75,14 +75,10 @@ describe('show proper migration ui state', () => {
     expect(migrationUI.migrationOptional).toBe(false)
   })
   test('show migration and make it mandatory when it got scalar from list', () => {
-    const migrationUI = getMigrationUI(
-      5,
-      emptyField(),
-      {
-        ...emptyField(),
-        isList: true,
-      },
-    )
+    const migrationUI = getMigrationUI(5, emptyField(), {
+      ...emptyField(),
+      isList: true,
+    })
     expect(migrationUI.showMigration).toBe(true)
     expect(migrationUI.migrationOptional).toBe(false)
   })

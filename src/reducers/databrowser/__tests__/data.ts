@@ -1,47 +1,55 @@
 import { reduceData, initialState } from '../data'
 import {
-  setOrder, setItemCount, setData, mutationRequest,
-  addNodeRequest, mutationError, deleteNodes, mutationSuccess, updateCell, addNodeSuccess,
+  setOrder,
+  setItemCount,
+  setData,
+  mutationRequest,
+  addNodeRequest,
+  mutationError,
+  deleteNodes,
+  mutationSuccess,
+  updateCell,
+  addNodeSuccess,
 } from '../../../actions/databrowser/data'
 import * as Immutable from 'immutable'
-import {ReduxAction} from '../../../types/reducers'
-import {DataBrowserDataState} from '../../../types/databrowser/data'
-import {Reducer} from 'redux'
+import { ReduxAction } from '../../../types/reducers'
+import { DataBrowserDataState } from '../../../types/databrowser/data'
+import { Reducer } from 'redux'
 
 function mockNodes() {
   return setData(
-    Immutable.List<Immutable.Map<string, any>>(
-      [
-        Immutable.Map({
-          id: 'asd',
-          name: 'a',
-        }),
-        Immutable.Map({
-          id: 'asd2',
-          name: 'a2',
-        }),
-        Immutable.Map({
-          id: 'asd3',
-          name: 'a3',
-        }),
-      ],
-    ),
+    Immutable.List<Immutable.Map<string, any>>([
+      Immutable.Map({
+        id: 'asd',
+        name: 'a',
+      }),
+      Immutable.Map({
+        id: 'asd2',
+        name: 'a2',
+      }),
+      Immutable.Map({
+        id: 'asd3',
+        name: 'a3',
+      }),
+    ]),
     Immutable.List<boolean>([true, true, true]),
   )
 }
 
 describe('databrowser reducer', () => {
-
   it('should render the initialState', () => {
-    const state = reduceData(initialState, {type: null})
+    const state = reduceData(initialState, { type: null })
     expect(state).toMatchSnapshot()
   })
 
   it('should set the order', () => {
-    const state = reduceData(initialState, setOrder({
-      fieldName: 'name',
-      order: 'ASC',
-    }))
+    const state = reduceData(
+      initialState,
+      setOrder({
+        fieldName: 'name',
+        order: 'ASC',
+      }),
+    )
 
     expect(state).toMatchSnapshot()
   })
@@ -62,10 +70,12 @@ describe('databrowser reducer', () => {
     reduceAndSnapshot(initialState, reduceData, [
       mockNodes(),
       mutationRequest(),
-      addNodeRequest(Immutable.Map({
-        id: 'asd4',
-        name: 'a4',
-      })),
+      addNodeRequest(
+        Immutable.Map({
+          id: 'asd4',
+          name: 'a4',
+        }),
+      ),
       mutationError(),
     ])
   })
@@ -77,13 +87,17 @@ describe('databrowser reducer', () => {
       [
         mockNodes(),
         mutationRequest(),
-        addNodeRequest(Immutable.Map({
-          name: 'a4',
-        })),
-        addNodeSuccess(Immutable.Map({
-          id: 'asd4',
-          name: 'a4',
-        })),
+        addNodeRequest(
+          Immutable.Map({
+            name: 'a4',
+          }),
+        ),
+        addNodeSuccess(
+          Immutable.Map({
+            id: 'asd4',
+            name: 'a4',
+          }),
+        ),
       ],
       [0, 1],
     )
@@ -99,7 +113,8 @@ describe('databrowser reducer', () => {
         deleteNodes(['asd', 'asd2']),
         mutationSuccess(),
       ],
-      [0, 1])
+      [0, 1],
+    )
   })
 
   it('should backup and restore when mutation fail after delete mutation', () => {
@@ -128,16 +143,15 @@ describe('databrowser reducer', () => {
       }),
     ])
   })
-
 })
 
 function reduceAndSnapshot(
-  initialState: DataBrowserDataState,
+  initState: DataBrowserDataState,
   reduce: Reducer<DataBrowserDataState>,
   actions: ReduxAction[],
   excludeActions: number[] = [],
 ) {
-  let lastState = initialState
+  let lastState = initState
   actions.forEach((action, index) => {
     lastState = reduce(lastState, action)
     if (excludeActions.includes(index)) {

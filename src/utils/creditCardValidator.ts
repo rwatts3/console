@@ -6,10 +6,14 @@ export const maxCPCDigits = 4
 export function creditCardNumberValid(creditCardNumber: string): boolean {
   let creditCardNumberWithoutSpaces = creditCardNumber
   if (creditCardNumber.includes(' ')) {
-    creditCardNumberWithoutSpaces = creditCardNumberWithoutSpaces.split(' ').join('')
+    creditCardNumberWithoutSpaces = creditCardNumberWithoutSpaces
+      .split(' ')
+      .join('')
   }
-  return creditCardNumberWithoutSpaces.length >= minCreditCardDigits &&
+  return (
+    creditCardNumberWithoutSpaces.length >= minCreditCardDigits &&
     creditCardNumberWithoutSpaces.length <= maxCreditCardDigits
+  )
 }
 
 export function expirationDateValid(expirationDate: string): boolean {
@@ -35,5 +39,5 @@ export function expirationDateValid(expirationDate: string): boolean {
 }
 
 export function cpcValid(cpc: string): boolean {
-    return cpc.length >= minCPCDigits && cpc.length <= maxCPCDigits
+  return cpc.length >= minCPCDigits && cpc.length <= maxCPCDigits
 }

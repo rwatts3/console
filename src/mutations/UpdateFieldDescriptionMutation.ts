@@ -1,4 +1,3 @@
-import * as Relay from 'react-relay/classic'
 import { graphql } from 'react-relay'
 import { makeMutation } from '../utils/makeMutation'
 
@@ -20,13 +19,15 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        field: input.id,
+    variables: { input },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          field: input.id,
+        },
       },
-    }],
+    ],
   })
 }
 

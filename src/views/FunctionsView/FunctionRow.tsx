@@ -1,32 +1,29 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {Link} from 'found'
-import {ServerlessFunction} from '../../types/types'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { Link } from 'found'
+import { ServerlessFunction } from '../../types/types'
 import NewToggleButton from '../../components/NewToggleButton/NewToggleButton'
-import {withRouter} from 'found'
-import {Icon, $v} from 'graphcool-styles'
-import UpdateRequestPipelineMutationFunction
-  from '../../mutations/Functions/UpdateRequestPipelineMutationFunction'
-import {onFailureShowNotification} from '../../utils/relay'
-import {showNotification} from '../../actions/notification'
-import {ShowNotificationCallback} from '../../types/utils'
-import {connect} from 'react-redux'
+import { withRouter } from 'found'
+import { Icon, $v } from 'graphcool-styles'
+import UpdateRequestPipelineMutationFunction from '../../mutations/Functions/UpdateRequestPipelineMutationFunction'
+import { onFailureShowNotification } from '../../utils/relay'
+import { showNotification } from '../../actions/notification'
+import { ShowNotificationCallback } from '../../types/utils'
+import { connect } from 'react-redux'
 import * as moment from 'moment'
 import RequestGraph from './RequestGraph'
 import * as cn from 'classnames'
-import {getIsInline} from './FunctionPopup/FunctionPopup'
-import {getEventTypeFromFunction} from '../../utils/functions'
+import { getIsInline } from './FunctionPopup/FunctionPopup'
+import { getEventTypeFromFunction } from '../../utils/functions'
 import UpdateServerSideSubscriptionFunction from '../../mutations/Functions/UpdateServerSideSubscriptionFunction'
 import UpdateSchemaExtensionFunction from '../../mutations/Functions/UpdateSchemaExtensionFunction'
 import { RelayProp } from 'react-relay/classic'
+import { dummy } from '../../utils/dummy'
 
 interface Props {
   fn: ServerlessFunction
   params: any
-  router: ReactRouter.InjectedRouter
+  router: any
   showNotification: ShowNotificationCallback
   relay: RelayProp
 }
@@ -36,7 +33,6 @@ interface State {
 }
 
 class FunctionRow extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -47,17 +43,20 @@ class FunctionRow extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.fn.isActive !== nextProps.fn.isActive) {
-      this.setState({isActive: nextProps.fn.isActive} as State)
+      this.setState({ isActive: nextProps.fn.isActive } as State)
     }
   }
 
   render() {
-    const {fn, params: {projectName}} = this.props
+    const { fn } = this.props
     const eventType = getEventTypeFromFunction(fn)
-    const link = `/${this.props.params.projectName}/functions/${this.props.fn.id}/edit`
+    const link = `/${this.props.params.projectName}/functions/${this.props.fn
+      .id}/edit`
     const isInline = getIsInline(fn)
 
-    const lastCall = fn.stats.lastRequest ? moment(fn.stats.lastRequest).fromNow() : 'no recent invocations'
+    const lastCall = fn.stats.lastRequest
+      ? moment(fn.stats.lastRequest).fromNow()
+      : 'no recent invocations'
 
     return (
       <tr key={fn.id} onClick={this.edit}>
@@ -76,7 +75,7 @@ class FunctionRow extends React.Component<Props, State> {
           }
           td {
             @p: .pointer;
-            border-bottom: 2px solid rgba(23,42,58,.06);
+            border-bottom: 2px solid rgba(23, 42, 58, .06);
           }
           .toggle {
             @p: .flex, .itemsCenter;
@@ -95,7 +94,8 @@ class FunctionRow extends React.Component<Props, State> {
           .event-type span {
             @p: .ml10;
           }
-          .bad, .good {
+          .bad,
+          .good {
             @p: .f12, .fw6, .tr;
           }
           .good {
@@ -108,7 +108,8 @@ class FunctionRow extends React.Component<Props, State> {
             @p: .flex, .itemsCenter;
           }
           .failed-count {
-            @p: .buttonShadow, .br100, .bgRed, .white, .tc, .flex, .itemsCenter, .justifyCenter;
+            @p: .buttonShadow, .br100, .bgRed, .white, .tc, .flex, .itemsCenter,
+              .justifyCenter;
             @p: .f12, .fw6;
             line-height: 18px;
             min-width: 18px;
@@ -120,7 +121,8 @@ class FunctionRow extends React.Component<Props, State> {
             left: 15px;
             top: -16px;
           }
-          td :global(a), td .toggle {
+          td :global(a),
+          td .toggle {
             @p: .ph20, .pv16, .db;
           }
           td.less-padding :global(a) {
@@ -140,47 +142,62 @@ class FunctionRow extends React.Component<Props, State> {
           }
         `}</style>
         <td>
-          <div className='toggle'>
-          <NewToggleButton
+          <div className="toggle">
+            <NewToggleButton
               defaultChecked={this.state.isActive}
               onChange={this.toggle}
             />
           </div>
         </td>
         <td>
-          <Link to={link} data-test={eventType === 'RP' ? 'edit-rp-function-button' : 'edit-sss-function-button'}>
-            <span className='name'>{fn.name}</span>
-            <span className='badge'>{isInline ? 'Inline' : 'Webhook'}</span>
+          <Link
+            to={link}
+            data-test={
+              eventType === 'RP'
+                ? 'edit-rp-function-button'
+                : 'edit-sss-function-button'
+            }
+          >
+            <span className="name">
+              {fn.name}
+            </span>
+            <span className="badge">
+              {isInline ? 'Inline' : 'Webhook'}
+            </span>
           </Link>
         </td>
         <td>
           <Link to={link}>
-            {eventType === 'RP' && (
-              <div className={cn(
-                'event-type',
-                // {
-                //   'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
-                //   'rp2': fn.binding === 'PRE_WRITE',
-                //   'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
-                // },
-              )}>
+            {eventType === 'RP' &&
+              <div
+                className={cn(
+                  'event-type',
+                  // {
+                  //   'rp1': fn.binding === 'TRANSFORM_ARGUMENT',
+                  //   'rp2': fn.binding === 'PRE_WRITE',
+                  //   'rp3': fn.binding === 'TRANSFORM_PAYLOAD',
+                  // },
+                )}
+              >
                 <Icon
                   src={require('graphcool-styles/icons/fill/requestpipeline.svg')}
                   color={$v.darkBlue50}
                   width={55}
                 />
-                <span className='ttu'>Request Pipeline</span>
-                {fn.model && (
-                  <div className='flex'>
-                    <div className='badge ml10'>{fn.model.name}</div>
-                    <span className='darkBlue40 f14'>is</span>
-                    <div className='badge ml6'>{fn.operation.toLowerCase()}d</div>
-                  </div>
-                )}
-              </div>
-            )}
-            {eventType === 'SSS' && (
-              <div className='event-type'>
+                <span className="ttu">Request Pipeline</span>
+                {fn.model &&
+                  <div className="flex">
+                    <div className="badge ml10">
+                      {fn.model.name}
+                    </div>
+                    <span className="darkBlue40 f14">is</span>
+                    <div className="badge ml6">
+                      {fn.operation.toLowerCase()}d
+                    </div>
+                  </div>}
+              </div>}
+            {eventType === 'SSS' &&
+              <div className="event-type">
                 <Icon
                   src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
                   color={$v.darkBlue50}
@@ -188,10 +205,9 @@ class FunctionRow extends React.Component<Props, State> {
                   height={23}
                 />
                 <span>Server-side Subscription</span>
-              </div>
-            )}
-            {eventType === 'SCHEMA_EXTENSION' && (
-              <div className='event-type'>
+              </div>}
+            {eventType === 'SCHEMA_EXTENSION' &&
+              <div className="event-type">
                 <Icon
                   src={require('assets/icons/schema.svg')}
                   color={$v.darkBlue50}
@@ -199,43 +215,50 @@ class FunctionRow extends React.Component<Props, State> {
                   height={18}
                 />
                 <span>Schema Extension</span>
-              </div>
-            )}
+              </div>}
           </Link>
         </td>
-        <td className='less-padding'>
+        <td className="less-padding">
           <Link to={link}>
-            <div className='requests'>
-              {fn.stats && fn.stats.requestHistogram && fn.stats.requestHistogram.length > 0 &&
-                <RequestGraph stats={fn.stats} />
-              }
-              <div className='good'>{fn.stats.requestCount}</div>
-              <div className='time'>{lastCall}</div>
+            <div className="requests">
+              {fn.stats &&
+                fn.stats.requestHistogram &&
+                fn.stats.requestHistogram.length > 0 &&
+                <RequestGraph stats={fn.stats} />}
+              <div className="good">
+                {fn.stats.requestCount}
+              </div>
+              <div className="time">
+                {lastCall}
+              </div>
             </div>
           </Link>
         </td>
         <td>
-          <Link to={`/${this.props.params.projectName}/functions/${this.props.fn.id}/logs`}>
-            {fn.stats.errorCount > 0 ? (
-              <div className='relative'>
-                <Icon
-                  src={require('graphcool-styles/icons/fill/logsFailed.svg')}
-                  color={$v.red}
+          <Link
+            to={`/${this.props.params.projectName}/functions/${this.props.fn
+              .id}/logs`}
+          >
+            {fn.stats.errorCount > 0
+              ? <div className="relative">
+                  <Icon
+                    src={require('graphcool-styles/icons/fill/logsFailed.svg')}
+                    color={$v.red}
+                    width={24}
+                    height={24}
+                  />
+                  <div className="failed-count-wrapper">
+                    <div className="failed-count">
+                      {fn.stats.errorCount}
+                    </div>
+                  </div>
+                </div>
+              : <Icon
+                  src={require('graphcool-styles/icons/fill/logs.svg')}
+                  color={$v.green}
                   width={24}
                   height={24}
-                />
-                <div className='failed-count-wrapper'>
-                  <div className='failed-count'>{fn.stats.errorCount}</div>
-                </div>
-              </div>
-            ) : (
-              <Icon
-                src={require('graphcool-styles/icons/fill/logs.svg')}
-                color={$v.green}
-                width={24}
-                height={24}
-              />
-            )}
+                />}
           </Link>
         </td>
       </tr>
@@ -259,7 +282,8 @@ class FunctionRow extends React.Component<Props, State> {
         return UpdateRequestPipelineMutationFunction.commit({
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
-        }).then(() => {
+        })
+          .then(() => {
             // noop
           })
           .catch(transaction => {
@@ -269,7 +293,8 @@ class FunctionRow extends React.Component<Props, State> {
         return UpdateServerSideSubscriptionFunction.commit({
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
-        }).then(() => {
+        })
+          .then(() => {
             // noop
           })
           .catch(transaction => {
@@ -279,7 +304,8 @@ class FunctionRow extends React.Component<Props, State> {
         return UpdateSchemaExtensionFunction.commit({
           functionId: this.props.fn.id,
           isActive: !this.props.fn.isActive,
-        }).then(() => {
+        })
+          .then(() => {
             // noop
           })
           .catch(transaction => {
@@ -289,7 +315,7 @@ class FunctionRow extends React.Component<Props, State> {
   }
 }
 
-const ConnectedFunctionRow = connect(null, {showNotification})(FunctionRow)
+const ConnectedFunctionRow = connect(null, { showNotification })(FunctionRow)
 
 export default createFragmentContainer(withRouter(ConnectedFunctionRow), {
   fn: graphql`
@@ -313,7 +339,7 @@ export default createFragmentContainer(withRouter(ConnectedFunctionRow), {
         }
         operation
       }
-    },
+    }
   `,
 })
 
@@ -333,3 +359,5 @@ const mutationFragments = graphql`
     }
   }
 `
+
+dummy(mutationFragments)

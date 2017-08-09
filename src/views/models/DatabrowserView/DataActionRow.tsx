@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
-import {Model, Project} from '../../../types/types'
-import {ActionRowState} from '../../../types/databrowser/actionrow'
+import { connect } from 'react-redux'
+import { Model, Project } from '../../../types/types'
+import { ActionRowState } from '../../../types/databrowser/actionrow'
 import NewNodeRow from './DataActionRow/NewNodeRow'
 import DeleteNodeRow from './DataActionRow/DeleteNodeRow'
 
@@ -34,11 +34,7 @@ class DataActionRow extends React.Component<Props, {}> {
           />
         )
       default:
-        return (
-            <NewNodeRow
-              {...this.props}
-            />
-        )
+        return <NewNodeRow {...this.props} />
     }
   }
 }

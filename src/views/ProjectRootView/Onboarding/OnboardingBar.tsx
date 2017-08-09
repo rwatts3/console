@@ -1,38 +1,32 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-import {Icon, $v} from 'graphcool-styles'
-import {connect} from 'react-redux'
-import {showCurrentStep, skip} from '../../../actions/gettingStarted'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {withRouter} from 'found'
+import { Icon, $v } from 'graphcool-styles'
+import { connect } from 'react-redux'
+import { showCurrentStep, skip } from '../../../actions/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { withRouter } from 'found'
 
 interface Props {
   gettingStartedState: GettingStartedState
   skip: () => void
-  router: ReactRouter.InjectedRouter
+  router: InjectedFoundRouter
   params: any
 }
 
-interface State {
-
-}
-
-class OnboardingBar extends React.Component<Props, State> {
-
+class OnboardingBar extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   render() {
-    const progressPercentage = (100 * (this.props.gettingStartedState.progress.index - 1)) / 3
+    const progressPercentage =
+      100 * (this.props.gettingStartedState.progress.index - 1) / 3
     const progress = this.props.gettingStartedState.progress
 
     return (
-      <div className='onboarding-bar'>
+      <div className="onboarding-bar">
         <style jsx>{`
           .onboarding-bar {
             @p: .bgDarkBlue, .flex, .flexColumn, .absolute, .bottom0, .z3;
@@ -66,13 +60,16 @@ class OnboardingBar extends React.Component<Props, State> {
             @p: .mr38, .underline, .pointer;
           }
         `}</style>
-        <div className='progress-bar'>
-          <div className='progress' style={{width: `${progressPercentage}%`}} />
+        <div className="progress-bar">
+          <div
+            className="progress"
+            style={{ width: `${progressPercentage}%` }}
+          />
         </div>
-        <div className='steps'>
-          <div className='flex itemsCenter'>
+        <div className="steps">
+          <div className="flex itemsCenter">
             <h2>Get Started</h2>
-            {steps.map(step => (
+            {steps.map(step =>
               <Step
                 active={step.n === progress.index}
                 done={step.n < progress.index}
@@ -81,13 +78,15 @@ class OnboardingBar extends React.Component<Props, State> {
                 key={step.n}
               >
                 {step.text}
-              </Step>
-            ))}
+              </Step>,
+            )}
           </div>
-          <div className='help'>
-            <div className='skip' onClick={this.skip}>Skip</div>
+          <div className="help">
+            <div className="skip" onClick={this.skip}>
+              Skip
+            </div>
             <span>Need help?</span>
-            <img src={require('assets/graphics/onboarding-arrow.svg')} alt=''/>
+            <img src={require('assets/graphics/onboarding-arrow.svg')} alt="" />
           </div>
         </div>
       </div>
@@ -98,14 +97,13 @@ class OnboardingBar extends React.Component<Props, State> {
     graphcoolConfirm(
       'This skips the Onboarding. 73% of our users going through the onboarding built successful Graphcool projects.',
       'Skip Onboarding',
-    )
-      .then(() => {
-        this.props.skip()
-      })
+    ).then(() => {
+      this.props.skip()
+    })
   }
 
   private gotoStep(n: number) {
-    const {router, params} = this.props
+    const { router, params } = this.props
     switch (n) {
       case 1:
         return router.push(`/${params.projectName}/schema`)
@@ -143,22 +141,23 @@ interface StepProps {
   onClick?: () => void
 }
 
-function Step({children, n, done, active, onClick}: StepProps) {
+function Step({ children, n, done, active, onClick }: StepProps) {
   return (
-    <div className={cn('step', {done, active})} onClick={onClick}>
+    <div className={cn('step', { done, active })} onClick={onClick}>
       <style jsx={true}>{`
         .step {
           @p: .flex, .itemsCenter, .ml38;
         }
         .circle {
-          @p: .br100, .tc, .f14, .fw6, .white60, .inlineFlex, .justifyCenter, .itemsCenter;
+          @p: .br100, .tc, .f14, .fw6, .white60, .inlineFlex, .justifyCenter,
+            .itemsCenter;
           border: 2px solid $white30;
           width: 25px;
           height: 25px;
           line-height: 25px;
         }
         span {
-          @p: .ml10, .f16, .white50
+          @p: .ml10, .f16, .white50;
         }
         .step.done .circle {
           @p: .bgWhite30;
@@ -175,19 +174,19 @@ function Step({children, n, done, active, onClick}: StepProps) {
           @p: .blue;
         }
       `}</style>
-      <div className='circle'>
-        {done ? (
-          <Icon
-            src={require('graphcool-styles/icons/fill/check.svg')}
-            color={$v.white60}
-            width={18}
-            height={18}
-          />
-        ) : (
-          n
-        )}
+      <div className="circle">
+        {done
+          ? <Icon
+              src={require('graphcool-styles/icons/fill/check.svg')}
+              color={$v.white60}
+              width={18}
+              height={18}
+            />
+          : n}
       </div>
-      <span>{children}</span>
+      <span>
+        {children}
+      </span>
     </div>
   )
 }
@@ -197,6 +196,7 @@ export default connect(
     gettingStartedState: state.gettingStarted.gettingStartedState,
   }),
   {
-    showCurrentStep, skip,
+    showCurrentStep,
+    skip,
   },
 )(withRouter(OnboardingBar))

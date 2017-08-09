@@ -1,11 +1,11 @@
 import * as React from 'react'
 import ImportSchema from './ImportSchema'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 
-export default class ImportSchemaView extends React.Component<null,null> {
+export default class ImportSchemaView extends React.Component<null, null> {
   render() {
     return (
-      <div className='import-schema-view'>
+      <div className="import-schema-view">
         <style jsx>{`
           .import-schema-view {
             @p: .bgBlack04, .w100, .h100;
@@ -19,16 +19,14 @@ export default class ImportSchemaView extends React.Component<null,null> {
             }
           }
         `}</style>
-        <div className='logo'>
+        <div className="logo">
           <Icon
             src={require('graphcool-styles/icons/fill/graphcoolLogoSpaced.svg')}
             color={$v.green}
             width={40}
             height={40}
           />
-          <span>
-            Graphcool
-          </span>
+          <span>Graphcool</span>
         </div>
         <ImportSchema />
       </div>

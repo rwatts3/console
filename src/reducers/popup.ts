@@ -1,13 +1,16 @@
-import {ReduxAction} from '../types/reducers'
+import { ReduxAction } from '../types/reducers'
 import Constants from '../constants/popup'
-import {Popup, PopupState} from '../types/popup'
+import { Popup, PopupState } from '../types/popup'
 import * as Immutable from 'immutable'
 
 const initialState: PopupState = {
   popups: Immutable.List<Popup>(),
 }
 
-export function reducePopup(state: PopupState = initialState, action: ReduxAction): PopupState {
+export function reducePopup(
+  state: PopupState = initialState,
+  action: ReduxAction,
+): PopupState {
   switch (action.type) {
     case Constants.SHOW_POPUP:
       return {
@@ -20,7 +23,9 @@ export function reducePopup(state: PopupState = initialState, action: ReduxActio
         }
       }
       return {
-        popups: state.popups.filter(value => value.id !== action.payload).toList(),
+        popups: state.popups
+          .filter(value => value.id !== action.payload)
+          .toList(),
       }
     default:
       return state

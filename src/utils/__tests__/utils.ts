@@ -1,5 +1,5 @@
 /// <reference path="../../../node_modules/@types/jest/index.d.ts"/>
-import {isValidUrl} from '../utils'
+import { isValidUrl } from '../utils'
 import '../polyfils'
 
 describe('isValidUrl', () => {

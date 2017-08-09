@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {CellProps} from './cells'
-import {stringToValue} from '../../../../utils/valueparser'
+import { CellProps } from './cells'
+import { stringToValue } from '../../../../utils/valueparser'
 import { Combobox } from 'react-input-enhancements'
 const classes: any = require('./EnumCell.scss')
 import ClickOutside from 'react-click-outside'
@@ -9,8 +9,10 @@ interface State {
   value: string
 }
 
-export default class EnumCell extends React.Component<CellProps<string>, State> {
-
+export default class EnumCell extends React.Component<
+  CellProps<string>,
+  State
+> {
   private ref: any
 
   constructor(props) {
@@ -22,39 +24,37 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
 
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      this.setState({value: nextProps.value})
+      this.setState({ value: nextProps.value })
     }
   }
 
   render() {
-    const selectedEnum = this.props.enums.find(en => this.props.field.enum.id === en.id)
+    const selectedEnum = this.props.enums.find(
+      en => this.props.field.enum.id === en.id,
+    )
     const enumValues = selectedEnum ? selectedEnum.values : []
     return (
-      <ClickOutside
-        onClickOutside={this.props.cancel}
-      >
-        <div
-          className={classes.root}
-        >
+      <ClickOutside onClickOutside={this.props.cancel}>
+        <div className={classes.root}>
           <Combobox
-            ref={ref => this.ref = ref}
+            ref={this.setRef}
             value={this.state.value}
-            onKeyDown={this.onKeyDown.bind(this)}
+            onKeyDown={this.handleKeyDown}
+            onSelect={this.handleSelect}
             options={enumValues}
-            onSelect={(value: string) => {
-              this.setState({value})
-              this.props.save(stringToValue(value, this.props.field))
-            }}
+            autocomplete
             autosize
             className={classes.root}
           >
             {inputProps => {
-              return <input
-                {...inputProps}
-                type='text'
-                placeholder='No Value'
-                autoFocus
-              />
+              return (
+                <input
+                  {...inputProps}
+                  type="text"
+                  placeholder="No Value"
+                  autoFocus
+                />
+              )
             }}
           </Combobox>
         </div>
@@ -62,9 +62,19 @@ export default class EnumCell extends React.Component<CellProps<string>, State> 
     )
   }
 
-  private onKeyDown = (e: any) => {
+  private setRef = ref => {
+    this.ref = ref
+  }
+
+  private handleSelect = (value: string) => {
+    this.setState({ value }, () => {
+      this.props.save(stringToValue(value, this.props.field))
+    })
+  }
+
+  private handleKeyDown = (e: any) => {
     // filter arrow keys
-    if ([38,40].includes(e.keyCode)) {
+    if ([38, 40].includes(e.keyCode)) {
       return
     }
 

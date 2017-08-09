@@ -1,19 +1,19 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
-import {toggleNewRow} from '../../../actions/databrowser/ui'
-import {Model, Field} from '../../../types/types'
-import {Icon} from 'graphcool-styles'
-import {classnames} from '../../../utils/classnames'
-import {SYSTEM_MODELS} from '../../../constants/system'
+import { connect } from 'react-redux'
+import * as cn from 'classnames'
+import { toggleNewRow } from '../../../actions/databrowser/ui'
+import { Model, Field } from '../../../types/types'
+import { Icon } from 'graphcool-styles'
+import { SYSTEM_MODELS } from '../../../constants/system'
 const classes: any = require('./NewRowInactive.scss')
 import Tether from '../../../components/Tether/Tether'
-import {Link} from 'found'
-import {idToBeginning} from '../../../utils/utils'
+import { Link } from 'found'
+import { idToBeginning } from '../../../utils/utils'
 
 interface Props {
-  columnWidths: {[key: string]: number}
+  columnWidths: { [key: string]: number }
   model: Model
-  toggleNewRow: (fields: Field[], modelNamePlural: String) => any
+  toggleNewRow: (fields: Field[], modelNamePlural: string) => any
   height: number
   params: any
 }
@@ -23,7 +23,6 @@ interface State {
 }
 
 class NewRowInactive extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -42,72 +41,71 @@ class NewRowInactive extends React.Component<Props, State> {
 
   render() {
     const fields = this.props.model.fields.edges
-      .map((edge) => edge.node)
+      .map(edge => edge.node)
       .sort(idToBeginning)
 
     return (
       <div
-        className={classnames(classes.root, {
+        className={cn(classes.root, {
           [classes.active]: this.state.active,
         })}
       >
-      {SYSTEM_MODELS.includes(this.props.model.name) ? (
-        <div
-          className={classes.cell}
-          style={{
-            width: '100%',
-            paddingLeft: 15,
-          }}
-        >
-        </div>
-      ) : (
-        <div
-          className={classnames(classes.root, {
-            [classes.active]: this.state.active,
-          })}
-          onClick={(e: any) => {
-            this.toggleNewRow(fields)
-          }}
-        >
-          {fields.map((field, index) => {
-            if (index === fields.length - 1) {
-              return (
-                <Tether
-                  style={{
-                    pointerEvents: 'none',
-                  }}
-                  steps={[{
-                    step: 'STEP3_CLICK_ADD_NODE2',
-                    title: `Awesome! Let's create one more.`,
-                    description: 'Hint: You can also use your keyboard to navigate between fields (Tab or Shift+Tab) and submit (Enter).', // tslint:disable-line
-                  }]}
-                  offsetX={0}
-                  offsetY={-10}
-                  width={351}
-                  horizontal='left'
-                  key='STEP3_CLICK_ADD_NODE2'
-                  zIndex={1000}
-                >
-                  {this.renderField(field, index, fields)}
-                </Tether>
-              )
-            } else {
-              return (
-                this.renderField(field, index, fields)
-              )
-            }
-          })}
-        </div>
-      )}
+        {SYSTEM_MODELS.includes(this.props.model.name)
+          ? <div
+              className={classes.cell}
+              style={{
+                width: '100%',
+                paddingLeft: 15,
+              }}
+            />
+          : <div
+              className={cn(classes.root, {
+                [classes.active]: this.state.active,
+              })}
+              onClick={(e: any) => {
+                this.toggleNewRow(fields)
+              }}
+            >
+              {fields.map((field, index) => {
+                if (index === fields.length - 1) {
+                  return (
+                    <Tether
+                      style={{
+                        pointerEvents: 'none',
+                      }}
+                      steps={[
+                        {
+                          step: 'STEP3_CLICK_ADD_NODE2',
+                          title: `Awesome! Let's create one more.`,
+                          description:
+                            'Hint: You can also use your keyboard to navigate between fields (Tab or Shift+Tab) and submit (Enter).', // tslint:disable-line
+                        },
+                      ]}
+                      offsetX={0}
+                      offsetY={-10}
+                      width={351}
+                      horizontal="left"
+                      key="STEP3_CLICK_ADD_NODE2"
+                      zIndex={1000}
+                    >
+                      {this.renderField(field, index, fields)}
+                    </Tether>
+                  )
+                } else {
+                  return this.renderField(field, index, fields)
+                }
+              })}
+            </div>}
         <Link
           style={{
             width: 250,
             height: this.props.height,
           }}
           className={classes.loading}
-          to={`/${this.props.params.projectName}/schema/${this.props.params.modelName}/create`}
+          to={`/${this.props.params.projectName}/schema/${this.props.params
+            .modelName}/create`}
         >
-          <div></div>
+          <div />
         </Link>
       </div>
     )
@@ -117,28 +115,33 @@ class NewRowInactive extends React.Component<Props, State> {
       <div
         key={field.id}
         style={{
-          width: this.props.columnWidths[field.name] + (index === fields.length - 1 ? 1 : 0),
+          width:
+            this.props.columnWidths[field.name] +
+            (index === fields.length - 1 ? 1 : 0),
           height: this.props.height,
         }}
-        className={classnames(classes.cell, {
+        className={cn(classes.cell, {
           [classes.last]: index === fields.length - 1,
         })}
       >
-        {index === 0 && (
+        {index === 0 &&
           <div className={classes.add}>
             <Tether
               style={{
                 pointerEvents: 'none',
               }}
-              steps={[{
-                step: 'STEP3_CLICK_ADD_NODE1',
-                title: 'Create a Node',
-                description: 'Items in your data belonging to a certain model are called nodes. Create a new post node and provide values for the "imageUrl" and "description" fields.', // tslint:disable-line
-              }]}
+              steps={[
+                {
+                  step: 'STEP3_CLICK_ADD_NODE1',
+                  title: 'Create a Node',
+                  description:
+                    'Items in your data belonging to a certain model are called nodes. Create a new post node and provide values for the "imageUrl" and "description" fields.', // tslint:disable-line
+                },
+              ]}
               offsetX={0}
               offsetY={-10}
               width={351}
-              horizontal='left'
+              horizontal="left"
             >
               <Icon
                 width={12}
@@ -146,11 +149,8 @@ class NewRowInactive extends React.Component<Props, State> {
                 src={require('assets/new_icons/add-plain.svg')}
               />
             </Tether>
-            <span>
-              add new node ...
-            </span>
-          </div>
-        )}
+            <span>add new node ...</span>
+          </div>}
       </div>
     )
   }
@@ -158,7 +158,7 @@ class NewRowInactive extends React.Component<Props, State> {
   private isActive = () => {
     const { model } = this.props
 
-    return (!model.isSystem && !SYSTEM_MODELS.includes(model.name))
+    return !model.isSystem && !SYSTEM_MODELS.includes(model.name)
   }
 
   private setActive = () => {
@@ -174,7 +174,6 @@ class NewRowInactive extends React.Component<Props, State> {
       this.props.toggleNewRow(fields, this.props.model.namePlural)
     }
   }
-
 }
 export default connect(null, {
   toggleNewRow,

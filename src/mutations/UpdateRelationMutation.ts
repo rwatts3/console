@@ -44,13 +44,15 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        relation: input.id,
+    variables: { input },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          relation: input.id,
+        },
       },
-    }],
+    ],
     optimisticResponse: {
       updateRelation: {
         relation: input.filterNullAndUndefined(),

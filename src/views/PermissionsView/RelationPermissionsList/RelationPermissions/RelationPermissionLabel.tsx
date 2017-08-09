@@ -1,6 +1,6 @@
 import * as React from 'react' // tslint:disable-line
 import * as cx from 'classnames'
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import styled from 'styled-components'
 
 export type RelationPermissionType = 'connect' | 'disconnect'
@@ -33,13 +33,11 @@ interface Props {
 }
 
 const RelationPermissionLabel = (props: Props) => {
-  const {operation, isActive, onClick, className, editable} = props
+  const { operation, isActive, onClick, className, editable } = props
 
-  const {text, color, containerClass} = getTagSettings(operation)
+  const { text, color, containerClass } = getTagSettings(operation)
 
-  const Text = styled.div`
-    color: ${color};
-  `
+  const Text = styled.div`color: ${color};`
 
   return (
     <div
@@ -63,7 +61,9 @@ const RelationPermissionLabel = (props: Props) => {
           @p: .o90;
         }
       `}</style>
-      <Text>{text}</Text>
+      <Text>
+        {text}
+      </Text>
     </div>
   )
 }

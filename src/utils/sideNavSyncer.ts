@@ -3,13 +3,17 @@ class SideNavSyncer {
   callback: any
   callbackObj: any
 
-  setCallback (callback, callbackObj) {
+  setCallback(callback, callbackObj) {
     this.callback = callback
     this.callbackObj = callbackObj
   }
 
-  notifySideNav () {
-    if (this.callback && this.callbackObj && typeof this.callback === 'function') {
+  notifySideNav() {
+    if (
+      this.callback &&
+      this.callbackObj &&
+      typeof this.callback === 'function'
+    ) {
       this.callback.call(this.callbackObj)
     }
   }

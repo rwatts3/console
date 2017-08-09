@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {Log} from '../../../types/types'
+import { Log } from '../../../types/types'
 import * as cn from 'classnames'
-import {Icon, $v} from 'graphcool-styles'
+import { Icon, $v } from 'graphcool-styles'
 import * as moment from 'moment'
 // import * as Codemirror from 'react-codemirror'
 // import {ResultViewer} from 'graphiql/dist/components/ResultViewer'
@@ -25,7 +25,7 @@ export default class LogComponent extends React.Component<Props, State> {
   }
   renderMessage(message) {
     return (
-      <div className='graphiql-container'>
+      <div className="graphiql-container">
         <style jsx>{`
           .graphiql-container {
             @p: .overflowAuto;
@@ -38,7 +38,7 @@ export default class LogComponent extends React.Component<Props, State> {
             @p: .pa0;
           }
         `}</style>
-        <div className='flex itemsBaseline'>
+        <div className="flex itemsBaseline">
           <Icon
             src={require('graphcool-styles/icons/fill/triangle.svg')}
             color={$v.white80}
@@ -46,23 +46,21 @@ export default class LogComponent extends React.Component<Props, State> {
             height={6}
             rotate={90}
           />
-          <ResultViewer
-            value={message}
-            onClick={this.ignoreClick}
-          />
+          <ResultViewer value={message} onClick={this.ignoreClick} />
         </div>
       </div>
     )
   }
   render() {
-    const {log} = this.props
-    const {expanded} = this.state
+    const { log } = this.props
+    const { expanded } = this.state
     const error = log.status === 'FAILURE'
 
     return (
-      <tr className={cn({error, expanded})} onClick={this.toggle}>
+      <tr className={cn({ error, expanded })} onClick={this.toggle}>
         <style jsx>{`
-          span, .message {
+          span,
+          .message {
             @p: .f14, .white80;
             line-height: 1.5;
             font-family: 'Source Code Pro', monospace;
@@ -72,10 +70,13 @@ export default class LogComponent extends React.Component<Props, State> {
           tr {
             @p: .o70, .pointer;
           }
-          tr:hover, tr.expanded {
+          tr:hover,
+          tr.expanded {
             @p: .o100;
           }
-          .error span, .error .message, .error .ago {
+          .error span,
+          .error .message,
+          .error .ago {
             @p: .red;
           }
           td {
@@ -101,26 +102,36 @@ export default class LogComponent extends React.Component<Props, State> {
             text-overflow: ellipsis;
           }
         `}</style>
-        <td><span>{log.timestamp.toString()}</span></td>
-        <td><span>{log.duration}ms</span></td>
         <td>
-          {expanded ? (
-            this.renderMessage(log.message)
-          ) : (
-            <div className='flex itemsCenter'>
-              <Icon
-                src={require('graphcool-styles/icons/fill/triangle.svg')}
-                color={$v.white80}
-                width={6}
-                height={6}
-              />
-              <div className='message'>
-                {log.message}
-              </div>
-            </div>
-          )}
+          <span>
+            {log.timestamp.toString()}
+          </span>
         </td>
-        <td><div className='ago'>{moment(log.timestamp).fromNow(true)}</div></td>
+        <td>
+          <span>
+            {log.duration}ms
+          </span>
+        </td>
+        <td>
+          {expanded
+            ? this.renderMessage(log.message)
+            : <div className="flex itemsCenter">
+                <Icon
+                  src={require('graphcool-styles/icons/fill/triangle.svg')}
+                  color={$v.white80}
+                  width={6}
+                  height={6}
+                />
+                <div className="message">
+                  {log.message}
+                </div>
+              </div>}
+        </td>
+        <td>
+          <div className="ago">
+            {moment(log.timestamp).fromNow(true)}
+          </div>
+        </td>
       </tr>
     )
   }

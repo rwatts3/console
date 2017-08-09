@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {Icon} from 'graphcool-styles'
-import {validateFieldName} from '../../utils/nameValidator'
+import { Icon } from 'graphcool-styles'
+import { validateFieldName } from '../../utils/nameValidator'
 import Tooltip from '../../views/Tooltip/Tooltip'
 
 interface State {
@@ -18,7 +18,6 @@ interface Props {
 }
 
 export default class FieldNameInput extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
@@ -31,9 +30,12 @@ export default class FieldNameInput extends React.Component<Props, State> {
   }
 
   render() {
-
-    const invalidInputMessage: string | null = this.generateInvalidInputMessage(this.props.relatedFieldName)
-    const shouldBreak = this.props.relatedFieldName ? this.props.relatedFieldName.length > 12 : false
+    const invalidInputMessage: string | null = this.generateInvalidInputMessage(
+      this.props.relatedFieldName,
+    )
+    const shouldBreak = this.props.relatedFieldName
+      ? this.props.relatedFieldName.length > 12
+      : false
 
     let relatedFieldElement: JSX.Element
     if (this.props.relatedFieldName !== null && this.props.relatedFieldType) {
@@ -41,22 +43,23 @@ export default class FieldNameInput extends React.Component<Props, State> {
         <div
           className={`ph16 pv8 flex pointer
             ${!shouldBreak ? 'itemsCenter ' : 'flexColumn'}
-            ${!this.state.isHovered && !this.state.isEnteringFieldName && ' marginRight'}
+            ${!this.state.isHovered &&
+              !this.state.isEnteringFieldName &&
+              ' marginRight'}
             ${this.state.isHovered && ' bgBlack02'}
             ${this.state.isEnteringFieldName && ' justifyBetween'}`}
-          onMouseEnter={() => this.setState({isHovered: true} as State)}
-          onMouseLeave={() => this.setState({isHovered: false} as State)}
-          onClick={() => this.setState({isEnteringFieldName: true} as State)}
+          onMouseEnter={() => this.setState({ isHovered: true } as State)}
+          onMouseLeave={() => this.setState({ isHovered: false } as State)}
+          onClick={() => this.setState({ isEnteringFieldName: true } as State)}
         >
           <style jsx={true}>{`
-
             .fieldType {
               @inherit: .f14, .pv4, .ph6, .black50, .bgBlack04, .br2;
               font-family: 'Source Code Pro';
             }
 
             .purpleColor {
-              color: rgba(164,3,111,1);
+              color: rgba(164, 3, 111, 1);
             }
 
             .move {
@@ -66,43 +69,39 @@ export default class FieldNameInput extends React.Component<Props, State> {
             .marginRight {
               margin-right: 24px;
             }
-
           `}</style>
-          {!this.state.isEnteringFieldName && !this.state.isHovered &&
-          (<div className={`f20 purpleColor`}>
-            {this.props.relatedFieldName}
-          </div>
-          )}
-          {!this.state.isEnteringFieldName && this.state.isHovered &&
-          (<div className='flex itemsCenter '>
-              <div className='f20 purpleColor'>{this.props.relatedFieldName}</div>
+          {!this.state.isEnteringFieldName &&
+            !this.state.isHovered &&
+            <div className={`f20 purpleColor`}>
+              {this.props.relatedFieldName}
+            </div>}
+          {!this.state.isEnteringFieldName &&
+            this.state.isHovered &&
+            <div className="flex itemsCenter ">
+              <div className="f20 purpleColor">
+                {this.props.relatedFieldName}
+              </div>
               <Icon
-                className='mh4 move'
+                className="mh4 move"
                 src={require('../../assets/icons/edit_project_name.svg')}
                 width={16}
                 height={16}
               />
-            </div>
-          )}
+            </div>}
           {this.state.isEnteringFieldName &&
-          (
-
-            <div className='flex itemsCenter'>
-              {Boolean(invalidInputMessage) && this.state.isDirty && (
-                <Tooltip
-                  className='red'
-                  text={invalidInputMessage}
-                >
+            <div className="flex itemsCenter">
+              {Boolean(invalidInputMessage) &&
+                this.state.isDirty &&
+                <Tooltip className="red" text={invalidInputMessage}>
                   <Icon
-                    className='mr6'
+                    className="mr6"
                     src={require('../../assets/icons/warning_red.svg')}
                     width={22}
                     height={22}
                   />
-                </Tooltip>
-              )}
+                </Tooltip>}
               <input
-                type='text'
+                type="text"
                 autoFocus={true}
                 onBlur={() => {
                   this.doneEditingInputField(false)
@@ -113,8 +112,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
                 value={this.props.relatedFieldName}
                 onChange={this.handleChange}
               />
-            </div>
-          )}
+            </div>}
           <div className={`move fieldType ${!shouldBreak ? 'ml6' : ''}`}>
             {this.props.relatedFieldType}
           </div>
@@ -123,10 +121,10 @@ export default class FieldNameInput extends React.Component<Props, State> {
     } else {
       relatedFieldElement = (
         <div
-          className='ph16 pv8 black20 f20 i pointer'
-          onMouseEnter={() => this.setState({isHovered: true} as State)}
-          onMouseLeave={() => this.setState({isHovered: false} as State)}
-          onClick={() => this.setState({isEnteringFieldName: true} as State)}
+          className="ph16 pv8 black20 f20 i pointer"
+          onMouseEnter={() => this.setState({ isHovered: true } as State)}
+          onMouseLeave={() => this.setState({ isHovered: false } as State)}
+          onClick={() => this.setState({ isEnteringFieldName: true } as State)}
         >
           will be generated
         </div>
@@ -134,14 +132,8 @@ export default class FieldNameInput extends React.Component<Props, State> {
     }
 
     return (
-      <div
-        className='bgWhite br2'
-      >
-        <div
-          className='black40 f14 pl16 pv8'
-        >
-          related field:
-        </div>
+      <div className="bgWhite br2">
+        <div className="black40 f14 pl16 pv8">related field:</div>
         {relatedFieldElement}
       </div>
     )
@@ -150,26 +142,31 @@ export default class FieldNameInput extends React.Component<Props, State> {
   private handleChange = (e: any) => {
     this.props.didChangeFieldName(e.target.value)
     if (!this.state.isDirty) {
-      this.setState({isDirty: true} as State)
+      this.setState({ isDirty: true } as State)
     }
   }
 
-  private handleKeyDown = (e) => {
+  private handleKeyDown = e => {
     if (e.keyCode === 13 || e.keyCode === 27) {
       this.doneEditingInputField(e.keyCode === 27)
     }
   }
 
   private doneEditingInputField = (reset: boolean) => {
-    const {relatedFieldName} = this.props
-    const {originalFieldName} = this.state
+    const { relatedFieldName } = this.props
+    const { originalFieldName } = this.state
     const actualRelatedFieldName =
-      relatedFieldName.length === 0 || reset || this.generateInvalidInputMessage(relatedFieldName) ?
-        originalFieldName : relatedFieldName
+      relatedFieldName.length === 0 ||
+      reset ||
+      this.generateInvalidInputMessage(relatedFieldName)
+        ? originalFieldName
+        : relatedFieldName
     this.props.didChangeFieldName(actualRelatedFieldName)
-    this.setState({
-      isEnteringFieldName: false,
-    } as State)
+    this.setState(
+      {
+        isEnteringFieldName: false,
+      } as State,
+    )
   }
 
   private generateInvalidInputMessage = (input: string): string | null => {
@@ -182,7 +179,7 @@ export default class FieldNameInput extends React.Component<Props, State> {
     }
 
     if (this.props.forbiddenFieldNames.includes(input)) {
-      return 'Field with name \'' + input + '\' already exists on this model'
+      return "Field with name '" + input + "' already exists on this model"
     }
     return null
   }

@@ -7,9 +7,9 @@ interface Props {
   className?: string
 }
 
-export default function N({active, children, className}: Props) {
+export default function N({ active, children, className }: Props) {
   return (
-    <span className={cn('n', {active}, className)}>
+    <span className={cn('n', { active }, className)}>
       <style jsx>{`
         .n {
           @p: .br2, .tc, .white, .f14, .fw6, .dib, .mh4;

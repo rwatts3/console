@@ -2,12 +2,13 @@ import * as React from 'react' // tslint:disable-line
 import ScalarListCell from '../ScalarListCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import {TypedValue} from '../../../../../types/utils'
-import {FieldType} from '../../../../../types/types'
+import { TypedValue } from '../../../../../types/utils'
+import { FieldType } from '../../../../../types/types'
 
 test('ScalarListCell renders', () => {
-
-  const save = jest.fn((value: TypedValue) => {  /* */ })
+  const save = jest.fn((value: TypedValue) => {
+    /* */
+  })
   const cancel = jest.fn()
   const onKeyDown = jest.fn()
   const field = {
@@ -27,11 +28,13 @@ test('ScalarListCell renders', () => {
 
   const component = shallow(
     <ScalarListCell
-      value={[1,2,3]}
+      value={[1, 2, 3]}
       nodeId={null}
       projectId={null}
       methods={{
-        save, cancel, onKeyDown,
+        save,
+        cancel,
+        onKeyDown,
       }}
       field={field}
       enums={[]}
@@ -39,5 +42,4 @@ test('ScalarListCell renders', () => {
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()
-
 })

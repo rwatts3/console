@@ -1,7 +1,7 @@
 export type NotificationLevel = 'success' | 'error' | 'warning' | 'info'
 
 export interface Notification {
-  message: string
+  message: string | JSX.Element
   level: NotificationLevel
   autoDismiss?: number
 }
@@ -20,4 +20,4 @@ export interface NonScalarValue {
 
 export type ScalarValue = number | string | Date | boolean
 export type AtomicValue = ScalarValue | NonScalarValue
-export type TypedValue = ScalarValue | NonScalarValue | Array<AtomicValue>
+export type TypedValue = ScalarValue | NonScalarValue | AtomicValue[]

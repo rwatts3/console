@@ -2,12 +2,13 @@ import * as React from 'react' // tslint:disable-line
 import DateTimeCell from '../DateTimeCell'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
-import {FieldType} from '../../../../../types/types'
-import {TypedValue} from '../../../../../types/utils'
+import { FieldType } from '../../../../../types/types'
+import { TypedValue } from '../../../../../types/utils'
 
 test('DateTimeCell renders', () => {
-
-  const save = jest.fn((value: TypedValue) => { /* */ })
+  const save = jest.fn((value: TypedValue) => {
+    /* */
+  })
   const cancel = jest.fn()
   const onKeyDown = jest.fn()
   const field = {
@@ -36,5 +37,4 @@ test('DateTimeCell renders', () => {
   )
 
   expect(shallowToJson(component)).toMatchSnapshot()
-
 })

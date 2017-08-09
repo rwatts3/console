@@ -1,9 +1,5 @@
 import * as React from 'react'
-import {
-  createRefetchContainer,
-  graphql,
-  RelayProp,
-} from 'react-relay'
+import { createRefetchContainer, graphql, RelayProp } from 'react-relay'
 import styled from 'styled-components'
 import {
   Action,
@@ -13,7 +9,7 @@ import {
   ActionHandlerType,
 } from '../../types/types'
 import { buildClientSchema } from 'graphql'
-import {particles, variables, $p} from 'graphcool-styles'
+import { particles, variables, $p } from 'graphcool-styles'
 import { validate } from 'graphql/validation'
 import { parse } from 'graphql/language'
 import AddActionMutation from '../../mutations/AddActionMutation'
@@ -26,7 +22,7 @@ import { isValidMutationCallbackUrl } from '../../utils/utils'
 const classes: any = require('./ActionBoxes.scss')
 import * as cx from 'classnames'
 import tracker from '../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
+import { ConsoleEvents } from 'graphcool-metrics'
 
 interface Props {
   action?: Action
@@ -47,7 +43,10 @@ interface State {
   changesMade: boolean
 }
 
-function extractSchema ({ schemaString, query }): { schema: any, valid: boolean } {
+function extractSchema({
+  schemaString,
+  query,
+}): { schema: any; valid: boolean } {
   const schema = schemaString
     ? buildClientSchema(JSON.parse(schemaString))
     : null
@@ -65,16 +64,22 @@ function extractSchema ({ schemaString, query }): { schema: any, valid: boolean 
 }
 
 class ActionBoxes extends React.Component<Props, State> {
-
   constructor(props) {
     super(props)
 
     const { action } = props
 
-    const triggerMutationModelModelId = action ? action.triggerMutationModel.model.id : ''
-    const triggerMutationModelFragment = action ? action.triggerMutationModel.fragment : ''
-    const triggerMutationModelMutationType = action ? action.triggerMutationModel.mutationType : 'CREATE'
-    const handlerWebhookUrl = action && action.handlerWebhook ? action.handlerWebhook.url : ''
+    const triggerMutationModelModelId = action
+      ? action.triggerMutationModel.model.id
+      : ''
+    const triggerMutationModelFragment = action
+      ? action.triggerMutationModel.fragment
+      : ''
+    const triggerMutationModelMutationType = action
+      ? action.triggerMutationModel.mutationType
+      : 'CREATE'
+    const handlerWebhookUrl =
+      action && action.handlerWebhook ? action.handlerWebhook.url : ''
 
     const { schema, valid } = extractSchema({
       schemaString: props.project.actionSchema,
@@ -102,7 +107,7 @@ class ActionBoxes extends React.Component<Props, State> {
     }))
   }
 
-  componentWillReceiveProps (props: Props) {
+  componentWillReceiveProps(props: Props) {
     const { schema, valid } = extractSchema({
       schemaString: props.project.actionSchema,
       query: this.state.triggerMutationModelFragment,
@@ -144,25 +149,14 @@ class ActionBoxes extends React.Component<Props, State> {
               particles.justifyBetween,
             )}
           >
-            <div
-              className={cx(
-                particles.contentStart,
-              )}
-            >
-              {!this.props.action ?
-                'New Mutation Callback' : 'Edit Mutation Callback'
-              }
+            <div className={cx(particles.contentStart)}>
+              {!this.props.action
+                ? 'New Mutation Callback'
+                : 'Edit Mutation Callback'}
             </div>
-            <div
-              className={cx(
-                particles.flex,
-                particles.justifyBetween,
-              )}
-            >
+            <div className={cx(particles.flex, particles.justifyBetween)}>
               <DeleteButton
-                className={cx(
-                  particles.mr25,
-                )}
+                className={cx(particles.mr25)}
                 onClick={this.cancel}
               >
                 Cancel
@@ -174,19 +168,26 @@ class ActionBoxes extends React.Component<Props, State> {
             className={classes.description}
             placeholder={'+ Add Description'}
             value={this.state.description}
-            onChange={(e: any) => this.setState({description: e.target.value, changesMade: true} as State)}
+            onChange={(e: any) =>
+              this.setState(
+                { description: e.target.value, changesMade: true } as State,
+              )}
           />
         </div>
         <div className={classes.boxes}>
           <ActionTriggerBox
-            triggerMutationModelMutationType={this.state.triggerMutationModelMutationType}
+            triggerMutationModelMutationType={
+              this.state.triggerMutationModelMutationType
+            }
             triggerMutationModelModelId={this.state.triggerMutationModelModelId}
-            triggerMutationModelFragment={this.state.triggerMutationModelFragment}
+            triggerMutationModelFragment={
+              this.state.triggerMutationModelFragment
+            }
             schema={this.state.schema}
             valid={this.state.triggerValid}
             project={this.props.project}
             update={this.onUpdateTrigger}
-            />
+          />
           <ActionHandlerBox
             handlerWebhookUrl={this.state.handlerWebhookUrl}
             valid={this.state.handlerValid}
@@ -194,13 +195,12 @@ class ActionBoxes extends React.Component<Props, State> {
             disabled={!this.state.triggerValid}
           />
         </div>
-
       </div>
     )
   }
 
   private onUpdateTrigger = (payload: UpdateTriggerPayload) => {
-    let partialState = payload.filterNullAndUndefined() as State
+    const partialState = payload.filterNullAndUndefined() as State
     partialState.changesMade = true
 
     if (payload.triggerMutationModelFragment) {
@@ -232,14 +232,15 @@ class ActionBoxes extends React.Component<Props, State> {
         }))
       }
     }
-
   }
 
   private onUpdateHandler = (payload: UpdateHandlerPayload) => {
-    let partialState = payload.filterNullAndUndefined() as State
+    const partialState = payload.filterNullAndUndefined() as State
     partialState.changesMade = true
     if (payload.handlerWebhookUrl) {
-      partialState.handlerValid = isValidMutationCallbackUrl(payload.handlerWebhookUrl)
+      partialState.handlerValid = isValidMutationCallbackUrl(
+        payload.handlerWebhookUrl,
+      )
     }
     this.setState(partialState)
   }
@@ -248,15 +249,21 @@ class ActionBoxes extends React.Component<Props, State> {
     if (!this.state.changesMade) {
       this.props.close()
     } else {
-      graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
-        .then(() => {
-          this.props.close()
-        })
+      graphcoolConfirm(
+        'This action could lead to massive data loss.',
+        'Unsaved Changes',
+      ).then(() => {
+        this.props.close()
+      })
     }
     if (this.props.action) {
-      tracker.track(ConsoleEvents.MutationCallbacks.canceled({type: 'Update'}))
+      tracker.track(
+        ConsoleEvents.MutationCallbacks.canceled({ type: 'Update' }),
+      )
     } else {
-      tracker.track(ConsoleEvents.MutationCallbacks.canceled({type: 'Create'}))
+      tracker.track(
+        ConsoleEvents.MutationCallbacks.canceled({ type: 'Create' }),
+      )
     }
   }
 
@@ -267,31 +274,35 @@ class ActionBoxes extends React.Component<Props, State> {
 
     if (this.props.action) {
       this.updateAction()
-      tracker.track(ConsoleEvents.MutationCallbacks.submitted({type: 'Update'}))
+      tracker.track(
+        ConsoleEvents.MutationCallbacks.submitted({ type: 'Update' }),
+      )
     } else {
-      tracker.track(ConsoleEvents.MutationCallbacks.submitted({type: 'Create'}))
+      tracker.track(
+        ConsoleEvents.MutationCallbacks.submitted({ type: 'Create' }),
+      )
       this.createAction()
     }
   }
 
   private createAction = () => {
-      AddActionMutation.commit({
-        projectId: this.props.project.id,
-        isActive: true,
-        description: this.state.description,
-        triggerType: 'MUTATION_MODEL' as ActionTriggerType,
-        handlerType: 'WEBHOOK' as ActionHandlerType,
-        triggerMutationModel: {
-          fragment: this.state.triggerMutationModelFragment,
-          mutationType: this.state.triggerMutationModelMutationType,
-          modelId: this.state.triggerMutationModelModelId,
-        },
-        handlerWebhook: {
-          url: this.state.handlerWebhookUrl,
-        },
-      }).then(() => {
-        this.props.close()
-      })
+    AddActionMutation.commit({
+      projectId: this.props.project.id,
+      isActive: true,
+      description: this.state.description,
+      triggerType: 'MUTATION_MODEL' as ActionTriggerType,
+      handlerType: 'WEBHOOK' as ActionHandlerType,
+      triggerMutationModel: {
+        fragment: this.state.triggerMutationModelFragment,
+        mutationType: this.state.triggerMutationModelMutationType,
+        modelId: this.state.triggerMutationModelModelId,
+      },
+      handlerWebhook: {
+        url: this.state.handlerWebhookUrl,
+      },
+    }).then(() => {
+      this.props.close()
+    })
   }
 
   private updateAction = () => {
@@ -315,14 +326,12 @@ class ActionBoxes extends React.Component<Props, State> {
   }
 
   private renderConfirm = () => {
-    if (!this.state.changesMade || !this.state.triggerValid || !this.state.handlerValid) {
-      return (
-        <div className={cx(
-          particles.f16,
-          particles.pa16,
-        )
-        }>No changes</div>
-      )
+    if (
+      !this.state.changesMade ||
+      !this.state.triggerValid ||
+      !this.state.handlerValid
+    ) {
+      return <div className={cx(particles.f16, particles.pa16)}>No changes</div>
     }
 
     return (
@@ -367,11 +376,14 @@ export default createRefetchContainer(
     `,
     project: graphql.experimental`
       fragment ActionBoxes_project on Project
-      @argumentDefinitions(
-        selectedModelId: {type: "ID!", defaultValue: ""}
-        selectedModelMutationType: {type: "ActionTriggerMutationModelMutationType!", defaultValue: CREATE}
-        hasSelectedModelId: {type: "Boolean!", defaultValue: false}
-      ) {
+        @argumentDefinitions(
+          selectedModelId: { type: "ID!", defaultValue: "" }
+          selectedModelMutationType: {
+            type: "ActionTriggerMutationModelMutationType!"
+            defaultValue: CREATE
+          }
+          hasSelectedModelId: { type: "Boolean!", defaultValue: false }
+        ) {
         id
         name
         actionSchema(
@@ -392,18 +404,19 @@ export default createRefetchContainer(
   },
   graphql.experimental`
     query ActionBoxesRefetchQuery(
-      $selectedModelId: ID!,
-      $selectedModelMutationType: ActionTriggerMutationModelMutationType!,
+      $selectedModelId: ID!
+      $selectedModelMutationType: ActionTriggerMutationModelMutationType!
       $hasSelectedModelId: Boolean!
       $projectName: String!
     ) {
       viewer {
         projectByName(projectName: $projectName) {
-          ...ActionBoxes_project @arguments(
-            selectedModelId: $selectedModelId,
-            selectedModelMutationType: $selectedModelMutationType,
-            hasSelectedModelId: $hasSelectedModelId,
-          )
+          ...ActionBoxes_project
+            @arguments(
+              selectedModelId: $selectedModelId
+              selectedModelMutationType: $selectedModelMutationType
+              hasSelectedModelId: $hasSelectedModelId
+            )
         }
       }
     }

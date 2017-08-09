@@ -7,7 +7,9 @@ interface Props {
 }
 
 const mutation = graphql`
-  mutation DeleteRelationPermissionMutation($input: DeleteRelationPermissionInput!) {
+  mutation DeleteRelationPermissionMutation(
+    $input: DeleteRelationPermissionInput!
+  ) {
     deleteRelationPermission(input: $input) {
       relation {
         id
@@ -27,16 +29,20 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input: {
-      relationPermissionId: input.relationPermissionId,
-    }},
-    configs: [{
-      type: 'NODE_DELETE',
-      parentName: 'relation',
-      parentID: input.relationId,
-      connectionName: 'permissions',
-      deletedIDFieldName: 'deletedId',
-    }],
+    variables: {
+      input: {
+        relationPermissionId: input.relationPermissionId,
+      },
+    },
+    configs: [
+      {
+        type: 'NODE_DELETE',
+        parentName: 'relation',
+        parentID: input.relationId,
+        connectionName: 'permissions',
+        deletedIDFieldName: 'deletedId',
+      },
+    ],
   })
 }
 

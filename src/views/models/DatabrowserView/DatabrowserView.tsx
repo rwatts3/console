@@ -1,61 +1,84 @@
 import * as React from 'react'
+import { createFragmentContainer, graphql, RelayProp } from 'react-relay'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { withRouter } from 'found'
 import {
-  createFragmentContainer,
-  graphql,
-  RelayProp,
-} from 'react-relay'
-import {connect} from 'react-redux'
-import {bindActionCreators} from 'redux'
-import {withRouter} from 'found'
-import {
-  toggleNodeSelection, clearNodeSelection, setNodeSelection, setScrollTop, setLoading,
-  hideNewRow, toggleSearch, selectCell,
+  toggleNodeSelection,
+  clearNodeSelection,
+  setNodeSelection,
+  setScrollTop,
+  setLoading,
+  hideNewRow,
+  toggleSearch,
+  selectCell,
 } from '../../../actions/databrowser/ui'
-import {resetDataAndUI} from '../../../actions/databrowser/shared'
+import { resetDataAndUI } from '../../../actions/databrowser/shared'
 import {
-  setItemCount, setOrder, addNodeAsync, updateNodeAsync,
-  reloadDataAsync, loadDataAsync, deleteSelectedNodes,
+  setItemCount,
+  setOrder,
+  addNodeAsync,
+  updateNodeAsync,
+  reloadDataAsync,
+  loadDataAsync,
+  deleteSelectedNodes,
 } from '../../../actions/databrowser/data'
-import {Popup} from '../../../types/popup'
+import { Popup } from '../../../types/popup'
 import * as Immutable from 'immutable'
-import {Icon} from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
-import {showNotification} from '../../../actions/notification'
-import {ShowNotificationCallback, TypedValue} from '../../../types/utils'
-import NewRow from './NewRow'
+import { showNotification } from '../../../actions/notification'
+import { ShowNotificationCallback, TypedValue } from '../../../types/utils'
 import HeaderCell from './HeaderCell'
 import AddFieldCell from './AddFieldCell'
 import CheckboxCell from './CheckboxCell'
-import {calculateFieldColumnWidths} from '../utils'
-import { Field, Model, Viewer, Project, OrderBy, FieldWidths, Enum } from '../../../types/types'
+import { calculateFieldColumnWidths } from '../utils'
+import {
+  Field,
+  Model,
+  Viewer,
+  Project,
+  OrderBy,
+  FieldWidths,
+  Enum,
+} from '../../../types/types'
 import ModelHeader from '../ModelHeader'
-import {showDonePopup, nextStep} from '../../../actions/gettingStarted'
-import {GettingStartedState} from '../../../types/gettingStarted'
-import {showPopup, closePopup} from '../../../actions/popup'
+import { showDonePopup, nextStep } from '../../../actions/gettingStarted'
+import { GettingStartedState } from '../../../types/gettingStarted'
+import { showPopup, closePopup } from '../../../actions/popup'
 import InfiniteTable from '../../../components/InfiniteTable/InfiniteTable'
-import {AutoSizer} from 'react-virtualized'
+import { AutoSizer } from 'react-virtualized'
 import Cell from './Cell'
 import LoadingCell from './LoadingCell'
-import {getLokka} from './../../../utils/relay'
-import {$p} from 'graphcool-styles'
-import * as cx from 'classnames'
-import {startProgress, incrementProgress} from '../../../actions/progressIndicator'
-import {StateTree, ReduxAction, ReduxThunk} from '../../../types/reducers'
+import { getLokka } from './../../../utils/relay'
+import { $p } from 'graphcool-styles'
 import {
-  nextCell, previousCell, nextRow, previousRow, editCell, setBrowserViewRef, setDataBrowserViewRef,
+  startProgress,
+  incrementProgress,
+} from '../../../actions/progressIndicator'
+import { StateTree, ReduxAction, ReduxThunk } from '../../../types/reducers'
+import {
+  nextCell,
+  previousCell,
+  nextRow,
+  previousRow,
+  editCell,
+  setBrowserViewRef,
+  setDataBrowserViewRef,
 } from '../../../actions/databrowser/ui'
-import {GridPosition} from '../../../types/databrowser/ui'
-import {classnames} from '../../../utils/classnames'
-import {throttle} from 'lodash'
-import {LightCell} from './LightCell'
+import { GridPosition } from '../../../types/databrowser/ui'
+import * as cn from 'classnames'
+import { throttle } from 'lodash'
+import { LightCell } from './LightCell'
 import tracker from '../../../utils/metrics'
-import {ConsoleEvents} from 'graphcool-metrics'
-import {idToBeginning} from '../../../utils/utils'
+import { ConsoleEvents } from 'graphcool-metrics'
+import { idToBeginning } from '../../../utils/utils'
 import Helmet from 'react-helmet'
 
 const classes: any = require('./DatabrowserView.scss')
-const DOCS_PREFIX = 'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
+const DOCS_PREFIX =
+  'https://graph.cool/docs/reference/platform/system-artifacts-uhieg2shio'
 
 interface Props {
   relay: RelayProp
@@ -93,7 +116,12 @@ interface Props {
   selectCell: (position: GridPosition) => ReduxAction
   editCell: (position: GridPosition) => ReduxAction
   setNodeSelection: (ids: Immutable.List<string>) => ReduxAction
-  deleteSelectedNodes: (lokka: any, projectName: string, modeName: string, model: Model) => ReduxThunk
+  deleteSelectedNodes: (
+    lokka: any,
+    projectName: string,
+    modeName: string,
+    model: Model,
+  ) => ReduxThunk
   toggleNodeSelection: (id: string) => ReduxAction
   searchVisible: boolean
   selectedNodeIds: Immutable.List<string>
@@ -108,26 +136,37 @@ interface Props {
   setOrder: (orderBy: OrderBy) => ReduxAction
   nodes: Immutable.List<Immutable.Map<string, any>>
   loaded: Immutable.List<boolean>
-  addNodeAsync: (lokka: any, model: Model, fields: Field[], fieldValues: { [key: string]: any }) => ReduxThunk
-  updateNodeAsync: (lokka: any,
-                    model: Model,
-                    fields: Field[],
-                    value: TypedValue,
-                    field: Field,
-                    callback,
-                    nodeId: string,
-                    index: number) => ReduxThunk
-  reloadDataAsync: (lokka: any,
-                    modelNamePlural: string,
-                    fields: Field[],
-                    index?: number,
-                    searchQuery?: string) => ReduxThunk
-  loadDataAsync: (lokka: any,
-                  modelNamePlural: string,
-                  field: Field[],
-                  first: number,
-                  skip: number,
-                  searchQuery?: string) => ReduxThunk
+  addNodeAsync: (
+    lokka: any,
+    model: Model,
+    fields: Field[],
+    fieldValues: { [key: string]: any },
+  ) => ReduxThunk
+  updateNodeAsync: (
+    lokka: any,
+    model: Model,
+    fields: Field[],
+    value: TypedValue,
+    field: Field,
+    callback,
+    nodeId: string,
+    index: number,
+  ) => ReduxThunk
+  reloadDataAsync: (
+    lokka: any,
+    modelNamePlural: string,
+    fields: Field[],
+    index?: number,
+    searchQuery?: string,
+  ) => ReduxThunk
+  loadDataAsync: (
+    lokka: any,
+    modelNamePlural: string,
+    field: Field[],
+    first: number,
+    skip: number,
+    searchQuery?: string,
+  ) => ReduxThunk
   searchQuery: string
   enums: Enum[]
 }
@@ -136,24 +175,24 @@ interface State {
   shouldLeaveRoute: boolean
 }
 
-class DatabrowserView extends React.PureComponent<Props, State> {
-
-  shouldComponentUpdate: any
-
+class DatabrowserView extends React.Component<Props, State> {
   private lokka: any
   private fieldColumnWidths: FieldWidths
   private mounted: boolean
-  private ref: Element
   private wrapperRef: any
 
   private setSearchQueryThrottled = throttle(
-    (q: string) => {
-      let queryObject = {query: {}}
+    (q: string, push?: boolean) => {
+      const queryObject = { query: {} }
       if (q.length > 0) {
-        queryObject.query = {q}
+        queryObject.query = { q }
       }
-      const newLocation = Object.assign({}, this.props.location, queryObject)
-      this.props.router.replace(newLocation)
+      const newLocation = { ...this.props.location, ...queryObject }
+      if (push) {
+        this.props.router.push(newLocation)
+      } else {
+        this.props.router.replace(newLocation)
+      }
       tracker.track(ConsoleEvents.Databrowser.Search.entered())
     },
     1000,
@@ -166,38 +205,44 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.lokka = getLokka(this.props.project.id)
-    this.fieldColumnWidths = calculateFieldColumnWidths(window.innerWidth - 300, this.props.fields, this.props.nodes)
+    this.fieldColumnWidths = calculateFieldColumnWidths(
+      window.innerWidth - 300,
+      this.props.fields,
+      this.props.nodes,
+    )
     this.state = {
       shouldLeaveRoute: true,
     }
   }
 
-  componentWillMount = () => {
+  componentWillMount() {
     this.reloadData()
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     tracker.track(ConsoleEvents.Databrowser.viewed())
 
     this.mounted = true
-    this.props.router.addTransitionHook((nextLocation) => {
+    this.props.router.addTransitionHook(nextLocation => {
       if (this.props.newRowActive) {
         if (this.state.shouldLeaveRoute) {
           return true
         }
-        graphcoolConfirm('This action could lead to massive data loss.', 'Unsaved Changes')
-          .then(() => {
-            this.props.resetDataAndUI()
-            this.setState(
-              {
-                shouldLeaveRoute: true,
-              } as State,
-              () => {
-                this.props.resetDataAndUI()
-                this.props.router.push(nextLocation)
-              },
-            )
-          })
+        graphcoolConfirm(
+          'This action could lead to massive data loss.',
+          'Unsaved Changes',
+        ).then(() => {
+          this.props.resetDataAndUI()
+          this.setState(
+            {
+              shouldLeaveRoute: true,
+            } as State,
+            () => {
+              this.props.resetDataAndUI()
+              this.props.router.push(nextLocation)
+            },
+          )
+        })
         return false
       } else {
         return true
@@ -211,42 +256,41 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     document.addEventListener('keydown', this.documentKeyDown)
   }
 
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     this.props.resetDataAndUI()
     document.removeEventListener('keydown', this.documentKeyDown)
     this.mounted = false
   }
 
-  componentWillReceiveProps = (nextProps: Props) => {
+  componentWillReceiveProps(nextProps: Props) {
     // reload data if the route changes (since react component will be reused) or if relay gets reloaded via forceFetch
     if (
-      this.props.location.pathname !== nextProps.location.pathname
-      || this.props.location.search !== nextProps.location.search
-      || this.props.location.query !== nextProps.location.query
-      || this.props.viewer.model !== nextProps.viewer.model
+      this.props.location.pathname !== nextProps.location.pathname ||
+      this.props.location.search !== nextProps.location.search ||
+      this.props.location.query !== nextProps.location.query ||
+      this.props.viewer.model !== nextProps.viewer.model
     ) {
       this.reloadData(0, nextProps)
     }
   }
 
   render() {
-    const {model} = this.props
-    const docsSuffix = model.name === 'User' ? '#user-model' : model.name === 'File' ? '#file-model' : ''
+    const { model } = this.props
+    const docsSuffix =
+      model.name === 'User'
+        ? '#user-model'
+        : model.name === 'File' ? '#file-model' : ''
     return (
-      <div
-        className={classes.root}
-        onKeyDown={this.onKeyDown}
-      >
+      <div className={classes.root} onKeyDown={this.onKeyDown}>
         <Helmet title={`${this.props.model.name} - Data`} />
         <ModelHeader
           params={this.props.params}
           model={this.props.model}
           viewer={this.props.viewer}
           project={this.props.project}
-          forceFetchRoot={this.forceFetch}
         >
           <div
-            className={classnames(classes.button, classes.search, {
+            className={cn(classes.button, classes.search, {
               [classes.active]: this.props.searchVisible,
             })}
           >
@@ -257,27 +301,26 @@ class DatabrowserView extends React.PureComponent<Props, State> {
               onClick={this.props.toggleSearch}
               className={classes.searchicon}
             />
-            {this.props.searchVisible && (
+            {this.props.searchVisible &&
               <input
-                type='text'
+                type="text"
                 className={classes.input}
                 autoFocus
                 defaultValue={this.props.location.query.q || ''}
                 onChange={this.setSearchQuery}
-              />
-            )}
-            {this.props.searchVisible && (
+              />}
+            {this.props.searchVisible &&
               <Icon
                 width={16}
                 height={16}
                 src={require('assets/new_icons/close.svg')}
                 className={classes.closeicon}
                 onClick={() => {
+                  this.setSearchQueryThrottled('', true)
                   this.props.toggleSearch()
                   tracker.track(ConsoleEvents.Databrowser.Search.toggled())
                 }}
-              />
-            )}
+              />}
           </div>
           {/* Disabling the import icon until we have proper documentation
            https://github.com/graphcool/console/issues/286 */}
@@ -289,10 +332,13 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           {/*src={require('assets/new_icons/down.svg')}*/}
           {/*/>*/}
           {/*</label>*/}
-          <div className={classes.button} onClick={() => {
-            this.reloadData(Math.floor(this.props.scrollTop / 47))
-            tracker.track(ConsoleEvents.Databrowser.reloaded())
-          }}>
+          <div
+            className={classes.button}
+            onClick={() => {
+              this.reloadData(Math.floor(this.props.scrollTop / 47))
+              tracker.track(ConsoleEvents.Databrowser.reloaded())
+            }}
+          >
             <Icon
               width={16}
               height={16}
@@ -301,17 +347,19 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           </div>
         </ModelHeader>
         <div
-          className={`${classes.table} ${this.props.loading ? classes.loading : ''}`}
-          id='data-browser-view-wrapper'
-          ref={ref => this.wrapperRef = ref}
+          className={`${classes.table} ${this.props.loading
+            ? classes.loading
+            : ''}`}
+          id="data-browser-view-wrapper"
+          ref={ref => (this.wrapperRef = ref)}
         >
           <div
-            className={`${classes.tableContainer} w-100`}
-            id='data-browser-view'
+            className={`${classes.tableContainer} w100`}
+            id="data-browser-view"
             tabIndex={100}
           >
             <AutoSizer>
-              {({height}) => {
+              {({ height }) => {
                 if (this.props.loading) {
                   return
                 }
@@ -322,33 +370,36 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                     selectedCell={this.props.selectedCell}
                     loadedList={this.props.loaded}
                     minimumBatchSize={100}
-                    width={this.props.fields.reduce((sum, {name}) => sum + this.fieldColumnWidths[name], 0) + 40 + 250}
+                    width={
+                      this.props.fields.reduce(
+                        (sum, { name }) => sum + this.fieldColumnWidths[name],
+                        0,
+                      ) +
+                      40 +
+                      250
+                    }
                     height={height}
                     scrollTop={this.props.scrollTop}
                     columnCount={this.props.fields.length + 2}
-                    columnWidth={(input) => this.getColumnWidth(this.fieldColumnWidths, input)}
-                    loadMoreRows={(input) => this.loadData(input.startIndex)}
+                    columnWidth={input =>
+                      this.getColumnWidth(this.fieldColumnWidths, input)}
+                    loadMoreRows={input => this.loadData(input.startIndex)}
                     addNew={this.props.newRowActive}
-                    onScroll={(input) => this.props.setScrollTop(input.scrollTop)}
+                    onScroll={input => this.props.setScrollTop(input.scrollTop)}
                     newRowActive={this.props.newRowActive}
                     updateCalled={this.handleUpdateCalled}
-
-                    hideNewRow={this.props.hideNewRow.bind(this)}
-                    addNewNode={this.addNewNode.bind(this)}
-                    deleteSelectedNodes={this.deleteSelectedNodes.bind(this)}
-
+                    hideNewRow={this.props.hideNewRow}
+                    addNewNode={this.addNewNode}
+                    deleteSelectedNodes={this.deleteSelectedNodes}
                     project={this.props.project}
                     model={this.props.model}
-
                     headerHeight={74}
                     headerRenderer={this.headerRenderer}
                     fieldColumnWidths={this.fieldColumnWidths}
-
                     rowCount={this.props.itemCount}
                     rowHeight={47}
                     cellRenderer={this.cellRenderer}
                     loadingCellRenderer={this.loadingCellRenderer}
-
                     addRowHeight={47}
                   />
                 )
@@ -358,27 +409,31 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         </div>
         {this.props.loading &&
           <div className={classes.loadingOverlay}>
-            <Loading color='#B9B9C8'/>
-          </div>
-        }
-        {this.props.model.isSystem && this.props.itemCount === 0 && (
+            <Loading color="#B9B9C8" />
+          </div>}
+        {this.props.model.isSystem &&
+          this.props.itemCount === 0 &&
           <div className={classes.loadingOverlay}>
             <div
-              className={cx($p.mt25, $p.flex, $p.flexColumn, $p.justifyCenter)}
+              className={cn($p.mt25, $p.flex, $p.flexColumn, $p.justifyCenter)}
             >
-              <h2 className={cx($p.fw3, $p.mb16)}>This is a system type. Nodes can only be added via the API.</h2>
-              <div className={cx($p.flex, $p.flexRow)}>
-                <div className={cx($p.flexAuto)}>
-                  <div className={cx($p.black50)}>
-                    This model also includes system fields, that are generated by graphcool.
+              <h2 className={cn($p.fw3, $p.mb16)}>
+                This is a system type. Nodes can only be added via the API.
+              </h2>
+              <div className={cn($p.flex, $p.flexRow)}>
+                <div className={cn($p.flexAuto)}>
+                  <div className={cn($p.black50)}>
+                    This model also includes system fields, that are generated
+                    by graphcool.
                   </div>
                   <div className={$p.black50}>
-                    To learn more about system types, please have a look in our docs.
+                    To learn more about system types, please have a look in our
+                    docs.
                   </div>
                 </div>
                 <div>
                   <a
-                    className={cx(
+                    className={cn(
                       $p.pa16,
                       $p.f16,
                       $p.white,
@@ -388,15 +443,14 @@ class DatabrowserView extends React.PureComponent<Props, State> {
                       $p.db,
                     )}
                     href={`${DOCS_PREFIX}${docsSuffix}`}
-                    target='_blank'
+                    target="_blank"
                   >
                     Docs
                   </a>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          </div>}
       </div>
     )
   }
@@ -435,7 +489,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   //   Promise.all(promises).then(() => this.reloadData(0)).then(() => this.props.closePopup(id))
   // }
 
-  private loadingCellRenderer = ({columnIndex}) => {
+  private loadingCellRenderer = ({ columnIndex }) => {
     if (columnIndex === 0) {
       return (
         <CheckboxCell
@@ -445,24 +499,16 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           height={47}
         />
       )
-    } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
-      return (
-        <LoadingCell
-          empty={true}
-          left={20}
-        />
-      )
+    } else if (columnIndex === this.props.fields.length + 1) {
+      // AddColumn
+      return <LoadingCell empty={true} left={20} />
     } else {
-      return (
-        <LoadingCell
-          backgroundColor='#fff'
-        />
-      )
+      return <LoadingCell backgroundColor="#fff" />
     }
   }
 
-  private headerRenderer = ({columnIndex}): JSX.Element | string => {
-    const {fields, orderBy, selectedNodeIds, nodes, params} = this.props
+  private headerRenderer = ({ columnIndex }): JSX.Element | string => {
+    const { fields, orderBy, selectedNodeIds, nodes, params } = this.props
     if (columnIndex === 0) {
       return (
         <CheckboxCell
@@ -475,7 +521,7 @@ class DatabrowserView extends React.PureComponent<Props, State> {
       if (this.props.newRowActive) {
         return null
       }
-      return <AddFieldCell params={params}/>
+      return <AddFieldCell params={params} />
     } else {
       const field = fields[columnIndex - 1]
       return (
@@ -490,14 +536,10 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     }
   }
 
-  private cellRenderer = ({rowIndex, columnIndex}): JSX.Element | string => {
+  private cellRenderer = ({ rowIndex, columnIndex }): JSX.Element | string => {
     const node = this.props.nodes.get(rowIndex)
     if (!node) {
-      return (
-        <LoadingCell
-          backgroundColor='#fff'
-        />
-      )
+      return <LoadingCell backgroundColor="#fff" />
     }
     const nodeId = node.get('id')
     const field = this.props.fields[columnIndex - 1]
@@ -510,19 +552,15 @@ class DatabrowserView extends React.PureComponent<Props, State> {
           data-test={`checkbox-row-${rowIndex}`}
         />
       )
-    } else if (columnIndex === this.props.fields.length + 1) { // AddColumn
+    } else if (columnIndex === this.props.fields.length + 1) {
+      // AddColumn
       if (this.props.newRowActive) {
         return null
       }
-      return (
-        <LoadingCell
-          empty={true}
-          left={20}
-        />
-      )
+      return <LoadingCell empty={true} left={20} />
     } else {
       const value = node.get(field.name)
-      const {selectedCell} = this.props
+      const { selectedCell } = this.props
       const rowHasCursor = selectedCell.row === rowIndex
       const selected = rowHasCursor && selectedCell.field === field.name
 
@@ -533,8 +571,10 @@ class DatabrowserView extends React.PureComponent<Props, State> {
             field={field}
             rowSelected={this.isSelected(nodeId)}
             rowHasCursor={rowHasCursor}
-            onClick={() => this.props.selectCell({ row: rowIndex, field: field.name })}
-            onDoubleClick={() => this.props.editCell({ row: rowIndex, field: field.name })}
+            onClick={() =>
+              this.props.selectCell({ row: rowIndex, field: field.name })}
+            onDoubleClick={() =>
+              this.props.editCell({ row: rowIndex, field: field.name })}
             data-test={!field.isSystem && `edit-field-${field.name}`}
           />
         )
@@ -544,12 +584,19 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         <Cell
           selected={selected}
           rowSelected={this.isSelected(nodeId)}
-          backgroundColor='#fff'
+          backgroundColor="#fff"
           field={field}
           value={value}
           projectId={this.props.project.id}
           projectName={this.props.params.projectName}
-          update={(value, field, callback) => this.updateEditingNode(value, field, callback, nodeId, rowIndex)}
+          update={(updatingValue, updatingField, callback) =>
+            this.updateEditingNode(
+              updatingValue,
+              updatingField,
+              callback,
+              nodeId,
+              rowIndex,
+            )}
           reload={() => this.loadData(rowIndex, 1)}
           nodeId={nodeId}
           rowIndex={rowIndex}
@@ -561,10 +608,15 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     }
   }
 
-  private getColumnWidth = (fieldColumnWidths: FieldWidths, {index}): number => {
-    if (index === 0) { // Checkbox
+  private getColumnWidth = (
+    fieldColumnWidths: FieldWidths,
+    { index },
+  ): number => {
+    if (index === 0) {
+      // Checkbox
       return 40
-    } else if (index === this.props.fields.length + 1) { // AddColumn
+    } else if (index === this.props.fields.length + 1) {
+      // AddColumn
       return 250
     } else {
       return fieldColumnWidths[this.getFieldName(index - 1)]
@@ -596,12 +648,16 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     switch (e.keyCode) {
       case 37:
         this.props.previousCell(this.props.fields)
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 37}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 37 } }),
+        )
         e.preventDefault()
         break
       case 38:
         this.props.previousRow(this.props.fields, this.props.model.namePlural)
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 38}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 38 } }),
+        )
         e.preventDefault()
         break
       case 9:
@@ -612,19 +668,29 @@ class DatabrowserView extends React.PureComponent<Props, State> {
         } else {
           this.props.nextCell(this.props.fields)
         }
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 39}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 39 } }),
+        )
         e.preventDefault()
         break
       case 40:
         this.props.nextRow(this.props.fields, this.props.model.namePlural)
-        tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 40}}))
+        tracker.track(
+          ConsoleEvents.Databrowser.Cell.selected({ source: { keyCode: 40 } }),
+        )
         e.preventDefault()
         break
       case 13:
-        const selectedField = this.props.fields.find(f => f.name === this.props.selectedCell.field)
+        const selectedField = this.props.fields.find(
+          f => f.name === this.props.selectedCell.field,
+        )
         if (selectedField && !selectedField.isReadonly) {
           this.props.editCell(this.props.selectedCell)
-          tracker.track(ConsoleEvents.Databrowser.Cell.selected({source: {keyCode: 13}}))
+          tracker.track(
+            ConsoleEvents.Databrowser.Cell.selected({
+              source: { keyCode: 13 },
+            }),
+          )
           e.preventDefault()
         }
         break
@@ -636,11 +702,12 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   }
 
   private setSortOrder = (field: Field) => {
-    const order: 'ASC' | 'DESC' = this.props.orderBy.fieldName === field.name
-      ? (this.props.orderBy.order === 'ASC' ? 'DESC' : 'ASC')
-      : 'ASC'
+    const order: 'ASC' | 'DESC' =
+      this.props.orderBy.fieldName === field.name
+        ? this.props.orderBy.order === 'ASC' ? 'DESC' : 'ASC'
+        : 'ASC'
 
-    this.props.setOrder({fieldName: field.name, order})
+    this.props.setOrder({ fieldName: field.name, order })
     this.reloadData()
   }
 
@@ -650,17 +717,38 @@ class DatabrowserView extends React.PureComponent<Props, State> {
 
   private loadData = (skip: number, first: number = 50): any => {
     const query = this.props.location.query.q || ''
-    return this.props.loadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, skip, first, query)
+    return this.props.loadDataAsync(
+      this.lokka,
+      this.props.model.namePlural,
+      this.props.fields,
+      skip,
+      first,
+      query,
+    )
   }
 
   private reloadData = (index: number = 0, nextProps: Props = null) => {
-    let query = (nextProps ? nextProps.location.query.q : this.props.location.query.q) || ''
+    let query =
+      (nextProps ? nextProps.location.query.q : this.props.location.query.q) ||
+      ''
     // remove whitespaces from the end of the string
     query = query.replace(/\s*$/, '')
-    this.props.reloadDataAsync(this.lokka, this.props.model.namePlural, this.props.fields, index, query)
+    this.props.reloadDataAsync(
+      this.lokka,
+      this.props.model.namePlural,
+      this.props.fields,
+      index,
+      query,
+    )
   }
 
-  private updateEditingNode = (value: TypedValue, field: Field, callback, nodeId: string, rowIndex: number) => {
+  private updateEditingNode = (
+    value: TypedValue,
+    field: Field,
+    callback,
+    nodeId: string,
+    rowIndex: number,
+  ) => {
     this.props.updateNodeAsync(
       this.lokka,
       this.props.model,
@@ -673,8 +761,13 @@ class DatabrowserView extends React.PureComponent<Props, State> {
     )
   }
 
-  private addNewNode = (fieldValues: { [key: string]: any }): any => {
-    return this.props.addNodeAsync(this.lokka, this.props.model, this.props.fields, fieldValues)
+  private addNewNode = (fieldValues?: { [key: string]: any }): any => {
+    return this.props.addNodeAsync(
+      this.lokka,
+      this.props.model,
+      this.props.fields,
+      fieldValues,
+    )
   }
 
   private isSelected = (nodeId: string): boolean => {
@@ -683,7 +776,9 @@ class DatabrowserView extends React.PureComponent<Props, State> {
 
   private selectAllOnClick = (checked: boolean) => {
     if (checked) {
-      const selectedNodeIds = this.props.nodes.map(node => node.get('id')).toList()
+      const selectedNodeIds = this.props.nodes
+        .map(node => node.get('id'))
+        .toList()
       this.props.setNodeSelection(selectedNodeIds)
     } else {
       this.props.clearNodeSelection()
@@ -691,20 +786,21 @@ class DatabrowserView extends React.PureComponent<Props, State> {
   }
 
   private deleteSelectedNodes = () => {
-    graphcoolConfirm(`This will delete ${this.props.selectedNodeIds.size} node(s).`)
-      .then(() => {
-        this.props.deleteSelectedNodes(
-          this.lokka,
-          this.props.params.projectName,
-          this.props.params.modelName,
-          this.props.model,
-        )
-      })
+    graphcoolConfirm(
+      `This will delete ${this.props.selectedNodeIds.size} node(s).`,
+    ).then(() => {
+      this.props.deleteSelectedNodes(
+        this.lokka,
+        this.props.params.projectName,
+        this.props.params.modelName,
+        this.props.model,
+      )
+    })
   }
 
   private handleUpdateCalled = () => {
     if (this.state.shouldLeaveRoute) {
-      this.setState({shouldLeaveRoute: false} as State)
+      this.setState({ shouldLeaveRoute: false } as State)
     }
   }
 }
@@ -764,24 +860,21 @@ function mapDispatchToProps(dispatch) {
       setBrowserViewRef,
       setDataBrowserViewRef,
     },
-    dispatch)
+    dispatch,
+  )
 }
 
-const ReduxContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withRouter(DatabrowserView))
+const ReduxContainer = connect(mapStateToProps, mapDispatchToProps)(
+  withRouter(DatabrowserView),
+)
 
 const MappedDatabrowserView = mapProps({
-  params: (props) => props.params,
-  fields: (props) => (
-    props.viewer.model.fields.edges
-      .map((edge) => edge.node)
-      .sort(idToBeginning)
-  ),
-  model: (props) => props.viewer.model,
-  project: (props) => props.viewer.project,
-  viewer: (props) => props.viewer,
+  params: props => props.params,
+  fields: props =>
+    props.viewer.model.fields.edges.map(edge => edge.node).sort(idToBeginning),
+  model: props => props.viewer.model,
+  project: props => props.viewer.project,
+  viewer: props => props.viewer,
   enums: props => props.viewer.project.enums.edges.map(edge => edge.node),
 })(ReduxContainer)
 

@@ -1,22 +1,18 @@
 import * as React from 'react'
 import * as cn from 'classnames'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {Project} from '../../types/types'
-import {sortSchema} from '../../../sortSchema'
-import {Link} from 'found'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { Project } from '../../types/types'
+import { Link } from 'found'
 import MigrateProject from '../../mutations/Schema/MigrateProject'
 import MigrationMessages from './MigrationMessages'
 const QueryEditor: any = require('./Editor/QueryEditor').QueryEditor
-import {showNotification} from '../../actions/notification'
-import {connect} from 'react-redux'
-import {ShowNotificationCallback} from '../../types/utils'
-import {onFailureShowNotification} from '../../utils/relay'
+import { showNotification } from '../../actions/notification'
+import { connect } from 'react-redux'
+import { ShowNotificationCallback } from '../../types/utils'
+import { onFailureShowNotification } from '../../utils/relay'
 import Loading from '../../components/Loading/Loading'
-import {debounce} from 'lodash'
-import {smoothScrollTo} from '../../utils/smooth'
+import { debounce } from 'lodash'
+import { smoothScrollTo } from '../../utils/smooth'
 import SchemaExport from './SchemaExport'
 
 interface Props {
@@ -66,13 +62,13 @@ class SchemaEditor extends React.Component<Props, State> {
   private lastDidChangeEnum = false
   private editor: any
   private containerRef = null
-  private handleScroll = debounce(
-    () => {
-      const container = this.containerRef
-      const scrollPercentage = 100 * container.scrollTop / (container.scrollHeight - container.clientHeight)
-    },
-    100,
-  )
+  private handleScroll = debounce(() => {
+    // const container = this.containerRef
+    // const scrollPercentage =
+    //   100 *
+    //   container.scrollTop /
+    //   (container.scrollHeight - container.clientHeight)
+  }, 100)
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -85,41 +81,43 @@ class SchemaEditor extends React.Component<Props, State> {
       errors: [],
       loading: false,
     }
-    global['s'] = this
   }
-  // componentDidMount() {
-  //   document.addEventListener('keydown', (e) => {
-  //     if (e.keyCode === 27) {
-  //       let splitted =  this.state.schema.split('\n')
-  //       splitted[14] += ' # @rename(oldName: "oldName")'
-  //       const cursor = this.editor.getCursor()
-  //       this.setState(
-  //         {schema: splitted.join('\n')} as State,
-  //         () => {
-  //           this.editor.setCursor(cursor)
-  //         },
-  //       )
-  //     }
-  //   })
-  // }
   componentWillReceiveProps(nextProps: Props) {
     if (this.props.scroll !== nextProps.scroll) {
       this.scrollToPercentage(nextProps.scroll)
     }
     if (this.props.project.typeSchema !== nextProps.project.typeSchema) {
-      this.setState({typeSchema: this.addFrontmatter(nextProps.project.typeSchema, nextProps)} as State)
+      this.setState(
+        {
+          typeSchema: this.addFrontmatter(
+            nextProps.project.typeSchema,
+            nextProps,
+          ),
+        } as State,
+      )
     }
     if (this.props.project.enumSchema !== nextProps.project.enumSchema) {
-      this.setState({enumSchema: nextProps.project.enumSchema} as State)
+      this.setState({ enumSchema: nextProps.project.enumSchema } as State)
     }
     if (this.props.project.version !== nextProps.project.version) {
-      this.setState({typeSchema: this.addFrontmatter(nextProps.project.typeSchema, nextProps)} as State)
+      this.setState(
+        {
+          typeSchema: this.addFrontmatter(
+            nextProps.project.typeSchema,
+            nextProps,
+          ),
+        } as State,
+      )
     }
   }
   scrollToPercentage(scroll) {
     const container = this.containerRef
-    const scrollPercentage = 100 * container.scrollTop / (container.scrollHeight - container.clientHeight)
-    const newScrollTop = (scroll * (container.scrollHeight - container.clientHeight)) / 100
+    // const scrollPercentage =
+    //   100 *
+    //   container.scrollTop /
+    //   (container.scrollHeight - container.clientHeight)
+    const newScrollTop =
+      scroll * (container.scrollHeight - container.clientHeight) / 100
     smoothScrollTo(this.containerRef, newScrollTop, 300)
   }
   componentDidUpdate() {
@@ -138,7 +136,10 @@ class SchemaEditor extends React.Component<Props, State> {
     this.lastDidChangeEnum = didChangeEnum
   }
   didChangeType() {
-    return this.state.typeSchema !== this.addFrontmatter(this.props.project.typeSchema)
+    return (
+      this.state.typeSchema !==
+      this.addFrontmatter(this.props.project.typeSchema)
+    )
   }
   didChangeEnum() {
     return this.state.enumSchema !== this.props.project.enumSchema
@@ -147,15 +148,17 @@ class SchemaEditor extends React.Component<Props, State> {
     return this.didChangeType() || this.didChangeEnum()
   }
   render() {
-    const {project} = this.props
-    const {beta, isDryRun, loading} = this.state
+    const { project } = this.props
+    const { beta, isDryRun, loading } = this.state
 
-    const schema = this.props.showEnums ? this.state.enumSchema : this.state.typeSchema
+    const schema = this.props.showEnums
+      ? this.state.enumSchema
+      : this.state.typeSchema
 
     const didChange = this.didChange()
 
     return (
-      <div className={cn('schema-editor', {beta})}>
+      <div className={cn('schema-editor', { beta })}>
         <style jsx={true}>{`
           .schema-editor {
             @p: .w100, .bgDarkerBlue, .flex, .flexColumn, .relative, .h100;
@@ -171,13 +174,14 @@ class SchemaEditor extends React.Component<Props, State> {
             @p: .flexAuto, .overflowAuto, .relative, .nosb;
           }
           .loader {
-            @p: .absolute, .top0, .right0, .bottom0, .left0, .flex, .justifyCenter, .itemsCenter;
+            @p: .absolute, .top0, .right0, .bottom0, .left0, .flex,
+              .justifyCenter, .itemsCenter;
           }
           .schema-editor:not(.beta) :global(.CodeMirror-cursor) {
             @p: .dn;
           }
           .schema-editor :global(.CodeMirror-selected) {
-            background: rgba(255,255,255,.1);
+            background: rgba(255, 255, 255, .1);
           }
 
           .footer {
@@ -196,7 +200,8 @@ class SchemaEditor extends React.Component<Props, State> {
             @p: .bgBlack30, .pa16, .justifyBetween;
           }
           .schema-editor :global(.schema-button) {
-            @p: .bgWhite04, .fw6, .f14, .white50, .ttu, .br2, .pointer, .o50, .mr16;
+            @p: .bgWhite04, .fw6, .f14, .white50, .ttu, .br2, .pointer, .o50,
+              .mr16;
             padding: 7px 9px 8px 11px;
             letter-spacing: 0.53px;
             transition: $duration linear opacity;
@@ -218,7 +223,7 @@ class SchemaEditor extends React.Component<Props, State> {
           }
         `}</style>
         <div
-          className='editor-wrapper'
+          className="editor-wrapper"
           onScroll={this.handleScroll}
           ref={ref => {
             this.containerRef = ref
@@ -233,150 +238,146 @@ class SchemaEditor extends React.Component<Props, State> {
             }}
             readOnly={!beta}
           />
-          {loading && (
-            <div className='loader'>
-              <Loading color='white' />
-            </div>
-          )}
-          <div className='cli-button'>
-            <Link className='schema-button' to={`/${project.name}/schema/cli-guide`}>Edit Schema from CLI</Link>
+          {loading &&
+            <div className="loader">
+              <Loading color="white" />
+            </div>}
+          <div className="cli-button">
+            <Link
+              className="schema-button"
+              to={`/${project.name}/schema/cli-guide`}
+            >
+              Edit Schema from CLI
+            </Link>
           </div>
         </div>
-        {didChange ? (
-          <div>
-            {(this.state.messages.length > 0 || this.state.errors.length > 0) && (
-              <MigrationMessages messages={this.state.messages} errors={this.state.errors} />
-            )}
-            <div className='footer editing'>
-              <div className='cancel' onClick={this.reset}>Reset Changes</div>
-              <div className='apply-changes' onClick={this.updateSchema}>
-                {isDryRun ? 'Preview ' : 'Apply '}
-                Changes
+        {didChange
+          ? <div>
+              {(this.state.messages.length > 0 ||
+                this.state.errors.length > 0) &&
+                <MigrationMessages
+                  messages={this.state.messages}
+                  errors={this.state.errors}
+                />}
+              <div className="footer editing">
+                <div className="cancel" onClick={this.reset}>
+                  Reset Changes
+                </div>
+                <div className="apply-changes" onClick={this.updateSchema}>
+                  {isDryRun ? 'Preview ' : 'Apply '}
+                  Changes
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className='footer'>
-            <SchemaExport schema={project.schema} projectName={project.name} projectId={project.id}>
-              <div className='schema-button'>Export Schema</div>
-            </SchemaExport>
-            <Link className='schema-button' to={`/${project.name}/clone`}>Clone Project</Link>
-          </div>
-        )}
-        {!beta && (
-          <div className='soon-editable'>soon editable</div>
-        )}
+          : <div className="footer">
+              <SchemaExport
+                schema={project.schema}
+                projectName={project.name}
+                projectId={project.id}
+              >
+                <div className="schema-button">Export Schema</div>
+              </SchemaExport>
+              <Link className="schema-button" to={`/${project.name}/clone`}>
+                Clone Project
+              </Link>
+            </div>}
+        {!beta && <div className="soon-editable">soon editable</div>}
       </div>
     )
   }
   private updateSchema = () => {
-    const {typeSchema, enumSchema, isDryRun} = this.state
+    const { typeSchema, enumSchema, isDryRun } = this.state
     const schema = typeSchema + '\n' + enumSchema
     // const newSchema = this.addFrontmatter(schema)
     const newSchema = schema
-    this.setState({loading: true} as State)
-      MigrateProject.commit({
-        newSchema,
-        isDryRun,
-        force: true,
-        projectId: this.props.project.id,
-      }).then(res => {
+    this.setState({ loading: true } as State)
+    MigrateProject.commit({
+      newSchema,
+      isDryRun,
+      force: true,
+      projectId: this.props.project.id,
+    })
+      .then(res => {
         if (isDryRun) {
-          this.setState({
-            messages: res.migrateProject.migrationMessages,
-            isDryRun: false,
-            errors: res.migrateProject.errors,
-            loading: false,
-          } as State)
+          this.setState(
+            {
+              messages: res.migrateProject.migrationMessages,
+              isDryRun: false,
+              errors: res.migrateProject.errors,
+              loading: false,
+            } as State,
+          )
         } else {
-          this.setState({messages: [], isDryRun: true, errors: [], loading: false} as State)
+          if (
+            res.migrateProject.errors &&
+            res.migrateProject.errors.length > 0
+          ) {
+            res.migrateProject.errors.forEach(error => {
+              this.props.showNotification({
+                level: 'error',
+                message: (
+                  <div>
+                    <span className="fw6">{error.type}:</span>{' '}
+                    {error.description}
+                  </div>
+                ),
+              })
+            })
+          }
+          this.setState(
+            {
+              messages: [],
+              isDryRun: true,
+              errors: [],
+              loading: false,
+            } as State,
+          )
         }
       })
       .catch(transaction => {
         onFailureShowNotification(transaction, this.props.showNotification)
-        this.setState({loading: false} as State)
+        this.setState({ loading: false } as State)
       })
   }
 
   private reset = () => {
-    const {project} = this.props
-    this.setState({
-      errors: [],
-      messages: [],
-      isDryRun: true,
-      enumSchema: project.enumSchema,
-      typeSchema: this.addFrontmatter(project.typeSchema, this.props),
-    } as State)
+    const { project } = this.props
+    this.setState(
+      {
+        errors: [],
+        messages: [],
+        isDryRun: true,
+        enumSchema: project.enumSchema,
+        typeSchema: this.addFrontmatter(project.typeSchema, this.props),
+      } as State,
+    )
   }
 
   private addFrontmatter(schema, props?: Props) {
-    const {version, id} = props ? props.project : this.props.project
-    return `# projectId: ${id}
+    const { version, id } = props ? props.project : this.props.project
+    return (
+      `# projectId: ${id}
 # version: ${version}\n\n` + schema
-  }
-
-  private patchSchemaRemarks(schema) {
-    const oldSchema = this.props.showEnums ? this.state.enumSchema : this.state.typeSchema
-    const splittedOld = oldSchema.split('\n')
-    let splittedNew = schema.split('\n')
-    const cursor = this.editor.getCursor()
-
-    const oldLine = splittedOld[cursor.line]
-    const newLine = splittedNew[cursor.line]
-    const oldFieldName = this.getFieldName(oldLine)
-    const newFieldName = this.getFieldName(newLine)
-    let changed = false
-
-    if (
-      oldLine !== newLine
-      && this.isField(oldLine)
-      && this.isField(newLine)
-      && !oldLine.includes('@rename')
-      && !newLine.includes('@rename')
-      && oldFieldName !== newFieldName
-    ) {
-      splittedNew[cursor.line] += ` @rename(oldName: "${oldFieldName}")`
-      changed = true
-    }
-    return {
-      schema: splittedNew.join('\n'),
-      changed,
-      cursor,
-    }
-  }
-
-  private isField(line) {
-    return /.+?:.+?/.test(line)
-  }
-
-  private getFieldName(line) {
-    const res = /(.+?):.*/.exec(line)
-    return res ? res[1].trim() : ''
+    )
   }
 
   private handleSchemaChange = newSchema => {
     if (!this.state.beta) {
       return
     }
-    const {schema, changed, cursor} = this.patchSchemaRemarks(newSchema)
     const schemaName = this.props.showEnums ? 'enumSchema' : 'typeSchema'
     this.setState(
       {
-        [schemaName]: schema,
+        [schemaName]: newSchema,
         errors: [],
         messages: [],
         isDryRun: true,
       } as State,
-      () => {
-        if (changed) {
-          this.editor.setCursor(cursor)
-        }
-      },
     )
   }
 }
 
-const SchemaEditorRedux = connect(null, {showNotification})(SchemaEditor)
+const SchemaEditorRedux = connect(null, { showNotification })(SchemaEditor)
 
 export default createFragmentContainer(SchemaEditorRedux, {
   project: graphql`
@@ -398,16 +399,3 @@ export default createFragmentContainer(SchemaEditorRedux, {
     }
   `,
 })
-
-const enumIdl = `enum Role {
-  Admin,
-  User,
-  Guest
-}
-
-enum Wood {
-  Beech,
-  Oak,
-  Fir,
-  Mahagony
-}`

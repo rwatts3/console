@@ -1,3 +1,3 @@
 export interface ProgressIndicatorState {
-    progress: number
+  progress: number
 }

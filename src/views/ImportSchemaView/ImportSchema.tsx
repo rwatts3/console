@@ -15,15 +15,15 @@ const importSchemaModalStyle = {
   },
 }
 
-export default class ImportSchema extends React.Component<null,null> {
+export default class ImportSchema extends React.Component<null, null> {
   render() {
     return (
       <Modal
         style={importSchemaModalStyle}
         isOpen={true}
-        contentLabel='Import Schema'
+        contentLabel="Import Schema"
       >
-        <div className='import-schema'>
+        <div className="import-schema">
           <style jsx={true}>{`
             .import-schema {
               @p: .flex;

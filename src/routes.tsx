@@ -1,8 +1,7 @@
 /* tslint:disable */
 import * as cookiestore from 'cookiestore'
 import * as React from 'react'
-import {graphql} from 'react-relay'
-import * as Relay from 'react-relay/classic'
+import { graphql } from 'react-relay'
 // import { Route, IndexRoute, IndexRedirect, Redirect } from 'found'
 import makeRouteConfig from 'found/lib/makeRouteConfig'
 import Route from 'found/lib/Route'
@@ -42,11 +41,9 @@ import AlgoliaView from './views/Integrations/Algolia/AlgoliaView'
 import ShowRoom from './views/ShowRoom/ShowRoom'
 import IntegrationsView from './views/Integrations/IntegrationsView'
 import tracker from './utils/metrics'
-import { ConsoleEvents } from 'graphcool-metrics'
 import RelationPopup from './views/RelationsPopup/RelationPopup'
 import ChangePricingPlan from './views/Settings/Billing/ChangePricingPlan'
 import ConfirmPricingPlan from './views/Settings/Billing/ConfirmPricingPlan'
-import ImportSchemaView from './views/ImportSchemaView/ImportSchemaView'
 import SchemaView from './views/SchemaView/SchemaView'
 import SchemaViewer from './views/SchemaView/SchemaViewer'
 import AllRelationPermissionsList from './views/PermissionsView/RelationPermissionsList/AllRelationPermissionsList'
@@ -76,17 +73,17 @@ import CliInfoPopup from './views/SchemaView/CliInfoPopup'
 //   `,
 // }
 
-function render({Component, props, error, match}) {
+function render({ Component, props, error, match }) {
   if (error) {
     if (error.response) {
-      const {code} = error.response.errors[0]
+      const { code } = error.response.errors[0]
 
       // project doesnt exist
       if (code === 4033) {
-        graphcoolAlert('The requested project doesn\'t exist on your account.')
+        graphcoolAlert("The requested project doesn't exist on your account.")
         return <RedirectOnMount to={`/`} />
 
-      // not authorized
+        // not authorized
       } else if (code === 2001) {
         cookiestore.remove('graphcool_auth_token')
         cookiestore.remove('graphcool_customer_id')
@@ -98,14 +95,15 @@ function render({Component, props, error, match}) {
 
   if (Component === null || !props) {
     return (
-      <div className='loader'>
+      <div className="loader">
         <style jsx>{`
-        .loader {
-          @p: .top0, .left0, .right0, .bottom0, .fixed, .flex, .justifyCenter, .itemsCenter, .z999;
-          pointer-events: none;
-        }
-      `}</style>
-        <Loading color={'#666'}/>
+          .loader {
+            @p: .top0, .left0, .right0, .bottom0, .fixed, .flex, .justifyCenter,
+              .itemsCenter, .z999;
+            pointer-events: none;
+          }
+        `}</style>
+        <Loading color={'#666'} />
       </div>
     )
   }
@@ -130,7 +128,11 @@ const FunctionsViewerQuery = graphql`
 `
 
 const RelationPopupQuery = graphql`
-  query routes_RelationPopup_Query($projectName: String!, $relationName: String!, $relationExists: Boolean!) {
+  query routes_RelationPopup_Query(
+    $projectName: String!
+    $relationName: String!
+    $relationExists: Boolean!
+  ) {
     viewer {
       ...RelationPopup_viewer
     }
@@ -138,7 +140,12 @@ const RelationPopupQuery = graphql`
 `
 
 const FieldPopupQuery = graphql`
-  query routes_FieldPopup_Query($projectName: String!, $modelName: String!, $fieldName: String!, $fieldExists: Boolean!) {
+  query routes_FieldPopup_Query(
+    $projectName: String!
+    $modelName: String!
+    $fieldName: String!
+    $fieldExists: Boolean!
+  ) {
     viewer {
       ...FieldPopup_viewer
     }
@@ -154,7 +161,12 @@ const ModelRedirectViewQuery = graphql`
 `
 
 const PermissionPopupQuery = graphql`
-  query routes_PermissionPopup_Query($projectName: String!, $modelName: String!, $id: ID!, $includeNode: Boolean!) {
+  query routes_PermissionPopup_Query(
+    $projectName: String!
+    $modelName: String!
+    $id: ID!
+    $includeNode: Boolean!
+  ) {
     viewer {
       ...PermissionPopup_viewer
     }
@@ -165,7 +177,12 @@ const PermissionPopupQuery = graphql`
 `
 
 const RelationPermissionPopupQuery = graphql`
-  query routes_RelationPermissionPopup_Query($projectName: String!, $relationName: String!, $id: ID!, $includeNode: Boolean!) {
+  query routes_RelationPermissionPopup_Query(
+    $projectName: String!
+    $relationName: String!
+    $id: ID!
+    $includeNode: Boolean!
+  ) {
     viewer {
       ...RelationPermissionPopup_viewer
     }
@@ -187,7 +204,11 @@ const FunctionLogsQuery = graphql`
 `
 
 const FunctionPopupQuery = graphql`
-  query routes_FunctionPopup_Query($projectName: String!, $id: ID!, $includeNode: Boolean!) {
+  query routes_FunctionPopup_Query(
+    $projectName: String!
+    $id: ID!
+    $includeNode: Boolean!
+  ) {
     viewer {
       ...FunctionPopup_viewer
     }
@@ -197,285 +218,439 @@ const FunctionPopupQuery = graphql`
   }
 `
 
-export default (
-  makeRouteConfig(
-    <Route path='/' Component={RootView}>
-      <Route Component={RootRedirectView} query={graphql`
+export default makeRouteConfig(
+  <Route path="/" Component={RootView}>
+    <Route
+      Component={RootRedirectView}
+      query={graphql`
         query routes_RootRedirectView_Query {
           viewer {
             ...RootRedirectView_viewer
           }
         }
-      `} render={render}/>
-      <Route path='signup' Component={({location}) => <AuthView initialScreen='signUp' location={location} />}/>
-      <Route path='login' Component={({location}) => <AuthView initialScreen='login' location={location} />}/>
-      <Route path='token' Component={TokenRedirectView}/>
-      <Route path='cli/auth' Component={CLIAuthView} onEnter={CLIAuthView.routeRedirectWhenAuthenticated}/>
-      <Route path='cli/auth/success' Component={CLIAuthSuccessView} />
-      <Route path='cli/auth/success-init' Component={CLIAuthSuccessInitView}/>
-      <Route path='after-signup' Component={AfterSignUpView} query={graphql`
+      `}
+      render={render}
+    />
+    <Route
+      path="signup"
+      Component={({ location }) =>
+        <AuthView initialScreen="signUp" location={location} />}
+    />
+    <Route
+      path="login"
+      Component={({ location }) =>
+        <AuthView initialScreen="login" location={location} />}
+    />
+    <Route path="token" Component={TokenRedirectView} />
+    <Route
+      path="cli/auth"
+      Component={CLIAuthView}
+      onEnter={CLIAuthView.routeRedirectWhenAuthenticated}
+    />
+    <Route path="cli/auth/success" Component={CLIAuthSuccessView} />
+    <Route path="cli/auth/success-init" Component={CLIAuthSuccessInitView} />
+    <Route
+      path="after-signup"
+      Component={AfterSignUpView}
+      query={graphql`
         query routes_AfterSignUpView_Query {
           viewer {
             ...AfterSignUpView_viewer
           }
         }
-      `} render={render}/>
-      <Route path='showroom' Component={ShowRoom}/>
-      <Route path=':projectName' Component={ProjectRootView} query={ProjectViewerQuery} render={render}>
-        <Redirect to='/:projectName/schema'/>
-        <Redirect from='settings' to='/:projectName/settings/general' />
-        <Route path='functions' Component={FunctionsView} query={FunctionsViewerQuery} render={render}>
-          <Route
-            path='create'
-            Component={FunctionPopup}
-            query={FunctionPopupQuery}
-            render={render}
-            prepareVariables={params => ({...params, includeNode: false, id: ''})}
-            >
-            <Route
-              path='fullscreen'
-              Component={null}
-            />
-          </Route>
-          <Route
-            path=':id/logs'
-            Component={FunctionLogs}
-            query={FunctionLogsQuery}
-            render={render}
-          />
-          <Route
-            path=':id/edit'
-            Component={FunctionPopup}
-            query={FunctionPopupQuery}
-            render={render}
-            prepareVariables={params => ({...params, includeNode: true})}
-          >
-            <Route
-              path='fullscreen'
-              Component={() => null}
-            />
-          </Route>
+      `}
+      render={render}
+    />
+    <Route path="showroom" Component={ShowRoom} />
+    <Route
+      path=":projectName"
+      Component={ProjectRootView}
+      query={ProjectViewerQuery}
+      render={render}
+    >
+      <Redirect to="/:projectName/schema" />
+      <Redirect from="settings" to="/:projectName/settings/general" />
+      <Route
+        path="functions"
+        Component={FunctionsView}
+        query={FunctionsViewerQuery}
+        render={render}
+      >
+        <Route
+          path="create"
+          Component={FunctionPopup}
+          query={FunctionPopupQuery}
+          render={render}
+          prepareVariables={params => ({
+            ...params,
+            includeNode: false,
+            id: '',
+          })}
+        >
+          <Route path="fullscreen" Component={null} />
         </Route>
-        <Route path='playground' Component={PlaygroundView} render={render} query={graphql`
+        <Route
+          path=":id/logs"
+          Component={FunctionLogs}
+          query={FunctionLogsQuery}
+          render={render}
+        />
+        <Route
+          path=":id/edit"
+          Component={FunctionPopup}
+          query={FunctionPopupQuery}
+          render={render}
+          prepareVariables={params => ({ ...params, includeNode: true })}
+        >
+          <Route path="fullscreen" Component={() => null} />
+        </Route>
+      </Route>
+      <Route
+        path="playground"
+        Component={PlaygroundView}
+        render={render}
+        query={graphql`
           query routes_PlaygroundView_Query($projectName: String!) {
             viewer {
               ...PlaygroundView_viewer
             }
           }
-        `}/>
-        <Route path='account' Component={AccountView} query={graphql`
+        `}
+      />
+      <Route
+        path="account"
+        Component={AccountView}
+        query={graphql`
           query routes_AccountView_Query($projectName: String!) {
             viewer {
               ...AccountView_viewer
             }
           }
-        `} render={render}>
-          <Route path='settings' Component={SettingsTab} query={graphql`
+        `}
+        render={render}
+      >
+        <Route
+          path="settings"
+          Component={SettingsTab}
+          query={graphql`
             query routes_SettingsTab_Query {
               viewer {
                 ...SettingsTab_viewer
               }
             }
-          `} render={render}/>
-        </Route>
-        <Route path='schema' Component={SchemaView} query={graphql`
+          `}
+          render={render}
+        />
+      </Route>
+      <Route
+        path="schema"
+        Component={SchemaView}
+        query={graphql`
           query routes_SchemaView_Query($projectName: String!) {
             viewer {
               ...SchemaView_viewer
             }
           }
-        `} render={render}>
-          <Route path='cli-guide' Component={CliInfoPopup} render={render}/>
-          <Route path='types' Component={() => null} render={render}/>
-          <Route path='interfaces' Component={() => null} render={render}/>
-          <Route path='enums' Component={() => null} render={render}>
-            <Route path='edit/:enumName' Component={() => null} render={render}/>
-          </Route>
-          <Route path='relations'>
-            <Route
-              path='create'
-              Component={RelationPopup}
-              query={RelationPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, relationExists: false, relationName: ''})}
-            />
-            <Route
-              path='edit/:relationName'
-              Component={RelationPopup}
-              query={RelationPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, relationExists: true})}
-            />
-          </Route>
-          <Route path=':modelName'>
-            <Route path='edit' Component={() => null} render={render}/>
-            <Route
-              path='edit/:fieldName'
-              Component={FieldPopup}
-              query={FieldPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, fieldExists: true})}
-            />
-            <Route
-              path='create'
-              Component={FieldPopup}
-              query={FieldPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, fieldExists: false, fieldName: ''})}
-            />
-          </Route>
+        `}
+        render={render}
+      >
+        <Route path="cli-guide" Component={CliInfoPopup} render={render} />
+        <Route path="types" Component={() => null} render={render} />
+        <Route path="interfaces" Component={() => null} render={render} />
+        <Route path="enums" Component={() => null} render={render}>
+          <Route path="edit/:enumName" Component={() => null} render={render} />
         </Route>
-        <Route path='graph-view' Component={SchemaViewer} query={graphql`
+        <Route path="relations">
+          <Route
+            path="create"
+            Component={RelationPopup}
+            query={RelationPopupQuery}
+            render={render}
+            prepareVariables={params => ({
+              ...params,
+              relationExists: false,
+              relationName: '',
+            })}
+          />
+          <Route
+            path="edit/:relationName"
+            Component={RelationPopup}
+            query={RelationPopupQuery}
+            render={render}
+            prepareVariables={params => ({ ...params, relationExists: true })}
+          />
+        </Route>
+        <Route path=":modelName">
+          <Route path="edit" Component={() => null} render={render} />
+          <Route
+            path="edit/:fieldName"
+            Component={FieldPopup}
+            query={FieldPopupQuery}
+            render={render}
+            prepareVariables={params => ({ ...params, fieldExists: true })}
+          />
+          <Route
+            path="create"
+            Component={FieldPopup}
+            query={FieldPopupQuery}
+            render={render}
+            prepareVariables={params => ({
+              ...params,
+              fieldExists: false,
+              fieldName: '',
+            })}
+          />
+        </Route>
+      </Route>
+      <Route
+        path="graph-view"
+        Component={SchemaViewer}
+        query={graphql`
           query routes_SchemaViewer_Query($projectName: String!) {
             viewer {
               ...SchemaViewer_viewer
             }
           }
-        `} render={render}/>
-        <Route path='models'>
-          <Route Component={ModelRedirectView} query={ModelRedirectViewQuery} render={render}/>
-          <Route path=':modelName/databrowser' Component={DatabrowserView} query={graphql`
-            query routes_DatabrowserView_Query($projectName: String!, $modelName: String!) {
+        `}
+        render={render}
+      />
+      <Route path="models">
+        <Route
+          Component={ModelRedirectView}
+          query={ModelRedirectViewQuery}
+          render={render}
+        />
+        <Route
+          path=":modelName/databrowser"
+          Component={DatabrowserView}
+          query={graphql`
+            query routes_DatabrowserView_Query(
+              $projectName: String!
+              $modelName: String!
+            ) {
               viewer {
                 ...DatabrowserView_viewer
               }
             }
-          `} render={render}/>
-          <Route path=':modelName' Component={ModelRedirectView} query={ModelRedirectViewQuery} render={render}/>
-        </Route>
-        <Route path='permissions' Component={PermissionsView} query={graphql`
+          `}
+          render={render}
+        />
+        <Route
+          path=":modelName"
+          Component={ModelRedirectView}
+          query={ModelRedirectViewQuery}
+          render={render}
+        />
+      </Route>
+      <Route
+        path="permissions"
+        Component={PermissionsView}
+        query={graphql`
           query routes_PermissionsView_Query($projectName: String!) {
             viewer {
               ...PermissionsView_viewer
             }
           }
-        `} render={render}>
-          <Route Component={PermissionsList}/>
-          <Route path='relations' Component={AllRelationPermissionsList}>
-            <Route
-              path=':relationName/edit/:id'
-              Component={RelationPermissionPopup}
-              query={RelationPermissionPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, includeNode: true})}
-            />
-            <Route
-              path=':relationName/create'
-              Component={RelationPermissionPopup}
-              query={RelationPermissionPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, includeNode: false, id: ''})}
-            />
-          </Route>
-          <Route Component={PermissionsList}>
-            <Route
-              path=':modelName/edit/:id'
-              Component={PermissionPopup}
-              query={PermissionPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, includeNode: true})}
-            />
-            <Route
-              path=':modelName/create'
-              Component={PermissionPopup}
-              query={PermissionPopupQuery}
-              render={render}
-              prepareVariables={params => ({...params, includeNode: false, id: ''})}
-            />
-          </Route>
+        `}
+        render={render}
+      >
+        <Route Component={PermissionsList} />
+        <Route path="relations" Component={AllRelationPermissionsList}>
+          <Route
+            path=":relationName/edit/:id"
+            Component={RelationPermissionPopup}
+            query={RelationPermissionPopupQuery}
+            render={render}
+            prepareVariables={params => ({ ...params, includeNode: true })}
+          />
+          <Route
+            path=":relationName/create"
+            Component={RelationPermissionPopup}
+            query={RelationPermissionPopupQuery}
+            render={render}
+            prepareVariables={params => ({
+              ...params,
+              includeNode: false,
+              id: '',
+            })}
+          />
         </Route>
-        <Route path='actions' Component={ActionsView} query={graphql`
-            query routes_ActionsView_Query($projectName: String!) {
-              viewer {
-                ...ActionsView_viewer
-              }
+        <Route Component={PermissionsList}>
+          <Route
+            path=":modelName/edit/:id"
+            Component={PermissionPopup}
+            query={PermissionPopupQuery}
+            render={render}
+            prepareVariables={params => ({ ...params, includeNode: true })}
+          />
+          <Route
+            path=":modelName/create"
+            Component={PermissionPopup}
+            query={PermissionPopupQuery}
+            render={render}
+            prepareVariables={params => ({
+              ...params,
+              includeNode: false,
+              id: '',
+            })}
+          />
+        </Route>
+      </Route>
+      <Route
+        path="actions"
+        Component={ActionsView}
+        query={graphql`
+          query routes_ActionsView_Query($projectName: String!) {
+            viewer {
+              ...ActionsView_viewer
             }
-        `} render={render}/>
-        <Route path='settings' Component={ProjectSettingsView} query={graphql`
-            query routes_ProjectSettingsView_Query($projectName: String!) {
-              viewer {
-                ...ProjectSettingsView_viewer
-              }
+          }
+        `}
+        render={render}
+      />
+      <Route
+        path="settings"
+        Component={ProjectSettingsView}
+        query={graphql`
+          query routes_ProjectSettingsView_Query($projectName: String!) {
+            viewer {
+              ...ProjectSettingsView_viewer
             }
-        `} render={render}/>
-        <Route path='algolia' Component={AlgoliaView} query={graphql`
-            query routes_AlgoliaView_Query($projectName: String!) {
-              viewer {
-                ...AlgoliaView_viewer
-              }
+          }
+        `}
+        render={render}
+      />
+      <Route
+        path="algolia"
+        Component={AlgoliaView}
+        query={graphql`
+          query routes_AlgoliaView_Query($projectName: String!) {
+            viewer {
+              ...AlgoliaView_viewer
             }
-          `} render={render}/>
-        <Route path='integrations' Component={IntegrationsView} query={graphql`
-            query routes_IntegrationsView_Query($projectName: String!) {
-              viewer {
-                ...IntegrationsView_viewer
-              }
+          }
+        `}
+        render={render}
+      />
+      <Route
+        path="integrations"
+        Component={IntegrationsView}
+        query={graphql`
+          query routes_IntegrationsView_Query($projectName: String!) {
+            viewer {
+              ...IntegrationsView_viewer
             }
-        `} render={render}>
-          <Route path='authentication/:provider' Component={AuthProviderPopup} query={graphql`
+          }
+        `}
+        render={render}
+      >
+        <Route
+          path="authentication/:provider"
+          Component={AuthProviderPopup}
+          query={graphql`
             query routes_AuthProviderPopup_Query($projectName: String!) {
               viewer {
                 ...AuthProviderPopup_viewer
               }
             }
-          `} render={render}/>
-        </Route>
-        <Route path='settings' Component={Settings} render={render}>
-          <Redirect from='settings' to='settings/general'/>
-          <Route path='team' Component={Team} query={graphql`
-              query routes_Team_Query($projectName: String!) {
-                viewer {
-                  ...Team_viewer
-                }
+          `}
+          render={render}
+        />
+      </Route>
+      <Route path="settings" Component={Settings} render={render}>
+        <Redirect from="settings" to="settings/general" />
+        <Route
+          path="team"
+          Component={Team}
+          query={graphql`
+            query routes_Team_Query($projectName: String!) {
+              viewer {
+                ...Team_viewer
               }
-           `} render={render}/>
-          <Route path='token' Component={TokenRedirectView}/>
-          <Route path='general' Component={General} query={graphql`
+            }
+          `}
+          render={render}
+        />
+        <Route path="token" Component={TokenRedirectView} />
+        <Route
+          path="general"
+          Component={General}
+          query={graphql`
             query routes_General_Query($projectName: String!) {
               viewer {
                 ...General_viewer
               }
             }
-          `} render={render}/>
-          <Route path='authentication' Component={Authentication} query={graphql`
+          `}
+          render={render}
+        />
+        <Route
+          path="authentication"
+          Component={Authentication}
+          query={graphql`
             query routes_Authentication_Query($projectName: String!) {
               viewer {
                 ...Authentication_viewer
               }
             }
-          `} render={render}/>
-          <Route path='export' Component={Export} query={graphql`
+          `}
+          render={render}
+        />
+        <Route
+          path="export"
+          Component={Export}
+          query={graphql`
             query routes_Export_Query($projectName: String!) {
               viewer {
                 ...Export_viewer
               }
             }
-          `} render={render}/>
-          <Route path='billing' Component={Billing} query={graphql`
+          `}
+          render={render}
+        />
+        <Route
+          path="billing"
+          Component={Billing}
+          query={graphql`
             query routes_Billing_Query($projectName: String!) {
               viewer {
                 ...Billing_viewer
               }
             }
-          `} render={render}>
-            <Route path='change-plan/:plan' Component={ChangePricingPlan} render={render}/>
-            <Route path='confirm-plan/:plan' Component={ConfirmPricingPlan} query={graphql`
+          `}
+          render={render}
+        >
+          <Route
+            path="change-plan/:plan"
+            Component={ChangePricingPlan}
+            render={render}
+          />
+          <Route
+            path="confirm-plan/:plan"
+            Component={ConfirmPricingPlan}
+            query={graphql`
               query routes_ConfirmPricingPlan_Query($projectName: String!) {
                 viewer {
                   ...ConfirmPricingPlan_viewer
                 }
               }
-            `} render={render}/>
-          </Route>
+            `}
+            render={render}
+          />
         </Route>
-           <Route path='clone' Component={CloneProjectPopup} query={graphql`
-              query routes_CloneProjectPopup_Query($projectName: String!) {
-                viewer {
-                  ...CloneProjectPopup_viewer
-                }
-              }
-           `} render={render}/>
       </Route>
+      <Route
+        path="clone"
+        Component={CloneProjectPopup}
+        query={graphql`
+          query routes_CloneProjectPopup_Query($projectName: String!) {
+            viewer {
+              ...CloneProjectPopup_viewer
+            }
+          }
+        `}
+        render={render}
+      />
     </Route>
-  )
+  </Route>,
 )

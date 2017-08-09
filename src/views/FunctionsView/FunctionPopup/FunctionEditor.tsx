@@ -1,9 +1,13 @@
 import * as React from 'react'
-import {FunctionBinding, FunctionType, Model, RequestPipelineMutationOperation} from '../../../types/types'
+import {
+  FunctionBinding,
+  FunctionType,
+  RequestPipelineMutationOperation,
+} from '../../../types/types'
 import FunctionInput from './FunctionInput'
 import StepMarker from './StepMarker'
-import {getText} from './data'
-import {EventType} from './FunctionPopup'
+import { getText } from './data'
+import { EventType } from './FunctionPopup'
 import N from './N'
 import { Button } from '../../../components/Links'
 import { examples } from './examples'
@@ -19,8 +23,8 @@ interface Props {
   onChangeUrl: (url: string) => void
   webhookUrl: string
   schema: string
-  headers: {[key: string]: string}
-  onChangeHeaders: (headers: {[key: string]: string}) => void
+  headers: { [key: string]: string }
+  onChangeHeaders: (headers: { [key: string]: string }) => void
   editing: boolean
   query: string
   onChangeQuery: (query: string) => void
@@ -35,27 +39,30 @@ interface Props {
   params: any
 }
 
-interface State {
-
-}
-
-export default class FunctionEditor extends React.Component<Props, State> {
-
+export default class FunctionEditor extends React.Component<Props, {}> {
   constructor(props) {
     super(props)
 
-    this.state = {
-    }
+    this.state = {}
   }
 
   render() {
     const {
-      name, inlineCode, onInlineCodeChange, onNameChange, binding, isInline, onTypeChange,
-      webhookUrl, onChangeUrl, schema, editing, eventType, onChangeQuery, query,
-      showErrors, location,
+      name,
+      inlineCode,
+      onInlineCodeChange,
+      binding,
+      isInline,
+      onTypeChange,
+      webhookUrl,
+      onChangeUrl,
+      schema,
+      editing,
+      eventType,
+      showErrors,
     } = this.props
     return (
-      <div className='request-pipeline-function'>
+      <div className="request-pipeline-function">
         <style jsx>{`
           .request-pipeline-function {
           }
@@ -95,45 +102,50 @@ export default class FunctionEditor extends React.Component<Props, State> {
           }
         `}</style>
         <input
-          type='text'
+          type="text"
           value={name}
           onChange={this.nameChange}
-          placeholder='Set a function name...'
+          placeholder="Set a function name..."
           autoFocus
-          data-test='function-name-input'
+          data-test="function-name-input"
         />
-        {showErrors && (!name || name.length === 0) && (
-          <div className='error'>Please give your function a name ⤴</div>
-        )}
-        {!editing && (
-          <StepMarker active style={{marginTop: -36, marginLeft: 0}}>1</StepMarker>
-        )}
-        <div className='line' />
-        <div className='content'>
-          {eventType === 'RP' && (editing ? (
-            <p>Request-Pipeline Step: <span className='pre'>{binding}</span></p>
-          ) : (
-            <p>
-              By creating a function at
-              <span className='pre'>{binding}</span>
-              {getText(binding)}&nbsp;
-              Your function will be called when a
-              <span className='pre'>{this.props.modelName}</span> is
-              <span className='pre'>{this.props.operation.toLowerCase()}d</span>
-            </p>
-          ))}
-          {eventType === 'SSS' && !editing && (
+        {showErrors &&
+          (!name || name.length === 0) &&
+          <div className="error">Please give your function a name ⤴</div>}
+        {!editing &&
+          <StepMarker active style={{ marginTop: -36, marginLeft: 0 }}>
+            1
+          </StepMarker>}
+        <div className="line" />
+        <div className="content">
+          {eventType === 'RP' &&
+            (editing
+              ? <p>
+                  Request-Pipeline Step: <span className="pre">{binding}</span>
+                </p>
+              : <p>
+                  By creating a function at
+                  <span className="pre">{binding}</span>
+                  {getText(binding)}&nbsp; Your function will be called when a
+                  <span className="pre">{this.props.modelName}</span> is
+                  <span className="pre">
+                    {this.props.operation.toLowerCase()}d
+                  </span>
+                </p>)}
+          {eventType === 'SSS' &&
+            !editing &&
             <p>
               To create a server-side subscription, you need to
               <N>1</N>
               define a function name
               <N>2</N>
-              define a trigger with some input (usually one or more mutations for one type), as well as
+              define a trigger with some input (usually one or more mutations
+              for one type), as well as
               <N>3</N>
               write a function that get’s executed every time.
-            </p>
-          )}
-          {'SCHEMA_EXTENSION' === eventType && !editing && (
+            </p>}
+          {'SCHEMA_EXTENSION' === eventType &&
+            !editing &&
             <p>
               To create a schema extension, you need to
               <N>1</N>
@@ -142,31 +154,42 @@ export default class FunctionEditor extends React.Component<Props, State> {
               define the schema sdl that describes the GraphQL API
               <N>3</N>
               write a function that get’s executed every time.
-            </p>
-          )}
-          {(eventType === 'RP' || eventType === 'SSS') && (
-            <p className='relative'>
+            </p>}
+          {(eventType === 'RP' || eventType === 'SSS') &&
+            <p className="relative">
               The <pre>event</pre> argument represents the payload of the
-              {eventType === 'RP' ? ' mutation' : ' subscription'}. <br/>
-              {eventType === 'RP' && (
+              {eventType === 'RP' ? ' mutation' : ' subscription'}. <br />
+              {eventType === 'RP' &&
                 <span>
-                  You can either <pre>return</pre> a value or a <pre>Promise</pre> if you have an async flow.
-                </span>
-              )}
-            </p>
-          )}
-          {eventType === 'SCHEMA_EXTENSION' && (
-            <div className='examples'>
+                  You can either <pre>return</pre> a value or a{' '}
+                  <pre>Promise</pre> if you have an async flow.
+                </span>}
+            </p>}
+          {eventType === 'SCHEMA_EXTENSION' &&
+            <div className="examples">
               <h3>Examples</h3>
-              <Button white hideArrow onClick={this.selectExample.bind(this, 'weather')}>Weather API</Button>
-              <Button white hideArrow onClick={this.selectExample.bind(this, 'cuid')}>CUID Generator</Button>
+              <Button
+                white
+                hideArrow
+                onClick={this.selectExample.bind(this, 'weather')}
+              >
+                Weather API
+              </Button>
+              <Button
+                white
+                hideArrow
+                onClick={this.selectExample.bind(this, 'cuid')}
+              >
+                CUID Generator
+              </Button>
               <Button
                 white
                 hideArrow
                 onClick={this.selectExample.bind(this, 'sendgrid')}
-              >Send Mail with Sendgrid</Button>
-            </div>
-          )}
+              >
+                Send Mail with Sendgrid
+              </Button>
+            </div>}
         </div>
         <FunctionInput
           schema={schema}

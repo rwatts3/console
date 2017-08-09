@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 import { makeMutation } from '../../utils/makeMutation'
-import {omit} from 'lodash'
+import { omit } from 'lodash'
 
 export interface MigrateProjectInput {
   newSchema: string
@@ -85,13 +85,15 @@ const mutation = graphql`
 function commit(input: MigrateProjectInput) {
   return makeMutation({
     mutation,
-    variables: {input: omit(input, ['projectId'])},
-    configs: [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        project: input.projectId,
+    variables: { input: omit(input, ['projectId']) },
+    configs: [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          project: input.projectId,
+        },
       },
-    }],
+    ],
   })
 }
 

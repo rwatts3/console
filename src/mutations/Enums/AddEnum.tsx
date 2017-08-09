@@ -13,10 +13,22 @@ const mutation = graphql`
       enumEdge {
         node {
           id
+          name
+          values
         }
       }
       project {
         id
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+        enumSchema
+        typeSchema
+        schema
       }
     }
   }
@@ -25,17 +37,19 @@ const mutation = graphql`
 function commit(input: Props) {
   return makeMutation({
     mutation,
-    variables: {input},
-    configs: [{
-      type: 'RANGE_ADD',
-      parentName: 'project',
-      parentID: input.projectId,
-      connectionName: 'enums',
-      edgeName: 'enumEdge',
-      rangeBehaviors: {
-        '': 'append',
+    variables: { input },
+    configs: [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'project',
+        parentID: input.projectId,
+        connectionName: 'enums',
+        edgeName: 'enumEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }],
+    ],
   })
 }
 

@@ -1,30 +1,21 @@
 import * as React from 'react'
-import {
-  createFragmentContainer,
-  graphql,
-} from 'react-relay'
-import {QueryEditor} from 'graphiql/dist/components/QueryEditor'
-import {SearchProviderAlgolia, Model} from '../../../types/types'
-import {withRouter} from 'found'
-import { buildClientSchema } from 'graphql'
-import { validate } from 'graphql/validation'
-import { parse } from 'graphql/language'
+import { createFragmentContainer, graphql } from 'react-relay'
+import { SearchProviderAlgolia, Model } from '../../../types/types'
 import AlgoliaQuery from './AlgoliaQuery'
 import mapProps from '../../../components/MapProps/MapProps'
-import {$v, Icon} from 'graphcool-styles'
+import { $v, Icon } from 'graphcool-styles'
 import AddAlgoliaSyncQueryMutation from '../../../mutations/AddAlgoliaSyncQueryMutation'
-import {showNotification} from '../../../actions/notification'
-import {onFailureShowNotification} from '../../../utils/relay'
-import {ShowNotificationCallback} from '../../../types/utils'
-import {connect} from 'react-redux'
-import ConfirmOperartionsPopup from './ConfirmOperationsPopup'
+import { showNotification } from '../../../actions/notification'
+import { onFailureShowNotification } from '../../../utils/relay'
+import { ShowNotificationCallback } from '../../../types/utils'
+import { connect } from 'react-redux'
 import ConfirmOperationsPopup from './ConfirmOperationsPopup'
 import Loading from '../../../components/Loading/Loading'
 
 interface Props {
   algolia: SearchProviderAlgolia
   models: Model[]
-  onRequestClose: Function
+  onRequestClose: () => void
   showNotification: ShowNotificationCallback
   noIndeces: boolean
 }
@@ -55,14 +46,15 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
     }
   }
   render() {
-    const {algolia, models} = this.props
-    const {selectedModel, fragment, title, loading} = this.state
+    const { algolia, models } = this.props
+    const { selectedModel, fragment, title, loading } = this.state
     const valid = this.valid()
     return (
-      <div className='create-algolia-index'>
+      <div className="create-algolia-index">
         <style jsx>{`
           .create-algolia-index {
-            @p: .overflowAuto, .bgDarkBlue, .flex, .flexColumn, .justifyBetween, .w100, .overflowVisible, .relative;
+            @p: .overflowAuto, .bgDarkBlue, .flex, .flexColumn, .justifyBetween,
+              .w100, .overflowVisible, .relative;
             height: 100vh;
           }
           .header {
@@ -99,7 +91,8 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             flex: 0 0 325px;
           }
           .new-index {
-            @p: .absolute, .top0, .left0, .bgGreen, .white, .br2, .ttu, .f12, .fw6;
+            @p: .absolute, .top0, .left0, .bgGreen, .white, .br2, .ttu, .f12,
+              .fw6;
             padding: 2px 5px;
             margin-top: 15px;
             margin-left: -4px;
@@ -135,7 +128,8 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             }
           }
           .loading {
-            @p: .flex, .top0, .right0, .bottom0, .left0, .z999, .itemsCenter, .justifyCenter;
+            @p: .flex, .top0, .right0, .bottom0, .left0, .z999, .itemsCenter,
+              .justifyCenter;
           }
         `}</style>
         <style jsx global>{`
@@ -146,18 +140,20 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
             @p: .bgDarkerBlue;
           }
         `}</style>
-        <div className='top'>
-          <div className='new-index'>New index</div>
-          <div className='step'>
+        <div className="top">
+          <div className="new-index">New index</div>
+          <div className="step">
             {'1) Select a Model'}
           </div>
-          <div className='select-wrapper'>
+          <div className="select-wrapper">
             <select value={selectedModel.id} onChange={this.handleModelChange}>
-              {models.map(model => (
-                <option key={model.id} value={model.id}>{model.name}</option>
-              ))}
+              {models.map(model =>
+                <option key={model.id} value={model.id}>
+                  {model.name}
+                </option>,
+              )}
             </select>
-            <div className='triangle'>
+            <div className="triangle">
               <Icon
                 src={require('graphcool-styles/icons/fill/triangle.svg')}
                 width={8}
@@ -167,19 +163,19 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
               />
             </div>
           </div>
-          <div className='step'>
+          <div className="step">
             {'2) Choose a Name'}
           </div>
           <input
             value={title}
-            placeholder='Select a name ...'
-            className='name-selection'
+            placeholder="Select a name ..."
+            className="name-selection"
             onChange={this.handleTitleChange}
           />
         </div>
-        <div className='bottom'>
+        <div className="bottom">
           <div>
-            <div className='header'>
+            <div className="header">
               {`3) Define a Query`}
             </div>
             <AlgoliaQuery
@@ -189,27 +185,34 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
               selectedModel={selectedModel}
             />
           </div>
-          <div className='footer'>
-            <div className='button cancel' onClick={this.cancel}>Cancel</div>
-            <div className='right'>
-              <div className={'button save' + (valid ? ' active' : '')} onClick={this.create}>Create Index</div>
-              {valid && selectedModel.itemCount > 0 && this.state.saving && (
+          <div className="footer">
+            <div className="button cancel" onClick={this.cancel}>
+              Cancel
+            </div>
+            <div className="right">
+              <div
+                className={'button save' + (valid ? ' active' : '')}
+                onClick={this.create}
+              >
+                Create Index
+              </div>
+              {valid &&
+                selectedModel.itemCount > 0 &&
+                this.state.saving &&
                 <ConfirmOperationsPopup
                   numOperations={selectedModel.itemCount}
                   onCancel={this.close}
                   onConfirmBreakingChanges={this.create}
                   showReset={false}
-                  saveLabel='Create Index'
-                />
-              )}
+                  saveLabel="Create Index"
+                />}
             </div>
           </div>
         </div>
-        {loading && (
-          <div className='loading'>
-            <Loading color='white' />
-          </div>
-        )}
+        {loading &&
+          <div className="loading">
+            <Loading color="white" />
+          </div>}
       </div>
     )
   }
@@ -229,33 +232,39 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
   private handleModelChange = (e: any) => {
     const modelId = e.target.value
     const model = this.props.models.find(m => m.id === modelId)
-    this.setState({
-      selectedModel: model,
-    } as State)
+    this.setState(
+      {
+        selectedModel: model,
+      } as State,
+    )
   }
 
   private handleTitleChange = (e: any) => {
-    this.setState({
-      title: e.target.value,
-    } as State)
+    this.setState(
+      {
+        title: e.target.value,
+      } as State,
+    )
   }
 
   private handleFragmentChange = (fragment: string, fragmentValid: boolean) => {
-    this.setState({
-      fragment,
-      fragmentValid,
-    } as State)
+    this.setState(
+      {
+        fragment,
+        fragmentValid,
+      } as State,
+    )
   }
 
   private create = () => {
-    const {fragment, fragmentValid, title, selectedModel, loading} = this.state
-    const {algolia} = this.props
+    const { fragment, title, selectedModel, loading } = this.state
+    const { algolia } = this.props
 
     if (this.valid() && !loading) {
       if (!this.state.saving && selectedModel.itemCount > 0) {
-        return this.setState({saving: true} as State)
+        return this.setState({ saving: true } as State)
       }
-      this.setState({loading: true} as State, () => {
+      this.setState({ loading: true } as State, () => {
         AddAlgoliaSyncQueryMutation.commit({
           modelId: selectedModel.id,
           indexName: title,
@@ -263,16 +272,15 @@ class CreateAlgoliaIndex extends React.Component<Props, State> {
           searchProviderAlgoliaId: algolia.id,
         })
           .then(res => {
-            this.setState({loading: false} as State)
+            this.setState({ loading: false } as State)
             this.close()
           })
           .catch(res => {
-            this.setState({loading: false} as State)
+            this.setState({ loading: false } as State)
             onFailureShowNotification(res, this.props.showNotification)
           })
       })
     }
-
   }
 
   private close() {

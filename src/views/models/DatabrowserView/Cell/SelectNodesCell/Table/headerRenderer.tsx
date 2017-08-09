@@ -13,18 +13,16 @@ export default function headerRenderer(field) {
     sortBy,
     sortDirection,
   }) => {
-    const showSortIndicator = sortBy === dataKey
-
     return (
-      <div className='header-cell'>
+      <div className="header-cell">
         <style jsx>{`
           .header-cell {
             @p: .flex, .itemsCenter;
           }
         `}</style>
         <span
-          className='ReactVirtualized__Table__headerTruncatedText'
-          key='label'
+          className="ReactVirtualized__Table__headerTruncatedText"
+          key="label"
           title={label}
         >
           {label}

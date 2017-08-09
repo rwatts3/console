@@ -2,7 +2,7 @@ import * as React from 'react'
 const classes: any = require('./ScrollBox.scss')
 
 interface Props {
-  children?: React.ReactChild
+  children?: any
   innerContainerClassName?: string
   outerContainerClassName?: string
   onScroll?: (e: React.UIEvent<any>) => void
@@ -12,14 +12,10 @@ interface Props {
 let scrollBarWidth = null
 
 export default class ScrollBox extends React.Component<Props, {}> {
+  outerContainer: Element
+  innerContainer: Element
 
-  refs: {
-    [key: string]: any;
-    outerContainer: Element
-    innerContainer: Element
-  }
-
-  componentWillMount () {
+  componentWillMount() {
     if (scrollBarWidth === null) {
       const scrollDiv = document.createElement('div')
       scrollDiv.className = classes.measureElement
@@ -31,31 +27,43 @@ export default class ScrollBox extends React.Component<Props, {}> {
     }
   }
 
-  _onScroll (e: React.UIEvent<any>) {
+  _onScroll(e: React.UIEvent<any>) {
     if (e.target === this.refs.outerContainer) {
       this.props.onScroll(e)
     }
   }
 
-  render () {
-    const onScroll = this.props.onScroll ? this._onScroll.bind(this) : (() => undefined)
-    const {style} = this.props
+  render() {
+    const onScroll = this.props.onScroll
+      ? this._onScroll.bind(this)
+      : () => undefined
+    const { style } = this.props
     return (
       <div className={classes.rootContainer} style={style}>
         <div
-          className={`${classes.outerContainer} ${this.props.outerContainerClassName || ''}`}
-          style={{width: `calc(100% + ${scrollBarWidth}px)`}}
+          className={`${classes.outerContainer} ${this.props
+            .outerContainerClassName || ''}`}
+          style={{ width: `calc(100% + ${scrollBarWidth}px)` }}
           onScroll={onScroll}
-          ref='outerContainer'
+          ref={this.setOuterContainer}
         >
           <div
-            className={`${classes.innerContainer} ${this.props.innerContainerClassName || ''}`}
-            ref='innerContainer'
+            className={`${classes.innerContainer} ${this.props
+              .innerContainerClassName || ''}`}
+            ref={this.setInnerContainer}
           >
             {this.props.children}
           </div>
         </div>
       </div>
     )
+  }
+
+  private setInnerContainer = ref => {
+    this.innerContainer = ref
+  }
+
+  private setOuterContainer = ref => {
+    this.outerContainer = ref
   }
 }

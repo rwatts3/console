@@ -1,16 +1,16 @@
 import * as React from 'react'
-import {Link} from 'found'
-import {Icon, $v} from 'graphcool-styles'
-import {Relation} from '../../../../types/types'
+import { Link } from 'found'
+import { Icon, $v } from 'graphcool-styles'
+import { Relation } from '../../../../types/types'
 
 interface Props {
   relation: Relation
   params: any
 }
 
-export default function ({relation, params}: Props) {
+export default function({ relation, params }: Props) {
   return (
-    <div className='relation-permission-header'>
+    <div className="relation-permission-header">
       <style jsx>{`
         .relation-permission-header {
           @p: .relative, .ph16, .flex, .justifyBetween;
@@ -28,12 +28,17 @@ export default function ({relation, params}: Props) {
           @p: .black50, .fw4, .bgWhite, .ph6;
         }
         .btn {
-          @p: .f14, .pa10, .pointer, .ttu, .bgWhite, .black50, .lhSolid, .fw6, .buttonShadow, .tracked, .flex;
+          @p: .f14, .pa10, .pointer, .ttu, .bgWhite, .black50, .lhSolid, .fw6,
+            .buttonShadow, .tracked, .flex;
         }
       `}</style>
-      <h2>{relation.name}</h2>
-      <Link to={`/${params.projectName}/permissions/relations/${relation.name}/create`}>
-        <div className='btn'>
+      <h2>
+        {relation.name}
+      </h2>
+      <Link
+        to={`/${params.projectName}/permissions/relations/${relation.name}/create`}
+      >
+        <div className="btn">
           <Icon
             src={require('graphcool-styles/icons/stroke/add.svg')}
             stroke={true}

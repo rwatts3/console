@@ -9,7 +9,6 @@ interface Props {
 }
 
 export default class Loading extends React.Component<Props, {}> {
-
   render() {
     const width = this.props.width || 30
     const height = this.props.height || 30

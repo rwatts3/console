@@ -1,21 +1,21 @@
 import * as React from 'react'
 import CreditCardFront from './CreditCardFront'
 import EditCreditCard from './EditCreditCard'
-import {Invoice} from '../../../types/types'
-import {mmDDyyyyFromTimestamp} from '../../../utils/utils'
+import { Invoice } from '../../../types/types'
+import { mmDDyyyyFromTimestamp } from '../../../utils/utils'
 
 interface Props {
   creditCardNumber: string
   cardHolderName: string
   expirationDate: string
   cpc: string
-  onCreditCardNumberChange: Function
-  onCardHolderNameChange: Function
-  onExpirationDateChange: Function
-  onCPCChange: Function
+  onCreditCardNumberChange: (num: string) => void
+  onCardHolderNameChange: (name: string) => void
+  onExpirationDateChange: (epiration: string) => void
+  onCPCChange: (cpc: string) => void
 
   isEditing: boolean
-  setEditingState: Function
+  setEditingState: (editing: boolean, saveChanges: boolean) => void
 
   addressLine1: string
   addressLine2: string
@@ -27,22 +27,24 @@ interface Props {
   creditCardDetailsValid: boolean
   addressDataValid: boolean
 
-  onAddressDataChange: Function
-  onSaveChanges: Function
+  onAddressDataChange: (key: string, address: string) => void
+  onSaveChanges: () => void
 
   invoices: Invoice[]
 }
 
 export default class CreditCardInformation extends React.Component<Props, {}> {
-
   render() {
     return (
-      <div className={`container ${this.props.isEditing ? 'bgWhite height350' : 'bgBlack04'}`}>
+      <div
+        className={`container ${this.props.isEditing
+          ? 'bgWhite height350'
+          : 'bgBlack04'}`}
+      >
         <style jsx={true}>{`
-
           .container {
             @p: .ph60, .pt38, .pb96, .w100, .bt;
-            border-color: rgba( 229, 229, 229, 1);
+            border-color: rgba(229, 229, 229, 1);
           }
 
           .title {
@@ -56,42 +58,34 @@ export default class CreditCardInformation extends React.Component<Props, {}> {
           .height350 {
             height: 350px;
           }
-
         `}</style>
 
-        {this.props.isEditing ?
-          (
-            <div className={''}>
-              <div className='title'>Credit Card Information</div>
+        {this.props.isEditing
+          ? <div className={''}>
+              <div className="title">Credit Card Information</div>
               {this.creditCardInEditingState()}
             </div>
-          )
-          :
-          (<div className='flex'>
-            <div>
-              <div className='title'>Credit Card Information</div>
-              {this.creditCardInNonEditingState()}
-            </div>
-            <div>
-              <div className='title ml38'>Payment History</div>
-              {this.paymentHistory()}
-            </div>
-          </div>)
-
-        }
-
+          : <div className="flex">
+              <div>
+                <div className="title">Credit Card Information</div>
+                {this.creditCardInNonEditingState()}
+              </div>
+              <div>
+                <div className="title ml38">Payment History</div>
+                {this.paymentHistory()}
+              </div>
+            </div>}
       </div>
     )
   }
 
   private paymentHistory = () => {
     return (
-      <div className='ml38'>
+      <div className="ml38">
         <style jsx={true}>{`
-
           .row {
             @p: .flex, .justifyBetween, .bb, .w100, .pt10, .pb16;
-            border-color: rgba( 229, 229, 229, 1);
+            border-color: rgba(229, 229, 229, 1);
           }
 
           .date {
@@ -101,13 +95,16 @@ export default class CreditCardInformation extends React.Component<Props, {}> {
           .price {
             @p: .f16, .blue, .ml38;
           }
-
         `}</style>
         {this.props.invoices.map((invoice, i) => {
           return (
-            <div key={i} className='row'>
-              <div className='date'>{mmDDyyyyFromTimestamp(invoice.timestamp)}</div>
-              <div className='price'>$ {invoice.total.toFixed(2)}</div>
+            <div key={i} className="row">
+              <div className="date">
+                {mmDDyyyyFromTimestamp(invoice.timestamp)}
+              </div>
+              <div className="price">
+                $ {invoice.total.toFixed(2)}
+              </div>
             </div>
           )
         })}
@@ -116,7 +113,6 @@ export default class CreditCardInformation extends React.Component<Props, {}> {
   }
 
   private creditCardInNonEditingState = (): JSX.Element => {
-
     return (
       <CreditCardFront
         cardHolderName={this.props.cardHolderName}
@@ -130,28 +126,27 @@ export default class CreditCardInformation extends React.Component<Props, {}> {
 
   private creditCardInEditingState = (): JSX.Element => {
     return (
-        <EditCreditCard
-          creditCardNumber={this.props.creditCardNumber}
-          cardHolderName={this.props.cardHolderName}
-          expirationDate={this.props.expirationDate}
-          cpc={this.props.cpc}
-          onCreditCardNumberChange={this.props.onCreditCardNumberChange}
-          onCardHolderNameChange={this.props.onCardHolderNameChange}
-          onExpirationDateChange={this.props.onExpirationDateChange}
-          onCPCChange={this.props.onCPCChange}
-          setEditingState={this.props.setEditingState}
-          addressLine1={this.props.addressLine1}
-          addressLine2={this.props.addressLine2}
-          zipCode={this.props.zipCode}
-          state={this.props.state}
-          city={this.props.city}
-          country={this.props.country}
-          creditCardDetailsValid={this.props.creditCardDetailsValid}
-          addressDataValid={this.props.addressDataValid}
-          onAddressDataChange={this.props.onAddressDataChange}
-          onSaveChanges={this.props.onSaveChanges}
-        />
+      <EditCreditCard
+        creditCardNumber={this.props.creditCardNumber}
+        cardHolderName={this.props.cardHolderName}
+        expirationDate={this.props.expirationDate}
+        cpc={this.props.cpc}
+        onCreditCardNumberChange={this.props.onCreditCardNumberChange}
+        onCardHolderNameChange={this.props.onCardHolderNameChange}
+        onExpirationDateChange={this.props.onExpirationDateChange}
+        onCPCChange={this.props.onCPCChange}
+        setEditingState={this.props.setEditingState}
+        addressLine1={this.props.addressLine1}
+        addressLine2={this.props.addressLine2}
+        zipCode={this.props.zipCode}
+        state={this.props.state}
+        city={this.props.city}
+        country={this.props.country}
+        creditCardDetailsValid={this.props.creditCardDetailsValid}
+        addressDataValid={this.props.addressDataValid}
+        onAddressDataChange={this.props.onAddressDataChange}
+        onSaveChanges={this.props.onSaveChanges}
+      />
     )
   }
-
 }

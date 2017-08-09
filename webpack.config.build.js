@@ -27,11 +27,6 @@ module.exports = {
   },
   module: {
     rules: [{
-      enforce: 'pre',
-      test: /\.ts(x?)$/,
-      loader: 'tslint-loader',
-      exclude: /node_modules/,
-    }, {
       test: /\.json$/, // TODO check if still needed
       loader: 'json-loader',
     }, {

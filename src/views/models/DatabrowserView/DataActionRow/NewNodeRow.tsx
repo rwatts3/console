@@ -1,12 +1,12 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
-import {Model, Project} from '../../../../types/types'
+import { connect } from 'react-redux'
+import { Model, Project } from '../../../../types/types'
 import NewRow from '../NewRow'
 import NewRowInactive from '../NewRowInactive'
-import {Grid} from 'react-virtualized'
-import {ActionRowState} from '../../../../types/databrowser/actionrow'
-import {GridPosition} from '../../../../types/databrowser/ui'
-import {createCellRenderer} from '../../../../components/InfiniteTable/InfiniteTable'
+import { Grid } from 'react-virtualized'
+import { ActionRowState } from '../../../../types/databrowser/actionrow'
+import { GridPosition } from '../../../../types/databrowser/ui'
+import { createCellRenderer } from '../../../../components/InfiniteTable/InfiniteTable'
 
 interface Props {
   width: number
@@ -16,7 +16,7 @@ interface Props {
   project: Project
   addNewNode: () => any
   hideNewRow: () => any
-  fieldColumnWidths: {[key: string]: number}
+  fieldColumnWidths: { [key: string]: number }
   actionRow?: ActionRowState
   newRowActive: boolean
   selectedCell: GridPosition
@@ -24,25 +24,21 @@ interface Props {
   updateCalled: () => void
 }
 
-interface State {
-
-}
-
-class NewNodeRow extends React.Component<Props, State> {
+class NewNodeRow extends React.Component<Props, {}> {
   renderAddCell = () => {
     if (this.props.newRowActive) {
-        return (
-          <NewRow
-            model={this.props.model}
-            projectId={this.props.project.id}
-            columnWidths={this.props.fieldColumnWidths}
-            add={this.props.addNewNode}
-            cancel={this.props.hideNewRow}
-            width={this.props.width}
-            updateCalled={this.props.updateCalled}
-            project={this.props.project}
-          />
-        )
+      return (
+        <NewRow
+          model={this.props.model}
+          projectId={this.props.project.id}
+          columnWidths={this.props.fieldColumnWidths}
+          add={this.props.addNewNode}
+          cancel={this.props.hideNewRow}
+          width={this.props.width}
+          updateCalled={this.props.updateCalled}
+          project={this.props.project}
+        />
+      )
     }
 
     return (
@@ -65,9 +61,11 @@ class NewNodeRow extends React.Component<Props, State> {
           left: 40,
           width: 'auto',
           top: this.props.headerHeight,
-          zIndex: !this.props.newRowActive ? 2 : this.props.selectedCell.row === -1 ? 4 : 2,
+          zIndex: !this.props.newRowActive
+            ? 2
+            : this.props.selectedCell.row === -1 ? 4 : 2,
         }}
-        cellStyle={{position: 'absolute'}}
+        cellStyle={{ position: 'absolute' }}
         rowHeight={this.props.height}
         columnCount={1}
         columnWidth={this.props.width - (40 - 1)}

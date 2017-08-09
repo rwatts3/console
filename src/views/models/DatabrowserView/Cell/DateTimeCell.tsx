@@ -1,12 +1,11 @@
 import * as React from 'react'
 import Datepicker from '../../../../components/Datepicker/Datepicker'
-import {CellProps} from './cells'
-import {Moment} from 'moment'
+import { CellProps } from './cells'
+import { Moment } from 'moment'
 
 const classes: any = require('../Cell.scss')
 
 export default class DateTimeCell extends React.Component<CellProps<Date>, {}> {
-
   resolveInput = (m: Moment | string) => {
     if (typeof m === 'string') {
       return new Date(m)
@@ -28,6 +27,7 @@ export default class DateTimeCell extends React.Component<CellProps<Date>, {}> {
         applyImmediately={false}
         onKeyDown={this.props.onKeyDown}
         onClickOutside={moment => this.props.save(moment.toDate())}
-      />)
+      />
+    )
   }
 }

@@ -1,8 +1,7 @@
 import * as React from 'react'
-import {Icon, $v} from 'graphcool-styles'
-import ConfirmPopup from './ConfirmFieldPopup'
+import { Icon } from 'graphcool-styles'
 import ConfirmFieldPopup from './ConfirmFieldPopup'
-import {Field} from '../../../types/types'
+import { Field } from '../../../types/types'
 import Tether from '../../../components/Tether/Tether'
 
 interface Props {
@@ -16,9 +15,9 @@ interface Props {
   needsMigrationIndex: number
   breaking?: boolean
   name: string
-  onConfirmBreakingChanges: Function
-  onReset: Function
-  onDelete: Function
+  onConfirmBreakingChanges: () => void
+  onReset: () => void
+  onDelete: () => void
   onCancel: (e: any) => void
   onDeletePopupVisibilityChange: (visible: boolean) => void
   initialField?: Field
@@ -57,19 +56,20 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
       onCancel,
       mutatedField,
       initialField,
-      nodeCount,
     } = this.props
-    const {showDeletePopup} = this.state
+    const { showDeletePopup } = this.state
 
     return (
-      <div className='field-popup-footer'>
+      <div className="field-popup-footer">
         <style jsx>{`
           .field-popup-footer {
-            @p: .bbox, .bgBlack02, .bt, .bBlack10, .pr16, .flex, .justifyBetween, .itemsCenter, .relative;
+            @p: .bbox, .bgBlack02, .bt, .bBlack10, .pr16, .flex, .justifyBetween,
+              .itemsCenter, .relative;
             height: 80px;
             padding-left: 30px;
           }
-          .cancel, .delete {
+          .cancel,
+          .delete {
             @p: .f16, .black50, .pointer;
           }
           .cancel {
@@ -78,7 +78,8 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
           .delete {
             @p: .red;
           }
-          .next-name, .prev-name {
+          .next-name,
+          .prev-name {
             @p: .ttu, .fw6, .f14, .blue, .blue;
             letter-spacing: 0.53px;
           }
@@ -93,13 +94,16 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
           }
           .divider {
             @p: .mh16;
-            border: 1px solid rgba(42,126,211,0.3);
+            border: 1px solid rgba(42, 126, 211, 0.3);
             height: 30px;
           }
-          .prev, .next, .buttons {
+          .prev,
+          .next,
+          .buttons {
             @p: .flex, .itemsCenter;
           }
-          .next, .prev {
+          .next,
+          .prev {
             @p: .pointer;
           }
           .next {
@@ -114,73 +118,78 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
           .button.active {
             @p: .bgGreen, .white, .pointer;
           }
-          .next-name.needs-migration, .prev-name.needs-migration {
+          .next-name.needs-migration,
+          .prev-name.needs-migration {
             @p: .lightOrange;
           }
         `}</style>
-        {create ? (
-            <div className='cancel' onClick={onCancel}>
+        {create
+          ? <div className="cancel" onClick={onCancel}>
               Cancel
             </div>
-          ) : (
-            <div>
-              <div className='delete' onClick={this.handleShowDeletePopup}>
+          : <div>
+              <div className="delete" onClick={this.handleShowDeletePopup}>
                 Delete
               </div>
-              {showDeletePopup && (
+              {showDeletePopup &&
                 <ConfirmFieldPopup
                   red={true}
                   fieldName={name}
                   onConfirmDeletion={onDelete}
                   onCancel={this.handleCloseDeletePopup}
-                />
-              )}
-            </div>
-          )}
-        <div className='buttons'>
+                />}
+            </div>}
+        <div className="buttons">
           <div
-            className='prev'
+            className="prev"
             onClick={() => onSelectIndex(activeTabIndex - 1)}
           >
-            {activeTabIndex > 0 && (
-              needsMigrationIndex === activeTabIndex - 1 ? (
-                  <Icon
+            {activeTabIndex > 0 &&
+              (needsMigrationIndex === activeTabIndex - 1
+                ? <Icon
                     src={require('../../../assets/icons/orange_arrow_left.svg')}
                     stroke
                     strokeWidth={2}
                     width={13}
                     height={13}
                   />
-                ) : (
-                  <Icon
+                : <Icon
                     src={require('../../../assets/icons/blue_arrow_left.svg')}
                     stroke
                     strokeWidth={2}
                     width={13}
                     height={13}
-                  />
-                )
-            )}
-            {activeTabIndex > 0 && (
+                  />)}
+            {activeTabIndex > 0 &&
               <div
-                className={'prev-name' + ((needsMigrationIndex === activeTabIndex - 1) ? ' needs-migration' : '')}
+                className={
+                  'prev-name' +
+                  (needsMigrationIndex === activeTabIndex - 1
+                    ? ' needs-migration'
+                    : '')
+                }
               >
                 {tabs[activeTabIndex - 1]}
-              </div>
-            )}
+              </div>}
           </div>
           <div
-            className='next'
+            className="next"
             onClick={() => onSelectIndex(activeTabIndex + 1)}
           >
-            {activeTabIndex < (tabs.length - 1) && (
-              <div className={'next-name' + ((needsMigrationIndex === activeTabIndex + 1) ? ' needs-migration' : '')}>
+            {activeTabIndex < tabs.length - 1 &&
+              <div
+                className={
+                  'next-name' +
+                  (needsMigrationIndex === activeTabIndex + 1
+                    ? ' needs-migration'
+                    : '')
+                }
+              >
                 {tabs[activeTabIndex + 1]}
-              </div>
-            )}
-            {activeTabIndex < (tabs.length - 1) && (
-              needsMigrationIndex === activeTabIndex + 1 ? (
-                  <Icon
+              </div>}
+            {activeTabIndex < tabs.length - 1 &&
+              (needsMigrationIndex === activeTabIndex + 1
+                ? <Icon
                     src={require('../../../assets/icons/orange_arrow_left.svg')}
                     stroke
                     strokeWidth={2}
@@ -188,21 +197,18 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
                     height={13}
                     rotate={180}
                   />
-                ) : (
-                  <Icon
+                : <Icon
                     src={require('../../../assets/icons/blue_arrow_left.svg')}
                     stroke
                     strokeWidth={2}
                     width={13}
                     height={13}
                     rotate={180}
-                  />
-                )
-            )}
+                  />)}
           </div>
-          {((!create && changed) || (create)) && (
-            breaking ? (
-                <ConfirmFieldPopup
+          {((!create && changed) || create) &&
+            (breaking
+              ? <ConfirmFieldPopup
                   red={false}
                   fieldName={name}
                   onConfirmBreakingChanges={onConfirmBreakingChanges}
@@ -210,8 +216,7 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
                   initialField={initialField}
                   mutatedField={mutatedField}
                 />
-              ) : (
-                <Tether
+              : <Tether
                   steps={[
                     {
                       step: 'STEP2_CLICK_CONFIRM_IMAGEURL',
@@ -227,12 +232,13 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
                   width={240}
                   zIndex={2000}
                 >
-                  <div className={'button' + (valid ? ' active' : '')} onClick={onSubmit}>
+                  <div
+                    className={'button' + (valid ? ' active' : '')}
+                    onClick={onSubmit}
+                  >
                     {create ? 'Create' : 'Update'} Field
                   </div>
-                </Tether>
-              )
-          )}
+                </Tether>)}
         </div>
       </div>
     )
@@ -240,7 +246,7 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
 
   private handleCloseDeletePopup = () => {
     this.props.onDeletePopupVisibilityChange(false)
-    this.setState({showDeletePopup: false})
+    this.setState({ showDeletePopup: false })
   }
 
   private handleShowDeletePopup = () => {
@@ -248,7 +254,7 @@ export default class FieldPopupFooter extends React.Component<Props, State> {
       this.props.onDelete()
     } else {
       this.props.onDeletePopupVisibilityChange(true)
-      this.setState({showDeletePopup: true})
+      this.setState({ showDeletePopup: true })
     }
   }
 }

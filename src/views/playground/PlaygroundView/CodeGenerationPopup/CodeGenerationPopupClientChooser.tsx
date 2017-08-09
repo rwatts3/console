@@ -1,9 +1,9 @@
 import * as React from 'react' // tslint:disable-line
-import {$p, variables} from 'graphcool-styles'
+import { $p, variables } from 'graphcool-styles'
 import styled from 'styled-components'
 import * as cx from 'classnames'
-import {connect} from 'react-redux'
-import {setClient} from '../../../../actions/codeGeneration'
+import { connect } from 'react-redux'
+import { setClient } from '../../../../actions/codeGeneration'
 import calculateSize from 'calculate-size'
 
 const ConditionButton = styled.div`
@@ -19,7 +19,7 @@ const clients = [
   // 'relay',
 ]
 
-const Chooser = (props) => (
+const Chooser = props =>
   <div className={cx($p.bb, $p.bBlack10)}>
     <div
       className={cx($p.pa38, $p.pt16, $p.flex, $p.flexColumn, $p.itemsCenter)}
@@ -35,33 +35,47 @@ const Chooser = (props) => (
             $p.pv6,
             $p.relative,
             $p.itemsCenter,
-           )}
+          )}
         >
           {clients.map(env => {
-            const {width} = calculateSize(env.toUpperCase(), {
+            const { width } = calculateSize(env.toUpperCase(), {
               fontSize: '14px',
               fontWeight: '600',
             })
 
             return (
               <div
-                className={cx($p.relative, $p.flex, $p.itemsCenter, $p.justifyCenter, $p.pointer)}
+                className={cx(
+                  $p.relative,
+                  $p.flex,
+                  $p.itemsCenter,
+                  $p.justifyCenter,
+                  $p.pointer,
+                )}
                 onClick={() => props.setClient(env)}
-                style={{width: width + 15}}
+                style={{ width: width + 15 }}
                 key={env}
               >
                 <ConditionButton
-                  className={cx($p.nowrap, $p.absolute, $p.ph10, $p.flex, $p.flexRow, $p.itemsCenter, {
-                  [cx($p.pv6, $p.bgBlack04)]: props.client !== env,
-                  [cx($p.bgBlue, $p.br2, $p.pv8, $p.z1)]: props.client === env,
-                })}
+                  className={cx(
+                    $p.nowrap,
+                    $p.absolute,
+                    $p.ph10,
+                    $p.flex,
+                    $p.flexRow,
+                    $p.itemsCenter,
+                    {
+                      [cx($p.pv6, $p.bgBlack04)]: props.client !== env,
+                      [cx($p.bgBlue, $p.br2, $p.pv8, $p.z1)]:
+                        props.client === env,
+                    },
+                  )}
                 >
                   <div
                     className={cx($p.ttu, $p.fw6, $p.f14, {
-                    [$p.black30]: props.client !== env,
-                    [$p.white]: props.client === env,
-                  },
-                )}
+                      [$p.black30]: props.client !== env,
+                      [$p.white]: props.client === env,
+                    })}
                   >
                     {env}
                   </div>
@@ -73,7 +87,6 @@ const Chooser = (props) => (
       </div>
     </div>
   </div>
-)
 
 export default connect(
   state => ({

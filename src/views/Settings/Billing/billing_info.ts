@@ -1,4 +1,4 @@
-import {PricingPlan, PricingPlanInfo} from '../../../types/types'
+import { PricingPlanInfo } from '../../../types/types'
 
 // should be: [key: PricingPlan]: PricingPlanInfo
 export const billingInfo: { [key: string]: PricingPlanInfo } = {
@@ -38,7 +38,7 @@ export const billingInfo: { [key: string]: PricingPlanInfo } = {
     pricePerAdditionalMB: 5,
     pricePerThousandAdditionalRequests: 10,
   },
-  'enterprise': {
+  enterprise: {
     name: 'Enterprise',
     price: -1,
     maxStorage: -1,
