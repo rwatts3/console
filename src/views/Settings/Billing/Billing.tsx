@@ -3,7 +3,7 @@ import CurrentPlan from './CurrentPlan'
 import Usage from './Usage'
 import CreditCardInformation from './CreditCardInformation'
 import { chunk, mmDDyyyyFromTimestamp } from '../../../utils/utils'
-import { createRefetchContainer, graphql } from 'react-relay'
+import { createFragmentContainer, graphql } from 'react-relay'
 import { Viewer, Invoice } from '../../../types/types'
 import {
   creditCardNumberValid,
@@ -436,7 +436,7 @@ class Billing extends React.Component<Props, State> {
             isLoading: false,
           } as State,
         )
-        this.props.relay.forceFetch()
+        // this.props.relay.forceFetch()
       })
       .catch(transaction => {
         onFailureShowNotification(transaction, this.props.showNotification)
@@ -451,7 +451,7 @@ const mapDispatchToProps = dispatch => {
 
 const mappedBilling = connect(null, mapDispatchToProps)(Billing)
 
-export default createRefetchContainer(mappedBilling, {
+export default createFragmentContainer(mappedBilling, {
   viewer: graphql`
     fragment Billing_viewer on Viewer {
       project: projectByName(projectName: $projectName) {
