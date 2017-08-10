@@ -394,6 +394,7 @@ class FieldPopup extends React.Component<Props, State> {
       DeleteFieldMutation.commit({
         fieldId: this.state.field.id,
         modelId: this.props.modelId,
+        projectName: this.props.params.projectName,
       })
         .then(() => {
           this.close()

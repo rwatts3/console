@@ -150,6 +150,9 @@ export function todayString(): string {
 }
 
 export const idToBeginning = (a: Field, b: Field) => {
+  if (!a || !b) {
+    return -1
+  }
   if (a.name === 'id') {
     return -1
   }

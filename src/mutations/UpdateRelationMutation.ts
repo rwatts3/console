@@ -24,11 +24,11 @@ const mutation = graphql`
         description
         leftModel {
           id
-          ...TypeList_model
+          ...TypeBox_model
         }
         rightModel {
           id
-          ...TypeList_model
+          ...TypeBox_model
         }
         fieldOnLeftModel {
           id
@@ -36,6 +36,11 @@ const mutation = graphql`
         fieldOnRightModel {
           id
         }
+      }
+      project {
+        id
+        schema
+        typeSchema
       }
     }
   }

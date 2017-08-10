@@ -4,15 +4,32 @@ import { makeMutation } from '../utils/makeMutation'
 interface Props {
   fieldId: string
   modelId: string
+  projectName: string
 }
 
 const mutation = graphql`
-  mutation DeleteFieldMutation($input: DeleteFieldInput!) {
+  mutation DeleteFieldMutation(
+    $input: DeleteFieldInput!
+    $projectName: String!
+  ) {
     deleteField(input: $input) {
       model {
-        id
+        fields(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
       deletedId
+      viewer {
+        projectByName(projectName: $projectName) {
+          id
+          schema
+          typeSchema
+        }
+      }
     }
   }
 `
@@ -22,8 +39,9 @@ function commit(input: Props) {
     mutation,
     variables: {
       input: {
-        deletedId: input.fieldId,
+        fieldId: input.fieldId,
       },
+      projectName: input.projectName,
     },
     configs: [
       {

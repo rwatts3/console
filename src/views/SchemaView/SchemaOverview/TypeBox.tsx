@@ -15,6 +15,7 @@ import { onFailureShowNotification } from '../../../utils/relay'
 import { showNotification } from '../../../actions/notification'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { withRouter } from 'found'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 interface Props {
   projectName: string
@@ -74,7 +75,10 @@ class TypeBox extends React.Component<Props, State> {
     const stateExtended = this.state.extended
     const extended =
       typeof stateExtended === 'boolean' ? stateExtended : propsExtended
-    const fields = model.fields.edges.map(edge => edge.node).sort(idToBeginning)
+    const fields = model.fields.edges
+      .map(edge => edge.node)
+      .filter(f => f)
+      .sort(idToBeginning)
 
     const permissions = model.permissions.edges.map(edge => edge.node)
     return (
@@ -526,4 +530,46 @@ const ConnectedTypebox = connect(
   { nextStep, showNotification },
 )(withRouter(TypeBox))
 
-export default ConnectedTypebox
+export default createFragmentContainer(ConnectedTypebox, {
+  model: graphql`
+    fragment TypeBox_model on Model {
+      id
+      itemCount
+      name
+      isSystem
+      description
+      permissions(first: 1000) {
+        edges {
+          node {
+            isActive
+            operation
+            applyToWholeModel
+            fieldIds
+          }
+        }
+      }
+      fields(first: 1000)
+        @connection(key: "TypeBox_model_fields", filters: ["first"]) {
+        edges {
+          node {
+            id
+            name
+            typeIdentifier
+            isList
+            isRequired
+            isSystem
+            isUnique
+            isReadonly
+            relation {
+              name
+            }
+            relatedModel {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  `,
+})

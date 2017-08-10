@@ -18,6 +18,7 @@ import { idToBeginning } from '../../../utils/utils'
 import UpdateModelMutation from '../../../mutations/UpdateModelMutation'
 import ConfirmModel from './ConfirmModel'
 import DeleteModelMutation from '../../../mutations/DeleteModelMutation'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 interface State {
   modelName: string
@@ -455,7 +456,7 @@ class AddType extends React.Component<Props, State> {
   }
 }
 
-export default connect(
+const MappedAddType = connect(
   state => ({ gettingStartedState: state.gettingStarted.gettingStartedState }),
   {
     showNotification,
@@ -463,3 +464,46 @@ export default connect(
     showDonePopup,
   },
 )(withRouter(AddType))
+
+export default createFragmentContainer(MappedAddType, {
+  model: graphql`
+    fragment AddType_model on Model {
+      id
+      itemCount
+      name
+      isSystem
+      description
+      permissions(first: 1000) {
+        edges {
+          node {
+            isActive
+            operation
+            applyToWholeModel
+            fieldIds
+          }
+        }
+      }
+      fields(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            typeIdentifier
+            isList
+            isRequired
+            isSystem
+            isUnique
+            isReadonly
+            relation {
+              name
+            }
+            relatedModel {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  `,
+})

@@ -18,14 +18,34 @@ interface Props {
 const mutation = graphql`
   mutation AddFieldMutation($input: AddFieldInput!) {
     addField(input: $input) {
-      fieldEdge {
-        node {
+      field {
+        id
+        name
+        typeIdentifier
+        isList
+        isRequired
+        isSystem
+        isUnique
+        isReadonly
+        relation {
+          name
+        }
+        relatedModel {
           id
+          name
         }
       }
       model {
         ...NewRow_model
-        ...TypeList_model
+        ...TypeBox_model
+        ...AddType_model
+        fields(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
       project {
         schema
