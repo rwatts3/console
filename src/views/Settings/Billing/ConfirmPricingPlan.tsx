@@ -26,7 +26,7 @@ class ConfirmPricingPlan extends React.Component<Props, State> {
   render() {
     const project = this.props.viewer.crm.crm.customer.projects.edges.find(
       edge => {
-        return edge.node.name === this.props.projectName
+        return edge.node.systemProjectId === this.props.viewer.project.id
       },
     ).node
     const creditCard = project.projectBillingInformation.creditCard
@@ -119,9 +119,32 @@ export default createFragmentContainer(withRouter(ConfirmPricingPlan), {
             projects(first: 1000) {
               edges {
                 node {
+                  id
                   name
+                  systemProjectId
                   projectBillingInformation {
+                    plan
+                    invoices(first: 1000) {
+                      edges {
+                        node {
+                          overageRequests
+                          usageRequests
+                          usageStorage
+                          usedSeats
+                          timestamp
+                          total
+                        }
+                      }
+                    }
                     creditCard {
+                      addressCity
+                      addressCountry
+                      addressLine1
+                      addressLine2
+                      addressState
+                      addressZip
+                      expMonth
+                      expYear
                       last4
                       name
                     }

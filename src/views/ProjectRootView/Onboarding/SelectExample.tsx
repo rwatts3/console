@@ -107,14 +107,28 @@ class SelectExample extends React.Component<Props, State> {
               Download the example, open it in your terminal and run
               <pre>npm install</pre>
               and
-              {this.state.selectedExampleIndex === 2
-                ? <pre>
-                    react-native run-ios{' '}
-                    <span className="darkBlue30">
-                      # or react-native run-android
-                    </span>
-                  </pre>
-                : <pre>npm start</pre>}
+              {this.state.selectedExampleIndex === 0
+                ? <div className="relative mt10" style={{ left: -6 }}>
+                    <div>
+                      <pre>
+                        npm relay{' '}
+                        <span className="black30"># invoke relay compiler</span>
+                      </pre>
+                    </div>
+                    <div>
+                      <pre>npm start</pre>
+                    </div>
+                  </div>
+                : this.state.selectedExampleIndex === 2
+                  ? <div className="relative mt10" style={{ left: -6 }}>
+                      <pre>
+                        react-native run-ios{' '}
+                        <span className="darkBlue30">
+                          # or react-native run-android
+                        </span>
+                      </pre>
+                    </div>
+                  : <pre>npm start</pre>}
             </p>
             <Button button green hideArrow target={downloadUrl}>
               Download Example
