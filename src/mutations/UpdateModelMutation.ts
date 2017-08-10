@@ -12,6 +12,9 @@ const mutation = graphql`
     updateModel(input: $input) {
       model {
         id
+        name
+        namePlural
+        description
       }
       project {
         schema
