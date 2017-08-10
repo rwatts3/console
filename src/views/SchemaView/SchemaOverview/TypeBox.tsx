@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Model } from '../../../types/types'
 import FieldItem from './FieldItem'
-import { Link } from 'found'
+import { Link, withRouter } from 'found'
 import { Icon, $v } from 'graphcool-styles'
 import { isScalar } from '../../../utils/graphql'
 import { idToBeginning } from '../../../utils/utils'
@@ -14,7 +14,6 @@ import UpdateModelNameMutation from '../../../mutations/UpdateModelNameMutation'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { showNotification } from '../../../actions/notification'
 import { ShowNotificationCallback } from '../../../types/utils'
-import { withRouter } from 'found'
 import { createFragmentContainer, graphql } from 'react-relay'
 
 interface Props {

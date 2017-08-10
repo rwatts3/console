@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { CellProps } from './cells'
-import ToggleButton from '../../../../components/ToggleButton/ToggleButton'
-import { ToggleSide } from '../../../../components/ToggleButton/ToggleButton'
+import ToggleButton, {
+  ToggleSide,
+} from '../../../../components/ToggleButton/ToggleButton'
 
 export default class BooleanCell extends React.Component<
   CellProps<boolean>,

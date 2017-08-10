@@ -8373,14 +8373,7 @@ relay-compiler-tmp@1.2.0-rc.3:
 
 "relay-compiler-typescript@git+https://github.com/s-panferov/relay-compiler-typescript":
   version "1.0.0"
-  uid bf66a864726f52b73b872d58e769a80a815d8e6b
   resolved "git+https://github.com/s-panferov/relay-compiler-typescript#bf66a864726f52b73b872d58e769a80a815d8e6b"
-  dependencies:
-    typescript "^2.3.2"
-
-"relay-compiler-typescript@git+https://github.com/s-panferov/relay-compiler-typescript.git":
-  version "1.0.0"
-  resolved "git+https://github.com/s-panferov/relay-compiler-typescript.git#bf66a864726f52b73b872d58e769a80a815d8e6b"
   dependencies:
     typescript "^2.3.2"
 
@@ -9110,9 +9103,9 @@ styled-components@^1.1.1:
     prop-types "^15.5.4"
     supports-color "^3.1.2"
 
-"styled-jss@git+https://github.com/timsuchanek/styled-jsx.git#build":
+"styled-jss@git+https://github.com/timsuchanek/styled-jsx#build":
   version "0.4.4"
-  resolved "git+https://github.com/timsuchanek/styled-jsx.git#020e6b771d5c89750a57abf5707dcebb64707f00"
+  resolved "git+https://github.com/timsuchanek/styled-jsx#020e6b771d5c89750a57abf5707dcebb64707f00"
   dependencies:
     babel-plugin-syntax-jsx "^6.18.0"
     convert-source-map "^1.3.0"

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { ISO8601 } from '../../utils/constants'
 import * as moment from 'moment'
-import { Moment } from 'moment'
 import ClickOutside from 'react-click-outside'
 import * as Datetime from 'react-datetime'
 const classes: any = require('./Datepicker.scss')
@@ -23,18 +22,18 @@ interface Props {
   autoClose?: boolean
   className?: string
   defaultValue: Date
-  onChange: (m: Moment) => void
+  onChange: (m: moment.Moment) => void
   onKeyDown?: (e: any) => void
   onCancel?: () => void
   // NOTE custom `onFocus` impl needed because overriding this property breaks the package
   onFocus?: () => void
-  onClickOutside?: (moment: Moment) => void
+  onClickOutside?: (moment: moment.Moment) => void
   [key: string]: any
   active: boolean
 }
 
 interface State {
-  moment: Moment
+  moment: moment.Moment
   open: boolean
 }
 
@@ -110,7 +109,7 @@ export default class DatePicker extends React.Component<Props, State> {
     }
   }
 
-  private onChange(m: Moment) {
+  private onChange(m: moment.Moment) {
     if (this.props.applyImmediately) {
       this.applyChange(m)
     } else {
@@ -118,7 +117,7 @@ export default class DatePicker extends React.Component<Props, State> {
     }
   }
 
-  private applyChange(m: Moment) {
+  private applyChange(m: moment.Moment) {
     this.setState({ open: false } as State)
     this.props.onChange(m)
   }

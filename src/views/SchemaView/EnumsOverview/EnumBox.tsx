@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { Enum } from '../../../types/types'
-import { Link } from 'found'
+import { Link, withRouter } from 'found'
 import { Icon, $v } from 'graphcool-styles'
 import { connect } from 'react-redux'
 import { nextStep } from '../../../actions/gettingStarted'
 import { GettingStartedState } from '../../../types/gettingStarted'
 import { showNotification } from '../../../actions/notification'
 import { ShowNotificationCallback } from '../../../types/utils'
-import { withRouter } from 'found'
 import EnumEditor from './EnumEditor'
 
 interface Props {

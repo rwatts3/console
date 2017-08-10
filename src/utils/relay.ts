@@ -1,11 +1,10 @@
-import { ShowNotificationCallback } from '../types/utils'
+import { ShowNotificationCallback, TypeValue } from '../types/utils'
 import * as cookiestore from 'cookiestore'
 import { Lokka } from 'lokka'
 import { Transport } from 'lokka-transport-http'
 import { toGQL } from '../views/models/utils'
 import { isScalar, isNonScalarList } from './graphql'
 import { Field, OrderBy } from '../types/types'
-import { TypedValue } from '../types/utils'
 
 export function onFailureShowNotification(
   error: any,
