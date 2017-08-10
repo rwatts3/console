@@ -27,6 +27,10 @@ const mutation = graphql`
         ...NewRow_model
         ...TypeList_model
       }
+      project {
+        schema
+        typeSchema
+      }
     }
   }
 `

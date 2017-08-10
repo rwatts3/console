@@ -19,6 +19,9 @@ const mutation = graphql`
         }
       }
       project {
+        schema
+        typeSchema
+        enumSchema
         models(first: 1000) {
           edges {
             node {
@@ -50,6 +53,12 @@ function commit(input: Props) {
         edgeName: 'modelEdge',
         rangeBehaviors: {
           '': 'append',
+        },
+      },
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          project: input.projectId,
         },
       },
     ],

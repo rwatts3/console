@@ -15,13 +15,27 @@ export interface UpdateFieldProps {
   migrationValue?: string
   description?: string
   enumId?: string
+  projectName: string
 }
 
 const mutation = graphql`
-  mutation UpdateFieldMutation($input: UpdateFieldInput!) {
+  mutation UpdateFieldMutation(
+    $input: UpdateFieldInput!
+    $projectName: String!
+  ) {
     updateField(input: $input) {
       field {
         id
+        name
+        isList
+        isRequired
+      }
+      viewer {
+        projectByName(projectName: $projectName) {
+          id
+          schema
+          typeSchema
+        }
       }
     }
   }
@@ -36,7 +50,9 @@ function commit(input: UpdateFieldProps) {
         'relation',
         'reverseRelationField',
         'enum',
+        'projectName',
       ]),
+      projectName: input.projectName,
     },
     configs: [
       {

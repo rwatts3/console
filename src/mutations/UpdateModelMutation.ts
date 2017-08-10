@@ -13,6 +13,11 @@ const mutation = graphql`
       model {
         id
       }
+      project {
+        schema
+        typeSchema
+        enumSchema
+      }
     }
   }
 `

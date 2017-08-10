@@ -579,7 +579,12 @@ class FieldPopup extends React.Component<Props, State> {
     const updatedField: any = this.patchDefaultAndMigrationValue(field)
     this.setState({ loading: true } as State)
 
-    UpdateFieldMutation.commit(updatedField)
+    UpdateFieldMutation.commit(
+      {
+        ...updatedField,
+        projectName: this.props.params.projectName,
+      } as any,
+    )
       .then(() => {
         this.close()
       })
