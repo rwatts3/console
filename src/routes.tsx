@@ -330,7 +330,6 @@ export default makeRouteConfig(
         render={render}
       >
         <Route
-          path="settings"
           Component={SettingsTab}
           query={graphql`
             query routes_SettingsTab_Query {
