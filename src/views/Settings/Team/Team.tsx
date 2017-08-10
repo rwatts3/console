@@ -19,7 +19,8 @@ interface Props {
 class Team extends React.Component<Props, {}> {
   render() {
     const seats = this.props.viewer.project.seats.edges.map(edge => edge.node)
-    const availableSeats = this.getSeatsForPlan(this.getPlan())
+    const plan = this.getPlan()
+    const availableSeats = this.getSeatsForPlan(plan)
     let seatsForDisplayEmptyRows = availableSeats
     if (availableSeats < 0) {
       seatsForDisplayEmptyRows = seats.length + 3
@@ -73,7 +74,9 @@ class Team extends React.Component<Props, {}> {
     const projects = this.props.viewer.user.crm.customer.projects.edges.map(
       edge => edge.node,
     )
-    const project = projects.find(p => p.name === this.props.params.projectName)
+    const project = projects.find(
+      p => p.systemProjectId === this.props.viewer.project.id,
+    )
     if (!project) {
       return freeId
     }
@@ -138,6 +141,7 @@ export default createFragmentContainer(mappedTeam, {
               edges {
                 node {
                   id
+                  systemProjectId
                   name
                   projectBillingInformation {
                     plan
