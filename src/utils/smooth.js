@@ -1,3 +1,4 @@
+/* tslint:disable */
 export const smoothScrollTo = function(element, target, duration) {
   target = Math.round(target);
   duration = Math.round(duration);
