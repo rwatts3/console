@@ -15,6 +15,10 @@ const mutation = graphql`
         name
         values
       }
+      project {
+        schema
+        enumSchema
+      }
     }
   }
 `
