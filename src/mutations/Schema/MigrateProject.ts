@@ -34,6 +34,15 @@ const mutation = graphql`
         typeSchema
         enumSchema
         version
+        enums(first: 1000) {
+          edges {
+            node {
+              id
+              name
+              values
+            }
+          }
+        }
         models(first: 1000) {
           edges {
             node {
