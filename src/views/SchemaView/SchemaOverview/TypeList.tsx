@@ -5,7 +5,6 @@ import { createFragmentContainer, graphql } from 'react-relay'
 import TypeBox from './TypeBox'
 import AddType from './AddType'
 import { debounce } from 'lodash'
-import { dummy } from '../../../utils/dummy'
 
 interface Props {
   project: Project
@@ -104,88 +103,13 @@ export default createFragmentContainer(TypeList, {
       models(first: 1000) {
         edges {
           node {
-            itemCount
             id
             name
-            isSystem
-            description
-            permissions(first: 1000) {
-              edges {
-                node {
-                  isActive
-                  operation
-                  applyToWholeModel
-                  fieldIds
-                }
-              }
-            }
-            fields(first: 1000) {
-              edges {
-                node {
-                  id
-                  name
-                  typeIdentifier
-                  isList
-                  isRequired
-                  isSystem
-                  isUnique
-                  isReadonly
-                  relation {
-                    name
-                  }
-                  relatedModel {
-                    id
-                    name
-                  }
-                }
-              }
-            }
+            ...TypeBox_model
+            ...AddType_model
           }
         }
       }
     }
   `,
 })
-
-const mutationFragments = graphql`
-  fragment TypeList_model on Model {
-    itemCount
-    id
-    name
-    isSystem
-    description
-    permissions(first: 1000) {
-      edges {
-        node {
-          isActive
-          operation
-          applyToWholeModel
-          fieldIds
-        }
-      }
-    }
-    fields(first: 1000) {
-      edges {
-        node {
-          id
-          name
-          typeIdentifier
-          isList
-          isRequired
-          isSystem
-          isUnique
-          isReadonly
-          relation {
-            name
-          }
-          relatedModel {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-`
-
-dummy(mutationFragments)

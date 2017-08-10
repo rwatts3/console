@@ -15,7 +15,7 @@ const mutation = graphql`
           ...NewRow_model
           ...ModelHeader_model
           ...SideNav_model
-          ...TypeList_model
+          ...TypeBox_model
         }
       }
       project {

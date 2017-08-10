@@ -20,16 +20,118 @@ const mutation = graphql`
     addRelation(input: $input) {
       relation {
         id
+        name
+        description
+        fieldOnLeftModel {
+          id
+          name
+          isList
+          isRequired
+        }
+        fieldOnRightModel {
+          id
+          name
+          isList
+          isRequired
+        }
+        leftModel {
+          id
+          name
+          namePlural
+          itemCount
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+        rightModel {
+          id
+          name
+          namePlural
+          itemCount
+          fields(first: 1000) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
       }
       leftModel {
         ...NewRow_model
-        ...TypeList_model
+        ...TypeBox_model
+        fields(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
       rightModel {
         ...NewRow_model
-        ...TypeList_model
+        ...TypeBox_model
+        fields(first: 1000) {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+      relationEdge {
+        node {
+          id
+          name
+          description
+          fieldOnLeftModel {
+            id
+            name
+            isList
+            isRequired
+          }
+          fieldOnRightModel {
+            id
+            name
+            isList
+            isRequired
+          }
+          leftModel {
+            id
+            name
+            namePlural
+            itemCount
+            fields(first: 1000) {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
+          }
+          rightModel {
+            id
+            name
+            namePlural
+            itemCount
+            fields(first: 1000) {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
+          }
+        }
       }
       project {
+        id
+        schema
+        typeSchema
         relations(first: 1000) {
           edges {
             node {

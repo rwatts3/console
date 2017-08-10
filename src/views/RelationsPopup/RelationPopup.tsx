@@ -882,6 +882,8 @@ class RelationPopup extends React.Component<Props, State> {
       projectId: this.props.viewer.project.id,
       leftModelId: this.props.viewer.relation.leftModel.id,
       rightModelId: this.props.viewer.relation.leftModel.id,
+      fieldOnLeftModelId: this.props.viewer.relation.fieldOnLeftModel.id,
+      fieldOnRightModelId: this.props.viewer.relation.fieldOnRightModel.id,
     })
       .then(() => {
         this.close()
