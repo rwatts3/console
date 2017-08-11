@@ -9,7 +9,7 @@ interface Props {
 export default class CLIAuthSuccessInitView extends React.Component<Props, {}> {
   render() {
     const { query } = this.props.location
-    const showAfterSignup = query && query.afterSignup
+    const showAfterSignup = query.hasOwnProperty('afterSignup')
 
     return (
       <div className="example-project">

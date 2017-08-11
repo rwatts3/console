@@ -6,7 +6,7 @@
     "deploy-production": "netlify deploy -p dist -s $NETLIFY_ID -t $NETLIFY_TOKEN",
     "deploy-integration": "netlify deploy -p dist -s $INTEGRATION_NETLIFY_ID -t $INTEGRATION_NETLIFY_TOKEN",
     "download-schema": "node build/downloadSchema.js",
-    "deploy": "npm run pre-deploy && npm run deploy-integration && npm run deploy-production",
+    "deploy": "npm run pre-deploy && npm run deploy-integration && npm run test-integration && npm run deploy-production",
     "lint": "tslint \"src/**/*.ts{,x}\"",
     "lint-fix": "tslint --fix \"src/**/*.ts{,x}\"",
     "start": "GRAPHQL_ENDPOINT=$BACKEND_ADDR/system webpack-dev-server --hot --profile --history-api-fallback --host 0.0.0.0 --port 4000 --content-base dll/",
