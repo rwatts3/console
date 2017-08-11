@@ -9,9 +9,7 @@ interface Props {
 export default class CLIAuthSuccessView extends React.Component<Props, {}> {
   render() {
     const { query } = this.props.location
-    const redirectUrl = query.hasOwnProperty('afterSignup')
-      ? '/after-signup'
-      : '/'
+    const redirectUrl = query && query.afterSignup ? '/after-signup' : '/'
 
     return (
       <div className="already-authenticated">
