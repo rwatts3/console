@@ -67,10 +67,6 @@ module.exports = {
     }],
   },
   plugins: [
-    new webpack.ContextReplacementPlugin(
-      /graphql-language-service-interface[\\/]dist$/,
-      new RegExp(`^\\./.*\\.js$`)
-    ),
     new ForkTsCheckerWebpackPlugin({}),
     new webpack.DefinePlugin({
       __BACKEND_ADDR__: JSON.stringify(process.env.BACKEND_ADDR.toString()),
