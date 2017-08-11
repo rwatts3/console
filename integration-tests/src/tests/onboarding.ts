@@ -8,7 +8,7 @@ export default async (cookies: any[]): Promise<any> =>  {
   })
 
   const screenshot = await chromeless
-    .setCookies(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(5000)
     .click('div[data-test="start-onboarding"]')

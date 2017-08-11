@@ -6,7 +6,7 @@ export default async (cookies: any[]): Promise<any> =>  {
   const chromeless = new Chromeless(config)
 
   return chromeless
-    .setCookies(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(5200)
     .wait('a[data-test="sidenav-functions"]')

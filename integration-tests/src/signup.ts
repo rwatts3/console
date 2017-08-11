@@ -6,7 +6,7 @@ const run = async (): Promise<any> =>  {
   const chromeless = new Chromeless(config)
 
   const cookies = await chromeless
-    .clearCookies()
+    .cookiesClearAll()
     .goto(CONSOLE_URL + '/signup')
     .wait(1000)
     .wait('button[type="submit"]')
@@ -19,7 +19,7 @@ const run = async (): Promise<any> =>  {
     .type('I am a Test', 'input[data-test="source"]')
     .click('div[data-test="open-console"]')
     // done with giving signup data
-    .cookies()
+    .cookiesGet()
 
   console.log('got cookies', cookies)
 

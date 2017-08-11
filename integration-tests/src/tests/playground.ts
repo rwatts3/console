@@ -7,7 +7,7 @@ export default async (cookies: any[]): Promise<any> => {
 
   return chromeless
     .goto(CONSOLE_URL)
-    .setCookies(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3000)
     .wait('.playground-button')

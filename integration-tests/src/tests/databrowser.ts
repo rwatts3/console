@@ -8,7 +8,7 @@ export default async (cookies: any[]): Promise<any> => {
   })
 
   const result = await chromeless
-    .setCookies(cookies)
+    .cookiesSet(cookies)
     .goto(CONSOLE_URL)
     .wait(3200)
     .wait('a[data-test="sidenav-databrowser"]')
