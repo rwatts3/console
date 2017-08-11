@@ -1,7 +1,6 @@
 exports[`test ScalarListCell renders 1`] = `
 <Modal
   ariaHideApp={true}
-  bodyOpenClassName="ReactModal__Body--open"
   closeTimeoutMS={0}
   contentLabel="Edit scalar list"
   isOpen={true}
