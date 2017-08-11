@@ -1,4 +1,4 @@
-import { isScalar, isNonScalarList } from '../../utils/graphql'
+import { isScalar } from '../../utils/graphql'
 import { Enum, Field, FieldWidths } from '../../types/types'
 import { TypedValue, NonScalarValue, ScalarValue } from '../../types/utils'
 import {
@@ -7,6 +7,7 @@ import {
   getFieldTypeName,
 } from '../../utils/valueparser'
 import calculateSize from 'calculate-size'
+import { isNonScalarList } from '../../utils/graphql'
 
 export function emptyDefault(field: Field, enums: Enum[]): TypedValue {
   if (field.isRequired) {

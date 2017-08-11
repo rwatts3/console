@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { valueToString, stringToValue } from '../../../utils/valueparser'
+import * as classnames from 'classnames'
 import styled, { keyframes } from 'styled-components'
 import { Enum, Field } from '../../../types/types'
 import { CellRequirements, getEditCell } from './Cell/cellgenerator'
@@ -89,7 +90,7 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   render(): JSX.Element {
-    const rootClassnames = cx({
+    const rootClassnames = classnames({
       [classes.root]: true,
       [classes.null]: this.props.value === null,
       [classes.editing]: this.props.editing,
@@ -291,7 +292,7 @@ export class Cell extends React.PureComponent<Props, State> {
   }
 
   private renderNew = (): JSX.Element => {
-    const invalidStyle = cx([classes.value, classes.id])
+    const invalidStyle = classnames([classes.value, classes.id])
     if (this.props.field.isReadonly) {
       return (
         <span className={invalidStyle}>

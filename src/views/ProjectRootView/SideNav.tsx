@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import { createRefetchContainer, graphql, RelayProp } from 'react-relay'
+import { createRefetchContainer, graphql } from 'react-relay'
 import { withRouter, Link } from 'found'
 import { connect } from 'react-redux'
 import cuid from 'cuid'
@@ -22,6 +22,7 @@ import { ExcludeProps } from '../../utils/components'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 import SideNavElement from './SideNavElement'
+import { RelayProp } from 'react-relay'
 import { dummy } from '../../utils/dummy'
 
 interface Props {

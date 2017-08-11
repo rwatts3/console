@@ -4,11 +4,12 @@ import {
   Project,
   ActionTriggerMutationModelMutationType,
 } from '../../types/types'
-import { Icon, $p } from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 const QueryEditor: any = require('../SchemaView/Editor/QueryEditor').QueryEditor
 import ActionTrigger from './ActionTrigger'
 import Tooltip from 'rc-tooltip'
 const classes: any = require('./ActionTriggerBox.scss')
+import { $p } from 'graphcool-styles'
 import * as cx from 'classnames'
 
 interface Props {

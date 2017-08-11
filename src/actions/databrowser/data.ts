@@ -1,11 +1,7 @@
-import {
-  ReduxAction,
-  ReduxThunk,
-  Dispatch,
-  StateTree,
-} from '../../types/reducers'
+import { ReduxAction, ReduxThunk, Dispatch } from '../../types/reducers'
 import { TypedValue, NonScalarValue } from '../../types/utils'
 import { OrderBy, Field, Model } from '../../types/types'
+import { StateTree } from '../../types/reducers'
 import Constants from '../../constants/databrowser/data'
 import * as Immutable from 'immutable'
 import {

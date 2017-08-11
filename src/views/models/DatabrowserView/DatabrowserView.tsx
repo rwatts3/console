@@ -12,13 +12,6 @@ import {
   hideNewRow,
   toggleSearch,
   selectCell,
-  nextCell,
-  previousCell,
-  nextRow,
-  previousRow,
-  editCell,
-  setBrowserViewRef,
-  setDataBrowserViewRef,
 } from '../../../actions/databrowser/ui'
 import { resetDataAndUI } from '../../../actions/databrowser/shared'
 import {
@@ -32,7 +25,7 @@ import {
 } from '../../../actions/databrowser/data'
 import { Popup } from '../../../types/popup'
 import * as Immutable from 'immutable'
-import { Icon, $p } from 'graphcool-styles'
+import { Icon } from 'graphcool-styles'
 import mapProps from '../../../components/MapProps/MapProps'
 import Loading from '../../../components/Loading/Loading'
 import { showNotification } from '../../../actions/notification'
@@ -59,11 +52,21 @@ import { AutoSizer } from 'react-virtualized'
 import Cell from './Cell'
 import LoadingCell from './LoadingCell'
 import { getLokka } from './../../../utils/relay'
+import { $p } from 'graphcool-styles'
 import {
   startProgress,
   incrementProgress,
 } from '../../../actions/progressIndicator'
 import { StateTree, ReduxAction, ReduxThunk } from '../../../types/reducers'
+import {
+  nextCell,
+  previousCell,
+  nextRow,
+  previousRow,
+  editCell,
+  setBrowserViewRef,
+  setDataBrowserViewRef,
+} from '../../../actions/databrowser/ui'
 import { GridPosition } from '../../../types/databrowser/ui'
 import * as cn from 'classnames'
 import { throttle } from 'lodash'

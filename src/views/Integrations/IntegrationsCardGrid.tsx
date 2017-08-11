@@ -2,8 +2,9 @@ import * as React from 'react'
 import * as cx from 'classnames'
 import { createFragmentContainer, graphql } from 'react-relay'
 import { Project } from '../../types/types'
-import { $p, Icon } from 'graphcool-styles'
+import { $p } from 'graphcool-styles'
 import IntegrationsCard from './IntegrationsCard'
+import { Icon } from 'graphcool-styles'
 
 interface Props {
   project: Project
