@@ -4,8 +4,7 @@ import * as cookiestore from 'cookiestore'
 import Left from './Left'
 import Right from './Right'
 import Loading from '../../../components/Loading/Loading'
-import { AuthTrigger } from '../types'
-import { updateNetworkLayer } from '../../../relayEnvironment'
+import { updateAuth } from '../../../utils/auth'
 
 interface State {
   loading: boolean
@@ -15,49 +14,17 @@ interface Props {
   location: any
 }
 
-const updateAuth = async (cliToken: string) => {
-  await fetch(`${__CLI_AUTH_TOKEN_ENDPOINT__}/update`, {
-    method: 'POST',
-    body: JSON.stringify({
-      authToken: cookiestore.get('graphcool_auth_token'),
-      cliToken,
-    }),
-  })
-
-  updateNetworkLayer()
-}
-
-// no need of after-signup here, because we can be sure that the person is logged in as
-// the graphcool_auth_token cookie already exists
-const redirectURL = (authTrigger: AuthTrigger): string => {
-  switch (authTrigger) {
-    case 'auth':
-      return `/cli/auth/success`
-    case 'init':
-      return `/cli/auth/success-init`
-    case 'quickstart':
-      return `https://www.graph.cool/docs/quickstart`
-  }
-}
-
 export default class CLIAuthView extends React.Component<Props, State> {
   // used from routes as `onEnter` hook
-  static routeRedirectWhenAuthenticated = async (nextState, replace, cb) => {
+  static renderRoute = ({ Component, match, props }) => {
     if (cookiestore.has('graphcool_auth_token')) {
-      const { authTrigger, cliToken } = nextState.location.query
-
-      await updateAuth(cliToken)
-
-      const redirect = redirectURL(authTrigger)
-      if (redirect.startsWith('http')) {
-        window.location.href = redirect
-      } else {
-        replace(redirect)
-        cb()
-      }
-    } else {
-      cb()
+      const { authTrigger, cliToken } = match.location.query
+      match.router.replace(
+        `/cli/auth/authorize?authTrigger=${authTrigger}&cliToken=${cliToken}`,
+      )
     }
+
+    return <Component {...props} />
   }
 
   constructor(props) {

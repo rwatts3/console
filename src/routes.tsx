@@ -52,6 +52,7 @@ import FunctionsView from './views/FunctionsView/FunctionsView'
 import FunctionPopup from './views/FunctionsView/FunctionPopup/FunctionPopup'
 import { FunctionLogs } from './views/FunctionsView/FunctionLogs/FunctionLogs'
 import CliInfoPopup from './views/SchemaView/CliInfoPopup'
+import CLIAuthorizeView from './views/CLIAuthView/CLIAuthorizeView'
 
 // const ViewerQuery = {
 //   viewer: (Component, variables) => Relay.QL`
@@ -245,9 +246,10 @@ export default makeRouteConfig(
     <Route
       path="cli/auth"
       Component={CLIAuthView}
-      onEnter={CLIAuthView.routeRedirectWhenAuthenticated}
+      render={CLIAuthView.renderRoute}
     />
     <Route path="cli/auth/success" Component={CLIAuthSuccessView} />
+    <Route path="cli/auth/authorize" Component={CLIAuthorizeView} />
     <Route path="cli/auth/success-init" Component={CLIAuthSuccessInitView} />
     <Route
       path="after-signup"
