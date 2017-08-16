@@ -1,8 +1,14 @@
 import * as React from 'react'
 import { Icon, $v } from 'graphcool-styles'
 import { Button } from '../../components/Links'
+import { redirectURL, updateAuth } from '../../utils/auth'
 
-export default class CLIAuthorizeView extends React.Component<{}, {}> {
+interface Props {
+  location: any
+  router: any
+}
+
+export default class CLIAuthorizeView extends React.Component<Props, {}> {
   render() {
     return (
       <div className="already-authenticated">
@@ -80,11 +86,16 @@ export default class CLIAuthorizeView extends React.Component<{}, {}> {
                 height={24}
               />
               <span className="ml10">
-                Read &amp; Write Project Data &amp; Structure
+                Read &amp; Write Project Data &amp; Schema
               </span>
             </div>
             <div>
-              <Button target={''} green className="mt38" hideArrow={true}>
+              <Button
+                green
+                className="mt38"
+                hideArrow={true}
+                onClick={this.authorize}
+              >
                 Authorize CLI
               </Button>
             </div>
@@ -92,5 +103,18 @@ export default class CLIAuthorizeView extends React.Component<{}, {}> {
         </div>
       </div>
     )
+  }
+
+  private authorize = () => {
+    const { location, router } = this.props
+    const { authTrigger, cliToken } = location.query
+    updateAuth(cliToken).then(() => {
+      const redirect = redirectURL(authTrigger)
+      if (redirect.startsWith('http')) {
+        window.location.href = redirect
+      } else {
+        router.replace(redirect)
+      }
+    })
   }
 }
