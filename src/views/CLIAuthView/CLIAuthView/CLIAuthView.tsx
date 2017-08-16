@@ -42,22 +42,21 @@ const redirectURL = (authTrigger: AuthTrigger): string => {
 
 export default class CLIAuthView extends React.Component<Props, State> {
   // used from routes as `onEnter` hook
-  static routeRedirectWhenAuthenticated = async (nextState, replace, cb) => {
+  static renderRoute = ({ Component, match, props }) => {
     if (cookiestore.has('graphcool_auth_token')) {
-      const { authTrigger, cliToken } = nextState.location.query
+      const { authTrigger, cliToken } = match.location.query
 
-      await updateAuth(cliToken)
-
-      const redirect = redirectURL(authTrigger)
-      if (redirect.startsWith('http')) {
-        window.location.href = redirect
-      } else {
-        replace(redirect)
-        cb()
-      }
-    } else {
-      cb()
+      updateAuth(cliToken).then(() => {
+        const redirect = redirectURL(authTrigger)
+        if (redirect.startsWith('http')) {
+          window.location.href = redirect
+        } else {
+          match.router.replace(redirect)
+        }
+      })
     }
+
+    return <Component {...props} />
   }
 
   constructor(props) {
