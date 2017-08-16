@@ -53,11 +53,11 @@ export default class CLIAuthorizeView extends React.Component<Props, {}> {
           }
 
           h2 {
-            @p: .white80, .f20, .mt38, .mb6;
+            @p: .white80, .f20, .mt38, .mb10, .fw6;
           }
 
           .permissions {
-            @p: .pa16, .bWhite10, .ba, .br2, .f14, .white60, .inlineFlex,
+            @p: .pa16, .bWhite10, .ba, .br2, .f16, .white60, .inlineFlex,
               .itemsCenter;
           }
         `}</style>
@@ -79,11 +79,10 @@ export default class CLIAuthorizeView extends React.Component<Props, {}> {
             <h2>Review permissions</h2>
             <div className="permissions">
               <Icon
-                src={require('graphcool-styles/icons/stroke/editSpaced.svg')}
-                stroke={true}
-                color={$v.white80}
-                width={24}
-                height={24}
+                src={require('assets/icons/schema.svg')}
+                color={$v.white60}
+                width={18}
+                height={18}
               />
               <span className="ml10">
                 Read &amp; Write Project Data &amp; Schema
