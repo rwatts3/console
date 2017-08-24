@@ -20,7 +20,6 @@ export default function RequestPipeline({
   payloadTaken,
 }: Props) {
   const argActive = binding === ('TRANSFORM_ARGUMENT' as FunctionBinding)
-  const preActive = binding === ('PRE_WRITE' as FunctionBinding)
   const payloadActive = binding === ('TRANSFORM_PAYLOAD' as FunctionBinding)
 
   return (
@@ -59,6 +58,9 @@ export default function RequestPipeline({
           list-style-position: outside;
           padding-left: 1.5em;
         }
+        .arrow-info {
+          margin-left: -60px;
+        }
       `}</style>
       <Arrow />
       <Info
@@ -73,15 +75,17 @@ export default function RequestPipeline({
         This step includes the raw input without any GraphQL Type checking.
       </Info>
       <div className="step">
-        <Info
-          top
-          cursorOffset={20}
-          offsetY={-30}
-          customTip={<Tip>Schema Validation</Tip>}
-        >
-          Graphcool executes the GraphQL Schema validation on the request
-          payload at this point.
-        </Info>
+        <div className="arrow-info">
+          <Info
+            top
+            cursorOffset={20}
+            offsetY={-30}
+            customTip={<Tip>Schema Validation</Tip>}
+          >
+            Graphcool executes the GraphQL Schema validation on the request
+            payload at this point.
+          </Info>
+        </div>
         <Arrow />
       </div>
       <Info
@@ -114,44 +118,33 @@ export default function RequestPipeline({
             </div>}
       </Info>
       <div className="step">
-        <Info
-          top
-          cursorOffset={20}
-          offsetY={-30}
-          customTip={<Tip>Graphcool Check</Tip>}
-        >
-          In this step Graphcool checks for Constraints like Uniqueness and
-          checks if the permissions even allow this request.
-        </Info>
+        <div className="arrow-info">
+          <Info
+            top
+            cursorOffset={20}
+            offsetY={-30}
+            customTip={<Tip>Graphcool Check</Tip>}
+          >
+            In this step Graphcool checks for Constraints like Uniqueness and
+            checks if the permissions even allow this request.
+          </Info>
+        </div>
         <Arrow />
       </div>
       <Info
         top
         customTip={
-          <div
-            className="step"
-            onClick={() => onChange('PRE_WRITE')}
-            data-test="pre-write-circle"
-          >
-            <Circle active={preActive} />
-            <div
-              className={cn('label', { active: preActive, taken: preTaken })}
-            >
-              PRE_WRITE
-            </div>
+          <div className="step">
+            <Circle disabled />
+            <div className="label disabled">PRE_WRITE</div>
           </div>
         }
       >
         {argTaken
           ? 'This hook is already being used by another function.'
           : <div>
-              In this step the checks of Graphcool already have been executed.{' '}
-              <br />
-              It's useful for calling external services: <br />
-              <ul>
-                <li>charge a customer on Stripe</li>
-                <li>write a message on Twilio</li>
-              </ul>
+              The PRE_WRITE Step is deprecated and can no longer be used for new
+              functions.
             </div>}
       </Info>
       <Arrow />
