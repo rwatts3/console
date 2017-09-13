@@ -72,6 +72,7 @@ export interface CrmOnboardingStatus {
 
 export interface Project {
   id: string
+  isEjected?: boolean
   name: string
   alias: string
   version: number

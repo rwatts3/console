@@ -121,50 +121,6 @@ type AddAlgoliaSyncQueryPayload {
   clientMutationId: String
 }
 
-input AddCustomMutationFunctionInput {
-  projectId: ID!
-  isActive: Boolean!
-  name: String!
-  schema: String!
-  type: FunctionType!
-  webhookUrl: String
-  webhookHeaders: String
-  inlineCode: String
-  auth0Id: String
-  clientMutationId: String
-}
-
-type AddCustomMutationFunctionPayload {
-  viewer: Viewer!
-  project: Project!
-  user: Customer!
-  function: SchemaExtensionFunction!
-  functionEdge: FunctionEdge!
-  clientMutationId: String
-}
-
-input AddCustomQueryFunctionInput {
-  projectId: ID!
-  isActive: Boolean!
-  name: String!
-  schema: String!
-  type: FunctionType!
-  webhookUrl: String
-  webhookHeaders: String
-  inlineCode: String
-  auth0Id: String
-  clientMutationId: String
-}
-
-type AddCustomQueryFunctionPayload {
-  viewer: Viewer!
-  project: Project!
-  user: Customer!
-  function: SchemaExtensionFunction!
-  functionEdge: FunctionEdge!
-  clientMutationId: String
-}
-
 input AddEnumInput {
   projectId: ID!
   name: String!
@@ -312,7 +268,6 @@ type AddProjectPayload {
   viewer: Viewer!
   project: Project!
   user: Customer!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
   projectEdge: ProjectEdge!
   clientMutationId: String
 }
@@ -560,12 +515,6 @@ enum AuthProviderType {
   AUTH_PROVIDER_AUTH0
 }
 
-# The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
-scalar BigDecimal
-
-# The `BigInt` scalar type represents non-fractional signed whole numeric values. BigInt can represent arbitrary big values.
-scalar BigInt
-
 # This is a BooleanConstraint
 type BooleanConstraint implements Node, FieldConstraint {
   equalsBoolean: Boolean
@@ -596,9 +545,8 @@ input CloneProjectInput {
 type CloneProjectPayload {
   viewer: Viewer!
   project: Project!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
-  projectEdge: ProjectEdge!
   user: Customer!
+  projectEdge: ProjectEdge!
   clientMutationId: String
 }
 
@@ -755,9 +703,11 @@ enum CUSTOMER_INFORMATION_SIGNUP_SOURCE {
   HOMEPAGE
   DOCS
   LEARN_RELAY
-  WAIT_LIST
+  CONSOLE_COLLABORATOR
   LEARN_APOLLO
   CLI
+  NOT_DEFINED
+  CONSOLE
 }
 
 enum CustomerSourceType {
@@ -931,7 +881,6 @@ type DeleteProjectPayload {
   viewer: Viewer!
   deletedId: String!
   user: Customer!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
   clientMutationId: String
 }
 
@@ -978,6 +927,17 @@ type DeleteRelationPermissionPayload {
   clientMutationId: String
 }
 
+input EjectProjectInput {
+  projectId: ID!
+  clientMutationId: String
+}
+
+type EjectProjectPayload {
+  viewer: Viewer!
+  project: Project!
+  clientMutationId: String
+}
+
 # This is an enum
 type Enum implements Node {
   id: ID!
@@ -1011,8 +971,6 @@ input ExportDataInput {
 type ExportDataPayload {
   viewer: Viewer!
   project: Project!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
-  projectEdge: ProjectEdge!
   user: Customer!
   url: String!
   clientMutationId: String
@@ -1285,10 +1243,6 @@ enum LogStatus {
   FAILURE
 }
 
-# The `Long` scalar type represents non-fractional signed whole numeric values.
-# Long can represent values between -(2^63) and 2^63 - 1.
-scalar Long
-
 input MigrateProjectInput {
   newSchema: String!
 
@@ -1410,6 +1364,7 @@ type Mutation {
   deleteRelation(input: DeleteRelationInput!): DeleteRelationPayload
   updateProject(input: UpdateProjectInput!): UpdateProjectPayload
   trustedSetProjectDatabase(input: TrustedSetProjectDatabaseInput!): TrustedSetProjectDatabasePayload
+  push(input: PushInput!): PushPayload
   migrateProject(input: MigrateProjectInput!): MigrateProjectPayload
   updateModel(input: UpdateModelInput!): UpdateModelPayload
   updateRelation(input: UpdateRelationInput!): UpdateRelationPayload
@@ -1457,12 +1412,9 @@ type Mutation {
   addFieldConstraint(input: AddFieldConstraintInput!): AddFieldConstraintPayload
   deleteFieldConstraint(input: DeleteFieldConstraintInput!): DeleteFieldConstraintPayload
   updateFieldConstraint(input: UpdateFieldConstraintInput!): UpdateFieldConstraintPayload
-  addCustomMutationFunction(input: AddCustomMutationFunctionInput!): AddCustomMutationFunctionPayload
-  updateCustomMutationFunction(input: UpdateCustomMutationFunctionInput!): UpdateCustomMutationFunctionPayload
-  addCustomQueryFunction(input: AddCustomQueryFunctionInput!): AddCustomQueryFunctionPayload
-  updateCustomQueryFunction(input: UpdateCustomQueryFunctionInput!): UpdateCustomQueryFunctionPayload
   addSchemaExtensionFunction(input: AddSchemaExtensionFunctionInput!): AddSchemaExtensionFunctionPayload
   updateSchemaExtensionFunction(input: UpdateSchemaExtensionFunctionInput!): UpdateSchemaExtensionFunctionPayload
+  ejectProject(input: EjectProjectInput!): EjectProjectPayload
   updateCrmGuideStatus(input: CrmGuideStatusInput!): UpdateCrmGuideStatusPayload!
   updateCrmOnboardingStatus(input: CrmOnboardingStatusInput!): UpdateCrmOnboardingStatusPayload!
   updateCrmCustomerInformation(input: CrmCustomerInformationInput!): UpdateCrmCustomerInformationPayload!
@@ -1630,6 +1582,8 @@ type Project implements Node {
   schema: String!
   typeSchema: String!
   enumSchema: String!
+  projectDefinition: String!
+  projectDefinitionWithFileContent: String!
   isGlobalEnumsEnabled: Boolean!
   webhookUrl: String
   seats(before: String, after: String, first: Int, last: Int): SeatConnection!
@@ -1648,6 +1602,7 @@ type Project implements Node {
   allowMutations: Boolean!
   availableUserRoles: [String!]!
   functionRequestHistogram(period: HistogramPeriod!): [Int!]!
+  isEjected: Boolean!
 }
 
 # A connection to a list of items.
@@ -1673,6 +1628,26 @@ type ProjectEdge {
 
   # A cursor for use in pagination.
   cursor: String!
+}
+
+input PushInput {
+  projectId: String!
+  version: Int!
+  config: String!
+
+  # If set to false the migration is not performed.
+  isDryRun: Boolean!
+
+  # If set to false the migration will fail if data would be lost. Defaults to false.
+  force: Boolean
+  clientMutationId: String
+}
+
+type PushPayload {
+  project: Project
+  migrationMessages: [MigrationMessage!]!
+  errors: [SchemaError!]!
+  clientMutationId: String
 }
 
 type Query {
@@ -1848,8 +1823,6 @@ type ResetProjectDataPayload {
   viewer: Viewer!
   user: Customer!
   project: Project!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
-  projectEdge: ProjectEdge!
   clientMutationId: String
 }
 
@@ -1862,8 +1835,6 @@ type ResetProjectSchemaPayload {
   viewer: Viewer!
   user: Customer!
   project: Project!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
-  projectEdge: ProjectEdge!
   clientMutationId: String
 }
 
@@ -2187,50 +2158,6 @@ type UpdateCustomerPayload {
   clientMutationId: String
 }
 
-input UpdateCustomMutationFunctionInput {
-  functionId: ID!
-  name: String
-  isActive: Boolean
-  schema: String
-  type: FunctionType
-  webhookUrl: String
-  webhookHeaders: String
-  inlineCode: String
-  auth0Id: String
-  clientMutationId: String
-}
-
-type UpdateCustomMutationFunctionPayload {
-  viewer: Viewer!
-  project: Project!
-  user: Customer!
-  function: SchemaExtensionFunction!
-  functionEdge: FunctionEdge!
-  clientMutationId: String
-}
-
-input UpdateCustomQueryFunctionInput {
-  functionId: ID!
-  name: String
-  isActive: Boolean
-  schema: String
-  type: FunctionType
-  webhookUrl: String
-  webhookHeaders: String
-  inlineCode: String
-  auth0Id: String
-  clientMutationId: String
-}
-
-type UpdateCustomQueryFunctionPayload {
-  viewer: Viewer!
-  project: Project!
-  user: Customer!
-  function: SchemaExtensionFunction!
-  functionEdge: FunctionEdge!
-  clientMutationId: String
-}
-
 input UpdateEnumInput {
   enumId: ID!
   name: String
@@ -2371,8 +2298,6 @@ type UpdateProjectPayload {
   viewer: Viewer!
   project: Project!
   user: Customer!
-  projectConnection(before: String, after: String, first: Int, last: Int): ProjectConnection!
-  projectEdge: ProjectEdge!
   clientMutationId: String
 }
 

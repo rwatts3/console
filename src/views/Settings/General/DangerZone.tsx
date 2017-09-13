@@ -51,7 +51,7 @@ class DangerZone extends React.Component<Props, State> {
 
           .orangeActionButton {
             color: rgba(241, 143, 1, 1);
-            background-color: rgba(241, 143, 1, .2);
+            background-color: rgba(241, 143, 1, 0.2);
           }
 
           .deleteRed100 {
@@ -59,12 +59,12 @@ class DangerZone extends React.Component<Props, State> {
           }
 
           .deleteBgrRed20 {
-            background-color: rgba(242, 92, 84, .2);
+            background-color: rgba(242, 92, 84, 0.2);
           }
 
           .redActionButton {
             color: rgba(242, 92, 84, 1);
-            background-color: rgba(242, 92, 84, .2);
+            background-color: rgba(242, 92, 84, 0.2);
           }
 
           .actionButton {
@@ -87,6 +87,26 @@ class DangerZone extends React.Component<Props, State> {
           }
         `}</style>
         <div className="dangerZoneTitle">Danger Zone</div>
+        {/*
+        <div className="actionRow">
+          <div>
+            <div className="fw3 f25 deleteRed100">Eject Project</div>
+            <div className="f16 deleteRed100">
+              After ejection the project has to be edited from the CLI.
+            </div>
+          </div>
+          <div
+            className={`actionButton ${this.state.hoveredRowIndex === 2
+              ? 'hoveredRedActionButton'
+              : 'redActionButton'}`}
+            onClick={this.onClickDeleteProject}
+            onMouseEnter={() => this.setState({ hoveredRowIndex: 2 } as State)}
+            onMouseLeave={() => this.setState({ hoveredRowIndex: -1 } as State)}
+          >
+            Eject Project
+          </div>
+        </div>
+        */}
         <div className="actionRow bottomBorderForActionRow">
           <div>
             <div
