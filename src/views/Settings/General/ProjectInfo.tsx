@@ -13,6 +13,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import Info from '../../../components/Info'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { Button } from '../../../components/Links'
+// import * as JSZip from 'jszip'
 
 // Note: the checks for this.props.project are there to make the UI
 // look better when a project gets deleted - otherwise there is a flicker
@@ -324,8 +325,15 @@ class ProjectInfo extends React.Component<Props, State> {
     )
   }
 
-  private downloadProjectDefinition() {
-    // noop
+  private async downloadProjectDefinition() {
+    // const definition: any = JSON.parse(
+    //   this.props.project.projectDefinitionWithFileContents,
+    // )
+    // const zip = new JSZip()
+    // console.log(zip)
+    // definition.modules.forEach(module => {
+    //   console.log(module)
+    // })
   }
 
   private saveSettings = (): void => {
@@ -378,6 +386,7 @@ export default createFragmentContainer(withRouter(mappedProjectInfo), {
       name
       alias
       isEjected
+      projectDefinitionWithFileContent
     }
   `,
 })

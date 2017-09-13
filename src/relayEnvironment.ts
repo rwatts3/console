@@ -20,7 +20,7 @@ function getClient() {
   })
 }
 
-let client = getClient()
+export let client = getClient()
 
 export function updateNetworkLayer() {
   client = getClient()
