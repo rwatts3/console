@@ -11,9 +11,8 @@ dependencies:
     - sudo sysctl fs.inotify.max_user_watches=524288
     - sudo sysctl -p
   override:
-    - npm install -g yarn
     - rm -rf node_modules
-    - yarn install
+    - npm install
 
 test:
   override:

@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Info from '../../../components/Info'
 import { onFailureShowNotification } from '../../../utils/relay'
+import { Button } from '../../../components/Links'
 
 // Note: the checks for this.props.project are there to make the UI
 // look better when a project gets deleted - otherwise there is a flicker
@@ -92,7 +93,7 @@ class ProjectInfo extends React.Component<Props, State> {
             top: -30px;
             left: 50%;
             transform: translate(-50%, 0);
-            animation: movingCopyIndicator .7s linear;
+            animation: movingCopyIndicator 0.7s linear;
           }
 
           .actionRow {
@@ -108,69 +109,76 @@ class ProjectInfo extends React.Component<Props, State> {
           .actionButton.white:hover {
             @p: .bgDarkBlue20;
           }
+          .infoBox {
+            @p: .br2, .pa16;
+            border: 1px solid rgba(241, 143, 1, 0.8);
+            color: rgba(241, 143, 1, 1);
+            background: rgba(241, 143, 1, 0.1);
+          }
         `}</style>
 
-        {this.state.isEnteringProjectName
-          ? <div className="flex flexColumn pl16 pt16 pb25">
-              <div className="flex itemsCenter">
-                <div className="black o40 f14">Project Name</div>
-                {this.state.newProjectName !== this.props.project.name &&
-                  <div
-                    className="resetButton"
-                    onClick={() =>
-                      this.setState(
-                        {
-                          isEnteringProjectName: false,
-                          newProjectName: this.props.project.name,
-                        } as State,
-                      )}
-                  >
-                    Reset
-                  </div>}
-              </div>
-              <div className="flex itemsCenter">
-                <input
-                  autoFocus={true}
-                  className="inputField"
-                  value={this.state.newProjectName}
-                  onKeyDown={this.handleKeyDown}
-                  onChange={(e: any) =>
-                    this.setState({ newProjectName: e.target.value } as State)}
-                />
-                {this.state.newProjectName !== this.props.project.name &&
-                  <div className="saveButton" onClick={this.saveSettings}>
-                    Save
-                  </div>}
-              </div>
-            </div>
-          : <div className="flex flexColumn pl16 pt16 pb25">
+        {this.state.isEnteringProjectName ? (
+          <div className="flex flexColumn pl16 pt16 pb25">
+            <div className="flex itemsCenter">
               <div className="black o40 f14">Project Name</div>
-              <div
-                className="flex itemsCenter pointer"
-                onMouseEnter={() =>
-                  this.setState({ isHoveringProjectName: true } as State)}
-                onMouseLeave={() =>
-                  this.setState({ isHoveringProjectName: false } as State)}
-                onClick={() =>
-                  this.setState(
-                    {
-                      isEnteringProjectName: true,
-                      isHoveringProjectName: false,
-                    } as State,
-                  )}
-              >
-                <div className="fw3 f25 pt6">
-                  {this.props.project && this.props.project.name}
+              {this.state.newProjectName !== this.props.project.name && (
+                <div
+                  className="resetButton"
+                  onClick={() =>
+                    this.setState({
+                      isEnteringProjectName: false,
+                      newProjectName: this.props.project.name,
+                    } as State)}
+                >
+                  Reset
                 </div>
-                {this.state.isHoveringProjectName &&
-                  <Icon
-                    className={$p.ml6}
-                    src={require('../../../assets/icons/edit_project_name.svg')}
-                    width={20}
-                    height={20}
-                  />}
+              )}
+            </div>
+            <div className="flex itemsCenter">
+              <input
+                autoFocus={true}
+                className="inputField"
+                value={this.state.newProjectName}
+                onKeyDown={this.handleKeyDown}
+                onChange={(e: any) =>
+                  this.setState({ newProjectName: e.target.value } as State)}
+              />
+              {this.state.newProjectName !== this.props.project.name && (
+                <div className="saveButton" onClick={this.saveSettings}>
+                  Save
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flexColumn pl16 pt16 pb25">
+            <div className="black o40 f14">Project Name</div>
+            <div
+              className="flex itemsCenter pointer"
+              onMouseEnter={() =>
+                this.setState({ isHoveringProjectName: true } as State)}
+              onMouseLeave={() =>
+                this.setState({ isHoveringProjectName: false } as State)}
+              onClick={() =>
+                this.setState({
+                  isEnteringProjectName: true,
+                  isHoveringProjectName: false,
+                } as State)}
+            >
+              <div className="fw3 f25 pt6">
+                {this.props.project && this.props.project.name}
               </div>
-            </div>}
+              {this.state.isHoveringProjectName && (
+                <Icon
+                  className={$p.ml6}
+                  src={require('../../../assets/icons/edit_project_name.svg')}
+                  width={20}
+                  height={20}
+                />
+              )}
+            </div>
+          </div>
+        )}
         <div className="flex flexColumn pl16 pt16 pb25">
           <div className="flex itemsCenter">
             <Icon
@@ -190,94 +198,99 @@ class ProjectInfo extends React.Component<Props, State> {
               onCopy={this.onCopy}
             >
               <div className="relative bgWhite selfCenter br2 pointer">
-                {this.state.projectIdCopied &&
+                {this.state.projectIdCopied && (
                   <div className="copyIndicator absolute f14 fw6 blue">
                     Copied
-                  </div>}
-                {this.props.project &&
+                  </div>
+                )}
+                {this.props.project && (
                   <Icon
                     className="ml10 pointer buttonShadow"
                     color={'rgba(0,0,0,.5)'}
                     src={require('../../../assets/icons/copy.svg')}
                     width={34}
                     height={34}
-                  />}
+                  />
+                )}
               </div>
             </CopyToClipboard>
           </div>
-          {this.state.isEnteringAlias
-            ? <div className="flex flexColumn pt16 pb25">
-                <div className="flex itemsCenter">
-                  <div className="black o40 f14">Project Alias</div>
-                  {this.state.newAlias !== this.props.project.alias &&
-                    <div
-                      className="resetButton"
-                      onClick={() => {
-                        this.setState(
-                          {
-                            isEnteringAlias: false,
-                            newAlias: this.props.project.alias,
-                          } as State,
-                        )
-                      }}
-                    >
-                      Reset
-                    </div>}
-                </div>
-                <div className="flex itemsCenter">
-                  <input
-                    autoFocus={true}
-                    className="inputField"
-                    value={this.state.newAlias}
-                    onKeyDown={this.handleKeyDown}
-                    onChange={(e: any) =>
-                      this.setState({ newAlias: e.target.value } as State)}
-                  />
-                  {this.state.newAlias !== this.props.project.alias &&
-                    <div className="saveButton" onClick={this.saveSettings}>
-                      Save
-                    </div>}
+          {this.state.isEnteringAlias ? (
+            <div className="flex flexColumn pt16 pb25">
+              <div className="flex itemsCenter">
+                <div className="black o40 f14">Project Alias</div>
+                {this.state.newAlias !== this.props.project.alias && (
+                  <div
+                    className="resetButton"
+                    onClick={() => {
+                      this.setState({
+                        isEnteringAlias: false,
+                        newAlias: this.props.project.alias,
+                      } as State)
+                    }}
+                  >
+                    Reset
+                  </div>
+                )}
+              </div>
+              <div className="flex itemsCenter">
+                <input
+                  autoFocus={true}
+                  className="inputField"
+                  value={this.state.newAlias}
+                  onKeyDown={this.handleKeyDown}
+                  onChange={(e: any) =>
+                    this.setState({ newAlias: e.target.value } as State)}
+                />
+                {this.state.newAlias !== this.props.project.alias && (
+                  <div className="saveButton" onClick={this.saveSettings}>
+                    Save
+                  </div>
+                )}
+                <Info>
+                  You will get a custom endpoint url based on the alias you
+                  choose
+                </Info>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flexColumn pt16 pb25">
+              <div className="black o40 f14">Project Alias</div>
+              <div
+                className="flex itemsCenter pointer"
+                onMouseEnter={() =>
+                  this.setState({ isHoveringAlias: true } as State)}
+                onMouseLeave={() =>
+                  this.setState({ isHoveringAlias: false } as State)}
+                onClick={() =>
+                  this.setState({
+                    isEnteringAlias: true,
+                    isHoveringAlias: false,
+                  } as State)}
+              >
+                <div className="fw3 f25 pt6 flex itemsCenter">
+                  {!this.props.project.alias ||
+                  this.props.project.alias.length === 0 ? (
+                    <div>Choose an Alias</div>
+                  ) : (
+                    this.props.project.alias
+                  )}
                   <Info>
                     You will get a custom endpoint url based on the alias you
                     choose
                   </Info>
                 </div>
+                {this.state.isHoveringAlias && (
+                  <Icon
+                    className={$p.ml6}
+                    src={require('../../../assets/icons/edit_project_name.svg')}
+                    width={20}
+                    height={20}
+                  />
+                )}
               </div>
-            : <div className="flex flexColumn pt16 pb25">
-                <div className="black o40 f14">Project Alias</div>
-                <div
-                  className="flex itemsCenter pointer"
-                  onMouseEnter={() =>
-                    this.setState({ isHoveringAlias: true } as State)}
-                  onMouseLeave={() =>
-                    this.setState({ isHoveringAlias: false } as State)}
-                  onClick={() =>
-                    this.setState(
-                      {
-                        isEnteringAlias: true,
-                        isHoveringAlias: false,
-                      } as State,
-                    )}
-                >
-                  <div className="fw3 f25 pt6 flex itemsCenter">
-                    {!this.props.project.alias ||
-                    this.props.project.alias.length === 0
-                      ? <div>Choose an Alias</div>
-                      : this.props.project.alias}
-                    <Info>
-                      You will get a custom endpoint url based on the alias you
-                      choose
-                    </Info>
-                  </div>
-                  {this.state.isHoveringAlias &&
-                    <Icon
-                      className={$p.ml6}
-                      src={require('../../../assets/icons/edit_project_name.svg')}
-                      width={20}
-                      height={20}
-                    />}
-                </div>
-              </div>}
+            </div>
+          )}
           <div className="actionRow">
             <div>
               <div className="fw3 f25 deleteRed100">Clone this Project</div>
@@ -286,9 +299,33 @@ class ProjectInfo extends React.Component<Props, State> {
               <div className="actionButton white">Clone Project</div>
             </Link>
           </div>
+          {this.props.project.isEjected && (
+            <div className="actionRow">
+              <div>
+                <div className="fw3 f16 deleteRed100 infoBox">
+                  This project is ejected from being edited in the Console.{' '}
+                  <br />
+                  From now on the project has to be edited from the CLI. <br />
+                  To install the CLI, use
+                  <pre className="mono">npm install -g graphcool@beta</pre>
+                  <h5>Click here to download the project data:</h5>
+                  <Button
+                    onClick={this.downloadProjectDefinition}
+                    hideArrow={true}
+                  >
+                    Download Project Definition
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
+  }
+
+  private downloadProjectDefinition() {
+    // noop
   }
 
   private saveSettings = (): void => {
@@ -313,11 +350,9 @@ class ProjectInfo extends React.Component<Props, State> {
     if (e.keyCode === 13) {
       this.saveSettings()
     } else if (e.keyCode === 27) {
-      this.setState(
-        {
-          isEnteringProjectName: false,
-        } as State,
-      )
+      this.setState({
+        isEnteringProjectName: false,
+      } as State)
     }
   }
 
@@ -342,6 +377,7 @@ export default createFragmentContainer(withRouter(mappedProjectInfo), {
       id
       name
       alias
+      isEjected
     }
   `,
 })
