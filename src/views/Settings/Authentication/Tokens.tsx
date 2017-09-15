@@ -45,7 +45,7 @@ class Tokens extends React.Component<Props, State> {
           .blueCircle {
             @inherit: .flex, .justifyCenter, .itemsCenter, .br100, .mr16, .hS25,
               .wS25;
-            background-color: rgba(42, 127, 211, .2);
+            background-color: rgba(42, 127, 211, 0.2);
           }
 
           .grayCircle {
@@ -67,80 +67,91 @@ class Tokens extends React.Component<Props, State> {
             color: rgba(42, 127, 211, 1);
           }
         `}</style>
-        {tokens.map(token =>
+        {tokens.map(token => (
           <TokenRow
             key={token.token}
             permanentAuthToken={token}
             deleteSystemToken={this.deleteSystemToken}
-          />,
-        )}
-        {this.state.isEnteringTokenName
-          ? <div className="flex pl25">
-              <input
-                className="inputField"
-                autoFocus={true}
-                placeholder="Define a name for the token ..."
-                value={this.state.newTokenName}
-                onKeyDown={this.handleKeyDown}
-                onChange={(e: any) =>
-                  this.setState({ newTokenName: e.target.value } as State)}
-              />
-              {this.state.loading
-                ? <div className="flex itemsCenter justifyCenter">
-                    <Loading />
-                  </div>
-                : <div className="flex itemsCenter">
-                    <Icon
-                      className="mh10 pointer"
-                      src={require('../../../assets/icons/cross_red.svg')}
-                      width={15}
-                      height={15}
-                      onClick={() =>
-                        this.setState(
-                          {
-                            isEnteringTokenName: false,
-                          } as State,
-                        )}
-                    />
-                    <Icon
-                      className="mh10 pointer"
-                      src={require('../../../assets/icons/confirm.svg')}
-                      width={35}
-                      height={35}
-                      onClick={this.addPermanentAuthToken}
-                    />
-                  </div>}
-            </div>
-          : <div
-              className="flex pointer pl25"
-              onClick={() => {
-                this.setState(
-                  {
-                    isEnteringTokenName: true,
-                  } as State,
-                )
-              }}
-            >
-              <div className={tokens.length > 0 ? 'grayCircle' : 'blueCircle'}>
+          />
+        ))}
+        {!this.props.project.isEjected ? this.state.isEnteringTokenName ? (
+          <div className="flex pl25">
+            <input
+              className="inputField"
+              autoFocus={true}
+              placeholder="Define a name for the token ..."
+              value={this.state.newTokenName}
+              onKeyDown={this.handleKeyDown}
+              onChange={(e: any) =>
+                this.setState({ newTokenName: e.target.value } as State)}
+            />
+            {this.state.loading ? (
+              <div className="flex itemsCenter justifyCenter">
+                <Loading />
+              </div>
+            ) : (
+              <div className="flex itemsCenter">
                 <Icon
-                  src={require('../../../assets/icons/addFull.svg')}
-                  width={12}
-                  height={12}
-                  color={
-                    tokens.length > 0 ? 'rgba(0,0,0,.3)' : 'rgba(42,127,211,1)'
-                  }
-                  stroke={true}
-                  strokeWidth={8}
+                  className="mh10 pointer"
+                  src={require('../../../assets/icons/cross_red.svg')}
+                  width={15}
+                  height={15}
+                  onClick={() =>
+                    this.setState({
+                      isEnteringTokenName: false,
+                    } as State)}
+                />
+                <Icon
+                  className="mh10 pointer"
+                  src={require('../../../assets/icons/confirm.svg')}
+                  width={35}
+                  height={35}
+                  onClick={this.addPermanentAuthToken}
                 />
               </div>
-              <div
-                className={
-                  tokens.length > 0 ? 'addTokenTextGray' : 'addTokenTextBlue'
+            )}
+          </div>
+        ) : (
+          <div
+            className="flex pointer pl25"
+            onClick={() => {
+              this.setState({
+                isEnteringTokenName: true,
+              } as State)
+            }}
+          >
+            <div className={tokens.length > 0 ? 'grayCircle' : 'blueCircle'}>
+              <Icon
+                src={require('../../../assets/icons/addFull.svg')}
+                width={12}
+                height={12}
+                color={
+                  tokens.length > 0 ? 'rgba(0,0,0,.3)' : 'rgba(42,127,211,1)'
                 }
-              >
-                add permanent access token
-              </div>
-            </div>}
+                stroke={true}
+                strokeWidth={8}
+              />
+            </div>
+            <div
+              className={
+                tokens.length > 0 ? 'addTokenTextGray' : 'addTokenTextBlue'
+              }
+            >
+              add permanent access token
+            </div>
+          </div>
+        ) : (
+          <div className="darkBlue80 pl25">
+            In order to create new tokens, use the
+            <a
+              href="https://github.com/graphcool/graphcool-cli"
+              target="_blank"
+              className="ml6 underline darkBlue fw6"
+            >
+              Graphcool CLI
+            </a>
+          </div>
+        )}
       </div>
     )
   }
@@ -153,16 +164,14 @@ class Tokens extends React.Component<Props, State> {
     if (e.keyCode === 13) {
       this.addPermanentAuthToken()
     } else if (e.keyCode === 27) {
-      this.setState(
-        {
-          isEnteringTokenName: false,
-        } as State,
-      )
+      this.setState({
+        isEnteringTokenName: false,
+      } as State)
     }
   }
 
   private addPermanentAuthToken = (): void => {
-    if (!this.state.newTokenName) {
+    if (!this.state.newTokenName || this.props.project.isEjected) {
       return
     }
     this.setLoading()
@@ -171,12 +180,10 @@ class Tokens extends React.Component<Props, State> {
       tokenName: this.state.newTokenName,
     })
       .then(() => {
-        this.setState(
-          {
-            newTokenName: '',
-            isEnteringTokenName: false,
-          } as State,
-        )
+        this.setState({
+          newTokenName: '',
+          isEnteringTokenName: false,
+        } as State)
         this.setLoading(false)
       })
       .catch(transaction => {
@@ -207,6 +214,7 @@ export default createFragmentContainer(mappedTokens, {
   project: graphql`
     fragment Tokens_project on Project {
       id
+      isEjected
       permanentAuthTokens(first: 1000) {
         edges {
           node {

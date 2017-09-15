@@ -4,7 +4,7 @@ import { withRouter, Link } from 'found'
 import { Project } from '../../../types/types'
 import Icon from 'graphcool-styles/dist/components/Icon/Icon'
 import { $p } from 'graphcool-styles'
-import UpdateProjectMutation from '../../../mutations/UpdateProjectMutation'
+import UpdateProjectMutation from '../../../mutations/Project/UpdateProjectMutation'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { connect } from 'react-redux'
 import { showNotification } from '../../../actions/notification'
@@ -13,7 +13,8 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import Info from '../../../components/Info'
 import { onFailureShowNotification } from '../../../utils/relay'
 import { Button } from '../../../components/Links'
-// import * as JSZip from 'jszip'
+import * as JSZip from 'jszip'
+import * as FileSaver from 'file-saver'
 
 // Note: the checks for this.props.project are there to make the UI
 // look better when a project gets deleted - otherwise there is a flicker
@@ -114,7 +115,7 @@ class ProjectInfo extends React.Component<Props, State> {
             @p: .br2, .pa16;
             border: 1px solid rgba(241, 143, 1, 0.8);
             color: rgba(241, 143, 1, 1);
-            background: rgba(241, 143, 1, 0.1);
+            background: rgba(241, 143, 1, 0.05);
           }
         `}</style>
 
@@ -303,12 +304,14 @@ class ProjectInfo extends React.Component<Props, State> {
           {this.props.project.isEjected && (
             <div className="actionRow">
               <div>
-                <div className="fw3 f16 deleteRed100 infoBox">
+                <div className="fw3 f16 deleteRed100 infoBox fw4">
                   This project is ejected from being edited in the Console.{' '}
                   <br />
                   From now on the project has to be edited from the CLI. <br />
                   To install the CLI, use
-                  <pre className="mono">npm install -g graphcool@beta</pre>
+                  <pre className="mono mt16 fw6">
+                    npm install -g graphcool@beta
+                  </pre>
                   <h5>Click here to download the project data:</h5>
                   <Button
                     onClick={this.downloadProjectDefinition}
@@ -325,15 +328,30 @@ class ProjectInfo extends React.Component<Props, State> {
     )
   }
 
-  private async downloadProjectDefinition() {
-    // const definition: any = JSON.parse(
-    //   this.props.project.projectDefinitionWithFileContents,
-    // )
-    // const zip = new JSZip()
-    // console.log(zip)
-    // definition.modules.forEach(module => {
-    //   console.log(module)
-    // })
+  private downloadProjectDefinition = async () => {
+    const definition: any = JSON.parse(
+      this.props.project.projectDefinitionWithFileContent,
+    )
+    const zip = new JSZip()
+    const module = definition.modules[0]
+    zip.file('graphcool.yml', module.content)
+    zip.file(
+      '.graphcoolrc',
+      `\
+default: prod
+environments:
+  prod: ${this.props.project.id}
+
+`,
+    )
+    Object.keys(module.files).forEach(fileName => {
+      const file = module.files[fileName]
+      zip.file(fileName, file)
+    })
+
+    zip.generateAsync({ type: 'blob' }).then(blob => {
+      FileSaver.saveAs(blob, `${this.props.project.name}.zip`)
+    })
   }
 
   private saveSettings = (): void => {

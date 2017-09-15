@@ -7,7 +7,7 @@ import Loading from '../../components/Loading/Loading'
 import FieldHorizontalSelect from '../models/FieldPopup/FieldHorizontalSelect'
 import { $v } from 'graphcool-styles'
 import { validateProjectName } from '../../utils/nameValidator'
-import AddProjectMutation from '../../mutations/AddProjectMutation'
+import AddProjectMutation from '../../mutations/Project/AddProjectMutation'
 import tracker from '../../utils/metrics'
 import { onFailureShowNotification } from '../../utils/relay'
 import { connect } from 'react-redux'
@@ -186,10 +186,11 @@ class AddProjectPopup extends React.Component<Props, State> {
               data-test="project-name-input"
             />
             {showError &&
-              error &&
+            error && (
               <div className="error">
                 The project name must begin with an uppercase letter
-              </div>}
+              </div>
+            )}
           </div>
           <div className="select-region">
             <h2>Choose a Region</h2>
@@ -215,10 +216,11 @@ class AddProjectPopup extends React.Component<Props, State> {
               Ok
             </div>
           </div>
-          {loading &&
+          {loading && (
             <div className="loading">
               <Loading />
-            </div>}
+            </div>
+          )}
         </div>
       </Modal>
     )

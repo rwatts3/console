@@ -4,7 +4,7 @@ import * as cookiestore from 'cookiestore'
 import { default as mapProps } from 'map-props'
 import { Viewer } from '../../types/types'
 const classes: any = require('./RootRedirectView.scss')
-import AddProjectMutation from '../../mutations/AddProjectMutation'
+import AddProjectMutation from '../../mutations/Project/AddProjectMutation'
 
 interface Props {
   viewer: Viewer
