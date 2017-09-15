@@ -11,4 +11,6 @@ const after = Date.now()
 
 console.log(`Took ${after - before}ms to bulid the client schema`)
 console.log(`${after - bbefore}ms in total`)
+console.log(schema)
+// fs.writeFileSync('schema.graphql', schema)
 

@@ -1,21 +1,14 @@
-import { Region } from '../types/types'
 import { graphql } from 'react-relay'
-import { makeMutation } from '../utils/makeMutation'
+import { makeMutation } from '../../utils/makeMutation'
 
 interface Props {
-  projectName: string
+  projectId: string
   customerId: string
-  region: Region
 }
 
 const mutation = graphql`
-  mutation AddProjectMutation($input: AddProjectInput!) {
-    addProject(input: $input) {
-      projectEdge {
-        node {
-          id
-        }
-      }
+  mutation DeleteProjectMutation($input: DeleteProjectInput!) {
+    deleteProject(input: $input) {
       user {
         projects(first: 1000) {
           edges {
@@ -25,6 +18,7 @@ const mutation = graphql`
           }
         }
       }
+      deletedId
     }
   }
 `
@@ -34,20 +28,16 @@ function commit(input: Props) {
     mutation,
     variables: {
       input: {
-        name: input.projectName,
-        region: input.region,
+        projectId: input.projectId,
       },
     },
     configs: [
       {
-        type: 'RANGE_ADD',
+        type: 'NODE_DELETE',
         parentName: 'user',
         parentID: input.customerId,
         connectionName: 'projects',
-        edgeName: 'projectEdge',
-        rangeBehaviors: {
-          '': 'append',
-        },
+        deletedIDFieldName: 'deletedId',
       },
     ],
   })

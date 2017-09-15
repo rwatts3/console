@@ -1,4 +1,4 @@
-const {buildClientSchema} = require('graphql')
+const {buildClientSchema, print} = require('graphql')
 const fs = require('fs')
 
 const file = fs.readFileSync('./schema.json')
@@ -12,3 +12,4 @@ const after = Date.now()
 
 console.log(`Took ${after - before}ms to bulid the client schema`)
 console.log(`${after - bbefore}ms in total`)
+console.log(print(schema))

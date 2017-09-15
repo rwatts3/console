@@ -71,7 +71,9 @@ export interface CrmOnboardingStatus {
 }
 
 export interface Project {
+  projectDefinitionWithFileContent?: string
   id: string
+  isEjected?: boolean
   name: string
   alias: string
   version: number

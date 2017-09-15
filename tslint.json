@@ -7,6 +7,8 @@
     "no-namespace": false,
     "no-reference": false,
     "no-var-requires": false,
-    "jsx-boolean-value": [false]
+    "jsx-boolean-value": [false],
+    "no-submodule-imports": null,
+    "no-duplicate-imports": null
   }
 }

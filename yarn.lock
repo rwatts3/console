@@ -4077,7 +4077,7 @@ graphql-tag@^2.0.0:
   version "1.0.0-rc.4"
   resolved "git+https://github.com/timsuchanek/graphql-voyager#31d88e3c0bb07fbcbcb1d3c1f83d0b07a143c0ff"
   dependencies:
-    "@f/animate" "^1.0.1"
+    "@f/animate" "1.0.1"
     classnames "^2.2.5"
     clipboard "^1.6.1"
     lodash "^4.17.2"

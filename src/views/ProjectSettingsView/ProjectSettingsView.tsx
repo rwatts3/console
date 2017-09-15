@@ -9,8 +9,8 @@ import { showNotification } from '../../actions/notification'
 import { bindActionCreators } from 'redux'
 import ResetProjectDataMutation from '../../mutations/ResetProjectDataMutation'
 import ResetProjectSchemaMutation from '../../mutations/ResetProjectSchemaMutation'
-import DeleteProjectMutation from '../../mutations/DeleteProjectMutation'
-import UpdateProjectMutation from '../../mutations/UpdateProjectMutation'
+import DeleteProjectMutation from '../../mutations/Project/DeleteProjectMutation'
+import UpdateProjectMutation from '../../mutations/Project/UpdateProjectMutation'
 import { onFailureShowNotification } from '../../utils/relay'
 import { findDOMNode } from 'react-dom'
 import * as cn from 'classnames'
@@ -59,13 +59,14 @@ class ProjectSettingsView extends React.Component<Props, State> {
                 onChange={e =>
                   this.updateProjectName((e.target as HTMLInputElement).value)}
               />
-              {this.state.nameChanged &&
+              {this.state.nameChanged && (
                 <div
                   onClick={this.saveSettings}
                   className={cn(classes.button, classes.green)}
                 >
                   <span>Save</span>
-                </div>}
+                </div>
+              )}
             </span>
           </div>
           <div className={classes.copy} title="Project Id">
@@ -97,13 +98,13 @@ class ProjectSettingsView extends React.Component<Props, State> {
               />
               {this.props.viewer.project.permanentAuthTokens.edges
                 .map(edge => edge.node)
-                .map(token =>
+                .map(token => (
                   <PermanentAuthTokenRow
                     key={token.id}
                     projectId={this.props.viewer.project.id}
                     permanentAuthToken={token}
-                  />,
-                )}
+                  />
+                ))}
             </div>
           </div>
           <div className={classes.category}>
@@ -195,12 +196,10 @@ class ProjectSettingsView extends React.Component<Props, State> {
   }
 
   private updateProjectName = (name: string): void => {
-    this.setState(
-      {
-        projectName: name,
-        nameChanged: name !== this.props.viewer.project.name,
-      } as State,
-    )
+    this.setState({
+      projectName: name,
+      nameChanged: name !== this.props.viewer.project.name,
+    } as State)
   }
 
   private selectProjectId = (): void => {

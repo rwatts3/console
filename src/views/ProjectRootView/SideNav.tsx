@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Immutable from 'immutable'
-import { createRefetchContainer, graphql } from 'react-relay'
-import { withRouter, Link } from 'found'
+import { createRefetchContainer, graphql, RelayProp } from 'react-relay'
+import { Link, withRouter } from 'found'
 import { connect } from 'react-redux'
 import cuid from 'cuid'
 import mapProps from '../../components/MapProps/MapProps'
@@ -9,7 +9,7 @@ import Tether from '../../components/Tether/Tether'
 import { sideNavSyncer } from '../../utils/sideNavSyncer'
 import { nextStep, showDonePopup } from '../../actions/gettingStarted'
 import { showPopup } from '../../actions/popup'
-import { Project, Viewer, Model } from '../../types/types'
+import { Model, Project, Viewer } from '../../types/types'
 import { ShowNotificationCallback } from '../../types/utils'
 import { showNotification } from '../../actions/notification'
 import { Popup } from '../../types/popup'
@@ -22,7 +22,6 @@ import { ExcludeProps } from '../../utils/components'
 import tracker from '../../utils/metrics'
 import { ConsoleEvents } from 'graphcool-metrics'
 import SideNavElement from './SideNavElement'
-import { RelayProp } from 'react-relay'
 import { dummy } from '../../utils/dummy'
 
 interface Props {
@@ -144,17 +143,19 @@ export class SideNav extends React.Component<Props, State> {
           className={cx('scrollable', $p.h100, { thin: !expanded })}
           style={{ paddingBottom: '70px' }}
         >
-          <SideNavElement
-            link={`/${project.name}/schema`}
-            iconSrc={require('assets/icons/schema.svg')}
-            text="Schema"
-            size={18}
-            active={
-              this.props.location.pathname.includes(`/schema`) &&
-              this.props.params.projectName
-            }
-            small={!this.props.expanded}
-          />
+          {!project.isEjected && (
+            <SideNavElement
+              link={`/${project.name}/schema`}
+              iconSrc={require('assets/icons/schema.svg')}
+              text="Schema"
+              size={18}
+              active={
+                this.props.location.pathname.includes(`/schema`) &&
+                this.props.params.projectName
+              }
+              small={!this.props.expanded}
+            />
+          )}
           <SideNavElement
             active={this.props.location.pathname.endsWith('databrowser')}
             link={`/${this.props.params.projectName}/models/${this.props
@@ -167,21 +168,25 @@ export class SideNav extends React.Component<Props, State> {
             data-test="sidenav-databrowser"
           />
           {location.pathname.endsWith('databrowser') && this.renderModels()}
-          <SideNavElement
-            link={`/${project.name}/permissions`}
-            iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
-            text="Permissions"
-            active={this.props.location.pathname.includes('/permissions')}
-            small={!this.props.expanded}
-            data-test="sidenav-permissions"
-          />
-          <SideNavElement
-            link={`/${project.name}/integrations`}
-            iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
-            text="Integrations"
-            active={this.props.location.pathname.endsWith('/integrations')}
-            small={!this.props.expanded}
-          />
+          {!project.isEjected && (
+            <SideNavElement
+              link={`/${project.name}/permissions`}
+              iconSrc={require('graphcool-styles/icons/fill/permissions.svg')}
+              text="Permissions"
+              active={this.props.location.pathname.includes('/permissions')}
+              small={!this.props.expanded}
+              data-test="sidenav-permissions"
+            />
+          )}
+          {!project.isEjected && (
+            <SideNavElement
+              link={`/${project.name}/integrations`}
+              iconSrc={require('graphcool-styles/icons/fill/integrations.svg')}
+              text="Integrations"
+              active={this.props.location.pathname.endsWith('/integrations')}
+              small={!this.props.expanded}
+            />
+          )}
           <SideNavElement
             link={`/${project.name}/functions`}
             iconSrc={require('graphcool-styles/icons/fill/actions.svg')}
@@ -330,10 +335,10 @@ export class SideNav extends React.Component<Props, State> {
       height: 32px;
 
       &:hover {
-         color: ${$v.white60};
+        color: ${$v.white60};
       }
 
-      ${props => props.active && activeListElement}
+      ${props => props.active && activeListElement};
     `
 
     return (
@@ -347,7 +352,7 @@ export class SideNav extends React.Component<Props, State> {
         >
           <div className={cx($p.flex, $p.flexColumn, $p.mt10, $p.mb16)}>
             {this.props.models &&
-              this.props.models.map(model =>
+              this.props.models.map(model => (
                 <ListElement
                   key={model.name}
                   to={`/${this.props.params
@@ -378,12 +383,14 @@ export class SideNav extends React.Component<Props, State> {
                     )}
                   >
                     <div title={model.name}>
-                      {this.props.expanded
-                        ? model.name
-                        : model.name.slice(0, 2).toUpperCase()}
+                      {this.props.expanded ? (
+                        model.name
+                      ) : (
+                        model.name.slice(0, 2).toUpperCase()
+                      )}
                     </div>
                     {this.props.expanded &&
-                      (model.isSystem &&
+                      (model.isSystem && (
                         <div
                           className={cx(
                             $p.ph4,
@@ -396,15 +403,17 @@ export class SideNav extends React.Component<Props, State> {
                           )}
                         >
                           System
-                        </div>)}
+                        </div>
+                      ))}
                   </div>
-                  {this.props.expanded &&
+                  {this.props.expanded && (
                     <div>
                       {model.itemCount +
                         (this.props.countChanges.get(model.id) || 0)}
-                    </div>}
-                </ListElement>,
-              )}
+                    </div>
+                  )}
+                </ListElement>
+              ))}
           </div>
         </div>
       </div>
@@ -489,6 +498,7 @@ export default createRefetchContainer(
         alias
         webhookUrl
         region
+        isEjected
         models(first: 1000) {
           edges {
             node {

@@ -3,13 +3,14 @@ import { createFragmentContainer, graphql } from 'react-relay'
 import { withRouter } from 'found'
 import ResetProjectDataMutation from '../../../mutations/ResetProjectDataMutation'
 import ResetProjectSchemaMutation from '../../../mutations/ResetProjectSchemaMutation'
-import DeleteProjectMutation from '../../../mutations/DeleteProjectMutation'
+import DeleteProjectMutation from '../../../mutations/Project/DeleteProjectMutation'
 import { Viewer, Project } from '../../../types/types'
 import { showNotification } from '../../../actions/notification'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ShowNotificationCallback } from '../../../types/utils'
 import { onFailureShowNotification } from '../../../utils/relay'
+import EjectProjectMutation from '../../../mutations/Project/EjectProjectMutation'
 
 interface Props {
   viewer: Viewer
@@ -49,26 +50,26 @@ class DangerZone extends React.Component<Props, State> {
             color: rgba(241, 143, 1, 1);
           }
 
-          .orangeActionButton {
-            color: rgba(241, 143, 1, 1);
-            background-color: rgba(241, 143, 1, .2);
-          }
-
           .deleteRed100 {
             color: rgba(242, 92, 84, 1);
           }
 
           .deleteBgrRed20 {
-            background-color: rgba(242, 92, 84, .2);
+            background-color: rgba(242, 92, 84, 0.2);
           }
 
           .redActionButton {
             color: rgba(242, 92, 84, 1);
-            background-color: rgba(242, 92, 84, .2);
+            background-color: rgba(242, 92, 84, 0.2);
           }
 
           .actionButton {
             @p: .pv10, .ph16, .f16, .nowrap, .br2, .pointer;
+          }
+
+          .actionButton:hover {
+            @p: .white;
+            background-color: rgba(242, 92, 84, 1);
           }
 
           .dangerZoneTitle {
@@ -76,17 +77,37 @@ class DangerZone extends React.Component<Props, State> {
             color: rgba(242, 92, 84, 1);
           }
 
-          .hoveredOrangeActionButton {
+          .orangeActionButton {
+            color: rgba(241, 143, 1, 1);
+            background-color: rgba(241, 143, 1, 0.2);
+          }
+
+          .orangeActionButton:hover {
             @p: .white;
             background-color: rgba(241, 143, 1, 1);
           }
-
-          .hoveredRedActionButton {
-            @p: .white;
-            background-color: rgba(242, 92, 84, 1);
-          }
         `}</style>
         <div className="dangerZoneTitle">Danger Zone</div>
+        {!this.props.project.isEjected &&
+        this.props.viewer.user.crm.information.isBeta && (
+          <div className="actionRow">
+            <div>
+              <div className="fw3 f25 deleteRed100">Eject Project</div>
+              <div className="f16 deleteRed100">
+                In order to edit the project from the CLI, you need to eject if
+                from being edited in the Console.
+              </div>
+            </div>
+            <div
+              className={`actionButton ${this.state.hoveredRowIndex === 2
+                ? 'hoveredRedActionButton'
+                : 'redActionButton'}`}
+              onClick={this.ejectProject}
+            >
+              Eject Project
+            </div>
+          </div>
+        )}
         <div className="actionRow bottomBorderForActionRow">
           <div>
             <div
@@ -109,8 +130,6 @@ class DangerZone extends React.Component<Props, State> {
               ? 'hoveredOrangeActionButton'
               : 'orangeActionButton'}`}
             onClick={this.onClickResetProjectData}
-            onMouseEnter={() => this.setState({ hoveredRowIndex: 0 } as State)}
-            onMouseLeave={() => this.setState({ hoveredRowIndex: -1 } as State)}
           >
             Reset Data
           </div>
@@ -137,8 +156,6 @@ class DangerZone extends React.Component<Props, State> {
               ? 'hoveredOrangeActionButton'
               : 'orangeActionButton'}`}
             onClick={this.onClickResetCompleteProject}
-            onMouseEnter={() => this.setState({ hoveredRowIndex: 1 } as State)}
-            onMouseLeave={() => this.setState({ hoveredRowIndex: -1 } as State)}
           >
             Reset Everything
           </div>
@@ -155,14 +172,34 @@ class DangerZone extends React.Component<Props, State> {
               ? 'hoveredRedActionButton'
               : 'redActionButton'}`}
             onClick={this.onClickDeleteProject}
-            onMouseEnter={() => this.setState({ hoveredRowIndex: 2 } as State)}
-            onMouseLeave={() => this.setState({ hoveredRowIndex: -1 } as State)}
           >
             Delete Project
           </div>
         </div>
       </div>
     )
+  }
+
+  private ejectProject = (): void => {
+    graphcoolConfirm(`After the ejection you will be able to edit the Project from the CLI, but NOT from the Console anymore.
+    Functionality like the Databrowser and the Playground will still be available in the Console.
+    `).then(() => {
+      EjectProjectMutation.commit({
+        projectId: this.props.project.id,
+      })
+        .then(() => {
+          this.props.showNotification({
+            message: 'Project has been ejected',
+            level: 'success',
+          })
+          this.props.router.replace(
+            `/${this.props.project.name}/settings/general`,
+          )
+        })
+        .catch(transaction => {
+          onFailureShowNotification(transaction, this.props.showNotification)
+        })
+    })
   }
 
   private onClickResetProjectData = (): void => {
@@ -244,6 +281,11 @@ export default createFragmentContainer(MappedDangerZone, {
     fragment DangerZone_viewer on Viewer {
       user {
         id
+        crm {
+          information {
+            isBeta
+          }
+        }
         projects(first: 1000) {
           edges {
             node {
@@ -258,6 +300,7 @@ export default createFragmentContainer(MappedDangerZone, {
     fragment DangerZone_project on Project {
       id
       name
+      isEjected
     }
   `,
 })

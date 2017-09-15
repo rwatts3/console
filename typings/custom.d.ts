@@ -40,10 +40,9 @@ declare global {
   var __AUTH0_DOMAIN__: string
   var __AUTH0_CLIENT_ID__: string
   var graphcoolAlert: any
-  var graphcoolConfirm: any
+  var graphcoolConfirm: (text: string, title?: string) => Promise<void>
   var graphcoolNotification: any
+  var saveAs: any
   type InjectedFoundRouter = any
   type FoundRouterRoute = any
 }
-
-
