@@ -156,17 +156,19 @@ export class SideNav extends React.Component<Props, State> {
               small={!this.props.expanded}
             />
           )}
-          <SideNavElement
-            active={this.props.location.pathname.endsWith('databrowser')}
-            link={`/${this.props.params.projectName}/models/${this.props
-              .models[0].name}/databrowser`}
-            iconSrc={require('assets/icons/databrowser.svg')}
-            text="Data"
-            size={16}
-            minimalHighlight
-            small={!this.props.expanded}
-            data-test="sidenav-databrowser"
-          />
+          {this.props.models.length > 0 && (
+            <SideNavElement
+              active={this.props.location.pathname.endsWith('databrowser')}
+              link={`/${this.props.params.projectName}/models/${this.props
+                .models[0].name}/databrowser`}
+              iconSrc={require('assets/icons/databrowser.svg')}
+              text="Data"
+              size={16}
+              minimalHighlight
+              small={!this.props.expanded}
+              data-test="sidenav-databrowser"
+            />
+          )}
           {location.pathname.endsWith('databrowser') && this.renderModels()}
           {!project.isEjected && (
             <SideNavElement
