@@ -157,6 +157,31 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
     )
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (
+      this.props.model.permissionQueryArguments !==
+        nextProps.model.permissionQueryArguments ||
+      this.props.model.permissionQueryArguments.length !==
+        nextProps.model.permissionQueryArguments.length
+    ) {
+      const { ruleGraphQuery } = nextProps.permission
+      if (this.state.ruleGraphQuery) {
+        const schema = buildClientSchema(
+          JSON.parse(this.props.model.permissionSchema),
+        )
+        this.setState(state => ({
+          ...state,
+          ruleGraphQuery: addVarsAndName(
+            nextProps.model.namePlural,
+            ruleGraphQuery,
+            nextProps.model.permissionQueryArguments,
+            schema,
+          ),
+        }))
+      }
+    }
+  }
+
   render() {
     const { params, model } = this.props
     const {
@@ -219,7 +244,7 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
               .bgWhite80, .z999;
             left: -20px;
             right: -20px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, .8);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
           }
         `}</style>
         <ModalDocs
@@ -447,7 +472,10 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
 
   private setRuleGraphQuery = (ruleGraphQuery: string) => {
     this.setState(
-      { ruleGraphQuery, queryChanged: true } as PermissionPopupState,
+      {
+        ruleGraphQuery,
+        queryChanged: true,
+      } as PermissionPopupState,
     )
   }
 
@@ -473,7 +501,9 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
   private toggleApplyToWholeModel = () => {
     const { applyToWholeModel } = this.state
     this.setState(
-      { applyToWholeModel: !applyToWholeModel } as PermissionPopupState,
+      {
+        applyToWholeModel: !applyToWholeModel,
+      } as PermissionPopupState,
     )
   }
 
@@ -498,6 +528,10 @@ class PermissionPopup extends React.Component<Props, PermissionPopupState> {
       ruleGraphQuery: extractSelection(ruleGraphQuery),
       isActive,
     }
+    // console.log(`Before`)
+    // console.log(ruleGraphQuery)
+    // console.log(`After Extraction`)
+    // console.log(updatedNode.ruleGraphQuery)
     tracker.track(
       ConsoleEvents.Permissions.Popup.submitted({ type: this.mutationType }),
     )
