@@ -49,10 +49,27 @@ class SchemaView extends React.Component<Props, State> {
   componentDidMount() {
     window.addEventListener('resize', this.rerender)
     this.addLeaveHook()
+    if (
+      this.props.viewer &&
+      this.props.viewer.project &&
+      this.props.viewer.project.isEjected
+    ) {
+      this.props.router.push(`/${this.props.viewer.project.name}/models`)
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.rerender)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.viewer &&
+      nextProps.viewer.project &&
+      nextProps.viewer.project.isEjected
+    ) {
+      this.props.router.push(`/${nextProps.viewer.project.name}/models`)
+    }
   }
 
   addLeaveHook() {
@@ -182,6 +199,7 @@ export default createRefetchContainer(withRouter(SchemaView), {
       project: projectByName(projectName: $projectName) {
         id
         name
+        isEjected
         ...SchemaEditor_project
         ...SchemaOverview_project
         ...EnumsOverview_project

@@ -270,7 +270,7 @@ export default makeRouteConfig(
       query={ProjectViewerQuery}
       render={render}
     >
-      <Redirect to="/:projectName/schema" />
+      <Redirect to="/:projectName/models" />
       <Redirect from="settings" to="/:projectName/settings/general" />
       <Route
         path="functions"
