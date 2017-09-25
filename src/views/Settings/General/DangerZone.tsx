@@ -95,7 +95,7 @@ class DangerZone extends React.Component<Props, State> {
               <div className="fw3 f25 deleteRed100">Eject Project</div>
               <div className="f16 deleteRed100">
                 In order to edit the project from the CLI, you need to eject if
-                from being edited in the Console.
+                from being edited in the Console. This is irreversible!
               </div>
             </div>
             <div
@@ -122,7 +122,7 @@ class DangerZone extends React.Component<Props, State> {
                 ? 'solidOrange'
                 : 'black50'}`}
             >
-              Delete all Nodes, but keep Models and Fields.
+              Delete all Nodes, but keep Models and Fields. This is irreversible!
             </div>
           </div>
           <div
@@ -148,7 +148,7 @@ class DangerZone extends React.Component<Props, State> {
                 ? 'solidOrange'
                 : 'black50'}`}
             >
-              Delete everything inside the project.
+              Delete everything inside the project. This is irreversible!
             </div>
           </div>
           <div
@@ -164,7 +164,7 @@ class DangerZone extends React.Component<Props, State> {
           <div>
             <div className="fw3 f25 deleteRed100">Delete this Project</div>
             <div className="f16 deleteRed100">
-              That's the point of no return.
+              That's the point of no return. This is irreversible!
             </div>
           </div>
           <div
