@@ -1,5 +1,7 @@
 # Graphcool Console
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/graphcool/console.svg)](https://greenkeeper.io/)
+
 🚀  Official source of [console.graph.cool](https://console.graph.cool/) written in Typescript 2 and based on React & Relay
 
 ## Changelog
