@@ -261,7 +261,7 @@ class FunctionInput extends React.Component<Props, State> {
       case 'SSS':
         return 'Subscription Query'
       case 'SCHEMA_EXTENSION':
-        return 'Schema Extension SDL'
+        return 'Resolver SDL'
     }
   }
   renderComponent() {

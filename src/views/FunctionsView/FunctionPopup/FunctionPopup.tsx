@@ -426,9 +426,9 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
 
     if ('SCHEMA_EXTENSION' === eventType) {
       if (this.state.editing) {
-        return ['Update Schema Extension']
+        return ['Update Resolver']
       } else {
-        return ['Choose Event Trigger', 'Define Schema Extension']
+        return ['Choose Event Trigger', 'Define resolver']
       }
     }
 

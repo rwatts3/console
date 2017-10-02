@@ -56,7 +56,7 @@ export default class Step0 extends React.Component<Props, {}> {
             height={16}
             color={$v.darkBlue30}
           />
-          <div className="ml10">Schema Extension</div>
+          <div className="ml10">Resolver</div>
         </div>,
       )
     }
@@ -127,7 +127,7 @@ export default class Step0 extends React.Component<Props, {}> {
     }
 
     if (eventType === 'SCHEMA_EXTENSION') {
-      return `With a Schema Extension you can provide custom queries and mutations that are powered by a function
+      return `With a resolver you can provide custom queries and mutations that are powered by a function
       that you provide.`
     }
 
