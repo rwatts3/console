@@ -156,20 +156,22 @@ class FunctionRow extends React.Component<Props, State> {
           <Link
             to={link}
             data-test={
-              eventType === 'RP' ? (
-                'edit-rp-function-button'
-              ) : (
-                'edit-sss-function-button'
-              )
+              eventType === 'RP'
+                ? 'edit-rp-function-button'
+                : 'edit-sss-function-button'
             }
           >
-            <span className="name">{fn.name}</span>
-            <span className="badge">{isInline ? 'Inline' : 'Webhook'}</span>
+            <span className="name">
+              {fn.name}
+            </span>
+            <span className="badge">
+              {isInline ? 'Inline' : 'Webhook'}
+            </span>
           </Link>
         </td>
         <td>
           <Link to={link}>
-            {eventType === 'RP' && (
+            {eventType === 'RP' &&
               <div
                 className={cn(
                   'event-type',
@@ -186,18 +188,18 @@ class FunctionRow extends React.Component<Props, State> {
                   width={55}
                 />
                 <span className="ttu">Request Pipeline</span>
-                {fn.model && (
+                {fn.model &&
                   <div className="flex">
-                    <div className="badge ml10">{fn.model.name}</div>
+                    <div className="badge ml10">
+                      {fn.model.name}
+                    </div>
                     <span className="darkBlue40 f14">is</span>
                     <div className="badge ml6">
                       {fn.operation.toLowerCase()}d
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {eventType === 'SSS' && (
+                  </div>}
+              </div>}
+            {eventType === 'SSS' &&
               <div className="event-type">
                 <Icon
                   src={require('graphcool-styles/icons/fill/serversidesubscriptions.svg')}
@@ -206,9 +208,8 @@ class FunctionRow extends React.Component<Props, State> {
                   height={23}
                 />
                 <span>Server-side Subscription</span>
-              </div>
-            )}
-            {eventType === 'SCHEMA_EXTENSION' && (
+              </div>}
+            {eventType === 'SCHEMA_EXTENSION' &&
               <div className="event-type">
                 <Icon
                   src={require('assets/icons/schema.svg')}
@@ -216,46 +217,48 @@ class FunctionRow extends React.Component<Props, State> {
                   width={18}
                   height={18}
                 />
-                <span>Schema Extension</span>
-              </div>
-            )}
+                <span>Resolver</span>
+              </div>}
           </Link>
         </td>
         <td className="less-padding">
           <Link to={link}>
             <div className="requests">
               {fn.stats &&
-              fn.stats.requestHistogram &&
-              fn.stats.requestHistogram.length > 0 && (
-                <RequestGraph stats={fn.stats} />
-              )}
-              <div className="good">{fn.stats.requestCount}</div>
-              <div className="time">{lastCall}</div>
+                fn.stats.requestHistogram &&
+                fn.stats.requestHistogram.length > 0 &&
+                <RequestGraph stats={fn.stats} />}
+              <div className="good">
+                {fn.stats.requestCount}
+              </div>
+              <div className="time">
+                {lastCall}
+              </div>
             </div>
           </Link>
         </td>
         <td>
           <Link to={logsPath}>
-            {fn.stats.errorCount > 0 ? (
-              <div className="relative">
-                <Icon
-                  src={require('graphcool-styles/icons/fill/logsFailed.svg')}
-                  color={$v.red}
+            {fn.stats.errorCount > 0
+              ? <div className="relative">
+                  <Icon
+                    src={require('graphcool-styles/icons/fill/logsFailed.svg')}
+                    color={$v.red}
+                    width={24}
+                    height={24}
+                  />
+                  <div className="failed-count-wrapper">
+                    <div className="failed-count">
+                      {fn.stats.errorCount}
+                    </div>
+                  </div>
+                </div>
+              : <Icon
+                  src={require('graphcool-styles/icons/fill/logs.svg')}
+                  color={$v.green}
                   width={24}
                   height={24}
-                />
-                <div className="failed-count-wrapper">
-                  <div className="failed-count">{fn.stats.errorCount}</div>
-                </div>
-              </div>
-            ) : (
-              <Icon
-                src={require('graphcool-styles/icons/fill/logs.svg')}
-                color={$v.green}
-                width={24}
-                height={24}
-              />
-            )}
+                />}
           </Link>
         </td>
       </tr>

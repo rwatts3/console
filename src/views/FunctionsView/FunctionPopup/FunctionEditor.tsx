@@ -147,7 +147,7 @@ export default class FunctionEditor extends React.Component<Props, {}> {
           {'SCHEMA_EXTENSION' === eventType &&
             !editing &&
             <p>
-              To create a schema extension, you need to
+              To create a resolver, you need to
               <N>1</N>
               define a function name
               <N>2</N>
