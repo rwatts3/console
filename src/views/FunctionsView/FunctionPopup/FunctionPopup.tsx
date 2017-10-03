@@ -60,7 +60,6 @@ interface Props {
   node: ServerlessFunction
   functions: ServerlessFunction[]
   location: any
-  isBeta: boolean
 }
 
 export interface FunctionPopupState {
@@ -215,7 +214,7 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
   }
 
   render() {
-    const { models, schema, functions, isBeta } = this.props
+    const { models, schema, functions } = this.props
     const {
       activeTabIndex,
       editing,
@@ -300,7 +299,6 @@ class FunctionPopup extends React.Component<Props, FunctionPopupState> {
                   sssModelName={sssModelName}
                   onChangeSSSModel={this.handleChangeSSSModel}
                   models={models}
-                  isBeta={isBeta}
                 />}
               {activeTabIndex === 1 &&
                 !editing &&
@@ -728,7 +726,6 @@ const MappedFunctionPopup = mapProps({
     props.viewer.project.functions
       ? props.viewer.project.functions.edges.map(edge => edge.node)
       : [],
-  isBeta: props => props.viewer.user.crm.information.isBeta,
 })(withRouter(ConnectedFunctionPopup))
 
 export default createRefetchContainer(
@@ -749,13 +746,6 @@ export default createRefetchContainer(
           }
         ) {
         id
-        user {
-          crm {
-            information {
-              isBeta
-            }
-          }
-        }
         project: projectByName(projectName: $projectName) {
           id
           name

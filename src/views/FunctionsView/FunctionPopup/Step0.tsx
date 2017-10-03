@@ -12,7 +12,6 @@ interface Props {
   sssModelName: string
   onChangeSSSModel: (e: any) => void
   models: Model[]
-  isBeta: boolean
 }
 
 export default class Step0 extends React.Component<Props, {}> {
@@ -23,7 +22,6 @@ export default class Step0 extends React.Component<Props, {}> {
       sssModelName,
       onChangeSSSModel,
       models,
-      isBeta,
     } = this.props
     const choices: Array<JSX.Element | string> = [
       <div className="flex itemsCenter" data-test="choose-sss" key="choose-sss">
@@ -44,22 +42,18 @@ export default class Step0 extends React.Component<Props, {}> {
         />
         <div className="ml16">Request Pipeline</div>
       </div>,
+      <div className="flex itemsCenter" data-test="choose-se" key="choose-se">
+        <Icon
+          src={require('assets/icons/schema.svg')}
+          width={16}
+          height={16}
+          color={$v.darkBlue30}
+        />
+        <div className="ml10">Resolver</div>
+      </div>,
       /*
       */
     ]
-    if (isBeta) {
-      choices.push(
-        <div className="flex itemsCenter" data-test="choose-se" key="choose-se">
-          <Icon
-            src={require('assets/icons/schema.svg')}
-            width={16}
-            height={16}
-            color={$v.darkBlue30}
-          />
-          <div className="ml10">Resolver</div>
-        </div>,
-      )
-    }
 
     return (
       <div className="step0">
