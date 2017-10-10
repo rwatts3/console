@@ -89,7 +89,6 @@ class DangerZone extends React.Component<Props, State> {
         `}</style>
         <div className="dangerZoneTitle">Danger Zone</div>
         {!this.props.project.isEjected &&
-        this.props.viewer.user.crm.information.isBeta && (
           <div className="actionRow">
             <div>
               <div className="fw3 f25 deleteRed100">Upgrade Project</div>
@@ -105,8 +104,7 @@ class DangerZone extends React.Component<Props, State> {
             >
               Upgrade Project
             </div>
-          </div>
-        )}
+          </div>}
         <div className="actionRow bottomBorderForActionRow">
           <div>
             <div
@@ -121,7 +119,8 @@ class DangerZone extends React.Component<Props, State> {
                 ? 'solidOrange'
                 : 'black50'}`}
             >
-              Delete all Nodes, but keep Models and Fields. This is irreversible!
+              Delete all Nodes, but keep Models and Fields. This is
+              irreversible!
             </div>
           </div>
           <div
