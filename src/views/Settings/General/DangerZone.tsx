@@ -92,10 +92,9 @@ class DangerZone extends React.Component<Props, State> {
         this.props.viewer.user.crm.information.isBeta && (
           <div className="actionRow">
             <div>
-              <div className="fw3 f25 deleteRed100">Eject Project</div>
+              <div className="fw3 f25 deleteRed100">Upgrade Project</div>
               <div className="f16 deleteRed100">
-                In order to edit the project from the CLI, you need to eject if
-                from being edited in the Console. This is irreversible!
+                In order to deploy the service from the CLI, you need to upgrade your project. This is irreversible.
               </div>
             </div>
             <div
@@ -104,7 +103,7 @@ class DangerZone extends React.Component<Props, State> {
                 : 'redActionButton'}`}
               onClick={this.ejectProject}
             >
-              Eject Project
+              Upgrade Project
             </div>
           </div>
         )}
